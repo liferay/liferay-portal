@@ -28,7 +28,7 @@ public class BackgroundImageDefaultEditableValuesFragmentEntryProcessor
 
 	@Override
 	public JSONObject getDefaultEditableValuesJSONObject(
-		String configuration, Document document) {
+		JSONObject configurationJSONObject, Document document) {
 
 		JSONObject defaultEditableValuesJSONObject =
 			_jsonFactory.createJSONObject();

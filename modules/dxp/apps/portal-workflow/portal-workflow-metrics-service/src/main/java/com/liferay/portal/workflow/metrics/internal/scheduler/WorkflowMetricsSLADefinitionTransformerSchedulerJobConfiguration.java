@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
@@ -117,7 +120,9 @@ public class WorkflowMetricsSLADefinitionTransformerSchedulerJobConfiguration
 		searchSearchRequest.setQuery(
 			booleanQuery.addFilterQueryClauses(_createBooleanQuery(companyId)));
 
-		searchSearchRequest.setSize(10000);
+		searchSearchRequest.setSize(
+			GetterUtil.getInteger(
+				PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT), 10000));
 
 		SearchSearchResponse searchSearchResponse =
 			_searchEngineAdapter.execute(searchSearchRequest);

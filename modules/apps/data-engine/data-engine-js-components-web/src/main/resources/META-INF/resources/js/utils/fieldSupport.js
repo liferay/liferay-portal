@@ -163,8 +163,12 @@ export function removeField(props, pages, fieldName, removeEmptyRows = true) {
 					rows,
 				};
 			})
-			.filter(({nestedFields = [], type}) => {
-				if (type === FIELD_TYPE_FIELDSET && !nestedFields.length) {
+			.filter(({nestedFields = [], rows = [], type}) => {
+				if (
+					type === FIELD_TYPE_FIELDSET &&
+					!nestedFields.length &&
+					!rows.length
+				) {
 					return false;
 				}
 

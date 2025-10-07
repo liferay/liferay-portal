@@ -245,6 +245,13 @@ public class TextExtractorTest {
 	}
 
 	@Test
+	public void testVsdx() {
+		String text = extractText("test.vsdx");
+
+		Assert.assertEquals("test\n\nThis is a test.\nNothing fancy.", text);
+	}
+
+	@Test
 	public void testWrongTikaConfigXml() {
 		Object tikaConfigurationHelper = ReflectionTestUtil.getFieldValue(
 			_textExtractor, "_tikaConfigurationHelper");

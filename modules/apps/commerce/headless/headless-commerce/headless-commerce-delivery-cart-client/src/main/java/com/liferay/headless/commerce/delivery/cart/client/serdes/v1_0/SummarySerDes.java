@@ -60,6 +60,16 @@ public class SummarySerDes {
 			sb.append("\"");
 		}
 
+		if (summary.getItemsCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"itemsCount\": ");
+
+			sb.append(summary.getItemsCount());
+		}
+
 		if (summary.getItemsQuantity() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -354,6 +364,13 @@ public class SummarySerDes {
 			map.put("currency", String.valueOf(summary.getCurrency()));
 		}
 
+		if (summary.getItemsCount() == null) {
+			map.put("itemsCount", null);
+		}
+		else {
+			map.put("itemsCount", String.valueOf(summary.getItemsCount()));
+		}
+
 		if (summary.getItemsQuantity() == null) {
 			map.put("itemsQuantity", null);
 		}
@@ -546,6 +563,9 @@ public class SummarySerDes {
 			if (Objects.equals(jsonParserFieldName, "currency")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "itemsCount")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "itemsQuantity")) {
 				return false;
 			}
@@ -645,6 +665,12 @@ public class SummarySerDes {
 			if (Objects.equals(jsonParserFieldName, "currency")) {
 				if (jsonParserFieldValue != null) {
 					summary.setCurrency((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "itemsCount")) {
+				if (jsonParserFieldValue != null) {
+					summary.setItemsCount(
+						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "itemsQuantity")) {

@@ -343,7 +343,9 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 					folderPreparedStatement.executeBatch();
 
 					fileEntryPreparedStatement.executeBatch();
+
 					fileShortcutPreparedStatement.executeBatch();
+
 					fileVersionPreparedStatement.executeBatch();
 				}
 			}

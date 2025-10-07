@@ -18,6 +18,34 @@ import java.util.Set;
  */
 public abstract class BaseJakartaTransformCheck extends BaseFileCheck {
 
+	@Override
+	protected String doProcess(
+			String fileName, String absolutePath, String content)
+		throws Exception {
+
+		if (!isValidExtension(fileName)) {
+			return content;
+		}
+
+		return format(fileName, absolutePath, content);
+	}
+
+	protected abstract String format(
+			String fileName, String absolutePath, String content)
+		throws Exception;
+
+	protected abstract String[] getValidExtensions();
+
+	protected boolean isValidExtension(String fileName) {
+		for (String extension : getValidExtensions()) {
+			if (fileName.endsWith(extension)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	protected String replace(String value) {
 		for (Map.Entry<String, String> entry : _replacementDashMap.entrySet()) {
 			value = StringUtil.replace(value, entry.getKey(), entry.getValue());

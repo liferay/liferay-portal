@@ -1,0 +1,19 @@
+{
+	"dependencies": {
+		"@clayui/form": "3.148.0",
+		"@clayui/link": "3.144.1",
+		"@clayui/popover": "3.148.0",
+		"frontend-js-components-web": "*",
+		"frontend-js-web": "*",
+		"react": "18.2.0"
+	},
+	"main": "js/index.js",
+	"name": "@liferay/osb-patcher-web",
+	"private": true,
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format"
+	},
+	"version": "1.0.0"
+}

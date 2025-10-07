@@ -42,6 +42,10 @@ public class ProcessListTag extends IncludeTag {
 		return _deleteMenu;
 	}
 
+	public boolean isDetailsMenu() {
+		return _detailsMenu;
+	}
+
 	public boolean isRelaunchMenu() {
 		return _relaunchMenu;
 	}
@@ -52,6 +56,10 @@ public class ProcessListTag extends IncludeTag {
 
 	public void setDeleteMenu(boolean deleteMenu) {
 		_deleteMenu = deleteMenu;
+	}
+
+	public void setDetailsMenu(boolean detailsMenu) {
+		_detailsMenu = detailsMenu;
 	}
 
 	public void setEmptyResultsMessage(String emptyResultsMessage) {
@@ -98,6 +106,7 @@ public class ProcessListTag extends IncludeTag {
 		super.cleanUp();
 
 		_deleteMenu = true;
+		_detailsMenu = false;
 		_emptyResultsMessage = StringPool.BLANK;
 		_localTaskExecutorClassName = StringPool.BLANK;
 		_mvcRenderCommandName = StringPool.BLANK;
@@ -116,6 +125,8 @@ public class ProcessListTag extends IncludeTag {
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		httpServletRequest.setAttribute(
 			"liferay-staging:process-list:deleteMenu", _deleteMenu);
+		httpServletRequest.setAttribute(
+			"liferay-staging:process-list:detailsMenu", _detailsMenu);
 		httpServletRequest.setAttribute(
 			"liferay-staging:process-list:emptyResultsMessage",
 			_emptyResultsMessage);
@@ -140,6 +151,7 @@ public class ProcessListTag extends IncludeTag {
 	private static final String _PAGE = "/process_list/page.jsp";
 
 	private boolean _deleteMenu = true;
+	private boolean _detailsMenu;
 	private String _emptyResultsMessage = StringPool.BLANK;
 	private String _localTaskExecutorClassName = StringPool.BLANK;
 	private String _mvcRenderCommandName = StringPool.BLANK;

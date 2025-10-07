@@ -500,6 +500,15 @@ public class DLFileEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_C_C() throws Exception {
+		_persistence.countByC_C_C(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong());
+
+		_persistence.countByC_C_C(0L, 0L, 0L);
+	}
+
+	@Test
 	public void testCountByS_L_C1_C2() throws Exception {
 		_persistence.countByS_L_C1_C2(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),

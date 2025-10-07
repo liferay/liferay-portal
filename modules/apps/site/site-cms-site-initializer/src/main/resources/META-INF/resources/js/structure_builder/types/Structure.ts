@@ -3,41 +3,54 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Space} from '../../common/types/Space';
+import {Workflow} from '../../common/types/Workflow';
 import {Field} from '../utils/field';
-import {ValidationError} from '../utils/validation';
 import {Uuid} from './Uuid';
-
-type History = {
-	deletedFields: boolean;
-};
 
 type Status = 'new' | 'draft' | 'published';
 
 type Spaces = 'all' | string[];
 
+type Workflows = Record<'' | Space['externalReferenceCode'], Workflow['name']>;
+
 export type ReferencedStructure = {
+	children: Map<Uuid, StructureChild>;
+	editURL: string;
 	erc: string;
+	label: Liferay.Language.LocalizedValue<string>;
 	name: string;
+	parent: Uuid;
+	relationshipName: string;
+	spaces: Spaces;
 	type: 'referenced-structure';
+	uuid: Uuid;
+	workflows: Workflows;
+};
+
+export type RepeatableGroup = {
+	children: Map<Uuid, StructureChild>;
+	erc: string;
+	label: Liferay.Language.LocalizedValue<string>;
+	name: string;
+	parent: Uuid;
+	relationshipName: string;
+	type: 'repeatable-group';
 	uuid: Uuid;
 };
 
+export type StructureChild = Field | ReferencedStructure | RepeatableGroup;
+
 export type Structure = {
+	children: Map<Uuid, StructureChild>;
 	erc: string;
-	error: string | null;
-	fields: Map<Uuid, Field | ReferencedStructure>;
-	history: History;
-	id: number | null;
-	invalids: Map<Uuid, Set<ValidationError>>;
 	label: Liferay.Language.LocalizedValue<string>;
 	name: string;
-	publishedFields: Set<Uuid>;
-	selection: Uuid[];
 	spaces: Spaces;
 	status: Status;
 	type?: 'L_CMS_CONTENT_STRUCTURES' | 'L_CMS_FILE_TYPES';
-	unsavedChanges: boolean;
 	uuid: Uuid;
+	workflows: Workflows;
 };
 
 export type Structures = Map<Structure['erc'], Structure>;

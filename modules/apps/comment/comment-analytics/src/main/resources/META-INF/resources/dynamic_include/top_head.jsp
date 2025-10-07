@@ -21,6 +21,7 @@
 				className: event.className,
 				classPK: event.classPK,
 				commentId: event.commentId,
+				externalReferenceCode: event.externalReferenceCode,
 				text: event.text,
 			};
 

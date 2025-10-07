@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Auto Tagger OpenNLP Implementation
 Bundle-SymbolicName: com.liferay.asset.auto.tagger.opennlp.impl
-Bundle-Version: 3.0.30
+Bundle-Version: 3.0.31
 -includeresource:\
 	opennlp-tools.jar=opennlp-tools-*.jar;lib:=true,\
 	org.apache.opennlp.model.en.ner.location.bin=org.apache.opennlp.model.en.ner.location-*.bin,\

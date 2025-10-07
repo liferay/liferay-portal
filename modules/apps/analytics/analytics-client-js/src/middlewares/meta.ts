@@ -10,9 +10,11 @@ import {getTimezoneOffsetHour} from '../utils/date';
  * Generates a local helper function to fetch information from DOM elements
  */
 function getAttribute(selector: string, attribute: string) {
-	const tag = document.querySelector(selector);
+	const tag = document.querySelector(selector) || {};
 
-	return tag ? tag.getAttribute(attribute) || '' : '';
+	// @ts-ignore
+
+	return tag[attribute] || '';
 }
 
 /**

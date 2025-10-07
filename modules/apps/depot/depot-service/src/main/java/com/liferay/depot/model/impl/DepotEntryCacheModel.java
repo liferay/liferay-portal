@@ -68,7 +68,7 @@ public class DepotEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -90,6 +90,8 @@ public class DepotEntryCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append("}");
 
 		return sb.toString();
@@ -135,6 +137,8 @@ public class DepotEntryCacheModel
 			depotEntryImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		depotEntryImpl.setType(type);
+
 		depotEntryImpl.resetOriginalValues();
 
 		return depotEntryImpl;
@@ -157,6 +161,8 @@ public class DepotEntryCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+
+		type = objectInput.readInt();
 	}
 
 	@Override
@@ -189,6 +195,8 @@ public class DepotEntryCacheModel
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		objectOutput.writeInt(type);
 	}
 
 	public long mvccVersion;
@@ -201,5 +209,6 @@ public class DepotEntryCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public int type;
 
 }

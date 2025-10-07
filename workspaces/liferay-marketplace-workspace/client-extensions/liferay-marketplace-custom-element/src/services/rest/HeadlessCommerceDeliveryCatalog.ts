@@ -16,6 +16,15 @@ export default class HeadlessCommerceDeliveryCatalog {
 		);
 	}
 
+	static async getProductsPage(
+		channelId: number | string,
+		searchParams = new URLSearchParams()
+	) {
+		return fetcher<APIResponse<DeliveryProduct>>(
+			`o/headless-commerce-delivery-catalog/v1.0/channels/${channelId}/products?${searchParams.toString()}`
+		);
+	}
+
 	static async getProductsByChannelId(
 		channelId: number,
 		searchParams = new URLSearchParams()

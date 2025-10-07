@@ -906,7 +906,6 @@ export const segmentsListColumns = {
 		accessor: 'name',
 		cellRenderer: NameCell,
 		cellRendererProps: {
-			renderIcon: SegmentSticker,
 			routeFn: ({data: {id}}) =>
 				toRoute(Routes.CONTACTS_SEGMENT, {
 					channelId,

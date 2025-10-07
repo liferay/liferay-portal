@@ -11,20 +11,29 @@
 ViewAllSpacesDisplayContext viewAllSpacesDisplayContext = (ViewAllSpacesDisplayContext)request.getAttribute(ViewAllSpacesDisplayContext.class.getName());
 %>
 
-<div class="cms-section custom-empty-state">
-	<frontend-data-set:headless-display
-		additionalProps="<%= viewAllSpacesDisplayContext.getAdditionalProps() %>"
-		apiURL="<%= viewAllSpacesDisplayContext.getAPIURL() %>"
-		bulkActionDropdownItems="<%= viewAllSpacesDisplayContext.getBulkActionDropdownItems() %>"
-		creationMenu="<%= viewAllSpacesDisplayContext.getCreationMenu() %>"
-		emptyState="<%= viewAllSpacesDisplayContext.getEmptyState() %>"
-		fdsActionDropdownItems="<%= viewAllSpacesDisplayContext.getFDSActionDropdownItems() %>"
-		formName="fm"
-		id="<%= CMSSiteInitializerFDSNames.ALL_SPACES_SECTION %>"
-		itemsPerPage="<%= 10 %>"
-		propsTransformer="{AllSpacesFDSPropsTransformer} from site-cms-site-initializer"
-		selectedItemsKey="id"
-		selectionType="multiple"
-		style="fluid"
-	/>
+<div>
+	<div>
+		<react:component
+			module="{Breadcrumb} from site-cms-site-initializer"
+			props="<%= viewAllSpacesDisplayContext.getBreadcrumbProps() %>"
+		/>
+	</div>
+
+	<div class="cms-section custom-empty-state">
+		<frontend-data-set:headless-display
+			additionalProps="<%= viewAllSpacesDisplayContext.getAdditionalProps() %>"
+			apiURL="<%= viewAllSpacesDisplayContext.getAPIURL() %>"
+			bulkActionDropdownItems="<%= viewAllSpacesDisplayContext.getBulkActionDropdownItems() %>"
+			creationMenu="<%= viewAllSpacesDisplayContext.getCreationMenu() %>"
+			emptyState="<%= viewAllSpacesDisplayContext.getEmptyState() %>"
+			fdsActionDropdownItems="<%= viewAllSpacesDisplayContext.getFDSActionDropdownItems() %>"
+			formName="fm"
+			id="<%= CMSSiteInitializerFDSNames.ALL_SPACES_SECTION %>"
+			itemsPerPage="<%= 10 %>"
+			propsTransformer="{AllSpacesFDSPropsTransformer} from site-cms-site-initializer"
+			selectedItemsKey="id"
+			selectionType="multiple"
+			style="fluid"
+		/>
+	</div>
 </div>

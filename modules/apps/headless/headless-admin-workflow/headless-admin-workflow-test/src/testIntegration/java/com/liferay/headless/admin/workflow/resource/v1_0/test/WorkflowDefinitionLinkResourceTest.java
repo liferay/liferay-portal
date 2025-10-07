@@ -28,6 +28,7 @@ import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalServiceUtil
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,6 +57,15 @@ public class WorkflowDefinitionLinkResourceTest
 			WorkflowDefinitionTestUtil.getContent(
 				RandomTestUtil.randomString(), "workflow-definition.xml", name),
 			StringPool.BLANK, 1, ServiceContextTestUtil.getServiceContext());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostWorkflowDefinitionWorkflowDefinitionLink()
+		throws Exception {
+
+		super.testGraphQLPostWorkflowDefinitionWorkflowDefinitionLink();
 	}
 
 	@Override

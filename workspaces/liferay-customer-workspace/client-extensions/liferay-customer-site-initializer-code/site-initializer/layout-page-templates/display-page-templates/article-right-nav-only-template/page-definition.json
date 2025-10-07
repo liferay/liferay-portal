@@ -1,0 +1,304 @@
+{
+	"pageElement": {
+		"id": "2ba16021-b4a3-d4f1-5af8-996ac736e1fa",
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentStyle": {
+						"backgroundColor": "colorBrandPrimaryDarken4",
+						"paddingBottom": "4",
+						"paddingLeft": "5",
+						"paddingRight": "5",
+						"paddingTop": "4",
+						"textColor": "colorNeutral0"
+					},
+					"indexed": true,
+					"layout": {
+						"paddingBottom": 2,
+						"paddingLeft": 4,
+						"paddingRight": 4,
+						"paddingTop": 2
+					}
+				},
+				"id": "f5f2a4e1-6926-a4c9-6010-1fae4c5dcb16",
+				"pageElements": [
+					{
+						"definition": {
+							"fragmentStyle": {
+								"maxWidth": "var(--container-max-xl)"
+							},
+							"indexed": true,
+							"layout": {
+								"align": "Center",
+								"contentDisplay": "FlexRow",
+								"justify": "SpaceBetween",
+								"widthType": "Fixed"
+							}
+						},
+						"id": "e1d6ccef-c095-6caa-6112-42f1acd7824c",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "cp-text",
+										"siteKey": "Customer Portal"
+									},
+									"fragmentConfig": {
+										"textType": "h1",
+										"truncateText": false
+									},
+									"fragmentFields": [
+										{
+											"id": "element-text",
+											"value": {
+												"fragmentLink": {
+												},
+												"text": {
+													"mapping": {
+														"fieldKey": "AssetVocabulary_34172619",
+														"itemReference": {
+															"contextSource": "DisplayPageItem"
+														}
+													}
+												}
+											}
+										}
+									],
+									"indexed": true
+								},
+								"id": "071295da-f36b-f517-9a78-1e7d2ea8ebb2",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"widgetInstance": {
+										"widgetConfig": {
+											"destination": "",
+											"displayStyle": "ddmTemplate_SEARCH-BAR-LEFT-ALIGNED-ICON-FTL",
+											"displayStyleGroupId": "[$GROUP_ID$]",
+											"displayStyleGroupKey": "68390129561053",
+											"federatedSearchKey": "",
+											"invisible": "false",
+											"keywordsParameterName": "q",
+											"scopeParameterName": "scope",
+											"searchScope": "this-site",
+											"showStagedResults": "false",
+											"suggestionsContributorConfigurations": "{\"contributorName\": \"basic\", \"displayGroupName\": \"suggestions\", \"size\": 5}",
+											"suggestionsDisplayThreshold": "2",
+											"suggestionsEnabled": "false",
+											"useAdvancedSearchSyntax": "false"
+										},
+										"widgetName": "com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet"
+									}
+								},
+								"id": "17e76d8c-7f50-2d8b-3b0b-3e54b1fec3c2",
+								"type": "Widget"
+							}
+						],
+						"type": "Section"
+					}
+				],
+				"type": "Section"
+			},
+			{
+				"definition": {
+					"fragmentStyle": {
+						"maxWidth": "var(--container-max-xl)",
+						"paddingBottom": "4",
+						"paddingLeft": "4",
+						"paddingRight": "4",
+						"paddingTop": "4"
+					},
+					"indexed": true,
+					"layout": {
+						"paddingBottom": 2,
+						"paddingLeft": 2,
+						"paddingRight": 2,
+						"paddingTop": 2,
+						"widthType": "Fixed"
+					}
+				},
+				"id": "1683a1d8-5448-7fb1-37bc-0653aa300f11",
+				"pageElements": [
+					{
+						"definition": {
+							"gutters": true,
+							"indexed": true,
+							"modulesPerRow": 2,
+							"numberOfColumns": 2,
+							"reverseOrder": false,
+							"rowViewports": [
+								{
+									"id": "landscapeMobile",
+									"rowViewportDefinition": {
+										"modulesPerRow": 1
+									}
+								},
+								{
+									"id": "portraitMobile",
+									"rowViewportDefinition": {
+									}
+								},
+								{
+									"id": "tablet",
+									"rowViewportDefinition": {
+									}
+								}
+							],
+							"verticalAlignment": "top"
+						},
+						"id": "9082f8a5-05bc-7b96-77b9-2333a6e543f9",
+						"pageElements": [
+							{
+								"definition": {
+									"columnViewports": [
+										{
+											"columnViewportDefinition": {
+												"size": 12
+											},
+											"id": "landscapeMobile"
+										},
+										{
+											"columnViewportDefinition": {
+											},
+											"id": "portraitMobile"
+										},
+										{
+											"columnViewportDefinition": {
+											},
+											"id": "tablet"
+										}
+									],
+									"size": 9
+								},
+								"id": "12060cd2-b077-83d9-33b7-0281f04a572b",
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "cp-text",
+												"siteKey": "Customer Portal"
+											},
+											"fragmentConfig": {
+												"textType": "h1",
+												"truncateText": false
+											},
+											"fragmentFields": [
+												{
+													"id": "element-text",
+													"value": {
+														"fragmentLink": {
+														},
+														"text": {
+															"mapping": {
+																"fieldKey": "JournalArticle_title",
+																"itemReference": {
+																	"contextSource": "DisplayPageItem"
+																}
+															}
+														}
+													}
+												}
+											],
+											"indexed": true
+										},
+										"id": "d989c6d5-6b02-ea65-d639-b93d878340ce",
+										"type": "Fragment"
+									},
+									{
+										"definition": {
+											"cssClasses": [
+												"dynamic-outline-target-wrapper"
+											],
+											"fragment": {
+												"key": "cp-text",
+												"siteKey": "Customer Portal"
+											},
+											"fragmentConfig": {
+												"textType": "text-paragraph",
+												"truncateText": false
+											},
+											"fragmentFields": [
+												{
+													"id": "element-text",
+													"value": {
+														"fragmentLink": {
+														},
+														"text": {
+															"mapping": {
+																"fieldKey": "DDMStructure_content27681514",
+																"itemReference": {
+																	"contextSource": "DisplayPageItem"
+																}
+															}
+														}
+													}
+												}
+											],
+											"indexed": true
+										},
+										"id": "a44381cd-3df1-86bd-5c5b-e12db877dc78",
+										"type": "Fragment"
+									}
+								],
+								"type": "Column"
+							},
+							{
+								"definition": {
+									"columnViewports": [
+										{
+											"columnViewportDefinition": {
+												"size": 12
+											},
+											"id": "landscapeMobile"
+										},
+										{
+											"columnViewportDefinition": {
+											},
+											"id": "portraitMobile"
+										},
+										{
+											"columnViewportDefinition": {
+											},
+											"id": "tablet"
+										}
+									],
+									"size": 3
+								},
+								"id": "d8fe44a1-f9ea-da4c-d234-dd7911743793",
+								"pageElements": [
+									{
+										"definition": {
+											"fragment": {
+												"key": "dynamic-outline",
+												"siteKey": "Customer Portal"
+											},
+											"fragmentConfig": {
+												"targetWrapper": "dynamic-outline-target-wrapper"
+											},
+											"fragmentFields": [
+											],
+											"indexed": true
+										},
+										"id": "8219382d-c4fa-b7ad-cb96-6be1a215961e",
+										"type": "Fragment"
+									}
+								],
+								"type": "Column"
+							}
+						],
+						"type": "Row"
+					}
+				],
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "home"
+		}
+	},
+	"version": 1.1
+}

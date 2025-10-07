@@ -2,10 +2,10 @@ assemble:
     -   fromTask: bootJar
 liferay-sample-etc-spring-boot-notification-type-1:
     name: Liferay Sample Etc Spring Boot Notification Type 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /notification/type/1
     type: notificationType
-liferay-sample-etc-spring-boot-oauth-application-user-agent:
+liferay-sample-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Sample Etc Spring Boot OAuth Application User Agent
@@ -15,28 +15,28 @@ liferay-sample-etc-spring-boot-oauth-application-user-agent:
     type: oAuthApplicationUserAgent
 liferay-sample-etc-spring-boot-object-action-1:
     name: Liferay Sample Etc Spring Boot Object Action 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /object/action/1
     type: objectAction
 liferay-sample-etc-spring-boot-object-action-2:
     name: Liferay Sample Etc Spring Boot Object Action 2
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /object/action/2
     type: objectAction
 liferay-sample-etc-spring-boot-object-entry-manager-1:
     name: Liferay Sample Etc Spring Boot Object Entry Manager 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /object/entry/manager/1
     type: objectEntryManager
 liferay-sample-etc-spring-boot-object-validation-rule-1:
     allowedObjectDefinitionNames:
         -   C_Employee
     name: Liferay Sample Etc Spring Boot Spring Boot Object Validation Rule 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /object/validation/rule/1
     type: objectValidationRule
 liferay-sample-etc-spring-boot-workflow-action-1:
     name: Liferay Sample Etc Spring Boot Workflow Action 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-spring-boot-oaua
     resourcePath: /workflow/action/1
     type: workflowAction

@@ -41,8 +41,12 @@ public class CurrentAccountEntryManagerStore {
 		long currentAccountEntryId = GetterUtil.getLong(
 			httpSession.getAttribute(_getKey(groupId)));
 
-		return _accountEntryLocalService.fetchAccountEntry(
-			currentAccountEntryId);
+		if (currentAccountEntryId > 0) {
+			return _accountEntryLocalService.fetchAccountEntry(
+				currentAccountEntryId);
+		}
+
+		return null;
 	}
 
 	public AccountEntry getAccountEntryFromPortalPreferences(

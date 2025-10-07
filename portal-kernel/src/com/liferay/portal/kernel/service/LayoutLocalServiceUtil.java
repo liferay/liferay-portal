@@ -636,6 +636,10 @@ public class LayoutLocalServiceUtil {
 		return getService().fetchDraftLayout(plid);
 	}
 
+	public static Map<Layout, Layout> fetchDraftLayouts(List<Layout> layouts) {
+		return getService().fetchDraftLayouts(layouts);
+	}
+
 	public static Layout fetchFirstLayout(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
@@ -1389,6 +1393,15 @@ public class LayoutLocalServiceUtil {
 	 */
 	public static long getNextLayoutId(long groupId, boolean privateLayout) {
 		return getService().getNextLayoutId(groupId, privateLayout);
+	}
+
+	public static Layout getOrAddEmptyLayout(
+			String externalReferenceCode, long userId, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return getService().getOrAddEmptyLayout(
+			externalReferenceCode, userId, groupId, serviceContext);
 	}
 
 	/**

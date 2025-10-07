@@ -40,8 +40,16 @@ function AddToCartButton({
 	const isMounted = useIsMounted();
 
 	const buttonDisabled = useMemo(
-		() => skuOptionsAtomState.errors?.length || disabled,
-		[disabled, skuOptionsAtomState.errors]
+		() =>
+			(skuOptionsAtomState.errors?.length &&
+				skuOptionsAtomState.namespace === settings.namespace) ||
+			disabled,
+		[
+			disabled,
+			skuOptionsAtomState.errors,
+			skuOptionsAtomState.namespace,
+			settings.namespace,
+		]
 	);
 
 	const handleClickAddToCart = useCallback(

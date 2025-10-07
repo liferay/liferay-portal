@@ -1,6 +1,6 @@
 {
 	"friendlyURL": "/welcome",
-	"hidden": true,
+	"hidden": false,
 	"name_i18n": {
 		"en_US": "Welcome"
 	},

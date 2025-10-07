@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security LDAP API
 Bundle-SymbolicName: com.liferay.portal.security.ldap.api
-Bundle-Version: 8.1.3
+Bundle-Version: 9.0.3
 Export-Package:\
 	com.liferay.portal.security.ldap,\
 	com.liferay.portal.security.ldap.authenticator.configuration,\

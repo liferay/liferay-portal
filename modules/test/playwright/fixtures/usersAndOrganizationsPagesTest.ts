@@ -24,6 +24,7 @@ import {AssignUsersPage} from '../pages/users-admin-web/AssignUsersPage';
 import {EditOrganizationPage} from '../pages/users-admin-web/EditOrganizationPage';
 import {EditUserPage} from '../pages/users-admin-web/EditUserPage';
 import {OrganizationUsersPage} from '../pages/users-admin-web/OrganizationUsersPage';
+import {SMTPMockServerPage} from '../pages/users-admin-web/SMTPMockServerPage';
 import {ServiceAccountsPage} from '../pages/users-admin-web/ServiceAccountsPage';
 import {TeamsPage} from '../pages/users-admin-web/TeamsPage';
 import {UserPersonalSitePage} from '../pages/users-admin-web/UserPersonalSitePage';
@@ -45,6 +46,7 @@ const usersAndOrganizationsPagesTest = test.extend<{
 	siteConfigurationDetailsPage: SiteConfigurationDetailsPage;
 	siteMembershipsPage: SiteMembershipsPage;
 	siteSettingsPage: SiteSettingsPage;
+	smtpMockServerPage: SMTPMockServerPage;
 	tagsEditPage: TagsEditPage;
 	teamsPage: TeamsPage;
 	userAssociatedDataAnnouncementPage: UserAssociatedDataAnnouncementPage;
@@ -94,6 +96,9 @@ const usersAndOrganizationsPagesTest = test.extend<{
 	},
 	siteSettingsPage: async ({page}, use) => {
 		await use(new SiteSettingsPage(page));
+	},
+	smtpMockServerPage: async ({page}, use) => {
+		await use(new SMTPMockServerPage(page));
 	},
 	tagsEditPage: async ({page}, use) => {
 		await use(new TagsEditPage(page));

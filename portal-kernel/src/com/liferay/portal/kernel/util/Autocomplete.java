@@ -56,24 +56,19 @@ public class Autocomplete {
 			max = array.length;
 		}
 
-		StringBundler sb = new StringBundler((array.length * 8) + 3);
+		StringBundler sb = new StringBundler((array.length * 5) + 2);
 
-		sb.append("<?xml version=\"1.0\"?>");
-
-		sb.append("<ajaxresponse>");
+		sb.append("<?xml version=\"1.0\"?><ajaxresponse>");
 
 		for (int i = 0; (i < array.length) && (i < max); i++) {
 			String text = array[i][0];
 			String value = array[i][1];
 
-			sb.append("<item>");
-			sb.append("<text><![CDATA[");
+			sb.append("<item><text><![CDATA[");
 			sb.append(text);
-			sb.append("]]></text>");
-			sb.append("<value><![CDATA[");
+			sb.append("]]></text><value><![CDATA[");
 			sb.append(value);
-			sb.append("]]></value>");
-			sb.append("</item>");
+			sb.append("]]></value></item>");
 		}
 
 		sb.append("</ajaxresponse>");

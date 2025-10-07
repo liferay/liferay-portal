@@ -77,6 +77,11 @@ public class ObjectEntryRowInfoItemRenderer
 	}
 
 	@Override
+	public String getItemClassName() {
+		return _objectDefinition.getClassName();
+	}
+
+	@Override
 	public String getKey() {
 		return StringBundler.concat(
 			ObjectEntryRowInfoItemRenderer.class.getName(),

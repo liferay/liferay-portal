@@ -24,7 +24,7 @@
 			outline: none;
 		}
 
-		&.cp-product-activation-active {
+		&.cp-activation-active {
 			.lexicon-icon-angle-right-small {
 				transform: rotate(90deg);
 				transition: transform 0.3s;

@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherFixComponent;
 import com.liferay.osb.patcher.model.PatcherFixPack;
@@ -155,7 +156,7 @@ public class PatcherFixComponentLocalServiceImpl
 			throw new PortalException("the-name-is-invalid");
 		}
 
-		Pattern pattern = Pattern.compile(_FIX_COMPONENT_REGEX);
+		Pattern pattern = Pattern.compile(PatcherConstants.FIX_COMPONENT_REGEX);
 
 		Matcher matcher = pattern.matcher(name);
 
@@ -173,8 +174,6 @@ public class PatcherFixComponentLocalServiceImpl
 			throw new PortalException("the-component-name-already-exists");
 		}
 	}
-
-	private static final String _FIX_COMPONENT_REGEX = "^([a-z-]+)$";
 
 	@Reference
 	private PatcherFixLocalService _patcherFixLocalService;

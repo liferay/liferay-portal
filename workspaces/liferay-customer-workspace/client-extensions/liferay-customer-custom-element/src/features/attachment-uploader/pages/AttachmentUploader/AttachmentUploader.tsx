@@ -7,40 +7,51 @@ import {Button as ClayButton} from '@clayui/core';
 import {ClayCheckbox, ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {useCallback, useState} from 'react';
+import useJiraTicketURL from '~/hooks/useJiraTicketURL';
 import i18n from '~/utils/I18n';
 
 import './AttachmentUploader.css';
 
-import {useNavigate, useParams} from 'react-router-dom';
-import {Liferay} from '~/services/liferay';
+import {useParams} from 'react-router-dom';
+import {IUpload} from '~/utils/types';
 
+import DropzoneUpload from '../../components/DropzoneUpload';
+import FileList from '../../components/FileList';
+import useCheckUploadAccess from '../../hooks/useCheckUploadAccess';
 import useGCSUploadFile from '../../hooks/useGCSUploadFile';
 import useGenerateFileMd5 from '../../hooks/useGenerateFileMd5';
 import useTicketAttachmentsDelete from '../../hooks/useTicketAttachmentsDelete';
 import useTicketAttachmentsInitiateUpload from '../../hooks/useTicketAttachmentsInitiateUpload';
-import DropzoneUpload from './components/DropzoneUpload';
-import FileList from './components/FileList';
+import {
+	CommentPostFailed,
+	ServerUnavailable,
+	UploadConfirmation,
+} from '../AttachmentUploaderMessages';
 
-export function isMd5HashEqual(localMd5: string, gcpMd5Hash: string): boolean {
-	const localBase24Md5 = new Uint8Array(
-		localMd5.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16))
-	);
-
-	return btoa(String.fromCharCode(...localBase24Md5)) === gcpMd5Hash;
+interface IProps {
+	setUploadStateData: React.Dispatch<React.SetStateAction<IUpload | null>>;
+	uploadStateData: IUpload | null;
 }
 
-const AttachmentUploader = () => {
+const AttachmentUploader = ({setUploadStateData, uploadStateData}: IProps) => {
+	const {loading: accessCheckLoading} = useCheckUploadAccess();
+
 	const [comment, setComment] = useState<string>('');
 	const [file, setFile] = useState<File>();
 	const [hasPersonalData, setHasPersonalData] = useState<boolean>(false);
 
-	const navigate = useNavigate();
+	const [uploadResult, setUploadResult] = useState<
+		'IDLE' | 'SUCCESS' | 'COMMENT_ERROR' | 'SERVER_ERROR'
+	>('IDLE');
+
 	const {ticketId} = useParams();
+
+	const ticketURL = useJiraTicketURL(ticketId ?? '');
 
 	const {deleteAttachment} = useTicketAttachmentsDelete();
 
 	const {
-		error: ticketAttachmentInitiateUploadError,
+		gcsSessionURL: initiatedGCSSessionURL,
 		initiateUpload,
 		loading: ticketAttachmentInitiateUploadLoading,
 		ticketAttachmentId: initiatedTicketAttachmentId,
@@ -48,14 +59,12 @@ const AttachmentUploader = () => {
 
 	const {
 		abortGenerateMd5,
-		error: generateMd5Error,
 		generateMd5,
 		loading: generateMd5Loading,
 	} = useGenerateFileMd5();
 
 	const {
 		abortUpload: abortGCSUpload,
-		error: gcsUploadError,
 		loading: gcsUploadFileLoading,
 		progress: gcsUploadProgress,
 		uploadFile,
@@ -87,96 +96,82 @@ const AttachmentUploader = () => {
 			return;
 		}
 
-		const calculatedMd5 = await generateMd5({file});
+		const calculatedMd5 = await generateMd5({file, ticketId});
 
-		if (!calculatedMd5 || generateMd5Error) {
-			Liferay.Util.openToast({
-				message: i18n.translate(
-					'md5-hash-generation-failed-please-try-again'
-				),
-				title: i18n.translate('error'),
-				type: 'danger',
-			});
+		if (!calculatedMd5.success || !calculatedMd5.hash) {
+			setUploadStateData(calculatedMd5.uploadProperties ?? null);
+			setUploadResult('SERVER_ERROR');
 
 			return;
 		}
 
 		const initiationResult = await initiateUpload({
-			fileMd5: calculatedMd5,
+			fileMd5: calculatedMd5.hash,
 			fileName: file.name,
 			fileSize: file.size.toString(),
 			ticketId: ticketId as string,
 		});
 
-		if (!initiationResult || ticketAttachmentInitiateUploadError) {
-			Liferay.Util.openToast({
-				message: i18n.translate(
-					'failed-to-initiate-upload-please-try-again'
-				),
-				title: i18n.translate('error'),
-				type: 'danger',
-			});
+		if (!initiationResult?.success) {
+			setUploadStateData(initiationResult?.uploadProperties ?? null);
+
+			if (
+				initiationResult?.uploadProperties?.errorCode ===
+				'ATTACHMENT_ALREADY_EXISTS'
+			) {
+				return;
+			}
+
+			setUploadResult('SERVER_ERROR');
 
 			return;
 		}
 
-		await uploadFile({
-			accountKey: initiationResult.accountKey,
+		const uploadResponse = await uploadFile({
+			accountKey: initiationResult.uploadProperties?.accountKey ?? '',
 			comment,
 			file,
-			navigateFn: navigate,
-			sessionURL: initiationResult.gcsSessionURL,
-			ticketAttachmentId: initiationResult.ticketAttachmentId,
-			ticketId: ticketId as string,
+			gcsSessionURL:
+				initiationResult.uploadProperties?.gcsSessionURL ?? '',
+			ticketAttachmentId:
+				initiationResult.uploadProperties?.ticketAttachmentId ?? '',
+			ticketId,
 		});
 
-		if (gcsUploadError) {
-			Liferay.Util.openToast({
-				message: i18n.translate('file-upload-failed-please-try-again'),
-				title: i18n.translate('error'),
-				type: 'danger',
-			});
+		if (uploadResponse.success) {
+			setFile(undefined);
+			setComment('');
+			setHasPersonalData(false);
 
-			return;
+			setUploadStateData(uploadResponse.uploadProperties ?? null);
+			setUploadResult('SUCCESS');
 		}
-
-		setFile(undefined);
-		setComment('');
-		setHasPersonalData(false);
+		else {
+			setUploadResult('SERVER_ERROR');
+			setUploadStateData(uploadResponse.uploadProperties ?? null);
+		}
 	}, [
 		comment,
 		file,
-		gcsUploadError,
 		generateMd5,
-		generateMd5Error,
 		initiateUpload,
-		navigate,
 		setComment,
 		setFile,
 		setHasPersonalData,
-		ticketAttachmentInitiateUploadError,
 		ticketId,
 		uploadFile,
+		setUploadStateData,
 	]);
 
 	const _handleCancelUpload = useCallback(async () => {
-		abortGenerateMd5();
 		abortGCSUpload();
+		abortGenerateMd5();
 
-		const currentTicketAttachmentId = initiatedTicketAttachmentId;
-
-		if (currentTicketAttachmentId) {
-			try {
-				await deleteAttachment({
-					ticketAttachmentId: currentTicketAttachmentId,
-				});
-			}
-			catch (error) {
-				console.error(
-					'Failed to delete attachment during cancel:',
-					error
-				);
-			}
+		if (initiatedGCSSessionURL && initiatedTicketAttachmentId) {
+			await deleteAttachment({
+				gcsSessionURL: initiatedGCSSessionURL,
+				ticketAttachmentId: initiatedTicketAttachmentId,
+			});
 		}
 
 		setComment('');
@@ -186,6 +181,7 @@ const AttachmentUploader = () => {
 		abortGCSUpload,
 		abortGenerateMd5,
 		deleteAttachment,
+		initiatedGCSSessionURL,
 		initiatedTicketAttachmentId,
 		setComment,
 		setFile,
@@ -196,12 +192,54 @@ const AttachmentUploader = () => {
 		setFile(undefined);
 	};
 
+	if (accessCheckLoading) {
+		return null;
+	}
+
+	if (uploadResult === 'SUCCESS' && uploadStateData) {
+		return (
+			<UploadConfirmation
+				attachmentName={uploadStateData.attachmentName ?? ''}
+				ticketURL={ticketURL ?? ''}
+				uploadAccountKey={uploadStateData.uploadAccountKey ?? ''}
+			/>
+		);
+	}
+
+	if (uploadResult === 'COMMENT_ERROR' && uploadStateData) {
+		return (
+			<CommentPostFailed
+				ticketURL={ticketURL ?? ''}
+				uploadAccountKey={uploadStateData.uploadAccountKey ?? ''}
+			/>
+		);
+	}
+
+	if (uploadResult === 'SERVER_ERROR' && uploadStateData) {
+		return (
+			<ServerUnavailable
+				ticketURL={ticketURL ?? ''}
+				uploadAccountKey={uploadStateData.uploadAccountKey ?? ''}
+			/>
+		);
+	}
+
 	return (
-		<div className="attachment-container mt-4">
-			<div className="attachment-uploader">
+		<div className="attachment-uploader mt-4">
+			<div className="attachment-uploader-container">
 				<div className="d-flex text-neutral-10">
 					<div className="h2">
-						{i18n.sub('attach-file-to-ticket-x', [ticketId || ''])}
+						<p
+							dangerouslySetInnerHTML={{
+								__html: i18n.sub('attach-file-to-ticket-x', [
+									'<a href="' +
+										ticketURL +
+										'">' +
+										ticketId +
+										'</a>',
+								]),
+							}}
+						/>
 					</div>
 				</div>
 
@@ -253,7 +291,7 @@ const AttachmentUploader = () => {
 						{i18n.translate('leave-a-comment')}
 					</div>
 
-					<div className="attach-input mb-4">
+					<div className="attachment-input mb-4">
 						<ClayInput
 							component="textarea"
 							disabled={isLoading}

@@ -69,6 +69,10 @@ public class DateUtil_IW {
 		return DateUtil.getISOFormat(text);
 	}
 
+	public java.util.Date getTomorrowDate() {
+		return DateUtil.getTomorrowDate();
+	}
+
 	public java.text.DateFormat getUTCFormat() {
 		return DateUtil.getUTCFormat();
 	}

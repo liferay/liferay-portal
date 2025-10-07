@@ -281,7 +281,8 @@ public class NotificationsSharingEntryLocalServiceWrapper
 		String title = StringPool.BLANK;
 
 		if (sharingEntryInterpreter != null) {
-			title = sharingEntryInterpreter.getTitle(sharingEntry);
+			title = sharingEntryInterpreter.getTitle(
+				sharingEntry, resourceBundle.getLocale());
 		}
 		else {
 			title = ResourceBundleUtil.getString(resourceBundle, "something");

@@ -6,6 +6,7 @@
 import getGlobalImports from '../configuration/getGlobalImports.mjs';
 import getLanguageJSON from '../configuration/getLanguageJSON.mjs';
 import getOverridenPackageSymbols from '../configuration/getOverridenPackageSymbols.mjs';
+import getProjectAlias from '../configuration/getProjectAlias.mjs';
 import getProjectDescription from '../configuration/getProjectDescription.mjs';
 import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import getProjectExports from '../configuration/getProjectExports.mjs';
@@ -29,6 +30,7 @@ export default async function main() {
 		globalImports,
 		languageJSON,
 		overridenPackageSymbols,
+		projectAlias,
 		projectDescription,
 		projectEntryPoints,
 		projectExports,
@@ -37,6 +39,7 @@ export default async function main() {
 		getGlobalImports(),
 		getLanguageJSON(),
 		getOverridenPackageSymbols(),
+		getProjectAlias(),
 		getProjectDescription(),
 		getProjectEntryPoints(),
 		getProjectExports(),
@@ -44,6 +47,8 @@ export default async function main() {
 	]);
 
 	const endConfig = Date.now();
+
+	await Promise.all([processCSSFiles(), processSassFiles()]);
 
 	await Promise.all([
 
@@ -53,6 +58,7 @@ export default async function main() {
 			globalImports,
 			languageJSON,
 			overridenPackageSymbols,
+			projectAlias,
 			projectDescription,
 			projectEntryPoints,
 			projectWebContextPath
@@ -60,6 +66,7 @@ export default async function main() {
 		bundleJavaScriptExports(
 			globalImports,
 			overridenPackageSymbols,
+			projectAlias,
 			projectExports,
 			projectWebContextPath
 		),
@@ -91,14 +98,6 @@ export default async function main() {
 			projectEntryPoints,
 			projectExports
 		),
-
-		// CSS processing
-
-		processCSSFiles(),
-		processSassFiles(),
-
-		// Rest of legacy build
-
 	]);
 
 	await writeTimings(start, endConfig);

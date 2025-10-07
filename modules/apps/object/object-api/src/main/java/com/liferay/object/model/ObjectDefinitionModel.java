@@ -389,6 +389,27 @@ public interface ObjectDefinitionModel
 	public void setEnableComments(boolean enableComments);
 
 	/**
+	 * Returns the enable form container of this object definition.
+	 *
+	 * @return the enable form container of this object definition
+	 */
+	public boolean getEnableFormContainer();
+
+	/**
+	 * Returns <code>true</code> if this object definition is enable form container.
+	 *
+	 * @return <code>true</code> if this object definition is enable form container; <code>false</code> otherwise
+	 */
+	public boolean isEnableFormContainer();
+
+	/**
+	 * Sets whether this object definition is enable form container.
+	 *
+	 * @param enableFormContainer the enable form container of this object definition
+	 */
+	public void setEnableFormContainer(boolean enableFormContainer);
+
+	/**
 	 * Returns the enable friendly url customization of this object definition.
 	 *
 	 * @return the enable friendly url customization of this object definition
@@ -493,6 +514,49 @@ public interface ObjectDefinitionModel
 	 * @param enableObjectEntryHistory the enable object entry history of this object definition
 	 */
 	public void setEnableObjectEntryHistory(boolean enableObjectEntryHistory);
+
+	/**
+	 * Returns the enable object entry schedule of this object definition.
+	 *
+	 * @return the enable object entry schedule of this object definition
+	 */
+	public boolean getEnableObjectEntrySchedule();
+
+	/**
+	 * Returns <code>true</code> if this object definition is enable object entry schedule.
+	 *
+	 * @return <code>true</code> if this object definition is enable object entry schedule; <code>false</code> otherwise
+	 */
+	public boolean isEnableObjectEntrySchedule();
+
+	/**
+	 * Sets whether this object definition is enable object entry schedule.
+	 *
+	 * @param enableObjectEntrySchedule the enable object entry schedule of this object definition
+	 */
+	public void setEnableObjectEntrySchedule(boolean enableObjectEntrySchedule);
+
+	/**
+	 * Returns the enable object entry subscription of this object definition.
+	 *
+	 * @return the enable object entry subscription of this object definition
+	 */
+	public boolean getEnableObjectEntrySubscription();
+
+	/**
+	 * Returns <code>true</code> if this object definition is enable object entry subscription.
+	 *
+	 * @return <code>true</code> if this object definition is enable object entry subscription; <code>false</code> otherwise
+	 */
+	public boolean isEnableObjectEntrySubscription();
+
+	/**
+	 * Sets whether this object definition is enable object entry subscription.
+	 *
+	 * @param enableObjectEntrySubscription the enable object entry subscription of this object definition
+	 */
+	public void setEnableObjectEntrySubscription(
+		boolean enableObjectEntrySubscription);
 
 	/**
 	 * Returns the enable object entry versioning of this object definition.

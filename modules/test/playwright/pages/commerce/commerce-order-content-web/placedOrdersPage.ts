@@ -15,6 +15,7 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly configurationIFrameShowFullAddressToggle: Locator;
 	readonly configurationIFrameShowPhoneNumberToggle: Locator;
 	readonly configurationMenuItem: Locator;
+	readonly expandProductButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly optionsButton: Locator;
 	readonly orderAccountName: (accountName: string) => Locator;
@@ -27,8 +28,6 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
-	readonly placedOrdersTable: Locator;
-	readonly placedOrderTableOrderDate: (orderDate: string) => Locator;
 	readonly placedOrderTableViewButton: Locator;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
@@ -60,6 +59,9 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 			exact: true,
 			name: 'Configuration',
 		});
+		this.expandProductButton = page
+			.locator('.autofit-col-toggle')
+			.getByRole('button');
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.optionsButton = page
 			.locator(
@@ -90,14 +92,11 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.panelList = page
 			.getByTestId('specificationFacetPanel')
 			.getByRole('button');
-		this.placedOrdersTable = page.locator(
-			'#portlet_com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet .fds table'
-		);
-		this.placedOrderTableOrderDate = (orderDate) =>
-			this.placedOrdersTable.getByText(orderDate);
-		this.placedOrderTableViewButton =
-			this.placedOrdersTable.getByLabel('View');
-		this.searchButton = page.getByRole('button', {name: 'Search'});
+		this.placedOrderTableViewButton = this.table.getByLabel('View');
+		this.searchButton = page.getByRole('button', {
+			exact: true,
+			name: 'Search',
+		});
 		this.searchInput = page.getByPlaceholder('Search');
 		this.commerceShippingAddress = page.getByTestId(
 			'commerceShippingAddress'
@@ -105,9 +104,32 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.viewButton = page.getByLabel('View');
 	}
 
-	async addPlacedOrdersWidget() {
-		await this.layoutsPage.addWidgetToPage('Placed Orders');
-	}
+	searchTableRowByValue = async function (
+		colPosition: number,
+		value: string,
+		strictEqual: boolean = false,
+		tableLocator: Locator = this.table
+	) {
+		await tableLocator.elementHandle();
+
+		const rows = await tableLocator.locator('tbody tr').all();
+
+		for await (const row of rows) {
+			const column = row.locator('td').nth(colPosition).first();
+
+			const colValue = (await column.allInnerTexts()).join('');
+
+			if (
+				(strictEqual && colValue === value) ||
+				(!strictEqual &&
+					colValue.toLowerCase().indexOf(value.toLowerCase()) >= 0)
+			) {
+				return {column, row};
+			}
+		}
+
+		throw new Error(`Cannot locate table row with value ${value}`);
+	};
 
 	async goto() {
 		await this.layoutsPage.goto();

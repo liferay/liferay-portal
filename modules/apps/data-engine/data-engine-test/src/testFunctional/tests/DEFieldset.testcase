@@ -79,7 +79,6 @@ definition {
 	@description = "LPS-165487 - Verify if the user can create structures with different Global language."
 	@priority = 3
 	test CanBeCreatedWithDifferentGlobalLanguage {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 
 		NavItem.gotoStructures();

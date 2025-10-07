@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -78,8 +77,6 @@ public class JSONWebServiceInvokerTest extends BaseJSONWebServiceTestCase {
 					}
 
 				}));
-
-		PropsTestUtil.setProps(Collections.emptyMap());
 
 		initPortalServices();
 

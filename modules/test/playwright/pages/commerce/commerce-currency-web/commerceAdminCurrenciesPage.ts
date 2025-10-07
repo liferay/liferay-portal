@@ -6,32 +6,33 @@
 import {Locator, Page} from '@playwright/test';
 
 import {ApplicationsMenuPage} from '../../product-navigation-applications-menu/ApplicationsMenuPage';
+import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 
-export class CommerceAdminCurrenciesPage {
+export class CommerceAdminCurrenciesPage extends CommerceDNDTablePage {
 	readonly actionsButton: Locator;
-	readonly activeFilter: (value: string) => Locator;
 	readonly activeMenuItem: Locator;
 	readonly activeToggleMenuItem: Locator;
 	readonly addCurrencyAddButton: Locator;
-	readonly addFilterButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
 	readonly backLink: Locator;
 	readonly currencyNameLink: (currencyName: string) => Locator;
 	readonly deleteMenuItem: Locator;
-	readonly filterButton: Locator;
 	readonly filterManagementToolbar: Locator;
 	readonly firstRowCurrencyCellName: (currencyName: string) => Locator;
 	readonly lastRowCurrencyCellName: (currencyName: string) => Locator;
 	readonly noResultsFoundText: Locator;
 	readonly primaryMenuItem: Locator;
 	readonly priorityButton: Locator;
-	readonly resetFilterButton: Locator;
 	readonly search: Locator;
 	readonly searchButton: Locator;
 
 	constructor(page: Page) {
+		super(
+			page,
+			'#_com_liferay_commerce_currency_web_internal_portlet_CommerceCurrencyPortlet_fm .fds table'
+		);
+
 		this.actionsButton = page.getByRole('button', {name: 'Actions'});
-		this.activeFilter = (value) => page.getByLabel(value);
 		this.activeMenuItem = page.getByRole('menuitem', {name: 'Active'});
 		this.activeToggleMenuItem = page.getByRole('menuitem', {
 			name: 'Toggle Active',
@@ -40,15 +41,13 @@ export class CommerceAdminCurrenciesPage {
 			exact: true,
 			name: 'Add Currency',
 		});
-		this.addFilterButton = page.getByRole('button', {name: 'Add Filter'});
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
 		this.currencyNameLink = (currencyName) =>
 			page.getByRole('link', {name: currencyName});
 		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
-		this.filterButton = page.getByRole('button', {name: 'Filter'});
 		this.filterManagementToolbar = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.getByRole('button', {name: 'Filter'});
 		this.firstRowCurrencyCellName = (currencyName) =>
 			page.locator('tbody tr').first().filter({hasText: currencyName});
@@ -59,11 +58,10 @@ export class CommerceAdminCurrenciesPage {
 		this.priorityButton = page
 			.getByRole('columnheader', {name: 'Priority'})
 			.getByRole('button');
-		this.resetFilterButton = page.getByRole('button', {
-			name: 'Reset Filters',
-		});
 		this.search = page.getByPlaceholder('Search');
-		this.searchButton = page.getByRole('button', {name: 'Search'});
+		this.searchButton = page
+			.getByTestId('managementToolbar')
+			.getByRole('button', {name: 'Search'});
 	}
 
 	async goto() {

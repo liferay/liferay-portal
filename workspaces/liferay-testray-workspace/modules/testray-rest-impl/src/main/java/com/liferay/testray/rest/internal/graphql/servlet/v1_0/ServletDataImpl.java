@@ -114,16 +114,6 @@ public class ServletDataImpl implements ServletData {
 							TestrayBuildAutofillResourceImpl.class,
 							"postTestrayBuildAutofillBatch"));
 					put(
-						"mutation#updateTestrayTestFlowByTestraySubtaskIdTestraySubtask",
-						new ObjectValuePair<>(
-							TestrayTestFlowResourceImpl.class,
-							"putTestrayTestFlowByTestraySubtaskIdTestraySubtask"));
-					put(
-						"mutation#updateTestrayTestFlowTestraySubtaskMergePage",
-						new ObjectValuePair<>(
-							TestrayTestFlowResourceImpl.class,
-							"putTestrayTestFlowTestraySubtaskMergePage"));
-					put(
 						"mutation#createTestrayTestFlow",
 						new ObjectValuePair<>(
 							TestrayTestFlowResourceImpl.class,
@@ -133,6 +123,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TestrayTestFlowResourceImpl.class,
 							"postTestrayTestFlowBatch"));
+					put(
+						"mutation#updateTestrayTestFlowByTestraySubtaskIdTestraySubtask",
+						new ObjectValuePair<>(
+							TestrayTestFlowResourceImpl.class,
+							"putTestrayTestFlowByTestraySubtaskIdTestraySubtask"));
+					put(
+						"mutation#updateTestrayTestFlowTestraySubtaskMergePage",
+						new ObjectValuePair<>(
+							TestrayTestFlowResourceImpl.class,
+							"putTestrayTestFlowTestraySubtaskMergePage"));
 					put(
 						"mutation#createTestrayTestSuite",
 						new ObjectValuePair<>(
@@ -165,15 +165,15 @@ public class ServletDataImpl implements ServletData {
 							TestrayRoutineDurationReportResourceImpl.class,
 							"getTestrayRoutineDurationReportsTestrayRoutinePage"));
 					put(
-						"query#testrayRunComparisonByTestrayRoutineIdTestrayRoutine",
-						new ObjectValuePair<>(
-							TestrayRunComparisonResourceImpl.class,
-							"getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine"));
-					put(
 						"query#testrayRunComparison",
 						new ObjectValuePair<>(
 							TestrayRunComparisonResourceImpl.class,
 							"getTestrayRunComparison"));
+					put(
+						"query#testrayRunComparisonByTestrayRoutineIdTestrayRoutine",
+						new ObjectValuePair<>(
+							TestrayRunComparisonResourceImpl.class,
+							"getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine"));
 					put(
 						"query#testrayRunComparisonRun",
 						new ObjectValuePair<>(
@@ -204,6 +204,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							TestrayStatusMetricResourceImpl.class,
 							"getTestrayStatusMetricByTestrayBuildIdTestrayBuildTestrayTeamsMetricsPage"));
+					put(
+						"query#testrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetrics",
+						new ObjectValuePair<>(
+							TestrayStatusMetricResourceImpl.class,
+							"getTestrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetricsPage"));
 					put(
 						"query#testrayStatusMetricByTestrayProjectIdTestrayProjectTestrayRoutinesMetrics",
 						new ObjectValuePair<>(

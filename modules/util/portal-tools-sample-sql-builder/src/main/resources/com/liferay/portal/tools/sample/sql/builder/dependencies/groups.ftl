@@ -36,13 +36,15 @@
 
 	<#assign
 		homePageContentLayoutModels = dataFactory.newContentPageLayoutModels(groupId, "home")
-		homePageSegmentsExperienceModel = dataFactory.newSegmentsExperienceModel(homePageContentLayoutModels)
+		homePageSegmentsExperienceModels = dataFactory.newSegmentsExperienceModels(homePageContentLayoutModels)
 	 />
 
-	 ${dataFactory.toInsertSQL(homePageSegmentsExperienceModel)}
+	 <#list homePageSegmentsExperienceModels as homePageSegmentsExperienceModel>
+	 	${dataFactory.toInsertSQL(homePageSegmentsExperienceModel)}
+	 </#list>
 
 	<@insertContentPageLayout
-		_fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(homePageContentLayoutModels, homePageSegmentsExperienceModel.getSegmentsExperienceId())
+		_fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(homePageContentLayoutModels, homePageSegmentsExperienceModels)
 		_layoutModels = homePageContentLayoutModels
 		_templateFileName = "default-homepage-layout-definition.json"
 	/>
@@ -58,13 +60,14 @@
 
 <#assign
 	defaultSiteHomePageContentLayoutModels = dataFactory.newContentPageLayoutModels(guestGroupModel.groupId, "home")
-	defaultSiteHomePageSegmentsExperienceModel = dataFactory.newSegmentsExperienceModel(defaultSiteHomePageContentLayoutModels)
+	defaultSiteHomePageSegmentsExperienceModels = dataFactory.newSegmentsExperienceModels(defaultSiteHomePageContentLayoutModels)
 />
-
-${dataFactory.toInsertSQL(defaultSiteHomePageSegmentsExperienceModel)}
+<#list defaultSiteHomePageSegmentsExperienceModels as defaultSiteHomePageSegmentsExperienceModel>
+	${dataFactory.toInsertSQL(defaultSiteHomePageSegmentsExperienceModel)}
+</#list>
 
 <@insertContentPageLayout
-	_fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(defaultSiteHomePageContentLayoutModels, defaultSiteHomePageSegmentsExperienceModel.getSegmentsExperienceId())
+	_fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(defaultSiteHomePageContentLayoutModels, defaultSiteHomePageSegmentsExperienceModels)
 	_layoutModels = defaultSiteHomePageContentLayoutModels
 	_templateFileName = "default-homepage-layout-definition.json"
 />

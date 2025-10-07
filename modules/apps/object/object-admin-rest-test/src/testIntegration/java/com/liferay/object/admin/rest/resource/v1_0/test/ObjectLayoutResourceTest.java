@@ -94,7 +94,7 @@ public class ObjectLayoutResourceTest extends BaseObjectLayoutResourceTestCase {
 
 		objectLayout.setDefaultObjectLayout(false);
 		objectLayout.setName(
-			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
+			Collections.singletonMap("en_US", RandomTestUtil.randomString()));
 		objectLayout.setObjectDefinitionExternalReferenceCode(
 			_objectDefinition.getExternalReferenceCode());
 		objectLayout.setObjectDefinitionId(
@@ -150,11 +150,41 @@ public class ObjectLayoutResourceTest extends BaseObjectLayoutResourceTestCase {
 	}
 
 	@Override
+	protected ObjectLayout
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_addObjectLayout(
+				String objectDefinitionExternalReferenceCode,
+				ObjectLayout objectLayout)
+		throws Exception {
+
+		return objectLayoutResource.
+			postObjectDefinitionByExternalReferenceCodeObjectLayout(
+				objectDefinitionExternalReferenceCode, objectLayout);
+	}
+
+	@Override
 	protected ObjectLayout testGraphQLObjectLayout_addObjectLayout()
 		throws Exception {
 
 		return objectLayoutResource.postObjectDefinitionObjectLayout(
 			_objectDefinition.getObjectDefinitionId(), randomObjectLayout());
+	}
+
+	@Override
+	protected Long
+			testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectLayout_getObjectDefinitionId(
+				ObjectLayout objectLayout)
+		throws Exception {
+
+		return objectLayout.getObjectDefinitionId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLPostObjectDefinitionObjectLayout_getObjectDefinitionId(
+				ObjectLayout objectLayout)
+		throws Exception {
+
+		return objectLayout.getObjectDefinitionId();
 	}
 
 	@Override
@@ -181,7 +211,7 @@ public class ObjectLayoutResourceTest extends BaseObjectLayoutResourceTestCase {
 			{
 				collapsable = RandomTestUtil.randomBoolean();
 				name = Collections.singletonMap(
-					"en-US", RandomTestUtil.randomString());
+					"en_US", RandomTestUtil.randomString());
 				objectLayoutRows = new ObjectLayoutRow[] {
 					_randomObjectLayoutRow()
 				};
@@ -216,7 +246,7 @@ public class ObjectLayoutResourceTest extends BaseObjectLayoutResourceTestCase {
 		return new ObjectLayoutTab() {
 			{
 				name = Collections.singletonMap(
-					"en-US", RandomTestUtil.randomString());
+					"en_US", RandomTestUtil.randomString());
 				objectLayoutBoxes = new ObjectLayoutBox[] {
 					_randomObjectLayoutBox()
 				};

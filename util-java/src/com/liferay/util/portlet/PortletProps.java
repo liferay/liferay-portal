@@ -17,10 +17,6 @@ import java.util.Properties;
  */
 public class PortletProps {
 
-	public static void addProperties(Properties properties) {
-		_portletProps._configuration.addProperties(properties);
-	}
-
 	public static boolean contains(String key) {
 		return _portletProps._configuration.contains(key);
 	}
@@ -43,10 +39,6 @@ public class PortletProps {
 
 	public static Properties getProperties() {
 		return _portletProps._configuration.getProperties();
-	}
-
-	public static void removeProperties(Properties properties) {
-		_portletProps._configuration.removeProperties(properties);
 	}
 
 	public static void set(String key, String value) {

@@ -16,10 +16,25 @@ import {
 	ProductTypeLabels,
 	ProductTypeVocabulary,
 	ProductWorkflowStatusCode,
+	ProductWorkflowStatusLabel,
 } from '../../../../enums/Product';
 import i18n from '../../../../i18n';
 import {formatDate} from '../../../../utils/date';
 import {usePublisherDashboardOutletContext} from '../../PublisherDashboardOutlet';
+
+function filterLatestProductVersions(products: Product[]): Product[] {
+	const latestVersions = new Map<number, Product>();
+
+	for (const product of products) {
+		const current = latestVersions.get(product.productId);
+
+		if (!current || product.version > current.version) {
+			latestVersions.set(product.productId, product);
+		}
+	}
+
+	return [...latestVersions.values()];
+}
 
 const Apps = () => {
 	const {catalogId} = usePublisherDashboardOutletContext();
@@ -68,6 +83,10 @@ const Apps = () => {
 					type: 'BLANK',
 				}}
 				id={`publisher-apps/${catalogId}`}
+				initialContext={{
+					pageSize: 20,
+					paginationDeltaOptions: [20, 40, 80, 120],
+				}}
 				resource={`/o/headless-commerce-admin-catalog/v1.0/products?${new URLSearchParams(
 					{
 						'accountId': '-1',
@@ -108,7 +127,7 @@ const Apps = () => {
 							name: i18n.translate('name'),
 							render: (name, item) => {
 								return (
-									<>
+									<div className="align-items-center d-flex">
 										<img
 											alt={`${name.en_US} app icon`}
 											className="app-details-page-table-icon"
@@ -118,10 +137,10 @@ const Apps = () => {
 											width={32}
 										/>
 
-										<span className="font-weight-semi-bold ml-2">
+										<span className="font-weight-semi-bold ml-2 text-truncate">
 											{name.en_US}
 										</span>
-									</>
+									</div>
 								);
 							},
 							size: 'sm',
@@ -184,13 +203,28 @@ const Apps = () => {
 									<OrderStatus
 										orderStatus={workflowStatusInfo.label}
 									>
-										{workflowStatusInfo.label}
+										{
+											ProductWorkflowStatusLabel[
+												workflowStatusInfo.code as keyof typeof ProductWorkflowStatusLabel
+											]
+										}
 									</OrderStatus>
 								);
 							},
 						},
 					],
 					navigateTo: (item) => `/app/${item.productId}`,
+				}}
+				transformData={(response) => {
+					const items = filterLatestProductVersions(response.items);
+
+					return {
+						...response,
+						items,
+						totalCount:
+							response.totalCount -
+							(items.length - response.items.length),
+					};
 				}}
 			/>
 		</Page>

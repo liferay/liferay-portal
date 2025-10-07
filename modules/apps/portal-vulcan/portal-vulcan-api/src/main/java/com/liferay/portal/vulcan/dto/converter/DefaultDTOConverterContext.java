@@ -42,16 +42,9 @@ public class DefaultDTOConverterContext implements DTOConverterContext {
 		HttpServletRequest httpServletRequest, Object id, Locale locale,
 		UriInfo uriInfo, User user) {
 
-		_acceptAllLanguages = acceptAllLanguages;
-		_actions = actions;
-		_dtoConverterRegistry = dtoConverterRegistry;
-		_httpServletRequest = httpServletRequest;
-		_id = id;
-		_locale = locale;
-		_uriInfo = uriInfo;
-		_user = user;
-
-		_attributes = new HashMap<>();
+		this(
+			acceptAllLanguages, actions, new HashMap<>(), dtoConverterRegistry,
+			httpServletRequest, id, locale, uriInfo, user);
 	}
 
 	public DefaultDTOConverterContext(
@@ -62,6 +55,24 @@ public class DefaultDTOConverterContext implements DTOConverterContext {
 		this(
 			acceptAllLanguages, actions, dtoConverterRegistry, null, id, locale,
 			uriInfo, user);
+	}
+
+	public DefaultDTOConverterContext(
+		boolean acceptAllLanguages, Map<String, Map<String, String>> actions,
+		Map<String, Object> attributes,
+		DTOConverterRegistry dtoConverterRegistry,
+		HttpServletRequest httpServletRequest, Object id, Locale locale,
+		UriInfo uriInfo, User user) {
+
+		_acceptAllLanguages = acceptAllLanguages;
+		_actions = actions;
+		_attributes = attributes;
+		_dtoConverterRegistry = dtoConverterRegistry;
+		_httpServletRequest = httpServletRequest;
+		_id = id;
+		_locale = locale;
+		_uriInfo = uriInfo;
+		_user = user;
 	}
 
 	public DefaultDTOConverterContext(

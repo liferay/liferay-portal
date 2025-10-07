@@ -3,7 +3,7 @@ assemble:
 liferay-sample-commerce-payment-integration:
     key: liferay-sample-commerce-payment-integration
     name: Liferay Sample Commerce Payment Integration
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-payment-integration-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-payment-integration-oaua
     paymentIntegrationType: 3
     paymentIntegrationTypeSettings:
         key1: value1
@@ -12,7 +12,7 @@ liferay-sample-commerce-payment-integration:
         key4: value4
         key5: value5
     type: commercePaymentIntegration
-liferay-sample-commerce-payment-integration-oauth-application-user-agent:
+liferay-sample-commerce-payment-integration-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Sample Commerce Payment Integration OAuth Application User Agent

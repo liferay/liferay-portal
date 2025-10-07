@@ -228,8 +228,7 @@ public class AssetCategoryDocumentContributor
 							assetCategory.getVocabularyId());
 
 					if (assetVocabulary == null) {
-						return AssetVocabularyConstants.
-							VISIBILITY_TYPE_INCOMPLETE;
+						return AssetVocabularyConstants.VISIBILITY_TYPE_EMPTY;
 					}
 
 					return assetVocabulary.getVisibilityType();

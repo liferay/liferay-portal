@@ -2204,6 +2204,13 @@ public class UserLocalServiceUtil {
 			emailAddress, status, params, andSearch);
 	}
 
+	public static int searchCountBySocial(
+		long companyId, long[] groupIds, long[] userGroupIds, String keywords) {
+
+		return getService().searchCountBySocial(
+			companyId, groupIds, userGroupIds, keywords);
+	}
+
 	public static Map<Long, Integer> searchCounts(
 		long companyId, int status, long[] groupIds) {
 

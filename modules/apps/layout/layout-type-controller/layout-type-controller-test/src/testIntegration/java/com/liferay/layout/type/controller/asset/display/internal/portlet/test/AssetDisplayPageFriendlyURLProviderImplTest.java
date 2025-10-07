@@ -10,7 +10,6 @@ import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
-import com.liferay.friendly.url.test.util.configuration.manager.FriendlyURLSeparatorConfigurationManagerTemporarySwapper;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -22,8 +21,6 @@ import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -44,6 +41,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -97,6 +95,11 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 				AssetDisplayPageConstants.TYPE_SPECIFIC, serviceContext);
 	}
 
+	@After
+	public void tearDown() {
+		ServiceContextThreadLocal.popServiceContext();
+	}
+
 	@Test
 	public void testGetFriendlyURL() throws Exception {
 		_setUpThemeDisplay(
@@ -107,25 +110,30 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 	}
 
 	@Test
-	public void testGetFriendlyURLWithConfiguredURLSeparator()
+	public void testGetFriendlyURLPreventsCrossSiteCircularCall()
 		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			journalArticle.getDDMStructureId(), true,
+			WorkflowConstants.STATUS_APPROVED);
 
 		_setUpThemeDisplay(
 			_layoutLocalService.getLayout(_assetDisplayPageEntry.getPlid()));
 
-		String journalArticleFriendlyURLSeparator = "/journal-test2/";
-
-		try (FriendlyURLSeparatorConfigurationManagerTemporarySwapper
-				friendlyURLSeparatorConfigurationManagerTemporarySwapper =
-					new FriendlyURLSeparatorConfigurationManagerTemporarySwapper(
-						_group.getCompanyId(),
-						JSONUtil.put(
-							JournalArticle.class.getName(),
-							journalArticleFriendlyURLSeparator
-						).toString())) {
-
-			_assertGetFriendlyURL(journalArticleFriendlyURLSeparator);
-		}
+		Assert.assertNull(
+			_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					journalArticle.getResourcePrimKey()),
+				LocaleUtil.getSiteDefault(), _themeDisplay));
 	}
 
 	@Test
@@ -137,23 +145,20 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 
 		_setUpThemeDisplay(layout);
 
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			_group.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
-			true, RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), layout.getUuid(),
-			LocaleUtil.getSiteDefault(), null, false, false,
-			ServiceContextThreadLocal.getServiceContext());
-
 		_assertGetFriendlyURL(
-			JournalArticleConstants.CANONICAL_URL_SEPARATOR, journalArticle);
+			JournalArticleConstants.CANONICAL_URL_SEPARATOR,
+			JournalTestUtil.addArticle(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
+				true, RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), layout.getUuid(),
+				LocaleUtil.getSiteDefault(), null, false, false,
+				ServiceContextThreadLocal.getServiceContext()));
 	}
 
-	private void _assertGetFriendlyURL(String urlSeparator)
-		throws PortalException {
-
+	private void _assertGetFriendlyURL(String urlSeparator) throws Exception {
 		Assert.assertEquals(
 			StringBundler.concat(
 				_portal.getGroupFriendlyURL(
@@ -169,7 +174,7 @@ public class AssetDisplayPageFriendlyURLProviderImplTest {
 
 	private void _assertGetFriendlyURL(
 			String urlSeparator, JournalArticle journalArticle)
-		throws PortalException {
+		throws Exception {
 
 		Assert.assertEquals(
 			StringBundler.concat(

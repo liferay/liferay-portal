@@ -8,9 +8,12 @@ package com.liferay.object.rest.internal.jaxrs.exception.mapper;
 import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 
@@ -22,6 +25,10 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class ObjectAssetCategoryExceptionMapper
 	extends BaseExceptionMapper<AssetCategoryException> {
+
+	public ObjectAssetCategoryExceptionMapper(Language language) {
+		_language = language;
+	}
 
 	@Override
 	protected Problem getProblem(
@@ -41,21 +48,27 @@ public class ObjectAssetCategoryExceptionMapper
 		if (assetCategoryException.getType() ==
 				AssetCategoryException.AT_LEAST_ONE_CATEGORY) {
 
-			errorMessage =
-				"Select at least one taxonomy category for vocabulary " +
-					vocabularyName;
+			errorMessage = _language.format(
+				_acceptLanguage.getPreferredLocale(),
+				"please-select-at-least-one-category-for-x", vocabularyName);
 		}
 		else if (assetCategoryException.getType() ==
 					AssetCategoryException.TOO_MANY_CATEGORIES) {
 
-			errorMessage =
-				"Unable to select more than one taxonomy category for " +
-					"vocabulary " + vocabularyName;
+			errorMessage = _language.format(
+				_acceptLanguage.getPreferredLocale(),
+				"you-cannot-select-more-than-one-category-for-x",
+				vocabularyName);
 		}
 
 		return new Problem(
-			errorMessage, Response.Status.BAD_REQUEST, errorMessage,
+			null, Response.Status.BAD_REQUEST, errorMessage,
 			AssetCategoryException.class.getName());
 	}
+
+	@Context
+	private AcceptLanguage _acceptLanguage;
+
+	private final Language _language;
 
 }

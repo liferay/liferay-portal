@@ -403,20 +403,21 @@ public class LayoutPageTemplateStructureLocalServiceUtil {
 
 	public static LayoutPageTemplateStructure
 			updateLayoutPageTemplateStructureData(
-				long groupId, long plid, long segmentsExperienceId, String data)
+				long userId, long groupId, long plid, long segmentsExperienceId,
+				String data)
 		throws PortalException {
 
 		return getService().updateLayoutPageTemplateStructureData(
-			groupId, plid, segmentsExperienceId, data);
+			userId, groupId, plid, segmentsExperienceId, data);
 	}
 
 	public static LayoutPageTemplateStructure
 			updateLayoutPageTemplateStructureData(
-				long groupId, long plid, String data)
+				long userId, long groupId, long plid, String data)
 		throws PortalException {
 
 		return getService().updateLayoutPageTemplateStructureData(
-			groupId, plid, data);
+			userId, groupId, plid, data);
 	}
 
 	public static LayoutPageTemplateStructureLocalService getService() {

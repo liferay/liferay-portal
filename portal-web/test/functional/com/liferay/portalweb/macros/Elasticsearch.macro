@@ -69,6 +69,17 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro getSidecarVersion() {
+		var projectDir = PropsUtil.get("project.dir");
+
+		var sidecarVersion = FileUtil.read("${projectDir}/modules/apps/portal-search-elasticsearch7/portal-search-elasticsearch7-impl/src/main/resources/META-INF/sidecar/sidecar.version");
+
+		echo("Elasticsearch client version: ${sidecarVersion}");
+
+		return ${sidecarVersion};
+	}
+
+	@summary = "Default summary"
 	macro isRemoteMode() {
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 

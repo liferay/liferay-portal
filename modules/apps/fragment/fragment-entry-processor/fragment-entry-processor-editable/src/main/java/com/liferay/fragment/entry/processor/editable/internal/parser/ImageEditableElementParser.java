@@ -221,9 +221,15 @@ public class ImageEditableElementParser extends BaseEditableElementParser {
 		if (Validator.isNotNull(alt) && JSONUtil.isJSONObject(alt)) {
 			JSONObject altJSONObject = configJSONObject.getJSONObject("alt");
 
-			Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
+			String languageId = LocaleUtil.toLanguageId(
+				LocaleThreadLocal.getThemeDisplayLocale());
 
-			alt = altJSONObject.getString(LocaleUtil.toLanguageId(locale));
+			if (!altJSONObject.has(languageId)) {
+				languageId = LocaleUtil.toLanguageId(
+					LocaleThreadLocal.getSiteDefaultLocale());
+			}
+
+			alt = altJSONObject.getString(languageId);
 		}
 
 		if (Validator.isNotNull(alt)) {

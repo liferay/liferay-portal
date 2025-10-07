@@ -560,6 +560,7 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 
 				CommerceDiscountRel commerceDiscountRel =
 					_commerceDiscountRelService.fetchCommerceDiscountRel(
+						commerceDiscount.getCommerceDiscountId(),
 						CPDefinition.class.getName(),
 						cProduct.getPublishedCPDefinitionId());
 

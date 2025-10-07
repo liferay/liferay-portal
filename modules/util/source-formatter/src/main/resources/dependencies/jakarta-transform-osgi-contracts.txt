@@ -1,0 +1,11 @@
+JavaAnnotation=JakartaAnnotations:2.1.0
+JavaCDI=JakartaCDI:4.0.0
+JavaEL=JakartaExpressionLanguage:5.0.0
+JavaInject=JakartaInject:2.0.0
+JavaInterceptor=JakartaInterceptors:2.1.0
+JavaJAXRS=JakartaRESTfulWebServices:3.1.0
+JavaJSONB=JakartaJSONBinding:3.0.0
+JavaJSONP=JakartaJSONProcessing:2.1.0
+JavaJSP=JakartaServerPages:3.1.0
+JavaPortlet=JakartaPortlet:4.0.0
+JavaServlet=JakartaServlet:5.0.0

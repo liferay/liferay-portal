@@ -161,7 +161,7 @@ public class DLFileEntryMetadataModelImpl
 	public static final long FILEENTRYMETADATAID_COLUMN_BITMASK = 64L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.document.library.kernel.model.DLFileEntryMetadata"));
 
 	public DLFileEntryMetadataModelImpl() {

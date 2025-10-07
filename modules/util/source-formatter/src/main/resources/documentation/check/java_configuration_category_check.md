@@ -1,7 +1,7 @@
 ## JavaConfigurationCategoryCheck
 
 The `category` in `@ExtendedObjectClassDefinition` should always match with the
-`categoryKey` of a corresponding class in `configuration-admin-web`
+`categoryKey` of a corresponding class that implements `ConfigurationCategory`
 
 ### Example
 

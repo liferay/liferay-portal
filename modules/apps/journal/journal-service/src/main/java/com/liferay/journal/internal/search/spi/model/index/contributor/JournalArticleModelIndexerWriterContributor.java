@@ -187,12 +187,42 @@ public class JournalArticleModelIndexerWriterContributor
 
 	@Override
 	public void modelDeleted(JournalArticle journalArticle) {
-		_reindexOtherArticleVersions(journalArticle);
+		if (_isIndexAllArticleVersions()) {
+			_reindexOtherArticleVersions(journalArticle);
+
+			return;
+		}
+
+		JournalArticle latestIndexableArticle =
+			_fetchLatestIndexableArticleVersion(
+				journalArticle.getResourcePrimKey());
+
+		if ((latestIndexableArticle != null) &&
+			(latestIndexableArticle.getVersion() <
+				journalArticle.getVersion())) {
+
+			_reindexOtherArticleVersions(journalArticle);
+		}
 	}
 
 	@Override
 	public void modelIndexed(JournalArticle journalArticle) {
-		_reindexOtherArticleVersions(journalArticle);
+		if (_isIndexAllArticleVersions()) {
+			_reindexOtherArticleVersions(journalArticle);
+
+			return;
+		}
+
+		JournalArticle latestIndexableArticle =
+			_fetchLatestIndexableArticleVersion(
+				journalArticle.getResourcePrimKey());
+
+		if ((latestIndexableArticle != null) &&
+			(latestIndexableArticle.getVersion() <=
+				journalArticle.getVersion())) {
+
+			_reindexOtherArticleVersions(journalArticle);
+		}
 	}
 
 	private JournalArticle _fetchLatestIndexableArticleVersion(

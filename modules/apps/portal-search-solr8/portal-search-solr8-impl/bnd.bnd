@@ -1,13 +1,11 @@
 Bundle-Name: Liferay Portal Search Solr 8 Implementation
 Bundle-SymbolicName: com.liferay.portal.search.solr8.impl
-Bundle-Version: 5.0.41
+Bundle-Version: 5.0.47
 Import-Package:\
 	!com.codahale.metrics.*,\
 	\
 	!com.sun.management.*,\
 	!com.sun.msv.*,\
-	\
-	!io.netty.*,\
 	\
 	!javax.annotation.*,\
 	\
@@ -39,7 +37,13 @@ Import-Package:\
 	\
 	!org.xerial.snappy.*,\
 	\
+	com.liferay.portal.kernel.exception;version="[0.0.0,9999.0.0)",\
+	com.liferay.portal.kernel.json;version="[0.0.0,9999.0.0)",\
+	com.liferay.portal.kernel.search;version="[0.0.0,9999.0.0)",\
+	com.liferay.portal.kernel.service;version="[0.0.0,9999.0.0)",\
+	com.liferay.portal.kernel.util;version="[0.0.0,9999.0.0)",\
 	com.liferay.portal.search.analysis,\
+	com.liferay.portal.search.query;version="[0.0.0,9999.0.0)",\
 	\
 	*
 -dsannotations-options: inherit

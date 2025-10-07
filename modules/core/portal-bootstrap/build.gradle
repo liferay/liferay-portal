@@ -86,9 +86,7 @@ dependencies {
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.eclipse.osgi", version: "3.13.0.LIFERAY-PATCHED-28"
-	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "5.3.39.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.context", version: "5.3.39.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -98,7 +96,9 @@ dependencies {
 	compileOnly group: "org.eclipse.angus", name: "angus-activation", version: "2.0.2"
 	compileOnly group: "org.eclipse.angus", name: "angus-mail", version: "2.0.3"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.springframework", name: "spring-core", version: "5.3.39"
+	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.9"
+	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.9"
+	compileOnly group: "org.springframework", name: "spring-web", version: "6.2.9"
 	compileOnly project(":core:jaxws-osgi-bridge")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-concurrent")

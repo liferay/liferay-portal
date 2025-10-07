@@ -12,6 +12,7 @@ import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.internal.resource.v1_0.CollaboratorResourceImpl;
@@ -182,28 +183,68 @@ public class ObjectEntryOpenAPIResourceImpl
 		return components.getSchemas();
 	}
 
+	private List<DTOProperty> _getDTOProperties(
+		Map<String, String> dtoPropertiesMap, Map<String, Object> extensions,
+		ObjectField objectField, String type) {
+
+		DTOProperty dtoProperty = new DTOProperty(
+			HashMapBuilder.<String, Object>put(
+				"x-parent-map", "properties"
+			).putAll(
+				extensions
+			).build(),
+			objectField.getName(), type);
+
+		List<DTOProperty> dtoProperties = new ArrayList<>();
+
+		for (Map.Entry<String, String> entry : dtoPropertiesMap.entrySet()) {
+			dtoProperties.add(
+				new DTOProperty(
+					Collections.singletonMap("x-parent-map", "properties"),
+					entry.getKey(), entry.getValue()));
+		}
+
+		dtoProperty.setDTOProperties(dtoProperties);
+
+		dtoProperty.setRequired(objectField.isRequired());
+
+		return ListUtil.fromArray(dtoProperty);
+	}
+
+	private List<DTOProperty> _getDTOProperties(
+		Map<String, String> dtoPropertiesMap, ObjectField objectField,
+		String type) {
+
+		return _getDTOProperties(
+			dtoPropertiesMap, Collections.emptyMap(), objectField, type);
+	}
+
 	private List<DTOProperty> _getDTOProperties(ObjectField objectField) {
 		if (Objects.equals(
 				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
 
-			DTOProperty dtoProperty = new DTOProperty(
-				HashMapBuilder.<String, Object>put(
-					"x-parent-map", "properties"
+			return _getDTOProperties(
+				HashMapBuilder.put(
+					"externalReferenceCode", String.class.getSimpleName()
+				).put(
+					"name", String.class.getSimpleName()
+				).put(
+					"type", Assignee.Type.class.getSimpleName()
 				).build(),
-				objectField.getName(), FileEntry.class.getSimpleName());
+				objectField, Assignee.class.getSimpleName());
+		}
+		else if (Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
-			dtoProperty.setDTOProperties(
-				Arrays.asList(
-					new DTOProperty(
-						Collections.singletonMap("x-parent-map", "properties"),
-						"id", Long.class.getSimpleName()),
-					new DTOProperty(
-						Collections.singletonMap("x-parent-map", "properties"),
-						"name", String.class.getSimpleName())));
-			dtoProperty.setRequired(objectField.isRequired());
-
-			return ListUtil.fromArray(dtoProperty);
+			return _getDTOProperties(
+				HashMapBuilder.put(
+					"id", Long.class.getSimpleName()
+				).put(
+					"name", String.class.getSimpleName()
+				).build(),
+				objectField, FileEntry.class.getSimpleName());
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -224,22 +265,14 @@ public class ObjectEntryOpenAPIResourceImpl
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
 
-			return ListUtil.fromArray(
-				new DTOProperty(
-					HashMapBuilder.<String, Object>put(
-						"x-parent-map", "properties"
-					).put(
-						"x-timeStorage",
-						ObjectFieldSettingUtil.getValue(
-							ObjectFieldSettingConstants.NAME_TIME_STORAGE,
-							objectField)
-					).build(),
-					objectField.getName(), objectField.getDBType()) {
-
-					{
-						setRequired(objectField.isRequired());
-					}
-				});
+			return _getDTOProperties(
+				Collections.emptyMap(),
+				Collections.singletonMap(
+					"x-timeStorage",
+					ObjectFieldSettingUtil.getValue(
+						ObjectFieldSettingConstants.NAME_TIME_STORAGE,
+						objectField)),
+				objectField, objectField.getDBType());
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -251,17 +284,7 @@ public class ObjectEntryOpenAPIResourceImpl
 					 objectField.getBusinessType(),
 					 ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
-			return ListUtil.fromArray(
-				new DTOProperty(
-					HashMapBuilder.<String, Object>put(
-						"x-parent-map", "properties"
-					).build(),
-					objectField.getName(), "String") {
-
-					{
-						setRequired(objectField.isRequired());
-					}
-				});
+			return _getDTOProperties(objectField, String.class.getSimpleName());
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -270,37 +293,19 @@ public class ObjectEntryOpenAPIResourceImpl
 					 objectField.getBusinessType(),
 					 ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
-			DTOProperty dtoProperty = new DTOProperty(
-				HashMapBuilder.<String, Object>put(
-					"x-parent-map", "properties"
+			return _getDTOProperties(
+				HashMapBuilder.put(
+					"key", String.class.getSimpleName()
+				).put(
+					"name", String.class.getSimpleName()
 				).build(),
-				objectField.getName(), ListEntry.class.getSimpleName());
-
-			dtoProperty.setDTOProperties(
-				Arrays.asList(
-					new DTOProperty(
-						Collections.singletonMap("x-parent-map", "properties"),
-						"key", String.class.getSimpleName()),
-					new DTOProperty(
-						Collections.singletonMap("x-parent-map", "properties"),
-						"name", String.class.getSimpleName())));
-			dtoProperty.setRequired(objectField.isRequired());
-
-			return ListUtil.fromArray(dtoProperty);
+				objectField, ListEntry.class.getSimpleName());
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_PRECISION_DECIMAL)) {
 
-			return ListUtil.fromArray(
-				new DTOProperty(
-					Collections.singletonMap("x-parent-map", "properties"),
-					objectField.getName(), Double.class.getSimpleName()) {
-
-					{
-						setRequired(objectField.isRequired());
-					}
-				});
+			return _getDTOProperties(objectField, Double.class.getSimpleName());
 		}
 		else if (Objects.equals(
 					objectField.getBusinessType(),
@@ -364,17 +369,14 @@ public class ObjectEntryOpenAPIResourceImpl
 				});
 		}
 
-		return ListUtil.fromArray(
-			new DTOProperty(
-				HashMapBuilder.<String, Object>put(
-					"x-parent-map", "properties"
-				).build(),
-				objectField.getName(), objectField.getDBType()) {
+		return _getDTOProperties(objectField, objectField.getDBType());
+	}
 
-				{
-					setRequired(objectField.isRequired());
-				}
-			});
+	private List<DTOProperty> _getDTOProperties(
+		ObjectField objectField, String type) {
+
+		return _getDTOProperties(
+			Collections.emptyMap(), Collections.emptyMap(), objectField, type);
 	}
 
 	private Schema _getObjectDefinitionSchema(OpenAPI openAPI) {

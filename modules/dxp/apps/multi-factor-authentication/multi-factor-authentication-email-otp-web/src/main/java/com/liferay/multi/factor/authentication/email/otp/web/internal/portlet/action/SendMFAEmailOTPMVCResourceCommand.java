@@ -105,7 +105,7 @@ public class SendMFAEmailOTPMVCResourceCommand implements MVCResourceCommand {
 			toUser.getCompanyId());
 
 		mailMessage.setMessageId(
-			_portal.getMailId(
+			_mailService.getMailId(
 				company.getMx(), "user", toUser.getUserId(),
 				System.currentTimeMillis()));
 

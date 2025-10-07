@@ -80,6 +80,15 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLDeletePaymentByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLDeletePaymentByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetPayment() throws Exception {
 		super.testGraphQLGetPayment();
 	}

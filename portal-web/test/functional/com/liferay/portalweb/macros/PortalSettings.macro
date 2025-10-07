@@ -98,43 +98,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureContentSharingSubSitesCP(subSites = null) {
-		if (${subSites} == "enabledByDefault") {
-			Select(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Enabled by Default");
-
-			PortletEntry.save();
-
-			AssertSelectedLabel(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Enabled by Default");
-		}
-		else if (${subSites} == "disabledByDefault") {
-			Select(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Disabled by Default");
-
-			PortletEntry.save();
-
-			AssertSelectedLabel(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Disabled by Default");
-		}
-		else if (${subSites} == "disabled") {
-			Select(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Disabled");
-
-			PortletEntry.save();
-
-			AssertSelectedLabel(
-				locator1 = "PortalSettingsContentSharing#CONTENT_SHARING_SELECTOR",
-				value1 = "Disabled");
-		}
-	}
-
-	@summary = "Default summary"
 	macro configureCurrentLanguagesCP(failExpected = null, errorMessage = null, currentPortalLanguages = null, useLanguageKey = null) {
 		if (isSet(currentPortalLanguages)) {
 			while (IsElementPresent(locator1 = "LanguageConfiguration#LANGUAGES_CURRENT_SELECT")) {

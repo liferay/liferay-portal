@@ -5,6 +5,7 @@
 
 const objectFieldBusinessTypeLabels = {
 	Aggregation: Liferay.Language.get('aggregation'),
+	Assignee: Liferay.Language.get('assignee'),
 	Attachment: Liferay.Language.get('attachment'),
 	AutoIncrement: Liferay.Language.get('auto-increment'),
 	Boolean: Liferay.Language.get('boolean'),

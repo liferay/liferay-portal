@@ -27,6 +27,7 @@ import com.liferay.portal.search.aggregation.pipeline.PipelineAggregationVisitor
 import com.liferay.portal.search.aggregation.pipeline.SerialDiffPipelineAggregation;
 import com.liferay.portal.search.aggregation.pipeline.StatsBucketPipelineAggregation;
 import com.liferay.portal.search.aggregation.pipeline.SumBucketPipelineAggregation;
+import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
 import com.liferay.portal.search.script.Script;
 import com.liferay.portal.search.sort.FieldSort;
@@ -56,7 +57,6 @@ import org.opensearch.client.opensearch._types.aggregations.StatsBucketAggregati
 import org.opensearch.client.opensearch._types.aggregations.SumBucketAggregation;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -399,7 +399,7 @@ public class OpenSearchPipelineAggregationTranslator
 		throw new IllegalArgumentException("Invalid gap policy " + gapPolicy);
 	}
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private SortFieldTranslator<SortOptions> _sortFieldTranslator;
+	private final SortFieldTranslator<SortOptions> _sortFieldTranslator =
+		new OpenSearchSortFieldTranslator();
 
 }

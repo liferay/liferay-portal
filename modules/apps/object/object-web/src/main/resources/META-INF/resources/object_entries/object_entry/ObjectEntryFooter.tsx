@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
+import ClayIcon from '@clayui/icon';
 import {navigate} from 'frontend-js-web';
 import React from 'react';
 
@@ -12,11 +13,13 @@ import {callWindowGlobalFunction} from '../../js/utils/callWindowGlobalFunction'
 
 interface ObjectEntryFooterProps {
 	backURL: string;
+	portletNamespace: string;
 	submitRef: string;
 }
 
 export default function ObjectEntryFooter({
 	backURL,
+	portletNamespace,
 	submitRef,
 }: ObjectEntryFooterProps) {
 	return (
@@ -29,12 +32,33 @@ export default function ObjectEntryFooter({
 						trigger={
 							<ClayButton displayType="primary" type="button">
 								{Liferay.Language.get('publish')}
+
+								<span className="inline-item inline-item-after">
+									<ClayIcon
+										className="lfr-object__entries-schedule-panel-publish-icon"
+										symbol="caret-bottom"
+									/>
+								</span>
 							</ClayButton>
 						}
 					>
 						<ClayDropDown.ItemList>
 							<ClayDropDown.Item
 								onClick={() => {
+									const hiddenInput = document.getElementById(
+										`${portletNamespace}scheduleContainer`
+									) as HTMLInputElement;
+
+									if (hiddenInput.value) {
+										const currenthiddenInputValue =
+											JSON.parse(hiddenInput.value);
+
+										hiddenInput.value = JSON.stringify({
+											...currenthiddenInputValue,
+											displayDate: null,
+										});
+									}
+
 									callWindowGlobalFunction(submitRef);
 
 									Liferay.fire('submitObjectEntry');

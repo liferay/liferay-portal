@@ -96,6 +96,20 @@ public class CISystemStatusReportUtil {
 			_CI_SYSTEM_STATUS_REPORT_DIR, new File(filePath));
 	}
 
+	public static void writeConfigJSFile(String filePath) throws IOException {
+		int maxYAxes = 2370;
+
+		if (JenkinsResultsParserUtil.isCloudCINode()) {
+			maxYAxes = 1210;
+		}
+
+		String content = String.format("window.MAX_Y_AXES = %d;%n", maxYAxes);
+
+		File configFile = new File(filePath, "/js/config.js");
+
+		JenkinsResultsParserUtil.write(configFile, content);
+	}
+
 	public static void writeJenkinsDataJavaScriptFile(String filePath)
 		throws IOException {
 

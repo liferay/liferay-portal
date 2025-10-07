@@ -17,8 +17,9 @@ import React, {useRef, useState} from 'react';
 
 import {IDataSet} from '../..//utils/types';
 import RequiredMark from '../../components/RequiredMark';
-import {API_URL, DEFAULT_FETCH_HEADERS} from '../../utils/constants';
+import {DEFAULT_FETCH_HEADERS} from '../../utils/constants';
 import getAPIExplorerURL from '../../utils/getAPIExplorerURL';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {IDataSetSectionProps} from '../DataSet';
@@ -90,14 +91,15 @@ const Details = ({
 			label: labelRef.current?.value,
 		};
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify(body),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();

@@ -25,11 +25,11 @@ import RESTEndpointDropdownMenu from './components/rest/RESTEndpointDropdownMenu
 import RESTSchemaDropdownMenu from './components/rest/RESTSchemaDropdownMenu';
 import {
 	ALLOWED_ENDPOINTS_PARAMETERS,
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	FDS_DEFAULT_PROPS,
 } from './utils/constants';
 import getAPIExplorerURL from './utils/getAPIExplorerURL';
+import getDataSetResourceURL from './utils/getDataSetResourceURL';
 import openDefaultFailureToast from './utils/openDefaultFailureToast';
 import openDefaultSuccessToast from './utils/openDefaultSuccessToast';
 import {IDataSet, ISystemDataSet} from './utils/types';
@@ -130,7 +130,7 @@ const NewDataSetModalContent = ({
 			restSchema: selectedRESTSchema,
 		};
 
-		const response = await fetch(API_URL.DATA_SETS, {
+		const response = await fetch(getDataSetResourceURL({}), {
 			body: JSON.stringify(body),
 			headers: DEFAULT_FETCH_HEADERS,
 			method: 'POST',
@@ -162,6 +162,10 @@ const NewDataSetModalContent = ({
 		path: string,
 		allowedParameters: string[]
 	): boolean => {
+		if (Liferay.FeatureFlags['LPD-38564']) {
+			return true;
+		}
+
 		const paramsMatcher = RegExp('{(.*?)}', 'g');
 		let matches;
 
@@ -535,15 +539,21 @@ const CustomDataSets = ({
 	systemDataSets: Array<ISystemDataSet>;
 }) => {
 	const getAPIURL = () => {
-		if (!systemDataSets.length) {
-			return API_URL.DATA_SETS;
+		let params;
+
+		if (systemDataSets.length) {
+			const systemDataSetNames: string = systemDataSets
+				.map((systemDataSet) => `'${systemDataSet.name}'`)
+				.join(',');
+
+			params = {
+				filter: `not (externalReferenceCode in (${systemDataSetNames}))`,
+			};
 		}
 
-		const systemDataSetNames: string = systemDataSets
-			.map((systemDataSet) => `'${systemDataSet.name}'`)
-			.join(',');
-
-		return `${API_URL.DATA_SETS}?filter=not (externalReferenceCode in (${systemDataSetNames}))`;
+		return getDataSetResourceURL({
+			params,
+		});
 	};
 
 	const getEditURL = (itemData: IDataSet) => {

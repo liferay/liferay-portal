@@ -178,6 +178,7 @@ public class CommerceReturnItemPermissionObjectValidationRuleEngineImplTest
 
 		_objectEntryLocalService.updateObjectEntry(
 			_objectEntry.getUserId(), _objectEntry.getObjectEntryId(),
+			_objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"r_accountToCommerceReturns_accountEntryId",
 				accountEntry.getAccountEntryId()
@@ -307,6 +308,7 @@ public class CommerceReturnItemPermissionObjectValidationRuleEngineImplTest
 
 		_objectEntryLocalService.updateObjectEntry(
 			_objectEntry.getUserId(), _objectEntry.getObjectEntryId(),
+			_objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"r_accountToCommerceReturns_accountEntryId",
 				accountEntry.getAccountEntryId()
@@ -435,6 +437,7 @@ public class CommerceReturnItemPermissionObjectValidationRuleEngineImplTest
 
 		_objectEntryLocalService.updateObjectEntry(
 			_objectEntry.getUserId(), _objectEntry.getObjectEntryId(),
+			_objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"r_accountToCommerceReturns_accountEntryId",
 				accountEntry.getAccountEntryId()

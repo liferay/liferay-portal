@@ -53,6 +53,11 @@ public interface ListTypeEntryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ListTypeEntry fetchListTypeEntry(
+			long listTypeDefinitionId, String key)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ListTypeEntry> getListTypeEntries(
 			long listTypeDefinitionId, int start, int end)
 		throws PortalException;
@@ -69,6 +74,11 @@ public interface ListTypeEntryService extends BaseService {
 	public ListTypeEntry getListTypeEntryByExternalReferenceCode(
 			String externalReferenceCode, long companyId,
 			long listTypeDefinitionId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ListTypeEntry getOrAddEmptyListTypeEntry(
+			long userId, long listTypeDefinitionId, String key)
 		throws PortalException;
 
 	/**

@@ -15,7 +15,6 @@ import com.liferay.info.pagination.InfoPage;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -111,11 +110,13 @@ public class JournalArticleSXPBlueprintInfoCollectionProvider
 				assetSubtypeIdentifier.getGroupExternalReferenceCode(),
 				sxpBlueprint.getCompanyId());
 		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to get group with external reference code " +
-					assetSubtypeIdentifier.getGroupExternalReferenceCode(),
-				portalException);
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get group with external reference code " +
+						assetSubtypeIdentifier.getGroupExternalReferenceCode(),
+					exception);
+			}
 
 			return "0";
 		}
@@ -132,11 +133,14 @@ public class JournalArticleSXPBlueprintInfoCollectionProvider
 
 			return String.valueOf(ddmStructure.getStructureId());
 		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to get dynamic data mapping structure with external " +
-					"reference code " + subtypeExternalReferenceCode,
-				portalException);
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get dynamic data mapping structure with " +
+						"external reference code " +
+							subtypeExternalReferenceCode,
+					exception);
+			}
 		}
 
 		return "0";

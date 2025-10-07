@@ -10,6 +10,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {MultiSelectItem, MultipleSelectBaseProps} from './select.d';
 
 const MultipleSelectBase = ({
+	displayErrors,
 	errorMessage,
 	id,
 	label,
@@ -19,17 +20,19 @@ const MultipleSelectBase = ({
 	readOnly,
 	required,
 	tip,
+	valid,
 	value: values,
 }: MultipleSelectBaseProps<string[] | string>) => {
 	const [items, setItems] = useState<MultiSelectItem[]>([]);
 
 	const accessibleProps = {
 		...(label && {
-			'aria-labelledby': `${id ?? name}`,
+			'aria-labelledby': `${id ?? name}_fieldLabel`,
 		}),
 		...((errorMessage || tip) && {
 			'aria-describedby': `${id ?? name}_fieldFeedback`,
 		}),
+		...(displayErrors && !valid && {'aria-invalid': true}),
 		'aria-required': required,
 	};
 

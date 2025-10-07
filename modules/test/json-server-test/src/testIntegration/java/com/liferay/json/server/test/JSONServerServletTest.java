@@ -162,6 +162,7 @@ public class JSONServerServletTest {
 
 		// /meat/pork
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setPathInfo("/meat/pork");
 
 		mockHttpServletResponse = new MockHttpServletResponse();
@@ -195,6 +196,7 @@ public class JSONServerServletTest {
 
 		// /meat/pork/2
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setMethod(HttpMethods.GET);
 		mockHttpServletRequest.setPathInfo("/meat/pork/2");
 
@@ -208,6 +210,7 @@ public class JSONServerServletTest {
 		Assert.assertEquals(2, message.get("id"));
 		Assert.assertEquals("Pork Ribs", message.get("name"));
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setMethod(HttpMethods.DELETE);
 
 		message = _objectMapper.readValue(
@@ -220,6 +223,7 @@ public class JSONServerServletTest {
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setMethod(HttpMethods.GET);
 
 		mockHttpServletResponse = new MockHttpServletResponse();
@@ -419,6 +423,7 @@ public class JSONServerServletTest {
 
 		// /fruit/orange
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setPathInfo("/fruit/orange");
 
 		mockHttpServletResponse = new MockHttpServletResponse();
@@ -442,6 +447,7 @@ public class JSONServerServletTest {
 
 		// /fruit/orange/2
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setPathInfo("/fruit/orange/2");
 
 		mockHttpServletResponse = new MockHttpServletResponse();
@@ -456,6 +462,7 @@ public class JSONServerServletTest {
 
 		// /fruit/orange/3
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setPathInfo("/fruit/orange/3");
 
 		mockHttpServletResponse = new MockHttpServletResponse();
@@ -489,6 +496,7 @@ public class JSONServerServletTest {
 		// /fruit/supercalifragilisticexpialidocious/something/to/say/when/you
 		// /have/nothing/to/say?a=b&c=d&e=f
 
+		mockHttpServletRequest.setContent(null);
 		mockHttpServletRequest.setPathInfo(
 			"/fruit/supercalifragilisticexpialidocious/something/to/say/when" +
 				"/you/have/nothing/to/say");

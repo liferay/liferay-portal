@@ -353,7 +353,7 @@ const Main = ({
 					...((otherProps.errorMessage || otherProps.tip) && {
 						'aria-describedby': `${otherProps.id ?? name}_fieldFeedback`,
 					}),
-					'aria-invalid': !valid,
+					...(displayErrors && !valid && {'aria-invalid': true}),
 					'aria-required': otherProps.required,
 				}}
 				editingLanguageId={editingLanguageId}

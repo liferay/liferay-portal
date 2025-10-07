@@ -226,7 +226,7 @@ public class CommerceDiscountLocalServiceTest {
 				_accountEntry.getAccountEntryId());
 
 		CommerceDiscount commerceDiscountTotal1 =
-			CommerceDiscountTestUtil.addChannelOrderDiscount(
+			CommerceDiscountTestUtil.addChannelOrderCommerceDiscount(
 				_user.getGroupId(), _commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_TOTAL);
 
@@ -234,7 +234,7 @@ public class CommerceDiscountLocalServiceTest {
 			commerceDiscountTotal1, CommerceDiscountConstants.TARGET_TOTAL);
 
 		CommerceDiscount commerceDiscountTotal2 =
-			CommerceDiscountTestUtil.addAccountGroupOrderDiscount(
+			CommerceDiscountTestUtil.addAccountGroupOrderCommerceDiscount(
 				_user.getGroupId(), commerceAccountGroups,
 				CommerceDiscountConstants.TARGET_TOTAL);
 
@@ -242,16 +242,17 @@ public class CommerceDiscountLocalServiceTest {
 			commerceDiscountTotal2, CommerceDiscountConstants.TARGET_TOTAL);
 
 		CommerceDiscount commerceDiscountTotal3 =
-			CommerceDiscountTestUtil.addAccountGroupAndChannelOrderDiscount(
-				_user.getGroupId(), commerceAccountGroups,
-				_commerceChannel.getCommerceChannelId(),
-				CommerceDiscountConstants.TARGET_TOTAL);
+			CommerceDiscountTestUtil.
+				addAccountGroupAndChannelOrderCommerceDiscount(
+					_user.getGroupId(), commerceAccountGroups,
+					_commerceChannel.getCommerceChannelId(),
+					CommerceDiscountConstants.TARGET_TOTAL);
 
 		_orderAssertEquals(
 			commerceDiscountTotal3, CommerceDiscountConstants.TARGET_TOTAL);
 
 		CommerceDiscount commerceDiscountTotal4 =
-			CommerceDiscountTestUtil.addAccountOrderDiscount(
+			CommerceDiscountTestUtil.addAccountOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				CommerceDiscountConstants.TARGET_TOTAL);
 
@@ -259,7 +260,7 @@ public class CommerceDiscountLocalServiceTest {
 			commerceDiscountTotal4, CommerceDiscountConstants.TARGET_TOTAL);
 
 		CommerceDiscount commerceDiscountTotal5 =
-			CommerceDiscountTestUtil.addAccountAndChannelOrderDiscount(
+			CommerceDiscountTestUtil.addAccountAndChannelOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_TOTAL);
@@ -268,7 +269,7 @@ public class CommerceDiscountLocalServiceTest {
 			commerceDiscountTotal5, CommerceDiscountConstants.TARGET_TOTAL);
 
 		CommerceDiscount commerceDiscountShipping1 =
-			CommerceDiscountTestUtil.addChannelOrderDiscount(
+			CommerceDiscountTestUtil.addChannelOrderCommerceDiscount(
 				_user.getGroupId(), _commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_SHIPPING);
 
@@ -277,7 +278,7 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SHIPPING);
 
 		CommerceDiscount commerceDiscountShipping2 =
-			CommerceDiscountTestUtil.addAccountGroupOrderDiscount(
+			CommerceDiscountTestUtil.addAccountGroupOrderCommerceDiscount(
 				_user.getGroupId(), commerceAccountGroups,
 				CommerceDiscountConstants.TARGET_SHIPPING);
 
@@ -286,17 +287,18 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SHIPPING);
 
 		CommerceDiscount commerceDiscountShipping3 =
-			CommerceDiscountTestUtil.addAccountGroupAndChannelOrderDiscount(
-				_user.getGroupId(), commerceAccountGroups,
-				_commerceChannel.getCommerceChannelId(),
-				CommerceDiscountConstants.TARGET_SHIPPING);
+			CommerceDiscountTestUtil.
+				addAccountGroupAndChannelOrderCommerceDiscount(
+					_user.getGroupId(), commerceAccountGroups,
+					_commerceChannel.getCommerceChannelId(),
+					CommerceDiscountConstants.TARGET_SHIPPING);
 
 		_orderAssertEquals(
 			commerceDiscountShipping3,
 			CommerceDiscountConstants.TARGET_SHIPPING);
 
 		CommerceDiscount commerceDiscountShipping4 =
-			CommerceDiscountTestUtil.addAccountOrderDiscount(
+			CommerceDiscountTestUtil.addAccountOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				CommerceDiscountConstants.TARGET_SHIPPING);
 
@@ -305,7 +307,7 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SHIPPING);
 
 		CommerceDiscount commerceDiscountShipping5 =
-			CommerceDiscountTestUtil.addAccountAndChannelOrderDiscount(
+			CommerceDiscountTestUtil.addAccountAndChannelOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_SHIPPING);
@@ -315,7 +317,7 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SHIPPING);
 
 		CommerceDiscount commerceDiscountSubtotal1 =
-			CommerceDiscountTestUtil.addChannelOrderDiscount(
+			CommerceDiscountTestUtil.addChannelOrderCommerceDiscount(
 				_user.getGroupId(), _commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_SUBTOTAL);
 
@@ -324,7 +326,7 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SUBTOTAL);
 
 		CommerceDiscount commerceDiscountSubtotal2 =
-			CommerceDiscountTestUtil.addAccountGroupOrderDiscount(
+			CommerceDiscountTestUtil.addAccountGroupOrderCommerceDiscount(
 				_user.getGroupId(), commerceAccountGroups,
 				CommerceDiscountConstants.TARGET_SUBTOTAL);
 
@@ -333,17 +335,18 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SUBTOTAL);
 
 		CommerceDiscount commerceDiscountSubtotal3 =
-			CommerceDiscountTestUtil.addAccountGroupAndChannelOrderDiscount(
-				_user.getGroupId(), commerceAccountGroups,
-				_commerceChannel.getCommerceChannelId(),
-				CommerceDiscountConstants.TARGET_SUBTOTAL);
+			CommerceDiscountTestUtil.
+				addAccountGroupAndChannelOrderCommerceDiscount(
+					_user.getGroupId(), commerceAccountGroups,
+					_commerceChannel.getCommerceChannelId(),
+					CommerceDiscountConstants.TARGET_SUBTOTAL);
 
 		_orderAssertEquals(
 			commerceDiscountSubtotal3,
 			CommerceDiscountConstants.TARGET_SUBTOTAL);
 
 		CommerceDiscount commerceDiscountSubtotal4 =
-			CommerceDiscountTestUtil.addAccountOrderDiscount(
+			CommerceDiscountTestUtil.addAccountOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				CommerceDiscountConstants.TARGET_SUBTOTAL);
 
@@ -352,7 +355,7 @@ public class CommerceDiscountLocalServiceTest {
 			CommerceDiscountConstants.TARGET_SUBTOTAL);
 
 		CommerceDiscount commerceDiscountSubtotal5 =
-			CommerceDiscountTestUtil.addAccountAndChannelOrderDiscount(
+			CommerceDiscountTestUtil.addAccountAndChannelOrderCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_SUBTOTAL);
@@ -381,7 +384,7 @@ public class CommerceDiscountLocalServiceTest {
 
 		_commerceOrders.add(commerceOrder);
 
-		CommerceDiscountTestUtil.addAccountAndChannelOrderDiscount(
+		CommerceDiscountTestUtil.addAccountAndChannelOrderCommerceDiscount(
 			_user.getGroupId(), _accountEntry.getAccountEntryId(),
 			_commerceChannel.getCommerceChannelId(),
 			CommerceDiscountConstants.TARGET_TOTAL);
@@ -419,7 +422,7 @@ public class CommerceDiscountLocalServiceTest {
 			_accountGroupLocalService.getAccountGroupIds(
 				_accountEntry.getAccountEntryId());
 
-		CommerceDiscountTestUtil.addAccountGroupAndChannelOrderDiscount(
+		CommerceDiscountTestUtil.addAccountGroupAndChannelOrderCommerceDiscount(
 			_user.getGroupId(), commerceAccountGroups,
 			_commerceChannel.getCommerceChannelId(),
 			CommerceDiscountConstants.TARGET_TOTAL);
@@ -465,7 +468,7 @@ public class CommerceDiscountLocalServiceTest {
 			cpInstance.getCPInstanceId());
 
 		CommerceDiscount commerceChannelDiscount =
-			CommerceDiscountTestUtil.addChannelDiscount(
+			CommerceDiscountTestUtil.addChannelCommerceDiscount(
 				_user.getGroupId(), _commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.LEVEL_L1,
 				cpDefinition.getCPDefinitionId());
@@ -479,7 +482,7 @@ public class CommerceDiscountLocalServiceTest {
 				_accountEntry.getAccountEntryId());
 
 		CommerceDiscount commerceAccountGroupsDiscount =
-			CommerceDiscountTestUtil.addAccountGroupDiscount(
+			CommerceDiscountTestUtil.addAccountGroupCommerceDiscount(
 				_user.getGroupId(), commerceAccountGroups,
 				CommerceDiscountConstants.LEVEL_L3,
 				cpDefinition.getCPDefinitionId());
@@ -489,7 +492,7 @@ public class CommerceDiscountLocalServiceTest {
 			cpInstance.getCPInstanceId());
 
 		CommerceDiscount commerceAccountGroupsAndChannelDiscount =
-			CommerceDiscountTestUtil.addAccountGroupAndChannelDiscount(
+			CommerceDiscountTestUtil.addAccountGroupAndChannelCommerceDiscount(
 				_user.getGroupId(), commerceAccountGroups,
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.LEVEL_L3,
@@ -500,7 +503,7 @@ public class CommerceDiscountLocalServiceTest {
 			cpDefinition.getCPDefinitionId(), cpInstance.getCPInstanceId());
 
 		CommerceDiscount commerceAccountDiscount =
-			CommerceDiscountTestUtil.addAccountDiscount(
+			CommerceDiscountTestUtil.addAccountCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				CommerceDiscountConstants.LEVEL_L4,
 				cpDefinition.getCPDefinitionId());
@@ -510,7 +513,7 @@ public class CommerceDiscountLocalServiceTest {
 			cpInstance.getCPInstanceId());
 
 		CommerceDiscount commerceAccountAndChannelDiscount =
-			CommerceDiscountTestUtil.addAccountAndChannelDiscount(
+			CommerceDiscountTestUtil.addAccountAndChannelCommerceDiscount(
 				_user.getGroupId(), _accountEntry.getAccountEntryId(),
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.LEVEL_L4,
@@ -539,7 +542,7 @@ public class CommerceDiscountLocalServiceTest {
 
 		CPDefinition cpDefinition = cpInstance.getCPDefinition();
 
-		CommerceDiscountTestUtil.addAccountAndChannelDiscount(
+		CommerceDiscountTestUtil.addAccountAndChannelCommerceDiscount(
 			_user.getGroupId(), _accountEntry.getAccountEntryId(),
 			_commerceChannel.getCommerceChannelId(),
 			CommerceDiscountConstants.LEVEL_L4,
@@ -577,7 +580,7 @@ public class CommerceDiscountLocalServiceTest {
 			_accountGroupLocalService.getAccountGroupIds(
 				_accountEntry.getAccountEntryId());
 
-		CommerceDiscountTestUtil.addAccountGroupAndChannelDiscount(
+		CommerceDiscountTestUtil.addAccountGroupAndChannelCommerceDiscount(
 			_user.getGroupId(), commerceAccountGroups,
 			_commerceChannel.getCommerceChannelId(),
 			CommerceDiscountConstants.LEVEL_L3,

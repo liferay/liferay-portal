@@ -147,6 +147,36 @@ public class ServletDataImpl implements ServletData {
 							ObjectEntryFolderResourceImpl.class,
 							"postScopeScopeKeyObjectEntryFolder"));
 					put(
+						"mutation#createScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore"));
+					put(
+						"mutation#createScopeScopeKeyObjectEntryFolderByExternalReferenceCodeSubscribe",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeSubscribe"));
+					put(
+						"mutation#createScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe"));
+					put(
+						"mutation#updateObjectEntryFolder",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"putObjectEntryFolder"));
+					put(
+						"mutation#updateObjectEntryFolderBatch",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"putObjectEntryFolderBatch"));
+					put(
+						"mutation#updateObjectEntryFolderPermissionsPage",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"putObjectEntryFolderPermissionsPage"));
+					put(
 						"mutation#updateScopeScopeKeyObjectEntryFolderByExternalReferenceCode",
 						new ObjectValuePair<>(
 							ObjectEntryFolderResourceImpl.class,
@@ -177,6 +207,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ObjectEntryFolderResourceImpl.class,
 							"getObjectEntryFolder"));
+					put(
+						"query#objectEntryFolderPermissions",
+						new ObjectValuePair<>(
+							ObjectEntryFolderResourceImpl.class,
+							"getObjectEntryFolderPermissionsPage"));
 					put(
 						"query#scopeScopeKeyObjectEntryFolderByExternalReferenceCode",
 						new ObjectValuePair<>(

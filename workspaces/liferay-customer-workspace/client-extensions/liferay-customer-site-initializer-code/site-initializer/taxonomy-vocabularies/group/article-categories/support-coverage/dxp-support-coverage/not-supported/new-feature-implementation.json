@@ -1,0 +1,10 @@
+{
+	"name": "New Feature Implementation",
+	"name_i18n": {
+		"en_US": "New Feature Implementation",
+		"es-ES": "Implementación de nuevas funcionalidades",
+		"ja-JP": "新機能の実装",
+		"pt-BR": "Implementação de Nova Funcionalidade"
+	},
+	"viewableBy": "Anyone"
+}

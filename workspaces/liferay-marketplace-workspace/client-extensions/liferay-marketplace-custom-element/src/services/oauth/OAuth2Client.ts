@@ -114,10 +114,7 @@ class OAuth2Client {
 
 export class MarketplaceSpringBootOAuth2 extends OAuth2Client {
 	constructor(resource: string) {
-		super(
-			'liferay-marketplace-etc-spring-boot-oauth-application-user-agent',
-			resource
-		);
+		super('liferay-marketplace-etc-spring-boot-oaua', resource);
 	}
 }
 

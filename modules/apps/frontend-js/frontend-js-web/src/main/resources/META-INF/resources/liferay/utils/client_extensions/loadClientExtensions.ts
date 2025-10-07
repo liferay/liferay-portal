@@ -5,29 +5,29 @@
 
 import {loadModule} from './loadModule';
 
-interface ClientExtensionDefinition<T> {
+export interface ClientExtensionDefinition<T> {
 	context?: T;
 	importDeclaration: string;
 }
 
-interface ClientExtensionDefinitionsHandlerItem<T> {
+export interface ClientExtensionResolution<T> {
 	binding?: any;
 	context: T;
 	error?: Error;
 }
 
-interface ClientExtensionDefinitionsHandler<T> {
-	onLoad(items: ClientExtensionDefinitionsHandlerItem<T>[]): void;
-	clientExtensionDefinitions: ClientExtensionDefinition<T>[];
+export interface ClientExtensionHandler<T> {
+	onLoad(resolutions: Array<ClientExtensionResolution<T>>): void;
+	clientExtensionDefinitions: Array<ClientExtensionDefinition<T>>;
 }
 
-export default function loadClientExtensions(
-	clientExtensionDefinitionsHandlers: ClientExtensionDefinitionsHandler<unknown>[]
+export function loadClientExtensions(
+	clientExtensionsHandlers: Array<ClientExtensionHandler<unknown>>
 ) {
 	for (const {
 		clientExtensionDefinitions,
 		onLoad,
-	} of clientExtensionDefinitionsHandlers) {
+	} of clientExtensionsHandlers) {
 		if (!clientExtensionDefinitions.length) {
 			continue;
 		}
@@ -39,10 +39,16 @@ export default function loadClientExtensions(
 						binding,
 						context,
 					}))
-					.catch((error: Error) => ({
-						context,
-						error,
-					}));
+					.catch((error: Error) => {
+						if (process.env.NODE_ENV === 'development') {
+							console.error(error);
+						}
+
+						return {
+							context,
+							error,
+						};
+					});
 			}
 		);
 

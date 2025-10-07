@@ -36,7 +36,7 @@ definition {
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@liferay.com");
 
-			CookiePreferenceHandlingAdmin.disablePreferenceHandlingWithOutCookieConsentInSiteSettings(
+			CookiePreferenceHandlingAdmin.disablePreferenceHandlingInSiteSettings(
 				baseURL = "http://www.able.com:8080",
 				portlet = "Preference Handling",
 				siteURLKey = "guest");
@@ -156,7 +156,7 @@ definition {
 				specificURL = "http://www.able.com:8080",
 				userEmailAddress = "test@liferay.com");
 
-			CookiePreferenceHandlingAdmin.disablePreferenceHandlingWithOutCookieConsentInSiteSettings(
+			CookiePreferenceHandlingAdmin.disablePreferenceHandlingInSiteSettings(
 				baseURL = "http://www.able.com:8080",
 				portlet = "Preference Handling",
 				siteURLKey = "guest");

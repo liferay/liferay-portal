@@ -18,7 +18,7 @@ List<DiffResult> targetResults = diffResults[1];
 %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/diff.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="frontend-taglib/css/diff.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <clay:container-fluid>

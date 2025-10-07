@@ -235,6 +235,14 @@ public interface ERCVersionedEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ERCVersionedEntry fetchERCVersionedEntry(long ercVersionedEntryId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ERCVersionedEntry fetchERCVersionedEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ERCVersionedEntry fetchERCVersionedEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId, boolean head);
+
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ERCVersionedEntryVersion fetchLatestVersion(
@@ -292,6 +300,16 @@ public interface ERCVersionedEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ERCVersionedEntry getERCVersionedEntry(long ercVersionedEntryId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ERCVersionedEntry getERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ERCVersionedEntry getERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

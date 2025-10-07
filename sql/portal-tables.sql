@@ -697,7 +697,7 @@ create table Layout (
 	masterLayoutPlid LONG,
 	layoutPrototypeUuid VARCHAR(75) null,
 	layoutPrototypeLinkEnabled BOOLEAN,
-	sourcePrototypeLayoutUuid VARCHAR(75) null,
+	layoutSetPrototypeLayoutERC VARCHAR(75) null,
 	publishDate DATE null,
 	lastPublishDate DATE null,
 	status INTEGER,
@@ -1180,6 +1180,7 @@ create table Release_ (
 	schemaVersion VARCHAR(75) null,
 	buildNumber INTEGER,
 	buildDate DATE null,
+	versionDisplayName VARCHAR(75) null,
 	verified BOOLEAN,
 	state_ INTEGER,
 	testString VARCHAR(1024) null

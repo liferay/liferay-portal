@@ -178,6 +178,109 @@
 			"uniqueness": "none"
 		},
 		{
+			"description": "A physical mailing address for this user.  Canonical type values of 'work', 'home', and 'other'.  This attribute is a complex type with the following sub-attributes.  All sub-attributes are OPTIONAL.",
+			"multiValued": true,
+			"mutability": "readWrite",
+			"name": "addresses",
+			"required": false,
+			"returned": "default",
+			"subAttributes": [
+				{
+					"caseExact": false,
+					"description": "The country name component.  When specified, the value MUST be in ISO 3166-1 'alpha-2' code format [ISO3166]; e.g., the United States and Sweden are 'US and 'SE', respectively.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "country",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"caseExact": false,
+					"description": "The full mailing address, formatted for display or use with a mailing label.  This attribute MAY contain newlines.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "formatted",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"caseExact": false,
+					"description": "The city or locality component.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "locality",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"caseExact": false,
+					"description": "The zip code or postal code component.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "portalCode",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred mailing address or primary email address. The primary attribute value 'true' MUST appear no more than once.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "primary",
+					"required": false,
+					"returned": "default",
+					"type": "boolean"
+				},
+				{
+					"caseExact": false,
+					"description": "The state or region component.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "region",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"caseExact": false,
+					"description": "The full street address component, which may include house number, street name, P.O. box, and multi-line extended street address information.  This attribute MAY contain newlines.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "streetAddress",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				},
+				{
+					"canonicalValues": [
+						"business",
+						"other",
+						"personal"
+					],
+					"caseExact": false,
+					"description": "A label indicating the attribute's function, e.g., 'business', 'other', or 'personal'.",
+					"multiValued": false,
+					"mutability": "readWrite",
+					"name": "type",
+					"required": false,
+					"returned": "default",
+					"type": "string",
+					"uniqueness": "none"
+				}
+			],
+			"type": "complex",
+			"uniqueness": "none"
+		},
+		{
 			"description": "A list of groups to which the user belongs, either through direct membership, through nested groups, or dynamically calculated.",
 			"multiValued": true,
 			"mutability": "readOnly",

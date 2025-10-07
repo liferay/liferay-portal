@@ -102,6 +102,16 @@ export class LdapConfigurationPage {
 		await this.addLdapServerButton.waitFor();
 	}
 
+	async goToConnectionTab(forceReload = true) {
+		if (forceReload) {
+			await this.goTo();
+		}
+
+		await this.page.getByRole('menuitem', {name: 'Connection'}).click();
+
+		await this.page.getByText('Factory Initial').waitFor();
+	}
+
 	async resetLdapConfiguration() {
 		await this.goTo();
 

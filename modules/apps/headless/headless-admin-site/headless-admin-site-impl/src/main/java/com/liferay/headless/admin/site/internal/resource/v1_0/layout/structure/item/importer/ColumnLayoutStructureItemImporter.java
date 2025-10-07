@@ -12,6 +12,7 @@ import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutStructu
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 /**
  * @author Eudaldo Alonso
@@ -43,7 +44,7 @@ public class ColumnLayoutStructureItemImporter
 		}
 
 		columnLayoutStructureItem.setSize(
-			columnPageElementDefinition.getSize());
+			GetterUtil.getInteger(columnPageElementDefinition.getSize(), 1));
 
 		return columnLayoutStructureItem;
 	}

@@ -460,8 +460,8 @@ public class TestrayCaseResultResourceImpl
 				CSVFormat.DEFAULT.builder(
 				).setHeader(
 					"Case Name", "Case Type", "Priority", "Team", "Component",
-					"Run Number", "Run Name", "Assignee", "Status", "Issues",
-					"Errors", "Comments", "Case Result URL"
+					"Run Number", "Run Name", "Duration", "Assignee", "Status",
+					"Issues", "Errors", "Comments", "Case Result URL"
 				).build())) {
 
 			Page<TestrayCaseResult> page =
@@ -481,6 +481,7 @@ public class TestrayCaseResultResourceImpl
 					testrayCaseResult.getTestrayComponentName(),
 					testrayCaseResult.getTestrayRunNumber(),
 					testrayCaseResult.getTestrayRunName(),
+					testrayCaseResult.getDuration(),
 					testrayCaseResult.getUserName(),
 					testrayCaseResult.getStatus(),
 					testrayCaseResult.getIssues(), testrayCaseResult.getError(),

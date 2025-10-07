@@ -166,7 +166,7 @@ describe('PagePathCard', () => {
 		).toBeInTheDocument();
 		expect(getByText('Learn more about path.')).toHaveAttribute(
 			'href',
-			'https://learn.liferay.com/analytics-cloud/latest/en/touchpoints/pages/paths.html'
+			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/sites-analytics/pages-analytics/paths-analytics'
 		);
 	});
 

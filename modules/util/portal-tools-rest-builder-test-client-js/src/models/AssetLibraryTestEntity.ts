@@ -11,7 +11,7 @@
  */
 
 	export class AssetLibraryTestEntity {
-			"assetLibraryId"?: number;
+			"assetLibraryKey"?: string;
 			"dateCreated"?: Date;
 			"dateModified"?: Date;
 			"description"?: string;
@@ -26,9 +26,9 @@
 		type: string;
 	}> = [
 		{
-			baseName: "assetLibraryId",
-			name: "assetLibraryId",
-			type: "number",
+			baseName: "assetLibraryKey",
+			name: "assetLibraryKey",
+			type: "string",
 		},
 		{
 			baseName: "dateCreated",

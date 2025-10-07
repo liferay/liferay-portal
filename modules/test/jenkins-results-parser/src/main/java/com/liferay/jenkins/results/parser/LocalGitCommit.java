@@ -5,11 +5,15 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
+
 /**
  * @author Michael Hashimoto
  */
 public interface LocalGitCommit extends GitCommit {
 
 	public GitWorkingDirectory getGitWorkingDirectory();
+
+	public boolean isFileChanged(File file);
 
 }

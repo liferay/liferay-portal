@@ -37,11 +37,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collections;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -169,17 +170,28 @@ public class AnalyticsRenderFragmentLayoutPostDynamicIncludeTest {
 	}
 
 	@Test
-	public void testIncludeWithUnregisteredClass() throws Exception {
+	public void testIncludeWithUnregisteredClassAndEscapedCharactersInTitle()
+		throws Exception {
+
 		ClassName className = _classNameLocalService.addClassName(
 			MockObject.class.getName());
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
+		String title = "Title with 'single quote' and \n new line";
+
 		MockObjectLayoutDisplayPageObjectProvider
 			mockObjectLayoutDisplayPageObjectProvider =
 				new MockObjectLayoutDisplayPageObjectProvider(
-					className.getClassNameId());
+					className.getClassNameId()) {
+
+					@Override
+					public String getTitle(Locale locale) {
+						return title;
+					}
+
+				};
 
 		mockHttpServletRequest.setAttribute(
 			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
@@ -193,12 +205,11 @@ public class AnalyticsRenderFragmentLayoutPostDynamicIncludeTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<script type=\"text/javascript\">\nwindow.onload = ",
-				"function() {Analytics.track(\"model.resource.",
+				"function() {window.Analytics && ",
+				"window.Analytics.track(\"model.resource.",
 				MockObject.class.getCanonicalName(), " Viewed\", {'classPK': ",
 				mockObjectLayoutDisplayPageObjectProvider.getClassPK(),
-				", 'title': '",
-				mockObjectLayoutDisplayPageObjectProvider.getTitle(
-					LocaleUtil.getSiteDefault()),
+				", 'title': '", HtmlUtil.escapeJS(title),
 				"', 'type': 'model.resource.",
 				MockObject.class.getCanonicalName(),
 				"'})};\n\n</script><script>\n\n</script>"),

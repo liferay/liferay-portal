@@ -21,9 +21,22 @@ public class DynamicObjectDefinitionLocalizationTableFactory {
 		ObjectDefinition objectDefinition,
 		ObjectFieldLocalService objectFieldLocalService) {
 
-		List<ObjectField> localizedObjectFields =
-			objectFieldLocalService.getLocalizedObjectFields(
-				objectDefinition.getObjectDefinitionId());
+		List<ObjectField> localizedObjectFields = null;
+
+		if (objectDefinition.isUnmodifiableSystemObject()) {
+			localizedObjectFields =
+				objectFieldLocalService.getLocalizedObjectFields(
+					objectDefinition.getObjectDefinitionId(), false);
+
+			if (localizedObjectFields.isEmpty()) {
+				return null;
+			}
+		}
+		else {
+			localizedObjectFields =
+				objectFieldLocalService.getLocalizedObjectFields(
+					objectDefinition.getObjectDefinitionId());
+		}
 
 		if (!objectDefinition.isEnableLocalization() ||
 			(FeatureFlagManagerUtil.isEnabled(

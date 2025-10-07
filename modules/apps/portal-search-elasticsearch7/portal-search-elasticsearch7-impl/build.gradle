@@ -8,7 +8,7 @@ String elasticsearchClientVersion = "7.17.28"
 String luceneVersion = "8.11.3"
 String sidecarElasticsearchServerVersion = file('src/main/resources/META-INF/sidecar/sidecar.version').text
 
-String elasticsearchDownloadURL = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${sidecarElasticsearchServerVersion}-no-jdk-linux-x86_64.tar.gz"
+String elasticsearchDownloadURL = "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${sidecarElasticsearchServerVersion}-linux-x86_64.tar.gz"
 
 File elasticsearchDistributionFile = file("${buildDir}/${elasticsearchDownloadURL.drop(elasticsearchDownloadURL.lastIndexOf('/') + 1)}")
 
@@ -58,6 +58,7 @@ dependencies {
 	compileInclude group: "org.locationtech.jts", name: "jts-core", version: "1.20.0"
 	compileInclude group: "org.locationtech.spatial4j", name: "spatial4j", version: "0.8"
 	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
+	compileInclude project(":apps:portal-search-elasticsearch7:portal-search-elasticsearch7-sidecar-agent")
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
 	compileOnly group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-cbor", version: "2.18.2"
 	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
@@ -104,6 +105,7 @@ dependencies {
 	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":core:petra:petra-sql-dsl-api")
 }
 
@@ -150,6 +152,8 @@ deploySidecar {
 	}
 
 	doLast {
+		delete file("${destinationDir}/jdk")
+
 		logger.lifecycle "Deployed Elasticsearch Sidecar: {}", destinationDir
 	}
 }
@@ -182,6 +186,23 @@ test {
 
 			into libProcessExecutorDir.getPath()
 			from configurations.compileOnly
+		}
+
+		File libSidecarAgentDir = file("tmp/elasticsearch-sidecar")
+
+		if (!libSidecarAgentDir.exists()) {
+			libSidecarAgentDir.mkdir()
+		}
+
+		project.copy {
+			include "com.liferay.portal.search.elasticsearch7.sidecar.agent*.jar"
+
+			configurations.compileInclude.allDependencies.each {
+				rename "-${it.version}", ""
+			}
+
+			into libSidecarAgentDir.getPath()
+			from configurations.compileInclude
 		}
 	}
 }

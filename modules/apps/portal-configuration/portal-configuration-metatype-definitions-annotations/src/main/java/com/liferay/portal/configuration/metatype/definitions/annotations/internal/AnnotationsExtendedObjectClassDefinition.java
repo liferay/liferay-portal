@@ -199,7 +199,7 @@ public class AnnotationsExtendedObjectClassDefinition
 			"factoryInstanceLabelAttribute",
 			extendedObjectClassDefinition.factoryInstanceLabelAttribute()
 		).put(
-			"featureFlagKey", extendedObjectClassDefinition.featureFlagKey()
+			"feature.flag.key", extendedObjectClassDefinition.featureFlagKey()
 		).put(
 			"generateUI",
 			Boolean.toString(extendedObjectClassDefinition.generateUI())

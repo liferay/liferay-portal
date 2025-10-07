@@ -32,11 +32,13 @@
 	import {PageFilter} from '../models/PageFilter';
 	import {PagePermission} from '../models/PagePermission';
 	import {PageSchema} from '../models/PageSchema';
+	import {PageScopedTestEntity} from '../models/PageScopedTestEntity';
 	import {PageSiteTestEntity} from '../models/PageSiteTestEntity';
 	import {PageSort} from '../models/PageSort';
 	import {PageTestEntity} from '../models/PageTestEntity';
 	import {Permission} from '../models/Permission';
 	import {Schema} from '../models/Schema';
+	import {ScopedTestEntity} from '../models/ScopedTestEntity';
 	import {SiteTestEntity} from '../models/SiteTestEntity';
 	import {Sort} from '../models/Sort';
 	import {StringTestEntity} from '../models/StringTestEntity';
@@ -106,11 +108,13 @@ const typeMap: {[index: string]: any} = {
 	PageFilter,
 	PagePermission,
 	PageSchema,
+	PageScopedTestEntity,
 	PageSiteTestEntity,
 	PageSort,
 	PageTestEntity,
 	Permission,
 	Schema,
+	ScopedTestEntity,
 	SiteTestEntity,
 	Sort,
 	StringTestEntity,

@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classic");
+String innerNavigation = ParamUtil.getString(request, "innerNavigation", "advanced_classic");
 %>
 
 <clay:navigation-bar
@@ -17,9 +17,15 @@ String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classi
 			{
 				add(
 					navigationItem -> {
-						navigationItem.setActive(innerNavigation.equals("classic"));
+						navigationItem.setActive(innerNavigation.equals("advanced_classic"));
 						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5");
-						navigationItem.setLabel("Classic");
+						navigationItem.setLabel("Advanced Classic");
+					});
+				add(
+					navigationItem -> {
+						navigationItem.setActive(innerNavigation.equals("basic_classic"));
+						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "basic_classic");
+						navigationItem.setLabel("Basic Classic");
 					});
 				add(
 					navigationItem -> {
@@ -39,6 +45,12 @@ String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classi
 						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "balloon");
 						navigationItem.setLabel("Balloon");
 					});
+				add(
+					navigationItem -> {
+						navigationItem.setActive(innerNavigation.equals("input_localized"));
+						navigationItem.setHref(renderResponse.createRenderURL(), "navigation", "ckeditor5", "innerNavigation", "input_localized");
+						navigationItem.setLabel("Input Localized");
+					});
 			}
 		}
 	%>'
@@ -46,17 +58,23 @@ String innerNavigation = ParamUtil.getString(request, "innerNavigation", "classi
 
 <div class="mt-3">
 	<c:choose>
+		<c:when test='<%= StringUtil.equals(innerNavigation, "advanced_classic") %>'>
+			<liferay-util:include page="/ckeditor5/partials/advanced_classic.jsp" servletContext="<%= application %>" />
+		</c:when>
 		<c:when test='<%= StringUtil.equals(innerNavigation, "balloon") %>'>
 			<liferay-util:include page="/ckeditor5/partials/balloon.jsp" servletContext="<%= application %>" />
 		</c:when>
-		<c:when test='<%= StringUtil.equals(innerNavigation, "classic") %>'>
-			<liferay-util:include page="/ckeditor5/partials/classic.jsp" servletContext="<%= application %>" />
+		<c:when test='<%= StringUtil.equals(innerNavigation, "basic_classic") %>'>
+			<liferay-util:include page="/ckeditor5/partials/basic_classic.jsp" servletContext="<%= application %>" />
 		</c:when>
-		<c:when test='<%= StringUtil.equals(innerNavigation, "react_cet") %>'>
-			<liferay-util:include page="/ckeditor5/partials/react_cet.jsp" servletContext="<%= application %>" />
+		<c:when test='<%= StringUtil.equals(innerNavigation, "input_localized") %>'>
+			<liferay-util:include page="/ckeditor5/partials/input_localized.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= StringUtil.equals(innerNavigation, "react") %>'>
+			<liferay-util:include page="/ckeditor5/partials/react.jsp" servletContext="<%= application %>" />
 		</c:when>
 		<c:otherwise>
-			<liferay-util:include page="/ckeditor5/partials/react.jsp" servletContext="<%= application %>" />
+			<liferay-util:include page="/ckeditor5/partials/react_cet.jsp" servletContext="<%= application %>" />
 		</c:otherwise>
 	</c:choose>
 </div>

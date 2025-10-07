@@ -698,6 +698,25 @@ that may or may not be enforced with a unique index at the database level. Case
 				start, end, orderByComparator);
 			}
 
+			<#if serviceBuilder.isVersionGTE_7_4_0()>
+				if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) && isPermissionsInMemoryFilterEnabled()) {
+					return InlineSQLHelperUtil.filter(
+						findBy${entityFinder.name}(
+
+						<#list entityColumns as entityColumn>
+							${entityColumn.name},
+						</#list>
+
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator)
+
+						<#if entityFinder.hasEntityColumn("groupId")>
+							, groupId
+						</#if>
+
+						);
+				}
+			</#if>
+
 			<#list entityColumns as entityColumn>
 				<#if stringUtil.equals(entityColumn.type, "String") && entityColumn.isConvertNull()>
 					${entityColumn.name} = Objects.toString(${entityColumn.name}, "");
@@ -1209,6 +1228,33 @@ that may or may not be enforced with a unique index at the database level. Case
 
 					start, end, orderByComparator);
 				}
+
+				<#if serviceBuilder.isVersionGTE_7_4_0()>
+					if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) && isPermissionsInMemoryFilterEnabled()) {
+						return InlineSQLHelperUtil.filter(
+							findBy${entityFinder.name}(
+
+							<#list entityColumns as entityColumn>
+								<#if entityColumn.hasArrayableOperator()>
+									${entityColumn.pluralName},
+								<#else>
+									${entityColumn.name},
+								</#if>
+							</#list>
+
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator)
+
+							<#if entityFinder.hasEntityColumn("groupId")>,
+								<#if entityFinder.getEntityColumn("groupId").hasArrayableOperator()>
+									groupIds
+								<#else>
+									groupId
+								</#if>
+							</#if>
+
+							);
+					}
+				</#if>
 
 				<#list entityColumns as entityColumn>
 					<#if entityColumn.hasArrayableOperator()>

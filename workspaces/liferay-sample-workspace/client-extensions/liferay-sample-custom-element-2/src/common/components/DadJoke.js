@@ -10,9 +10,7 @@ function DadJoke() {
 	const [joke, setJoke] = React.useState(null);
 
 	React.useEffect(() => {
-		OAuth2.FromUserAgentApplication(
-			'liferay-sample-etc-spring-boot-oauth-application-user-agent'
-		)
+		OAuth2.FromUserAgentApplication('liferay-sample-etc-spring-boot-oaua')
 			.then((oAuth2Client) => {
 				oAuth2Client
 					?.fetch('/dad/joke')

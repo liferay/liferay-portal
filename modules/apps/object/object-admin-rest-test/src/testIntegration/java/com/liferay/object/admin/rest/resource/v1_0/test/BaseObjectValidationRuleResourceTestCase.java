@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -53,7 +56,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -296,7 +299,7 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 								objectValidationRule1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -336,7 +339,7 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 									objectValidationRule2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -784,6 +787,109 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPage()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPage_getExternalReferenceCode();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionByExternalReferenceCodeObjectValidationRules",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject
+			objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject =
+				JSONUtil.getValueAsJSONObject(
+					invokeGraphQLQuery(graphQLField), "JSONObject/data",
+					"JSONObject/objectDefinitionByExternalReferenceCodeObjectValidationRules");
+
+		long totalCount =
+			objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+				getLong("totalCount");
+
+		ObjectValidationRule objectValidationRule1 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				externalReferenceCode, randomObjectValidationRule());
+
+		ObjectValidationRule objectValidationRule2 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				externalReferenceCode, randomObjectValidationRule());
+
+		objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectValidationRules");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectValidationRule1,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+						getString("items"))));
+		assertContains(
+			objectValidationRule2,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+						getString("items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("objectAdmin_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectValidationRules");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectValidationRule1,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+						getString("items"))));
+		assertContains(
+			objectValidationRule2,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectValidationRulesJSONObject.
+						getString("items"))));
+	}
+
+	protected ObjectValidationRule
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				String externalReferenceCode,
+				ObjectValidationRule objectValidationRule)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetObjectDefinitionObjectValidationRulesPage()
 		throws Exception {
 
@@ -1185,6 +1291,96 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionObjectValidationRulesPage()
+		throws Exception {
+
+		Long objectDefinitionId =
+			testGetObjectDefinitionObjectValidationRulesPage_getObjectDefinitionId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionObjectValidationRules",
+			new HashMap<String, Object>() {
+				{
+					put("objectDefinitionId", objectDefinitionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject objectDefinitionObjectValidationRulesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionObjectValidationRules");
+
+		long totalCount =
+			objectDefinitionObjectValidationRulesJSONObject.getLong(
+				"totalCount");
+
+		ObjectValidationRule objectValidationRule1 =
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				objectDefinitionId, randomObjectValidationRule());
+
+		ObjectValidationRule objectValidationRule2 =
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				objectDefinitionId, randomObjectValidationRule());
+
+		objectDefinitionObjectValidationRulesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionObjectValidationRules");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectValidationRulesJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			objectValidationRule1,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionObjectValidationRulesJSONObject.getString(
+						"items"))));
+		assertContains(
+			objectValidationRule2,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionObjectValidationRulesJSONObject.getString(
+						"items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionObjectValidationRulesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("objectAdmin_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+				"JSONObject/objectDefinitionObjectValidationRules");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectValidationRulesJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			objectValidationRule1,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionObjectValidationRulesJSONObject.getString(
+						"items"))));
+		assertContains(
+			objectValidationRule2,
+			Arrays.asList(
+				ObjectValidationRuleSerDes.toDTOs(
+					objectDefinitionObjectValidationRulesJSONObject.getString(
+						"items"))));
+	}
+
+	@Test
 	public void testGetObjectValidationRule() throws Exception {
 		ObjectValidationRule postObjectValidationRule =
 			testGetObjectValidationRule_addObjectValidationRule();
@@ -1561,6 +1757,32 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectValidationRule()
+		throws Exception {
+
+		ObjectValidationRule randomObjectValidationRule =
+			randomObjectValidationRule();
+
+		ObjectValidationRule objectValidationRule =
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectValidationRule_getObjectDefinitionId(
+					randomObjectValidationRule),
+				randomObjectValidationRule);
+
+		Assert.assertTrue(
+			equals(randomObjectValidationRule, objectValidationRule));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectValidationRule_getObjectDefinitionId(
+				ObjectValidationRule objectValidationRule)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostObjectDefinitionObjectValidationRule()
 		throws Exception {
 
@@ -1584,6 +1806,32 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 			postObjectDefinitionObjectValidationRule(
 				testGetObjectDefinitionObjectValidationRulesPage_getObjectDefinitionId(),
 				objectValidationRule);
+	}
+
+	@Test
+	public void testGraphQLPostObjectDefinitionObjectValidationRule()
+		throws Exception {
+
+		ObjectValidationRule randomObjectValidationRule =
+			randomObjectValidationRule();
+
+		ObjectValidationRule objectValidationRule =
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				testGraphQLPostObjectDefinitionObjectValidationRule_getObjectDefinitionId(
+					randomObjectValidationRule),
+				randomObjectValidationRule);
+
+		Assert.assertTrue(
+			equals(randomObjectValidationRule, objectValidationRule));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionObjectValidationRule_getObjectDefinitionId(
+				ObjectValidationRule objectValidationRule)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1679,6 +1927,136 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected ObjectValidationRule
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule()
+		throws Exception {
+
+		return testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+			testGraphQLObjectDefinitionObjectValidationRule_getObjectDefinitionId(),
+			randomObjectValidationRule());
+	}
+
+	protected Long
+			testGraphQLObjectDefinitionObjectValidationRule_getObjectDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ObjectValidationRule
+			testGraphQLObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				Long objectDefinitionId,
+				ObjectValidationRule objectValidationRule)
+		throws Exception {
+
+		JSONDeserializer<ObjectValidationRule> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(ObjectValidationRule.class)) {
+
+			if (getGraphQLValue(field.get(objectValidationRule)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(objectValidationRule)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createObjectDefinitionObjectValidationRule",
+						new HashMap<String, Object>() {
+							{
+								put("objectDefinitionId", objectDefinitionId);
+								put("objectValidationRule", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createObjectDefinitionObjectValidationRule"),
+			ObjectValidationRule.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1959,6 +2337,10 @@ public abstract class BaseObjectValidationRuleResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

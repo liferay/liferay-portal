@@ -63,9 +63,7 @@ public abstract class BaseCapability
 	protected InputStreamSanitizer inputStreamSanitizer;
 
 	private void _deleteAdaptiveMedia(FileEntry fileEntry) {
-		if (!DLAppHelperThreadLocal.isEnabled() ||
-			ExportImportThreadLocal.isImportInProcess()) {
-
+		if (ExportImportThreadLocal.isImportInProcess()) {
 			return;
 		}
 
@@ -88,9 +86,7 @@ public abstract class BaseCapability
 	}
 
 	private void _deleteAdaptiveMedia(FileVersion fileVersion) {
-		if (!DLAppHelperThreadLocal.isEnabled() ||
-			ExportImportThreadLocal.isImportInProcess()) {
-
+		if (ExportImportThreadLocal.isImportInProcess()) {
 			return;
 		}
 

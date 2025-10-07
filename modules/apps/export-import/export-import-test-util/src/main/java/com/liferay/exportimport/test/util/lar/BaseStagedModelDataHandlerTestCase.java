@@ -100,6 +100,9 @@ public abstract class BaseStagedModelDataHandlerTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		GroupLocalServiceUtil.deleteGroup(stagingGroup);
+		GroupLocalServiceUtil.deleteGroup(liveGroup);
+
 		ServiceContextThreadLocal.popServiceContext();
 	}
 

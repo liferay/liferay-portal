@@ -162,6 +162,8 @@ definition {
 	@description = "This test ensures that multiple Japanese files can be downloaded simultaneously."
 	@priority = 3
 	test CanSimultaneouslyDownloadMultipleJapaneseFiles {
+		property portal.acceptance = "false";
+
 		HeadlessSite.addSite(siteName = "Site_1");
 
 		JSONDocument.addFileWithUploadedFile(

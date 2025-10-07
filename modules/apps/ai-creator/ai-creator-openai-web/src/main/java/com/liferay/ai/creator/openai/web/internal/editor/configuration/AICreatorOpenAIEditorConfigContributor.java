@@ -7,7 +7,6 @@ package com.liferay.ai.creator.openai.web.internal.editor.configuration;
 
 import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIPortletKeys;
-import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -18,6 +17,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"editor.config.key=rich_text", "editor.name=ckeditor_classic",
-		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL
+		"editor.name=ckeditor5_classic"
 	},
 	service = EditorConfigContributor.class
 )
@@ -48,7 +48,8 @@ public class AICreatorOpenAIEditorConfigContributor
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
 		if (!_isAICreatorChatGPTGroupEnabled(
-				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId())) {
+				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId()) ||
+			!_isShowAICreator(inputEditorTaglibAttributes)) {
 
 			return;
 		}
@@ -112,6 +113,14 @@ public class AICreatorOpenAIEditorConfigContributor
 		}
 
 		return false;
+	}
+
+	private boolean _isShowAICreator(
+		Map<String, Object> inputEditorTaglibAttributes) {
+
+		return GetterUtil.getBoolean(
+			inputEditorTaglibAttributes.get(
+				"liferay-ui:input-editor:showAICreator"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

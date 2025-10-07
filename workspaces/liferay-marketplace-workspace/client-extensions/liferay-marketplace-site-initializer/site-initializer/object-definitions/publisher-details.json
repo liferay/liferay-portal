@@ -1,0 +1,123 @@
+{
+	"externalReferenceCode": "PUBLISHER-DETAILS",
+	"label": {
+		"en_US": "Publisher Details"
+	},
+	"name": "PublisherDetails",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Publisher Name"
+			},
+			"name": "publisherName",
+			"required": false,
+			"type": "String"
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "LongText",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Website URL"
+			},
+			"name": "websiteURL",
+			"objectFieldSettings": [
+				{
+					"name": "showCounter",
+					"value": false
+				}
+			],
+			"required": false,
+			"type": "Clob"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Email Address"
+			},
+			"name": "emailAddress",
+			"required": false,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Location"
+			},
+			"name": "location",
+			"required": false,
+			"type": "String"
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "LongText",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Publisher Profile Image"
+			},
+			"name": "publisherProfileImage",
+			"objectFieldSettings": [
+				{
+					"name": "showCounter",
+					"value": false
+				}
+			],
+			"required": false,
+			"type": "Clob"
+		},
+		{
+			"DBType": "Long",
+			"businessType": "LongInteger",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Catalog Id"
+			},
+			"name": "catalogId",
+			"required": false,
+			"type": "Long"
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "RichText",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Description"
+			},
+			"name": "description",
+			"required": false,
+			"type": "Clob"
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Show Contact Form"
+			},
+			"name": "showContactForm",
+			"required": false,
+			"type": "Boolean"
+		}
+	],
+	"objectFolderExternalReferenceCode": "MARKETPLACE",
+	"panelCategoryKey": "control_panel.object",
+	"pluralLabel": {
+		"en_US": "Publishers Details"
+	},
+	"scope": "company"
+}

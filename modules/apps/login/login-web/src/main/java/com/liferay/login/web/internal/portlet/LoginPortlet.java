@@ -38,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 		"jakarta.portlet.init-param.view-template=/login.jsp",
 		"jakarta.portlet.name=" + LoginPortletKeys.LOGIN,
 		"jakarta.portlet.portlet-mode=text/html;config",
+		"jakarta.portlet.preferences=classpath:/META-INF/portlet-preferences/default-portlet-preferences.xml",
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=guest,power-user,user",
 		"jakarta.portlet.version=4.0"

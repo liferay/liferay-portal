@@ -7,12 +7,10 @@ package com.liferay.portal.workflow.kaleo.runtime.notification.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -34,7 +32,6 @@ import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalServ
 
 import java.io.Serializable;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -91,11 +88,10 @@ public class TemplateNotificationMessageGeneratorTest {
 				"service.CompanyLocalService\").getCompanyByWebId(" +
 					"\"liferay.com\").getName()}";
 
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"NOTIFICATION_EMAIL_TEMPLATE_ENABLED", true)) {
-
-			String message = _notificationMessageGenerator.generateMessage(
+		AssertUtils.assertFailure(
+			NotificationMessageGenerationException.class,
+			"Unable to generate notification message",
+			() -> _notificationMessageGenerator.generateMessage(
 				KaleoNode.class.getName(), RandomTestUtil.randomLong(),
 				RandomTestUtil.randomString(), "freemarker",
 				notificationTemplate,
@@ -103,28 +99,7 @@ public class TemplateNotificationMessageGeneratorTest {
 					_kaleoInstanceToken,
 					WorkflowContextUtil.convert(
 						_kaleoInstance.getWorkflowContext()),
-					ServiceContextTestUtil.getServiceContext()));
-
-			Assert.assertEquals("Liferay DXP", message);
-		}
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"NOTIFICATION_EMAIL_TEMPLATE_ENABLED", false)) {
-
-			AssertUtils.assertFailure(
-				NotificationMessageGenerationException.class,
-				"Unable to generate notification message",
-				() -> _notificationMessageGenerator.generateMessage(
-					KaleoNode.class.getName(), RandomTestUtil.randomLong(),
-					RandomTestUtil.randomString(), "freemarker",
-					notificationTemplate,
-					new ExecutionContext(
-						_kaleoInstanceToken,
-						WorkflowContextUtil.convert(
-							_kaleoInstance.getWorkflowContext()),
-						ServiceContextTestUtil.getServiceContext())));
-		}
+					ServiceContextTestUtil.getServiceContext())));
 	}
 
 	private KaleoInstance _kaleoInstance;

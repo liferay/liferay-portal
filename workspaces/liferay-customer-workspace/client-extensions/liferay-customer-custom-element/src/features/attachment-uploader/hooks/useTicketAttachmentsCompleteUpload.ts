@@ -35,7 +35,7 @@ const useTicketAttachmentsCompleteUpload = (): IProps => {
 					`/ticket-attachments/${ticketAttachmentId}/complete-upload`,
 					{
 						body: JSON.stringify({
-							zendeskTicketCommentBody: comment,
+							commentBody: comment,
 						}),
 						method: 'POST',
 					}

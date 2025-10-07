@@ -5,21 +5,77 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
-export const test = mergeTests(loginTest(), systemSettingsPageTest);
+const hideableCookieTypes = [
+	'Functional Cookies',
+	'Performance Cookies',
+	'Personalization Cookies',
+];
+
+export const test = mergeTests(
+	featureFlagsTest({
+		'LPD-51356': {enabled: true},
+	}),
+	loginTest(),
+	systemSettingsPageTest
+);
+
+test.afterEach(async ({systemSettingsPage}) => {
+	await systemSettingsPage.goToSystemSetting('Privacy', 'Cookie Manager');
+
+	const menuItems = await systemSettingsPage.page.getByRole('menuitem').all();
+
+	await test.step('In reverse order, reset each configuration if previously set. We use reverse order since the latter entries will be hidden if the first "Preference Handling" entry is reset.', async () => {
+		for (const menuItem of menuItems.reverse()) {
+			if (await menuItem.getByText('Product Analytics').isVisible()) {
+				continue;
+			}
+
+			await menuItem.click();
+
+			await systemSettingsPage.page.waitForTimeout(1000);
+
+			await systemSettingsPage.page.waitForLoadState();
+
+			if (
+				await systemSettingsPage.page
+					.getByRole('button', {name: 'Actions'})
+					.isVisible()
+			) {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: systemSettingsPage.page.getByRole('menuitem', {
+						name: 'Reset Default Values',
+					}),
+					trigger: systemSettingsPage.page.getByRole('button', {
+						name: 'Actions',
+					}),
+				});
+			}
+		}
+	});
+
+	await test.step('Clear Consent Cookies if present', async () => {
+		await systemSettingsPage.page
+			.context()
+			.clearCookies({name: /^CONSENT_TYPE_/});
+		await systemSettingsPage.page
+			.context()
+			.clearCookies({name: 'USER_CONSENT_CONFIGURED'});
+	});
+});
 
 test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 	page,
 	systemSettingsPage,
 }) => {
 	await test.step('Enable Preference Handling Cookies', async () => {
-		await systemSettingsPage.goToSystemSetting(
-			'Cookies',
-			'Preference Handling'
-		);
+		await systemSettingsPage.goToSystemSetting('Privacy', 'Cookie Manager');
 
 		const enabledButton = page.getByLabel('Enabled');
 
@@ -124,3 +180,127 @@ test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 		}
 	});
 });
+
+test(
+	'Cookie Manager Adjustments',
+	{tag: '@LPD-60002'},
+	async ({browser, page, systemSettingsPage}) => {
+		await test.step('Enable Preference Handling Cookies if needed', async () => {
+			await systemSettingsPage.goToSystemSetting(
+				'Privacy',
+				'Cookie Manager'
+			);
+
+			const enabledButton = await page.getByLabel('Enabled');
+
+			await enabledButton.waitFor();
+
+			await enabledButton.check();
+
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			await waitForAlert(page);
+		});
+
+		const cookiesBanner = await page.locator(
+			'#p_p_id_com_liferay_cookies_banner_web_portlet_CookiesBannerPortlet_'
+		);
+
+		// Accept All cookies so the Cookies Banner doesn't break the test
+
+		if (await cookiesBanner.isVisible()) {
+			await page.getByRole('button', {name: 'Accept All'}).click();
+		}
+
+		const cookiePolicyLink = page.getByLabel('Cookie Policy Link');
+
+		const hideFromEndUserCheckboxes = page.getByLabel('Hide from end-user');
+
+		await test.step('AC1: Verify each non-strictly necessary cookie type has a "Hide from end-user" configuration entry', async () => {
+			await systemSettingsPage.goToSystemSetting(
+				'Privacy',
+				'Cookie Panel'
+			);
+
+			await cookiePolicyLink.waitFor();
+
+			expect(await hideFromEndUserCheckboxes.count()).toEqual(
+				hideableCookieTypes.length
+			);
+		});
+
+		await test.step('AC2: Enabling "Hide from end-user" will hide the cookie type from the consent banner', async () => {
+			for (const hideFromEndUserCheckbox of await hideFromEndUserCheckboxes.all()) {
+				await hideFromEndUserCheckbox.check();
+			}
+
+			// Configuration won't save without a URL in the Cookie Policy Link
+
+			await cookiePolicyLink.fill('http://www.liferay.com');
+
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			await waitForAlert(page);
+
+			for (const hideFromEndUserCheckbox of await hideFromEndUserCheckboxes.all()) {
+				await expect(await hideFromEndUserCheckbox).toBeChecked();
+			}
+
+			await expectCookiesBannerTypes(browser);
+		});
+
+		await test.step('AC3: Disabling "Hide from end-user" will display the cookie type in the consent banner', async () => {
+			for (const hideFromEndUserCheckbox of await hideFromEndUserCheckboxes.all()) {
+				await hideFromEndUserCheckbox.uncheck();
+			}
+
+			await page.getByRole('button', {name: 'Update'}).click();
+
+			await waitForAlert(page);
+
+			for (const hideFromEndUserCheckbox of await hideFromEndUserCheckboxes.all()) {
+				await expect(await hideFromEndUserCheckbox).not.toBeChecked();
+			}
+
+			await expectCookiesBannerTypes(browser, hideableCookieTypes, false);
+		});
+	}
+);
+
+async function expectCookiesBannerTypes(
+	browser,
+	cookieTypes: string[] = hideableCookieTypes,
+	hidden: boolean = true
+) {
+	const newPage = await browser.newPage();
+
+	await newPage.goto('/');
+
+	await newPage.getByRole('button', {name: 'Configuration'}).waitFor();
+
+	await newPage.getByRole('button', {name: 'Configuration'}).click();
+
+	const cookieConfigurationIFrame = await newPage.frameLocator(
+		'iframe[title="Cookie Configuration"]'
+	);
+
+	await cookieConfigurationIFrame
+		.getByRole('heading', {name: 'Strictly Necessary Cookies'})
+		.waitFor();
+
+	for (const cookieType of cookieTypes) {
+		const cookieTypeHeading = cookieConfigurationIFrame.getByRole(
+			'heading',
+			{name: cookieType}
+		);
+
+		if (hidden) {
+			await expect(await cookieTypeHeading).not.toBeVisible();
+		}
+		else {
+			await expect(await cookieTypeHeading).toBeVisible();
+		}
+	}
+
+	await newPage.close();
+}

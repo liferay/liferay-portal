@@ -24,6 +24,7 @@ export const FIRST_DAY_OF_WEEK_MAP = {
 	'ar-SY': 6,
 	'ar-YE': 6,
 	'au-AU': 0,
+	'ca-ES': 1,
 	'cn-HK': 0,
 	'cs-CZ': 1,
 	'da-DK': 1,
@@ -34,6 +35,7 @@ export const FIRST_DAY_OF_WEEK_MAP = {
 	'en-US': 0,
 	'es-ES': 1,
 	'et-EE': 1,
+	'eu-ES': 1,
 	'fi-FI': 1,
 	'fr-FR': 1,
 	'hu-HU': 1,
@@ -61,4 +63,25 @@ export const FIRST_DAY_OF_WEEK_MAP = {
 	'tw-TW': 0,
 	'vi-VN': 1,
 	'zh-CN': 1,
+} as const;
+
+export const WEEKDAYS_SHORT_MAP = {
+	'eu-ES': ['ig', 'al', 'ar', 'az', 'og', 'or', 'lr'],
+} as const;
+
+export const MONTHS_LONG_MAP = {
+	'eu-ES': [
+		'urtarrila',
+		'otsaila',
+		'martxoa',
+		'apirila',
+		'maiatza',
+		'ekaina',
+		'uztaila',
+		'abuztua',
+		'iraila',
+		'urria',
+		'azaroa',
+		'abendua',
+	],
 } as const;

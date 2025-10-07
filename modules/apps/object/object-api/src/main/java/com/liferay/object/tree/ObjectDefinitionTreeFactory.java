@@ -39,16 +39,20 @@ public class ObjectDefinitionTreeFactory extends BaseTreeFactory {
 		_objectDefinitionPersistence = objectDefinitionPersistence;
 	}
 
-	public Tree create(boolean excludeDifferentStatus, long objectDefinitionId)
+	public Tree create(
+			boolean excludeDifferentRootObjectDefinitionIds,
+			boolean excludeDifferentStatus, long objectDefinitionId)
 		throws PortalException {
 
 		return create(
-			excludeDifferentStatus, objectDefinitionId,
+			excludeDifferentRootObjectDefinitionIds, excludeDifferentStatus,
+			objectDefinitionId,
 			pk -> objectRelationshipLocalService.getObjectRelationships(
 				pk, true));
 	}
 
 	public Tree create(
+			boolean excludeDifferentRootObjectDefinitionIds,
 			boolean excludeDifferentStatus, long objectDefinitionId,
 			UnsafeFunction<Long, List<ObjectRelationship>, PortalException>
 				unsafeFunction)
@@ -65,11 +69,12 @@ public class ObjectDefinitionTreeFactory extends BaseTreeFactory {
 					ObjectDefinition objectDefinition2 = _getObjectDefinition(
 						objectRelationship.getObjectDefinitionId2());
 
-					if ((excludeDifferentStatus &&
+					if ((excludeDifferentRootObjectDefinitionIds &&
+						 !objectDefinition2.isRootDescendantNode(
+							 rootObjectDefinition.getObjectDefinitionId())) ||
+						(excludeDifferentStatus &&
 						 (rootObjectDefinition.getStatus() !=
-							 objectDefinition2.getStatus())) ||
-						(rootObjectDefinition.getObjectDefinitionId() !=
-							objectDefinition2.getRootObjectDefinitionId())) {
+							 objectDefinition2.getStatus()))) {
 
 						return null;
 					}
@@ -81,7 +86,7 @@ public class ObjectDefinitionTreeFactory extends BaseTreeFactory {
 	}
 
 	public Tree create(long objectDefinitionId) throws PortalException {
-		return create(true, objectDefinitionId);
+		return create(true, true, objectDefinitionId);
 	}
 
 	private ObjectDefinition _getObjectDefinition(long objectDefinitionId)

@@ -25,7 +25,6 @@ public class ProductConfigurationEntityModel implements EntityModel {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
 			new BooleanEntityField("purchasable", locale -> "purchasable"),
 			new BooleanEntityField("shippable", locale -> "shippable"),
-			new BooleanEntityField("visible", locale -> "hidden"),
 			new CollectionEntityField(
 				new StringEntityField(
 					"categoryIds", locale -> "assetCategoryIds")),

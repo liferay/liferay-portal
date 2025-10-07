@@ -69,6 +69,10 @@ const FrontendTokenDefinitionFilePicker = ({
 		disableFormSubmitButton(false, portletNamespace);
 
 		selectFileButtonRef.current?.focus();
+
+		if (fileInputRef.current) {
+			fileInputRef.current.value = '';
+		}
 	};
 
 	const validateFrontendTokenDefinitionFile = async (
@@ -108,6 +112,10 @@ const FrontendTokenDefinitionFilePicker = ({
 									'your-upload-failed-to-complete'
 								),
 				});
+
+				if (fileInputRef.current) {
+					fileInputRef.current.value = '';
+				}
 			});
 	};
 

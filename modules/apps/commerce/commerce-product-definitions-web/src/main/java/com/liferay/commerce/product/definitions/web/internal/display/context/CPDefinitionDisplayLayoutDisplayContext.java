@@ -5,7 +5,7 @@
 
 package com.liferay.commerce.product.definitions.web.internal.display.context;
 
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.commerce.product.configuration.CPDisplayLayoutConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CPField;
@@ -214,12 +214,13 @@ public class CPDefinitionDisplayLayoutDisplayContext
 
 		CommerceChannel commerceChannel = getCommerceChannel();
 
-		AssetDisplayPageSelectorCriterion assetDisplayPageSelectorCriterion =
-			new AssetDisplayPageSelectorCriterion();
+		AssetDisplayPageItemSelectorCriterion
+			assetDisplayPageItemSelectorCriterion =
+				new AssetDisplayPageItemSelectorCriterion();
 
-		assetDisplayPageSelectorCriterion.setDesiredItemSelectorReturnTypes(
+		assetDisplayPageItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			Collections.singletonList(new UUIDItemSelectorReturnType()));
-		assetDisplayPageSelectorCriterion.setClassNameId(
+		assetDisplayPageItemSelectorCriterion.setClassNameId(
 			PortalUtil.getClassNameId(CPDefinition.class));
 
 		return String.valueOf(
@@ -229,7 +230,7 @@ public class CPDefinitionDisplayLayoutDisplayContext
 				_groupLocalService.getGroup(commerceChannel.getSiteGroupId()),
 				commerceChannel.getSiteGroupId(),
 				"selectLayoutPageTemplateEntry",
-				assetDisplayPageSelectorCriterion));
+				assetDisplayPageItemSelectorCriterion));
 	}
 
 	public String getLayoutPageTemplateEntryName(

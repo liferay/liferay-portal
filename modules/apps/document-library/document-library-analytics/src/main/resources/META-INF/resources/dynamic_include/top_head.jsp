@@ -34,11 +34,16 @@
 			anchor,
 			'analyticsFileEntryVersion'
 		);
+		var externalReferenceCode = <portlet:namespace />getValueByAttribute(
+			anchor,
+			'analyticsExternalReferenceCode'
+		);
 
 		if (fileEntryId) {
 			Analytics.send('documentDownloaded', 'Document', {
-				groupId: themeDisplay.getScopeGroupId(),
+				externalReferenceCode,
 				fileEntryId,
+				groupId: themeDisplay.getScopeGroupId(),
 				preview:
 					!!window.<%= DocumentLibraryAnalyticsConstants.JS_PREFIX %>isViewFileEntry,
 				title,

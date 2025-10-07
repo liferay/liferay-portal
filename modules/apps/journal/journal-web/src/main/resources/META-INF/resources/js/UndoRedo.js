@@ -69,27 +69,25 @@ export default function UndoRedo({
 		step: 0,
 	});
 
-	let descriptionInputComponent;
-	let friendlyURLInputComponent;
-	let titleInputComponent;
+	const [descriptionInputComponent, setDescriptionInputComponent] =
+		useState(null);
+	const [friendlyURLInputComponent, setFriendlyURLInputComponent] =
+		useState(null);
+	const [titleInputComponent, setTitleInputComponent] = useState(null);
 
-	Liferay.componentReady(
-		`${portletNamespace}${META_FIELD_NAMES.description}`
-	).then((component) => {
-		descriptionInputComponent = component;
-	});
+	useEffect(() => {
+		Liferay.componentReady(
+			`${portletNamespace}${META_FIELD_NAMES.description}`
+		).then(setDescriptionInputComponent);
 
-	Liferay.componentReady(
-		`${portletNamespace}${META_FIELD_NAMES.friendlyURL}`
-	).then((component) => {
-		friendlyURLInputComponent = component;
-	});
+		Liferay.componentReady(
+			`${portletNamespace}${META_FIELD_NAMES.friendlyURL}`
+		).then(setFriendlyURLInputComponent);
 
-	Liferay.componentReady(`${portletNamespace}${META_FIELD_NAMES.title}`).then(
-		(component) => {
-			titleInputComponent = component;
-		}
-	);
+		Liferay.componentReady(
+			`${portletNamespace}${META_FIELD_NAMES.title}`
+		).then(setTitleInputComponent);
+	}, [portletNamespace]);
 
 	const handleUndo = (newStep = step - 1) => {
 		setLock(true);
@@ -261,21 +259,23 @@ export default function UndoRedo({
 					.values(),
 			};
 
-			setState({
+			setState((previousState) => ({
 				defaultLanguageId: defaultLanguageIdInput.value,
-				history: [...history.slice(0, step + 1), newHistory],
+				history: [
+					...previousState.history.slice(0, previousState.step + 1),
+					newHistory,
+				],
 				selectedLanguageId: selectedLanguageIdInput.value,
-				step: step + 1,
-			});
+				step: previousState.step + 1,
+			}));
+
 			setLock(false);
 		},
 		[
 			descriptionInputComponent,
 			friendlyURLInputComponent,
-			history,
-			portletNamespace,
-			step,
 			titleInputComponent,
+			portletNamespace,
 		]
 	);
 
@@ -295,24 +295,26 @@ export default function UndoRedo({
 			step.selectedLanguageId
 		);
 
-		setTimeout(
-			() =>
-				descriptionInputComponent.updateInput(
-					step.descriptionInputValue
-				),
-			200
-		);
+		if (!Liferay.FeatureFlags['LPD-11235']) {
+			setTimeout(
+				() =>
+					descriptionInputComponent.updateInput(
+						step.descriptionInputValue
+					),
+				200
+			);
+		}
 
 		friendlyURLInputComponent.updateInput(step.friendlyURLInputValue);
 
 		titleInputComponent.updateInput(step.titleInputValue);
 
-		setState({
+		setState((previousState) => ({
+			...previousState,
 			defaultLanguageId: step.defaultLanguageId,
-			history,
 			selectedLanguageId: step.selectedLanguageId,
 			step: newStep,
-		});
+		}));
 	};
 
 	const resetStoreState = useCallback(

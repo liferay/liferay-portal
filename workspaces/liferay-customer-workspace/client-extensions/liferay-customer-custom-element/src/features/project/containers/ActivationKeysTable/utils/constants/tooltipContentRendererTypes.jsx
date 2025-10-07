@@ -12,7 +12,7 @@ export const TOOLTIP_CONTENT_RENDERER_TYPES = {
 			dangerouslySetInnerHTML={{
 				__html: i18n.sub(
 					'to-download-an-aggregate-key-select-keys-for-a-valid-liferay-version-with-identical-type-start-date-end-date-and-instance-size-to-learn-more-click-x-here-x',
-					['<a href="https://help.liferay.com/hc/articles/8835990270989-How-do-I-download-my-Liferay-DXP-Portal-Activation-Keys" target="_blank">', '</a>']
+					['<a href="https://support.liferay.com/w/how-do-i-download-my-liferay-dxp-portal-activation-keys" target="_blank">', '</a>']
 				)
 			}}
 		/>

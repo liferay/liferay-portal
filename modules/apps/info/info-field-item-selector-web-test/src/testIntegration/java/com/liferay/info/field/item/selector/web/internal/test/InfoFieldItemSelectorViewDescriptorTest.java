@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.dao.search.ResultRowSplitterEntry;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -141,24 +142,31 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 						RandomTestUtil.nextInt())));
 
 		Assert.assertEquals(
-			resultRowSplitterEntries.toString(), 2,
+			resultRowSplitterEntries.toString(), 3,
 			resultRowSplitterEntries.size());
 
 		ResultRowSplitterEntry resultRowSplitterEntry1 =
 			resultRowSplitterEntries.get(0);
 
 		Assert.assertEquals(
-			_objectDefinition1.getLabel(LocaleUtil.getSiteDefault()),
+			_language.get(LocaleUtil.getSiteDefault(), "basic-information"),
 			resultRowSplitterEntry1.getTitle());
 
 		ResultRowSplitterEntry resultRowSplitterEntry2 =
 			resultRowSplitterEntries.get(1);
 
 		Assert.assertEquals(
+			_objectDefinition1.getLabel(LocaleUtil.getSiteDefault()),
+			resultRowSplitterEntry2.getTitle());
+
+		ResultRowSplitterEntry resultRowSplitterEntry3 =
+			resultRowSplitterEntries.get(2);
+
+		Assert.assertEquals(
 			StringBundler.concat(
 				objectRelationship.getLabel(LocaleUtil.getSiteDefault()), " (",
 				_objectDefinition2.getLabel(LocaleUtil.getSiteDefault()), ")"),
-			resultRowSplitterEntry2.getTitle());
+			resultRowSplitterEntry3.getTitle());
 	}
 
 	@Test
@@ -169,7 +177,7 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 		SearchContainer<Object> searchContainer =
 			itemSelectorViewDescriptor.getSearchContainer();
 
-		Assert.assertEquals(3, searchContainer.getTotal());
+		Assert.assertEquals(4, searchContainer.getTotal());
 	}
 
 	@Test
@@ -203,8 +211,9 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), draftLayout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				draftLayout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		mockHttpServletRequest.setParameter(
 			"formItemId", formStyledLayoutStructureItem.getItemId());
@@ -215,7 +224,7 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 		SearchContainer<Object> searchContainer =
 			itemSelectorViewDescriptor.getSearchContainer();
 
-		Assert.assertEquals(3, searchContainer.getTotal());
+		Assert.assertEquals(4, searchContainer.getTotal());
 	}
 
 	@Test
@@ -253,7 +262,7 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 		SearchContainer<Object> searchContainer =
 			itemSelectorViewDescriptor.getSearchContainer();
 
-		Assert.assertEquals(5, searchContainer.getTotal());
+		Assert.assertEquals(6, searchContainer.getTotal());
 	}
 
 	@Test
@@ -407,6 +416,9 @@ public class InfoFieldItemSelectorViewDescriptorTest {
 
 	@Inject
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Inject
+	private Language _language;
 
 	private Layout _layout;
 

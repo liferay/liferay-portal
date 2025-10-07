@@ -7,7 +7,7 @@ package com.liferay.mail.kernel.service;
 
 import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.model.MailMessage;
-import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 
 import jakarta.mail.Session;
 
@@ -20,13 +20,14 @@ public class MailServiceUtil {
 		getService().clearSession();
 	}
 
-	public static MailService getService() {
-		if (_mailService == null) {
-			_mailService = (MailService)PortalBeanLocatorUtil.locate(
-				MailService.class.getName());
-		}
+	public static String getMailId(
+		String mx, String popPortletPrefix, Object... ids) {
 
-		return _mailService;
+		return getService().getMailId(mx, popPortletPrefix, ids);
+	}
+
+	public static MailService getService() {
+		return _mailServiceSnapshot.get();
 	}
 
 	public static Session getSession() {
@@ -41,14 +42,15 @@ public class MailServiceUtil {
 		return getService().getSession(companyId);
 	}
 
+	public static boolean isPopServerUser(String emailAddress) {
+		return getService().isPOPServerUser(emailAddress);
+	}
+
 	public static void sendEmail(MailMessage mailMessage) {
 		getService().sendEmail(mailMessage);
 	}
 
-	public void setService(MailService mailService) {
-		_mailService = mailService;
-	}
-
-	private static MailService _mailService;
+	private static final Snapshot<MailService> _mailServiceSnapshot =
+		new Snapshot<>(MailServiceUtil.class, MailService.class);
 
 }

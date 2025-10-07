@@ -23,9 +23,9 @@ import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.adapter.ModelAdapterUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.constants.TrashActionKeys;
 import com.liferay.trash.constants.TrashEntryConstants;
@@ -229,7 +229,7 @@ public class TrashEntryServiceImpl extends TrashEntryServiceBaseImpl {
 	public List<TrashEntry> getEntries(long groupId, String className)
 		throws PrincipalException {
 
-		List<TrashEntry> entries = trashEntryPersistence.findByG_C(
+		List<TrashEntry> entries = trashEntryPersistence.findByG_CN(
 			groupId, _classNameLocalService.getClassNameId(className));
 
 		return _filterEntries(entries);
@@ -269,7 +269,7 @@ public class TrashEntryServiceImpl extends TrashEntryServiceBaseImpl {
 		List<TrashEntry> entries = null;
 
 		if (Validator.isNotNull(className)) {
-			entries = trashEntryPersistence.findByG_C(
+			entries = trashEntryPersistence.findByG_CN(
 				groupId, _classNameLocalService.getClassNameId(className), 0,
 				end + PropsValues.TRASH_SEARCH_LIMIT, orderByComparator);
 		}
@@ -501,7 +501,7 @@ public class TrashEntryServiceImpl extends TrashEntryServiceBaseImpl {
 			String className, long classPK, long overrideClassPK, String name)
 		throws PortalException {
 
-		TrashEntry trashEntry = trashEntryPersistence.fetchByC_C(
+		TrashEntry trashEntry = trashEntryPersistence.fetchByCN_CPK(
 			_classNameLocalService.getClassNameId(className), classPK);
 
 		if (trashEntry != null) {

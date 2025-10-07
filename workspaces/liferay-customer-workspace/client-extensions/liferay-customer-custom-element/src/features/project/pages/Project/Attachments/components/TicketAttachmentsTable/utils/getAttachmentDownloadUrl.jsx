@@ -9,7 +9,7 @@ export default async function getAttachmentDownloadUrl(
 	return await Liferay.OAuth2Client.FromUserAgentApplication(
 		'liferay-customer-etc-spring-boot-oaua'
 	).fetch(
-		"/ticket-attachments/" + ticketAttachmentId + "/download"
+		"/ticket-attachments/by-id/" + ticketAttachmentId + "/download"
 	).then(
 		(response) => response.text()
 	);

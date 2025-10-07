@@ -211,11 +211,11 @@ public class AssetCategoryServiceWrapper
 	}
 
 	@Override
-	public AssetCategory getOrAddIncompleteCategory(
+	public AssetCategory getOrAddEmptyCategory(
 			String externalReferenceCode, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _assetCategoryService.getOrAddIncompleteCategory(
+		return _assetCategoryService.getOrAddEmptyCategory(
 			externalReferenceCode, groupId);
 	}
 

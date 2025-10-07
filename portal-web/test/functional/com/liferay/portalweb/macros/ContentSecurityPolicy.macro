@@ -1,12 +1,19 @@
 definition {
 
 	@summary = "Default summary"
-	macro configureCSP(csp = null, enableCSP = null, excludedPaths = null) {
+	macro configureCSP(csp = null, enableCSP = null, excludedPaths = null, reportOnly = null) {
 		if (${enableCSP} == "true") {
 			FormFields.enableCheckbox(fieldName = "enabled");
 		}
 		else if (${enableCSP} == "false") {
 			FormFields.disableCheckbox(fieldName = "enabled");
+		}
+
+		if (${reportOnly} == "true") {
+			FormFields.enableCheckbox(fieldName = "reportOnly");
+		}
+		else {
+			FormFields.disableCheckbox(fieldName = "reportOnly");
 		}
 
 		if (isSet(csp)) {

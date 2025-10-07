@@ -73,17 +73,6 @@ public class AssetRendererSharingEntryInterpreter
 	}
 
 	@Override
-	public String getTitle(SharingEntry sharingEntry) {
-		AssetEntry assetEntry = _getAssetEntry(sharingEntry);
-
-		if (assetEntry == null) {
-			return StringPool.BLANK;
-		}
-
-		return assetEntry.getTitle();
-	}
-
-	@Override
 	public String getTitle(SharingEntry sharingEntry, Locale locale) {
 		AssetEntry assetEntry = _getAssetEntry(sharingEntry);
 

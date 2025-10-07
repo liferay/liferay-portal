@@ -16,7 +16,7 @@ import {DownloadStaticCSVReport} from 'shared/components/download-report/Downloa
 import {getMatchedRoute, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {PropTypes} from 'prop-types';
 import {Segment} from 'shared/util/records';
-import {SegmentStates, SegmentTypes} from 'shared/util/constants';
+import {SegmentStates} from 'shared/util/constants';
 import {Switch, withRouter} from 'react-router-dom';
 import {withSegment} from 'shared/hoc/WithSegment';
 
@@ -118,16 +118,6 @@ export class SegmentProfileRoutes extends React.Component {
 		}
 	}
 
-	getPageTitleLabel() {
-		const {
-			segment: {segmentType}
-		} = this.props;
-
-		return segmentType === SegmentTypes.Dynamic
-			? Liferay.Language.get('dynamic-segment')
-			: Liferay.Language.get('static-segment');
-	}
-
 	render() {
 		const {channelId, groupId, id, segment} = this.props;
 
@@ -164,7 +154,7 @@ export class SegmentProfileRoutes extends React.Component {
 					<BasePage.Row>
 						<BasePage.Header.TitleSection title={title}>
 							<Label display='secondary' size='lg' uppercase>
-								{this.getPageTitleLabel()}
+								{Liferay.Language.get('segment')}
 							</Label>
 						</BasePage.Header.TitleSection>
 

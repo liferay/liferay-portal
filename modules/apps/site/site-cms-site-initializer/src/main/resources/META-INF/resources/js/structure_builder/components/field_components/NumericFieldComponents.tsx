@@ -7,7 +7,7 @@ import ClayForm, {ClayCheckbox} from '@clayui/form';
 import React from 'react';
 
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
-import selectPublishedFields from '../../selectors/selectPublishedFields';
+import selectPublishedChildren from '../../selectors/selectPublishedChildren';
 import {Field, NumericField} from '../../utils/field';
 
 export default function getNumericFieldComponents(): {
@@ -29,9 +29,9 @@ function SecondSectionComponent({
 	const numericField = field as NumericField;
 
 	const dispatch = useStateDispatch();
-	const publishedFields = useSelector(selectPublishedFields);
+	const publishedChildren = useSelector(selectPublishedChildren);
 
-	const isPublished = publishedFields.has(field.uuid);
+	const isPublished = publishedChildren.has(field.uuid);
 
 	return (
 		<ClayForm.Group className="mb-3">

@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperienceModel;
@@ -95,11 +96,9 @@ public class TranslationRequestHelper {
 	}
 
 	public long getClassNameId() {
-		if (_classNameId != null) {
-			return _classNameId;
+		if ((_classNameId == null) && Validator.isNull(_modelClassName)) {
+			_initClassNameIdModelClassName();
 		}
-
-		_classNameId = ParamUtil.getLong(_httpServletRequest, "classNameId");
 
 		return _classNameId;
 	}
@@ -159,11 +158,9 @@ public class TranslationRequestHelper {
 	}
 
 	public String getModelClassName() {
-		if (_modelClassName != null) {
-			return _modelClassName;
+		if ((_classNameId == null) && Validator.isNull(_modelClassName)) {
+			_initClassNameIdModelClassName();
 		}
-
-		_modelClassName = PortalUtil.getClassName(getClassNameId());
 
 		return _modelClassName;
 	}
@@ -225,6 +222,30 @@ public class TranslationRequestHelper {
 		return ListUtil.toLongArray(
 			segmentsExperiences,
 			SegmentsExperienceModel::getSegmentsExperienceId);
+	}
+
+	private void _initClassNameIdModelClassName() {
+		long classNameId = ParamUtil.getLong(
+			_httpServletRequest, "classNameId");
+
+		if (classNameId != 0) {
+			_classNameId = classNameId;
+			_modelClassName = PortalUtil.getClassName(classNameId);
+
+			return;
+		}
+
+		String className = ParamUtil.getString(
+			_httpServletRequest, "className");
+
+		if (Validator.isNotNull(className)) {
+			_classNameId = PortalUtil.getClassNameId(className);
+			_modelClassName = className;
+
+			return;
+		}
+
+		throw new IllegalStateException();
 	}
 
 	private boolean _isExportAllSegmentsExperiences(

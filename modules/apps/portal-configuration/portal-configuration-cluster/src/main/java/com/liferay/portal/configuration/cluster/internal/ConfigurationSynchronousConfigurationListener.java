@@ -38,8 +38,20 @@ public class ConfigurationSynchronousConfigurationListener
 
 	@Override
 	public void configurationEvent(ConfigurationEvent configurationEvent) {
-		if (ConfigurationThreadLocal.isLocalUpdate() ||
-			InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly()) {
+		try {
+			if (ConfigurationThreadLocal.isLocalUpdate() ||
+				InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly() ||
+				_reloadablePersistenceManager.isEphemeral(
+					configurationEvent.getPid())) {
+
+				return;
+			}
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to determine if configuration is ephemeral for " +
+					configurationEvent.getPid(),
+				exception);
 
 			return;
 		}

@@ -1,0 +1,10 @@
+{
+	"name": "Architectural Assistance",
+	"name_i18n": {
+		"en_US": "Architectural Assistance",
+		"es-ES": "Ayuda de arquitectura",
+		"ja-JP": "アーキテクチャのサポート",
+		"pt-BR": "Assistência de Arquitetura"
+	},
+	"viewableBy": "Anyone"
+}

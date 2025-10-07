@@ -2,31 +2,31 @@
 	"accessing-accounts-data-from-custom-objects": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/web/guest/w/dxp/liferay-development/objects/creating-and-managing-objects/using-system-objects-with-custom-objects/accessing-accounts-data-from-custom-objects"
+			"url": "https://learn.liferay.com/web/guest/w/dxp/low-code/objects/creating-and-managing-objects/using-system-objects-with-custom-objects/accessing-accounts-data-from-custom-objects"
 		}
 	},
 	"expression-builder-validations-reference": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/en/w/dxp/liferay-development/objects/creating-and-managing-objects/validations/expression-builder-validations-reference"
+			"url": "https://learn.liferay.com/en/w/dxp/low-code/objects/creating-and-managing-objects/validations/expression-builder-validations-reference"
+		}
+	},
+	"inheritance-relationships": {
+		"en_US": {
+			"message": "Learn more about inheritance relationships.",
+			"url": "https://learn.liferay.com/w/dxp/low-code/objects/creating-and-managing-objects/relationships"
 		}
 	},
 	"localizing-object-definitions-and-entries": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/objects/creating-and-managing-objects/localizing-object-definitions-and-entries"
+			"url": "https://learn.liferay.com/w/dxp/low-code/objects/creating-and-managing-objects/localizing-object-definitions-and-entries"
 		}
 	},
 	"managing-data-from-external-systems": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/objects/integrating-objects-with-third-party-services/managing-data-from-external-systems#proxy-object-limitations"
-		}
-	},
-	"relationships": {
-		"en_US": {
-			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/objects/creating-and-managing-objects/relationships"
+			"url": "https://learn.liferay.com/w/dxp/low-code/objects/integrating-objects-with-third-party-services/managing-data-from-external-systems#proxy-object-limitations"
 		}
 	}
 }

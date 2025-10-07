@@ -135,15 +135,6 @@ public class ProductConfigurationListResourceTest
 
 	@Override
 	protected ProductConfigurationList
-			testGraphQLGetProductConfigurationListsPage_addProductConfigurationList()
-		throws Exception {
-
-		return productConfigurationListResource.postProductConfigurationList(
-			randomProductConfigurationList());
-	}
-
-	@Override
-	protected ProductConfigurationList
 			testGraphQLProductConfigurationList_addProductConfigurationList()
 		throws Exception {
 

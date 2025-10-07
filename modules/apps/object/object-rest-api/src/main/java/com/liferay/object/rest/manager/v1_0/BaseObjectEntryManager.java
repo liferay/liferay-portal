@@ -12,6 +12,7 @@ import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.exception.ObjectEntryScopeException;
 import com.liferay.object.field.business.type.ObjectFieldBusinessType;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
@@ -74,7 +75,8 @@ import org.osgi.service.component.annotations.Reference;
 public abstract class BaseObjectEntryManager {
 
 	protected Map<String, String> addDeleteAction(
-		ObjectDefinition objectDefinition, String scopeKey, User user) {
+			ObjectDefinition objectDefinition, String scopeKey, User user)
+		throws ObjectEntryScopeException {
 
 		if (!_hasPortletResourcePermission(
 				objectDefinition, scopeKey, user, ActionKeys.DELETE)) {
@@ -111,20 +113,29 @@ public abstract class BaseObjectEntryManager {
 	}
 
 	protected long getGroupId(
-		ObjectDefinition objectDefinition, String scopeKey) {
+			ObjectDefinition objectDefinition, String scopeKey)
+		throws ObjectEntryScopeException {
 
 		return getGroupId(objectDefinition, scopeKey, false);
 	}
 
 	protected long getGroupId(
-		ObjectDefinition objectDefinition, String scopeKey,
-		boolean useCompanyGroup) {
+			ObjectDefinition objectDefinition, String scopeKey,
+			boolean useCompanyGroup)
+		throws ObjectEntryScopeException {
 
 		ObjectScopeProvider objectScopeProvider =
 			objectScopeProviderRegistry.getObjectScopeProvider(
 				objectDefinition.getScope());
 
 		if (objectScopeProvider.isGroupAware()) {
+			if (scopeKey == null) {
+				throw new ObjectEntryScopeException(
+					StringBundler.concat(
+						"No scope key was provided for the \"",
+						objectDefinition.getName(), "\" entry."));
+			}
+
 			return GetterUtil.getLong(
 				GroupUtil.getGroupId(
 					objectDefinition.getCompanyId(), scopeKey,
@@ -302,7 +313,8 @@ public abstract class BaseObjectEntryManager {
 	}
 
 	protected void validateReadOnlyObjectFields(
-			String externalReferenceCode, ObjectDefinition objectDefinition,
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition,
 			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry)
 		throws Exception {
 
@@ -311,7 +323,7 @@ public abstract class BaseObjectEntryManager {
 		if (externalReferenceCode != null) {
 			ObjectEntry serviceBuilderObjectEntry =
 				objectEntryLocalService.fetchObjectEntry(
-					externalReferenceCode,
+					externalReferenceCode, groupId,
 					objectDefinition.getObjectDefinitionId());
 
 			if (serviceBuilderObjectEntry == null) {
@@ -417,8 +429,9 @@ public abstract class BaseObjectEntryManager {
 	}
 
 	private boolean _hasPortletResourcePermission(
-		ObjectDefinition objectDefinition, String scopeKey, User user,
-		String actionId) {
+			ObjectDefinition objectDefinition, String scopeKey, User user,
+			String actionId)
+		throws ObjectEntryScopeException {
 
 		PortletResourcePermission portletResourcePermission =
 			getPortletResourcePermission(objectDefinition);

@@ -8,6 +8,7 @@ package com.liferay.site.internal.configuration.manager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
@@ -32,6 +33,19 @@ public class SitemapConfigurationManagerImpl
 
 		return TransformUtil.transform(
 			sitemapCompanyConfiguration.companySitemapGroupIds(),
+			GetterUtil::getLong, Long.class);
+	}
+
+	@Override
+	public Long[] getCompanySitemapObjectDefinitionIds(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return TransformUtil.transform(
+			sitemapCompanyConfiguration.companySitemapObjectDefinitionIds(),
 			GetterUtil::getLong, Long.class);
 	}
 
@@ -114,16 +128,34 @@ public class SitemapConfigurationManagerImpl
 	}
 
 	@Override
+	public boolean isObjectDefinitionCompanyIncluded(
+			long companyId, String objectDefinitionId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return ArrayUtil.contains(
+			sitemapCompanyConfiguration.companySitemapObjectDefinitionIds(),
+			objectDefinitionId);
+	}
+
+	@Override
 	public void saveSitemapCompanyConfiguration(
 			long companyId, long[] companySitemapGroupIds,
-			boolean includeCategories, boolean includePages,
-			boolean includeWebContent, boolean xmlSitemapIndexEnabled)
+			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
+			boolean includePages, boolean includeWebContent,
+			boolean xmlSitemapIndexEnabled)
 		throws ConfigurationException {
 
 		_configurationProvider.saveCompanyConfiguration(
 			SitemapCompanyConfiguration.class, companyId,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"companySitemapGroupIds", companySitemapGroupIds
+			).put(
+				"companySitemapObjectDefinitionIds",
+				companySitemapObjectDefinitionIds
 			).put(
 				"includeCategories", includeCategories
 			).put(

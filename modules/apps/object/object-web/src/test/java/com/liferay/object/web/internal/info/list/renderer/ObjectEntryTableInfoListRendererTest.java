@@ -7,6 +7,7 @@ package com.liferay.object.web.internal.info.list.renderer;
 
 import com.liferay.info.item.renderer.InfoItemRendererRegistry;
 import com.liferay.info.list.renderer.DefaultInfoListRendererContext;
+import com.liferay.info.taglib.servlet.taglib.InfoListBasicTableTag;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -58,9 +59,20 @@ public class ObjectEntryTableInfoListRendererTest {
 	@Test
 	public void testRender() {
 		ObjectEntryTableInfoListRenderer objectEntryTableInfoListRenderer =
-			new ObjectEntryTableInfoListRenderer(
-				Mockito.mock(InfoItemRendererRegistry.class),
-				Mockito.mock(ObjectDefinition.class), _objectFieldLocalService);
+			Mockito.spy(
+				new ObjectEntryTableInfoListRenderer(
+					Mockito.mock(InfoItemRendererRegistry.class),
+					Mockito.mock(ObjectDefinition.class),
+					_objectFieldLocalService));
+
+		InfoListBasicTableTag infoListBasicTableTag = Mockito.mock(
+			InfoListBasicTableTag.class);
+
+		Mockito.when(
+			objectEntryTableInfoListRenderer.getInfoListBasicTableTag()
+		).thenReturn(
+			infoListBasicTableTag
+		);
 
 		objectEntryTableInfoListRenderer.render(
 			Collections.singletonList(Mockito.mock(ObjectEntry.class)),

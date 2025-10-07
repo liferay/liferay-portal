@@ -1,0 +1,20 @@
+{
+	"name": "DXP Support Coverage",
+	"name_i18n": {
+		"en_US": "DXP Support Coverage",
+		"es-ES": "Cobertura de soporte DXP",
+		"ja-JP": "DXPのサポート範囲",
+		"pt-BR": "Cobertura de Suporte do DXP"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "display-layout",
+			"value": "list"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/dxp_support_coverage.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

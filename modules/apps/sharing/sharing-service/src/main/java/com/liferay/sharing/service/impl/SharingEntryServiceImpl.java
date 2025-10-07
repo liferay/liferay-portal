@@ -8,6 +8,7 @@ package com.liferay.sharing.service.impl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.security.permission.SharingPermission;
@@ -186,14 +187,15 @@ public class SharingEntryServiceImpl extends SharingEntryServiceBaseImpl {
 
 	@Override
 	public List<SharingEntry> getSharingEntries(
-			long classNameId, long classPK, long groupId, int start, int end)
+			long classNameId, long classPK, long groupId, int start, int end,
+			OrderByComparator<SharingEntry> orderByComparator)
 		throws PortalException {
 
 		sharingPermission.checkSharePermission(
 			getPermissionChecker(), classNameId, classPK, groupId);
 
 		return sharingEntryLocalService.getSharingEntries(
-			classNameId, classPK, start, end);
+			classNameId, classPK, start, end, orderByComparator);
 	}
 
 	@Override

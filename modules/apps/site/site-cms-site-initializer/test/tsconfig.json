@@ -1,5 +1,5 @@
 {
-	"@generated": "626deb8239620e0eb2fff0b9747a0fdd1d4d0115",
+	"@generated": "652fad263df3eaf0db0f752a3b06a3003dac2a3f",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,8 +11,14 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/analytics-reports-js-components-web": [
+				"../../../analytics/analytics-reports-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
 			"@liferay/frontend-data-set-web": [
 				"../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"@liferay/frontend-js-item-selector-web": [
+				"../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
 			],
 			"@liferay/frontend-js-react-web": [
 				"../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/js/index.ts"
@@ -23,6 +29,18 @@
 			"@liferay/object-js-components-web": [
 				"../../../object/object-js-components-web/src/main/resources/META-INF/resources/index.ts"
 			],
+			"document-library-preview-document": [
+				"../../../document-library/document-library-preview-document/src/main/resources/META-INF/resources/preview/js/index.tsx"
+			],
+			"document-library-preview-image": [
+				"../../../document-library/document-library-preview-image/src/main/resources/META-INF/resources/preview/js/index.tsx"
+			],
+			"document-library-video": [
+				"../../../document-library/document-library-video/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"frontend-editor-ckeditor-web": [
+				"../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
 			"frontend-js-components-web": [
 				"../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"
 			],
@@ -31,6 +49,9 @@
 			],
 			"frontend-js-web/legacy": [
 				"../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
+			],
+			"ratings-taglib": [
+				"../../../ratings/ratings-taglib/src/main/resources/META-INF/resources/js/index.ts"
 			]
 		},
 		"rootDir": "../../../..",
@@ -52,7 +73,13 @@
 	],
 	"references": [
 		{
+			"path": "../../../analytics/analytics-reports-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
 			"path": "../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-react-web/src/main/resources/META-INF/resources/tsconfig.json"
@@ -64,10 +91,25 @@
 			"path": "../../../object/object-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
+			"path": "../../../document-library/document-library-preview-document/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../document-library/document-library-preview-image/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../document-library/document-library-video/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../frontend-editor/frontend-editor-ckeditor-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
 			"path": "../../../frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
 		{
 			"path": "../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../ratings/ratings-taglib/src/main/resources/META-INF/resources/tsconfig.json"
 		}
 	]
 }

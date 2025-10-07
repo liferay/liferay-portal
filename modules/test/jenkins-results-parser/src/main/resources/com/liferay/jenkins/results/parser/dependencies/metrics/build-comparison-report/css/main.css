@@ -1,0 +1,32 @@
+.col-1 {
+	left: 0px;
+	max-width: 450px;
+	min-width: 400px;
+	position: sticky;
+	width: 500px;
+}
+
+.date p {
+	font-size: 12px;
+	font-style: italic;
+}
+
+.table-wrapper{
+    max-height: none;
+}
+
+td.col-1 {
+	z-index: 4;
+}
+
+td.col-2 {
+	background: transparent;
+}
+
+td.col-2 {
+	z-index: 1;
+}
+
+th.col-2 {
+	z-index: 1;
+}

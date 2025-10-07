@@ -1,0 +1,100 @@
+{
+	"availableLanguageIds": [
+		"es_ES"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"autocomplete": false,
+				"dataSourceType": "manual",
+				"dataType": "string",
+				"ddmDataProviderInstanceId": [
+				],
+				"ddmDataProviderInstanceOutput": [
+				],
+				"displayStyle": "multiline",
+				"fieldNamespace": "",
+				"fieldReference": "CopyOfCajaDeTexto9fap",
+				"options": {
+					"es_ES": [
+						{
+							"label": "Option",
+							"reference": "",
+							"value": "Option"
+						}
+					]
+				},
+				"placeholder": {
+					"es_ES": ""
+				},
+				"tooltip": {
+					"es_ES": ""
+				},
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"es_ES": ""
+			},
+			"fieldType": "text",
+			"indexType": "text",
+			"indexable": true,
+			"label": {
+				"es_ES": "Caja de Texto"
+			},
+			"localizable": true,
+			"name": "CopyOfCajaDeTexto9fap",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": true,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"es_ES": ""
+			}
+		}
+	],
+	"dataDefinitionKey": "45939",
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"CopyOfCajaDeTexto9fap"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"es_ES": "Descripción"
+				},
+				"title": {
+					"es_ES": "Página"
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "es_ES",
+	"description": {
+	},
+	"externalReferenceCode": "21bd46f7-a007-6e3a-e43b-881b8493fb97",
+	"name": {
+		"es_ES": "Simple"
+	},
+	"storageType": "default"
+}

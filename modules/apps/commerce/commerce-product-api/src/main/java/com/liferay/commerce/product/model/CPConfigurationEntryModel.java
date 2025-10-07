@@ -651,27 +651,6 @@ public interface CPConfigurationEntryModel
 	public void setTaxExempt(boolean taxExempt);
 
 	/**
-	 * Returns the visible of this cp configuration entry.
-	 *
-	 * @return the visible of this cp configuration entry
-	 */
-	public boolean getVisible();
-
-	/**
-	 * Returns <code>true</code> if this cp configuration entry is visible.
-	 *
-	 * @return <code>true</code> if this cp configuration entry is visible; <code>false</code> otherwise
-	 */
-	public boolean isVisible();
-
-	/**
-	 * Sets whether this cp configuration entry is visible.
-	 *
-	 * @param visible the visible of this cp configuration entry
-	 */
-	public void setVisible(boolean visible);
-
-	/**
 	 * Returns the weight of this cp configuration entry.
 	 *
 	 * @return the weight of this cp configuration entry

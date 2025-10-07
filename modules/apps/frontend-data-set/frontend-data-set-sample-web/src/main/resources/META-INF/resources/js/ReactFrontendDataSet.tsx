@@ -61,7 +61,20 @@ const ReactFrontendDataSet = (props: IFrontendDataSetProps) => {
 
 	props.views.push(listView);
 
-	return <FrontendDataSet {...props} />;
+	const [selectedItems, setSelectedItems] = React.useState<any[]>([]);
+
+	return (
+		<>
+			<button onClick={() => setSelectedItems([])}>clear</button>
+
+			<FrontendDataSet
+				{...props}
+				onSelectedItemsChange={setSelectedItems}
+				selectedItems={selectedItems}
+				selectionType="multiple"
+			/>
+		</>
+	);
 };
 
 export default ReactFrontendDataSet;

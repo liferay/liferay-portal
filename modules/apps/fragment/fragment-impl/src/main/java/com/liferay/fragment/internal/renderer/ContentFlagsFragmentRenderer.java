@@ -13,6 +13,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -41,7 +42,7 @@ public class ContentFlagsFragmentRenderer
 	}
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
 
 		return JSONUtil.put(
@@ -69,8 +70,7 @@ public class ContentFlagsFragmentRenderer
 					_language.format(
 						fragmentRendererContext.getLocale(), "x-options",
 						"content-flags", true)
-				))
-		).toString();
+				)));
 	}
 
 	@Override
@@ -114,8 +114,8 @@ public class ContentFlagsFragmentRenderer
 					httpServletRequest,
 					GetterUtil.getString(
 						fragmentEntryConfigurationParser.getFieldValue(
-							getConfiguration(fragmentRendererContext),
-							fragmentEntryLink.getEditableValues(),
+							getConfigurationJSONObject(fragmentRendererContext),
+							fragmentEntryLink.getEditableValuesJSONObject(),
 							fragmentRendererContext.getLocale(), "message"))));
 
 			LayoutDisplayPageProvider<?> layoutDisplayPageProvider =

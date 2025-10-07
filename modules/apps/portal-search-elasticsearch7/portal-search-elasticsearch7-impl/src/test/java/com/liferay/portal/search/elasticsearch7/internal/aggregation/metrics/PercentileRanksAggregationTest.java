@@ -29,4 +29,9 @@ public class PercentileRanksAggregationTest
 		return LiferayElasticsearchIndexingFixtureFactory.getInstance();
 	}
 
+	@Override
+	protected String getTDigestExpectedResult() {
+		return "{10.0=25.0, 20.0=56.25, 30.0=68.75, 40.0=81.25, 50.0=93.75}";
+	}
+
 }

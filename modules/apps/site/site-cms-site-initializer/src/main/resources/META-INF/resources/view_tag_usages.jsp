@@ -15,8 +15,8 @@ ViewTagUsagesDisplayContext viewTagUsagesDisplayContext = (ViewTagUsagesDisplayC
 	<div class="categorization-section">
 		<div>
 			<react:component
-				module="{CategorizationBreadcrumb} from site-cms-site-initializer"
-				props="<%= viewTagUsagesDisplayContext.getBreadcrumbReactData() %>"
+				module="{Breadcrumb} from site-cms-site-initializer"
+				props="<%= viewTagUsagesDisplayContext.getBreadcrumbProps() %>"
 			/>
 		</div>
 

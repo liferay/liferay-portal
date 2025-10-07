@@ -14,6 +14,7 @@ import './BusinessEventsConfirmationPage.css';
 interface IBusinessEventsConfirmationPageProps {
 	handleSubmit: () => void;
 	headerTitle: string;
+	isLoadingSubmitButton?: boolean;
 	message: string;
 	observer: Observer;
 	onClose: () => void;
@@ -24,6 +25,7 @@ interface IBusinessEventsConfirmationPageProps {
 const BusinessEventsConfirmationPage = ({
 	handleSubmit,
 	headerTitle,
+	isLoadingSubmitButton,
 	message,
 	observer,
 	onClose,
@@ -38,6 +40,7 @@ const BusinessEventsConfirmationPage = ({
 		<BusinessEventsModal
 			handleSubmit={handleSubmit}
 			headerTitle={headerTitle}
+			isLoadingSubmitButton={isLoadingSubmitButton}
 			modalType="editEvent"
 			observer={observer}
 			onClose={onClose}

@@ -52,12 +52,10 @@ export class ListTypeDefinitionsPage {
 			.frameLocator('iframe')
 			.getByRole('button', {name: 'Actions'});
 		this.picklistItemKey = page.getByLabel('Key');
-		this.picklistItemTranslationButton = page.getByRole('button', {
-			name: 'en_US',
-		});
+		this.picklistItemTranslationButton = page.getByTitle('en_US');
 		this.picklistTranslationButton = page
 			.frameLocator('iframe')
-			.getByRole('button', {name: 'en_US'});
+			.getByTitle('en_US');
 		this.sidebarNameInput = page.frameLocator('iframe').getByLabel('Name');
 		this.sidebarSaveButton = page
 			.frameLocator('iframe')
@@ -107,7 +105,9 @@ export class ListTypeDefinitionsPage {
 
 		await this.page
 			.frameLocator('iframe')
-			.getByRole('menuitem', {name: `${locationCode} Untranslated`})
+			.getByRole('option', {
+				name: `${locationCode} language: Untranslated`,
+			})
 			.click();
 
 		await this.sidebarNameInput.click();
@@ -133,7 +133,9 @@ export class ListTypeDefinitionsPage {
 		await this.picklistItemTranslationButton.click();
 
 		await this.page
-			.getByRole('menuitem', {name: `${locationCode} Untranslated`})
+			.getByRole('option', {
+				name: `${locationCode} language: Untranslated`,
+			})
 			.click();
 
 		await this.modalNameInput.click();

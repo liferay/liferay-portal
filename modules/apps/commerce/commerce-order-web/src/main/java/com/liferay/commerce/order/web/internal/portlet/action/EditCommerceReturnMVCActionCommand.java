@@ -56,7 +56,8 @@ public class EditCommerceReturnMVCActionCommand extends BaseMVCActionCommand {
 				CommerceReturnThreadLocal.setMarkAsCompleted(true);
 
 				_objectEntryService.updateObjectEntry(
-					objectEntry.getObjectEntryId(), values,
+					objectEntry.getObjectEntryId(),
+					objectEntry.getObjectEntryFolderId(), values,
 					new ServiceContext());
 			}
 		}

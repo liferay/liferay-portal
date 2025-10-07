@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {waitForAlert} from '../../utils/waitForAlert';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
@@ -25,6 +25,34 @@ export class InstanceSettingsPage {
 
 	async goto(forceReload = true) {
 		await this.applicationsMenuPage.goToInstanceSettings(forceReload);
+	}
+
+	async checkOption(label: string, checked: boolean) {
+		const checkbox = this.page.getByLabel(label).first();
+		await expect(checkbox).toBeVisible();
+		checked ? await checkbox.check() : await checkbox.uncheck();
+	}
+
+	async assertOptionVisible(options: {
+		customLocator?: Locator;
+		description?: string;
+		label?: string;
+	}) {
+		const {customLocator, description, label} = options;
+
+		if (label) {
+			await expect(this.page.getByLabel(label).first()).toBeVisible();
+		}
+
+		if (description) {
+			await expect(
+				this.page.getByText(description).first()
+			).toBeVisible();
+		}
+
+		if (customLocator) {
+			await expect(customLocator).toBeVisible();
+		}
 	}
 
 	async exportInstanceSetting() {

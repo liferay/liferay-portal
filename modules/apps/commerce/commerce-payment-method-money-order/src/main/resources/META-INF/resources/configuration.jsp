@@ -25,13 +25,24 @@ String messageAsLocalizedXML = moneyOrderGroupServiceConfiguration.messageAsLoca
 
 		<div id="<portlet:namespace />message">
 			<aui:field-wrapper label="message">
-				<liferay-ui:input-localized
-					fieldPrefix="settings"
-					fieldPrefixSeparator="--"
-					name="messageAsLocalizedXML"
-					type="editor"
-					xml="<%= messageAsLocalizedXML %>"
-				/>
+				<c:choose>
+					<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+						<liferay-ui:input-localized
+							fieldPrefix="settings"
+							fieldPrefixSeparator="--"
+							name="messageAsLocalizedXML"
+							type="editor"
+							xml="<%= messageAsLocalizedXML %>"
+						/>
+					</c:when>
+					<c:otherwise>
+						<liferay-editor:input-localized
+							defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
+							name="messageAsLocalizedXML"
+							xml="<%= messageAsLocalizedXML %>"
+						/>
+					</c:otherwise>
+				</c:choose>
 			</aui:field-wrapper>
 		</div>
 	</commerce-ui:panel>

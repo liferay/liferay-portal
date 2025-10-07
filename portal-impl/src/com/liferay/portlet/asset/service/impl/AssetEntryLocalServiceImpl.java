@@ -59,14 +59,15 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.RenderLayoutContentThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.view.count.ViewCountManagerUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.model.impl.AssetEntryModelImpl;
 import com.liferay.portlet.asset.service.base.AssetEntryLocalServiceBaseImpl;
 import com.liferay.portlet.asset.service.permission.AssetCategoryPermission;
@@ -786,8 +787,7 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		// Tags
 
 		if ((tagNames != null) && ((entry != null) || (tagNames.length > 0))) {
-			Group siteGroup = _groupPersistence.findByPrimaryKey(
-				PortalUtil.getSiteGroupId(groupId));
+			Group siteGroup = _getAssetTagSiteGroup(groupId, serviceContext);
 
 			List<AssetTag> tags = _assetTagLocalService.checkTags(
 				userId, siteGroup, tagNames);
@@ -1422,6 +1422,21 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		}
 
 		return assetEntryValidators;
+	}
+
+	private Group _getAssetTagSiteGroup(
+			long groupId, ServiceContext serviceContext)
+		throws PortalException {
+
+		long scopeGroupId = groupId;
+
+		if (serviceContext != null) {
+			scopeGroupId = GetterUtil.getLong(
+				serviceContext.getAttribute("assetTagScopeGroupId"), groupId);
+		}
+
+		return _groupPersistence.findByPrimaryKey(
+			PortalUtil.getSiteGroupId(scopeGroupId));
 	}
 
 	private boolean _hasScoreSort(SearchContext searchContext) {

@@ -2,8 +2,26 @@
 	"pageElement": {
 		"id": "79a27a7e-1f7a-11f0-91ec-2800af537d2d",
 		"pageElements": [
+			{
+				"definition": {
+					"fragment": {
+						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceSettingsComponentSectionFragmentRenderer"
+					},
+					"fragmentConfig": {
+					},
+					"fragmentFields": [
+					],
+					"indexed": true
+				},
+				"id": "3929b275-07d4-b8d7-f08f-4179726c339c",
+				"type": "Fragment"
+			}
 		],
 		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "CMS"
 	},
 	"version": 1.1
 }

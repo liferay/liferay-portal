@@ -6,7 +6,7 @@
 package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.depot.web.internal.application.list.DepotPanelAppController;
-import com.liferay.depot.web.internal.util.DepotAdminGroupSearchProvider;
+import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
@@ -117,7 +117,7 @@ public class DepotItemSelectorView
 				new UUIDItemSelectorReturnType()));
 
 	@Reference
-	private DepotAdminGroupSearchProvider _depotAdminGroupSearchProvider;
+	private DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
 
 	@Reference
 	private DepotPanelAppController _depotPanelAppController;
@@ -162,9 +162,9 @@ public class DepotItemSelectorView
 		@Override
 		public GroupSearch getGroupSearch() {
 			try {
-				return _depotAdminGroupSearchProvider.getGroupSearch(
+				return _depotEntryAdminSearchProvider.getGroupSearch(
 					_groupItemSelectorCriterion, getPortletRequest(),
-					getPortletURL());
+					getPortletResponse(), getPortletURL());
 			}
 			catch (PortalException portalException) {
 				return ReflectionUtil.throwException(portalException);

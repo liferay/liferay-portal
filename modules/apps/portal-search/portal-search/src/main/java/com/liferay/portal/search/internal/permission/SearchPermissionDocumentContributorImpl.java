@@ -5,6 +5,8 @@
 
 package com.liferay.portal.search.internal.permission;
 
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchResourceException;
@@ -25,11 +27,15 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.internal.SearchPermissionFieldContributorRegistryUtil;
 import com.liferay.portal.search.permission.SearchPermissionDocumentContributor;
 import com.liferay.portal.search.spi.model.permission.contributor.SearchPermissionFieldContributor;
+import com.liferay.portal.search.spi.model.permission.contributor.SearchPermissionRoleContributor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -90,6 +96,18 @@ public class SearchPermissionDocumentContributorImpl
 			companyId, groupId, className, classPK, viewActionId, document);
 	}
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
+			bundleContext, SearchPermissionRoleContributor.class,
+			"model.class.name");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
+	}
+
 	private void _addPermissionFields(
 		long companyId, long groupId, String className, long classPK,
 		String viewActionId, Document document) {
@@ -109,15 +127,12 @@ public class SearchPermissionDocumentContributorImpl
 				companyId, permissionName, ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(classPK), viewActionId);
 
-			if (roles.isEmpty()) {
-				return;
-			}
-
-			List<Long> roleIds = new ArrayList<>();
 			List<String> groupRoleIds = new ArrayList<>();
+			List<Long> roleIds = new ArrayList<>();
 
 			for (Role role : roles) {
-				if ((role.getType() == RoleConstants.TYPE_ORGANIZATION) ||
+				if ((role.getType() == RoleConstants.TYPE_DEPOT) ||
+					(role.getType() == RoleConstants.TYPE_ORGANIZATION) ||
 					(role.getType() == RoleConstants.TYPE_SITE)) {
 
 					groupRoleIds.add(
@@ -128,9 +143,29 @@ public class SearchPermissionDocumentContributorImpl
 				}
 			}
 
-			document.addKeyword(Field.ROLE_ID, roleIds.toArray(new Long[0]));
-			document.addKeyword(
-				Field.GROUP_ROLE_ID, groupRoleIds.toArray(new String[0]));
+			List<SearchPermissionRoleContributor>
+				searchPermissionRoleContributors =
+					_serviceTrackerMap.getService(className);
+
+			if (searchPermissionRoleContributors != null) {
+				searchPermissionRoleContributors.forEach(
+					searchPermissionRoleContributor ->
+						searchPermissionRoleContributor.contribute(
+							companyId, groupId, className, classPK,
+							role -> groupRoleIds.add(
+								groupId + StringPool.DASH + role.getRoleId()),
+							role -> roleIds.add(role.getRoleId())));
+			}
+
+			if (!groupRoleIds.isEmpty()) {
+				document.addKeyword(
+					Field.GROUP_ROLE_ID, groupRoleIds.toArray(new String[0]));
+			}
+
+			if (!roleIds.isEmpty()) {
+				document.addKeyword(
+					Field.ROLE_ID, roleIds.toArray(new Long[0]));
+			}
 		}
 		catch (NoSuchResourceException noSuchResourceException) {
 			if (_log.isDebugEnabled()) {
@@ -169,5 +204,8 @@ public class SearchPermissionDocumentContributorImpl
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	private ServiceTrackerMap<String, List<SearchPermissionRoleContributor>>
+		_serviceTrackerMap;
 
 }

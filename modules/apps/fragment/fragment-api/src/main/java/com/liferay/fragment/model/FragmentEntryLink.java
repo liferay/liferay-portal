@@ -51,6 +51,18 @@ public interface FragmentEntryLink
 
 			};
 
+	public com.liferay.portal.kernel.json.JSONObject
+		getConfigurationJSONObject();
+
+	public com.liferay.portal.kernel.json.JSONObject getConfigurationJSONObject(
+		boolean strict);
+
+	public com.liferay.portal.kernel.json.JSONObject
+		getEditableValuesJSONObject();
+
+	public com.liferay.portal.kernel.json.JSONObject
+		getEditableValuesJSONObject(boolean strict);
+
 	public boolean isCacheable();
 
 	public boolean isLatestVersion()

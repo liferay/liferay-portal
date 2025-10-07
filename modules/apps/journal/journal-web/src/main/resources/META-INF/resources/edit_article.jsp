@@ -213,7 +213,7 @@ journalEditArticleDisplayContext.setViewAttributes();
 								<clay:link
 									borderless="<%= true %>"
 									displayType="secondary"
-									href="<%= journalEditArticleDisplayContext.getBackURL() %>"
+									href="<%= PortalUtil.escapeRedirect(journalEditArticleDisplayContext.getBackURL()) %>"
 									label="cancel"
 									type="button"
 								/>
@@ -356,18 +356,77 @@ journalEditArticleDisplayContext.setViewAttributes();
 							<div id="<portlet:namespace />descriptionMapAsXMLWrapper">
 								<label for="<portlet:namespace />descriptionMapAsXML" id="<portlet:namespace />Aria"><liferay-ui:message key="description" /></label>
 
-								<liferay-ui:input-localized
-									availableLocales="<%= journalEditArticleDisplayContext.getAvailableLocales() %>"
-									defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
-									editorName="ckeditor"
-									formName="fm"
-									ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
-									languagesDropdownVisible="<%= false %>"
-									name="descriptionMapAsXML"
-									selectedLanguageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
-									type="editor"
-									xml="<%= (article != null) ? article.getDescriptionMapAsXML() : StringPool.BLANK %>"
-								/>
+								<c:choose>
+									<c:when test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+										<liferay-editor:input-localized
+											autofillFromDefault="<%= true %>"
+											availableLocales="<%= journalEditArticleDisplayContext.getAvailableLocales() %>"
+											componentId="descriptionMapAsXML"
+											defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
+											ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
+											languagesDropdownVisible="<%= false %>"
+											name="descriptionMapAsXML"
+											onBlurMethod='<%= liferayPortletResponse.getNamespace() + "handleBlurDescription" %>'
+											onChangeMethod='<%= liferayPortletResponse.getNamespace() + "handleChangeDescription" %>'
+											selectedLanguageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
+											xml="<%= (article != null) ? article.getDescriptionMapAsXML() : StringPool.BLANK %>"
+										/>
+
+										<aui:script>
+											let edited = false;
+
+											function <portlet:namespace />handleBlurDescription() {
+												if (!Liferay.FeatureFlags['LPD-11228']) {
+													return;
+												}
+
+												if (edited) {
+													Liferay.fire('journal:unlock');
+
+													const label = document.querySelector(
+														'label[for="<portlet:namespace />descriptionMapAsXML"]'
+													).textContent;
+
+													Liferay.fire('journal:storeState', {
+														fieldName: Liferay.Language.get('edit') + ' ' + label.trim(),
+													});
+
+													edited = false;
+												}
+											}
+
+											function <portlet:namespace />handleChangeDescription() {
+												if (!Liferay.FeatureFlags['LPD-11228']) {
+													return;
+												}
+
+												const isUserInEditor = !!document.activeElement.closest('.ck-editor');
+
+												if (isUserInEditor) {
+													if (!edited) {
+														Liferay.fire('journal:lock');
+													}
+
+													edited = true;
+												}
+											}
+										</aui:script>
+									</c:when>
+									<c:otherwise>
+										<liferay-ui:input-localized
+											availableLocales="<%= journalEditArticleDisplayContext.getAvailableLocales() %>"
+											defaultLanguageId="<%= journalEditArticleDisplayContext.getDefaultArticleLanguageId() %>"
+											editorName="ckeditor"
+											formName="fm"
+											ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
+											languagesDropdownVisible="<%= false %>"
+											name="descriptionMapAsXML"
+											selectedLanguageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
+											type="editor"
+											xml="<%= (article != null) ? article.getDescriptionMapAsXML() : StringPool.BLANK %>"
+										/>
+									</c:otherwise>
+								</c:choose>
 
 								<p class="text-3 text-secondary" id="<portlet:namespace />descriptionNotTranslatableMessage" hidden>
 									<liferay-ui:message arguments="description" key="the-x-will-not-count-as-a-translatable-field" />

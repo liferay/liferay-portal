@@ -8,6 +8,7 @@ package com.liferay.osb.faro.web.internal.controller.api;
 import com.liferay.oauth2.provider.scope.RequiresNoScope;
 import com.liferay.osb.faro.engine.client.exception.InvalidFilterException;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.util.FaroThreadLocal;
 import com.liferay.osb.faro.web.internal.context.GroupInfo;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
@@ -94,7 +95,8 @@ public class ReportController extends BaseFaroController {
 
 			return _reportControllerResponseFactory.create(
 				"\"fromDate\" and \"toDate\" query parameters are mandatory " +
-					"and must be ISO 8601 compliant " + _ISO_8601_FORMAT,
+					"and must be ISO 8601 compliant " +
+						DateUtil.PATTERN_DATE_TIME,
 				Response.Status.BAD_REQUEST);
 		}
 
@@ -110,7 +112,7 @@ public class ReportController extends BaseFaroController {
 
 			return _reportControllerResponseFactory.create(
 				"Both dates in range must be ISO 8601 compliant " +
-					_ISO_8601_FORMAT,
+					DateUtil.PATTERN_DATE_TIME,
 				Response.Status.BAD_REQUEST);
 		}
 
@@ -224,14 +226,11 @@ public class ReportController extends BaseFaroController {
 		return Date.from(zonedDateTime.toInstant());
 	}
 
-	private static final String _ISO_8601_FORMAT =
-		"yyyy-MM-dd'T'HH:mm[:ss.SSS'Z']";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		ReportController.class);
 
 	private static final DateTimeFormatter _dateTimeFormatter =
-		DateTimeFormatter.ofPattern(_ISO_8601_FORMAT);
+		DateTimeFormatter.ofPattern(DateUtil.PATTERN_DATE_TIME);
 	private static final List<String> _exportTypes = new ArrayList<String>() {
 		{
 			add("event");

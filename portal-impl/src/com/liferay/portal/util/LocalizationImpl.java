@@ -22,11 +22,13 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Tuple;
@@ -47,6 +49,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Function;
@@ -210,6 +213,25 @@ public class LocalizationImpl implements Localization {
 	public String getLocalization(
 		String xml, String requestedLanguageId, boolean useDefault,
 		String defaultValue) {
+
+		if ((xml == null) && useDefault) {
+			return null;
+		}
+
+		String openTag = "language-id=\"" + requestedLanguageId + "\">";
+
+		int startIndex = xml.indexOf(openTag);
+
+		if (startIndex != -1) {
+			startIndex += openTag.length();
+
+			int endIndex = xml.indexOf("</", startIndex);
+
+			if (endIndex != -1) {
+				return StringUtil.stripCDATA(
+					HtmlUtil.unescape(xml.substring(startIndex, endIndex)));
+			}
+		}
 
 		if (!Validator.isXml(xml)) {
 			if (useDefault ||
@@ -499,8 +521,28 @@ public class LocalizationImpl implements Localization {
 
 		Map<Locale, String> map = new HashMap<>();
 
-		for (Locale locale : LanguageUtil.getAvailableLocales()) {
-			String languageId = LocaleUtil.toLanguageId(locale);
+		if (Validator.isNull(xml)) {
+			return map;
+		}
+
+		Map<String, Locale> availableLocaleMap =
+			LanguageUtil.getAvailableLocaleMap();
+
+		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
+
+		for (Map.Entry<String, Locale> entry : availableLocaleMap.entrySet()) {
+			String languageId = entry.getKey();
+			Locale locale = entry.getValue();
+
+			if (!useDefault && !xml.contains(languageId)) {
+				if (!Validator.isXml(xml) &&
+					Objects.equals(locale, siteDefaultLocale)) {
+
+					map.put(entry.getValue(), xml);
+				}
+
+				continue;
+			}
 
 			String value = getLocalization(xml, languageId, useDefault);
 
@@ -1414,6 +1456,18 @@ public class LocalizationImpl implements Localization {
 
 		if (!Validator.isXml(xml)) {
 			return defaultValue;
+		}
+
+		int startIndex = xml.indexOf(name + "=\"");
+
+		if (startIndex != -1) {
+			startIndex += name.length() + 2;
+
+			int endIndex = xml.indexOf('"', startIndex);
+
+			if (endIndex != -1) {
+				return xml.substring(startIndex, endIndex);
+			}
 		}
 
 		String value = null;

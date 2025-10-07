@@ -40,6 +40,7 @@ public class ReleaseWrapper
 		attributes.put("schemaVersion", getSchemaVersion());
 		attributes.put("buildNumber", getBuildNumber());
 		attributes.put("buildDate", getBuildDate());
+		attributes.put("versionDisplayName", getVersionDisplayName());
 		attributes.put("verified", isVerified());
 		attributes.put("state", getState());
 		attributes.put("testString", getTestString());
@@ -96,6 +97,13 @@ public class ReleaseWrapper
 
 		if (buildDate != null) {
 			setBuildDate(buildDate);
+		}
+
+		String versionDisplayName = (String)attributes.get(
+			"versionDisplayName");
+
+		if (versionDisplayName != null) {
+			setVersionDisplayName(versionDisplayName);
 		}
 
 		Boolean verified = (Boolean)attributes.get("verified");
@@ -248,6 +256,16 @@ public class ReleaseWrapper
 	}
 
 	/**
+	 * Returns the version display name of this release.
+	 *
+	 * @return the version display name of this release
+	 */
+	@Override
+	public String getVersionDisplayName() {
+		return model.getVersionDisplayName();
+	}
+
+	/**
 	 * Returns <code>true</code> if this release is verified.
 	 *
 	 * @return <code>true</code> if this release is verified; <code>false</code> otherwise
@@ -380,6 +398,16 @@ public class ReleaseWrapper
 	@Override
 	public void setVerified(boolean verified) {
 		model.setVerified(verified);
+	}
+
+	/**
+	 * Sets the version display name of this release.
+	 *
+	 * @param versionDisplayName the version display name of this release
+	 */
+	@Override
+	public void setVersionDisplayName(String versionDisplayName) {
+		model.setVersionDisplayName(versionDisplayName);
 	}
 
 	@Override

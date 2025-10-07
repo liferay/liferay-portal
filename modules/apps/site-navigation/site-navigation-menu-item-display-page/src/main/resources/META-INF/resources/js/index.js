@@ -326,6 +326,12 @@ function FormValues({localizedNames, namespace, selectedItem, useCustomName}) {
 				value={selectedItem.classTypeId || ''}
 			/>
 			<input
+				name={getFieldName(namespace, 'externalReferenceCode')}
+				readOnly
+				type="hidden"
+				value={selectedItem.externalReferenceCode || ''}
+			/>
+			<input
 				name={getFieldName(namespace, 'title')}
 				readOnly
 				type="hidden"

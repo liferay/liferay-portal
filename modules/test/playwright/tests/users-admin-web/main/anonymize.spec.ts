@@ -278,6 +278,8 @@ test(
 
 		await page.goto(`/group/${site.name}-staging${PORTLET_URLS.journal}`);
 
+		await expect(userAssociatedDataJournalPage.optionsButton).toBeEnabled();
+
 		await userAssociatedDataJournalPage.optionsButton.click();
 		await userAssociatedDataSiteStagingPage.stagingMenuItem.click();
 		await userAssociatedDataSiteStagingPage.stagingFramePublishToLiveButton.click();

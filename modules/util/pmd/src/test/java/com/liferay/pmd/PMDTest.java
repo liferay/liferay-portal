@@ -23,7 +23,6 @@ import java.nio.file.Path;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
@@ -112,8 +111,8 @@ public class PMDTest extends AutoBalanceTestCase {
 
 		_pmdTask.addConfiguredSourceLanguage(sourceLanguage);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				ClassTypeResolver.class.getName(), Level.SEVERE)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ClassTypeResolver.class.getName(), LoggerTestUtil.ERROR)) {
 
 			_pmdTask.execute();
 

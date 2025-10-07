@@ -299,6 +299,26 @@ public class ERCVersionedEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntry
+		fetchERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId) {
+
+		return _ercVersionedEntryLocalService.
+			fetchERCVersionedEntryByExternalReferenceCode(
+				externalReferenceCode, groupId);
+	}
+
+	@Override
+	public com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntry
+		fetchERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head) {
+
+		return _ercVersionedEntryLocalService.
+			fetchERCVersionedEntryByExternalReferenceCode(
+				externalReferenceCode, groupId, head);
+	}
+
+	@Override
 	public
 		com.liferay.portal.tools.service.builder.test.model.
 			ERCVersionedEntryVersion fetchLatestVersion(
@@ -394,6 +414,28 @@ public class ERCVersionedEntryLocalServiceWrapper
 
 		return _ercVersionedEntryLocalService.getERCVersionedEntry(
 			ercVersionedEntryId);
+	}
+
+	@Override
+	public com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntry
+			getERCVersionedEntryByExternalReferenceCode(
+				String externalReferenceCode, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ercVersionedEntryLocalService.
+			getERCVersionedEntryByExternalReferenceCode(
+				externalReferenceCode, groupId);
+	}
+
+	@Override
+	public com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntry
+			getERCVersionedEntryByExternalReferenceCode(
+				String externalReferenceCode, long groupId, boolean head)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ercVersionedEntryLocalService.
+			getERCVersionedEntryByExternalReferenceCode(
+				externalReferenceCode, groupId, head);
 	}
 
 	@Override

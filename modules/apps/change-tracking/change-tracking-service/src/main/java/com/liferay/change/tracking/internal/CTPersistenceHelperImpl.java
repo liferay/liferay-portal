@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.io.Serializable;
 
@@ -190,9 +190,7 @@ public class CTPersistenceHelperImpl implements CTPersistenceHelper {
 		setCTCollectionIdWithSafeCloseable(
 			Class<T> ctModelClass, Serializable primaryKey) {
 
-		if ((primaryKey != null) &&
-			isProductionMode(ctModelClass, primaryKey)) {
-
+		if (isProductionMode(ctModelClass, primaryKey)) {
 			return CTCollectionThreadLocal.setProductionModeWithSafeCloseable();
 		}
 

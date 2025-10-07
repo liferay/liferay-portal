@@ -94,7 +94,7 @@ public class CollectionAppliedFiltersFragmentRendererDisplayContext {
 				(JSONArray)
 					_fragmentEntryConfigurationParser.
 						getConfigurationFieldValue(
-							fragmentEntryLink.getEditableValues(),
+							fragmentEntryLink.getEditableValuesJSONObject(),
 							"targetCollections",
 							FragmentConfigurationFieldDataType.ARRAY);
 
@@ -162,7 +162,8 @@ public class CollectionAppliedFiltersFragmentRendererDisplayContext {
 	public boolean showClearFiltersButton() {
 		return GetterUtil.getBoolean(
 			_fragmentEntryConfigurationParser.getConfigurationFieldValue(
-				_fragmentEntryLink.getEditableValues(), "showClearFilters",
+				_fragmentEntryLink.getEditableValuesJSONObject(),
+				"showClearFilters",
 				FragmentConfigurationFieldDataType.BOOLEAN));
 	}
 
@@ -174,7 +175,8 @@ public class CollectionAppliedFiltersFragmentRendererDisplayContext {
 		JSONArray targetCollectionsJSONArray =
 			(JSONArray)
 				_fragmentEntryConfigurationParser.getConfigurationFieldValue(
-					_fragmentEntryLink.getEditableValues(), "targetCollections",
+					_fragmentEntryLink.getEditableValuesJSONObject(),
+					"targetCollections",
 					FragmentConfigurationFieldDataType.ARRAY);
 
 		_targetCollections = JSONUtil.toStringSet(targetCollectionsJSONArray);

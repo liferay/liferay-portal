@@ -177,6 +177,7 @@ public class CETDeployerImpl implements CETDeployer {
 			_register(
 				EditorConfigContributor.class,
 				new CETEditorConfigContributor(
+					editorConfigContributorCET.getCompanyId(),
 					editorConfigContributorCET.getEditorConfigKeys(),
 					editorConfigContributorCET.getEditorNames(),
 					editorConfigContributorCET.getPortletNames(),

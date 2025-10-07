@@ -10,8 +10,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.log4j.Log4JUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.log4j.Log4JUtil;
 
 import java.util.ArrayList;
 import java.util.List;

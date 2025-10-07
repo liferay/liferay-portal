@@ -46,6 +46,13 @@ public class ListTypeEntryServiceUtil {
 		return getService().deleteListTypeEntry(listTypeEntryId);
 	}
 
+	public static ListTypeEntry fetchListTypeEntry(
+			long listTypeDefinitionId, String key)
+		throws PortalException {
+
+		return getService().fetchListTypeEntry(listTypeDefinitionId, key);
+	}
+
 	public static List<ListTypeEntry> getListTypeEntries(
 			long listTypeDefinitionId, int start, int end)
 		throws PortalException {
@@ -73,6 +80,14 @@ public class ListTypeEntryServiceUtil {
 
 		return getService().getListTypeEntryByExternalReferenceCode(
 			externalReferenceCode, companyId, listTypeDefinitionId);
+	}
+
+	public static ListTypeEntry getOrAddEmptyListTypeEntry(
+			long userId, long listTypeDefinitionId, String key)
+		throws PortalException {
+
+		return getService().getOrAddEmptyListTypeEntry(
+			userId, listTypeDefinitionId, key);
 	}
 
 	/**

@@ -98,10 +98,11 @@ const ACTIONS = {
 		});
 	},
 
-	editImage({fileEntryId, imageURL}, portletNamespace) {
+	editImage({fileEntryId, imageURL, mimeType}, portletNamespace) {
 		window[`${portletNamespace}editWithImageEditor`]({
 			fileEntryId,
 			imageURL,
+			mimeType,
 		});
 	},
 

@@ -35,6 +35,7 @@ public class LPD_8040 {
 		_http.isSecure(null);
 		_http.normalizePath(null);
 		_http.parameterMapFromString(null);
+		_http.parameterMapToString(null, null);
 		_http.protocolize(null, null);
 		_http.removeDomain(null);
 		_http.removeParameter(null);
@@ -68,6 +69,7 @@ public class LPD_8040 {
 		HttpUtil.isSecure(null);
 		HttpUtil.normalizePath(null);
 		HttpUtil.parameterMapFromString(null);
+		HttpUtil.parameterMapToString(null, null);
 		HttpUtil.protocolize(null, null);
 		HttpUtil.removeDomain(null);
 		HttpUtil.removeParameter(null);
@@ -78,8 +80,9 @@ public class LPD_8040 {
 		HttpUtil.shortenURL(null);
 	}
 
-	public void method(Http http) {
+	public void method(Http http, HttpServletRequest httpServletRequest) {
 		http.encodeParameters(null);
+		httpServletRequest.getParameter(null);
 	}
 
 	@Reference

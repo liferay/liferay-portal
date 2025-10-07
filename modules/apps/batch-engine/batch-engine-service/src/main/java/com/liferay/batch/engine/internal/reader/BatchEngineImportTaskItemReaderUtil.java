@@ -7,6 +7,7 @@ package com.liferay.batch.engine.internal.reader;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,10 +20,12 @@ import com.liferay.batch.engine.action.ItemReaderPostAction;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -52,7 +55,28 @@ public class BatchEngineImportTaskItemReaderUtil {
 		throws ReflectiveOperationException {
 
 		Map<String, Serializable> extendedProperties = new HashMap<>();
-		T item = itemClass.newInstance();
+
+		JsonTypeInfo jsonTypeInfo = itemClass.getAnnotation(JsonTypeInfo.class);
+
+		Class<? extends T> resolvedClass = itemClass;
+
+		if (jsonTypeInfo != null) {
+			String property = jsonTypeInfo.property();
+
+			ObjectMapper objectMapper =
+				ObjectMapperProviderUtil.getBatchEngineObjectMapper();
+
+			T value = objectMapper.convertValue(
+				HashMapBuilder.put(
+					property, fieldNameValueMap.get(property)
+				).build(),
+				itemClass);
+
+			resolvedClass = (Class<? extends T>)value.getClass();
+		}
+
+		T item = resolvedClass.getDeclaredConstructor(
+		).newInstance();
 
 		Set<String> batchRestrictFields = _getBatchRestrictFields(
 			batchEngineImportTask);
@@ -66,7 +90,14 @@ public class BatchEngineImportTaskItemReaderUtil {
 
 			Field field = null;
 
-			for (Field declaredField : itemClass.getDeclaredFields()) {
+			Field[] declaredFields = itemClass.getDeclaredFields();
+
+			if (jsonTypeInfo != null) {
+				declaredFields = ArrayUtil.append(
+					declaredFields, resolvedClass.getDeclaredFields());
+			}
+
+			for (Field declaredField : declaredFields) {
 				if (name.equals(declaredField.getName()) ||
 					Objects.equals(
 						StringPool.UNDERLINE + name, declaredField.getName())) {
@@ -91,7 +122,7 @@ public class BatchEngineImportTaskItemReaderUtil {
 				continue;
 			}
 
-			for (Field declaredField : itemClass.getDeclaredFields()) {
+			for (Field declaredField : declaredFields) {
 				JsonAnySetter[] jsonAnySetters =
 					declaredField.getAnnotationsByType(JsonAnySetter.class);
 

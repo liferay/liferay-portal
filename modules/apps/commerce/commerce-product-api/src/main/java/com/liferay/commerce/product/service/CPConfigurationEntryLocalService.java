@@ -91,8 +91,8 @@ public interface CPConfigurationEntryLocalService
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException;
 
 	/**
@@ -288,10 +288,6 @@ public interface CPConfigurationEntryLocalService
 	public List<CPConfigurationEntry> getCPConfigurationEntries(
 		long classNameId, long classPK);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPConfigurationEntry> getCPConfigurationEntries(
-		long classNameId, long classPK, boolean visible);
-
 	/**
 	 * Returns all the cp configuration entries matching the UUID and company.
 	 *
@@ -410,8 +406,8 @@ public interface CPConfigurationEntryLocalService
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException;
 
 	@Override

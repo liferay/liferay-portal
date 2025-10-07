@@ -6,10 +6,10 @@
 package com.liferay.exportimport.report.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
+import com.liferay.portal.kernel.model.AttachedModel;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
-import com.liferay.portal.kernel.model.TypedModel;
 
 import java.util.Date;
 
@@ -28,8 +28,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface ExportImportReportEntryModel
-	extends BaseModel<ExportImportReportEntry>, MVCCModel, ShardedModel,
-			TypedModel {
+	extends AttachedModel, BaseModel<ExportImportReportEntry>, MVCCModel,
+			ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -182,6 +182,22 @@ public interface ExportImportReportEntryModel
 	public void setClassNameId(long classNameId);
 
 	/**
+	 * Returns the class pk of this export import report entry.
+	 *
+	 * @return the class pk of this export import report entry
+	 */
+	@Override
+	public long getClassPK();
+
+	/**
+	 * Sets the class pk of this export import report entry.
+	 *
+	 * @param classPK the class pk of this export import report entry
+	 */
+	@Override
+	public void setClassPK(long classPK);
+
+	/**
 	 * Returns the export import configuration ID of this export import report entry.
 	 *
 	 * @return the export import configuration ID of this export import report entry
@@ -197,19 +213,19 @@ public interface ExportImportReportEntryModel
 		long exportImportConfigurationId);
 
 	/**
-	 * Returns the error of this export import report entry.
+	 * Returns the error message of this export import report entry.
 	 *
-	 * @return the error of this export import report entry
+	 * @return the error message of this export import report entry
 	 */
 	@AutoEscape
-	public String getError();
+	public String getErrorMessage();
 
 	/**
-	 * Sets the error of this export import report entry.
+	 * Sets the error message of this export import report entry.
 	 *
-	 * @param error the error of this export import report entry
+	 * @param errorMessage the error message of this export import report entry
 	 */
-	public void setError(String error);
+	public void setErrorMessage(String errorMessage);
 
 	/**
 	 * Returns the error stacktrace of this export import report entry.
@@ -227,25 +243,63 @@ public interface ExportImportReportEntryModel
 	public void setErrorStacktrace(String errorStacktrace);
 
 	/**
-	 * Returns the resolved of this export import report entry.
+	 * Returns the model name of this export import report entry.
 	 *
-	 * @return the resolved of this export import report entry
+	 * @return the model name of this export import report entry
 	 */
-	public boolean getResolved();
+	@AutoEscape
+	public String getModelName();
 
 	/**
-	 * Returns <code>true</code> if this export import report entry is resolved.
+	 * Sets the model name of this export import report entry.
 	 *
-	 * @return <code>true</code> if this export import report entry is resolved; <code>false</code> otherwise
+	 * @param modelName the model name of this export import report entry
 	 */
-	public boolean isResolved();
+	public void setModelName(String modelName);
 
 	/**
-	 * Sets whether this export import report entry is resolved.
+	 * Returns the origin of this export import report entry.
 	 *
-	 * @param resolved the resolved of this export import report entry
+	 * @return the origin of this export import report entry
 	 */
-	public void setResolved(boolean resolved);
+	public int getOrigin();
+
+	/**
+	 * Sets the origin of this export import report entry.
+	 *
+	 * @param origin the origin of this export import report entry
+	 */
+	public void setOrigin(int origin);
+
+	/**
+	 * Returns the scope of this export import report entry.
+	 *
+	 * @return the scope of this export import report entry
+	 */
+	@AutoEscape
+	public String getScope();
+
+	/**
+	 * Sets the scope of this export import report entry.
+	 *
+	 * @param scope the scope of this export import report entry
+	 */
+	public void setScope(String scope);
+
+	/**
+	 * Returns the scope key of this export import report entry.
+	 *
+	 * @return the scope key of this export import report entry
+	 */
+	@AutoEscape
+	public String getScopeKey();
+
+	/**
+	 * Sets the scope key of this export import report entry.
+	 *
+	 * @param scopeKey the scope key of this export import report entry
+	 */
+	public void setScopeKey(String scopeKey);
 
 	/**
 	 * Returns the type of this export import report entry.
@@ -260,6 +314,20 @@ public interface ExportImportReportEntryModel
 	 * @param type the type of this export import report entry
 	 */
 	public void setType(int type);
+
+	/**
+	 * Returns the status of this export import report entry.
+	 *
+	 * @return the status of this export import report entry
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this export import report entry.
+	 *
+	 * @param status the status of this export import report entry
+	 */
+	public void setStatus(int status);
 
 	@Override
 	public ExportImportReportEntry cloneWithOriginalValues();

@@ -8,8 +8,7 @@ import {useCallback, useEffect} from 'react';
 
 import {Liferay} from '../liferay/liferay';
 import {cartStore} from '../pages/ProductPurchase/store';
-import headlessCommerceDeliveryCart from '../services/rest/HeadlessCommerceDeliveryCart';
-import {createCart} from '../utils/api';
+import HeadlessCommerceDeliveryCart from '../services/rest/HeadlessCommerceDeliveryCart';
 
 const channelId = Liferay.CommerceContext.commerceChannelId;
 
@@ -35,11 +34,14 @@ const useProductPurchaseCart = (
 
 	const addCart = async (productId: number, skuId: number) => {
 		if (!cartId) {
-			const response = await createCart({
-				accountId,
+			const response = await HeadlessCommerceDeliveryCart.createCart(
 				channelId,
-				orderTypeExternalReferenceCode,
-			});
+				{
+					accountId,
+					currencyCode: Liferay.CommerceContext.currency.currencyCode,
+					orderTypeExternalReferenceCode,
+				}
+			);
 
 			setCart(response);
 		}
@@ -75,8 +77,7 @@ const useProductPurchaseCart = (
 
 	const removeCart = useCallback(
 		(id: number) =>
-			headlessCommerceDeliveryCart
-				.deleteCart(id)
+			HeadlessCommerceDeliveryCart.deleteCart(id)
 				.then(() => cartStore.send({type: 'reset'}))
 				.catch(console.error),
 		[]
@@ -89,7 +90,7 @@ const useProductPurchaseCart = (
 			}
 
 			const {items: carts} =
-				await headlessCommerceDeliveryCart.getAccountCarts(
+				await HeadlessCommerceDeliveryCart.getAccountCarts(
 					accountId,
 					channelId
 				);
@@ -111,7 +112,7 @@ const useProductPurchaseCart = (
 			}
 
 			const {items: cartItems} =
-				await headlessCommerceDeliveryCart.getCartItems(cart.id);
+				await HeadlessCommerceDeliveryCart.getCartItems(cart.id);
 
 			if (
 				!cartItems.some(
@@ -133,8 +134,8 @@ const useProductPurchaseCart = (
 		removeCart,
 		removeFromCart,
 		setCart,
-		updateCart: headlessCommerceDeliveryCart.updateCart.bind(
-			headlessCommerceDeliveryCart
+		updateCart: HeadlessCommerceDeliveryCart.updateCart.bind(
+			HeadlessCommerceDeliveryCart
 		),
 	};
 };

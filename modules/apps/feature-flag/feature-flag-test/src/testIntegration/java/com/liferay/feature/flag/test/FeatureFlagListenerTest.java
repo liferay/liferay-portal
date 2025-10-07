@@ -248,7 +248,7 @@ public class FeatureFlagListenerTest {
 			_serviceRegistration = _bundleContext.registerService(
 				FeatureFlagListener.class, this,
 				HashMapDictionaryBuilder.put(
-					"featureFlagKey",
+					"feature.flag.key",
 					() -> {
 						if (featureFlagKeys.length == 0) {
 							return null;

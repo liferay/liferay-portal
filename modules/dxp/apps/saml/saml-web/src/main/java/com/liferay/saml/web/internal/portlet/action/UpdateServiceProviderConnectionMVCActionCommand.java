@@ -92,17 +92,17 @@ public class UpdateServiceProviderConnectionMVCActionCommand
 
 		if (samlIdpSpConnectionId <= 0) {
 			_samlIdpSpConnectionLocalService.addSamlIdpSpConnection(
-				assertionLifetime, attributeNames, attributesEnabled,
-				attributesNamespaceEnabled, enabled, encryptionForced,
-				metadataUrl, metadataXmlInputStream, name, nameIdAttribute,
-				nameIdFormat, samlSpEntityId, serviceContext);
+				samlSpEntityId, assertionLifetime, attributeNames,
+				attributesEnabled, attributesNamespaceEnabled, enabled,
+				encryptionForced, metadataUrl, metadataXmlInputStream, name,
+				nameIdAttribute, nameIdFormat, serviceContext);
 		}
 		else {
 			_samlIdpSpConnectionLocalService.updateSamlIdpSpConnection(
-				samlIdpSpConnectionId, assertionLifetime, attributeNames,
-				attributesEnabled, attributesNamespaceEnabled, enabled,
-				encryptionForced, metadataUrl, metadataXmlInputStream, name,
-				nameIdAttribute, nameIdFormat, samlSpEntityId, serviceContext);
+				samlIdpSpConnectionId, samlSpEntityId, assertionLifetime,
+				attributeNames, attributesEnabled, attributesNamespaceEnabled,
+				enabled, encryptionForced, metadataUrl, metadataXmlInputStream,
+				name, nameIdAttribute, nameIdFormat, serviceContext);
 		}
 	}
 

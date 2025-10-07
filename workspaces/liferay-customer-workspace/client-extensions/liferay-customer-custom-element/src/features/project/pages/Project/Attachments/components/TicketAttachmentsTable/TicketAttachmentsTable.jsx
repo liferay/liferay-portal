@@ -5,9 +5,9 @@
 
 import {useModal} from '@clayui/core';
 import {useEffect, useState} from 'react';
-import {PAGE_ROUTER_TYPES} from '~/utils/constants';
 import i18n from '~/utils/I18n';
 import ActionTable from '~/components/ActionTable';
+import useJiraTicketURL from '~/hooks/useJiraTicketURL';
 import {getTicketAttachments} from '~/services/liferay/api';
 import useMyUserAccountByAccountExternalReferenceCode from '~/features/project/pages/Project/TeamMembers/components/TeamMembersTable/hooks/useMyUserAccountByAccountExternalReferenceCode';
 import DeleteTicketAttachmentModal from './components/DeleteTicketAttachmentModal/DeleteTicketAttachmentModal';
@@ -35,7 +35,6 @@ const TicketAttachmentsTable = ({
 		koroneikiAccountLoading
 	);
 	const loggedUserAccount = myUserAccountData?.myUserAccount;
-
 	const [ticketAttachments, setTicketAttachments] = useState([]);
 	const [selectedTicketAttachment, setSelectedTicketAttachment] = useState();
 
@@ -66,7 +65,7 @@ const TicketAttachmentsTable = ({
 						fileSize: ticketAttachment.fileSize,
 						storageBucket: ticketAttachment.storageBucket,
 						ticketAttachmentId: ticketAttachment.id,
-						zendeskTicketId: ticketAttachment.zendeskTicketId,
+						ticketId: ticketAttachment.jiraIssueKey,
 					};
 				}
 			);
@@ -175,11 +174,9 @@ const TicketAttachmentsTable = ({
 								ticket: (
 									<a
 										className="m-0 text-truncate"
-										href={PAGE_ROUTER_TYPES.request(
-											ticketAttachment?.zendeskTicketId
-										)}
+										href={`${useJiraTicketURL(ticketAttachment?.ticketId)}`}
 									>
-										{'#' + ticketAttachment?.zendeskTicketId}
+										{'#' + ticketAttachment?.ticketId}
 									</a>
 								),
 							})

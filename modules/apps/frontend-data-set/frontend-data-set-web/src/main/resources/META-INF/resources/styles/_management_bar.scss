@@ -2,8 +2,17 @@
 	border-bottom: 1px solid $border-color;
 	margin-bottom: 1rem;
 
-	& > .management-bar + .management-bar {
-		border-top: 1px solid #eee;
+	& > .management-bar {
+		&:first-child {
+			.dropdown-toggle {
+				padding: 0.525rem;
+			}
+		}
+
+		& + .management-bar {
+			border-top: 1px solid #eee;
+			min-height: 3.5rem;
+		}
 	}
 
 	.btn.btn-filter-navigation {
@@ -101,10 +110,6 @@
 		}
 	}
 
-	.dropdown-toggle {
-		padding: 0.525rem;
-	}
-
 	.filter-body {
 		.inline-scroller {
 			max-height: 200px;
@@ -125,19 +130,34 @@
 	}
 
 	.filter-resume {
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
 		cursor: pointer;
 
 		&.active {
 			border-color: $primary-color;
 		}
 
+		&.active,
+		&:focus {
+			z-index: 2;
+		}
+
 		&.disabled {
 			cursor: not-allowed;
 			opacity: 0.5;
 		}
+	}
 
-		.filter-resume-content {
-			display: flex;
+	.search-resume .search-resume-label {
+		align-items: center;
+		cursor: default;
+		display: inline-flex;
+
+		&:hover {
+			background-color: var(--btn-secondary-background-color, $white);
+			border-color: var(--btn-secondary-border-color, $secondary-l2);
+			color: var(--btn-secondary-color, $secondary);
 		}
 	}
 }

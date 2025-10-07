@@ -5,7 +5,7 @@
 
 package com.liferay.asset.display.page.item.selector.web.internal;
 
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.asset.display.page.item.selector.web.internal.display.context.AssetDisplayPagesItemSelectorCustomViewDisplayContext;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
@@ -35,13 +35,13 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ItemSelectorView.class)
 public class AssetDisplayPagesItemSelectorCustomView
-	implements ItemSelectorView<AssetDisplayPageSelectorCriterion> {
+	implements ItemSelectorView<AssetDisplayPageItemSelectorCriterion> {
 
 	@Override
-	public Class<AssetDisplayPageSelectorCriterion>
+	public Class<AssetDisplayPageItemSelectorCriterion>
 		getItemSelectorCriterionClass() {
 
-		return AssetDisplayPageSelectorCriterion.class;
+		return AssetDisplayPageItemSelectorCriterion.class;
 	}
 
 	public ServletContext getServletContext() {
@@ -61,7 +61,8 @@ public class AssetDisplayPagesItemSelectorCustomView
 	@Override
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
-			AssetDisplayPageSelectorCriterion assetDisplayPageSelectorCriterion,
+			AssetDisplayPageItemSelectorCriterion
+				assetDisplayPageItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
@@ -74,7 +75,7 @@ public class AssetDisplayPagesItemSelectorCustomView
 			assetDisplayPagesItemSelectorCustomViewDisplayContext =
 				new AssetDisplayPagesItemSelectorCustomViewDisplayContext(
 					(HttpServletRequest)servletRequest, itemSelectedEventName,
-					assetDisplayPageSelectorCriterion, portletURL);
+					assetDisplayPageItemSelectorCriterion, portletURL);
 
 		servletRequest.setAttribute(
 			AssetDisplayPagesItemSelectorCustomViewDisplayContext.class.

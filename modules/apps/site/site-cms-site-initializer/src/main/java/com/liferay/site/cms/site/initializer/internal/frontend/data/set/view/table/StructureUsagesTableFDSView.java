@@ -33,8 +33,10 @@ public class StructureUsagesTableFDSView extends BaseTableFDSView {
 
 		return fdsTableSchemaBuilder.add(
 			"embedded.title", "title",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"title"
+			fdsTableSchemaField -> fdsTableSchemaField.setActionId(
+				"edit"
+			).setContentRenderer(
+				"actionLink"
 			).setSortable(
 				true
 			)

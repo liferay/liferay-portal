@@ -27,12 +27,6 @@ export default class HeadlessCommerceAdminPricing {
 		);
 	}
 
-	static deletePriceList(priceListId: number) {
-		return fetcher.delete(
-			`o/headless-commerce-admin-pricing/v2.0/price-lists/${priceListId}`
-		);
-	}
-
 	static deleteTierPrice(tierPriceId: number) {
 		return fetcher.delete(
 			`o/headless-commerce-admin-pricing/v2.0/tier-prices/${tierPriceId}`

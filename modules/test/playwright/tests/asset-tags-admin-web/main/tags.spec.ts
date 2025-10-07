@@ -117,7 +117,9 @@ test(
 			await page.keyboard.press('Tab');
 			await page.keyboard.press('Tab');
 			await expect(
-				page.locator('.tooltip-inner').filter({hasText: 'Go to Tags'})
+				page
+					.locator('.lfr-portal-tooltip')
+					.filter({hasText: 'Go to Tags'})
 			).toBeVisible();
 		});
 
@@ -143,7 +145,9 @@ test(
 			await page.keyboard.press('Tab');
 			await page.keyboard.press('Tab');
 			await expect(
-				page.locator('.tooltip-inner').filter({hasText: 'Go to Tags'})
+				page
+					.locator('.lfr-portal-tooltip')
+					.filter({hasText: 'Go to Tags'})
 			).toBeVisible();
 		});
 	}

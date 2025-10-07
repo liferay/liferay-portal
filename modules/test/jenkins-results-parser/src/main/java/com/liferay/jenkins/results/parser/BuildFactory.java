@@ -68,9 +68,12 @@ public class BuildFactory {
 			return new ControllerTopLevelBuild(url, (TopLevelBuild)parentBuild);
 		}
 
-		if (jobName.equals("app-server-bundle-builder") ||
-			jobName.contains("-downstream")) {
+		if (jobName.equals("app-server-bundle-builder")) {
+			return new AppServerBundleDownstreamBuild(
+				url, (TopLevelBuild)parentBuild);
+		}
 
+		if (jobName.contains("-downstream")) {
 			String queryString = matcher.group("queryString");
 
 			if ((queryString != null) && queryString.contains("JOB_VARIANT")) {
@@ -83,13 +86,23 @@ public class BuildFactory {
 					url, "JOB_VARIANT", parentBuild);
 			}
 
-			if ((jobVariant != null) &&
-				(jobVariant.contains("functional") ||
-				 jobVariant.contains("test-portal-environment") ||
-				 jobVariant.contains("test-portal-fixpack-environment"))) {
+			if (jobVariant != null) {
+				if (jobVariant.contains("functional") ||
+					jobVariant.contains("test-portal-environment") ||
+					jobVariant.contains("test-portal-fixpack-environment")) {
 
-				return new PoshiDownstreamBuild(
-					url, (TopLevelBuild)parentBuild);
+					return new PoshiJUnitDownstreamBuild(
+						url, (TopLevelBuild)parentBuild);
+				}
+				else if (jobVariant.startsWith("integration") ||
+						 jobVariant.startsWith("js-unit") ||
+						 jobVariant.startsWith("modules-integration") ||
+						 jobVariant.startsWith("modules-unit") ||
+						 jobVariant.startsWith("playwright-js")) {
+
+					return new JUnitDownstreamBuild(
+						url, (TopLevelBuild)parentBuild);
+				}
 			}
 
 			return new DefaultDownstreamBuild(url, (TopLevelBuild)parentBuild);
@@ -151,7 +164,9 @@ public class BuildFactory {
 				url, (TopLevelBuild)parentBuild);
 		}
 
-		if (jobName.startsWith("test-portal-acceptance-pullrequest")) {
+		if (jobName.equals("forward-pullrequest") ||
+			jobName.startsWith("test-portal-acceptance-pullrequest")) {
+
 			return new PullRequestPortalTopLevelBuild(
 				url, (TopLevelBuild)parentBuild);
 		}

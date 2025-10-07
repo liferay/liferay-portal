@@ -39,7 +39,6 @@ test('LPD-44010 Check no delete dropdown in order admin page without delete perm
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -839,6 +838,19 @@ test(
 			);
 		});
 
+		await test.step('Verify note label in an order created via the account selector ', async () => {
+			await page.goto(`/web/${site.name}`);
+
+			await commerceLayoutsPage
+				.accountSelectorButton(account.name)
+				.click();
+			await commerceLayoutsPage.createNewOrderButton.click();
+
+			await expect(
+				pendingOrdersPage.questionAndAnswersText
+			).toBeVisible();
+		});
+
 		await test.step('Verify inactive order type is not assigned to an order created via the account selector ', async () => {
 			await page.goto(`/web/${site.name}`);
 
@@ -1083,9 +1095,7 @@ test(
 		await test.step('Verify inactive order type is not assigned to an order created via add to cart ', async () => {
 			await page.goto(`/web/${site.name}`);
 
-			await commerceThemeMiniumCatalogPage
-				.productCardAddToCartButton('U-Joint')
-				.click();
+			await commerceThemeMiniumCatalogPage.addToCart('U-Joint');
 
 			await commerceMiniCartPage.miniCartButton.click();
 
@@ -1105,9 +1115,7 @@ test(
 
 			await page.goto(`/web/${site.name}`);
 
-			await commerceThemeMiniumCatalogPage
-				.productCardAddToCartButton('U-Joint')
-				.click();
+			await commerceThemeMiniumCatalogPage.addToCart('U-Joint');
 
 			await commerceMiniCartPage.miniCartButton.click();
 
@@ -1130,9 +1138,7 @@ test(
 				);
 			await page.goto(`/web/${site.name}`);
 
-			await commerceThemeMiniumCatalogPage
-				.productCardAddToCartButton('U-Joint')
-				.click();
+			await commerceThemeMiniumCatalogPage.addToCart('U-Joint');
 
 			await commerceMiniCartPage.miniCartButton.click();
 
@@ -1160,9 +1166,7 @@ test(
 
 			await page.goto(`/web/${site.name}`);
 
-			await commerceThemeMiniumCatalogPage
-				.productCardAddToCartButton('U-Joint')
-				.click();
+			await commerceThemeMiniumCatalogPage.addToCart('U-Joint');
 
 			await expect(
 				commerceLayoutsPage.orderTypeModalHeading
@@ -1174,9 +1178,7 @@ test(
 
 			await page.goto(`/web/${site.name}/catalog`);
 
-			await commerceThemeMiniumCatalogPage
-				.productCardAddToCartButton('Mount')
-				.click();
+			await commerceThemeMiniumCatalogPage.addToCart('Mount');
 
 			await page.goto(`/web/${site.name}/pending-orders`);
 

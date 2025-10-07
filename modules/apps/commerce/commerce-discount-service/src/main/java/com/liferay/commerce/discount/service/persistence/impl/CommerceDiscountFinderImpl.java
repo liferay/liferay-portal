@@ -113,8 +113,7 @@ public class CommerceDiscountFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommerceDiscount.class.getName(),
-					"CommerceDiscount.commerceDiscountId", null, null,
-					new long[] {0}, null);
+					"CommerceDiscount.commerceDiscountId");
 			}
 
 			String[] keywords = _customSQL.keywords(title, true);
@@ -250,8 +249,7 @@ public class CommerceDiscountFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommerceDiscount.class.getName(),
-					"CommerceDiscount.commerceDiscountId", null, null,
-					new long[] {0}, null);
+					"CommerceDiscount.commerceDiscountId");
 			}
 
 			if (Validator.isNotNull(title)) {

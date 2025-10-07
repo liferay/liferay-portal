@@ -8,6 +8,7 @@ package com.liferay.fragment.entry.processor.background.image;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.processor.DocumentFragmentEntryValidator;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 
 import java.util.HashSet;
@@ -32,7 +33,8 @@ public class BackgroundImageFragmentEntryValidator
 
 	@Override
 	public void validateFragmentEntryHTML(
-			Document document, String configuration, Locale locale)
+			Document document, JSONObject configurationJSONObject,
+			Locale locale)
 		throws PortalException {
 
 		Set<String> ids = new HashSet<>();

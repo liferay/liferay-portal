@@ -203,6 +203,84 @@ export class ERCAssetLibraryTestEntityAPI {
 		/**
 		 * 
 				 * @param assetLibraryExternalReferenceCode
+				 * @param ercAssetLibraryTestEntityExternalReferenceCode
+				 * @param fields
+				 * @param restrictFields
+				 * @param roleNames
+		 * @param headers Optional custom request headers
+		 */
+		public async getAssetLibraryERCAssetLibraryTestEntityPermissionsPage(
+						assetLibraryExternalReferenceCode: string,
+						ercAssetLibraryTestEntityExternalReferenceCode: string,
+						fields?: string,
+						restrictFields?: string,
+						roleNames?: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+
+			const path = this._basePath + "/test/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}/permissions"
+						.replace("{assetLibraryExternalReferenceCode}",encodeURIComponent(assetLibraryExternalReferenceCode))
+										.replace("{ercAssetLibraryTestEntityExternalReferenceCode}",encodeURIComponent(ercAssetLibraryTestEntityExternalReferenceCode))
+																;
+
+			const queryParameters: any = {};
+
+						if (assetLibraryExternalReferenceCode === null || assetLibraryExternalReferenceCode === undefined) {
+							throw new Error("Required parameter assetLibraryExternalReferenceCode was null or undefined when calling getAssetLibraryERCAssetLibraryTestEntityPermissionsPage.");
+						}
+
+						if (ercAssetLibraryTestEntityExternalReferenceCode === null || ercAssetLibraryTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercAssetLibraryTestEntityExternalReferenceCode was null or undefined when calling getAssetLibraryERCAssetLibraryTestEntityPermissionsPage.");
+						}
+
+						if (fields !== undefined) {
+							queryParameters["fields"] = ObjectSerializer.serialize(fields, "string");
+						}
+
+						if (restrictFields !== undefined) {
+							queryParameters["restrictFields"] = ObjectSerializer.serialize(restrictFields, "string");
+						}
+
+						if (roleNames !== undefined) {
+							queryParameters["roleNames"] = ObjectSerializer.serialize(roleNames, "string");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+					,headers || {}
+					),
+				method: "GET",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+		/**
+		 * 
+				 * @param assetLibraryExternalReferenceCode
 		 		* @param requestBody Request body that can be one of multiple content types
 		 * @param headers Optional custom request headers
 		 */
@@ -414,4 +492,64 @@ export class ERCAssetLibraryTestEntityAPI {
 							headers
 						);
 					}
+		/**
+		 * 
+				 * @param assetLibraryExternalReferenceCode
+				 * @param ercAssetLibraryTestEntityExternalReferenceCode
+		 * @param headers Optional custom request headers
+		 */
+		public async putAssetLibraryERCAssetLibraryTestEntityPermissionsPage(
+						assetLibraryExternalReferenceCode: string,
+						ercAssetLibraryTestEntityExternalReferenceCode: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+
+			const path = this._basePath + "/test/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}/permissions"
+						.replace("{assetLibraryExternalReferenceCode}",encodeURIComponent(assetLibraryExternalReferenceCode))
+										.replace("{ercAssetLibraryTestEntityExternalReferenceCode}",encodeURIComponent(ercAssetLibraryTestEntityExternalReferenceCode))
+				;
+
+			const queryParameters: any = {};
+
+						if (assetLibraryExternalReferenceCode === null || assetLibraryExternalReferenceCode === undefined) {
+							throw new Error("Required parameter assetLibraryExternalReferenceCode was null or undefined when calling putAssetLibraryERCAssetLibraryTestEntityPermissionsPage.");
+						}
+
+						if (ercAssetLibraryTestEntityExternalReferenceCode === null || ercAssetLibraryTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercAssetLibraryTestEntityExternalReferenceCode was null or undefined when calling putAssetLibraryERCAssetLibraryTestEntityPermissionsPage.");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+					,headers || {}
+					),
+				method: "PUT",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
 }

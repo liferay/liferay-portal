@@ -110,6 +110,10 @@ public class AnalyticsTopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 			AnalyticsWebKeys.ANALYTICS_CLIENT_READABLE_CONTENT,
 			Boolean.toString(layout.isTypeAssetDisplay()));
 
+		httpServletRequest.setAttribute(
+			AnalyticsWebKeys.ANALYTICS_EXTERNAL_REFERENCE_CODE,
+			layout.getExternalReferenceCode());
+
 		super.include(httpServletRequest, httpServletResponse, key);
 	}
 

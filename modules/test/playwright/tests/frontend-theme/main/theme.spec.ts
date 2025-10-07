@@ -12,6 +12,7 @@ import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import getRandomString from '../../../utils/getRandomString';
+import {performLogout} from '../../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -128,5 +129,19 @@ test(
 		await page.goto(`/web${site.friendlyUrlPath}/${layoutTitle}`);
 
 		await checkAccessibility({bestPractices: true, page});
+	}
+);
+
+test(
+	'Check accessibility for a portal page.',
+	{tag: '@LPD-55257'},
+	async ({page}) => {
+		await page.goto('/');
+
+		await checkAccessibility({page});
+
+		await performLogout(page);
+
+		await checkAccessibility({page});
 	}
 );

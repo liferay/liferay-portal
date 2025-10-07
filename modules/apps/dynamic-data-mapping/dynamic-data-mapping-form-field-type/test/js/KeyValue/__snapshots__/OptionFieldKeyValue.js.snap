@@ -6,7 +6,7 @@ exports[`OptionFieldKeyValue has a helptext 1`] = `
     class="panel panel-secondary"
   >
     <button
-      aria-controls="clay-id-2"
+      aria-controls="clay-id-1"
       aria-expanded="false"
       class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
       type="button"
@@ -42,9 +42,9 @@ exports[`OptionFieldKeyValue has a helptext 1`] = `
       </span>
     </button>
     <div
-      aria-labelledby="clay-id-2"
+      aria-labelledby="clay-id-1"
       class="panel-collapse collapse"
-      id="clay-id-2"
+      id="clay-id-1"
       role="region"
     >
       <div
@@ -68,7 +68,6 @@ exports[`OptionFieldKeyValue has a helptext 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
@@ -133,7 +132,6 @@ exports[`OptionFieldKeyValue has a helptext 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"
@@ -192,7 +190,7 @@ exports[`OptionFieldKeyValue has a label 1`] = `
     class="panel panel-secondary"
   >
     <button
-      aria-controls="clay-id-4"
+      aria-controls="clay-id-2"
       aria-expanded="false"
       class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
       type="button"
@@ -228,9 +226,9 @@ exports[`OptionFieldKeyValue has a label 1`] = `
       </span>
     </button>
     <div
-      aria-labelledby="clay-id-4"
+      aria-labelledby="clay-id-2"
       class="panel-collapse collapse"
-      id="clay-id-4"
+      id="clay-id-2"
       role="region"
     >
       <div
@@ -259,7 +257,6 @@ exports[`OptionFieldKeyValue has a label 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
@@ -326,7 +323,6 @@ exports[`OptionFieldKeyValue has a label 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"
@@ -377,341 +373,6 @@ exports[`OptionFieldKeyValue has a label 1`] = `
 `;
 
 exports[`OptionFieldKeyValue has a predefined Value 1`] = `
-<div>
-  <div
-    class="panel panel-secondary"
-  >
-    <button
-      aria-controls="clay-id-5"
-      aria-expanded="false"
-      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
-      type="button"
-    >
-      <span
-        class="panel-title"
-      >
-        Option
-      </span>
-      <span
-        class="collapse-icon-closed"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-right"
-          role="presentation"
-        >
-          <use
-            href="#angle-right"
-          />
-        </svg>
-      </span>
-      <span
-        class="collapse-icon-open"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-down"
-          role="presentation"
-        >
-          <use
-            href="#angle-down"
-          />
-        </svg>
-      </span>
-    </button>
-    <div
-      aria-labelledby="clay-id-5"
-      class="panel-collapse collapse"
-      id="clay-id-5"
-      role="region"
-    >
-      <div
-        class="panel-body collapsable-option-body"
-      >
-        <label
-          for="keyValueDisplayNameOptionFieldKeyValue"
-        >
-          display-name
-        </label>
-        <div
-          class="form-group hide"
-          data-field-name="OptionFieldKeyValue"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
-          >
-            <div
-              data-tooltip-align="top"
-              title="Option 1"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                id="keyValueDisplayNameOptionFieldKeyValue"
-                name="keyValueDisplayNameOptionFieldKeyValue"
-                placeholder="Option 1"
-                type="text"
-                value=""
-              />
-            </div>
-            <input
-              name="keyValueDisplayNameOptionFieldKeyValue_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="OptionFieldKeyValue_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="OptionFieldKeyValue_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-        <label
-          class="mt-3"
-          for="keyValueReferenceundefined"
-        >
-          option-reference
-        </label>
-        <div
-          class="form-group hide"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueReferenceundefined"
-          >
-            <div
-              data-tooltip-align="top"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                id="keyValueReferenceundefined"
-                name="keyValueReferenceundefined"
-                type="text"
-                value=""
-              />
-            </div>
-            <input
-              name="keyValueReferenceundefined_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueReferenceundefined_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="undefined_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="undefined_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`OptionFieldKeyValue has a value 1`] = `
-<div>
-  <div
-    class="panel panel-secondary"
-  >
-    <button
-      aria-controls="clay-id-9"
-      aria-expanded="false"
-      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
-      type="button"
-    >
-      <span
-        class="panel-title"
-      >
-        value
-      </span>
-      <span
-        class="collapse-icon-closed"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-right"
-          role="presentation"
-        >
-          <use
-            href="#angle-right"
-          />
-        </svg>
-      </span>
-      <span
-        class="collapse-icon-open"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-down"
-          role="presentation"
-        >
-          <use
-            href="#angle-down"
-          />
-        </svg>
-      </span>
-    </button>
-    <div
-      aria-labelledby="clay-id-9"
-      class="panel-collapse collapse"
-      id="clay-id-9"
-      role="region"
-    >
-      <div
-        class="panel-body collapsable-option-body"
-      >
-        <label
-          for="keyValueDisplayNameOptionFieldKeyValue"
-        >
-          display-name
-        </label>
-        <div
-          class="form-group hide"
-          data-field-name="OptionFieldKeyValue"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
-          >
-            <div
-              data-tooltip-align="top"
-              title="value"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                id="keyValueDisplayNameOptionFieldKeyValue"
-                name="keyValueDisplayNameOptionFieldKeyValue"
-                type="text"
-                value="value"
-              />
-            </div>
-            <input
-              name="keyValueDisplayNameOptionFieldKeyValue_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="OptionFieldKeyValue_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="OptionFieldKeyValue_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-        <label
-          class="mt-3"
-          for="keyValueReferenceundefined"
-        >
-          option-reference
-        </label>
-        <div
-          class="form-group hide"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueReferenceundefined"
-          >
-            <div
-              data-tooltip-align="top"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                id="keyValueReferenceundefined"
-                name="keyValueReferenceundefined"
-                type="text"
-                value=""
-              />
-            </div>
-            <input
-              name="keyValueReferenceundefined_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueReferenceundefined_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="undefined_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="undefined_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`OptionFieldKeyValue has an id 1`] = `
 <div>
   <div
     class="panel panel-secondary"
@@ -776,179 +437,13 @@ exports[`OptionFieldKeyValue has an id 1`] = `
           >
             <div
               data-tooltip-align="top"
+              title="Option 1"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
-                type="text"
-                value=""
-              />
-            </div>
-            <input
-              name="keyValueDisplayNameOptionFieldKeyValue_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="OptionFieldKeyValue_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="Id_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-        <label
-          class="mt-3"
-          for="keyValueReferenceundefined"
-        >
-          option-reference
-        </label>
-        <div
-          class="form-group hide"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueReferenceundefined"
-          >
-            <div
-              data-tooltip-align="top"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                id="keyValueReferenceundefined"
-                name="keyValueReferenceundefined"
-                type="text"
-                value=""
-              />
-            </div>
-            <input
-              name="keyValueReferenceundefined_edited"
-              type="hidden"
-              value="false"
-            />
-            <div
-              class="form-feedback-group field-feedback"
-              id="keyValueReferenceundefined_fieldFeedback"
-            >
-              <div
-                aria-live="assertive"
-                class="form-feedback-item"
-              />
-            </div>
-          </div>
-          <input
-            name="undefined_edited"
-            type="hidden"
-            value="false"
-          />
-          <div
-            class="form-feedback-group field-feedback"
-            id="Id_fieldFeedback"
-          >
-            <div
-              aria-live="assertive"
-              class="form-feedback-item"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`OptionFieldKeyValue is not editable 1`] = `
-<div>
-  <div
-    class="panel panel-secondary"
-  >
-    <button
-      aria-controls="clay-id-1"
-      aria-expanded="false"
-      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
-      type="button"
-    >
-      <span
-        class="panel-title"
-      >
-        Option
-      </span>
-      <span
-        class="collapse-icon-closed"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-right"
-          role="presentation"
-        >
-          <use
-            href="#angle-right"
-          />
-        </svg>
-      </span>
-      <span
-        class="collapse-icon-open"
-      >
-        <svg
-          class="lexicon-icon lexicon-icon-angle-down"
-          role="presentation"
-        >
-          <use
-            href="#angle-down"
-          />
-        </svg>
-      </span>
-    </button>
-    <div
-      aria-labelledby="clay-id-1"
-      class="panel-collapse collapse"
-      id="clay-id-1"
-      role="region"
-    >
-      <div
-        class="panel-body collapsable-option-body"
-      >
-        <label
-          for="keyValueDisplayNameOptionFieldKeyValue"
-        >
-          display-name
-        </label>
-        <div
-          class="form-group hide"
-          data-field-name="OptionFieldKeyValue"
-        >
-          <div
-            class="form-group hide"
-            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
-          >
-            <div
-              data-tooltip-align="top"
-            >
-              <input
-                aria-invalid="true"
-                class="form-control ddm-field-text"
-                disabled=""
-                id="keyValueDisplayNameOptionFieldKeyValue"
-                name="keyValueDisplayNameOptionFieldKeyValue"
+                placeholder="Option 1"
                 type="text"
                 value=""
               />
@@ -1000,7 +495,6 @@ exports[`OptionFieldKeyValue is not editable 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"
@@ -1044,7 +538,336 @@ exports[`OptionFieldKeyValue is not editable 1`] = `
 </div>
 `;
 
-exports[`OptionFieldKeyValue is not required 1`] = `
+exports[`OptionFieldKeyValue has a value 1`] = `
+<div>
+  <div
+    class="panel panel-secondary"
+  >
+    <button
+      aria-controls="clay-id-4"
+      aria-expanded="false"
+      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
+      type="button"
+    >
+      <span
+        class="panel-title"
+      >
+        value
+      </span>
+      <span
+        class="collapse-icon-closed"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-right"
+          role="presentation"
+        >
+          <use
+            href="#angle-right"
+          />
+        </svg>
+      </span>
+      <span
+        class="collapse-icon-open"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-down"
+          role="presentation"
+        >
+          <use
+            href="#angle-down"
+          />
+        </svg>
+      </span>
+    </button>
+    <div
+      aria-labelledby="clay-id-4"
+      class="panel-collapse collapse"
+      id="clay-id-4"
+      role="region"
+    >
+      <div
+        class="panel-body collapsable-option-body"
+      >
+        <label
+          for="keyValueDisplayNameOptionFieldKeyValue"
+        >
+          display-name
+        </label>
+        <div
+          class="form-group hide"
+          data-field-name="OptionFieldKeyValue"
+        >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
+          >
+            <div
+              data-tooltip-align="top"
+              title="value"
+            >
+              <input
+                class="form-control ddm-field-text"
+                id="keyValueDisplayNameOptionFieldKeyValue"
+                name="keyValueDisplayNameOptionFieldKeyValue"
+                type="text"
+                value="value"
+              />
+            </div>
+            <input
+              name="keyValueDisplayNameOptionFieldKeyValue_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="OptionFieldKeyValue_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="OptionFieldKeyValue_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+        <label
+          class="mt-3"
+          for="keyValueReferenceundefined"
+        >
+          option-reference
+        </label>
+        <div
+          class="form-group hide"
+        >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueReferenceundefined"
+          >
+            <div
+              data-tooltip-align="top"
+            >
+              <input
+                class="form-control ddm-field-text"
+                id="keyValueReferenceundefined"
+                name="keyValueReferenceundefined"
+                type="text"
+                value=""
+              />
+            </div>
+            <input
+              name="keyValueReferenceundefined_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueReferenceundefined_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="undefined_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="undefined_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OptionFieldKeyValue has an id 1`] = `
+<div>
+  <div
+    class="panel panel-secondary"
+  >
+    <button
+      aria-controls="clay-id-5"
+      aria-expanded="false"
+      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
+      type="button"
+    >
+      <span
+        class="panel-title"
+      >
+        Option
+      </span>
+      <span
+        class="collapse-icon-closed"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-right"
+          role="presentation"
+        >
+          <use
+            href="#angle-right"
+          />
+        </svg>
+      </span>
+      <span
+        class="collapse-icon-open"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-down"
+          role="presentation"
+        >
+          <use
+            href="#angle-down"
+          />
+        </svg>
+      </span>
+    </button>
+    <div
+      aria-labelledby="clay-id-5"
+      class="panel-collapse collapse"
+      id="clay-id-5"
+      role="region"
+    >
+      <div
+        class="panel-body collapsable-option-body"
+      >
+        <label
+          for="keyValueDisplayNameOptionFieldKeyValue"
+        >
+          display-name
+        </label>
+        <div
+          class="form-group hide"
+          data-field-name="OptionFieldKeyValue"
+        >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
+          >
+            <div
+              data-tooltip-align="top"
+            >
+              <input
+                class="form-control ddm-field-text"
+                id="keyValueDisplayNameOptionFieldKeyValue"
+                name="keyValueDisplayNameOptionFieldKeyValue"
+                type="text"
+                value=""
+              />
+            </div>
+            <input
+              name="keyValueDisplayNameOptionFieldKeyValue_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="OptionFieldKeyValue_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="Id_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+        <label
+          class="mt-3"
+          for="keyValueReferenceundefined"
+        >
+          option-reference
+        </label>
+        <div
+          class="form-group hide"
+        >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueReferenceundefined"
+          >
+            <div
+              data-tooltip-align="top"
+            >
+              <input
+                class="form-control ddm-field-text"
+                id="keyValueReferenceundefined"
+                name="keyValueReferenceundefined"
+                type="text"
+                value=""
+              />
+            </div>
+            <input
+              name="keyValueReferenceundefined_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueReferenceundefined_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="undefined_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="Id_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OptionFieldKeyValue is not editable 1`] = `
 <div>
   <div
     class="panel panel-secondary"
@@ -1111,9 +934,8 @@ exports[`OptionFieldKeyValue is not required 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
-                aria-required="false"
                 class="form-control ddm-field-text"
+                disabled=""
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
                 type="text"
@@ -1167,7 +989,6 @@ exports[`OptionFieldKeyValue is not required 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"
@@ -1211,7 +1032,7 @@ exports[`OptionFieldKeyValue is not required 1`] = `
 </div>
 `;
 
-exports[`OptionFieldKeyValue renders Label if showLabel is true 1`] = `
+exports[`OptionFieldKeyValue is not required 1`] = `
 <div>
   <div
     class="panel panel-secondary"
@@ -1270,6 +1091,171 @@ exports[`OptionFieldKeyValue renders Label if showLabel is true 1`] = `
           class="form-group hide"
           data-field-name="OptionFieldKeyValue"
         >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueDisplayNameOptionFieldKeyValue"
+          >
+            <div
+              data-tooltip-align="top"
+            >
+              <input
+                aria-required="false"
+                class="form-control ddm-field-text"
+                id="keyValueDisplayNameOptionFieldKeyValue"
+                name="keyValueDisplayNameOptionFieldKeyValue"
+                type="text"
+                value=""
+              />
+            </div>
+            <input
+              name="keyValueDisplayNameOptionFieldKeyValue_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueDisplayNameOptionFieldKeyValue_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="OptionFieldKeyValue_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="OptionFieldKeyValue_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+        <label
+          class="mt-3"
+          for="keyValueReferenceundefined"
+        >
+          option-reference
+        </label>
+        <div
+          class="form-group hide"
+        >
+          <div
+            class="form-group hide"
+            data-field-name="keyValueReferenceundefined"
+          >
+            <div
+              data-tooltip-align="top"
+            >
+              <input
+                class="form-control ddm-field-text"
+                id="keyValueReferenceundefined"
+                name="keyValueReferenceundefined"
+                type="text"
+                value=""
+              />
+            </div>
+            <input
+              name="keyValueReferenceundefined_edited"
+              type="hidden"
+              value="false"
+            />
+            <div
+              class="form-feedback-group field-feedback"
+              id="keyValueReferenceundefined_fieldFeedback"
+            >
+              <div
+                aria-live="assertive"
+                class="form-feedback-item"
+              />
+            </div>
+          </div>
+          <input
+            name="undefined_edited"
+            type="hidden"
+            value="false"
+          />
+          <div
+            class="form-feedback-group field-feedback"
+            id="undefined_fieldFeedback"
+          >
+            <div
+              aria-live="assertive"
+              class="form-feedback-item"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`OptionFieldKeyValue renders Label if showLabel is true 1`] = `
+<div>
+  <div
+    class="panel panel-secondary"
+  >
+    <button
+      aria-controls="clay-id-10"
+      aria-expanded="false"
+      class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
+      type="button"
+    >
+      <span
+        class="panel-title"
+      >
+        Option
+      </span>
+      <span
+        class="collapse-icon-closed"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-right"
+          role="presentation"
+        >
+          <use
+            href="#angle-right"
+          />
+        </svg>
+      </span>
+      <span
+        class="collapse-icon-open"
+      >
+        <svg
+          class="lexicon-icon lexicon-icon-angle-down"
+          role="presentation"
+        >
+          <use
+            href="#angle-down"
+          />
+        </svg>
+      </span>
+    </button>
+    <div
+      aria-labelledby="clay-id-10"
+      class="panel-collapse collapse"
+      id="clay-id-10"
+      role="region"
+    >
+      <div
+        class="panel-body collapsable-option-body"
+      >
+        <label
+          for="keyValueDisplayNameOptionFieldKeyValue"
+        >
+          display-name
+        </label>
+        <div
+          class="form-group hide"
+          data-field-name="OptionFieldKeyValue"
+        >
           <label
             aria-labelledby="OptionFieldKeyValue_fieldDetails"
             class="ddm-label"
@@ -1284,7 +1270,6 @@ exports[`OptionFieldKeyValue renders Label if showLabel is true 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
@@ -1351,7 +1336,6 @@ exports[`OptionFieldKeyValue renders Label if showLabel is true 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"
@@ -1407,7 +1391,7 @@ exports[`OptionFieldKeyValue renders component with a key 1`] = `
     class="panel panel-secondary"
   >
     <button
-      aria-controls="clay-id-10"
+      aria-controls="clay-id-9"
       aria-expanded="false"
       class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle collapsed btn btn-unstyled"
       type="button"
@@ -1443,9 +1427,9 @@ exports[`OptionFieldKeyValue renders component with a key 1`] = `
       </span>
     </button>
     <div
-      aria-labelledby="clay-id-10"
+      aria-labelledby="clay-id-9"
       class="panel-collapse collapse"
-      id="clay-id-10"
+      id="clay-id-9"
       role="region"
     >
       <div
@@ -1468,7 +1452,6 @@ exports[`OptionFieldKeyValue renders component with a key 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueDisplayNameOptionFieldKeyValue"
                 name="keyValueDisplayNameOptionFieldKeyValue"
@@ -1523,7 +1506,6 @@ exports[`OptionFieldKeyValue renders component with a key 1`] = `
               data-tooltip-align="top"
             >
               <input
-                aria-invalid="true"
                 class="form-control ddm-field-text"
                 id="keyValueReferenceundefined"
                 name="keyValueReferenceundefined"

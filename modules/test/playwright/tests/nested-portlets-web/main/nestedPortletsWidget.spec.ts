@@ -50,7 +50,7 @@ test('User can nest a widget inside nested portlets widget', async ({
 
 	await page
 		.locator('.modal-header')
-		.getByLabel('close', {exact: true})
+		.getByLabel('Close', {exact: true})
 		.click();
 
 	// Add web content display widget and drag into nested applications widget

@@ -71,8 +71,6 @@ public class EditRankingDisplayBuilderTest extends BaseRankingsWebTestCase {
 		setUpHttpServletRequestParamValue(
 			httpServletRequest, "resultsRankingUid", "resultsRankingUid");
 
-		setUpPropsUtil();
-
 		EditRankingDisplayContext editRankingDisplayContext =
 			_editRankingDisplayBuilder.build();
 

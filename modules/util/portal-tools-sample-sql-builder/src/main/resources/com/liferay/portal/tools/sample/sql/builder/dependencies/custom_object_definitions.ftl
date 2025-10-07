@@ -19,6 +19,10 @@ ${dataFactory.toInsertSQL(listTypeDefinitionModel)}
 
 ${dataFactory.toInsertSQL(objectDefinitionModel)}
 
+${dataFactory.getDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel, objectFieldModels)}
+
+${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel)}
+
 <#list dataFactory.newObjectEntryModels(objectDefinitionModel.getObjectDefinitionId()) as objectEntryModel>
 	<#assign
 		dlFileEntryModel = dataFactory.newDLFileEntryModel(dlFolderModel, "FileEntry" + objectEntryModel.getObjectEntryId(), "txt", "text/plain", dataFactory.getCounterNext())
@@ -68,10 +72,6 @@ ${dataFactory.toInsertSQL(objectDefinitionModel)}
 </#list>
 
 ${dataFactory.toInsertSQL(dataFactory.newObjectRelationshipModel(objectDefinitionModel.getObjectDefinitionId()))}
-
-${dataFactory.getDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel, objectFieldModels)}
-
-${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel)}
 
 <#list dataFactory.newResourcePermissionModels(objectDefinitionModel) as resourcePermissionModel>
 	${dataFactory.toInsertSQL(resourcePermissionModel)}

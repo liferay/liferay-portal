@@ -47,6 +47,18 @@ EditRolesDisplayContext editRolesDisplayContext = new EditRolesDisplayContext(re
 			name="description"
 			value="<%= role.getDescription(locale) %>"
 		/>
+
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+			<liferay-ui:search-container-column-text
+				cssClass="table-cell-expand-smaller table-cell-minw-150 table-cell-ws-nowrap"
+				name="status"
+			>
+				<clay:label
+					displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
+					label="<%= WorkflowConstants.getStatusLabel(role.getStatus()) %>"
+				/>
+			</liferay-ui:search-container-column-text>
+		</c:if>
 	</liferay-ui:search-container-row>
 
 	<liferay-ui:search-iterator

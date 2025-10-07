@@ -30,12 +30,8 @@ export function SeoContainer({
 	setValues,
 	values,
 }: SeoContainerProps) {
-	const isReadOnly = !values.modifiable && values.system;
-
 	const disabled =
-		!hasUpdateObjectDefinitionPermission ||
-		isLinkedObjectDefinition ||
-		isReadOnly;
+		!hasUpdateObjectDefinitionPermission || isLinkedObjectDefinition;
 
 	return (
 		<ClayForm.Group>

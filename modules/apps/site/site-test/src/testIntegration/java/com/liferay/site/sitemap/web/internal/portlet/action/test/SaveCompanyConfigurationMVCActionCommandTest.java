@@ -6,6 +6,9 @@
 package com.liferay.site.sitemap.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
@@ -85,6 +88,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_originalCompanySitemapGroupIds =
 			_sitemapConfigurationManager.getCompanySitemapGroupIds(
 				_company.getCompanyId());
+		_originalCompanySitemapObjectDefinitionIds =
+			_sitemapConfigurationManager.getCompanySitemapObjectDefinitionIds(
+				_company.getCompanyId());
 		_originalIncludeCategories =
 			_sitemapConfigurationManager.includeCategoriesCompanyEnabled(
 				_company.getCompanyId());
@@ -108,6 +114,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			_company.getCompanyId(),
 			ArrayUtil.toArray(_originalCompanySitemapGroupIds),
+			ArrayUtil.toArray(_originalCompanySitemapObjectDefinitionIds),
 			_originalIncludeCategories, _originalIncludePages,
 			_originalIncludeWebContent, _originalXMLSitemapIndexEnabled);
 
@@ -117,7 +124,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	@Test
 	public void testSaveCompanyConfiguration() throws Exception {
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], true, true, true, true, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], true, true,
+			true, true, _adminUser);
 	}
 
 	@Test
@@ -129,8 +137,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
 		_assertSaveCompanyConfiguration(
-			new long[] {group.getGroupId()}, new long[] {group.getGroupId()},
-			true, true, false, true, _adminUser);
+			new long[] {group.getGroupId()}, new long[0],
+			new long[] {group.getGroupId()}, new long[0], true, true, false,
+			true, _adminUser);
 	}
 
 	@Test
@@ -145,9 +154,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			_company.getCompanyId(), GroupConstants.GUEST);
 
 		_assertSaveCompanyConfiguration(
-			new long[] {group.getGroupId()},
-			new long[] {guestGroup.getGroupId(), group.getGroupId()}, true,
-			true, false, true, _adminUser);
+			new long[] {group.getGroupId()}, new long[0],
+			new long[] {guestGroup.getGroupId(), group.getGroupId()},
+			new long[0], true, true, false, true, _adminUser);
 	}
 
 	@Test
@@ -159,9 +168,63 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
 		_assertSaveCompanyConfiguration(
-			new long[] {group.getGroupId()},
-			new long[] {RandomTestUtil.randomLong(), group.getGroupId()}, true,
-			true, false, true, _adminUser);
+			new long[] {group.getGroupId()}, new long[0],
+			new long[] {RandomTestUtil.randomLong(), group.getGroupId()},
+			new long[0], true, true, false, true, _adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCompanySitemapObjectDefinitionIds()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		_assertSaveCompanyConfiguration(
+			new long[0], new long[] {objectDefinition.getObjectDefinitionId()},
+			new long[0], new long[] {objectDefinition.getObjectDefinitionId()},
+			true, true, false, true, _adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCompanySitemapObjectDefinitionIdsInactiveObjectDefinitionSelected()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		objectDefinition.setActive(false);
+
+		objectDefinition = _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
+
+		_assertSaveCompanyConfiguration(
+			new long[0], new long[0], new long[0],
+			new long[] {objectDefinition.getObjectDefinitionId()}, true, true,
+			false, true, _adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCompanySitemapObjectDefinitionIdsNonexistentObjectDefinition()
+		throws Exception {
+
+		_assertSaveCompanyConfiguration(
+			new long[0], new long[0], new long[0],
+			new long[] {RandomTestUtil.randomLong()}, true, true, false, true,
+			_adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCompanySitemapObjectDefinitionIdsSystemObjectDefinitionSelected()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishSystemObjectDefinition();
+
+		_assertSaveCompanyConfiguration(
+			new long[0], new long[0], new long[0],
+			new long[] {objectDefinition.getObjectDefinitionId()}, true, true,
+			false, true, _adminUser);
 	}
 
 	@Test
@@ -169,7 +232,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], false, true, true, true, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], false, true,
+			true, true, _adminUser);
 	}
 
 	@Test
@@ -177,7 +241,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], true, false, true, true, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], true, false,
+			true, true, _adminUser);
 	}
 
 	@Test
@@ -185,7 +250,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], true, true, false, true, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], true, true,
+			false, true, _adminUser);
 	}
 
 	@Test
@@ -193,7 +259,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], true, true, true, false, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], true, true,
+			true, false, _adminUser);
 	}
 
 	@Test
@@ -208,8 +275,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		try {
 			_assertSaveCompanyConfiguration(
-				new long[0], new long[0], true, true, true, true,
-				UserTestUtil.addGroupAdminUser(group));
+				new long[0], new long[0], new long[0], new long[0], true, true,
+				true, true, UserTestUtil.addGroupAdminUser(group));
 		}
 		catch (PortletException portletException) {
 			portletExceptionThrown = true;
@@ -225,7 +292,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	}
 
 	private void _assertCompanyConfiguration(
-			long[] companySitemapGroupIds, boolean includeCategories,
+			long[] companySitemapGroupIds,
+			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
 			boolean includePages, boolean includeWebContent,
 			boolean xmlSitemapIndexEnabled)
 		throws Exception {
@@ -245,6 +313,10 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		Assert.assertArrayEquals(
 			companySitemapGroupIds,
 			GetterUtil.getLongValues(properties.get("companySitemapGroupIds")));
+		Assert.assertArrayEquals(
+			companySitemapObjectDefinitionIds,
+			GetterUtil.getLongValues(
+				properties.get("companySitemapObjectDefinitionIds")));
 		Assert.assertEquals(
 			includeCategories,
 			GetterUtil.getBoolean(properties.get("includeCategories")));
@@ -260,15 +332,17 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	}
 
 	private void _assertSaveCompanyConfiguration(
-			long[] expectedGroupIds, long[] groupIds, boolean includeCategories,
-			boolean includePages, boolean includeWebContent,
-			boolean xmlSitemapIndexEnabled, User user)
+			long[] expectedGroupIds, long[] expectedObjectDefinitionIds,
+			long[] groupIds, long[] objectDefinitionIds,
+			boolean includeCategories, boolean includePages,
+			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
+			User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(
-				groupIds, includeCategories, includePages, includeWebContent,
-				xmlSitemapIndexEnabled, user);
+				groupIds, objectDefinitionIds, includeCategories, includePages,
+				includeWebContent, xmlSitemapIndexEnabled, user);
 
 		Assert.assertFalse(
 			SessionMessages.contains(
@@ -283,12 +357,13 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 				mockLiferayPortletActionRequest, "requestProcessed"));
 
 		_assertCompanyConfiguration(
-			expectedGroupIds, includeCategories, includePages,
-			includeWebContent, xmlSitemapIndexEnabled);
+			expectedGroupIds, expectedObjectDefinitionIds, includeCategories,
+			includePages, includeWebContent, xmlSitemapIndexEnabled);
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
-			long[] groupIds, boolean includeCategories, boolean includePages,
+			long[] groupIds, long[] objectDefinitionIds,
+			boolean includeCategories, boolean includePages,
 			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
 			User user)
 		throws Exception {
@@ -305,6 +380,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			"includePages", String.valueOf(includePages));
 		mockLiferayPortletActionRequest.addParameter(
 			"includeWebContent", String.valueOf(includeWebContent));
+		mockLiferayPortletActionRequest.addParameter(
+			"objectDefinitionsSearchContainerPrimaryKeys",
+			StringUtil.merge(objectDefinitionIds, StringPool.COMMA));
 		mockLiferayPortletActionRequest.addParameter(
 			"xmlSitemapIndexEnabled", String.valueOf(xmlSitemapIndexEnabled));
 		mockLiferayPortletActionRequest.setAttribute(
@@ -352,7 +430,11 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	@Inject
 	private static LayoutLocalService _layoutLocalService;
 
+	@Inject
+	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
+
 	private static Long[] _originalCompanySitemapGroupIds;
+	private static Long[] _originalCompanySitemapObjectDefinitionIds;
 	private static boolean _originalIncludeCategories;
 	private static boolean _originalIncludePages;
 	private static boolean _originalIncludeWebContent;

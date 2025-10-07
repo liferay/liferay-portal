@@ -1,0 +1,66 @@
+[
+	{
+		"key": "BUG",
+		"name": "Bug",
+		"name_i18n": {
+			"en-US": "Bug"
+		},
+		"type": "string"
+	},
+	{
+		"key": "EPIC",
+		"name": "Epic",
+		"name_i18n": {
+			"en-US": "Epic"
+		},
+		"type": "string"
+	},
+	{
+		"key": "IMPEDIBUG",
+		"name": "Impedibug",
+		"name_i18n": {
+			"en-US": "Impedibug"
+		},
+		"type": "string"
+	},
+	{
+		"key": "INITIATIVE",
+		"name": "Initiative",
+		"name_i18n": {
+			"en-US": "Initiative"
+		},
+		"type": "string"
+	},
+	{
+		"key": "STORY",
+		"name": "Story",
+		"name_i18n": {
+			"en-US": "Story"
+		},
+		"type": "string"
+	},
+	{
+		"key": "TASK",
+		"name": "Task",
+		"name_i18n": {
+			"en-US": "Task"
+		},
+		"type": "string"
+	},
+	{
+		"key": "TECHNICALTASK",
+		"name": "Technical Task",
+		"name_i18n": {
+			"en-US": "Technical Task"
+		},
+		"type": "string"
+	},
+	{
+		"key": "UNDEFINED",
+		"name": "Undefined",
+		"name_i18n": {
+			"en-US": "Undefined"
+		},
+		"type": "string"
+	}
+]

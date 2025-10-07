@@ -37,12 +37,12 @@ public interface SiteTestEntityResource {
 	}
 
 	public void deleteSiteSiteTestEntityByExternalReferenceCode(
-			String externalReferenceCode, Long siteId)
+			Long siteId, String externalReferenceCode)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			deleteSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, Long siteId)
+				Long siteId, String externalReferenceCode)
 		throws Exception;
 
 	public Page<SiteTestEntity> getSiteSiteTestEntitiesPage(Long siteId)
@@ -53,12 +53,12 @@ public interface SiteTestEntityResource {
 		throws Exception;
 
 	public SiteTestEntity getSiteSiteTestEntityByExternalReferenceCode(
-			String externalReferenceCode, Long siteId)
+			Long siteId, String externalReferenceCode)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, Long siteId)
+				Long siteId, String externalReferenceCode)
 		throws Exception;
 
 	public SiteTestEntity getSiteTestEntity(Long siteTestEntityId)
@@ -113,13 +113,13 @@ public interface SiteTestEntityResource {
 		throws Exception;
 
 	public SiteTestEntity putSiteSiteTestEntityByExternalReferenceCode(
-			String externalReferenceCode, Long siteId,
+			Long siteId, String externalReferenceCode,
 			SiteTestEntity siteTestEntity)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			putSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-				String externalReferenceCode, Long siteId,
+				Long siteId, String externalReferenceCode,
 				SiteTestEntity siteTestEntity)
 		throws Exception;
 
@@ -257,12 +257,12 @@ public interface SiteTestEntityResource {
 		implements SiteTestEntityResource {
 
 		public void deleteSiteSiteTestEntityByExternalReferenceCode(
-				String externalReferenceCode, Long siteId)
+				Long siteId, String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				deleteSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, siteId);
+					siteId, externalReferenceCode);
 
 			String content = httpResponse.getContent();
 
@@ -325,7 +325,7 @@ public interface SiteTestEntityResource {
 
 		public HttpInvoker.HttpResponse
 				deleteSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					String externalReferenceCode, Long siteId)
+					Long siteId, String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -354,8 +354,8 @@ public interface SiteTestEntityResource {
 					_builder._port + _builder._contextPath +
 						"/o/test/v1.0/sites/{siteId}/site-test-entities/by-external-reference-code/{externalReferenceCode}");
 
-			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 			httpInvoker.path("siteId", siteId);
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -471,12 +471,12 @@ public interface SiteTestEntityResource {
 		}
 
 		public SiteTestEntity getSiteSiteTestEntityByExternalReferenceCode(
-				String externalReferenceCode, Long siteId)
+				Long siteId, String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, siteId);
+					siteId, externalReferenceCode);
 
 			String content = httpResponse.getContent();
 
@@ -539,7 +539,7 @@ public interface SiteTestEntityResource {
 
 		public HttpInvoker.HttpResponse
 				getSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					String externalReferenceCode, Long siteId)
+					Long siteId, String externalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -568,8 +568,8 @@ public interface SiteTestEntityResource {
 					_builder._port + _builder._contextPath +
 						"/o/test/v1.0/sites/{siteId}/site-test-entities/by-external-reference-code/{externalReferenceCode}");
 
-			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 			httpInvoker.path("siteId", siteId);
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -1232,13 +1232,13 @@ public interface SiteTestEntityResource {
 		}
 
 		public SiteTestEntity putSiteSiteTestEntityByExternalReferenceCode(
-				String externalReferenceCode, Long siteId,
+				Long siteId, String externalReferenceCode,
 				SiteTestEntity siteTestEntity)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				putSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					externalReferenceCode, siteId, siteTestEntity);
+					siteId, externalReferenceCode, siteTestEntity);
 
 			String content = httpResponse.getContent();
 
@@ -1301,7 +1301,7 @@ public interface SiteTestEntityResource {
 
 		public HttpInvoker.HttpResponse
 				putSiteSiteTestEntityByExternalReferenceCodeHttpResponse(
-					String externalReferenceCode, Long siteId,
+					Long siteId, String externalReferenceCode,
 					SiteTestEntity siteTestEntity)
 			throws Exception {
 
@@ -1333,8 +1333,8 @@ public interface SiteTestEntityResource {
 					_builder._port + _builder._contextPath +
 						"/o/test/v1.0/sites/{siteId}/site-test-entities/by-external-reference-code/{externalReferenceCode}");
 
-			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 			httpInvoker.path("siteId", siteId);
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(

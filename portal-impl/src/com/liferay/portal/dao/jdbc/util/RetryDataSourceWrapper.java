@@ -5,7 +5,7 @@
 
 package com.liferay.portal.dao.jdbc.util;
 
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.sql.Connection;
 import java.sql.SQLException;

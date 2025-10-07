@@ -19,6 +19,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SegmentsConfigurationProvider {
 
+	public void clearSegmentsCompanyConfigurations();
+
 	public String getCompanyConfigurationURL(
 			HttpServletRequest httpServletRequest)
 		throws PortalException;

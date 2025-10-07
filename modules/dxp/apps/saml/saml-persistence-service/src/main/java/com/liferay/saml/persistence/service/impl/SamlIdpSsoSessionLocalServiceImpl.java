@@ -87,6 +87,11 @@ public class SamlIdpSsoSessionLocalServiceImpl
 	}
 
 	@Override
+	public SamlIdpSsoSession fetchSamlIdpSsoByUserId(long userId) {
+		return samlIdpSsoSessionPersistence.fetchByUserId(userId);
+	}
+
+	@Override
 	public SamlIdpSsoSession getSamlIdpSso(String samlIdpSsoSessionKey)
 		throws PortalException {
 

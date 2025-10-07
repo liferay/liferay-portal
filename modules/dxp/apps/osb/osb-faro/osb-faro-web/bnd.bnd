@@ -13,6 +13,7 @@ Import-Package:\
 	com.liferay.expando.kernel.model;version="[6.0.0,9999.0.0)",\
 	com.liferay.expando.kernel.service;version="[1.8.0,9999.0.0)",\
 	com.liferay.mail.kernel.model;version="[1.0.0,9999.0.0)",\
+	com.liferay.mail.kernel.service;version="[6.0.0,9999.0.0)",\
 	com.liferay.oauth2.provider.model;version="[4.1.0,9999.0.0)",\
 	com.liferay.oauth2.provider.service;version="[3.0.0,9999.0.0)",\
 	com.liferay.osgi.service.tracker.collections.list;version="[3.0.0,9999.0.0)",\

@@ -1542,7 +1542,7 @@ exports[`SidebarPanelInfoView renders 1`] = `
               tabindex="0"
             >
               <div
-                class="analytics-reports"
+                class="content-dashboard-performance"
               >
                 <span
                   aria-hidden="true"

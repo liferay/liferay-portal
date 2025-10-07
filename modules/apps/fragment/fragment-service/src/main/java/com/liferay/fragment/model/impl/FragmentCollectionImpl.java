@@ -171,6 +171,10 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 				getFragmentCollectionId());
 
 		for (FragmentComposition fragmentComposition : fragmentCompositions) {
+			if (fragmentComposition.isMarketplace()) {
+				continue;
+			}
+
 			fragmentComposition.populateZipWriter(
 				zipWriter, path + "/fragment-compositions");
 		}
@@ -181,7 +185,7 @@ public class FragmentCollectionImpl extends FragmentCollectionBaseImpl {
 				QueryUtil.ALL_POS);
 
 		for (FragmentEntry fragmentEntry : fragmentEntries) {
-			if (fragmentEntry.isTypeReact()) {
+			if (fragmentEntry.isMarketplace() || fragmentEntry.isTypeReact()) {
 				continue;
 			}
 

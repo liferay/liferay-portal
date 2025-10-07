@@ -19,7 +19,7 @@ jobs:
 
                     echo "Verifying Helm chart version ${CHART_VERSION}."
 
-                    if helm show readme "oci://${GAR_REPOSITORY}/liferay:${CHART_VERSION}" >/dev/null 2>&1
+                    if helm show readme "oci://${GAR_REPOSITORY}/liferay-default:${CHART_VERSION}" >/dev/null 2>&1
                     then
                         echo "Skipping Helm Chart version ${CHART_VERSION}."
 

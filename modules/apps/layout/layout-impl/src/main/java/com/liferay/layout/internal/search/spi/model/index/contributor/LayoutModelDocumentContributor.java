@@ -58,14 +58,15 @@ public class LayoutModelDocumentContributor
 		}
 
 		document.addText(Field.TYPE, layout.getType());
-		document.addText(
-			"privateLayout", String.valueOf(layout.isPrivateLayout()));
 		document.addLocalizedKeyword(
 			"localized_title",
 			_localization.populateLocalizationMap(
 				layout.getNameMap(), layout.getDefaultLanguageId(),
 				layout.getGroupId()),
 			true, true);
+		document.addText(
+			"privateLayout", String.valueOf(layout.isPrivateLayout()));
+		document.addText("systemLayout", String.valueOf(layout.isSystem()));
 	}
 
 	private void _addLayoutContentFields(Document document, Layout layout) {
@@ -103,6 +104,10 @@ public class LayoutModelDocumentContributor
 	}
 
 	private int _getStatus(Layout layout) {
+		if (layout.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			return layout.getStatus();
+		}
+
 		if (layout.isPublished()) {
 			return WorkflowConstants.STATUS_APPROVED;
 		}

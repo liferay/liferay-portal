@@ -36,10 +36,12 @@ test(
 		const picklist =
 			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
 
-		const listTypeEntry = await apiHelpers.listTypeAdmin.postListTypeEntry(
-			picklist.externalReferenceCode,
-			'item1'
-		);
+		const listTypeEntry = await apiHelpers.listTypeAdmin.postListTypeEntry({
+			key: 'item1',
+			listTypeDefinitionExternalReferenceCode:
+				picklist.externalReferenceCode,
+			name_i18n: {en_US: 'item1'},
+		});
 
 		await apiHelpers.headlessCommerceAdminCatalog.patchSpecification(
 			specification.id,

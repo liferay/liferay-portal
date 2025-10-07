@@ -102,8 +102,6 @@ export class ClientExtensionsPage extends POM {
 	): Promise<ViewClientExtensionPage> {
 		await this._openItemActionsDropdown(clientExtensionName);
 
-		await this.viewMenuItem.click();
-
 		// The ERC is inside the data-id attribute of each dataset TD
 
 		const dataId = await this.page
@@ -115,6 +113,10 @@ export class ClientExtensionsPage extends POM {
 			.getAttribute('data-id');
 
 		const erc = dataId.replace('string,', '').replace(':name', '');
+
+		// Now go to the view client extension page
+
+		await this.viewMenuItem.click();
 
 		const viewClientExtensionPage = new ViewClientExtensionPage(
 			this.page,

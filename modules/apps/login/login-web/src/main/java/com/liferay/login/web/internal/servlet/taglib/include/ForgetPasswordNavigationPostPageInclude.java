@@ -11,9 +11,10 @@ import com.liferay.login.web.constants.LoginPortletKeys;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.taglib.include.PageInclude;
@@ -21,6 +22,9 @@ import com.liferay.taglib.portlet.RenderURLTag;
 import com.liferay.taglib.ui.IconTag;
 
 import jakarta.portlet.PortletConfig;
+import jakarta.portlet.PortletMode;
+import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.WindowState;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,16 +84,37 @@ public class ForgetPasswordNavigationPostPageInclude implements PageInclude {
 		}
 
 		try {
-			Layout layout =
-				_layoutUtilityPageEntryLayoutProvider.
-					getDefaultLayoutUtilityPageEntryLayout(
-						themeDisplay.getScopeGroupId(),
-						LayoutUtilityPageEntryConstants.TYPE_FORGOT_PASSWORD);
+			Layout layout = null;
+
+			if (FeatureFlagManagerUtil.isEnabled("LPD-6378")) {
+				layout =
+					_layoutUtilityPageEntryLayoutProvider.
+						getDefaultLayoutUtilityPageEntryLayout(
+							themeDisplay.getScopeGroupId(),
+							LayoutUtilityPageEntryConstants.
+								TYPE_FORGOT_PASSWORD);
+			}
 
 			String forgetPasswordURL = null;
 
 			if (layout != null) {
-				forgetPasswordURL = _portal.getLayoutURL(layout, themeDisplay);
+				PortletURL portletURL = PortletURLBuilder.create(
+					PortletURLFactoryUtil.create(
+						httpServletRequest, LoginPortletKeys.FORGOT_PASSWORD,
+						layout, PortletRequest.RENDER_PHASE)
+				).setParameter(
+					"saveLastPath", false
+				).setPortletMode(
+					PortletMode.VIEW
+				).setWindowState(
+					WindowState.MAXIMIZED
+				).buildPortletURL();
+
+				if (layout.isTypeUtility()) {
+					portletURL.setWindowState(WindowState.NORMAL);
+				}
+
+				forgetPasswordURL = portletURL.toString();
 			}
 			else {
 				RenderURLTag renderURLTag = new RenderURLTag();
@@ -124,8 +149,5 @@ public class ForgetPasswordNavigationPostPageInclude implements PageInclude {
 	@Reference
 	private LayoutUtilityPageEntryLayoutProvider
 		_layoutUtilityPageEntryLayoutProvider;
-
-	@Reference
-	private Portal _portal;
 
 }

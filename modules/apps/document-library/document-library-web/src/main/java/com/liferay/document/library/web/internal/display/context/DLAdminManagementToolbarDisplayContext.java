@@ -885,7 +885,7 @@ public class DLAdminManagementToolbarDisplayContext
 					"extensionsFilterURL", _getExtensionsItemSelectorURL());
 				dropdownItem.setActive(!extensionsIsEmpty);
 				dropdownItem.setLabel(
-					LanguageUtil.get(_httpServletRequest, "extension"));
+					LanguageUtil.get(_httpServletRequest, "extension[file]"));
 			}
 		).add(
 			dropdownItem -> {

@@ -40,7 +40,7 @@ public class TestClassMissingLiferayUnitTestRuleCheck extends BaseCheck {
 			return;
 		}
 
-		List<String> pathNames = getAttributeValues(_PAHT_NAMES_WHITELIST);
+		List<String> pathNames = getAttributeValues(_PATH_NAMES_WHITELIST_KEY);
 
 		for (String pathName : pathNames) {
 			if (!absolutePath.contains(pathName)) {
@@ -123,6 +123,7 @@ public class TestClassMissingLiferayUnitTestRuleCheck extends BaseCheck {
 
 	private static final String _MSG_REQUIRE_TEST_RULE = "test.rule.missing";
 
-	private static final String _PAHT_NAMES_WHITELIST = "pathNamesWhitelist";
+	private static final String _PATH_NAMES_WHITELIST_KEY =
+		"pathNamesWhitelist";
 
 }

@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -98,7 +97,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 		try {
 			_backgroundTaskManager.addBackgroundTask(
-				_user.getUserId(), CompanyConstants.SYSTEM,
+				_user.getUserId(), BackgroundTaskConstants.GROUP_ID_DEFAULT,
 				BackgroundTaskStatusMessageListenerTest.class.getName(),
 				backgroundTaskExecutorClass.getName(), new HashMap<>(),
 				new ServiceContext());

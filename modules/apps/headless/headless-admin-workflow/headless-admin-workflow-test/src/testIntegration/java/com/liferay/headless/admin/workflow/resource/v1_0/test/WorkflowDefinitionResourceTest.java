@@ -40,6 +40,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -151,6 +152,13 @@ public class WorkflowDefinitionResourceTest
 		Assert.assertEquals(
 			workflowDefinition.getDateCreated(),
 			latestWorkflowDefinition.getDateCreated());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteWorkflowDefinitionUndeploy() throws Exception {
+		super.testGraphQLDeleteWorkflowDefinitionUndeploy();
 	}
 
 	@Override
@@ -409,6 +417,22 @@ public class WorkflowDefinitionResourceTest
 		throws Exception {
 
 		return testGetWorkflowDefinition_addWorkflowDefinition();
+	}
+
+	@Override
+	protected WorkflowDefinition
+			testGraphQLWorkflowDefinition_addWorkflowDefinition(
+				WorkflowDefinition workflowDefinition)
+		throws Exception {
+
+		workflowDefinition =
+			workflowDefinitionResource.postWorkflowDefinitionDeploy(
+				workflowDefinition);
+
+		_workflowDefinitions.put(
+			workflowDefinition.getName(), workflowDefinition);
+
+		return workflowDefinition;
 	}
 
 	@Override

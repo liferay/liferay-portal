@@ -156,6 +156,10 @@ public class FooService {
 			ids.length);
 	}
 
+	public static String locales(List<Locale> locales) {
+		return locales.toString();
+	}
+
 	public static String methodOne(long id, long nameId) {
 		return "m-2";
 	}

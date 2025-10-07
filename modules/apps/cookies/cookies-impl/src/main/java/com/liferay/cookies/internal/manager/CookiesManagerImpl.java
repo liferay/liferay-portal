@@ -245,6 +245,7 @@ public class CookiesManagerImpl implements CookiesManager {
 
 			cookie.setMaxAge(0);
 			cookie.setPath(_getContextPath(httpServletRequest));
+			cookie.setSecure(_portal.isSecure(httpServletRequest));
 			cookie.setValue(StringPool.BLANK);
 
 			httpServletResponse.addCookie(cookie);

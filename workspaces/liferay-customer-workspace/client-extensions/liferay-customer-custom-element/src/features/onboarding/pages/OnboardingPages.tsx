@@ -57,7 +57,7 @@ const OnboardingPages: React.FC = () => {
 		project?.accountKey
 	);
 
-	const {client, featureFlags} = useAppPropertiesContext();
+	const {client} = useAppPropertiesContext();
 
 	const subscriptionDXPCloud = subscriptionGroups?.find(
 		(subscriptionGroup: IAccountSubscriptionGroup) =>
@@ -82,7 +82,6 @@ const OnboardingPages: React.FC = () => {
 
 	const invitesPageHandle = () => {
 		if (
-			featureFlags.includes('LPS-153478') &&
 			subscriptionLiferayExperienceCloud &&
 			!liferayExperienceCloudActivationSubmittedStatus
 		) {

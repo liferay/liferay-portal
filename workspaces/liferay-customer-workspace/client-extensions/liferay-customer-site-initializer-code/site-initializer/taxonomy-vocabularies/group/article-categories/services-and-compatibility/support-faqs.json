@@ -1,0 +1,20 @@
+{
+	"name": "Support FAQs",
+	"name_i18n": {
+		"en_US": "Support FAQs",
+		"es-ES": "Preguntas más frecuentes sobre soporte",
+		"ja-JP": "サポートFAQ",
+		"pt-BR": "Perguntas Frequentes sobre Suporte"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "quick-answers-and-resources-to-common-support-questions"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/support_faq.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

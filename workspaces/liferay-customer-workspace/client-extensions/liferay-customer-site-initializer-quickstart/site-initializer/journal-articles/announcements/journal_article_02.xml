@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="content" index-type="text" instance-id="IMF21pak" name="content" type="rich_text">
+		<dynamic-content language-id="en_US">
+			<![CDATA[<p>The insurance industry is evolving rapidly, with rising customer expectations, operational inefficiencies, and increasing climate risks creating major challenges. At the same time, acquiring and retaining customers has become more complex, requiring smarter digital strategies and faster innovation.In this session, Liferay's Erica Gnajek and Objective Group's Rafael Gomes will explore how Digital Experience Platforms (DXPs) can help insurers:</p>]]>
+		</dynamic-content>
+	</dynamic-element>
+	<dynamic-element field-reference="button" index-type="" instance-id="MkP5s6F7" name="button" type="fieldset">
+		<dynamic-element field-reference="buttonText" index-type="keyword" instance-id="E89qyDr8" name="buttonText" type="text">
+			<dynamic-content language-id="en_US">
+				<![CDATA[Register Now]]>
+			</dynamic-content>
+		</dynamic-element>
+		<dynamic-element field-reference="buttonURL" index-type="keyword" instance-id="Y3M5Rl7O" name="buttonURL" type="text">
+			<dynamic-content language-id="en_US">
+				<![CDATA[/register-now]]>
+			</dynamic-content>
+		</dynamic-element>
+	</dynamic-element>
+</root>

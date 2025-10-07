@@ -68,8 +68,6 @@ definition {
 
 	@priority = 3
 	test CanCreateSiteScopedKeywordWhileUpdatingSiteScopedObjectEntry {
-		property portal.acceptance = "true";
-
 		task ("And Given object definition 'Student' with name field and Scope: Site created") {
 			ObjectDefinitionAPI.createAndPublishObjectDefinition(
 				en_US_label = "student",

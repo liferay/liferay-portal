@@ -6,17 +6,12 @@
 package com.liferay.wiki.internal.translator;
 
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.Digester;
-import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.mockito.Mockito;
 
 /**
  * @author Jorge Ferrer
@@ -288,18 +283,6 @@ public class MediaWikiToCreoleTranslatorTest {
 
 	@Test
 	public void testNowikiWithFormat() throws Exception {
-		DigesterUtil digesterUtil = new DigesterUtil();
-
-		Digester digester = Mockito.mock(Digester.class);
-
-		Mockito.when(
-			digester.digest(Mockito.anyString())
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		digesterUtil.setDigester(digester);
-
 		String content =
 			"previous line\n<nowiki>\nmonospace\n''second'' " +
 				"line\n</nowiki>\nnext line";

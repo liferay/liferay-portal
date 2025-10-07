@@ -15,7 +15,7 @@ public class Database {
 			return new Database(
 				"com.ibm.db2.jcc.DB2Driver", "jdbc:db2://", "localhost", 50000,
 				":deferPrepares=false;fullyMaterializeInputStreams=true;" +
-					"fullyMaterializeLobData=true;progresssiveLocators=2;" +
+					"fullyMaterializeLobData=true;progressiveLocators=2;" +
 						"progressiveStreaming=2;",
 				"lportal");
 		}

@@ -1,0 +1,47 @@
+{
+	"configuration": {
+		"className": "com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-17564",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
+			"listTypeEntries": [
+				{
+					"externalReferenceCode": "COMPLETED",
+					"key": "completed",
+					"name": "Completed",
+					"system": true
+				},
+				{
+					"externalReferenceCode": "FAILED",
+					"key": "failed",
+					"name": "Failed",
+					"system": true
+				},
+				{
+					"externalReferenceCode": "INITIAL",
+					"key": "initial",
+					"name": "Initial",
+					"system": true
+				},
+				{
+					"externalReferenceCode": "STARTED",
+					"key": "started",
+					"name": "Started",
+					"system": true
+				}
+			],
+			"name": "Bulk Action Statuses",
+			"system": true
+		}
+	]
+}

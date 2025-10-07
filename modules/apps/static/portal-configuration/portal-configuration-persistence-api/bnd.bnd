@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Configuration Persistence API
 Bundle-SymbolicName: com.liferay.portal.configuration.persistence.api
-Bundle-Version: 4.1.5
+Bundle-Version: 4.2.1
 Export-Package:\
 	com.liferay.portal.configuration.persistence,\
 	com.liferay.portal.configuration.persistence.listener,\

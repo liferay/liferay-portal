@@ -1,0 +1,6 @@
+{
+	"fragmentEntryKey": "account-selector-fragment",
+	"icon": "users",
+	"name": "account-selector",
+	"type": "component"
+}

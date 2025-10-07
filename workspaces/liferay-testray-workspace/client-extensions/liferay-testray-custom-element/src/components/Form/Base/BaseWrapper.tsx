@@ -16,7 +16,7 @@ type BaseWrapperProps = {
 	disabled?: boolean;
 	error?: string;
 	id?: string;
-	label?: string;
+	label?: string | ReactNode;
 	required?: boolean;
 };
 
@@ -46,7 +46,7 @@ const BaseWrapper: React.FC<BaseWrapperProps> = ({
 					)}
 					htmlFor={id}
 				>
-					{i18n.translate(label)}
+					{typeof label === 'string' ? i18n.translate(label) : label}
 				</label>
 			)}
 

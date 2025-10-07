@@ -145,7 +145,6 @@
 		<field name="shippingExtraPrice" type="double" />
 		<field name="shipSeparately" type="boolean" />
 		<field name="taxExempt" type="boolean" />
-		<field name="visible" type="boolean" />
 		<field name="weight" type="double" />
 		<field name="width" type="double" />
 	</model>
@@ -299,9 +298,10 @@
 		<field name="companyId" type="long" />
 		<field name="CPDefinitionId" type="long" />
 		<field name="languageId" type="String" />
+		<field name="CProductId" type="long" />
 		<field name="name" type="String">
 			<hint-collection name="TEXTAREA" />
-			<sanitize content-type="text/html" modes="ALL" />
+			<sanitize content-type="text/plain" modes="ALL" />
 		</field>
 		<field name="shortDescription" type="String">
 			<hint-collection name="TEXTAREA" />

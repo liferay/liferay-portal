@@ -15,7 +15,6 @@ const ENDPOINT_FIELD_TYPES = `${
 const HEADERS = {
 	'Accept': 'application/json',
 	'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
-	'Content-Type': 'application/json',
 };
 
 export function useFieldTypesResource() {

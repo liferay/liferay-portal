@@ -5,7 +5,7 @@ apply plugin: "com.liferay.patcher"
 task patch(type: PatchTask)
 
 dependencies {
-	api group: "com.liferay", name: "org.springframework.beans", version: "5.3.39.LIFERAY-PATCHED-1"
+	api group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
 	api group: "com.liferay", name: "org.springframework.expression", version: "4.3.30.LIFERAY-PATCHED-3"
 	api group: "commons-logging", name: "commons-logging", version: "1.2"
 	api group: "org.springframework", name: "spring-context", version: "4.3.30.RELEASE"

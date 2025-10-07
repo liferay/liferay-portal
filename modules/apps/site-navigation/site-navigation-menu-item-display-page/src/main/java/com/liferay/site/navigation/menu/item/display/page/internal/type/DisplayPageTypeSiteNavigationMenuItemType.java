@@ -107,6 +107,11 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 				_displayPageTypeContext.getClassName());
 			siteNavigationMenuItemElement.addAttribute(
 				"display-page-class-pk", String.valueOf(classPK));
+			siteNavigationMenuItemElement.addAttribute(
+				"display-page-external-reference-code",
+				GetterUtil.getString(
+					typeSettingsUnicodeProperties.get(
+						"externalReferenceCode")));
 
 			portletDataContext.addReferenceElement(
 				siteNavigationMenuItem, siteNavigationMenuItemElement,
@@ -354,10 +359,10 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 		Element element = portletDataContext.getImportDataElement(
 			siteNavigationMenuItem);
 
-		long classPK = GetterUtil.getLong(
-			element.attributeValue("display-page-class-pk"));
+		String externalReferenceCode = GetterUtil.getString(
+			element.attributeValue("display-page-external-reference-code"));
 
-		if (classPK <= 0) {
+		if (externalReferenceCode == null) {
 			return false;
 		}
 
@@ -376,7 +381,12 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 						(Map<Long, Long>)
 							portletDataContext.getNewPrimaryKeysMap(
 								_displayPageTypeContext.getClassName()),
-						classPK, classPK))
+						GetterUtil.getLong(
+							element.attributeValue("display-page-class-pk")),
+						GetterUtil.getLong(
+							element.attributeValue("display-page-class-pk"))))
+			).put(
+				"externalReferenceCode", externalReferenceCode
 			).buildString());
 
 		return true;

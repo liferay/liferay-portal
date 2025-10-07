@@ -14,6 +14,8 @@ public class PatcherBuildConstants {
 
 	public static final double KEY_VERSION_DEFAULT = 1.0;
 
+	public static final String LABEL_ANY = "any";
+
 	public static final String LABEL_DEBUG = "debug";
 
 	public static final String LABEL_FIX_PACK = "fix-pack";

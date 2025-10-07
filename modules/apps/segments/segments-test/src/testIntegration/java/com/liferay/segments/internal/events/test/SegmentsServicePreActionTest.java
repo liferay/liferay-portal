@@ -43,6 +43,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.configuration.SegmentsCompanyConfiguration;
 import com.liferay.segments.configuration.SegmentsConfiguration;
+import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.model.SegmentsExperience;
@@ -103,6 +104,9 @@ public class SegmentsServicePreActionTest {
 								"segmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
 				MockHttpServletRequest mockHttpServletRequest =
@@ -158,6 +162,9 @@ public class SegmentsServicePreActionTest {
 							HashMapDictionaryBuilder.<String, Object>put(
 								"segmentationEnabled", true
 							).build())) {
+
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
 
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
@@ -235,6 +242,9 @@ public class SegmentsServicePreActionTest {
 								"segmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
 				MockHttpServletRequest mockHttpServletRequest =
@@ -299,6 +309,9 @@ public class SegmentsServicePreActionTest {
 								"segmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
 				MockHttpServletRequest mockHttpServletRequest =
@@ -340,6 +353,9 @@ public class SegmentsServicePreActionTest {
 								"segmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
 				MockHttpServletRequest mockHttpServletRequest =
@@ -379,6 +395,9 @@ public class SegmentsServicePreActionTest {
 							HashMapDictionaryBuilder.<String, Object>put(
 								"segmentationEnabled", true
 							).build())) {
+
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
 
 				LifecycleAction lifecycleAction = _getLifecycleAction();
 
@@ -489,6 +508,9 @@ public class SegmentsServicePreActionTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private SegmentsConfigurationProvider _segmentsConfigurationProvider;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

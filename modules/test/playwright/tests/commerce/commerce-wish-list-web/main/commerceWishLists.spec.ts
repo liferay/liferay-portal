@@ -86,7 +86,6 @@ test('LPD-34906 Verify wishlist visibility rules', async ({
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'WishListsSite',
 		siteGroupId: site.id,
 	});
 

@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -37,7 +38,6 @@ import com.liferay.portal.tools.rest.builder.test.client.http.HttpInvoker;
 import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.EntityModelResourceTestEntity2Resource;
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.EntityModelResourceTestEntity2SerDes;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -209,6 +209,123 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 
 	protected EntityModelResourceTestEntity2
 			testGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2()
+		throws Exception {
+
+		EntityModelResourceTestEntity2 entityModelResourceTestEntity2 =
+			testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				entityModelResourceTestEntity2,
+				EntityModelResourceTestEntity2SerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"entityModelResourceTestEntity2Id",
+											entityModelResourceTestEntity2.
+												getId());
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/entityModelResourceTestEntities2EntityModelResourceTestEntity2"))));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertTrue(
+			equals(
+				entityModelResourceTestEntity2,
+				EntityModelResourceTestEntity2SerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"test_v1_0",
+								new GraphQLField(
+									"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"entityModelResourceTestEntity2Id",
+												entityModelResourceTestEntity2.
+													getId());
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/test_v1_0",
+						"Object/entityModelResourceTestEntities2EntityModelResourceTestEntity2"))));
+	}
+
+	@Test
+	public void testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2NotFound()
+		throws Exception {
+
+		Long irrelevantEntityModelResourceTestEntity2Id =
+			RandomTestUtil.randomLong();
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"entityModelResourceTestEntity2Id",
+									irrelevantEntityModelResourceTestEntity2Id);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"entityModelResourceTestEntities2EntityModelResourceTestEntity2",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"entityModelResourceTestEntity2Id",
+										irrelevantEntityModelResourceTestEntity2Id);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected EntityModelResourceTestEntity2
+			testGraphQLGetEntityModelResourceTestEntities2EntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
+		throws Exception {
+
+		return testGraphQLEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2();
+	}
+
+	protected EntityModelResourceTestEntity2
+			testGraphQLEntityModelResourceTestEntity2_addEntityModelResourceTestEntity2()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -390,6 +507,8 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

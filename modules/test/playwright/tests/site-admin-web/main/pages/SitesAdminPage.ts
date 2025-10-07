@@ -43,7 +43,7 @@ export class SitesAdminPage {
 		).toBeVisible();
 
 		if (closeModal) {
-			await this.page.getByLabel('close').click();
+			await this.page.locator('.modal').getByLabel('Close').click();
 
 			await expect(
 				this.page.getByRole('heading', {name: 'Provided by Liferay'})
@@ -73,6 +73,24 @@ export class SitesAdminPage {
 		});
 
 		await this.addBlankSite(childSiteName);
+	}
+
+	async deactivateSite(siteName: string) {
+		this.page.once('dialog', async (dialog) => {
+			await dialog.accept();
+		});
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				name: 'Deactivate',
+			}),
+			trigger: this.page
+				.getByRole('row', {name: siteName})
+				.getByLabel('Show Actions'),
+		});
+
+		await waitForAlert(this.page);
 	}
 
 	async assertActions(

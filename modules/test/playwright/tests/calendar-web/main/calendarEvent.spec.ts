@@ -22,7 +22,6 @@ import performLogin, {
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {getNextOrPreviousSaturday} from './utils/getNextOrPreviousSaturday';
 import {toLocalDateTimeFormatted} from './utils/toLocalDateTimeFormatted';
 
 export const test = mergeTests(
@@ -42,7 +41,12 @@ export const test = mergeTests(
 const recurrence = {
 	frequency: 'WEEKLY',
 	ocurrences: '2',
-	repeatDays: ['Wednesday'],
+	repeatDays: [
+		new Date().toLocaleDateString('en-US', {
+			timeZone: 'Europe/Paris',
+			weekday: 'long',
+		}),
+	],
 } as Recurrence;
 
 test.beforeEach(
@@ -72,7 +76,7 @@ test.beforeEach(
 	}
 );
 
-test('assert that past events have respective within the click more dropdown', async ({
+test('assert that past events have respective class within the click more dropdown', async ({
 	calendarWidgetPage,
 	page,
 }) => {
@@ -479,14 +483,13 @@ test('event ending at midnight does not render on the next day', async ({
 	calendarWidgetPage,
 	page,
 }) => {
-	const today = new Date();
+	const eventStartDay = new Date();
+	eventStartDay.setDate(15);
 
-	const saturday = getNextOrPreviousSaturday(today);
+	const eventEndDay = new Date();
+	eventEndDay.setDate(eventStartDay.getDate() + 1);
 
-	const sunday = new Date(saturday);
-	sunday.setDate(saturday.getDate() + 1);
-
-	const [startDate, endDate] = [saturday, sunday].map((date) =>
+	const [startDate, endDate] = [eventStartDay, eventEndDay].map((date) =>
 		toLocalDateTimeFormatted(date.toUTCString(), {
 			day: '2-digit',
 			month: '2-digit',
@@ -509,5 +512,39 @@ test('event ending at midnight does not render on the next day', async ({
 	await calendarWidgetPage.closeModalEvent();
 	await calendarWidgetPage.monthViewTab.click();
 
-	await expect(page.getByTitle(title)).toHaveCount(1);
+	await expect(page.getByTitle(title, {exact: true})).toHaveCount(1);
+	await expect(page.locator('.lfr-busy-day')).toHaveCount(1);
+});
+
+test('event with weekly recurrence has default value for repeat on field and has at least one value for repeat on options', async ({
+	calendarWidgetPage,
+	modalRecurrencePage,
+	page,
+}) => {
+	await calendarWidgetPage.clickAddEventButton();
+
+	await calendarWidgetPage.repeatCheckbox.setChecked(true);
+
+	await modalRecurrencePage.repeatSelect.selectOption('Weekly');
+
+	const today = new Date().toLocaleDateString('en-US', {
+		timeZone: 'Europe/Paris',
+		weekday: 'long',
+	});
+
+	const dayOfWeekCheckbox = page
+		.frameLocator('iframe')
+		.getByRole('checkbox', {name: today});
+
+	await expect(dayOfWeekCheckbox).toBeChecked();
+
+	await dayOfWeekCheckbox.click();
+
+	await expect(dayOfWeekCheckbox).toBeChecked();
+
+	await modalRecurrencePage.doneButton.click();
+
+	await calendarWidgetPage.publishEvent();
+
+	await expect(calendarWidgetPage.successAlert).toBeVisible();
 });

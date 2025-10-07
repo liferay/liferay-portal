@@ -3,7 +3,7 @@ assemble:
 liferay-paypal-commerce-payment-integration:
     key: liferay-paypal-commerce-payment-integration
     name: Liferay PayPal Commerce Payment Integration
-    oAuth2ApplicationExternalReferenceCode: liferay-paypal-commerce-payment-integration-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-paypal-commerce-payment-integration-oaua
     paymentIntegrationType: 4
     paymentIntegrationTypeSettings:
         clientId:
@@ -12,7 +12,7 @@ liferay-paypal-commerce-payment-integration:
         mode:
         webhookId:
     type: commercePaymentIntegration
-liferay-paypal-commerce-payment-integration-oauth-application-headless-server:
+liferay-paypal-commerce-payment-integration-oahs:
     .serviceAddress: localhost:58082
     .serviceScheme: http
     name: Liferay PayPal Commerce Payment Integration OAuth Application Headless Server
@@ -24,7 +24,7 @@ liferay-paypal-commerce-payment-integration-oauth-application-headless-server:
         -   c_b9k3paypaltransaction.everything
         -   c_b9k3paypalwebhook.everything
     type: oAuthApplicationHeadlessServer
-liferay-paypal-commerce-payment-integration-oauth-application-user-agent:
+liferay-paypal-commerce-payment-integration-oaua:
     .serviceAddress: localhost:58082
     .serviceScheme: http
     name: Liferay PayPal Commerce Payment Integration OAuth Application User Agent

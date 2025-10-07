@@ -15,148 +15,22 @@ CookiesBannerConfigurationDisplayContext cookiesBannerConfigurationDisplayContex
 	cssClass="container-view p-md-4"
 	id='<%= liferayPortletResponse.getNamespace() + "cookiesBannerConfigurationForm" %>'
 >
-	<clay:row>
+	<c:choose>
+		<c:when test="<%= cookiesBannerConfigurationDisplayContext.isShowButtons() %>">
+			<clay:sheet>
+				<clay:sheet-header>
+					<h2 class="sheet-title">
+						<liferay-ui:message key="cookie-preference-handling-configuration-name" />
+					</h2>
+				</clay:sheet-header>
 
-		<%
-		String alertMessage = ParamUtil.getString(request, "alertMessage");
-		%>
-
-		<c:if test="<%= alertMessage != StringPool.BLANK %>">
-			<clay:col
-				size="12"
-			>
-				<clay:alert
-					displayType='<%= ParamUtil.getString(request, "alertDisplayType", "info") %>'
-					message="<%= alertMessage %>"
-				/>
-			</clay:col>
-		</c:if>
-
-		<clay:col
-			cssClass="mb-3"
-			size="12"
-		>
-			<p>
-				<%= cookiesBannerConfigurationDisplayContext.getDescription(locale) %>
-
-				<clay:link
-					href="<%= cookiesBannerConfigurationDisplayContext.getCookiePolicyLink() %>"
-					label="<%= cookiesBannerConfigurationDisplayContext.getLinkDisplayText(locale) %>"
-					target="_blank"
-				/>
-			</p>
-		</clay:col>
-
-		<clay:col
-			size="12"
-		>
-
-			<%
-			for (ConsentCookieType requiredConsentCookieType : cookiesBannerConfigurationDisplayContext.getRequiredConsentCookieTypes()) {
-			%>
-
-				<clay:content-row
-					noGutters="true"
-					verticalAlign="center"
-				>
-					<clay:content-col
-						expand="<%= true %>"
-					>
-						<h2><%= cookiesBannerConfigurationDisplayContext.getCookieTitle(requiredConsentCookieType.getName(), request) %></h2>
-					</clay:content-col>
-
-					<clay:content-col>
-						<span class="pr-2 text-primary"><liferay-ui:message key="always-active" /></span>
-					</clay:content-col>
-				</clay:content-row>
-
-				<clay:content-row
-					cssClass="mb-3"
-				>
-					<p><%= requiredConsentCookieType.getDescription(locale) %></p>
-				</clay:content-row>
-
-			<%
-			}
-
-			for (ConsentCookieType optionalConsentCookieType : cookiesBannerConfigurationDisplayContext.getOptionalConsentCookieTypes()) {
-			%>
-
-				<clay:content-row
-					noGutters="true"
-					verticalAlign="center"
-				>
-					<clay:content-col
-						expand="<%= true %>"
-					>
-						<h2><%= cookiesBannerConfigurationDisplayContext.getCookieTitle(optionalConsentCookieType.getName(), request) %></h2>
-					</clay:content-col>
-
-					<clay:content-col>
-						<label class="toggle-switch">
-							<span class="toggle-switch-check-bar">
-								<input class="toggle-switch-check" data-cookie-key="<%= optionalConsentCookieType.getName() %>" data-prechecked="<%= optionalConsentCookieType.isPrechecked() %>" disabled type="checkbox" />
-
-								<span aria-hidden="true" class="toggle-switch-bar">
-									<span class="toggle-switch-handle"></span>
-								</span>
-							</span>
-						</label>
-					</clay:content-col>
-				</clay:content-row>
-
-				<clay:content-row
-					cssClass="mb-3"
-				>
-					<p><%= optionalConsentCookieType.getDescription(locale) %></p>
-				</clay:content-row>
-
-			<%
-			}
-			%>
-
-		</clay:col>
-	</clay:row>
-
-	<c:if test="<%= cookiesBannerConfigurationDisplayContext.isShowButtons() %>">
-		<clay:row
-			cssClass="d-flex justify-content-end"
-		>
-			<clay:content-row
-				noGutters="true"
-				verticalAlign="center"
-			>
-				<clay:content-col>
-					<clay:button
-						displayType="secondary"
-						id='<%= liferayPortletResponse.getNamespace() + "confirmButton" %>'
-						label='<%= LanguageUtil.get(request, "confirm") %>'
-						small="<%= true %>"
-					/>
-				</clay:content-col>
-
-				<clay:content-col>
-					<clay:button
-						displayType="secondary"
-						id='<%= liferayPortletResponse.getNamespace() + "acceptAllButton" %>'
-						label='<%= LanguageUtil.get(request, "accept-all") %>'
-						small="<%= true %>"
-					/>
-				</clay:content-col>
-
-				<c:if test="<%= cookiesBannerConfigurationDisplayContext.isIncludeDeclineAllButton() %>">
-					<clay:content-col>
-						<clay:button
-							displayType="secondary"
-							id='<%= liferayPortletResponse.getNamespace() + "declineAllButton" %>'
-							label='<%= LanguageUtil.get(request, "decline-all") %>'
-							small="<%= true %>"
-						/>
-					</clay:content-col>
-				</c:if>
-			</clay:content-row>
-		</clay:row>
-	</c:if>
+				<liferay-util:include page="/cookies_banner_configuration/cookies_banner_configuration.jsp" servletContext="<%= application %>" />
+			</clay:sheet>
+		</c:when>
+		<c:otherwise>
+			<liferay-util:include page="/cookies_banner_configuration/cookies_banner_configuration.jsp" servletContext="<%= application %>" />
+		</c:otherwise>
+	</c:choose>
 </clay:container-fluid>
 
 <liferay-frontend:component

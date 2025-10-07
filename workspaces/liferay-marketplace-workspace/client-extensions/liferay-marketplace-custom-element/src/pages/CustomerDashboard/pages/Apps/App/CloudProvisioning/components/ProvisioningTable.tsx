@@ -13,6 +13,7 @@ import i18n from '../../../../../../../i18n';
 import useProvisioningActions from '../hooks/useProvisioningActions';
 import useProvisioningData from '../hooks/useProvisioningData';
 import {InstallStatus} from '../types';
+import InstallAlertModal from './InstallAlertModal';
 import InstallationStatus from './InstallStatus';
 import UninstallModal from './UninstallModal';
 
@@ -27,6 +28,7 @@ const ProvisioningTable: React.FC<ProvisioningTableProps> = ({
 	const {selectedAccount} = useOutletContext<{selectedAccount: Account}>();
 	const {
 		actions,
+		installAlertModal,
 		loading,
 		onOpenDetailsModal,
 		selectedProvisioningRow,
@@ -191,6 +193,9 @@ const ProvisioningTable: React.FC<ProvisioningTableProps> = ({
 				onClickRow={(row) => onOpenDetailsModal(row)}
 				rows={provisioningTableData}
 			/>
+			{selectedProvisioningRow && (
+				<InstallAlertModal modal={installAlertModal} />
+			)}
 			{selectedProvisioningRow && (
 				<UninstallModal
 					loading={loading}

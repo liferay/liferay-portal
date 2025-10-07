@@ -10,18 +10,23 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.CompanyTestEntity;
+import com.liferay.portal.tools.rest.builder.test.client.permission.Permission;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.CompanyTestEntityResource;
-import com.liferay.portal.util.PropsValues;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,6 +58,24 @@ public class CompanyTestEntityResourceTest
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"description"};
+	}
+
+	@Override
+	protected CompanyTestEntity
+			testBatchEngineDeleteImportTask_addCompanyTestEntity()
+		throws Exception {
+
+		return companyTestEntityResource.postCompanyTestEntity(
+			randomCompanyTestEntity());
+	}
+
+	@Override
+	protected CompanyTestEntity
+			testDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity()
+		throws Exception {
+
+		return companyTestEntityResource.postCompanyTestEntity(
+			randomCompanyTestEntity());
 	}
 
 	@Override
@@ -188,6 +211,35 @@ public class CompanyTestEntityResourceTest
 									companyTestEntity.toString()))
 						).getContent()));
 		}
+
+		companyTestEntity.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		companyTestEntity.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						actionIds = new String[] {ActionKeys.VIEW};
+						roleExternalReferenceCode =
+							role.getExternalReferenceCode();
+						roleName = role.getName();
+						roleType = RoleConstants.getTypeLabel(role.getType());
+					}
+				}
+			});
+
+		_waitForFinish(
+			"COMPLETED", true,
+			JSONFactoryUtil.createJSONObject(
+				companyTestEntityResource.
+					postCompanyTestEntityBatchHttpResponse(
+						null,
+						JSONUtil.putAll(
+							JSONFactoryUtil.createJSONObject(
+								companyTestEntity.toString()))
+					).getContent()));
 	}
 
 	private void _testPutCompanyTestEntityBatch() throws Exception {

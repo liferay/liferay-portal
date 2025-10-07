@@ -50,7 +50,7 @@ public abstract class BaseDLOpenerFileEntryReferenceUADExporter
 	protected String toXmlString(
 		DLOpenerFileEntryReference dlOpenerFileEntryReference) {
 
-		StringBundler sb = new StringBundler(13);
+		StringBundler sb = new StringBundler(22);
 
 		sb.append("<model><model-name>");
 		sb.append(
@@ -60,6 +60,18 @@ public abstract class BaseDLOpenerFileEntryReferenceUADExporter
 		sb.append(
 			"<column><column-name>userName</column-name><column-value><![CDATA[");
 		sb.append(dlOpenerFileEntryReference.getUserName());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>referenceKey</column-name><column-value><![CDATA[");
+		sb.append(dlOpenerFileEntryReference.getReferenceKey());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>referenceType</column-name><column-value><![CDATA[");
+		sb.append(dlOpenerFileEntryReference.getReferenceType());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>fileEntryId</column-name><column-value><![CDATA[");
+		sb.append(dlOpenerFileEntryReference.getFileEntryId());
 		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");

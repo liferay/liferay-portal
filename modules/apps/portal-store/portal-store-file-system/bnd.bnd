@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Store File System
 Bundle-SymbolicName: com.liferay.portal.store.file.system
-Bundle-Version: 6.0.22
+Bundle-Version: 6.0.23
 -dsannotations-options: inherit

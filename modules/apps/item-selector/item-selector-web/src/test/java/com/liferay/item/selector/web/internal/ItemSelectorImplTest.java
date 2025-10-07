@@ -12,6 +12,8 @@ import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewRenderer;
 import com.liferay.item.selector.constants.ItemSelectorPortletKeys;
+import com.liferay.item.selector.web.internal.item.selector.FlickrItemSelectorCriterion;
+import com.liferay.item.selector.web.internal.item.selector.MediaItemSelectorCriterion;
 import com.liferay.item.selector.web.internal.util.ItemSelectorCriterionSerializerImpl;
 import com.liferay.item.selector.web.internal.util.ItemSelectorKeyUtil;
 import com.liferay.petra.function.transform.TransformUtil;

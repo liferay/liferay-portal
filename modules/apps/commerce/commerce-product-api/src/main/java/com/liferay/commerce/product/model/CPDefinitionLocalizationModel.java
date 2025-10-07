@@ -143,6 +143,20 @@ public interface CPDefinitionLocalizationModel
 	public void setLanguageId(String languageId);
 
 	/**
+	 * Returns the c product ID of this cp definition localization.
+	 *
+	 * @return the c product ID of this cp definition localization
+	 */
+	public long getCProductId();
+
+	/**
+	 * Sets the c product ID of this cp definition localization.
+	 *
+	 * @param CProductId the c product ID of this cp definition localization
+	 */
+	public void setCProductId(long CProductId);
+
+	/**
 	 * Returns the name of this cp definition localization.
 	 *
 	 * @return the name of this cp definition localization

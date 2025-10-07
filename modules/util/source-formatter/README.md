@@ -99,8 +99,9 @@ Checks are configured in the following files:
    - [Upgrade](src/main/resources/documentation/upgrade_checks.md#upgrade-checks)
 
 - ### By File Extensions:
-   - [.action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd](src/main/resources/documentation/xml_source_processor_checks.md#checks-for-action-function-jelly-jrxml-macro-pom-project-properties-svg-testcase-toggle-tpl-wsdl-xml-or-xsd)
+   - [.action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd](src/main/resources/documentation/xml_source_processor_checks.md#checks-for-action-function-jelly-jrxml-macro-pom-project-properties-qti-svg-testcase-toggle-tpl-wsdl-xml-or-xsd)
    - [.bnd](src/main/resources/documentation/bnd_source_processor_checks.md#checks-for-bnd)
+   - [.bnd, .ftl, .gradle, .html, .java, .js, .jsp, .jspf, .jspx, .jsx, .properties, .tld, .ts, .tsx, or .xml](src/main/resources/documentation/jakarta_transform_source_processor_checks.md#checks-for-bnd-ftl-gradle-html-java-js-jsp-jspf-jspx-jsx-properties-tld-ts-tsx-or-xml)
    - [.bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm](src/main/resources/documentation/upgrade_source_processor_checks.md#checks-for-bnd-ftl-gradle-java-json-jsp-jspf-scss-or-vm)
    - [.bndrun](src/main/resources/documentation/bnd_run_source_processor_checks.md#checks-for-bndrun)
    - [.cfg or .config](src/main/resources/documentation/config_source_processor_checks.md#checks-for-cfg-or-config)
@@ -114,7 +115,7 @@ Checks are configured in the following files:
    - [.function, .jar, .lar, .macro, .path, .testcase, .war, or .zip](src/main/resources/documentation/poshi_source_processor_checks.md#checks-for-function-jar-lar-macro-path-testcase-war-or-zip)
    - [.gitrepo or ci-merge](src/main/resources/documentation/ci_merge_and_git_repo_source_processor_checks.md#checks-for-gitrepo-or-cimerge)
    - [.gradle](src/main/resources/documentation/gradle_source_processor_checks.md#checks-for-gradle)
-   - [.gradle, .gradle, .gradle, .gradle, .json, .json, .properties, .properties, .xml, or .xml](src/main/resources/documentation/library_source_processor_checks.md#checks-for-gradle-gradle-gradle-gradle-json-json-properties-properties-xml-or-xml)
+   - [.gradle, .json, .properties, or .xml](src/main/resources/documentation/library_source_processor_checks.md#checks-for-gradle-json-properties-or-xml)
    - [.groovy](src/main/resources/documentation/groovy_source_processor_checks.md#checks-for-groovy)
    - [.html or .path](src/main/resources/documentation/html_source_processor_checks.md#checks-for-html-or-path)
    - [.ipynb, .json, or .npmbridgerc](src/main/resources/documentation/json_source_processor_checks.md#checks-for-ipynb-json-or-npmbridgerc)

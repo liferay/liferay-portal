@@ -8,22 +8,22 @@ package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 import com.liferay.portal.kernel.exception.DuplicateExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LongWrapper;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.CompanyTestEntity;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.CompanyTestEntityResource;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.permission.Permission;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -37,121 +37,16 @@ public class CompanyTestEntityResourceImpl
 	extends BaseCompanyTestEntityResourceImpl {
 
 	@Override
-	public Page<CompanyTestEntity> doGetCompanyTestEntitiesPage()
-		throws Exception {
-
-		return Page.of(
-			HashMapBuilder.<String, Map<String, String>>put(
-				"createBatch",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/test/v1.0/company-test-entities" +
-						"/batch"
-				).put(
-					"method", "POST"
-				).build()
-			).build(),
-			_companyTestEntities);
-	}
-
-	@Override
-	public CompanyTestEntity doGetCompanyTestEntity(Long companyTestEntityId)
-		throws Exception {
-
-		CompanyTestEntity companyTestEntity = _fetchCompanyTestEntity(
-			companyTestEntityId);
-
-		if (companyTestEntity == null) {
-			throw new NoSuchModelException();
-		}
-
-		return companyTestEntity;
-	}
-
-	@Override
-	public CompanyTestEntity doGetCompanyTestEntityByExternalReferenceCode(
+	public void deleteCompanyTestEntityByExternalReferenceCode(
 			String externalReferenceCode)
 		throws Exception {
 
 		CompanyTestEntity companyTestEntity = _fetchCompanyTestEntity(
 			externalReferenceCode);
 
-		if (companyTestEntity == null) {
-			throw new NoSuchModelException();
+		if (companyTestEntity != null) {
+			_companyTestEntities.remove(companyTestEntity.getId());
 		}
-
-		return companyTestEntity;
-	}
-
-	@Override
-	public CompanyTestEntity doPostCompanyTestEntity(
-			CompanyTestEntity companyTestEntity)
-		throws Exception {
-
-		CompanyTestEntity existingCompanyTestEntity = _fetchCompanyTestEntity(
-			companyTestEntity.getExternalReferenceCode());
-
-		if (existingCompanyTestEntity != null) {
-			throw new DuplicateExternalReferenceCodeException();
-		}
-
-		companyTestEntity.setId(Long.valueOf(_companyTestEntities.size()));
-		companyTestEntity.setPermissions((Permission[])null);
-
-		_companyTestEntities.add(companyTestEntity);
-
-		return companyTestEntity;
-	}
-
-	@Override
-	public CompanyTestEntity doPutCompanyTestEntity(
-			Long companyTestEntityId, CompanyTestEntity companyTestEntity)
-		throws Exception {
-
-		CompanyTestEntity existingCompanyTestEntity = _fetchCompanyTestEntity(
-			companyTestEntity.getExternalReferenceCode());
-
-		if ((existingCompanyTestEntity != null) &&
-			!Objects.equals(
-				existingCompanyTestEntity.getId(), companyTestEntityId)) {
-
-			throw new DuplicateExternalReferenceCodeException();
-		}
-
-		existingCompanyTestEntity = _fetchCompanyTestEntity(
-			companyTestEntityId);
-
-		if (existingCompanyTestEntity == null) {
-			throw new NoSuchModelException();
-		}
-
-		companyTestEntity.setExternalReferenceCode(
-			existingCompanyTestEntity.getExternalReferenceCode());
-		companyTestEntity.setId(companyTestEntityId);
-		companyTestEntity.setPermissions((Permission[])null);
-
-		_companyTestEntities.set(
-			Math.toIntExact(companyTestEntityId), companyTestEntity);
-
-		return companyTestEntity;
-	}
-
-	@Override
-	public CompanyTestEntity doPutCompanyTestEntityByExternalReferenceCode(
-			String externalReferenceCode, CompanyTestEntity companyTestEntity)
-		throws Exception {
-
-		companyTestEntity.setExternalReferenceCode(externalReferenceCode);
-
-		CompanyTestEntity existingCompanyTestEntity = _fetchCompanyTestEntity(
-			externalReferenceCode);
-
-		if (existingCompanyTestEntity == null) {
-			return postCompanyTestEntity(companyTestEntity);
-		}
-
-		return putCompanyTestEntity(
-			existingCompanyTestEntity.getId(), companyTestEntity);
 	}
 
 	@Override
@@ -188,7 +83,7 @@ public class CompanyTestEntityResourceImpl
 		throws Exception {
 
 		for (Permission permission : permissions) {
-			_roleLocalService.getRole(
+			roleLocalService.getRole(
 				CompanyThreadLocal.getCompanyId(), permission.getRoleName());
 		}
 
@@ -200,11 +95,135 @@ public class CompanyTestEntityResourceImpl
 		return getCompanyTestEntityPermissionsPage(companyTestEntityId, null);
 	}
 
+	@Override
+	protected Page<CompanyTestEntity> doGetCompanyTestEntitiesPage()
+		throws Exception {
+
+		return Page.of(
+			HashMapBuilder.<String, Map<String, String>>put(
+				"createBatch",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/test/v1.0/company-test-entities" +
+						"/batch"
+				).put(
+					"method", "POST"
+				).build()
+			).build(),
+			_companyTestEntities.values());
+	}
+
+	@Override
+	protected CompanyTestEntity doGetCompanyTestEntity(Long companyTestEntityId)
+		throws Exception {
+
+		CompanyTestEntity companyTestEntity = _fetchCompanyTestEntity(
+			companyTestEntityId);
+
+		if (companyTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		return companyTestEntity;
+	}
+
+	@Override
+	protected CompanyTestEntity doGetCompanyTestEntityByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		CompanyTestEntity companyTestEntity = _fetchCompanyTestEntity(
+			externalReferenceCode);
+
+		if (companyTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		return companyTestEntity;
+	}
+
+	@Override
+	protected CompanyTestEntity doPostCompanyTestEntity(
+			CompanyTestEntity companyTestEntity)
+		throws Exception {
+
+		if (Validator.isNull(companyTestEntity.getExternalReferenceCode())) {
+			companyTestEntity.setExternalReferenceCode(
+				StringUtil.randomString());
+		}
+		else {
+			CompanyTestEntity existingCompanyTestEntity =
+				_fetchCompanyTestEntity(
+					companyTestEntity.getExternalReferenceCode());
+
+			if (existingCompanyTestEntity != null) {
+				throw new DuplicateExternalReferenceCodeException();
+			}
+		}
+
+		companyTestEntity.setId(_counter.increment());
+		companyTestEntity.setPermissions((Permission[])null);
+
+		_companyTestEntities.put(companyTestEntity.getId(), companyTestEntity);
+
+		return companyTestEntity;
+	}
+
+	@Override
+	protected CompanyTestEntity doPutCompanyTestEntity(
+			Long companyTestEntityId, CompanyTestEntity companyTestEntity)
+		throws Exception {
+
+		CompanyTestEntity existingCompanyTestEntity = _fetchCompanyTestEntity(
+			companyTestEntity.getExternalReferenceCode());
+
+		if ((existingCompanyTestEntity != null) &&
+			!Objects.equals(
+				existingCompanyTestEntity.getId(), companyTestEntityId)) {
+
+			throw new DuplicateExternalReferenceCodeException();
+		}
+
+		existingCompanyTestEntity = _fetchCompanyTestEntity(
+			companyTestEntityId);
+
+		if (existingCompanyTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		companyTestEntity.setExternalReferenceCode(
+			existingCompanyTestEntity.getExternalReferenceCode());
+		companyTestEntity.setId(companyTestEntityId);
+		companyTestEntity.setPermissions((Permission[])null);
+
+		_companyTestEntities.put(companyTestEntityId, companyTestEntity);
+
+		return companyTestEntity;
+	}
+
+	@Override
+	protected CompanyTestEntity doPutCompanyTestEntityByExternalReferenceCode(
+			String externalReferenceCode, CompanyTestEntity companyTestEntity)
+		throws Exception {
+
+		companyTestEntity.setExternalReferenceCode(externalReferenceCode);
+
+		CompanyTestEntity existingCompanyTestEntity = _fetchCompanyTestEntity(
+			externalReferenceCode);
+
+		if (existingCompanyTestEntity == null) {
+			return postCompanyTestEntity(companyTestEntity);
+		}
+
+		return putCompanyTestEntity(
+			existingCompanyTestEntity.getId(), companyTestEntity);
+	}
+
 	private CompanyTestEntity _fetchCompanyTestEntity(long id)
 		throws Exception {
 
-		if (_companyTestEntities.size() > id) {
-			return _companyTestEntities.get(Math.toIntExact(id));
+		if (_companyTestEntities.containsKey(id)) {
+			return _companyTestEntities.get(id);
 		}
 
 		return null;
@@ -213,7 +232,9 @@ public class CompanyTestEntityResourceImpl
 	private CompanyTestEntity _fetchCompanyTestEntity(
 		String externalReferenceCode) {
 
-		for (CompanyTestEntity companyTestEntity : _companyTestEntities) {
+		for (CompanyTestEntity companyTestEntity :
+				_companyTestEntities.values()) {
+
 			if (Objects.equals(
 					externalReferenceCode,
 					companyTestEntity.getExternalReferenceCode())) {
@@ -225,11 +246,9 @@ public class CompanyTestEntityResourceImpl
 		return null;
 	}
 
-	private static final List<CompanyTestEntity> _companyTestEntities =
-		new ArrayList<>();
+	private static final Map<Long, CompanyTestEntity> _companyTestEntities =
+		new TreeMap<>();
+	private static final LongWrapper _counter = new LongWrapper();
 	private static final Map<Long, Permission[]> _permissions = new HashMap<>();
-
-	@Reference
-	private RoleLocalService _roleLocalService;
 
 }

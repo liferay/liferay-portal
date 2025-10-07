@@ -174,7 +174,7 @@ public class LearnRestController extends BaseRestController {
 				get(
 					_getAuthorization(),
 					UriComponentsBuilder.fromPath(
-						"/o/c/quizquestions/scopes/" + _siteGroupId
+						"/o/c/quizquestions"
 					).queryParam(
 						"filter", "quizId eq '" + quizId + "'"
 					).queryParam(
@@ -248,7 +248,7 @@ public class LearnRestController extends BaseRestController {
 
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
-			"liferay-learn-etc-spring-boot-oauth-application-headless-server");
+			"liferay-learn-etc-spring-boot-oahs");
 	}
 
 	private String _getGoogleAccessToken() throws Exception {
@@ -428,7 +428,7 @@ public class LearnRestController extends BaseRestController {
 			get(
 				_getAuthorization(),
 				UriComponentsBuilder.fromPath(
-					"/o/c/userbadges/scopes/" + _siteGroupId
+					"/o/c/userbadges"
 				).queryParam(
 					"filter",
 					StringBundler.concat(
@@ -452,7 +452,7 @@ public class LearnRestController extends BaseRestController {
 				"r_userBadges_userId", userId
 			).toString(),
 			UriComponentsBuilder.fromPath(
-				"/o/c/userbadges/scopes/" + _siteGroupId
+				"/o/c/userbadges"
 			).build(
 			).toUri());
 	}
@@ -519,8 +519,5 @@ public class LearnRestController extends BaseRestController {
 
 	@Autowired
 	private LiferayOAuth2AccessTokenManager _liferayOAuth2AccessTokenManager;
-
-	@Value("${liferay.learn.dxp.site.group.id}")
-	private long _siteGroupId;
 
 }

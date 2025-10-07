@@ -352,9 +352,7 @@ public class BaseSolrQueryAssemblerImpl implements BaseSolrQueryAssembler {
 
 		};
 
-	@Reference(target = "(search.engine.impl=Solr)")
-	private FilterTranslator<org.apache.lucene.search.Query> _filterTranslator;
-
+	private final FilterTranslator _filterTranslator = new FilterTranslator();
 	private final QueryTranslator<String> _queryTranslator =
 		new com.liferay.portal.search.solr8.internal.query.
 			SolrQueryTranslator();

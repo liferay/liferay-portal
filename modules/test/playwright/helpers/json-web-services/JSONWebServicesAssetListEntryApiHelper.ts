@@ -42,15 +42,41 @@ export class JSONWebServicesAssetListEntryApiHelper {
 		);
 	}
 
+	async addManualAssetListEntry({
+		groupId,
+		title,
+		type = '1',
+	}: {
+		groupId: string;
+		title: string;
+		type?: string;
+	}): Promise<AssetListEntry> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('externalReferenceCode', '');
+		urlSearchParams.append('groupId', groupId);
+		urlSearchParams.append('title', title);
+		urlSearchParams.append('type', type);
+
+		return await this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/add-asset-list-entry`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async updateAssetListEntry({
 		assetListEntryId,
 		groupId,
-		segmentsEntryId,
+		segmentsEntryId = '0',
 		typeSettings = '',
 	}: {
 		assetListEntryId: string;
 		groupId: string;
-		segmentsEntryId: string;
+		segmentsEntryId?: string;
 		typeSettings?: string;
 	}): Promise<AssetListEntry> {
 		const user =

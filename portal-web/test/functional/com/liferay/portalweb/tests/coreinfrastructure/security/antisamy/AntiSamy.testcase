@@ -30,7 +30,7 @@ definition {
 	}
 
 	@description = "LPS-112581 TC-4: AntiSamy configuration XML should be configurable through the Portal."
-	@priority = 3
+	@priority = 4
 	test AntiSamyConfigXMLShouldBeConfigurableInPortal {
 		property antisamy.enabled = "true";
 		property portal.acceptance = "true";
@@ -68,7 +68,7 @@ definition {
 	@description = "LPD-25553: AntiSamy Should be disabled without exceptions"
 	@priority = 3
 	test AntiSamyShouldBeDisabledWithoutExceptions {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -109,7 +109,7 @@ definition {
 	@priority = 3
 	test ModelSpecificAntiSamyRulesShouldWorkForModel {
 		property antisamy.enabled = "true";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -223,7 +223,7 @@ definition {
 	@description = "LPD-25553: Assert AntiSamy is correctly disabled"
 	@priority = 3
 	test ScriptInWikiPortletShouldNotBeSanitizedWhenAntiSamyIsDisabled {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

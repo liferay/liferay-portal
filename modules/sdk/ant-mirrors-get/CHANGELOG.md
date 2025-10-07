@@ -1,5 +1,73 @@
 # Liferay Ant Mirrors Get Change Log
 
+## 1.2.22 - 2025-02-07
+
+### Commits
+- [LRCI-5292] Fix the temporary file path (88266bda2d)
+- [LRCI-5292] Create a method to delete a file even if it is a dir (f0da7a8603)
+- [LRCI-5292] Remove parent path (5f248ccfc8)
+
+## 1.2.21 - 2025-02-05
+
+### Commits
+- [LRCI-5292] Grab file name (261dfb6741)
+
+## 1.2.20 - 2025-02-04
+
+### Commits
+- [LRCI-5292] Wordsmith (0e091c5f02)
+- [LRCI-5292] Use current time as prefix (c9736ea320)
+
+## 1.2.19 - 2025-01-11
+
+### Commits
+- [LRCI-5148] Rename (6a4199eaf5)
+- [LRCI-5148] SF/Wordsmith (f8fafed0dd)
+- [LRCI-4148] Drive properties by the bucket name instead of the hostname
+(7e8aed617b)
+- [LRCI-5148] Add ability for mirrors-get to take in GCP URLs (90d0cd6cd2)
+- [LRCI-5148] Add ability to download files using GCP instead of HTTP if
+configured (f076e5258f)
+
+## 1.2.18 - 2025-01-11
+
+### Commits
+- [LRCI-5204] Wordsmith (92a664e86a)
+- [LRCI-5204] Sort (833a3282df)
+- [LRCI-5204] Wordsmith (042905c9de)
+- [LRCI-5204] Check mirrors cache files if they are valid .7z & .tar.gz files
+(91e7d0f7f2)
+- [LRCI-5204] Add logic to check if a file is a .tar.gz (5c3ae72f37)
+- [LPD-34518] Fix compile, source option 6 is no longer supported by jdk17
+(e84a22ccfd)
+
+## 1.2.17 - 2025-01-03
+
+### Commits
+- [LRCI-5155] Avoid replacing 'mirrors' with 'getMirrorsHostname()' since regex
+should already remove it (ec1e6a8d8b)
+- [LPD-43937] Remove mirrors-get test that downloads tcserver (e682993df6)
+
+## 1.2.16 - 2024-11-20
+
+### Commits
+- [LRCI-4932] Wordsmith (ecbe04aa3a)
+- [LRCI-4932] Fix compile error (f72e3bbd5b)
+- [LRCI-4932] Move cache temp file to cache file in all cases (ce31219b4d)
+
+## 1.2.15 - 2024-11-19
+
+### Commits
+- [LRCI-4932] Add ability to get file from mirrors, local, or remote URLs
+(b257c19f9c)
+- [LPD-36975] liferay-portal: auto SF (b1c315ad65)
+- [LPS-206192] upgrade mysql-connector-j to 8.3.0 in build-test.xml (acf2d4d6bb)
+- [LPS-201428] upgrade mysql-connector-j to 8.0.33 in build-test.xml
+(58ec9ff147)
+
+### Dependencies
+- [LPD-36975] Update the ant dependency to version 1.10.14.
+
 ## 1.2.14 - 2023-11-03
 
 ### Commits
@@ -172,6 +240,9 @@ verification (95fbf498b6)
 ### Commits
 - [LRQA-28693] _dest may be a directory or a file. (3635bdaeb1)
 
+[LPD-34518]: https://issues.liferay.com/browse/LPD-34518
+[LPD-36975]: https://issues.liferay.com/browse/LPD-36975
+[LPD-43937]: https://issues.liferay.com/browse/LPD-43937
 [LPS-72572]: https://issues.liferay.com/browse/LPS-72572
 [LPS-74016]: https://issues.liferay.com/browse/LPS-74016
 [LPS-75049]: https://issues.liferay.com/browse/LPS-75049
@@ -191,11 +262,19 @@ verification (95fbf498b6)
 [LPS-157036]: https://issues.liferay.com/browse/LPS-157036
 [LPS-168681]: https://issues.liferay.com/browse/LPS-168681
 [LPS-191498]: https://issues.liferay.com/browse/LPS-191498
+[LPS-201428]: https://issues.liferay.com/browse/LPS-201428
+[LPS-206192]: https://issues.liferay.com/browse/LPS-206192
 [LRCI-901]: https://issues.liferay.com/browse/LRCI-901
 [LRCI-941]: https://issues.liferay.com/browse/LRCI-941
 [LRCI-1523]: https://issues.liferay.com/browse/LRCI-1523
 [LRCI-3720]: https://issues.liferay.com/browse/LRCI-3720
 [LRCI-3837]: https://issues.liferay.com/browse/LRCI-3837
+[LRCI-4148]: https://issues.liferay.com/browse/LRCI-4148
+[LRCI-4932]: https://issues.liferay.com/browse/LRCI-4932
+[LRCI-5148]: https://issues.liferay.com/browse/LRCI-5148
+[LRCI-5155]: https://issues.liferay.com/browse/LRCI-5155
+[LRCI-5204]: https://issues.liferay.com/browse/LRCI-5204
+[LRCI-5292]: https://issues.liferay.com/browse/LRCI-5292
 [LRQA-28693]: https://issues.liferay.com/browse/LRQA-28693
 [LRQA-29376]: https://issues.liferay.com/browse/LRQA-29376
 [LRQA-29640]: https://issues.liferay.com/browse/LRQA-29640

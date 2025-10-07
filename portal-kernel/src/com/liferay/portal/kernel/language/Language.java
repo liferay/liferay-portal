@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -109,6 +110,8 @@ public interface Language {
 
 	public String get(
 		ResourceBundle resourceBundle, String key, String defaultValue);
+
+	public Map<String, Locale> getAvailableLocaleMap();
 
 	public Set<Locale> getAvailableLocales();
 

@@ -11,6 +11,8 @@ import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.test.rule.LazyReferencing;
+import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.headless.admin.user.client.dto.v1_0.Role;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
@@ -49,7 +52,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
 import java.text.DateFormat;
@@ -72,6 +74,11 @@ import org.junit.runner.RunWith;
 @DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class RoleResourceTest extends BaseRoleResourceTestCase {
+
+	@ClassRule
+	@Rule
+	public static final LazyReferencingTestRule lazyReferencingTestRule =
+		LazyReferencingTestRule.INSTANCE;
 
 	@ClassRule
 	@Rule
@@ -258,7 +265,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		}
 	}
 
-	@FeatureFlag("LPD-47858")
+	@FeatureFlag("LPD-35914")
+	@LazyReferencing
 	@Override
 	@Test
 	public void testPostRole() throws Exception {
@@ -543,14 +551,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 	@Override
 	protected Long
-			testDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId()
-		throws Exception {
-
-		return testGroup.getGroupId();
-	}
-
-	@Override
-	protected Long
 			testDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
 		throws Exception {
 
@@ -562,13 +562,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		throws Exception {
 
 		return _addRole(true, RoleConstants.TYPE_SITE);
-	}
-
-	@Override
-	protected Long testDeleteSiteRoleUserAccountAssociation_getSiteId()
-		throws Exception {
-
-		return testGroup.getGroupId();
 	}
 
 	@Override
@@ -596,8 +589,86 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	}
 
 	@Override
+	protected Long
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getOrganizationId()
+		throws Exception {
+
+		return _organization.getOrganizationId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		return _user.getUserId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_getOrganizationId()
+		throws Exception {
+
+		return _organization.getOrganizationId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		return _user.getUserId();
+	}
+
+	@Override
+	protected Long
+		testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId() {
+
+		return _user.getUserId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		return _user.getUserId();
+	}
+
+	@Override
+	protected Role
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_addRole()
+		throws Exception {
+
+		return _addRole(true, RoleConstants.TYPE_SITE);
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		return _user.getUserId();
+	}
+
+	@Override
+	protected Role testGraphQLDeleteSiteRoleUserAccountAssociation_addRole()
+		throws Exception {
+
+		return _addRole(true, RoleConstants.TYPE_SITE);
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteSiteRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		return _user.getUserId();
+	}
+
+	@Override
 	protected Role testGraphQLRole_addRole() throws Exception {
-		return testGetRole_addRole();
+		return _addRole(true, RoleConstants.TYPE_ORGANIZATION);
 	}
 
 	@Override
@@ -725,7 +796,18 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		long totalCount = page.getTotalCount();
 
+		// Sleep for 1 second to ensure that role 1 and existing roles are
+		// created 1 second apart
+
+		Thread.sleep(1000);
+
 		Role role1 = _addRole(false, randomRole());
+
+		// Sleep for 1 second to ensure that role 1 and role 2 are created 1
+		// second apart
+
+		Thread.sleep(1000);
+
 		Role role2 = _addRole(false, randomRole());
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
@@ -744,6 +826,11 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			Pagination.of(1, 2));
 
 		Assert.assertEquals(2, page.getTotalCount());
+
+		// Sleep for 1 second to ensure that role 1 and role 2 are modified 1
+		// second apart
+
+		Thread.sleep(1000);
 
 		role1.setDescription(
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));
@@ -886,6 +973,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 					serviceBuilderRole1.getType());
 			}
 		};
+
 		Permission permission2 = new Permission() {
 			{
 				actionIds = new String[] {ActionKeys.UPDATE};
@@ -966,8 +1054,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			RoleConstants.getLabelType(permission2.getRoleType()),
 			serviceBuilderRole3.getType());
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_INCOMPLETE,
-			serviceBuilderRole3.getStatus());
+			WorkflowConstants.STATUS_EMPTY, serviceBuilderRole3.getStatus());
 	}
 
 	private Role _toRole(com.liferay.portal.kernel.model.Role role) {

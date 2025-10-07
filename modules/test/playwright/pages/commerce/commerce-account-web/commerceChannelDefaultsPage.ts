@@ -49,7 +49,7 @@ export class CommerceChannelDefaultsPage {
 			});
 		this.defaultBillingCommerceAddressesButton =
 			this.defaultBillingCommerceAddresses
-				.getByTestId('management-toolbar')
+				.getByTestId('managementToolbar')
 				.locator('[data-testid="fdsCreationActionButton"]');
 		this.defaultCommerceCurrencies = page.getByTestId(
 			'defaultCommerceCurrencies'
@@ -99,7 +99,7 @@ export class CommerceChannelDefaultsPage {
 			});
 		this.defaultShippingCommerceAddressesButton =
 			this.defaultShippingCommerceAddresses
-				.getByTestId('management-toolbar')
+				.getByTestId('managementToolbar')
 				.locator('[data-testid="fdsCreationActionButton"]');
 		this.defaultUsers = page.getByTestId('defaultUsers');
 		this.defaultUsersButton = this.defaultUsers.getByLabel('Add User');

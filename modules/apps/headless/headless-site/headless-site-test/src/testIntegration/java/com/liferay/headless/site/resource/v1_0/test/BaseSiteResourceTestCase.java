@@ -13,11 +13,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.site.client.dto.v1_0.Site;
 import com.liferay.headless.site.client.http.HttpInvoker;
 import com.liferay.headless.site.client.pagination.Page;
+import com.liferay.headless.site.client.pagination.Pagination;
 import com.liferay.headless.site.client.resource.v1_0.SiteResource;
 import com.liferay.headless.site.client.serdes.v1_0.SiteSerDes;
+import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -26,27 +31,46 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.PathSegment;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.io.File;
 
 import java.lang.reflect.Method;
+
+import java.net.URI;
 
 import java.text.Format;
 
@@ -57,6 +81,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -69,6 +94,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
 /**
  * @author Rubén Pulido
  * @generated
@@ -78,8 +106,10 @@ public abstract class BaseSiteResourceTestCase {
 
 	@ClassRule
 	@Rule
-	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
-		new LiferayIntegrationTestRule();
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -101,6 +131,16 @@ public abstract class BaseSiteResourceTestCase {
 			testCompany.getCompanyId());
 
 		siteResource = SiteResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		importTaskResource = ImportTaskResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -171,6 +211,7 @@ public abstract class BaseSiteResourceTestCase {
 		site.setFriendlyUrlPath(regex);
 		site.setKey(regex);
 		site.setName(regex);
+		site.setParentSiteExternalReferenceCode(regex);
 		site.setParentSiteKey(regex);
 		site.setTemplateKey(regex);
 
@@ -184,6 +225,7 @@ public abstract class BaseSiteResourceTestCase {
 		Assert.assertEquals(regex, site.getFriendlyUrlPath());
 		Assert.assertEquals(regex, site.getKey());
 		Assert.assertEquals(regex, site.getName());
+		Assert.assertEquals(regex, site.getParentSiteExternalReferenceCode());
 		Assert.assertEquals(regex, site.getParentSiteKey());
 		Assert.assertEquals(regex, site.getTemplateKey());
 	}
@@ -195,11 +237,75 @@ public abstract class BaseSiteResourceTestCase {
 
 		assertHttpResponseStatusCode(
 			204, siteResource.deleteSiteHttpResponse(site.getId()));
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site.getId()));
+		assertHttpResponseStatusCode(404, siteResource.getSiteHttpResponse(0L));
 	}
 
 	protected Site testDeleteSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testDeleteSiteBatch() throws Exception {
+		Site site1 = testDeleteSiteBatch_addSite();
+
+		testDeleteSiteBatch_deleteSite(
+			202, site1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+
+		site1 = testDeleteSiteBatch_addSite();
+
+		testDeleteSiteBatch_deleteSite(202, null, site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+
+		site1 = testDeleteSiteBatch_addSite();
+		Site site2 = testDeleteSiteBatch_addSite();
+
+		testDeleteSiteBatch_deleteSite(
+			202, site2.getExternalReferenceCode(), site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+		assertHttpResponseStatusCode(
+			200, siteResource.getSiteHttpResponse(site2.getId()));
+
+		testDeleteSiteBatch_deleteSite(
+			202, site2.getExternalReferenceCode(), site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site2.getId()));
+	}
+
+	protected Site testDeleteSiteBatch_addSite() throws Exception {
+		return testDeleteSite_addSite();
+	}
+
+	protected void testDeleteSiteBatch_deleteSite(
+			int expectedStatusCode, String externalReferenceCode, Long id)
+		throws Exception {
+
+		HttpInvoker.HttpResponse httpResponse =
+			siteResource.deleteSiteBatchHttpResponse(
+				null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
 	@Test
@@ -223,6 +329,207 @@ public abstract class BaseSiteResourceTestCase {
 	protected Site testDeleteSiteByExternalReferenceCode_addSite()
 		throws Exception {
 
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetSite() throws Exception {
+		Site postSite = testGetSite_addSite();
+
+		Site getSite = siteResource.getSite(postSite.getId());
+
+		assertEquals(postSite, getSite);
+		assertValid(getSite);
+	}
+
+	@Test
+	public void testVulcanCRUDItemDelegateGetItem() throws Exception {
+		Site postSite = testGetSite_addSite();
+
+		Site getSite = siteResource.getSite(postSite.getId());
+
+		VulcanCRUDItemDelegate vulcanCRUDItemDelegate =
+			_vulcanCRUDItemDelegateBuilderRegistry.builder(
+				testCompany, "com.liferay.headless.site.dto.v1_0.Site"
+			).acceptLanguage(
+				new AcceptLanguage() {
+
+					@Override
+					public List<Locale> getLocales() {
+						return Arrays.asList(LocaleUtil.getDefault());
+					}
+
+					@Override
+					public String getPreferredLanguageId() {
+						return LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+					}
+
+					@Override
+					public Locale getPreferredLocale() {
+						return LocaleUtil.getDefault();
+					}
+
+				}
+			).groupLocalService(
+				_groupLocalService
+			).httpServletRequest(
+				testVulcanCRUDItemDelegate_getHttpServletRequest()
+			).httpServletResponse(
+				new MockHttpServletResponse()
+			).resourceActionLocalService(
+				_resourceActionLocalService
+			).resourcePermissionLocalService(
+				_resourcePermissionLocalService
+			).roleLocalService(
+				_roleLocalService
+			).scopeChecker(
+				_scopeChecker
+			).uriInfo(
+				testVulcanCRUDItemDelegate_getUriInfo()
+			).user(
+				testVulcanCRUDItemDelegate_getUser()
+			).build();
+
+		Object item = vulcanCRUDItemDelegate.getItem(postSite.getId());
+
+		assertEquals(getSite, SiteSerDes.toDTO(item.toString()));
+	}
+
+	protected HttpServletRequest
+		testVulcanCRUDItemDelegate_getHttpServletRequest() {
+
+		return new MockHttpServletRequest() {
+
+			@Override
+			public StringBuffer getRequestURL() {
+				return new StringBuffer(
+					StringBundler.concat(
+						"http://localhost:8080/o/v1.0/",
+						RandomTestUtil.randomString(), "/",
+						RandomTestUtil.randomString()));
+			}
+
+		};
+	}
+
+	protected UriInfo testVulcanCRUDItemDelegate_getUriInfo() {
+		String applicationPath = RandomTestUtil.randomString() + "/";
+		String resourcePath = RandomTestUtil.randomString();
+
+		return new UriInfo() {
+
+			@Override
+			public String getPath() {
+				return resourcePath;
+			}
+
+			@Override
+			public String getPath(boolean decode) {
+				return getPath();
+			}
+
+			@Override
+			public List<PathSegment> getPathSegments() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public List<PathSegment> getPathSegments(boolean decode) {
+				return getPathSegments();
+			}
+
+			@Override
+			public URI getRequestUri() {
+				return URI.create(
+					"http://localhost:8080/o/" + applicationPath +
+						resourcePath);
+			}
+
+			@Override
+			public UriBuilder getRequestUriBuilder() {
+				return UriBuilder.fromUri(getRequestUri());
+			}
+
+			@Override
+			public URI getAbsolutePath() {
+				return getRequestUri();
+			}
+
+			@Override
+			public UriBuilder getAbsolutePathBuilder() {
+				return getRequestUriBuilder();
+			}
+
+			@Override
+			public URI getBaseUri() {
+				return URI.create("http://localhost:8080/o/" + applicationPath);
+			}
+
+			@Override
+			public UriBuilder getBaseUriBuilder() {
+				return UriBuilder.fromUri(getBaseUri());
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getPathParameters() {
+				return new MultivaluedHashMap<>();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getPathParameters(
+				boolean decode) {
+
+				return getPathParameters();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getQueryParameters() {
+				return new MultivaluedHashMap<>();
+			}
+
+			@Override
+			public MultivaluedMap<String, String> getQueryParameters(
+				boolean decode) {
+
+				return getQueryParameters();
+			}
+
+			@Override
+			public List<String> getMatchedURIs() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public List<String> getMatchedURIs(boolean decode) {
+				return getMatchedURIs();
+			}
+
+			@Override
+			public List<Object> getMatchedResources() {
+				return Collections.emptyList();
+			}
+
+			@Override
+			public URI resolve(URI requestUri) {
+				return getBaseUri().resolve(requestUri);
+			}
+
+			@Override
+			public URI relativize(URI uri) {
+				return getBaseUri().relativize(uri);
+			}
+
+		};
+	}
+
+	protected com.liferay.portal.kernel.model.User
+		testVulcanCRUDItemDelegate_getUser() {
+
+		return _testCompanyAdminUser;
+	}
+
+	protected Site testGetSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -253,34 +560,135 @@ public abstract class BaseSiteResourceTestCase {
 	}
 
 	@Test
-	public void testPostSite() throws Exception {
-		Site randomSite = randomSite();
+	public void testGetSitesPage() throws Exception {
+		Page<Site> page = siteResource.getSitesPage(
+			null, null, Pagination.of(1, 10));
 
-		Map<String, File> multipartFiles = getMultipartFiles();
+		long totalCount = page.getTotalCount();
 
-		Site postSite = testPostSite_addSite(randomSite, multipartFiles);
+		Site site1 = testGetSitesPage_addSite(randomSite());
 
-		assertEquals(randomSite, postSite);
-		assertValid(postSite);
+		Site site2 = testGetSitesPage_addSite(randomSite());
 
-		assertValid(postSite, multipartFiles);
+		page = siteResource.getSitesPage(null, null, Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(site1, (List<Site>)page.getItems());
+		assertContains(site2, (List<Site>)page.getItems());
+		assertValid(page, testGetSitesPage_getExpectedActions());
+
+		siteResource.deleteSite(site1.getId());
+
+		siteResource.deleteSite(site2.getId());
 	}
 
-	protected Site testPostSite_addSite(
-			Site site, Map<String, File> multipartFiles)
+	protected Map<String, Map<String, String>>
+			testGetSitesPage_getExpectedActions()
 		throws Exception {
 
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetSitesPageWithPagination() throws Exception {
+		Page<Site> sitesPage = siteResource.getSitesPage(null, null, null);
+
+		int totalCount = GetterUtil.getInteger(sitesPage.getTotalCount());
+
+		Site site1 = testGetSitesPage_addSite(randomSite());
+
+		Site site2 = testGetSitesPage_addSite(randomSite());
+
+		Site site3 = testGetSitesPage_addSite(randomSite());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<Site> page1 = siteResource.getSitesPage(
+				null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(site1, (List<Site>)page1.getItems());
+
+			Page<Site> page2 = siteResource.getSitesPage(
+				null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(site2, (List<Site>)page2.getItems());
+
+			Page<Site> page3 = siteResource.getSitesPage(
+				null, null,
+				Pagination.of(
+					(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+					pageSizeLimit));
+
+			assertContains(site3, (List<Site>)page3.getItems());
+		}
+		else {
+			Page<Site> page1 = siteResource.getSitesPage(
+				null, null, Pagination.of(1, totalCount + 2));
+
+			List<Site> sites1 = (List<Site>)page1.getItems();
+
+			Assert.assertEquals(
+				sites1.toString(), totalCount + 2, sites1.size());
+
+			Page<Site> page2 = siteResource.getSitesPage(
+				null, null, Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<Site> sites2 = (List<Site>)page2.getItems();
+
+			Assert.assertEquals(sites2.toString(), 1, sites2.size());
+
+			Page<Site> page3 = siteResource.getSitesPage(
+				null, null, Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(site1, (List<Site>)page3.getItems());
+			assertContains(site2, (List<Site>)page3.getItems());
+			assertContains(site3, (List<Site>)page3.getItems());
+		}
+	}
+
+	protected Site testGetSitesPage_addSite(Site site) throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
 	@Test
-	public void testPostFormDataSite() throws Exception {
+	public void testPostSite() throws Exception {
+		Site randomSite = randomSite();
+
+		Site postSite = testPostSite_addSite(randomSite);
+
+		assertEquals(randomSite, postSite);
+		assertValid(postSite);
+	}
+
+	protected Site testPostSite_addSite(Site site) throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostSiteSiteInitializer() throws Exception {
 		Site randomSite = randomSite();
 
 		Map<String, File> multipartFiles = getMultipartFiles();
 
-		Site postSite = testPostFormDataSite_addSite(
+		Site postSite = testPostSiteSiteInitializer_addSite(
 			randomSite, multipartFiles);
 
 		assertEquals(randomSite, postSite);
@@ -289,10 +697,32 @@ public abstract class BaseSiteResourceTestCase {
 		assertValid(postSite, multipartFiles);
 	}
 
-	protected Site testPostFormDataSite_addSite(
+	protected Site testPostSiteSiteInitializer_addSite(
 			Site site, Map<String, File> multipartFiles)
 		throws Exception {
 
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutSite() throws Exception {
+		Site postSite = testPutSite_addSite();
+
+		Site randomSite = randomSite();
+
+		Site putSite = siteResource.putSite(randomSite);
+
+		assertEquals(randomSite, putSite);
+		assertValid(putSite);
+
+		Site getSite = siteResource.getSite(putSite.getId());
+
+		assertEquals(randomSite, getSite);
+		assertValid(getSite);
+	}
+
+	protected Site testPutSite_addSite() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -348,6 +778,80 @@ public abstract class BaseSiteResourceTestCase {
 		throws Exception {
 
 		return randomSite();
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		Site site1 = testBatchEngineDeleteImportTask_addSite();
+
+		testBatchEngineDeleteImportTask_deleteSite(
+			200, site1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+
+		site1 = testBatchEngineDeleteImportTask_addSite();
+
+		testBatchEngineDeleteImportTask_deleteSite(200, null, site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+
+		site1 = testBatchEngineDeleteImportTask_addSite();
+		Site site2 = testBatchEngineDeleteImportTask_addSite();
+
+		testBatchEngineDeleteImportTask_deleteSite(
+			200, site2.getExternalReferenceCode(), site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site1.getId()));
+		assertHttpResponseStatusCode(
+			200, siteResource.getSiteHttpResponse(site2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteSite(
+			200, site2.getExternalReferenceCode(), site1.getId());
+
+		assertHttpResponseStatusCode(
+			404, siteResource.getSiteHttpResponse(site2.getId()));
+	}
+
+	protected Site testBatchEngineDeleteImportTask_addSite() throws Exception {
+		return testDeleteSite_addSite();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteSite(
+			int expectedStatusCode, String externalReferenceCode, Long id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.site.dto.v1_0.Site", null, null, null,
+				null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"id", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	protected void assertContains(Site site, List<Site> sites) {
@@ -418,6 +922,22 @@ public abstract class BaseSiteResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("active", additionalAssertFieldName)) {
+				if (site.getActive() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (site.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -444,6 +964,24 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("manualMembership", additionalAssertFieldName)) {
+				if (site.getManualMembership() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"membershipRestriction", additionalAssertFieldName)) {
+
+				if (site.getMembershipRestriction() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("membershipType", additionalAssertFieldName)) {
 				if (site.getMembershipType() == null) {
 					valid = false;
@@ -454,6 +992,25 @@ public abstract class BaseSiteResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (site.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name_i18n", additionalAssertFieldName)) {
+				if (site.getName_i18n() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"parentSiteExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (site.getParentSiteExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -478,6 +1035,14 @@ public abstract class BaseSiteResourceTestCase {
 
 			if (Objects.equals("templateType", additionalAssertFieldName)) {
 				if (site.getTemplateType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("typeSettings", additionalAssertFieldName)) {
+				if (site.getTypeSettings() == null) {
 					valid = false;
 				}
 
@@ -548,6 +1113,10 @@ public abstract class BaseSiteResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.site.dto.v1_0.Site.class)) {
@@ -606,6 +1175,25 @@ public abstract class BaseSiteResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("active", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(site1.getActive(), site2.getActive())) {
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)site1.getDescription(),
+						(Map)site2.getDescription())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -646,6 +1234,30 @@ public abstract class BaseSiteResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("manualMembership", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						site1.getManualMembership(),
+						site2.getManualMembership())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"membershipRestriction", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						site1.getMembershipRestriction(),
+						site2.getMembershipRestriction())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("membershipType", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						site1.getMembershipType(), site2.getMembershipType())) {
@@ -658,6 +1270,30 @@ public abstract class BaseSiteResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(site1.getName(), site2.getName())) {
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name_i18n", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)site1.getName_i18n(), (Map)site2.getName_i18n())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"parentSiteExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						site1.getParentSiteExternalReferenceCode(),
+						site2.getParentSiteExternalReferenceCode())) {
+
 					return false;
 				}
 
@@ -687,6 +1323,17 @@ public abstract class BaseSiteResourceTestCase {
 			if (Objects.equals("templateType", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						site1.getTemplateType(), site2.getTemplateType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("typeSettings", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)site1.getTypeSettings(),
+						(Map)site2.getTypeSettings())) {
 
 					return false;
 				}
@@ -800,6 +1447,16 @@ public abstract class BaseSiteResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("active")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("description")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = site.getExternalReferenceCode();
@@ -944,6 +1601,17 @@ public abstract class BaseSiteResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("manualMembership")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("membershipRestriction")) {
+			sb.append(String.valueOf(site.getMembershipRestriction()));
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("membershipType")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -951,6 +1619,57 @@ public abstract class BaseSiteResourceTestCase {
 
 		if (entityFieldName.equals("name")) {
 			Object object = site.getName();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("name_i18n")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("parentSiteExternalReferenceCode")) {
+			Object object = site.getParentSiteExternalReferenceCode();
 
 			String value = String.valueOf(object);
 
@@ -1092,6 +1811,11 @@ public abstract class BaseSiteResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("typeSettings")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1142,13 +1866,18 @@ public abstract class BaseSiteResourceTestCase {
 	protected Site randomSite() throws Exception {
 		return new Site() {
 			{
+				active = RandomTestUtil.randomBoolean();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				friendlyUrlPath = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				key = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				manualMembership = RandomTestUtil.randomBoolean();
+				membershipRestriction = RandomTestUtil.randomInt();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				parentSiteExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				parentSiteKey = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				templateKey = StringUtil.toLowerCase(
@@ -1167,7 +1896,30 @@ public abstract class BaseSiteResourceTestCase {
 		return randomSite();
 	}
 
+	protected final JSONObject waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			ImportTask.ExecuteStatus executeStatus =
+				importTask.getExecuteStatus();
+
+			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
+				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus, executeStatus.getValue());
+
+				return jsonObject;
+			}
+		}
+	}
+
 	protected SiteResource siteResource;
+	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1374,5 +2126,27 @@ public abstract class BaseSiteResourceTestCase {
 
 	@Inject
 	private com.liferay.headless.site.resource.v1_0.SiteResource _siteResource;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private ScopeChecker _scopeChecker;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@Inject
+	private VulcanCRUDItemDelegateBuilderRegistry
+		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }

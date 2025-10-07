@@ -6,6 +6,7 @@
 package com.liferay.portal.search.internal.background.task;
 
 import com.liferay.portal.kernel.search.background.task.ReindexStatusMessageSender;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.search.spi.reindexer.IndexReindexerRegistry;
@@ -14,6 +15,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -57,6 +59,26 @@ public class ReindexIndexReindexerBackgroundTaskExecutorTest {
 		ReflectionTestUtil.setFieldValue(
 			_reindexIndexReindexerBackgroundTaskExecutor,
 			"_reindexStatusMessageSender", _reindexStatusMessageSender);
+	}
+
+	@Test
+	public void testDatabasePartitioning() throws Exception {
+		Mockito.doAnswer(
+			invocation -> {
+				Assert.assertEquals(
+					invocation.getArgument(0),
+					CompanyThreadLocal.getCompanyId());
+
+				return null;
+			}
+		).when(
+			_indexReindexer1
+		).reindex(
+			Mockito.anyLong(), Mockito.anyString()
+		);
+
+		_reindexIndexReindexerBackgroundTaskExecutor.reindex(
+			"", _COMPANY_IDS, _EXECUTION_MODE);
 	}
 
 	@Test

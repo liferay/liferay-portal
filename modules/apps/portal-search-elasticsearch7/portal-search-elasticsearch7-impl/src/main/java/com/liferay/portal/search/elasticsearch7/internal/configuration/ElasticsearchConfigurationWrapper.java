@@ -7,7 +7,7 @@ package com.liferay.portal.search.elasticsearch7.internal.configuration;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration;
@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Bryan Engler
@@ -254,6 +253,10 @@ public class ElasticsearchConfigurationWrapper
 		return _elasticsearchConfiguration.sidecarJVMOptions();
 	}
 
+	public String[] sidecarModuleNames() {
+		return _elasticsearchConfiguration.sidecarModuleNames();
+	}
+
 	public long sidecarShutdownTimeout() {
 		return _elasticsearchConfiguration.sidecarShutdownTimeout();
 	}
@@ -293,7 +296,7 @@ public class ElasticsearchConfigurationWrapper
 	@Modified
 	protected void activate(Map<String, Object> map) {
 		Map<String, Object> propsMap = _getPropsMap(
-			_PROPS_KEYS, ElasticsearchConfiguration.class, _props);
+			_PROPS_KEYS, ElasticsearchConfiguration.class);
 
 		_elasticsearchConfiguration = ConfigurableUtil.createConfigurable(
 			ElasticsearchConfiguration.class, map);
@@ -312,14 +315,8 @@ public class ElasticsearchConfigurationWrapper
 		_elasticsearchConfiguration = elasticsearchConfiguration;
 	}
 
-	private Map<String, Object> _getPropsMap(
-		String[] keys, Class<?> clazz, Props props) {
-
-		if (props == null) {
-			return Collections.emptyMap();
-		}
-
-		Properties properties = props.getProperties(
+	private Map<String, Object> _getPropsMap(String[] keys, Class<?> clazz) {
+		Properties properties = PropsUtil.getProperties(
 			StringUtil.toLowerCase(clazz.getName()) + CharPool.PERIOD, true);
 
 		if ((properties == null) || properties.isEmpty()) {
@@ -345,10 +342,6 @@ public class ElasticsearchConfigurationWrapper
 	private volatile ElasticsearchConfiguration _elasticsearchConfiguration;
 	private final Set<ElasticsearchConfigurationObserver>
 		_elasticsearchConfigurationObservers = new ConcurrentSkipListSet<>();
-
-	@Reference
-	private Props _props;
-
 	private volatile ElasticsearchConfiguration
 		_propsElasticsearchConfiguration;
 	private volatile Map<String, Object> _propsMap = Collections.emptyMap();

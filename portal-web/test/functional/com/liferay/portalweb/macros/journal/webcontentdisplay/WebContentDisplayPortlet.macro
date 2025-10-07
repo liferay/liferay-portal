@@ -52,23 +52,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addLocalized(localizedBasicWebContent = null, portletNameTranslation = null, publish = null, publishWithPermissions = null,  webContentContent = null, webContentTitle = null) {
-		WebContentDisplayPortletNavigator.gotoAdd(
-			portletNameTranslation = ${portletNameTranslation},
-			structureName = ${localizedBasicWebContent});
-
-		WebContent.addCP(
-			webContentContent = ${webContentContent},
-			webContentTitle = ${webContentTitle});
-
-		WebContent.publishWithPermissionsLocalized(
-			publish = ${publish},
-			publishWithPermissions = ${publishWithPermissions});
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
 	macro addTag(tagNameList = null, edit = null) {
 		Panel.expandPanel(panel = "Categorization");
 

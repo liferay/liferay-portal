@@ -7,9 +7,9 @@ package com.liferay.document.library.preview.pdf.internal.util;
 
 import com.liferay.petra.process.ProcessConfig;
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PortalClassPathUtil;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Collections;
 

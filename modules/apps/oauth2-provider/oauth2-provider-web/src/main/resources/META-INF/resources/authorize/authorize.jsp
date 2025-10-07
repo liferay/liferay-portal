@@ -48,7 +48,7 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 						</c:when>
 						<c:when test="<%= !oAuth2AuthorizePortletDisplayContext.hasCreateTokenApplicationPermission(oAuth2Application) %>">
 							<h1>
-								<liferay-ui:message key="you-dont-have-permissions-to-authorize-the-application" />
+								<liferay-ui:message key="you-do-not-have-permissions-to-authorize-the-application" />
 							</h1>
 						</c:when>
 						<c:otherwise>

@@ -321,10 +321,10 @@ public interface AccountGroupLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AccountGroup getOrAddIncompleteAccountGroup(
+	public AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, long companyId, long userId,
 			String name)
-		throws Exception;
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.

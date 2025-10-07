@@ -54,6 +54,10 @@ public class UpgradeVirtualHostTest extends BaseCTUpgradeProcessTestCase {
 	}
 
 	@Override
+	protected void deleteCTModel(long primaryKey) {
+	}
+
+	@Override
 	protected CTService<?> getCTService() {
 		return _virtualHostLocalService;
 	}

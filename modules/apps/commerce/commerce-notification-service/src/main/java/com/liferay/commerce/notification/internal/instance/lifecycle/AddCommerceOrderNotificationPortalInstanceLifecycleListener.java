@@ -112,6 +112,8 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 			NotificationUtil.toNotificationContext(
 				notificationTemplate, _objectFieldLocalService);
 
+		notificationContext.setCompanyId(companyId);
+
 		User user = _getAdminUser(companyId);
 
 		notificationContext.setNotificationRecipient(

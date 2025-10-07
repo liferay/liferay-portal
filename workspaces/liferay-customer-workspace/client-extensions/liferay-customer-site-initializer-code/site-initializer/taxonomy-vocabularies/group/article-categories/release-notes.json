@@ -1,0 +1,10 @@
+{
+	"name": "Release Notes",
+	"name_i18n": {
+		"en_US": "Release Notes",
+		"es-ES": "Notas de las actualizaciones",
+		"ja-JP": "リリースノート",
+		"pt-BR": "Notas de versão"
+	},
+	"viewableBy": "Anyone"
+}

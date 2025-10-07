@@ -194,9 +194,13 @@ public class NavItemUtil {
 			privateLayout = true;
 		}
 
-		return NavItem.fromLayouts(
-			httpServletRequest, _getLayouts(privateLayout, themeDisplay),
-			themeDisplay);
+		List<Layout> layouts = _getLayouts(privateLayout, themeDisplay);
+
+		if (Objects.equals(layouts, themeDisplay.getLayouts())) {
+			return themeDisplay.getNavItems();
+		}
+
+		return NavItem.fromLayouts(httpServletRequest, layouts, themeDisplay);
 	}
 
 	private static List<NavItem> _getBranchNavItems(

@@ -8,6 +8,7 @@ package com.liferay.portal.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutQueryStringComposite;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -28,6 +30,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.webdav.methods.Method;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
 
@@ -65,9 +69,9 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 		User user = _userLocalService.fetchGuestUser(_group.getCompanyId());
 
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, false, user);
+			new MockHttpServletRequest(Method.GET, "/"), layout, false, user);
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, true, user);
+			new MockHttpServletRequest(Method.GET, "/"), layout, true, user);
 	}
 
 	@Test
@@ -81,7 +85,7 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 		LayoutTestUtil.addTypePortletLayout(_group);
 
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, false,
+			new MockHttpServletRequest(Method.GET, "/"), layout, false,
 			_userLocalService.fetchGuestUser(_group.getCompanyId()));
 	}
 
@@ -96,7 +100,7 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 		LayoutTestUtil.addTypePortletLayout(_group);
 
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, true,
+			new MockHttpServletRequest(Method.GET, "/"), layout, true,
 			_userLocalService.fetchGuestUser(_group.getCompanyId()));
 	}
 
@@ -111,7 +115,8 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 		LayoutTestUtil.addTypePortletLayout(_group);
 
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, false, UserTestUtil.addUser(_group.getGroupId()));
+			new MockHttpServletRequest(Method.GET, "/"), layout, false,
+			UserTestUtil.addUser(_group.getGroupId()));
 	}
 
 	@Test
@@ -125,7 +130,41 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 		LayoutTestUtil.addTypePortletLayout(_group);
 
 		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			layout, true, UserTestUtil.addUser(_group.getGroupId()));
+			new MockHttpServletRequest(Method.GET, "/"), layout, true,
+			UserTestUtil.addUser(_group.getGroupId()));
+	}
+
+	@Test
+	@TestInfo("LPD-62227")
+	public void testNullFriendlyURLFirstLayoutWithoutPermissionNoSuchLayoutException()
+		throws Exception {
+
+		_addLayoutWithoutPermission(true);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		LayoutTestUtil.addTypePortletLayout(_group);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(Method.GET, "/");
+
+		mockHttpServletRequest.setAttribute(
+			NoSuchLayoutException.class.getName(), Boolean.TRUE.toString());
+
+		User guestUser = _userLocalService.fetchGuestUser(
+			_group.getCompanyId());
+
+		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
+			mockHttpServletRequest, layout, false, guestUser);
+		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
+			mockHttpServletRequest, layout, true, guestUser);
+
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
+			mockHttpServletRequest, layout, false, user);
+		_assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
+			mockHttpServletRequest, layout, true, user);
 	}
 
 	private Layout _addLayoutWithoutPermission() throws Exception {
@@ -153,7 +192,8 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 	}
 
 	private void _assertGetActualLayoutQueryStringCompositeWithNullFriendlyURL(
-			Layout layout, boolean promptEnabled, User user)
+			HttpServletRequest httpServletRequest, Layout layout,
+			boolean promptEnabled, User user)
 		throws Exception {
 
 		try (GroupConfigurationTemporarySwapper
@@ -170,7 +210,7 @@ public class PortalImplGetLayoutFriendlyURLSeparatorCompositeTest {
 				_portal.getActualLayoutQueryStringComposite(
 					_group.getGroupId(), false, null, Collections.emptyMap(),
 					HashMapBuilder.<String, Object>put(
-						"request", new MockHttpServletRequest(Method.GET, "/")
+						"request", httpServletRequest
 					).build());
 
 			Layout curLayout = layoutQueryStringComposite.getLayout();

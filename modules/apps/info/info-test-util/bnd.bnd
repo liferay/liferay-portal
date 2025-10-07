@@ -1,9 +1,10 @@
 Bundle-Name: Liferay Info Test Utilities
 Bundle-SymbolicName: com.liferay.info.test.util
-Bundle-Version: 5.1.2
+Bundle-Version: 5.2.2
 Export-Package:\
 	com.liferay.info.test.util,\
 	com.liferay.info.test.util.info.item.creator,\
 	com.liferay.info.test.util.info.item.provider,\
+	com.liferay.info.test.util.info.item.renderer,\
 	com.liferay.info.test.util.layout.display.page,\
 	com.liferay.info.test.util.model

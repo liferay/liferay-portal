@@ -7,8 +7,6 @@ package com.liferay.mail.kernel.service;
 
 import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.model.MailMessage;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.transaction.Transactional;
 
 import jakarta.mail.Session;
@@ -16,18 +14,26 @@ import jakarta.mail.Session;
 /**
  * @author Brian Wing Shun Chan
  */
-@Transactional(rollbackFor = {PortalException.class, SystemException.class})
+@Transactional(enabled = false)
 public interface MailService {
 
 	public void clearSession();
 
 	public void clearSession(long companyId);
 
+	public String getMailId(String mx, String popPortletPrefix, Object... ids);
+
+	public String getPOPServerSubdomain();
+
 	public Session getSession();
 
 	public Session getSession(Account account);
 
 	public Session getSession(long companyId);
+
+	public boolean isPOPServerNotificationsEnabled(long companyId);
+
+	public boolean isPOPServerUser(String emailAddress);
 
 	public void sendEmail(MailMessage mailMessage);
 

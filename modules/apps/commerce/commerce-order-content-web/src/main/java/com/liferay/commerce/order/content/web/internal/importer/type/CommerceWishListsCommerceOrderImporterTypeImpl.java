@@ -34,7 +34,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -223,27 +222,21 @@ public class CommerceWishListsCommerceOrderImporterTypeImpl
 				cpDefinition.getCPDefinitionId());
 			commerceOrderImporterItemImpl.setNameMap(cpDefinition.getNameMap());
 
-			long cpConfigurationListId = 0;
+			CommerceChannel commerceChannel =
+				_commerceChannelLocalService.getCommerceChannelByGroupId(
+					commerceOrder.getGroupId());
 
-			if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-				CommerceChannel commerceChannel =
-					_commerceChannelLocalService.getCommerceChannelByGroupId(
-						commerceOrder.getGroupId());
-
-				CPConfigurationList cpConfigurationList =
-					_cpConfigurationListDiscovery.getCPConfigurationList(
-						cpInstance.getCompanyId(), cpInstance.getGroupId(),
-						commerceOrder.getCommerceAccountId(),
-						commerceChannel.getCommerceChannelId(),
-						commerceOrder.getCommerceOrderTypeId());
-
-				cpConfigurationListId =
-					cpConfigurationList.getCPConfigurationListId();
-			}
+			CPConfigurationList cpConfigurationList =
+				_cpConfigurationListDiscovery.getCPConfigurationList(
+					cpInstance.getCompanyId(), cpInstance.getGroupId(),
+					commerceOrder.getCommerceAccountId(),
+					commerceChannel.getCommerceChannelId(),
+					commerceOrder.getCommerceOrderTypeId());
 
 			commerceOrderImporterItemImpl.setQuantity(
 				_cpDefinitionInventoryEngine.getMinOrderQuantity(
-					cpConfigurationListId, cpInstance));
+					cpConfigurationList.getCPConfigurationListId(),
+					cpInstance));
 
 			commerceOrderImporterItemImpl.setUnitOfMeasureKey(StringPool.BLANK);
 		}

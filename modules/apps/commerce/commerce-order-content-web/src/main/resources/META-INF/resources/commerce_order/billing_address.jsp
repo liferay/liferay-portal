@@ -30,10 +30,10 @@ CommerceOrder commerceOrder = commerceOrderContentDisplayContext.getCommerceOrde
 			%>'
 			creationMenu='<%= commerceOrderContentDisplayContext.getCommerceAddressCreationMenu("/commerce_open_order_content/edit_commerce_order_billing_address") %>'
 			dataProviderKey="<%= CommerceOrderFDSNames.BILLING_ADDRESSES %>"
+			defaultSelectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getBillingAddressId())) %>"
 			formName="fm"
 			id="<%= CommerceOrderFDSNames.BILLING_ADDRESSES %>"
 			itemsPerPage="<%= 10 %>"
-			selectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getBillingAddressId())) %>"
 			selectedItemsKey="addressId"
 			selectionType="single"
 		/>

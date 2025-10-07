@@ -1,0 +1,122 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.headless.admin.site.client.dto.v1_0;
+
+import com.liferay.headless.admin.site.client.function.UnsafeSupplier;
+import com.liferay.headless.admin.site.client.serdes.v1_0.BorderStylesConfigSerDes;
+
+import jakarta.annotation.Generated;
+
+import java.io.Serializable;
+
+import java.util.Objects;
+
+/**
+ * @author Rubén Pulido
+ * @generated
+ */
+@Generated("")
+public class BorderStylesConfig implements Cloneable, Serializable {
+
+	public static BorderStylesConfig toDTO(String json) {
+		return BorderStylesConfigSerDes.toDTO(json);
+	}
+
+	public Object getBorderColor() {
+		return borderColor;
+	}
+
+	public void setBorderColor(Object borderColor) {
+		this.borderColor = borderColor;
+	}
+
+	public void setBorderColor(
+		UnsafeSupplier<Object, Exception> borderColorUnsafeSupplier) {
+
+		try {
+			borderColor = borderColorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Object borderColor;
+
+	public Object getBorderStyle() {
+		return borderStyle;
+	}
+
+	public void setBorderStyle(Object borderStyle) {
+		this.borderStyle = borderStyle;
+	}
+
+	public void setBorderStyle(
+		UnsafeSupplier<Object, Exception> borderStyleUnsafeSupplier) {
+
+		try {
+			borderStyle = borderStyleUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Object borderStyle;
+
+	public Object getBorderWidth() {
+		return borderWidth;
+	}
+
+	public void setBorderWidth(Object borderWidth) {
+		this.borderWidth = borderWidth;
+	}
+
+	public void setBorderWidth(
+		UnsafeSupplier<Object, Exception> borderWidthUnsafeSupplier) {
+
+		try {
+			borderWidth = borderWidthUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Object borderWidth;
+
+	@Override
+	public BorderStylesConfig clone() throws CloneNotSupportedException {
+		return (BorderStylesConfig)super.clone();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+
+		if (!(object instanceof BorderStylesConfig)) {
+			return false;
+		}
+
+		BorderStylesConfig borderStylesConfig = (BorderStylesConfig)object;
+
+		return Objects.equals(toString(), borderStylesConfig.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		String string = toString();
+
+		return string.hashCode();
+	}
+
+	public String toString() {
+		return BorderStylesConfigSerDes.toJSON(this);
+	}
+
+}

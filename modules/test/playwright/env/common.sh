@@ -290,6 +290,15 @@ function get_absolute_dir {
 	echo $(cd -- $(dirname -- $1) &> /dev/null && pwd)
 }
 
+function get_app_server_dir {
+	if [[ "${APP_SERVER_TYPE}" == "tomcat" ]]
+	then
+		find "${1}" -maxdepth 2 -type d -name "${APP_SERVER_TYPE}*"
+	else
+		find "${1}" -maxdepth 2 -type d -name "${APP_SERVER_TYPE}*[0-9]]"
+	fi
+}
+
 function get_client_extension_dir {
 	local clients_extension_name=${1}
 
@@ -425,10 +434,6 @@ function get_project_client_extension_workspace_portal_ext_properties_files {
 	fi
 }
 
-function get_tomcat_dir {
-	find ${1} -type d -name "tomcat*"
-}
-
 function get_tomcat_portal_ext_properties_file {
 	find ${LIFERAY_HOME} -type f -name "portal-ext.properties"
 }
@@ -486,20 +491,25 @@ function prepare_additional_bundles {
 
 		cp -r ${LIFERAY_HOME} ${liferay_home}
 
-		local tomcat_dir=$(get_tomcat_dir ${liferay_home})
+		local app_server_dir=$(get_app_server_dir ${liferay_home})
 
-		echo ${tomcat_dir}
+		echo ${app_server_dir}
 
-		sed -i "s/=\"8\([0-9]\{3\}\)\"/=\"${leading_port_number}\1\"/g" "${tomcat_dir}/conf/server.xml"
+		sed -i "s/=\"8\([0-9]\{3\}\)\"/=\"${leading_port_number}\1\"/g" "${app_server_dir}/conf/server.xml"
 
 		local osgi_console_port=$((11312 + ${app_server_bundles_size}))
 
-		sed -i "s/11312/${osgi_console_port}/g" "${tomcat_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
+		sed -i "s/11312/${osgi_console_port}/g" "${app_server_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
 
-		sed -i "s/channel-logic-name/channel-logic-name-${app_server_bundles_size}/g" "${tomcat_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
-		sed -i "s|liferay.home=${LIFERAY_HOME}|liferay.home=${liferay_home}|g" "${tomcat_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
+		sed -i "s/channel-logic-name/channel-logic-name-${app_server_bundles_size}/g" "${app_server_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
+		sed -i "s|liferay.home=${LIFERAY_HOME}|liferay.home=${liferay_home}|g" "${app_server_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
 
-		chmod a+x ${tomcat_dir}
+		chmod a+x ${app_server_dir}
+
+		if [[ ${2} == "true" ]]
+		then
+			sed -i "s/lportal/lportal${app_server_bundles_size}/g" "${app_server_dir}/webapps/ROOT/WEB-INF/classes/portal-ext.properties"
+		fi
 	done
 }
 
@@ -534,11 +544,41 @@ function start_analytics_cloud {
 function start_app_server {
 	local liferay_home=${1}
 
-	local tomcat_dir=$(get_tomcat_dir ${liferay_home})
+	local app_server_dir=$(get_app_server_dir ${liferay_home})
 
-	cd ${tomcat_dir}/bin
+	if [[ "${APP_SERVER_TYPE}" == "jboss" ]]
+	then
+		ant -f build-test-jboss.xml setup-jboss-playwright
 
-	/bin/bash catalina.sh run &
+		cd ${app_server_dir}/standalone/deployments
+
+		touch ROOT.war.dodeploy
+
+		cd ${app_server_dir}/bin
+
+		/bin/bash standalone.sh &
+	elif [[ "${APP_SERVER_TYPE}" == "tomcat" ]]
+	then
+		cd ${app_server_dir}/bin
+
+		/bin/bash catalina.sh run &
+	elif [[ "${APP_SERVER_TYPE}" == "weblogic" ]]
+	then
+		cd ${app_server_dir}/domains/liferay
+
+		/bin/bash startWeblogic.sh
+	elif [[ "${APP_SERVER_TYPE}" == "wildfly" ]]
+	then
+		ant -f build-test-wildfly.xml setup-wildfly-playwright
+
+		cd ${app_server_dir}/standalone/deployments
+
+		touch ROOT.war.dodeploy
+
+		cd ${app_server_dir}/bin
+
+		/bin/bash standalone.sh &
+	fi
 
 	local liferay_portal_url=${2}
 
@@ -630,9 +670,22 @@ function stop_analytics_cloud {
 function stop_app_server {
 	local liferay_home=${1}
 
-	cd $(get_tomcat_dir ${liferay_home})/bin
+	cd $(get_app_server_dir ${liferay_home})/bin
 
-	/bin/bash shutdown.sh &
+	if [[ "${APP_SERVER_TYPE}" == "jboss" || "${APP_SERVER_TYPE}" == "wildfly" ]]
+	then
+		cd ${_PORTAL_PROJECT_DIR}
+
+		ant -f build-test.xml stop-app-server
+	elif [[ "${APP_SERVER_TYPE}" == "tomcat" ]]
+	then
+		/bin/bash shutdown.sh &
+	elif [[ "${APP_SERVER_TYPE}" == "weblogic" ]]
+	then
+		cd ${app_server_dir}/domains/liferay
+
+		/bin/bash startWeblogic.sh
+	fi
 
 	local portal_url=${2}
 

@@ -6,7 +6,6 @@
 package com.liferay.osb.patcher.web.internal.search;
 
 import com.liferay.osb.patcher.constants.PatcherFixConstants;
-import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherFixLocalService;
@@ -26,7 +25,7 @@ import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
-import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -52,66 +51,63 @@ public class PatcherFixIndexer extends BaseIndexer<PatcherFix> {
 	}
 
 	@Override
-	public void postProcessContextQuery(
-			BooleanQuery contextQuery, SearchContext searchContext)
+	public void postProcessContextBooleanFilter(
+			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
 
 		long patcherProductVersionId = GetterUtil.getLong(
 			searchContext.getAttribute("patcherProductVersionId"));
 
 		if (patcherProductVersionId > 0) {
-			contextQuery.addRequiredTerm(
+			contextBooleanFilter.addRequiredTerm(
 				"patcherProductVersionId", patcherProductVersionId);
 		}
 
-		BooleanQuery booleanQuery = new BooleanQueryImpl();
-
-		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.MUST;
-
-		if (GetterUtil.getBoolean(
-				searchContext.getAttribute("advancedSearch"))) {
-
-			setBooleanQuery(booleanQuery, searchContext);
-		}
-		else if (GetterUtil.getBoolean(
-					searchContext.getAttribute("viewSearch"))) {
-
+		if (GetterUtil.getBoolean(searchContext.getAttribute("viewSearch"))) {
 			String key = GetterUtil.getString(
 				searchContext.getAttribute("key"));
 
 			if (Validator.isNotNull(key)) {
-				booleanQuery.addRequiredTerm("key", key, false);
+				contextBooleanFilter.addRequiredTerm("key", key);
 			}
 
-			BooleanQuery subbooleanQuery = new BooleanQueryImpl();
+			contextBooleanFilter.addTerm(
+				"type",
+				String.valueOf(
+					PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC),
+				BooleanClauseOccur.MUST_NOT);
 
-			subbooleanQuery.addExactTerm(
-				"type", PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC);
-
-			booleanQuery.add(subbooleanQuery, BooleanClauseOccur.MUST_NOT);
-		}
-		else {
-			contextQuery.addRequiredTerm("latestFix", true);
-
-			booleanQuery.addExactTerm(
-				"type", PatcherFixConstants.TYPE_FIX_PACK);
-			booleanQuery.addExactTerm(
-				"type", PatcherFixConstants.TYPE_GENERATED);
-			booleanQuery.addExactTerm(
-				"type", PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC);
-
-			BooleanQuery subbooleanQuery = new BooleanQueryImpl();
-
-			subbooleanQuery.addExactTerm(
-				"status", WorkflowConstants.STATUS_FIX_CONFLICT);
-
-			booleanQuery.add(subbooleanQuery, BooleanClauseOccur.MUST_NOT);
-
-			booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
+			return;
 		}
 
-		if (booleanQuery.hasClauses()) {
-			contextQuery.add(booleanQuery, booleanClauseOccur);
+		boolean hideOldFixVersions = GetterUtil.getBoolean(
+			searchContext.getAttribute("hideOldFixVersions"), true);
+
+		if (hideOldFixVersions) {
+			contextBooleanFilter.addRequiredTerm(
+				"latestFix", String.valueOf(hideOldFixVersions));
+		}
+
+		long patcherProjectVersionIdFilter = GetterUtil.getLong(
+			searchContext.getAttribute("patcherProjectVersionId"));
+
+		if (patcherProjectVersionIdFilter > 0) {
+			contextBooleanFilter.addRequiredTerm(
+				"patcherProjectVersionId", patcherProjectVersionIdFilter);
+		}
+
+		int statusFilter = GetterUtil.getInteger(
+			searchContext.getAttribute("status"));
+
+		if (statusFilter > 0) {
+			contextBooleanFilter.addRequiredTerm("status", statusFilter);
+		}
+
+		int typeFilter = GetterUtil.getInteger(
+			searchContext.getAttribute("type"), PatcherFixConstants.TYPE_ANY);
+
+		if (typeFilter >= 0) {
+			contextBooleanFilter.addRequiredTerm("type", typeFilter);
 		}
 	}
 
@@ -126,16 +122,10 @@ public class PatcherFixIndexer extends BaseIndexer<PatcherFix> {
 			return;
 		}
 
-		boolean advancedSearch = GetterUtil.getBoolean(
-			searchContext.getAttribute("advancedSearch"));
-
-		if (!advancedSearch) {
-			addSearchTerm(
-				searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
-			addSearchTerm(searchQuery, searchContext, "patcherFixName", true);
-			addSearchTerm(
-				searchQuery, searchContext, "patcherProjectVersionName", true);
-		}
+		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
+		addSearchTerm(searchQuery, searchContext, "patcherFixName", true);
+		addSearchTerm(
+			searchQuery, searchContext, "patcherProjectVersionName", true);
 	}
 
 	@Override
@@ -227,99 +217,6 @@ public class PatcherFixIndexer extends BaseIndexer<PatcherFix> {
 			});
 
 		indexableActionableDynamicQuery.performActions();
-	}
-
-	protected void setBooleanQuery(
-			BooleanQuery booleanQuery, SearchContext searchContext)
-		throws Exception {
-
-		long entryClassPK = GetterUtil.getLong(
-			searchContext.getAttribute(Field.ENTRY_CLASS_PK));
-
-		if (entryClassPK > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, Field.ENTRY_CLASS_PK,
-				entryClassPK);
-		}
-
-		boolean hideOldFixVersions = GetterUtil.getBoolean(
-			searchContext.getAttribute("hideOldFixVersions"), true);
-
-		if (hideOldFixVersions) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "latestFix",
-				String.valueOf(hideOldFixVersions));
-		}
-
-		String patcherFixName = GetterUtil.getString(
-			searchContext.getAttribute("patcherFixName"));
-
-		if (Validator.isNotNull(patcherFixName)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherFixName",
-				PatcherUtil.prepareKeywords(patcherFixName), true);
-		}
-
-		long patcherProjectVersionIdFilter = GetterUtil.getLong(
-			searchContext.getAttribute("patcherProjectVersionIdFilter"));
-
-		if (patcherProjectVersionIdFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherProjectVersionId",
-				patcherProjectVersionIdFilter);
-		}
-
-		int statusFilter = GetterUtil.getInteger(
-			searchContext.getAttribute("statusFilter"));
-
-		if (statusFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "status", statusFilter);
-		}
-
-		int typeFilter = GetterUtil.getInteger(
-			searchContext.getAttribute("typeFilter"),
-			PatcherFixConstants.TYPE_ANY);
-
-		if (typeFilter >= 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "type", typeFilter);
-		}
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			BooleanQuery query)
-		throws Exception {
-
-		if (searchContext.isAndSearch()) {
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-		else {
-			booleanQuery.add(query, BooleanClauseOccur.SHOULD);
-		}
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			String field, Object value)
-		throws Exception {
-
-		setBooleanQueryIsAndSearch(
-			booleanQuery, searchContext, field, value, false);
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			String field, Object value, boolean like)
-		throws Exception {
-
-		if (searchContext.isAndSearch()) {
-			booleanQuery.addRequiredTerm(field, String.valueOf(value), like);
-		}
-		else {
-			booleanQuery.addTerm(field, String.valueOf(value), like);
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

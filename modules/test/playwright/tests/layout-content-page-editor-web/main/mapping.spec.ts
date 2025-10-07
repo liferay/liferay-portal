@@ -79,7 +79,7 @@ test('Allows selecting specific repeatable field when mapping', async ({
 
 	const webContentOption = page
 		.frameLocator('iframe[title="Select"]')
-		.getByRole('menuitem', {name: 'Web Content'});
+		.getByRole('menuitem', {exact: true, name: 'Web Content'});
 
 	if (
 		await webContentOption.evaluate(
@@ -555,6 +555,16 @@ test(
 			page.locator('.component-image').getByRole('link')
 		).toHaveAttribute('href', 'https://en.wikipedia.org/wiki/Cat');
 
+		// Check we can clear mapped item
+
+		await pageEditorPage.goto(layout, pageManagementSite.friendlyUrlPath);
+
+		await pageEditorPage.selectEditable(headingId, 'element-text');
+
+		await page.getByRole('tab', {exact: true, name: 'Link'}).click();
+
+		await pageEditorPage.removeMapping();
+
 		// Delete layout
 
 		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.id);
@@ -616,6 +626,7 @@ test(
 				status: {
 					code: 0,
 				},
+				titleObjectFieldName: 'name',
 			});
 
 		apiHelpers.data.push({
@@ -735,13 +746,13 @@ test(
 
 		await pageEditorPage.mapObjectAction({
 			entity: 'Potato Providers',
-			entry: String(firstObjectEntry.id),
+			entry: firstObjectEntry.name,
 			fragmentId: firstButtonId,
 		});
 
 		await pageEditorPage.mapObjectAction({
 			entity: 'Potato Providers',
-			entry: String(secondObjectEntry.id),
+			entry: secondObjectEntry.name,
 			fragmentId: secondButtonId,
 		});
 
@@ -778,7 +789,9 @@ test(
 		await buttons.last().click();
 
 		await expect(
-			page.getByRole('heading', {name: String(secondObjectEntry.id)})
+			page.getByRole('heading', {
+				name: secondObjectEntry.name,
+			})
 		).toBeVisible();
 	}
 );

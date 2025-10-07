@@ -1121,6 +1121,13 @@ nav.public-sites-navigation .nav-items-wrapper .adt-nav-item .adt-submenu {
 	width: 2rem;
 }
 
+.adt-nav-item .adt-submenu-header-image {
+	height: 1.125rem;
+	margin-right: 0.4rem;
+	margin-top: -0.125rem;
+	width: 1rem;
+}
+
 .adt-nav-item .adt-submenu-item-preheader {
 	font-size: 0.9rem;
 	letter-spacing: 0.1em;

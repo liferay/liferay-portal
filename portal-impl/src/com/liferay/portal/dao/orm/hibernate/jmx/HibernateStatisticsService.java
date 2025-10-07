@@ -8,7 +8,7 @@ package com.liferay.portal.dao.orm.hibernate.jmx;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import javax.management.DynamicMBean;
 import javax.management.NotCompliantMBeanException;

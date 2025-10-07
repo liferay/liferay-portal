@@ -8,6 +8,7 @@ package com.liferay.commerce.product.content.web.internal.item.selector;
 import com.liferay.commerce.constants.CommerceWebKeys;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.info.item.selector.InfoItemSelectorView;
@@ -156,6 +157,13 @@ public class CPDefinitionItemSelectorView
 				_portal.getClassNameId(CPDefinition.class.getName())
 			).put(
 				"classPK", _cpDefinition.getCPDefinitionId()
+			).put(
+				"externalReferenceCode",
+				() -> {
+					CProduct cProduct = _cpDefinition.getCProduct();
+
+					return cProduct.getExternalReferenceCode();
+				}
 			).put(
 				"title", _cpDefinition.getName(themeDisplay.getLanguageId())
 			).put(

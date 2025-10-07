@@ -2,7 +2,7 @@
 
 [#if configuration.type == "previous"]
 	<div class="component-button text-break">
-		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentEntryLinkNamespace}-form-button" type="button">
+		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentElementId}-form-button" type="button">
 			<span data-lfr-editable-id="previous-button-text" data-lfr-editable-type="text">
 				Previous
 			</span>
@@ -10,7 +10,7 @@
 	</div>
 [#elseif configuration.type == "next"]
 	<div class="component-button text-break">
-		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentEntryLinkNamespace}-form-button" type="button">
+		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentElementId}-form-button" type="button">
 			<span data-lfr-editable-id="next-button-text" data-lfr-editable-type="text">
 				Next
 			</span>
@@ -18,7 +18,7 @@
 	</div>
 [#else]
 	<div class="component-button text-break">
-		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" data-lfr-editable-id="submit-button-text" data-lfr-editable-type="text" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentEntryLinkNamespace}-submit-button" name="status" type="submit" value="${configuration.submittedEntryStatus}">
+		<button class="btn btn-${configuration.buttonSize} btn-${configuration.buttonType}" data-lfr-editable-id="submit-button-text" data-lfr-editable-type="text" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="fragment-${fragmentElementId}-submit-button" name="status" type="submit" value="${configuration.submittedEntryStatus}">
 			Submit
 		</button>
 	</div>

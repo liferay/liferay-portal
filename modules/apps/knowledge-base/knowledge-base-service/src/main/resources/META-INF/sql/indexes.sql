@@ -1,6 +1,6 @@
 create index IX_7E9C8FF8 on KBArticle (externalReferenceCode[$COLUMN_LENGTH:75$]);
+create unique index IX_E832E86E on KBArticle (groupId, ctCollectionId, externalReferenceCode[$COLUMN_LENGTH:75$], version);
 create unique index IX_8DC73951 on KBArticle (groupId, ctCollectionId, uuid_[$COLUMN_LENGTH:75$]);
-create unique index IX_1096F938 on KBArticle (groupId, ctCollectionId, version, externalReferenceCode[$COLUMN_LENGTH:75$]);
 create index IX_4A49CDD6 on KBArticle (groupId, kbFolderId, urlTitle[$COLUMN_LENGTH:75$]);
 create index IX_7B1749F4 on KBArticle (groupId, latest, kbFolderId);
 create index IX_E2460F71 on KBArticle (groupId, latest, parentResourcePrimKey);

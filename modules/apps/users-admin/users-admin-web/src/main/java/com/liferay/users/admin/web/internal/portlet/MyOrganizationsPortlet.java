@@ -45,7 +45,8 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.init-param.view-template=/view.jsp",
 		"jakarta.portlet.name=" + UsersAdminPortletKeys.MY_ORGANIZATIONS,
 		"jakarta.portlet.resource-bundle=content.Language",
-		"jakarta.portlet.security-role-ref=administrator"
+		"jakarta.portlet.security-role-ref=administrator",
+		"jakarta.portlet.version=4.0"
 	},
 	service = Portlet.class
 )

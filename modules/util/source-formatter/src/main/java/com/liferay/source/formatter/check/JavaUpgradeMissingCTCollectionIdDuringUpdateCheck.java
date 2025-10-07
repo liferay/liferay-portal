@@ -40,7 +40,9 @@ public class JavaUpgradeMissingCTCollectionIdDuringUpdateCheck
 		String className = JavaSourceUtil.getClassName(fileName);
 
 		if (!absolutePath.contains("/upgrade/") ||
-			absolutePath.contains("-test/") || className.startsWith("Base") ||
+			absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/") ||
+			className.startsWith("Base") ||
 			!isUpgradeProcess(absolutePath, content)) {
 
 			return content;

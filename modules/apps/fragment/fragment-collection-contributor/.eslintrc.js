@@ -8,6 +8,7 @@ module.exports = {
 		YT: true,
 		configuration: true,
 		fragmentElement: true,
+		fragmentElementId: true,
 		fragmentEntryLinkNamespace: true,
 		fragmentNamespace: true,
 		input: true,

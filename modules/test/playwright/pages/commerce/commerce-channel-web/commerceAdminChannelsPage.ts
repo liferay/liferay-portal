@@ -44,7 +44,7 @@ export class CommerceAdminChannelsPage {
 
 	constructor(page: Page) {
 		this.addButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.buyerOrderApprovalWorkflow = page.getByLabel(
@@ -110,7 +110,7 @@ export class CommerceAdminChannelsPage {
 		this.shippingMethodActiveField =
 			this.sidePanelFrameLocator.getByLabel('Active');
 		this.shippingMethodOptionsAddButton = this.sidePanelFrameLocator
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.shippingMethodOptionsLink = this.sidePanelFrameLocator.getByRole(
 			'link',

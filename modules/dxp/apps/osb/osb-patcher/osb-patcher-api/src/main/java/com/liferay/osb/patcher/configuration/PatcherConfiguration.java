@@ -25,6 +25,9 @@ public interface PatcherConfiguration {
 	public String githubURL();
 
 	@Meta.AD(deflt = "", required = false)
+	public String googleCloudHotfixBucket();
+
+	@Meta.AD(deflt = "", required = false)
 	public String helpCenterGetAccountApiEndpoint();
 
 	@Meta.AD(deflt = "", required = false)

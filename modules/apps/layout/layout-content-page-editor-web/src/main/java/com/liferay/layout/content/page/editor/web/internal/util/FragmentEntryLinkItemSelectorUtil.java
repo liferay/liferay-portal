@@ -36,6 +36,10 @@ public class FragmentEntryLinkItemSelectorUtil {
 		ItemSelector itemSelector, HttpServletRequest httpServletRequest,
 		JSONObject jsonObject) {
 
+		if (jsonObject == null) {
+			return;
+		}
+
 		JSONArray fieldSetsJSONArray = jsonObject.getJSONArray("fieldSets");
 
 		if (fieldSetsJSONArray == null) {

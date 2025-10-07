@@ -44,6 +44,7 @@ public class OrderEntityModel implements EntityModel {
 			new IntegerEntityField("orderId", locale -> Field.ENTRY_CLASS_PK),
 			new IntegerEntityField(
 				"orderTypeId", locale -> "commerceOrderTypeId"),
+			new IntegerEntityField("paymentStatus", locale -> "paymentStatus"),
 			new StringEntityField(
 				"creatorEmailAddress", locale -> "orderCreatorEmailAddress"),
 			new StringEntityField(

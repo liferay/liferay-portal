@@ -7,6 +7,7 @@ package com.liferay.depot.web.internal.item.selector;
 
 import com.liferay.item.selector.BaseItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
+import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -18,13 +19,11 @@ import org.osgi.service.component.annotations.Deactivate;
  */
 @Component(service = ItemSelectorCriterionHandler.class)
 public class DepotGroupItemSelectorCriterionHandler
-	extends BaseItemSelectorCriterionHandler<DepotGroupItemSelectorCriterion> {
+	extends BaseItemSelectorCriterionHandler<GroupItemSelectorCriterion> {
 
 	@Override
-	public Class<DepotGroupItemSelectorCriterion>
-		getItemSelectorCriterionClass() {
-
-		return DepotGroupItemSelectorCriterion.class;
+	public Class<GroupItemSelectorCriterion> getItemSelectorCriterionClass() {
+		return GroupItemSelectorCriterion.class;
 	}
 
 	@Activate

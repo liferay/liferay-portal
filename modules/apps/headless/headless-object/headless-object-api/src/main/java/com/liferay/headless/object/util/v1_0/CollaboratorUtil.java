@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -31,6 +32,8 @@ import com.liferay.sharing.service.SharingEntryService;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -74,7 +77,7 @@ public class CollaboratorUtil {
 		List<SharingEntry> oldSharingEntries =
 			sharingEntryService.getSharingEntries(
 				classNameId, classPK, groupId, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, null);
 
 		List<SharingEntry> newSharingEntries = new ArrayList<>();
 
@@ -95,6 +98,14 @@ public class CollaboratorUtil {
 				sharingEntryService.deleteSharingEntry(sharingEntry);
 			}
 		}
+
+		Collections.sort(
+			newSharingEntries,
+			Comparator.comparing(
+				SharingEntry::getCreateDate, Comparator.reverseOrder()
+			).thenComparing(
+				SharingEntry::getSharingEntryId, Comparator.reverseOrder()
+			));
 
 		return Page.of(
 			TransformUtil.transform(
@@ -160,7 +171,10 @@ public class CollaboratorUtil {
 			TransformUtil.transform(
 				sharingEntryService.getSharingEntries(
 					classNameId, classPK, groupId,
-					pagination.getStartPosition(), pagination.getEndPosition()),
+					pagination.getStartPosition(), pagination.getEndPosition(),
+					OrderByComparatorFactoryUtil.create(
+						"SharingEntry", "createDate", false, "sharingEntryId",
+						false)),
 				sharingEntry -> toCollaborator(
 					acceptLanguage, dtoConverter, dtoConverterRegistry,
 					sharingEntry, uriInfo, user)),

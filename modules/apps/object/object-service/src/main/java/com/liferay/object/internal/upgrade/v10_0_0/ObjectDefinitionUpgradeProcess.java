@@ -55,21 +55,30 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 
 				preparedStatement2.addBatch();
 
-				if (hasTable(resultSet.getString("dbTableName"))) {
-					alterColumnName(
-						resultSet.getString("dbTableName"),
-						oldPKObjectFieldDBColumnName,
-						newPKObjectFieldDBColumnName + " LONG not null");
-
-					alterColumnName(
-						resultSet.getString("dbTableName") + "_x",
-						oldPKObjectFieldDBColumnName,
-						newPKObjectFieldDBColumnName + " LONG not null");
-				}
+				_alterColumnName(
+					resultSet.getString("dbTableName"),
+					oldPKObjectFieldDBColumnName, newPKObjectFieldDBColumnName);
+				_alterColumnName(
+					resultSet.getString("dbTableName") + "_x",
+					oldPKObjectFieldDBColumnName, newPKObjectFieldDBColumnName);
 			}
 
 			preparedStatement2.executeBatch();
 		}
+	}
+
+	private void _alterColumnName(
+			String dbTableName, String oldPKObjectFieldDBColumnName,
+			String newPKObjectFieldDBColumnName)
+		throws Exception {
+
+		if (!hasColumn(dbTableName, oldPKObjectFieldDBColumnName)) {
+			return;
+		}
+
+		alterColumnName(
+			dbTableName, oldPKObjectFieldDBColumnName,
+			newPKObjectFieldDBColumnName + " LONG not null");
 	}
 
 }

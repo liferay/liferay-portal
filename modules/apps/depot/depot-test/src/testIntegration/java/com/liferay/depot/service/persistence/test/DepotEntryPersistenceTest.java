@@ -133,6 +133,8 @@ public class DepotEntryPersistenceTest {
 
 		newDepotEntry.setModifiedDate(RandomTestUtil.nextDate());
 
+		newDepotEntry.setType(RandomTestUtil.nextInt());
+
 		_depotEntries.add(_persistence.update(newDepotEntry));
 
 		DepotEntry existingDepotEntry = _persistence.findByPrimaryKey(
@@ -163,6 +165,8 @@ public class DepotEntryPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingDepotEntry.getModifiedDate()),
 			Time.getShortTimestamp(newDepotEntry.getModifiedDate()));
+		Assert.assertEquals(
+			existingDepotEntry.getType(), newDepotEntry.getType());
 	}
 
 	@Test
@@ -200,6 +204,14 @@ public class DepotEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_T() throws Exception {
+		_persistence.countByC_T(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByC_T(0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		DepotEntry newDepotEntry = addDepotEntry();
 
@@ -227,7 +239,7 @@ public class DepotEntryPersistenceTest {
 			"DepotEntry", "mvccVersion", true, "ctCollectionId", true, "uuid",
 			true, "depotEntryId", true, "groupId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true);
+			"modifiedDate", true, "type", true);
 	}
 
 	@Test
@@ -530,6 +542,8 @@ public class DepotEntryPersistenceTest {
 		depotEntry.setCreateDate(RandomTestUtil.nextDate());
 
 		depotEntry.setModifiedDate(RandomTestUtil.nextDate());
+
+		depotEntry.setType(RandomTestUtil.nextInt());
 
 		_depotEntries.add(_persistence.update(depotEntry));
 

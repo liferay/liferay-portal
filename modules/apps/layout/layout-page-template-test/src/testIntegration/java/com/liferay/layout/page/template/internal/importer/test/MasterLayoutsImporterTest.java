@@ -36,7 +36,6 @@ import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -282,8 +281,7 @@ public class MasterLayoutsImporterTest {
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 		JSONObject configurationValuesJSONObject =
-			_jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject freeMarkerJSONObject =
 			configurationValuesJSONObject.getJSONObject(
@@ -622,8 +620,8 @@ public class MasterLayoutsImporterTest {
 			String key)
 		throws Exception {
 
-		JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject editableJSONObject = editableValuesJSONObject.getJSONObject(
 			FragmentEntryProcessorConstants.
@@ -822,9 +820,6 @@ public class MasterLayoutsImporterTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private JSONFactory _jsonFactory;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;

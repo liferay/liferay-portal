@@ -19,11 +19,11 @@ import OrderableTable from '../../components/OrderableTable';
 import RequiredMark from '../../components/RequiredMark';
 import Toggle from '../../components/Toggle';
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import sortItems from '../../utils/sortItems';
@@ -492,16 +492,21 @@ const Sorting = ({
 	const fetchDataSetSorts = useCallback(async () => {
 		setLoading(true);
 
-		const response = await fetch(
-			`${API_URL.SORTS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_SORTS_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_SORTS}&sort=dateCreated:asc`,
-			{
-				headers: {
-					'Accept': 'application/json',
-					'Accept-Language':
-						Liferay.ThemeDisplay.getBCP47LanguageId(),
-				},
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			params: {
+				nestedFields: OBJECT_RELATIONSHIP.DATA_SET_SORTS,
+				sort: 'dateCreated:asc',
+			},
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_SORTS,
+		});
+
+		const response = await fetch(url, {
+			headers: {
+				'Accept': 'application/json',
+				'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
+			},
+		});
 
 		const responseJSON = await response.json();
 
@@ -561,7 +566,13 @@ const Sorting = ({
 					}) => {
 						processClose();
 
-						const url = `${API_URL.SORTS}/${item.id}`;
+						const url = getDataSetResourceURL({
+							dataSetERC: dataSet.externalReferenceCode,
+							relatedResourceERC: String(
+								item.externalReferenceCode
+							),
+							relationship: OBJECT_RELATIONSHIP.DATA_SET_SORTS,
+						});
 
 						const response = await fetch(url, {
 							method: 'DELETE',
@@ -608,19 +619,20 @@ const Sorting = ({
 	};
 
 	const updateSortsOrder = async ({sortsOrder}: {sortsOrder: string}) => {
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify({
-					sortsOrder,
-				}),
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify({
+				sortsOrder,
+			}),
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -647,14 +659,17 @@ const Sorting = ({
 	const updateActive = async (item: IDataSetSort) => {
 		setToogleActiveDisabled(true);
 
-		const response = await fetch(
-			`${API_URL.SORTS}/by-external-reference-code/${item.externalReferenceCode}`,
-			{
-				body: JSON.stringify({active: !item.active}),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			relatedResourceERC: item.externalReferenceCode,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_SORTS,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify({active: !item.active}),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();

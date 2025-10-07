@@ -909,17 +909,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro movePageItemUp(pageNameTo = null, pageName = null) {
-		var key_pageName = ${pageName};
-		var key_pageNameTo = ${pageNameTo};
-
-		DragAndDrop.javaScriptDragAndDropToUp(
-			locator1 = "PagesAdmin#LIST_GROUP_ITEM_DRAG_HANDLER",
-			locator2 = "PagesAdmin#LIST_GROUP_ITEM_DROP_TARGET",
-			value1 = "");
-	}
-
-	@summary = "Default summary"
 	macro openPageEllipsisMenu(parentPagesHierarchy = null, pageName = null) {
 		WaitForPageLoad();
 

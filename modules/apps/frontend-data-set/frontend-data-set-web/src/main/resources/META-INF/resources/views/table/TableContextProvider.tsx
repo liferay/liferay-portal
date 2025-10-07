@@ -12,7 +12,7 @@ import ViewsContext, {
 
 // @ts-ignore
 
-import {VIEWS_ACTION_TYPES} from '../viewsReducer';
+import {EViewsActionTypes} from '../viewsReducer';
 import TableContext from './TableContext';
 
 function TableContextProvider({
@@ -65,7 +65,7 @@ function TableContextProvider({
 
 		if (isColumnReducing && columnsAreShorterThanContainer) {
 			viewsDispatch({
-				type: VIEWS_ACTION_TYPES.UPDATE_FIELD,
+				type: EViewsActionTypes.UPDATE_FIELD,
 				value: {
 					name: nextColumnName,
 					width: nextColumn.width + resizedColumn.width - width,
@@ -74,7 +74,7 @@ function TableContextProvider({
 		}
 
 		viewsDispatch({
-			type: VIEWS_ACTION_TYPES.UPDATE_FIELD,
+			type: EViewsActionTypes.UPDATE_FIELD,
 			value: {
 				name,
 				width,

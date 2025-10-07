@@ -10,7 +10,6 @@ import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegist
 import com.liferay.analytics.settings.data.control.tasks.UsersDataControlTasks;
 import com.liferay.analytics.settings.internal.client.AnalyticsCloudClient;
 import com.liferay.petra.function.UnsafeRunnable;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
@@ -43,12 +42,6 @@ public class AnalyticsDataControlTasksSchedulerJobConfiguration
 
 			for (Map.Entry<Long, AnalyticsConfiguration> entry :
 					analyticsConfigurations.entrySet()) {
-
-				if (!FeatureFlagManagerUtil.isEnabled(
-						entry.getKey(), "LPD-45375")) {
-
-					continue;
-				}
 
 				Set<String> emailAddresses =
 					_usersDataControlTasks.getEmailAddresses(entry.getKey());

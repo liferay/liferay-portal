@@ -1,0 +1,20 @@
+{
+	"name": "Partners",
+	"name_i18n": {
+		"en_US": "Partners",
+		"es-ES": "Partners",
+		"ja-JP": "パートナー",
+		"pt-BR": "Partners"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "team-setup-and-activation-management-for-you-and-your-customers"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/partners.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

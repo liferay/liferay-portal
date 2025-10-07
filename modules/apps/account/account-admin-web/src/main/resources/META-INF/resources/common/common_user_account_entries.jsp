@@ -105,6 +105,18 @@ boolean singleSelect = ParamUtil.getBoolean(request, "singleSelect", true);
 				value="<%= accountUserDisplay.getAccountRoleNamesString(accountEntryDisplay.getAccountEntryId(), locale) %>"
 			/>
 
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+				<liferay-ui:search-container-column-text
+					cssClass="table-cell-expand-smallest"
+					name="status"
+				>
+					<clay:label
+						displayType="<%= accountEntryDisplay.getStatusLabelStyle() %>"
+						label="<%= accountEntryDisplay.getStatusLabel() %>"
+					/>
+				</liferay-ui:search-container-column-text>
+			</c:if>
+
 			<c:if test="<%= !portletName.equals(UsersAdminPortletKeys.MY_ACCOUNT) && AccountEntryPermission.contains(permissionChecker, accountEntryDisplay.getAccountEntryId(), ActionKeys.MANAGE_USERS) %>">
 				<liferay-ui:search-container-column-text>
 					<clay:button

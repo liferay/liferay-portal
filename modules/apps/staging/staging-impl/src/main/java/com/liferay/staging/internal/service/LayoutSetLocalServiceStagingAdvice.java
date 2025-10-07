@@ -12,13 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetStagingHandler;
-import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
-import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
-import com.liferay.portal.kernel.util.AggregateClassLoader;
-import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.spring.aop.AopInvocationHandler;
 import com.liferay.portlet.exportimport.staging.StagingAdvicesThreadLocal;
 
 import java.io.Closeable;
@@ -30,6 +24,7 @@ import java.lang.reflect.Method;
 
 import java.util.List;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -44,25 +39,10 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutSetLocalServiceStagingAdvice {
 
 	@Activate
-	protected void activate() {
-		AopInvocationHandler aopInvocationHandler =
-			ProxyUtil.fetchInvocationHandler(
-				_layoutSetLocalService, AopInvocationHandler.class);
-
-		Object target = aopInvocationHandler.getTarget();
-
-		aopInvocationHandler.setTarget(
-			ProxyUtil.newProxyInstance(
-				AggregateClassLoader.getAggregateClassLoader(
-					PortalClassLoaderUtil.getClassLoader(),
-					LayoutSetLocalServiceStagingAdvice.class.getClassLoader()),
-				new Class<?>[] {
-					IdentifiableOSGiService.class, LayoutSetLocalService.class,
-					BaseLocalService.class
-				},
-				new LayoutSetLocalServiceStagingInvocationHandler(target)));
-
-		_closeable = () -> aopInvocationHandler.setTarget(target);
+	protected void activate(BundleContext bundleContext) {
+		_closeable = StagingAdviceUtil.register(
+			bundleContext, LayoutSetLocalServiceStagingInvocationHandler::new,
+			_layoutSetLocalService, LayoutSetLocalService.class);
 	}
 
 	@Deactivate
@@ -113,6 +93,18 @@ public class LayoutSetLocalServiceStagingAdvice {
 		public Object invoke(Object proxy, Method method, Object[] arguments)
 			throws Throwable {
 
+			String methodName = method.getName();
+
+			if (methodName.equals("getWrappedService")) {
+				return _targetObject;
+			}
+
+			if (methodName.equals("setWrappedService")) {
+				_targetObject = arguments[0];
+
+				return null;
+			}
+
 			try {
 				Object returnValue = method.invoke(_targetObject, arguments);
 
@@ -146,7 +138,7 @@ public class LayoutSetLocalServiceStagingAdvice {
 			_targetObject = targetObject;
 		}
 
-		private final Object _targetObject;
+		private volatile Object _targetObject;
 
 	}
 

@@ -169,19 +169,19 @@ public class TrashVersionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByE_C() throws Exception {
-		_persistence.countByE_C(
+	public void testCountByE_CN() throws Exception {
+		_persistence.countByE_CN(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
-		_persistence.countByE_C(0L, 0L);
+		_persistence.countByE_CN(0L, 0L);
 	}
 
 	@Test
-	public void testCountByC_C() throws Exception {
-		_persistence.countByC_C(
+	public void testCountByCN_CPK() throws Exception {
+		_persistence.countByCN_CPK(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
-		_persistence.countByC_C(0L, 0L);
+		_persistence.countByCN_CPK(0L, 0L);
 	}
 
 	@Test

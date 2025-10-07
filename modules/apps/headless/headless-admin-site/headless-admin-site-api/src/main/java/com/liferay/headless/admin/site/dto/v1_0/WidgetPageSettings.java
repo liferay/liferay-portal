@@ -414,17 +414,16 @@ public class WidgetPageSettings extends PageSettings implements Serializable {
 			sb.append(hiddenFromNavigation);
 		}
 
-		NavigationMenuSettings navigationMenuSettings =
-			getNavigationMenuSettings();
+		NavigationSettings navigationSettings = getNavigationSettings();
 
-		if (navigationMenuSettings != null) {
+		if (navigationSettings != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"navigationMenuSettings\": ");
+			sb.append("\"navigationSettings\": ");
 
-			sb.append(String.valueOf(navigationMenuSettings));
+			sb.append(String.valueOf(navigationSettings));
 		}
 
 		OpenGraphSettings openGraphSettings = getOpenGraphSettings();
@@ -437,6 +436,34 @@ public class WidgetPageSettings extends PageSettings implements Serializable {
 			sb.append("\"openGraphSettings\": ");
 
 			sb.append(String.valueOf(openGraphSettings));
+		}
+
+		Integer priority = getPriority();
+
+		if (priority != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priority\": ");
+
+			sb.append(priority);
+		}
+
+		String queryString = getQueryString();
+
+		if (queryString != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"queryString\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(queryString));
+
+			sb.append("\"");
 		}
 
 		SEOSettings seoSettings = getSeoSettings();

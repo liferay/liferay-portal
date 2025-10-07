@@ -14,7 +14,9 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -120,15 +122,16 @@ public class TestrayRoutine {
 			"r_routineToBuilds_c_routineId eq '", String.valueOf(getID()), "'");
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"builds", TestrayBuild.FIELD_NAMES, filter, null, 1, 1);
 
 			if (entityJSONObjects.isEmpty()) {
 				return null;
 			}
 
-			return TestrayFactory.newTestrayBuild(
-				this, entityJSONObjects.get(0));
+			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
+
+			return TestrayFactory.newTestrayBuild(this, iterator.next());
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -143,15 +146,16 @@ public class TestrayRoutine {
 			"r_routineToBuilds_c_routineId eq '", String.valueOf(getID()), "'");
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"builds", TestrayBuild.FIELD_NAMES, filter, null, 1, 1);
 
 			if (entityJSONObjects.isEmpty()) {
 				return null;
 			}
 
-			return TestrayFactory.newTestrayBuild(
-				this, entityJSONObjects.get(0));
+			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
+
+			return TestrayFactory.newTestrayBuild(this, iterator.next());
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -190,7 +194,7 @@ public class TestrayRoutine {
 		}
 
 		try {
-			List<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = _testrayServer.requestGraphQL(
 				"builds", TestrayBuild.FIELD_NAMES, sb.toString(),
 				"dateCreated:desc", maxSize, 0);
 
@@ -293,14 +297,16 @@ public class TestrayRoutine {
 			"id eq '", matcher.group("routineID"), "'");
 
 		try {
-			List<JSONObject> entityJSONObjects = testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = testrayServer.requestGraphQL(
 				"routines", TestrayRoutine.FIELD_NAMES, filter, null, 1, 1);
 
 			if (entityJSONObjects.isEmpty()) {
 				return;
 			}
 
-			setJSONObject(entityJSONObjects.get(0));
+			Iterator<JSONObject> iterator = entityJSONObjects.iterator();
+
+			setJSONObject(iterator.next());
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);

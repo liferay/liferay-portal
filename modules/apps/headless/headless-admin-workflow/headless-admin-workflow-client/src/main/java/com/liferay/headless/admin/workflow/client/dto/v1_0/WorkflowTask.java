@@ -364,6 +364,27 @@ public class WorkflowTask implements Cloneable, Serializable {
 
 	protected Long workflowInstanceId;
 
+	public WorkflowLog[] getWorkflowLogs() {
+		return workflowLogs;
+	}
+
+	public void setWorkflowLogs(WorkflowLog[] workflowLogs) {
+		this.workflowLogs = workflowLogs;
+	}
+
+	public void setWorkflowLogs(
+		UnsafeSupplier<WorkflowLog[], Exception> workflowLogsUnsafeSupplier) {
+
+		try {
+			workflowLogs = workflowLogsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected WorkflowLog[] workflowLogs;
+
 	@Override
 	public WorkflowTask clone() throws CloneNotSupportedException {
 		return (WorkflowTask)super.clone();

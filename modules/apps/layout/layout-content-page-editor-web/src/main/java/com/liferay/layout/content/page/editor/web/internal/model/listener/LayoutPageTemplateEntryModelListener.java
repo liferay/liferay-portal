@@ -33,7 +33,6 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -212,7 +211,7 @@ public class LayoutPageTemplateEntryModelListener
 			_formManager.addFragmentEntryLinksLayoutStructureItems(
 				addedFragmentEntryLinks, _jsonFactory.createJSONObject(),
 				formStyledLayoutStructureItem, true, layout, layoutStructure,
-				LocaleUtil.getMostRelevantLocale(), segmentsExperienceId,
+				LocaleUtil.getMostRelevantLocale(), false, segmentsExperienceId,
 				serviceContext, null);
 
 			return addedFragmentEntryLinks;
@@ -330,29 +329,20 @@ public class LayoutPageTemplateEntryModelListener
 			return;
 		}
 
-		JSONObject editableValuesJSONObject = null;
-
-		try {
-			editableValuesJSONObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
-
-			JSONObject editableFragmentEntryProcessorJSONObject =
-				editableValuesJSONObject.getJSONObject(
-					FragmentEntryProcessorConstants.
-						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
-
-			if (editableFragmentEntryProcessorJSONObject != null) {
-				_removeMappedFields(editableFragmentEntryProcessorJSONObject);
-			}
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
-			}
-		}
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		if (editableValuesJSONObject == null) {
 			return;
+		}
+
+		JSONObject editableFragmentEntryProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (editableFragmentEntryProcessorJSONObject != null) {
+			_removeMappedFields(editableFragmentEntryProcessorJSONObject);
 		}
 
 		try (SafeCloseable safeCloseable =
@@ -397,7 +387,8 @@ public class LayoutPageTemplateEntryModelListener
 
 			_layoutPageTemplateStructureLocalService.
 				updateLayoutPageTemplateStructureData(
-					layout.getGroupId(), layout.getPlid(), segmentsExperienceId,
+					layoutPageTemplateEntry.getUserId(), layout.getGroupId(),
+					layout.getPlid(), segmentsExperienceId,
 					layoutStructure.toString());
 		}
 		catch (PortalException portalException) {

@@ -44,36 +44,33 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PageRuleActionResource {
 
-	public void deleteSiteSiteByExternalReferenceCodePageRuleAction(
+	public void deleteSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode)
 		throws Exception;
 
-	public PageRuleAction getSiteSiteByExternalReferenceCodePageRuleAction(
+	public PageRuleAction getSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode)
 		throws Exception;
 
-	public Page<PageRuleAction>
-			getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPage(
-				String siteExternalReferenceCode,
-				String pageRuleExternalReferenceCode, Boolean flatten)
+	public Page<PageRuleAction> getSitePageRulePageRuleActionsPage(
+			String siteExternalReferenceCode,
+			String pageRuleExternalReferenceCode, Boolean flatten)
 		throws Exception;
 
-	public PageRuleAction patchSiteSiteByExternalReferenceCodePageRuleAction(
+	public PageRuleAction patchSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode,
 			PageRuleAction pageRuleAction)
 		throws Exception;
 
-	public PageRuleAction
-			postSiteSiteByExternalReferenceCodePageRulePageRuleAction(
-				String siteExternalReferenceCode,
-				String pageRuleExternalReferenceCode,
-				PageRuleAction pageRuleAction)
+	public PageRuleAction postSitePageRulePageRuleAction(
+			String siteExternalReferenceCode,
+			String pageRuleExternalReferenceCode, PageRuleAction pageRuleAction)
 		throws Exception;
 
-	public PageRuleAction putSiteSiteByExternalReferenceCodePageRuleAction(
+	public PageRuleAction putSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode,
 			PageRuleAction pageRuleAction)

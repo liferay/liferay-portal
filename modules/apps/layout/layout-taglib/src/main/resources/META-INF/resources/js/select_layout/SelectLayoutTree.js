@@ -40,6 +40,7 @@ export default function SelectLayoutTree({
 	const updateSelectedItems = (item, selection, recursive) => {
 		if (!selection.has(item.id)) {
 			selectedItemsRef.current.set(item.id, {
+				externalReferenceCode: item.externalReferenceCode,
 				groupId: item.groupId,
 				id: item.id,
 				layoutId: item.layoutId,
@@ -90,6 +91,7 @@ export default function SelectLayoutTree({
 
 	const handleSingleSelection = (item, selection) => {
 		const data = {
+			externalReferenceCode: item.externalReferenceCode,
 			groupId: item.groupId,
 			id: item.id,
 			layoutId: item.layoutId,

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Security API
 Bundle-SymbolicName: com.liferay.portal.security.api
-Bundle-Version: 2.0.11
+Bundle-Version: 2.0.12
 Export-Package: com.liferay.portal.security.configuration

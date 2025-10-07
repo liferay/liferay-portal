@@ -4,3 +4,4 @@
  */
 
 export {default as checkAccessibility} from './checkAccessibility';
+export {default as formatAccessibility} from './formatAccessibility';

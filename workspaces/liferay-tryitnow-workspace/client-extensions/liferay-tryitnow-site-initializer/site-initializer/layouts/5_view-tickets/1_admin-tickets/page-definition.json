@@ -51,7 +51,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -189,7 +189,7 @@
 								"widgetConfig": {
 									"displayStyleGroupId": "[$GROUP_ID$]"
 								},
-								"widgetName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:J3Y7Ticket$]"
+								"widgetName": "[$OBJECT_DEFINITION_PORTLET_ID:J3Y7Ticket$]"
 							}
 						},
 						"type": "Widget"

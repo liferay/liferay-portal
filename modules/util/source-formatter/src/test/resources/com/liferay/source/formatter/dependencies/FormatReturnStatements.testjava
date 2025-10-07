@@ -52,4 +52,10 @@ public class FormatReturnStatements {
 		return s == null;
 	}
 
+	protected String setName(String name) {
+		return _name = name;
+	}
+
+	private String _name;
+
 }

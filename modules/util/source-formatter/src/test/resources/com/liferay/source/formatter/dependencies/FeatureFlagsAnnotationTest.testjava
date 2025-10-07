@@ -6,7 +6,7 @@
 package com.liferay.source.formatter.dependencies;
 
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
-import com.liferay.portal.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

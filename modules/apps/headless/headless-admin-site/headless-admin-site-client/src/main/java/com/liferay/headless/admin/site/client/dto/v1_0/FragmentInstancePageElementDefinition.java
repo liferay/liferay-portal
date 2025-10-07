@@ -28,6 +28,46 @@ public class FragmentInstancePageElementDefinition
 		return FragmentInstancePageElementDefinitionSerDes.toDTO(json);
 	}
 
+	public String getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(String configuration) {
+		this.configuration = configuration;
+	}
+
+	public void setConfiguration(
+		UnsafeSupplier<String, Exception> configurationUnsafeSupplier) {
+
+		try {
+			configuration = configurationUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String configuration;
+
+	public String getCss() {
+		return css;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
+	}
+
+	public void setCss(UnsafeSupplier<String, Exception> cssUnsafeSupplier) {
+		try {
+			css = cssUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String css;
+
 	public String[] getCssClasses() {
 		return cssClasses;
 	}
@@ -113,52 +153,31 @@ public class FragmentInstancePageElementDefinition
 
 	protected Date datePropagated;
 
-	public Date getDatePublished() {
-		return datePublished;
+	public String getDraftFragmentInstanceExternalReferenceCode() {
+		return draftFragmentInstanceExternalReferenceCode;
 	}
 
-	public void setDatePublished(Date datePublished) {
-		this.datePublished = datePublished;
+	public void setDraftFragmentInstanceExternalReferenceCode(
+		String draftFragmentInstanceExternalReferenceCode) {
+
+		this.draftFragmentInstanceExternalReferenceCode =
+			draftFragmentInstanceExternalReferenceCode;
 	}
 
-	public void setDatePublished(
-		UnsafeSupplier<Date, Exception> datePublishedUnsafeSupplier) {
-
-		try {
-			datePublished = datePublishedUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Date datePublished;
-
-	public String getDraftPageElementExternalReferenceCode() {
-		return draftPageElementExternalReferenceCode;
-	}
-
-	public void setDraftPageElementExternalReferenceCode(
-		String draftPageElementExternalReferenceCode) {
-
-		this.draftPageElementExternalReferenceCode =
-			draftPageElementExternalReferenceCode;
-	}
-
-	public void setDraftPageElementExternalReferenceCode(
+	public void setDraftFragmentInstanceExternalReferenceCode(
 		UnsafeSupplier<String, Exception>
-			draftPageElementExternalReferenceCodeUnsafeSupplier) {
+			draftFragmentInstanceExternalReferenceCodeUnsafeSupplier) {
 
 		try {
-			draftPageElementExternalReferenceCode =
-				draftPageElementExternalReferenceCodeUnsafeSupplier.get();
+			draftFragmentInstanceExternalReferenceCode =
+				draftFragmentInstanceExternalReferenceCodeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String draftPageElementExternalReferenceCode;
+	protected String draftFragmentInstanceExternalReferenceCode;
 
 	public Map<String, Object> getFragmentConfig() {
 		return fragmentConfig;
@@ -204,16 +223,43 @@ public class FragmentInstancePageElementDefinition
 
 	protected FragmentField[] fragmentFields;
 
-	public Object getFragmentReference() {
+	public String getFragmentInstanceExternalReferenceCode() {
+		return fragmentInstanceExternalReferenceCode;
+	}
+
+	public void setFragmentInstanceExternalReferenceCode(
+		String fragmentInstanceExternalReferenceCode) {
+
+		this.fragmentInstanceExternalReferenceCode =
+			fragmentInstanceExternalReferenceCode;
+	}
+
+	public void setFragmentInstanceExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			fragmentInstanceExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			fragmentInstanceExternalReferenceCode =
+				fragmentInstanceExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String fragmentInstanceExternalReferenceCode;
+
+	public FragmentReference getFragmentReference() {
 		return fragmentReference;
 	}
 
-	public void setFragmentReference(Object fragmentReference) {
+	public void setFragmentReference(FragmentReference fragmentReference) {
 		this.fragmentReference = fragmentReference;
 	}
 
 	public void setFragmentReference(
-		UnsafeSupplier<Object, Exception> fragmentReferenceUnsafeSupplier) {
+		UnsafeSupplier<FragmentReference, Exception>
+			fragmentReferenceUnsafeSupplier) {
 
 		try {
 			fragmentReference = fragmentReferenceUnsafeSupplier.get();
@@ -223,7 +269,7 @@ public class FragmentInstancePageElementDefinition
 		}
 	}
 
-	protected Object fragmentReference;
+	protected FragmentReference fragmentReference;
 
 	public FragmentStyle getFragmentStyle() {
 		return fragmentStyle;
@@ -245,6 +291,35 @@ public class FragmentInstancePageElementDefinition
 	}
 
 	protected FragmentStyle fragmentStyle;
+
+	public FragmentType getFragmentType() {
+		return fragmentType;
+	}
+
+	public String getFragmentTypeAsString() {
+		if (fragmentType == null) {
+			return null;
+		}
+
+		return fragmentType.toString();
+	}
+
+	public void setFragmentType(FragmentType fragmentType) {
+		this.fragmentType = fragmentType;
+	}
+
+	public void setFragmentType(
+		UnsafeSupplier<FragmentType, Exception> fragmentTypeUnsafeSupplier) {
+
+		try {
+			fragmentType = fragmentTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected FragmentType fragmentType;
 
 	public FragmentViewport[] getFragmentViewports() {
 		return fragmentViewports;
@@ -268,6 +343,25 @@ public class FragmentInstancePageElementDefinition
 
 	protected FragmentViewport[] fragmentViewports;
 
+	public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
+	}
+
+	public void setHtml(UnsafeSupplier<String, Exception> htmlUnsafeSupplier) {
+		try {
+			html = htmlUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String html;
+
 	public Boolean getIndexed() {
 		return indexed;
 	}
@@ -288,6 +382,25 @@ public class FragmentInstancePageElementDefinition
 	}
 
 	protected Boolean indexed;
+
+	public String getJs() {
+		return js;
+	}
+
+	public void setJs(String js) {
+		this.js = js;
+	}
+
+	public void setJs(UnsafeSupplier<String, Exception> jsUnsafeSupplier) {
+		try {
+			js = jsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String js;
 
 	public String getName() {
 		return name;
@@ -404,6 +517,39 @@ public class FragmentInstancePageElementDefinition
 
 	public String toString() {
 		return FragmentInstancePageElementDefinitionSerDes.toJSON(this);
+	}
+
+	public static enum FragmentType {
+
+		BASIC("Basic"), FORM("Form");
+
+		public static FragmentType create(String value) {
+			for (FragmentType fragmentType : values()) {
+				if (Objects.equals(fragmentType.getValue(), value) ||
+					Objects.equals(fragmentType.name(), value)) {
+
+					return fragmentType;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private FragmentType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 }

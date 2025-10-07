@@ -1,37 +1,50 @@
 @import 'atlas-variables';
 
-.modal-body.inline-scroller {
-	max-height: 600px;
+.multiple-file-uploader {
+	.modal-body.inline-scroller {
+		max-height: 600px;
 
-	.loading-animation {
-		position: relative !important;
+		.loading-animation {
+			position: relative !important;
+		}
 	}
-}
 
-.dropzone {
-	background-color: $light;
-	border-radius: 4px;
-	height: 160px;
-	outline: 2px dashed $secondary-l2;
-	padding: 0.75rem;
+	.dropzone {
+		background-color: $light;
+		border-radius: 4px;
+		height: 160px;
+		outline: 2px dashed $secondary-l2;
+		padding: 0.75rem;
 
-	transition-duration: 0.2s;
-	transition-property: bakground-color, outline;
-	transition-timing-function: ease-in-out;
+		transition-duration: 0.2s;
+		transition-property: bakground-color, outline;
+		transition-timing-function: ease-in-out;
 
-	&-drag-active {
-		background-color: $primary-l3;
-		outline-color: $primary;
+		&-drag-active {
+			background-color: $primary-l3;
+			outline-color: $primary;
+		}
 	}
-}
 
-.loading-message {
-	align-items: center;
-	background-color: $white;
-	display: flex;
-	inset: 0;
-	justify-content: center;
-	position: absolute;
-	top: 0;
-	z-index: 10;
+	.loading-message {
+		align-items: center;
+		background-color: $white;
+		display: flex;
+		inset: 0;
+		justify-content: center;
+		position: absolute;
+		top: 0;
+		z-index: 10;
+	}
+
+	.form-control.has-error {
+		border-left: 0;
+		border-radius: 0;
+		border-right: 0;
+		border-top: 0;
+	}
+
+	.sticker-border-secondary {
+		border: 1px solid $secondary-l3;
+	}
 }

@@ -75,7 +75,7 @@ describe('Connect', () => {
 		expect(sheetTextDiv).toBeInTheDocument();
 
 		expect(sheetTextDiv).toHaveTextContent(
-			'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'
+			'use-the-token-generated-in-your-analytics-cloud-to-connect-this-workspace'
 		);
 
 		expect(formControl).toBeInTheDocument();

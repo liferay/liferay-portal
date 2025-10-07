@@ -37,8 +37,8 @@ public class SamlSpMessageWrapper
 		attributes.put("companyId", getCompanyId());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("samlIdpEntityId", getSamlIdpEntityId());
-		attributes.put("samlIdpResponseKey", getSamlIdpResponseKey());
 		attributes.put("expirationDate", getExpirationDate());
+		attributes.put("samlIdpResponseKey", getSamlIdpResponseKey());
 
 		return attributes;
 	}
@@ -69,17 +69,17 @@ public class SamlSpMessageWrapper
 			setSamlIdpEntityId(samlIdpEntityId);
 		}
 
+		Date expirationDate = (Date)attributes.get("expirationDate");
+
+		if (expirationDate != null) {
+			setExpirationDate(expirationDate);
+		}
+
 		String samlIdpResponseKey = (String)attributes.get(
 			"samlIdpResponseKey");
 
 		if (samlIdpResponseKey != null) {
 			setSamlIdpResponseKey(samlIdpResponseKey);
-		}
-
-		Date expirationDate = (Date)attributes.get("expirationDate");
-
-		if (expirationDate != null) {
-			setExpirationDate(expirationDate);
 		}
 	}
 

@@ -313,16 +313,19 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 			}
 		}
 
+		JSONObject configurationJSONObject = _jsonFactory.safeCreateJSONObject(
+			configuration, true);
+		String errorMessage = null;
 		int type = FragmentConstants.getTypeFromLabel(
 			StringUtil.toLowerCase(StringUtil.trim(typeLabel)));
 		int status = WorkflowConstants.STATUS_APPROVED;
-		String errorMessage = null;
 
 		try {
 			_fragmentEntryProcessorRegistry.validateFragmentEntryHTML(
-				html, configuration);
+				html, configurationJSONObject);
 
-			_fragmentEntryValidator.validateConfiguration(configuration);
+			_fragmentEntryValidator.validateConfiguration(
+				configurationJSONObject);
 			_fragmentEntryValidator.validateTypeOptions(type, typeOptions);
 		}
 		catch (PortalException portalException) {
@@ -340,8 +343,8 @@ public class FragmentsImporterImpl implements FragmentsImporter {
 				return;
 			}
 
-			status = WorkflowConstants.STATUS_DRAFT;
 			errorMessage = portalException.getLocalizedMessage();
+			status = WorkflowConstants.STATUS_DRAFT;
 		}
 
 		try {

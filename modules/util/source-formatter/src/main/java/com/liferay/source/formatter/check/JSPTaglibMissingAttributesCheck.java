@@ -60,7 +60,7 @@ public class JSPTaglibMissingAttributesCheck extends BaseTagAttributesCheck {
 			addMessage(
 				fileName,
 				"When using <clay:dropdown-actions>, always specify one of " +
-					"the follwing attributes: \"aria-label\", " +
+					"the following attributes: \"aria-label\", " +
 						"\"aria-labelledby\", \"title\"",
 				getLineNumber(content, x));
 		}

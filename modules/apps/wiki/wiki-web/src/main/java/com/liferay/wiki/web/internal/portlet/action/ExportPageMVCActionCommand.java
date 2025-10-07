@@ -155,30 +155,17 @@ public class ExportPageMVCActionCommand extends BaseMVCActionCommand {
 				exception);
 		}
 
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(9);
 
-		sb.append("<!DOCTYPE html>");
-
-		sb.append("<html>");
-
-		sb.append("<head>");
-		sb.append("<meta content=\"");
+		sb.append("<!DOCTYPE html><html><head><meta content=\"");
 		sb.append(ContentTypes.TEXT_HTML_UTF8);
-		sb.append("\" http-equiv=\"content-type\" />");
-		sb.append("<base href=\"");
+		sb.append("\" http-equiv=\"content-type\" /><base href=\"");
 		sb.append(themeDisplay.getPortalURL());
-		sb.append("\" />");
-		sb.append("</head>");
-
-		sb.append("<body>");
-
-		sb.append("<h1>");
+		sb.append("\" /></head><body><h1>");
 		sb.append(title);
 		sb.append("</h1>");
 		sb.append(content);
-
-		sb.append("</body>");
-		sb.append("</html>");
+		sb.append("</body></html>");
 
 		String s = sb.toString();
 

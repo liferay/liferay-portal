@@ -1092,6 +1092,51 @@ public interface ObjectDefinitionPersistence
 		boolean accountEntryRestricted);
 
 	/**
+	 * Returns the object definition where className = &#63; or throws a <code>NoSuchObjectDefinitionException</code> if it could not be found.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition
+	 * @throws NoSuchObjectDefinitionException if a matching object definition could not be found
+	 */
+	public ObjectDefinition findByClassName(String className)
+		throws NoSuchObjectDefinitionException;
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	public ObjectDefinition fetchByClassName(String className);
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param className the class name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	public ObjectDefinition fetchByClassName(
+		String className, boolean useFinderCache);
+
+	/**
+	 * Removes the object definition where className = &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @return the object definition that was removed
+	 */
+	public ObjectDefinition removeByClassName(String className)
+		throws NoSuchObjectDefinitionException;
+
+	/**
+	 * Returns the number of object definitions where className = &#63;.
+	 *
+	 * @param className the class name
+	 * @return the number of matching object definitions
+	 */
+	public int countByClassName(String className);
+
+	/**
 	 * Returns all the object definitions where system = &#63;.
 	 *
 	 * @param system the system

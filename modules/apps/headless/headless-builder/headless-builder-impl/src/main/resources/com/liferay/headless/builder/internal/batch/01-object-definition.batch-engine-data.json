@@ -13,7 +13,6 @@
 	},
 	"items": [
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_API_SORT",
 			"label": {
@@ -59,7 +58,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_API_FILTER",
 			"label": {
@@ -105,7 +103,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_API_ENDPOINT",
 			"label": {
@@ -288,7 +285,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": false,
 			"externalReferenceCode": "L_API_PROPERTY",
@@ -407,7 +403,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_API_SCHEMA",
 			"label": {
@@ -525,7 +520,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_API_APPLICATION",
 			"label": {

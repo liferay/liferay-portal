@@ -35,15 +35,16 @@ const getTrialDetails = (placedOrder: PlacedOrder) => {
 	const isTrialCompleted =
 		orderStatusCode === OrderWorkflowStatusCode.COMPLETED;
 
-	const nextToExpire = customFields[OrderCustomFields.END_DATE]
+	const nextToExpire = customFields[OrderCustomFields.TRIAL_END_DATE]
 		? !isTrialCompleted &&
 			differenceInDays(
-				new Date(customFields[OrderCustomFields.END_DATE]),
+				new Date(customFields[OrderCustomFields.TRIAL_END_DATE]),
 				new Date()
 			) <= NEXT_TO_EXPIRE_LEFT_DAYS
 		: false;
 
-	const virtualHost = customFields[OrderCustomFields.VIRTUAL_HOST] || '';
+	const virtualHost =
+		customFields[OrderCustomFields.TRIAL_VIRTUAL_HOST] || '';
 
 	return [
 		{
@@ -52,15 +53,15 @@ const getTrialDetails = (placedOrder: PlacedOrder) => {
 		},
 		{
 			title: i18n.translate('trial-start-date'),
-			value: customFields[OrderCustomFields.START_DATE]
-				? formatDate(customFields[OrderCustomFields.START_DATE])
+			value: customFields[OrderCustomFields.TRIAL_START_DATE]
+				? formatDate(customFields[OrderCustomFields.TRIAL_START_DATE])
 				: '-',
 		},
 		{
 			title: i18n.translate('trial-end-date'),
-			value: customFields[OrderCustomFields.END_DATE] ? (
+			value: customFields[OrderCustomFields.TRIAL_END_DATE] ? (
 				<span>
-					{formatDate(customFields[OrderCustomFields.END_DATE])}
+					{formatDate(customFields[OrderCustomFields.TRIAL_END_DATE])}
 
 					{nextToExpire && (
 						<ClayLabel

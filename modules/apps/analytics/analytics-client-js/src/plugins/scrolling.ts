@@ -20,7 +20,11 @@ function scrolling(analytics: Analytics) {
 			analytics.send(
 				AnalyticsType.EventId.PageDepthReached,
 				AnalyticsType.ApplicationId.Page,
-				{depth}
+				{
+					depth,
+					externalReferenceCode:
+						analytics._getContext().layoutExternalReferenceCode,
+				}
 			);
 		});
 	}, DEBOUNCE);

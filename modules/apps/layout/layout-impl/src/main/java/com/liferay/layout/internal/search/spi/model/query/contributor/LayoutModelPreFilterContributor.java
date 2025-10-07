@@ -40,7 +40,7 @@ public class LayoutModelPreFilterContributor
 			searchContext.getAttribute(Field.TYPE),
 			new String[] {
 				LayoutConstants.TYPE_CONTENT, LayoutConstants.TYPE_EMBEDDED,
-				LayoutConstants.TYPE_LINK_TO_LAYOUT,
+				LayoutConstants.TYPE_EMPTY, LayoutConstants.TYPE_LINK_TO_LAYOUT,
 				LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
 				LayoutConstants.TYPE_PANEL, LayoutConstants.TYPE_PORTLET,
 				LayoutConstants.TYPE_URL, LayoutConstants.TYPE_UTILITY
@@ -62,6 +62,16 @@ public class LayoutModelPreFilterContributor
 				"privateLayout", privateLayout);
 
 			booleanFilter.add(privateLayoutTermFilter, BooleanClauseOccur.MUST);
+		}
+
+		String systemLayout = (String)searchContext.getAttribute(
+			"systemLayout");
+
+		if (Validator.isNotNull(systemLayout)) {
+			TermFilter systemLayoutTermFilter = new TermFilter(
+				"systemLayout", systemLayout);
+
+			booleanFilter.add(systemLayoutTermFilter, BooleanClauseOccur.MUST);
 		}
 
 		int[] statuses = GetterUtil.getIntegerValues(

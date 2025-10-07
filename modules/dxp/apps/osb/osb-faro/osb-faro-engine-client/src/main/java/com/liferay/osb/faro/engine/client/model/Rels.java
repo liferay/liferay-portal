@@ -193,6 +193,8 @@ public interface Rels {
 	public static final String PREVIEW_DISABLED_SEGMENTS =
 		"preview-disabled-segments";
 
+	public static final String PROJECT_USAGE_METRICS = "project-usage-metrics";
+
 	public static final String PROJECTS_LAST_SEEN_DATE =
 		"projects-last-seen-date";
 

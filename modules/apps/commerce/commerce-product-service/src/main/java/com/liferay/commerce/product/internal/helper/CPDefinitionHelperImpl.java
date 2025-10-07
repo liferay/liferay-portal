@@ -5,7 +5,6 @@
 
 package com.liferay.commerce.product.internal.helper;
 
-import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.media.CommerceMediaResolverUtil;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
@@ -32,13 +31,11 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.url.CPFriendlyURL;
-import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -90,21 +87,26 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 			Locale locale)
 		throws PortalException {
 
-		_commerceProductViewPermission.check(
-			PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
-			groupId, cpDefinitionId);
+		return getCPCatalogEntry(
+			commerceAccountId, groupId, cpDefinitionId, locale, true);
+	}
+
+	@Override
+	public CPCatalogEntry getCPCatalogEntry(
+			long commerceAccountId, long groupId, long cpDefinitionId,
+			Locale locale, boolean secure)
+		throws PortalException {
+
+		if (secure) {
+			_commerceProductViewPermission.check(
+				PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+				groupId, cpDefinitionId);
+		}
 
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
 
-		CommerceContext commerceContext = CommerceContextThreadLocal.get();
-
-		if (!cpDefinition.isApproved() || !cpDefinition.isPublished() ||
-			(FeatureFlagManagerUtil.isEnabled("LPD-10889") &&
-			 !cpDefinition.isVisible(
-				 commerceContext.getCPConfigurationListId(
-					 cpDefinition.getGroupId())))) {
-
+		if (!cpDefinition.isApproved() || !cpDefinition.isPublished()) {
 			return null;
 		}
 

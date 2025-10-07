@@ -190,6 +190,13 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 	}
 
 	@Override
+	protected Shipment testGraphQLShipment_addShipment(Shipment shipment)
+		throws Exception {
+
+		return _addShipment(shipment.getExternalReferenceCode());
+	}
+
+	@Override
 	protected Shipment testPatchShipment_addShipment() throws Exception {
 		return _addShipment(null);
 	}

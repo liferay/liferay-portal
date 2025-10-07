@@ -1,0 +1,12 @@
+{
+	"cacheable": false,
+	"fragmentEntryKey": "drag-and-drop-upload",
+	"icon": "upload",
+	"name": "drag-and-drop-upload",
+	"type": "input",
+	"typeOptions": {
+		"fieldTypes": [
+			"file"
+		]
+	}
+}

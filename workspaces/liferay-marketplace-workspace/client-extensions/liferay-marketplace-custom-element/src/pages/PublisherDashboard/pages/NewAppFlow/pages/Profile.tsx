@@ -15,6 +15,7 @@ import {
 	useNewAppContext,
 } from '../../../../../context/NewAppContext';
 import {
+	ProductTags,
 	ProductVocabulary,
 	ProductWorkflowStatusCode,
 } from '../../../../../enums/Product';
@@ -73,6 +74,7 @@ const Profile = () => {
 			preview: URL.createObjectURL(_file),
 			progress: 0,
 			readableSize: filesize(_file.size),
+			tags: [ProductTags.APP_ICON],
 			uploaded: true,
 		};
 

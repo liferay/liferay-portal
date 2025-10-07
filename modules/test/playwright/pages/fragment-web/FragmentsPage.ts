@@ -183,7 +183,10 @@ export class FragmentsPage {
 	) {
 		await this.gotoFragmentSet(setName);
 
-		const addButton = this.page.getByRole('button', {name: 'Add'});
+		const addButton = this.page.getByRole('button', {
+			exact: true,
+			name: 'Add',
+		});
 
 		await addButton.waitFor();
 

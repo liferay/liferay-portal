@@ -73,8 +73,8 @@ public class ObjectEntryRowInfoItemRendererTest {
 
 		_objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, false, true, false,
-				false, false, null,
+				TestPropsValues.getUserId(), 0, null, false, true, false, true,
+				false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -85,7 +85,8 @@ public class ObjectEntryRowInfoItemRendererTest {
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), _objectFieldName)));
+						RandomTestUtil.randomString(), _objectFieldName)),
+				Collections.emptyList());
 
 		_objectDefinition =
 			_objectDefinitionLocalService.publishCustomObjectDefinition(

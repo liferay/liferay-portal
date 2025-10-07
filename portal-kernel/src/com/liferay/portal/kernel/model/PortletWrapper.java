@@ -2011,6 +2011,11 @@ public class PortletWrapper
 		return model.isFullPageDisplayable();
 	}
 
+	@Override
+	public boolean isHeaderPortlet() {
+		return model.isHeaderPortlet();
+	}
+
 	/**
 	 * Returns <code>true</code> to include the portlet and make it available to
 	 * be made active.
@@ -2100,10 +2105,11 @@ public class PortletWrapper
 
 	/**
 	 * Returns <code>true</code> if the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified CSS resource dependencies are
 	 to be referenced in the page's header
@@ -2117,9 +2123,9 @@ public class PortletWrapper
 	 * Returns <code>true</code> if the JavaScript resource dependencies
 	 * specified in <code>portlet.xml</code>, @{@link
 	 * jakarta.portlet.annotations.Dependency}, {@link
-	 * jakarta.portlet.HeaderResponse#addDependency(String, String, String)}, or
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String, String,
-	 * String)} are to be referenced in the page's header.
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified JavaScript resource
 	 dependencies are to be referenced in the page's header
@@ -3038,10 +3044,11 @@ public class PortletWrapper
 
 	/**
 	 * Sets whether the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @param portletDependencyCssEnabled whether the CSS resource dependencies
 	 that are specified in <code>portlet.xml</code>,
@@ -3055,18 +3062,18 @@ public class PortletWrapper
 
 	/**
 	 * Sets whether the JavaScript resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @param portletDependencyJavaScriptEnabled whether the JavaScript resource
 	 dependencies specified in <code>portlet.xml</code>, @{@link
 	 jakarta.portlet.annotations.Dependency}, {@link
-	 jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 String)}, or {@link
-	 jakarta.portlet.HeaderResponse#addDependency(String, String, String,
-	 String)} are to be referenced in the page's header
+	 HeaderResponse#addDependency(String, String, String)}, or {@link
+	 HeaderResponse#addDependency(String, String, String, String)} are
+	 to be referenced in the page's header
 	 */
 	@Override
 	public void setPortletDependencyJavaScriptEnabled(

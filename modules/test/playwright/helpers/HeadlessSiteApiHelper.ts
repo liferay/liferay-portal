@@ -42,7 +42,7 @@ export class HeadlessSiteApiHelper {
 		});
 
 		return this.apiHelpers.post(
-			`${this.apiHelpers.baseUrl}${this.basePath}/sites`,
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/site-initializer`,
 			{
 				headers: {
 					...(await this.apiHelpers.getCSRFTokenHeader()),

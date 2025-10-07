@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.upgrade.ReleaseManager;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -69,6 +70,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Luis Ortiz
@@ -147,7 +149,63 @@ public class UpgradeRecorderTest {
 	}
 
 	@Test
-	public void testFailureResultByPreupgradeVerifyException() {
+	public void testFailureResultByPreupgradeVerifyExceptionWithoutReleaseManager() {
+		StartupHelperUtil.setUpgrading(true);
+
+		ServiceTracker<ReleaseManager, ReleaseManager> originalServiceTracker =
+			ReflectionTestUtil.getFieldValue(
+				_upgradeRecorder, "_serviceTracker");
+
+		VerifyExceptionProcess verifyExceptionProcess =
+			new VerifyExceptionProcess();
+
+		try {
+			ServiceTracker<ReleaseManager, ReleaseManager> serviceTracker =
+				new ServiceTracker<>(
+					_bundle.getBundleContext(), ReleaseManager.class, null) {
+
+					public ReleaseManager getService() {
+						return null;
+					}
+
+				};
+
+			ReflectionTestUtil.setFieldValue(
+				_upgradeRecorder, "_serviceTracker", serviceTracker);
+
+			_appender.start();
+
+			verifyExceptionProcess.verify();
+
+			Assert.fail();
+		}
+		catch (VerifyException verifyException) {
+			_appender.append(
+				Log4jLogEvent.newBuilder(
+				).setLoggerName(
+					PreupgradeVerifyProcessSuite.class.getName()
+				).setLevel(
+					Level.ERROR
+				).setMessage(
+					new SimpleMessage(RandomTestUtil.randomString())
+				).setThrown(
+					verifyException
+				).build());
+		}
+		finally {
+			_appender.stop();
+
+			StartupHelperUtil.setUpgrading(false);
+
+			ReflectionTestUtil.setFieldValue(
+				_upgradeRecorder, "_serviceTracker", originalServiceTracker);
+		}
+
+		Assert.assertEquals("preupgrade verification failure", _getResult());
+	}
+
+	@Test
+	public void testFailureResultByPreupgradeVerifyExceptionWithReleaseManager() {
 		StartupHelperUtil.setUpgrading(true);
 
 		VerifyExceptionProcess verifyExceptionProcess =
@@ -179,7 +237,7 @@ public class UpgradeRecorderTest {
 			StartupHelperUtil.setUpgrading(false);
 		}
 
-		Assert.assertEquals("preupgrade verification failure", _getResult());
+		Assert.assertEquals("failure", _getResult());
 	}
 
 	@Test

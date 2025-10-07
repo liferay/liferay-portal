@@ -1,0 +1,10 @@
+{
+	"name": "Installation",
+	"name_i18n": {
+		"en_US": "Installation",
+		"es-ES": "Instalación",
+		"ja-JP": "インストール",
+		"pt-BR": "Instalação"
+	},
+	"viewableBy": "Anyone"
+}

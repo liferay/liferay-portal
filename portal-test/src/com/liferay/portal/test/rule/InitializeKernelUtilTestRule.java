@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AbstractTestRule;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -21,7 +20,6 @@ import java.lang.reflect.Constructor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.junit.runner.Description;
 
@@ -29,37 +27,32 @@ import org.junit.runner.Description;
  * @author Matthew Tambara
  */
 public class InitializeKernelUtilTestRule
-	extends AbstractTestRule<Void, Properties> {
+	extends AbstractTestRule<Map<String, String>, Map<String, String>> {
 
 	public static final InitializeKernelUtilTestRule INSTANCE =
 		new InitializeKernelUtilTestRule();
 
 	@Override
-	protected void afterClass(Description description, Void v)
+	protected void afterClass(
+			Description description, Map<String, String> originalMap)
 		throws ReflectiveOperationException {
 
-		_setUpPropsUtil(null);
+		_setUpPropsUtil(originalMap);
 	}
 
 	@Override
 	protected void afterMethod(
-			Description description, Properties properties, Object target)
+			Description description, Map<String, String> originalMap,
+			Object target)
 		throws ReflectiveOperationException {
 
-		if ((properties != null) && !properties.isEmpty()) {
-			Thread thread = Thread.currentThread();
-
-			ClassLoader classLoader = thread.getContextClassLoader();
-
-			ReflectionTestUtil.invoke(
-				classLoader.loadClass("com.liferay.portal.util.PropsUtil"),
-				"removeProperties", new Class<?>[] {Properties.class},
-				properties);
+		if ((originalMap != null) && !originalMap.isEmpty()) {
+			_setUpPropsUtil(originalMap);
 		}
 	}
 
 	@Override
-	protected Void beforeClass(Description description)
+	protected Map<String, String> beforeClass(Description description)
 		throws ReflectiveOperationException {
 
 		_setUpPortalClassLoader();
@@ -68,21 +61,25 @@ public class InitializeKernelUtilTestRule
 
 		PortalProps portalProps = clazz.getAnnotation(PortalProps.class);
 
+		Map<String, String> originalMap = null;
+
 		if (portalProps == null) {
 			_setUpPropsUtil(null);
 		}
 		else {
-			_setUpPropsUtil(_processProperties(portalProps.properties()));
+			originalMap = _setUpPropsUtil(
+				_processProperties(portalProps.properties()));
 		}
 
 		_setUpFileUtil();
 		_setUpJSONFactoryUtil();
 
-		return null;
+		return originalMap;
 	}
 
 	@Override
-	protected Properties beforeMethod(Description description, Object target)
+	protected Map<String, String> beforeMethod(
+			Description description, Object target)
 		throws Throwable {
 
 		PortalProps portalProps = description.getAnnotation(PortalProps.class);
@@ -154,35 +151,22 @@ public class InitializeKernelUtilTestRule
 		}
 	}
 
-	private Properties _setUpPropsUtil(Map<String, String> map)
+	private Map<String, String> _setUpPropsUtil(Map<String, String> map)
 		throws ReflectiveOperationException {
-
-		Thread thread = Thread.currentThread();
-
-		ClassLoader classLoader = thread.getContextClassLoader();
-
-		Class<?> clazz = classLoader.loadClass(
-			"com.liferay.portal.util.PropsImpl");
-
-		Constructor<?> constructor = clazz.getDeclaredConstructor();
-
-		PropsUtil.setProps((Props)constructor.newInstance());
 
 		if (map == null) {
 			return null;
 		}
 
-		Properties properties = new Properties();
+		Map<String, String> originalMap = new HashMap<>();
 
-		properties.putAll(map);
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			originalMap.put(entry.getKey(), PropsUtil.get(entry.getKey()));
 
-		if (!properties.isEmpty()) {
-			ReflectionTestUtil.invoke(
-				classLoader.loadClass("com.liferay.portal.util.PropsUtil"),
-				"addProperties", new Class<?>[] {Properties.class}, properties);
+			PropsUtil.set(entry.getKey(), entry.getValue());
 		}
 
-		return properties;
+		return originalMap;
 	}
 
 }

@@ -3,12 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayForm from '@clayui/form';
+import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
+import classnames from 'classnames';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import skuOptionsAtom from '../../utilities/atoms/skuOptionsAtom';
 import DDMFormHandler from '../../utilities/forms/DDMFormHandler';
-import {getSkuOptionsErrors} from './utils';
+import {INITIAL_SKU_OPTIONS_ATOM_STATE, getSkuOptionsErrors} from './utils';
+
+import './product_option_upload.scss';
 
 const CP_CONTENT_WEB_PORTLET_KEY =
 	'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet';
@@ -20,9 +25,10 @@ const ProductOptionUpload = ({
 	namespace,
 	productOption,
 }) => {
-	const [, setHasErrors] = useState(false);
+	const [hasErrors, setHasErrors] = useState(false);
 	const [skuOptionsAtomState, setSkuOptionsAtomState] =
 		useLiferayState(skuOptionsAtom);
+	const isMounted = useIsMounted();
 
 	const handleChange = useCallback(
 		({value = '{}'}) => {
@@ -37,7 +43,6 @@ const ProductOptionUpload = ({
 					if (skuOption.skuOptionKey === productOption.key) {
 						return {
 							key: productOption.key,
-							required: productOption.required,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
 							value: [value],
@@ -52,7 +57,6 @@ const ProductOptionUpload = ({
 					...currentSkuOptions,
 					{
 						key: productOption.key,
-						required: productOption.required,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
 						value: [value],
@@ -60,18 +64,16 @@ const ProductOptionUpload = ({
 				];
 			}
 
-			if (
+			const required =
 				(forceRequired || productOption.required) &&
-				(!value || value === '{}')
-			) {
-				setHasErrors(true);
-			}
+				(!value || value === '{}');
+
+			setHasErrors(required);
 
 			setSkuOptionsAtomState({
 				...skuOptionsAtomState,
 				errors: getSkuOptionsErrors(
-					(forceRequired || productOption.required) &&
-						(!value || value === '{}'),
+					required,
 					false,
 					productOption,
 					skuOptionsAtomState
@@ -90,6 +92,30 @@ const ProductOptionUpload = ({
 	);
 
 	useEffect(() => {
+		const required = forceRequired || productOption.required;
+
+		setHasErrors(required);
+
+		setSkuOptionsAtomState((skuOptionsAtomState) => ({
+			...skuOptionsAtomState,
+			errors: getSkuOptionsErrors(
+				required,
+				false,
+				productOption,
+				skuOptionsAtomState
+			),
+			namespace,
+			skuOptions: [
+				...(skuOptionsAtomState.skuOptions || []),
+				{
+					key: productOption.key,
+					skuOptionKey: productOption.key,
+					skuOptionName: productOption.name,
+					value: ['{}'],
+				},
+			],
+		}));
+
 		Liferay.componentReady('ProductOptions' + cpDefinitionId).then(
 			(DDMFormInstance) => {
 				if (DDMFormInstance) {
@@ -104,7 +130,13 @@ const ProductOptionUpload = ({
 				}
 			}
 		);
-	}, [cpDefinitionId, forceRequired, namespace, productOption]);
+	}, [
+		cpDefinitionId,
+		forceRequired,
+		namespace,
+		productOption,
+		setSkuOptionsAtomState,
+	]);
 
 	useEffect(() => {
 		const handler = (payload) => handleChange(payload);
@@ -113,10 +145,30 @@ const ProductOptionUpload = ({
 
 		return () => {
 			Liferay.detach('product-option-upload-update', handler);
-		};
-	}, [handleChange]);
 
-	return <div id={componentId} />;
+			if (!isMounted()) {
+				setSkuOptionsAtomState(INITIAL_SKU_OPTIONS_ATOM_STATE);
+			}
+		};
+	}, [handleChange, isMounted, setSkuOptionsAtomState]);
+
+	return (
+		<ClayForm.Group
+			className={classnames('product-option-upload', {
+				'has-error': hasErrors,
+			})}
+		>
+			<div id={componentId} />
+
+			{hasErrors && (
+				<ClayForm.FeedbackItem>
+					<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+					{Liferay.Language.get('this-field-is-required')}
+				</ClayForm.FeedbackItem>
+			)}
+		</ClayForm.Group>
+	);
 };
 
 export default ProductOptionUpload;

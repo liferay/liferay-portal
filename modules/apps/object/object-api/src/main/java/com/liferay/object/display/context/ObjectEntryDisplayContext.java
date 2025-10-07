@@ -24,7 +24,11 @@ import java.util.Map;
  */
 public interface ObjectEntryDisplayContext {
 
+	public String getAPIURL() throws PortalException;
+
 	public String getBackURL() throws PortalException;
+
+	public String getMethod() throws PortalException;
 
 	public ObjectDefinition getObjectDefinition1();
 
@@ -43,7 +47,7 @@ public interface ObjectEntryDisplayContext {
 
 	public String getObjectRelationshipERCObjectFieldName();
 
-	public String getParentObjectEntryId();
+	public String getParentObjectEntryERC();
 
 	public CreationMenu getRelatedModelCreationMenu(
 			ObjectRelationship objectRelationship)
@@ -67,6 +71,8 @@ public interface ObjectEntryDisplayContext {
 	public boolean isReadOnly();
 
 	public boolean isShowObjectEntryForm() throws PortalException;
+
+	public boolean isShowScreenNavigation() throws PortalException;
 
 	public String renderDDMForm(PageContext pageContext) throws PortalException;
 

@@ -5,7 +5,7 @@
 
 export async function onPaypalLoaded() {
 	const payPalOAuth = Liferay.OAuth2Client.FromUserAgentApplication(
-		'liferay-paypal-commerce-payment-integration-oauth-application-user-agent'
+		'liferay-paypal-commerce-payment-integration-oaua'
 	);
 
 	const orderId = document.getElementById('payment-order-id').value;

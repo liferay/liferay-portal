@@ -6,6 +6,7 @@
 package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.document.library.test.util.DLAppTestUtil;
@@ -25,9 +26,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class ContentElementResourceTest
 
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(LocaleUtil.getDefault(), name), null,
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 
 		testGetAssetLibraryContentElementsPage_addContentElement(
@@ -192,14 +194,6 @@ public class ContentElementResourceTest
 
 		return _addContentElement(
 			contentElement, (Double)_get(contentElement, "priority"), siteId);
-	}
-
-	@Override
-	protected ContentElement testGraphQLContentElement_addContentElement()
-		throws Exception {
-
-		return _addContentElement(
-			randomContentElement(), null, testGroup.getGroupId());
 	}
 
 	private ContentElement _addContentElement(

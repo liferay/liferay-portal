@@ -10,10 +10,18 @@ import ClayModal, {useModal} from '@clayui/modal';
 import ClayMultiSelect from '@clayui/multi-select';
 import classNames from 'classnames';
 import {FieldFeedback, useId} from 'frontend-js-components-web';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
+import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
-import {Structure, Structures} from '../types/Structure';
+import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import selectStructureERC from '../selectors/selectStructureERC';
+import selectStructureUuid from '../selectors/selectStructureUuid';
+import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
+import {ReferencedStructure, Structure} from '../types/Structure';
+import {Uuid} from '../types/Uuid';
+import {buildReferencedStructure} from '../utils/buildStructure';
+import getRandomName from '../utils/getRandomName';
 
 type Item = {
 	label: string;
@@ -24,36 +32,56 @@ export default function ReferencedStructureModal({
 	onAdd,
 	onCloseModal,
 }: {
-	onAdd: (ercs: Array<Structure['erc']>) => void;
+	onAdd: (referencedStructures: ReferencedStructure[]) => void;
 	onCloseModal: () => void;
 }) {
 	const {observer, onClose} = useModal({
 		onClose: () => onCloseModal(),
 	});
 
-	const {data: structures, status} = useCache('structures');
+	const dispatch = useStateDispatch();
+
+	const structureUuid = useSelector(selectStructureUuid);
+	const structureERC = useSelector(selectStructureERC);
+
+	const {
+		data: objectDefinitions,
+		load,
+		status,
+	} = useCache('object-definitions');
 
 	const [selection, setSelection] = useState<Item[]>([]);
 	const [hasError, setHasError] = useState(false);
 
 	const id = useId();
 
+	useEffect(() => {
+		if (status === 'stale') {
+			load().then((objectDefinitions) =>
+				dispatch({
+					objectDefinitions,
+					type: 'refresh-referenced-structures',
+				})
+			);
+		}
+	}, [dispatch, load, status]);
+
 	return (
 		<ClayModal observer={observer}>
 			<ClayModal.Header>
-				{Liferay.Language.get('referenced-structure')}
+				{Liferay.Language.get('referenced-content-structure')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
 				<p className="text-secondary">
 					{Liferay.Language.get(
-						'select-the-structures-to-be-referenced'
+						'select-the-content-structures-to-be-referenced'
 					)}
 				</p>
 
 				<ClayForm.Group className={classNames({'has-error': hasError})}>
 					<label htmlFor={id}>
-						{Liferay.Language.get('structures')}
+						{Liferay.Language.get('content-structures')}
 
 						<ClayIcon
 							className="ml-1 reference-mark"
@@ -72,7 +100,7 @@ export default function ReferencedStructureModal({
 
 							setHasError(!selection.length);
 						}}
-						sourceItems={getItems(structures)}
+						sourceItems={getItems(objectDefinitions, structureERC)}
 					/>
 
 					{hasError ? (
@@ -105,7 +133,14 @@ export default function ReferencedStructureModal({
 									return;
 								}
 
-								onAdd(selection.map(({value}) => value));
+								const structures = buildStructures(
+									selection,
+									objectDefinitions,
+									structureUuid,
+									structureERC
+								);
+
+								onAdd(structures);
 
 								onCloseModal();
 							}}
@@ -119,13 +154,89 @@ export default function ReferencedStructureModal({
 	);
 }
 
-function getItems(structures: Structures): Item[] {
-	return Array.from(structures.values())
+function getItems(
+	objectDefinitions: ObjectDefinitions,
+	mainStructureERC: Structure['erc']
+): Item[] {
+	const items = [];
 
-		.map((structure) => ({
-			label:
-				structure.label[Liferay.ThemeDisplay.getDefaultLanguageId()] ||
-				'',
-			value: structure.erc,
-		}));
+	// Exclude objectDefinitions that are repeatable groups,
+	// main objectDefinition itself and objectDefinitions
+	// that have a circular dependency with the main one
+
+	for (const objectDefinition of Object.values(objectDefinitions)) {
+		if (
+			objectDefinition.externalReferenceCode === mainStructureERC ||
+			objectDefinition.objectFolderExternalReferenceCode ===
+				'L_CMS_STRUCTURE_REPEATABLE_GROUPS' ||
+			hasCircularDependency(
+				objectDefinition,
+				objectDefinitions,
+				mainStructureERC
+			)
+		) {
+			continue;
+		}
+
+		items.push({
+			label: getLocalizedValue(objectDefinition.label),
+			value: objectDefinition.externalReferenceCode,
+		});
+	}
+
+	return items;
+}
+
+function hasCircularDependency(
+	objectDefinition: ObjectDefinition,
+	objectDefinitions: ObjectDefinitions,
+	mainStructureERC: Structure['erc']
+) {
+	if (!objectDefinition.objectRelationships?.length) {
+		return false;
+	}
+
+	for (const relationship of objectDefinition.objectRelationships) {
+		if (
+			relationship.objectDefinitionExternalReferenceCode2 ===
+			mainStructureERC
+		) {
+			return true;
+		}
+
+		const hasDependency = hasCircularDependency(
+			objectDefinitions[
+				relationship.objectDefinitionExternalReferenceCode2
+			],
+			objectDefinitions,
+			mainStructureERC
+		);
+
+		if (hasDependency) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function buildStructures(
+	selection: Item[],
+	objectDefinitions: ObjectDefinitions,
+	mainStructureUuid: Uuid,
+	mainStructureERC: Structure['erc']
+) {
+	const ercs = selection.map(({value}) => value);
+
+	return ercs.map((erc) => {
+		const structure = buildReferencedStructure({
+			ancestors: [mainStructureERC],
+			erc,
+			objectDefinitions,
+			parent: mainStructureUuid,
+			relationshipName: getRandomName(),
+		});
+
+		return structure;
+	});
 }

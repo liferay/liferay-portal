@@ -112,8 +112,17 @@
 	<field class="java.util.Map" name="nameMap" />
 	<field class="java.math.BigDecimal" name="quantity" />
 	<field class="java.util.Date" name="requestedDeliveryDate" />
+	<field class="java.lang.String" name="json" />
 	<field class="java.lang.String" name="sku" />
 	<field class="com.liferay.commerce.currency.model.CommerceMoney" name="unitPriceMoney" />
+	<variable class="com.fasterxml.jackson.databind.JsonNode" name="skuOptionsJsonArray">
+		<variableExpression><![CDATA[new com.fasterxml.jackson.databind.ObjectMapper().readTree($F{json})]]></variableExpression>
+	</variable>
+	<variable class="java.lang.String" name="skuOptions">
+		<variableExpression>
+			<![CDATA[java.util.stream.StreamSupport.stream($V{skuOptionsJsonArray}.spliterator(), false).map(skuOption -> skuOption.get("skuOptionValueNames").get(0).asText()).collect(java.util.stream.Collectors.joining(", "))]]>
+		</variableExpression>
+	</variable>
 	<title>
 		<band height="425" splitType="Stretch">
 			<image hAlign="Center" onErrorType="Blank" vAlign="Middle">
@@ -468,7 +477,7 @@
 				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "name")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="14" uuid="98a3fbdf-1e9d-48d1-af5b-743165c619fe" width="28" x="434" y="7">
+				<reportElement height="14" uuid="98a3fbdf-1e9d-48d1-af5b-743165c619fe" width="28" x="454" y="7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="eb3147dc-3162-43b9-82cb-14f999a79da9" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -477,7 +486,18 @@
 				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "qty")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="14" uuid="163ff2b4-130b-4856-9344-0b50f6ffc128" width="52" x="140" y="7">
+				<reportElement height="14" uuid="62b251a3-2550-482a-a9a7-20092c6e6d19" width="52" x="136" y="7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9059262-f622-43aa-aebf-0c5b57fc5204" />
+					<property name="com.jaspersoft.studio.unit.width" value="px" />
+					<property name="com.jaspersoft.studio.unit.height" value="px" />
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9" />
+				</textElement>
+				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "options")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement height="14" uuid="163ff2b4-130b-4856-9344-0b50f6ffc128" width="52" x="194" y="7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9059262-f622-43aa-aebf-0c5b57fc5204" />
 					<property name="com.jaspersoft.studio.unit.width" value="px" />
 					<property name="com.jaspersoft.studio.unit.height" value="px" />
@@ -488,7 +508,7 @@
 				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "sku")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="14" uuid="f46e5e3c-93bc-4eb6-bf5b-6dcbfb529543" width="82" x="200" y="7">
+				<reportElement height="14" uuid="f46e5e3c-93bc-4eb6-bf5b-6dcbfb529543" width="82" x="256" y="7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9059262-f622-43aa-aebf-0c5b57fc5204" />
 					<property name="com.jaspersoft.studio.unit.width" value="px" />
 					<property name="com.jaspersoft.studio.unit.height" value="px" />
@@ -499,7 +519,7 @@
 				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "delivery-date")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="14" uuid="1cd53939-c150-4e19-a75b-495522965a8e" width="48" x="290" y="7">
+				<reportElement height="14" uuid="1cd53939-c150-4e19-a75b-495522965a8e" width="48" x="346" y="7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9059262-f622-43aa-aebf-0c5b57fc5204" />
 					<property name="com.jaspersoft.studio.unit.width" value="px" />
 					<property name="com.jaspersoft.studio.unit.height" value="px" />
@@ -510,7 +530,7 @@
 				<textFieldExpression><![CDATA[$P{language}.get($P{locale}, "price")]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="14" uuid="1caa5163-10b9-4501-907b-4927d87b4522" width="40" x="370" y="7">
+				<reportElement height="14" uuid="1caa5163-10b9-4501-907b-4927d87b4522" width="40" x="404" y="7">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e9059262-f622-43aa-aebf-0c5b57fc5204" />
 					<property name="com.jaspersoft.studio.unit.width" value="px" />
 					<property name="com.jaspersoft.studio.unit.height" value="px" />
@@ -543,7 +563,16 @@
 				<textFieldExpression><![CDATA[($F{nameMap}.containsKey($P{locale})) ? $F{nameMap}.get($P{locale}) : $F{nameMap}.get($P{siteDefaultLocale})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="20" uuid="550e1c16-4b1a-46a4-8c0a-f652b28ff76e" width="52" x="140" y="1">
+				<reportElement height="25" uuid="94c254b7-d16c-486d-926f-9988e404b865" width="52" x="136" y="1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" />
+				</textElement>
+				<textFieldExpression><![CDATA[$V{skuOptions}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement height="20" uuid="550e1c16-4b1a-46a4-8c0a-f652b28ff76e" width="52" x="194" y="1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -552,7 +581,7 @@
 				<textFieldExpression><![CDATA[$F{sku}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement height="20" uuid="c0cfe80f-d827-463a-b3c9-72a5b4453d7c" width="60" x="201" y="1">
+				<reportElement height="20" uuid="c0cfe80f-d827-463a-b3c9-72a5b4453d7c" width="60" x="257" y="1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -561,7 +590,7 @@
 				<textFieldExpression><![CDATA[$F{requestedDeliveryDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="20" uuid="a0b785a5-6f96-418b-96b2-059a0657ba3e" width="48" x="290" y="1">
+				<reportElement height="20" uuid="a0b785a5-6f96-418b-96b2-059a0657ba3e" width="48" x="346" y="1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -570,7 +599,7 @@
 				<textFieldExpression><![CDATA[$F{unitPriceMoney}.format($P{locale})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="20" uuid="c9905514-8baa-4a74-9d28-befd9ab03b94" width="40" x="370" y="1">
+				<reportElement height="20" uuid="c9905514-8baa-4a74-9d28-befd9ab03b94" width="40" x="404" y="1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -579,7 +608,7 @@
 				<textFieldExpression><![CDATA[$F{discountAmountMoney}.format($P{locale})]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement height="20" uuid="ffb890d9-c944-4d33-89d4-f87c9d18f23c" width="28" x="434" y="1">
+				<reportElement height="20" uuid="ffb890d9-c944-4d33-89d4-f87c9d18f23c" width="28" x="454" y="1">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="895dde53-9a59-4aea-90ff-211d1966faf4" />
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">

@@ -430,7 +430,19 @@ PortletURL portletURL = PortletURLBuilder.createRenderURL(
 													</ul>
 
 													<ul>
-														<aui:fieldset cssClass="content-options" label="for-each-of-the-selected-content-types,-export-their">
+														<liferay-util:buffer
+															var="selectedContentOptionsLabel"
+														>
+															<liferay-ui:message key="for-each-of-the-selected-content-types,-export-their" />
+
+															<span aria-label="<%= LanguageUtil.get(request, "comments-associated-to-object-entries-are-currently-excluded-from-the-export") %>" class="lfr-portal-tooltip ml-1" title="<%= LanguageUtil.get(request, "comments-associated-to-object-entries-are-currently-excluded-from-the-export") %>">
+																<clay:icon
+																	symbol="question-circle-full"
+																/>
+															</span>
+														</liferay-util:buffer>
+
+														<aui:fieldset cssClass="content-options" label="<%= selectedContentOptionsLabel %>">
 															<span class="selected-labels" id="<portlet:namespace />selectedContentOptions"></span>
 
 															<clay:button

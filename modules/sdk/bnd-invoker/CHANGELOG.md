@@ -1,5 +1,17 @@
 # Liferay BND Invoker Change Log
 
+## 1.0.4 - 2025-02-18
+
+### Commits
+- [LPD-47148] Bump to 2.0 on master (0a8d91e9f6)
+- [LPD-47148] Upgrade biz.aQute.bnd to 6.4.0 (84494174ec)
+- [LPD-36975] liferay-portal: auto SF (b1c315ad65)
+- [LPD-15162] Pin version (f636f23295)
+
+### Dependencies
+- [LPD-47148] Update the biz.aQute.bnd dependency to version 6.4.0.
+- [LPD-36975] Update the ant dependency to version 1.10.14.
+
 ## 1.0.3 - 2024-02-08
 
 ### Commits
@@ -27,6 +39,9 @@
 - [LPS-95413] Need to set project first. (dfc307b349)
 
 [JDK-8161269]: https://issues.liferay.com/browse/JDK-8161269
+[LPD-15162]: https://issues.liferay.com/browse/LPD-15162
+[LPD-36975]: https://issues.liferay.com/browse/LPD-36975
+[LPD-47148]: https://issues.liferay.com/browse/LPD-47148
 [LPS-95413]: https://issues.liferay.com/browse/LPS-95413
 [LPS-96095]: https://issues.liferay.com/browse/LPS-96095
 [LPS-98801]: https://issues.liferay.com/browse/LPS-98801

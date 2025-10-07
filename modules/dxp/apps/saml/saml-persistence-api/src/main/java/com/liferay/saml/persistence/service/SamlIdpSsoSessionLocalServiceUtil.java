@@ -223,6 +223,10 @@ public class SamlIdpSsoSessionLocalServiceUtil {
 		return getService().fetchSamlIdpSso(samlIdpSsoSessionKey);
 	}
 
+	public static SamlIdpSsoSession fetchSamlIdpSsoByUserId(long userId) {
+		return getService().fetchSamlIdpSsoByUserId(userId);
+	}
+
 	public static SamlIdpSsoSession fetchSamlIdpSsoSession(
 		long samlIdpSsoSessionId) {
 

@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringWriter;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 
 import jakarta.servlet.ServletOutputStream;
 
@@ -24,8 +23,6 @@ import java.io.PrintWriter;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -686,8 +683,6 @@ public class BufferCacheServletResponseTest {
 				}
 
 			};
-
-		PropsTestUtil.setProps(Collections.emptyMap());
 
 		// Clean
 

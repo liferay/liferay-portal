@@ -12,6 +12,8 @@ import com.liferay.headless.admin.list.type.resource.v1_0.ListTypeEntryResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
@@ -356,6 +358,10 @@ public class Query {
 		listTypeDefinitionResource.setContextUriInfo(_uriInfo);
 		listTypeDefinitionResource.setContextUser(_user);
 		listTypeDefinitionResource.setGroupLocalService(_groupLocalService);
+		listTypeDefinitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		listTypeDefinitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		listTypeDefinitionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -371,6 +377,10 @@ public class Query {
 		listTypeEntryResource.setContextUriInfo(_uriInfo);
 		listTypeEntryResource.setContextUser(_user);
 		listTypeEntryResource.setGroupLocalService(_groupLocalService);
+		listTypeEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		listTypeEntryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		listTypeEntryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -389,6 +399,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

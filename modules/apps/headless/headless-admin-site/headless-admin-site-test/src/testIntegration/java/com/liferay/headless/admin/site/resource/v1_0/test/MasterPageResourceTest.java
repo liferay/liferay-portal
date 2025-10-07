@@ -8,11 +8,11 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.headless.admin.site.client.custom.field.CustomField;
 import com.liferay.headless.admin.site.client.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.client.dto.v1_0.MasterPage;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
-import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.MasterPageResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.AssetTestUtil;
@@ -22,6 +22,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -39,8 +40,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -48,10 +49,10 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.sites.kernel.util.Sites;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.junit.Assert;
@@ -75,14 +76,18 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@Ignore
 	@Override
 	@Test
-	public void testDeleteSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
 
-		MasterPage postMasterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
+	@Override
+	@Test
+	public void testDeleteSiteMasterPage() throws Exception {
+		MasterPage postMasterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
 		Assert.assertNotNull(
 			_layoutPageTemplateEntryLocalService.
@@ -90,7 +95,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 					postMasterPage.getExternalReferenceCode(),
 					testGroup.getGroupId()));
 
-		masterPageResource.deleteSiteSiteByExternalReferenceCodeMasterPage(
+		masterPageResource.deleteSiteMasterPage(
 			testGroup.getExternalReferenceCode(),
 			postMasterPage.getExternalReferenceCode());
 
@@ -102,131 +107,80 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		_assertProblemException(
 			"NOT_FOUND", null,
-			() ->
-				masterPageResource.
-					deleteSiteSiteByExternalReferenceCodeMasterPage(
-						testGroup.getExternalReferenceCode(),
-						postMasterPage.getExternalReferenceCode()));
+			() -> masterPageResource.deleteSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode()));
 
-		MasterPage liveGroupMasterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
+		MasterPage liveGroupMasterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
 		_enableLocalStaging();
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
-			() ->
-				masterPageResource.
-					deleteSiteSiteByExternalReferenceCodeMasterPage(
-						testGroup.getExternalReferenceCode(),
-						liveGroupMasterPage.getExternalReferenceCode()));
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGetSiteMasterPagePermissionsPage() throws Exception {
-		super.testGetSiteMasterPagePermissionsPage();
+			() -> masterPageResource.deleteSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				liveGroupMasterPage.getExternalReferenceCode()));
 	}
 
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
+	public void testGetSiteMasterPage() throws Exception {
+		MasterPage masterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
-		MasterPage masterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
-
-		_testGetSiteSiteByExternalReferenceCodeMasterPage(masterPage);
-		_testGetSiteSiteByExternalReferenceCodeMasterPageWithNestedFields(
-			masterPage);
+		_testGetSiteMasterPage(masterPage);
+		_testGetSiteMasterPageWithNestedFields(masterPage);
 
 		_assertProblemException(
 			"NOT_FOUND", null,
-			() ->
-				masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
-					testGroup.getExternalReferenceCode(),
-					RandomTestUtil.randomString()));
+			() -> masterPageResource.getSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
 
 		_enableLocalStaging();
 
-		_testGetSiteSiteByExternalReferenceCodeMasterPage(masterPage);
-	}
-
-	@Override
-	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPagesPage()
-		throws Exception {
-
-		super.testGetSiteSiteByExternalReferenceCodeMasterPagesPage();
-
-		_testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSearch();
+		_testGetSiteMasterPage(masterPage);
 	}
 
 	@Ignore
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortDateTime()
-		throws Exception {
-
-		super.
-			testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortDateTime();
+	public void testGetSiteMasterPagesPageWithSortDateTime() throws Exception {
+		super.testGetSiteMasterPagesPageWithSortDateTime();
 	}
 
 	@Ignore
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortDouble()
-		throws Exception {
-
-		super.
-			testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortDouble();
+	public void testGetSiteMasterPagesPageWithSortDouble() throws Exception {
+		super.testGetSiteMasterPagesPageWithSortDouble();
 	}
 
 	@Ignore
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortInteger()
-		throws Exception {
-
-		super.
-			testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortInteger();
+	public void testGetSiteMasterPagesPageWithSortInteger() throws Exception {
+		super.testGetSiteMasterPagesPageWithSortInteger();
 	}
 
 	@Ignore
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortString()
-		throws Exception {
-
-		super.
-			testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSortString();
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
-
-		super.testGraphQLGetSiteSiteByExternalReferenceCodeMasterPage();
+	public void testGetSiteMasterPagesPageWithSortString() throws Exception {
+		super.testGetSiteMasterPagesPageWithSortString();
 	}
 
 	@Override
 	@Test
-	public void testPatchSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
-
-		MasterPage masterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
+	public void testPatchSiteMasterPage() throws Exception {
+		MasterPage masterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
 		_updateLayoutPageTemplateEntryStatus(
 			masterPage.getExternalReferenceCode());
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPage(
+		_testPatchSiteMasterPage(
 			Boolean.TRUE, null,
 			_getMasterPage(
 				Boolean.TRUE, masterPage.getExternalReferenceCode(), null));
@@ -238,7 +192,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		FileEntry fileEntry = _addPortletFileEntry(repository.getDlFolderId());
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPage(
+		_testPatchSiteMasterPage(
 			Boolean.TRUE, fileEntry.getExternalReferenceCode(),
 			_getMasterPage(
 				null, masterPage.getExternalReferenceCode(),
@@ -246,61 +200,52 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		fileEntry = _addPortletFileEntry(repository.getDlFolderId());
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPage(
+		_testPatchSiteMasterPage(
 			Boolean.FALSE, fileEntry.getExternalReferenceCode(),
 			_getMasterPage(
 				Boolean.FALSE, masterPage.getExternalReferenceCode(),
 				fileEntry.getExternalReferenceCode()));
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPage(
+		_testPatchSiteMasterPage(
 			Boolean.FALSE, null,
 			_getMasterPage(
 				Boolean.FALSE, masterPage.getExternalReferenceCode(),
 				StringPool.BLANK));
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications();
+		_testPatchSiteMasterPageWithPageSpecifications();
 
 		_assertProblemException(
 			"NOT_FOUND", null,
-			() ->
-				masterPageResource.
-					patchSiteSiteByExternalReferenceCodeMasterPage(
-						testGroup.getExternalReferenceCode(),
-						RandomTestUtil.randomString(), randomMasterPage()));
+			() -> masterPageResource.patchSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomMasterPage()));
 
-		MasterPage liveGroupMasterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
+		MasterPage liveGroupMasterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
 		_enableLocalStaging();
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
-			() ->
-				masterPageResource.
-					patchSiteSiteByExternalReferenceCodeMasterPage(
-						testGroup.getExternalReferenceCode(),
-						liveGroupMasterPage.getExternalReferenceCode(),
-						_getMasterPage(
-							null,
-							liveGroupMasterPage.getExternalReferenceCode(),
-							null)));
+			() -> masterPageResource.patchSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				liveGroupMasterPage.getExternalReferenceCode(),
+				_getMasterPage(
+					null, liveGroupMasterPage.getExternalReferenceCode(),
+					null)));
 	}
 
 	@Override
 	@Test
-	public void testPostSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
-
-		super.testPostSiteSiteByExternalReferenceCodeMasterPage();
+	public void testPostSiteMasterPage() throws Exception {
+		super.testPostSiteMasterPage();
 
 		MasterPage masterPage = randomMasterPage();
 
 		masterPage.setKey(StringPool.BLANK);
 
-		MasterPage postMasterPage =
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage);
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
 
 		Assert.assertTrue(Validator.isNotNull(postMasterPage.getKey()));
 		Assert.assertFalse(postMasterPage.getMarkedAsDefault());
@@ -324,9 +269,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				}
 			});
 
-		postMasterPage =
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage);
+		postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
 
 		Assert.assertEquals(masterPage.getKey(), postMasterPage.getKey());
 
@@ -334,20 +278,17 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			fileEntry.getExternalReferenceCode(),
 			postMasterPage.getThumbnail());
 
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications();
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithSiteTemplatePageSpecification();
+		_testPostSiteMasterPageWithPageSpecifications();
+		_testPostSiteMasterPageWithSiteTemplatePageSpecification();
 	}
 
 	@Override
 	@Test
-	public void testPostSiteSiteByExternalReferenceCodeMasterPagePageSpecification()
-		throws Exception {
-
+	public void testPostSiteMasterPagePageSpecification() throws Exception {
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
-		MasterPage masterPage =
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(), randomMasterPage());
+		MasterPage masterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage());
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
@@ -359,45 +300,31 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				testGroup.getGroupId(), TestPropsValues.getUserId());
 
-		PageSpecificationsTestUtil.
-			testPostSiteSiteByExternalReferenceCodePageSpecification(
-				_layoutLocalService.getLayout(
-					layoutPageTemplateEntry.getPlid()),
-				masterPage.getPageSpecifications(), serviceContext,
-				contentPageSpecification ->
-					masterPageResource.
-						postSiteSiteByExternalReferenceCodeMasterPagePageSpecification(
-							testGroup.getExternalReferenceCode(),
-							masterPage.getExternalReferenceCode(),
-							contentPageSpecification));
+		PageSpecificationsTestUtil.testPostSitePageSpecification(
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
+			masterPage.getPageSpecifications(), serviceContext,
+			contentPageSpecification ->
+				masterPageResource.postSiteMasterPagePageSpecification(
+					testGroup.getExternalReferenceCode(),
+					masterPage.getExternalReferenceCode(),
+					contentPageSpecification));
 
-		_assertPostSiteSiteByExternalReferenceCodeMasterPagePageSpecificationProblemException(
+		_assertPostSiteMasterPagePageSpecificationProblemException(
 			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
 				serviceContext));
 
-		_assertPostSiteSiteByExternalReferenceCodeMasterPagePageSpecificationProblemException(
+		_assertPostSiteMasterPagePageSpecificationProblemException(
 			LayoutPageTemplateEntryTestUtil.
 				getDisplayPageLayoutPageTemplateEntry(serviceContext));
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testPutSiteMasterPagePermissionsPage() throws Exception {
-		super.testPutSiteMasterPagePermissionsPage();
-	}
+	public void testPutSiteMasterPage() throws Exception {
+		_testPutSiteMasterPage(null, randomMasterPage());
 
-	@Override
-	@Test
-	public void testPutSiteSiteByExternalReferenceCodeMasterPage()
-		throws Exception {
-
-		_testPutSiteSiteByExternalReferenceCodeMasterPage(
-			null, randomMasterPage());
-
-		MasterPage masterPage =
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				randomMasterPage());
+		MasterPage masterPage = testPostSiteMasterPage_addMasterPage(
+			randomMasterPage());
 
 		Repository repository = _portletFileRepository.addPortletRepository(
 			testGroup.getGroupId(), RandomTestUtil.randomString(),
@@ -406,30 +333,29 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		FileEntry fileEntry = _addPortletFileEntry(repository.getDlFolderId());
 
-		_testPutSiteSiteByExternalReferenceCodeMasterPage(
+		_testPutSiteMasterPage(
 			fileEntry.getExternalReferenceCode(),
 			_getMasterPage(
 				null, masterPage.getExternalReferenceCode(),
 				fileEntry.getExternalReferenceCode()));
 
-		_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications();
+		_testPutSiteMasterPageWithPageSpecifications();
 
 		_enableLocalStaging();
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
-			() ->
-				masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
-					testGroup.getExternalReferenceCode(),
-					masterPage.getExternalReferenceCode(),
-					_getMasterPage(
-						null, masterPage.getExternalReferenceCode(), null)));
+			() -> masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				masterPage.getExternalReferenceCode(),
+				_getMasterPage(
+					null, masterPage.getExternalReferenceCode(), null)));
 	}
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"externalReferenceCode", "keywordItemExternalReferences", "name",
+			"externalReferenceCode", "keywords", "name",
 			"taxonomyCategoryItemExternalReferences"
 		};
 	}
@@ -451,8 +377,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				testGroup, TestPropsValues.getUserId());
 
-		masterPage.setKeywordItemExternalReferences(
-			AssetTestUtil.randomKeywordItemExternalReferences(serviceContext));
+		masterPage.setKeywords(AssetTestUtil.randomKeywords(serviceContext));
+
 		masterPage.setMarkedAsDefault(Boolean.FALSE);
 		masterPage.setTaxonomyCategoryItemExternalReferences(
 			AssetTestUtil.randomTaxonomyCategoryItemExternalReferences(
@@ -461,42 +387,30 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		return masterPage;
 	}
 
-	@Ignore
 	@Override
-	@Test
-	protected MasterPage testGetSiteMasterPagePermissionsPage_addMasterPage()
+	protected MasterPage testGetSiteMasterPagesPage_addMasterPage(
+			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
 
-		return super.testGetSiteMasterPagePermissionsPage_addMasterPage();
-	}
-
-	@Override
-	protected MasterPage
-			testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-				String siteExternalReferenceCode, MasterPage masterPage)
-		throws Exception {
-
-		return masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
+		return masterPageResource.postSiteMasterPage(
 			siteExternalReferenceCode, masterPage);
 	}
 
 	@Override
-	protected MasterPage
-			testPostSiteSiteByExternalReferenceCodeMasterPage_addMasterPage(
-				MasterPage masterPage)
-		throws Exception {
+	protected Map<String, Map<String, String>>
+		testGetSiteMasterPagesPage_getExpectedActions(
+			String siteExternalReferenceCode) {
 
-		return testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(), masterPage);
+		return new HashMap<>();
 	}
 
-	@Ignore
 	@Override
-	@Test
-	protected MasterPage testPutSiteMasterPagePermissionsPage_addMasterPage()
+	protected MasterPage testPostSiteMasterPage_addMasterPage(
+			MasterPage masterPage)
 		throws Exception {
 
-		return super.testPutSiteMasterPagePermissionsPage_addMasterPage();
+		return testGetSiteMasterPagesPage_addMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
 	}
 
 	private FileEntry _addPortletFileEntry(long folderId) throws Exception {
@@ -539,23 +453,20 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			masterPage.getPageSpecifications(), layout, status);
 	}
 
-	private void
-			_assertPostSiteSiteByExternalReferenceCodeMasterPagePageSpecificationProblemException(
-				LayoutPageTemplateEntry layoutPageTemplateEntry)
+	private void _assertPostSiteMasterPagePageSpecificationProblemException(
+			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws Exception {
 
 		_assertProblemException(
 			"BAD_REQUEST", null,
-			() ->
-				masterPageResource.
-					postSiteSiteByExternalReferenceCodeMasterPagePageSpecification(
-						testGroup.getExternalReferenceCode(),
-						layoutPageTemplateEntry.getExternalReferenceCode(),
-						new ContentPageSpecification() {
-							{
-								setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
-							}
-						}));
+			() -> masterPageResource.postSiteMasterPagePageSpecification(
+				testGroup.getExternalReferenceCode(),
+				layoutPageTemplateEntry.getExternalReferenceCode(),
+				new ContentPageSpecification() {
+					{
+						setType(() -> Type.CONTENT_PAGE_SPECIFICATION);
+					}
+				}));
 	}
 
 	private void _assertProblemException(
@@ -624,14 +535,6 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		return masterPage;
 	}
 
-	private MasterPage _getMasterPage(String name) throws Exception {
-		MasterPage masterPage = randomMasterPage();
-
-		masterPage.setName(name);
-
-		return masterPage;
-	}
-
 	private MasterPageResource _getMasterPageResource() throws Exception {
 		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
@@ -647,107 +550,51 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		).build();
 	}
 
-	private void _testGetSiteSiteByExternalReferenceCodeMasterPage(
-			MasterPage masterPage)
+	private MasterPage _postMasterPageWithPageSpecificationsWithCustomFields()
 		throws Exception {
 
-		MasterPage getMasterPage =
-			masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(),
-				masterPage.getExternalReferenceCode());
+		MasterPage randomMasterPage = randomMasterPage();
+
+		PageSpecification[] pageSpecifications =
+			PageSpecificationsTestUtil.getContentPageSpecifications(
+				RandomTestUtil.randomString());
+
+		randomMasterPage.setPageSpecifications(pageSpecifications);
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), randomMasterPage);
+
+		PageSpecificationsTestUtil.assertCustomFields(
+			TransformUtil.transform(
+				pageSpecifications,
+				pageSpecification -> pageSpecification.getCustomFields(),
+				CustomField[].class),
+			testGroup.getGroupId(), postMasterPage.getPageSpecifications());
+
+		return postMasterPage;
+	}
+
+	private void _testGetSiteMasterPage(MasterPage masterPage)
+		throws Exception {
+
+		MasterPage getMasterPage = masterPageResource.getSiteMasterPage(
+			testGroup.getExternalReferenceCode(),
+			masterPage.getExternalReferenceCode());
 
 		assertEquals(masterPage, getMasterPage);
 		assertValid(getMasterPage);
 	}
 
-	private List<MasterPage>
-			_testGetSiteSiteByExternalReferenceCodeMasterPagesPage(
-				int count, String search)
-		throws Exception {
-
-		Page<MasterPage> masterPagePage =
-			masterPageResource.
-				getSiteSiteByExternalReferenceCodeMasterPagesPage(
-					testGroup.getExternalReferenceCode(), search, null, null,
-					null, null);
-
-		List<MasterPage> masterPages =
-			(List<MasterPage>)masterPagePage.getItems();
-
-		Assert.assertEquals(masterPages.toString(), count, masterPages.size());
-
-		return masterPages;
-	}
-
-	private void _testGetSiteSiteByExternalReferenceCodeMasterPagesPageWithSearch()
-		throws Exception {
-
-		String search = RandomTestUtil.randomString();
-
-		Page<MasterPage> masterPagePage =
-			masterPageResource.
-				getSiteSiteByExternalReferenceCodeMasterPagesPage(
-					testGroup.getExternalReferenceCode(), search, null, null,
-					null, null);
-
-		int totalCount = GetterUtil.getInteger(masterPagePage.getTotalCount());
-
-		testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(), randomMasterPage());
-
-		testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(), randomMasterPage());
-
-		MasterPage masterPage = _getMasterPage(search);
-
-		testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(), masterPage);
-
-		testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(), randomMasterPage());
-
-		List<MasterPage> masterPages =
-			_testGetSiteSiteByExternalReferenceCodeMasterPagesPage(
-				totalCount + 1, search);
-
-		String name = null;
-
-		for (MasterPage curMasterPage : masterPages) {
-			if (!Objects.equals(
-					curMasterPage.getExternalReferenceCode(),
-					masterPage.getExternalReferenceCode())) {
-
-				continue;
-			}
-
-			name = curMasterPage.getName();
-
-			break;
-		}
-
-		Assert.assertEquals(search, name);
-
-		testGetSiteSiteByExternalReferenceCodeMasterPagesPage_addMasterPage(
-			testGroup.getExternalReferenceCode(),
-			_getMasterPage(
-				RandomTestUtil.randomString() + search +
-					RandomTestUtil.randomString()));
-
-		_testGetSiteSiteByExternalReferenceCodeMasterPagesPage(
-			totalCount + 2, search);
-	}
-
-	private void
-			_testGetSiteSiteByExternalReferenceCodeMasterPageWithNestedFields(
-				MasterPage masterPage)
+	private void _testGetSiteMasterPageWithNestedFields(MasterPage masterPage)
 		throws Exception {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
-		MasterPage getMasterPage =
-			masterPageResource.getSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(),
-				masterPage.getExternalReferenceCode());
+		MasterPage getMasterPage = masterPageResource.getSiteMasterPage(
+			testGroup.getExternalReferenceCode(),
+			masterPage.getExternalReferenceCode());
 
 		assertEquals(masterPage, getMasterPage);
 		assertValid(getMasterPage);
@@ -763,15 +610,14 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			getMasterPage.getPageSpecifications());
 	}
 
-	private void _testPatchSiteSiteByExternalReferenceCodeMasterPage(
+	private void _testPatchSiteMasterPage(
 			Boolean expectedMarkedAsDefault,
 			String expectedExternalReferenceCode, MasterPage masterPage)
 		throws Exception {
 
-		MasterPage patchMasterPage =
-			masterPageResource.patchSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(),
-				masterPage.getExternalReferenceCode(), masterPage);
+		MasterPage patchMasterPage = masterPageResource.patchSiteMasterPage(
+			testGroup.getExternalReferenceCode(),
+			masterPage.getExternalReferenceCode(), masterPage);
 
 		assertEquals(masterPage, patchMasterPage);
 		assertValid(patchMasterPage);
@@ -783,32 +629,32 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			expectedExternalReferenceCode, patchMasterPage.getThumbnail());
 	}
 
-	private void _testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications()
+	private void _testPatchSiteMasterPageWithPageSpecifications()
 		throws Exception {
 
-		_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPatchSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.APPROVED);
-		_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPatchSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.DRAFT);
-		_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPatchSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.DRAFT, PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED);
-		_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPatchSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.DRAFT, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT);
+		_testPatchSiteMasterPageWithPageSpecificationsWithCustomFields();
 	}
 
-	private void
-			_testPatchSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-				PageSpecification.Status newDraftLayoutStatus,
-				PageSpecification.Status newPublishedLayoutStatus,
-				PageSpecification.Status oldDraftLayoutStatus,
-				PageSpecification.Status oldPublishedLayoutStatus)
+	private void _testPatchSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status newDraftLayoutStatus,
+			PageSpecification.Status newPublishedLayoutStatus,
+			PageSpecification.Status oldDraftLayoutStatus,
+			PageSpecification.Status oldPublishedLayoutStatus)
 		throws Exception {
 
 		MasterPage masterPage = randomMasterPage();
@@ -829,9 +675,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
-		MasterPage postMasterPage =
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(), masterPage);
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			testGroup.getExternalReferenceCode(), masterPage);
 
 		_assertPageSpecifications(
 			postMasterPage, draftContentPageSpecification,
@@ -841,7 +686,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		publishedContentPageSpecification.setStatus(newPublishedLayoutStatus);
 
 		_assertPageSpecifications(
-			masterPageResource.patchSiteSiteByExternalReferenceCodeMasterPage(
+			masterPageResource.patchSiteMasterPage(
 				testGroup.getExternalReferenceCode(),
 				masterPage.getExternalReferenceCode(),
 				new MasterPage() {
@@ -856,24 +701,61 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			draftContentPageSpecification, publishedContentPageSpecification);
 	}
 
-	private void _testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications()
+	private void _testPatchSiteMasterPageWithPageSpecificationsWithCustomFields()
 		throws Exception {
 
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-			PageSpecification.Status.APPROVED,
-			PageSpecification.Status.APPROVED);
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT);
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-			PageSpecification.Status.DRAFT, PageSpecification.Status.APPROVED);
-		_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-			PageSpecification.Status.DRAFT, PageSpecification.Status.DRAFT);
+		try (PageSpecificationsTestUtil.ExpandoTableAutocloseable
+				expandoTableAutoCloseable =
+					PageSpecificationsTestUtil.getExpandoTableAutoCloseable()) {
+
+			MasterPage postMasterPage =
+				_postMasterPageWithPageSpecificationsWithCustomFields();
+
+			MasterPageResource masterPageResource = _getMasterPageResource();
+
+			PageSpecification[] patchPageSpecifications =
+				PageSpecificationsTestUtil.getPatchPageSpecifications(
+					postMasterPage.getPageSpecifications());
+
+			MasterPage patchMasterPage = masterPageResource.patchSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(),
+				new MasterPage() {
+					{
+						setExternalReferenceCode(
+							postMasterPage::getExternalReferenceCode);
+						setPageSpecifications(patchPageSpecifications);
+					}
+				});
+
+			PageSpecificationsTestUtil.assertCustomFields(
+				TransformUtil.transform(
+					patchPageSpecifications,
+					pageSpecification -> pageSpecification.getCustomFields(),
+					CustomField[].class),
+				testGroup.getGroupId(),
+				patchMasterPage.getPageSpecifications());
+		}
 	}
 
-	private void
-			_testPostSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-				PageSpecification.Status draftLayoutStatus,
-				PageSpecification.Status publishedLayoutStatus)
+	private void _testPostSiteMasterPageWithPageSpecifications()
+		throws Exception {
+
+		_testPostSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status.APPROVED,
+			PageSpecification.Status.APPROVED);
+		_testPostSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT);
+		_testPostSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status.DRAFT, PageSpecification.Status.APPROVED);
+		_testPostSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status.DRAFT, PageSpecification.Status.DRAFT);
+		_testPostSiteMasterPageWithPageSpecificationsWithCustomFields();
+	}
+
+	private void _testPostSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status draftLayoutStatus,
+			PageSpecification.Status publishedLayoutStatus)
 		throws Exception {
 
 		MasterPage masterPage = randomMasterPage();
@@ -895,12 +777,23 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
 		_assertPageSpecifications(
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
+			masterPageResource.postSiteMasterPage(
 				testGroup.getExternalReferenceCode(), masterPage),
 			draftContentPageSpecification, publishedContentPageSpecification);
 	}
 
-	private void _testPostSiteSiteByExternalReferenceCodeMasterPageWithSiteTemplatePageSpecification()
+	private void _testPostSiteMasterPageWithPageSpecificationsWithCustomFields()
+		throws Exception {
+
+		try (PageSpecificationsTestUtil.ExpandoTableAutocloseable
+				expandoTableAutoCloseable =
+					PageSpecificationsTestUtil.getExpandoTableAutoCloseable()) {
+
+			_postMasterPageWithPageSpecificationsWithCustomFields();
+		}
+	}
+
+	private void _testPostSiteMasterPageWithSiteTemplatePageSpecification()
 		throws Exception {
 
 		MasterPageResource masterPageResource = _getMasterPageResource();
@@ -949,9 +842,8 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				draftContentPageSpecification, publishedContentPageSpecification
 			});
 
-		MasterPage postMasterPage =
-			masterPageResource.postSiteSiteByExternalReferenceCodeMasterPage(
-				group.getExternalReferenceCode(), masterPage);
+		MasterPage postMasterPage = masterPageResource.postSiteMasterPage(
+			group.getExternalReferenceCode(), masterPage);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
@@ -966,7 +858,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			PageSpecification.Status.APPROVED);
 	}
 
-	private void _testPutSiteSiteByExternalReferenceCodeMasterPage(
+	private void _testPutSiteMasterPage(
 			String expectedThumbnailExternalReferenceCode,
 			MasterPage masterPage)
 		throws Exception {
@@ -975,17 +867,15 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		_assertProblemException(
 			"CONFLICT", "The default master page must be published first.",
-			() ->
-				masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
-					testGroup.getExternalReferenceCode(),
-					masterPage.getExternalReferenceCode(), masterPage));
+			() -> masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				masterPage.getExternalReferenceCode(), masterPage));
 
 		masterPage.setMarkedAsDefault(Boolean.FALSE);
 
-		MasterPage putMasterPage =
-			masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
-				testGroup.getExternalReferenceCode(),
-				masterPage.getExternalReferenceCode(), masterPage);
+		MasterPage putMasterPage = masterPageResource.putSiteMasterPage(
+			testGroup.getExternalReferenceCode(),
+			masterPage.getExternalReferenceCode(), masterPage);
 
 		assertEquals(masterPage, putMasterPage);
 		assertValid(putMasterPage);
@@ -995,32 +885,32 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			putMasterPage.getThumbnail());
 	}
 
-	private void _testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications()
+	private void _testPutSiteMasterPageWithPageSpecifications()
 		throws Exception {
 
-		_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPutSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.APPROVED);
-		_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPutSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.DRAFT);
-		_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPutSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.DRAFT, PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED,
 			PageSpecification.Status.APPROVED);
-		_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
+		_testPutSiteMasterPageWithPageSpecifications(
 			PageSpecification.Status.DRAFT, PageSpecification.Status.DRAFT,
 			PageSpecification.Status.APPROVED, PageSpecification.Status.DRAFT);
+		_testPutSiteMasterPageWithPageSpecificationsWithCustomFields();
 	}
 
-	private void
-			_testPutSiteSiteByExternalReferenceCodeMasterPageWithPageSpecifications(
-				PageSpecification.Status newDraftLayoutStatus,
-				PageSpecification.Status newPublishedLayoutStatus,
-				PageSpecification.Status oldDraftLayoutStatus,
-				PageSpecification.Status oldPublishedLayoutStatus)
+	private void _testPutSiteMasterPageWithPageSpecifications(
+			PageSpecification.Status newDraftLayoutStatus,
+			PageSpecification.Status newPublishedLayoutStatus,
+			PageSpecification.Status oldDraftLayoutStatus,
+			PageSpecification.Status oldPublishedLayoutStatus)
 		throws Exception {
 
 		MasterPage masterPage = randomMasterPage();
@@ -1042,7 +932,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		MasterPageResource masterPageResource = _getMasterPageResource();
 
 		_assertPageSpecifications(
-			masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
+			masterPageResource.putSiteMasterPage(
 				testGroup.getExternalReferenceCode(),
 				masterPage.getExternalReferenceCode(), masterPage),
 			draftContentPageSpecification, publishedContentPageSpecification);
@@ -1051,10 +941,49 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		publishedContentPageSpecification.setStatus(newPublishedLayoutStatus);
 
 		_assertPageSpecifications(
-			masterPageResource.putSiteSiteByExternalReferenceCodeMasterPage(
+			masterPageResource.putSiteMasterPage(
 				testGroup.getExternalReferenceCode(),
 				masterPage.getExternalReferenceCode(), masterPage),
 			draftContentPageSpecification, publishedContentPageSpecification);
+	}
+
+	private void _testPutSiteMasterPageWithPageSpecificationsWithCustomFields()
+		throws Exception {
+
+		try (PageSpecificationsTestUtil.ExpandoTableAutocloseable
+				expandoTableAutoCloseable =
+					PageSpecificationsTestUtil.getExpandoTableAutoCloseable()) {
+
+			MasterPage postMasterPage =
+				_postMasterPageWithPageSpecificationsWithCustomFields();
+
+			MasterPageResource masterPageResource = _getMasterPageResource();
+
+			MasterPage putMasterPage = postMasterPage;
+
+			putMasterPage.setPageSpecifications(
+				() -> TransformUtil.transform(
+					putMasterPage.getPageSpecifications(),
+					pageSpecification -> {
+						pageSpecification.setCustomFields(
+							PageSpecificationsTestUtil.getCustomFields());
+
+						return pageSpecification;
+					},
+					PageSpecification.class));
+
+			MasterPage updateMasterPage = masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				postMasterPage.getExternalReferenceCode(), putMasterPage);
+
+			PageSpecificationsTestUtil.assertCustomFields(
+				TransformUtil.transform(
+					putMasterPage.getPageSpecifications(),
+					pageSpecification -> pageSpecification.getCustomFields(),
+					CustomField[].class),
+				testGroup.getGroupId(),
+				updateMasterPage.getPageSpecifications());
+		}
 	}
 
 	private void _updateLayoutPageTemplateEntryStatus(

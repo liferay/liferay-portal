@@ -3,7 +3,7 @@ assemble:
 liferay-adyen-commerce-payment-integration:
     key: liferay-adyen-commerce-payment-integration
     name: Liferay Adyen Commerce Payment Integration
-    oAuth2ApplicationExternalReferenceCode: liferay-adyen-commerce-payment-integration-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-adyen-commerce-payment-integration-oaua
     paymentIntegrationType: 4
     paymentIntegrationTypeSettings:
         apiKey:
@@ -14,7 +14,7 @@ liferay-adyen-commerce-payment-integration:
         webhookPassword:
         webhookUsername:
     type: commercePaymentIntegration
-liferay-adyen-commerce-payment-integration-oauth-application-headless-server:
+liferay-adyen-commerce-payment-integration-oahs:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Adyen Commerce Payment Integration OAuth Application Headless Server
@@ -25,7 +25,7 @@ liferay-adyen-commerce-payment-integration-oauth-application-headless-server:
         -   Liferay.Object.Admin.REST.everything
         -   c_n1a0adyenwebhook.everything
     type: oAuthApplicationHeadlessServer
-liferay-adyen-commerce-payment-integration-oauth-application-user-agent:
+liferay-adyen-commerce-payment-integration-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Adyen Commerce Payment Integration OAuth Application User Agent

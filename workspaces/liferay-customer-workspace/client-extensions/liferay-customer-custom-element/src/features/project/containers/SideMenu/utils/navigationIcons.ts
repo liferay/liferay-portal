@@ -6,6 +6,7 @@
 import * as NavigationMenuIcons from '~/assets/NavigationMenu';
 
 const navigationIcons = {
+	activation: [NavigationMenuIcons.ActivationIconGray],
 	analytics: [
 		NavigationMenuIcons.AnalyticsIcon,
 		NavigationMenuIcons.AnalyticsIconGray,
@@ -45,7 +46,6 @@ const navigationIcons = {
 		NavigationMenuIcons.PortalIcon,
 		NavigationMenuIcons.PortalIconGray,
 	],
-	productActivation: [NavigationMenuIcons.ProductActivationIconGray],
 	projectUsage: [
 		NavigationMenuIcons.ProjectUsageIcon,
 		NavigationMenuIcons.ProjectUsageIconGray,

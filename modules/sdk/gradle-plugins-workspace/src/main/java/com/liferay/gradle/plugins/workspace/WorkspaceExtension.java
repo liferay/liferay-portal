@@ -90,6 +90,8 @@ public class WorkspaceExtension {
 		_homeDir = _getProperty(
 			settings, "home.dir",
 			BundleSupportConstants.DEFAULT_LIFERAY_HOME_DIR_NAME);
+		_javaEEUseJakarta = _getProperty(
+			settings, "java.ee.use.jakarta", false);
 		_nodePackageManager = _getProperty(
 			settings, "node.package.manager", _NODE_PACKAGE_MANAGER);
 		_targetPlatformVersion = _getProperty(
@@ -280,6 +282,10 @@ public class WorkspaceExtension {
 		return GradleUtil.toFile(_gradle.getRootProject(), _homeDir);
 	}
 
+	public boolean getJavaEEUseJakarta() {
+		return GradleUtil.toBoolean(_javaEEUseJakarta);
+	}
+
 	public String getNodePackageManager() {
 		return GradleUtil.toString(_nodePackageManager);
 	}
@@ -393,6 +399,10 @@ public class WorkspaceExtension {
 		_homeDir = homeDir;
 	}
 
+	public void setJavaEEUseJakarta(Object javaEEUseJakarta) {
+		_javaEEUseJakarta = javaEEUseJakarta;
+	}
+
 	public void setNodePackageManager(Object nodePackageManager) {
 		_nodePackageManager = nodePackageManager;
 	}
@@ -479,6 +489,7 @@ public class WorkspaceExtension {
 	private Object _environment;
 	private final Gradle _gradle;
 	private Object _homeDir;
+	private Object _javaEEUseJakarta;
 	private Object _nodePackageManager;
 	private Object _product;
 	private final Set<ProjectConfigurator> _projectConfigurators =

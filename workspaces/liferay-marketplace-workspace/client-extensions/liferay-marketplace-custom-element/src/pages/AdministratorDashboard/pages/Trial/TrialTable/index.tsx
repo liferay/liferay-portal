@@ -14,7 +14,10 @@ import {DashboardPage} from '../../../../../components/DashBoardPage/DashboardPa
 import {DashboardEmptyTable} from '../../../../../components/DashboardTable/DashboardEmptyTable';
 import Loading from '../../../../../components/Loading';
 import Table from '../../../../../components/Table/Table';
-import {OrderWorkflowStatusCode} from '../../../../../enums/Order';
+import {
+	OrderCustomFields,
+	OrderWorkflowStatusCode,
+} from '../../../../../enums/Order';
 import {useConfirmationModal} from '../../../../../hooks/useConfirmationModal';
 import useModalContext from '../../../../../hooks/useModalContext';
 import i18n from '../../../../../i18n';
@@ -86,7 +89,9 @@ const TrialTable: React.FC<TrialTableProps> = ({items, revalidate}) => {
 			onClick: (order: Order) =>
 				window.open(
 					`https://${
-						order?.customFields?.['trial-virtualhost'] as string
+						order?.customFields?.[
+							OrderCustomFields.TRIAL_VIRTUAL_HOST
+						]
 					}`
 				),
 		},

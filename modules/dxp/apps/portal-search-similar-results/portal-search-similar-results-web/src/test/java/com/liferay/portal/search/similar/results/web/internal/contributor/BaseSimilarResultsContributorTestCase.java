@@ -168,14 +168,14 @@ public abstract class BaseSimilarResultsContributorTestCase {
 	}
 
 	protected void setUpDestinationHelperGetRouteParameter(
-		long entryId, String paramterName) {
+		long entryId, String parameterName) {
 
 		Mockito.doReturn(
 			entryId
 		).when(
 			destinationHelper
 		).getRouteParameter(
-			Mockito.eq(paramterName)
+			Mockito.eq(parameterName)
 		);
 	}
 

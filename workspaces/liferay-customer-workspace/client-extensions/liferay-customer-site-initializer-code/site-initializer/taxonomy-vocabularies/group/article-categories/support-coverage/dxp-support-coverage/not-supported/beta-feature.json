@@ -1,0 +1,10 @@
+{
+	"name": "Beta Feature",
+	"name_i18n": {
+		"en_US": "Beta Feature",
+		"es-ES": "Funcionalidades beta",
+		"ja-JP": "ベータ版機能",
+		"pt-BR": "Recursos Beta"
+	},
+	"viewableBy": "Anyone"
+}

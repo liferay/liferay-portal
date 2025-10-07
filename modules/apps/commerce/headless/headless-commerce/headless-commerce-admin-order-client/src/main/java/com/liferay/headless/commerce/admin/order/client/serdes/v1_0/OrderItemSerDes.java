@@ -361,6 +361,16 @@ public class OrderItemSerDes {
 			sb.append("\"");
 		}
 
+		if (orderItem.getProductId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productId\": ");
+
+			sb.append(orderItem.getProductId());
+		}
+
 		if (orderItem.getPromoPrice() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -890,6 +900,13 @@ public class OrderItemSerDes {
 			map.put("printedNote", String.valueOf(orderItem.getPrintedNote()));
 		}
 
+		if (orderItem.getProductId() == null) {
+			map.put("productId", null);
+		}
+		else {
+			map.put("productId", String.valueOf(orderItem.getProductId()));
+		}
+
 		if (orderItem.getPromoPrice() == null) {
 			map.put("promoPrice", null);
 		}
@@ -1203,6 +1220,9 @@ public class OrderItemSerDes {
 			else if (Objects.equals(jsonParserFieldName, "printedNote")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "productId")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "promoPrice")) {
 				return false;
 			}
@@ -1494,6 +1514,12 @@ public class OrderItemSerDes {
 			else if (Objects.equals(jsonParserFieldName, "printedNote")) {
 				if (jsonParserFieldValue != null) {
 					orderItem.setPrintedNote((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "productId")) {
+				if (jsonParserFieldValue != null) {
+					orderItem.setProductId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "promoPrice")) {

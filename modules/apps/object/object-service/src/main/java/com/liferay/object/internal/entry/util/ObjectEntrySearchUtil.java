@@ -13,6 +13,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionLocalizationTable;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.util.HttpServletRequestThreadLocal;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -28,6 +29,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.math.BigDecimal;
 
 import java.util.Locale;
@@ -38,7 +41,18 @@ import java.util.Locale;
 public class ObjectEntrySearchUtil {
 
 	public static String getLanguageId() throws PortalException {
-		Locale locale = LocaleThreadLocal.getThemeDisplayLocale();
+		Locale locale = null;
+
+		HttpServletRequest httpServletRequest =
+			HttpServletRequestThreadLocal.getHttpServletRequest();
+
+		if (httpServletRequest != null) {
+			locale = httpServletRequest.getLocale();
+		}
+
+		if (locale == null) {
+			locale = LocaleThreadLocal.getThemeDisplayLocale();
+		}
 
 		if (locale == null) {
 			locale = LocaleThreadLocal.getSiteDefaultLocale();

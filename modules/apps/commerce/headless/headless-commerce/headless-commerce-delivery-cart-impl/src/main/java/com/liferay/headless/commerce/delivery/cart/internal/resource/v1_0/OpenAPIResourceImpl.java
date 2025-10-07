@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @Generated("")
 @OpenAPIDefinition(
-	info = @Info(description = "Headless Delivery Commerce Cart API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.51'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Headless Delivery Commerce Cart API", version = "v1.0")
+	info = @Info(description = "Headless Delivery Commerce Cart API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.52'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Headless Delivery Commerce Cart API", version = "v1.0")
 )
 @Path("/v1.0")
 public class OpenAPIResourceImpl {

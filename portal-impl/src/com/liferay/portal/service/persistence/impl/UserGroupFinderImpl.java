@@ -229,8 +229,7 @@ public class UserGroupFinderImpl
 				InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, UserGroup.class.getName(), "UserGroup.userGroupId",
-					null, null, new long[] {0}, null);
+					sql, UserGroup.class.getName(), "UserGroup.userGroupId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
@@ -318,8 +317,7 @@ public class UserGroupFinderImpl
 				InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, UserGroup.class.getName(), "UserGroup.userGroupId",
-					null, null, new long[] {0}, null);
+					sql, UserGroup.class.getName(), "UserGroup.userGroupId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);

@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -96,6 +97,13 @@ public class AdvancedFDSItemsActions implements FDSItemsActions {
 		fdsActionDropdownItem3.putData("disableHeader", true);
 
 		return Arrays.asList(
+			new FDSActionDropdownItem(
+				"#test-visibility-filter", "sun",
+				"sampleVisibilityFilterMessage", "Sample Visibility Filter",
+				null, null, "link",
+				HashMapBuilder.<String, Object>put(
+					"color", "Yellow"
+				).build()),
 			new FDSActionDropdownItem(
 				null, "view", "infoPanel", "View Details", null, null,
 				"infoPanel"),

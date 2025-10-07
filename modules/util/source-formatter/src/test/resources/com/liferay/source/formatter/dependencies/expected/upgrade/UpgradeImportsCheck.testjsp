@@ -52,3 +52,14 @@ public static FDSTableSchema getFDSTableSchema() {
 
 private FDSTableSchemaBuilderFactory _fDSTableSchemaBuilderFactory;
 %>
+
+<div class="js-search-filter-settings">
+	<div class="loading-animation"></div>
+</div>
+
+<aui:script use="search-filter-settings">
+	new A.SearchFilters({
+		boundingBox: '.js-search-filter-settings',
+		namespace: '<portlet:namespace />'
+	});
+</aui:script>

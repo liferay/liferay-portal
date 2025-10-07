@@ -21,12 +21,10 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -60,7 +58,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
@@ -95,8 +92,6 @@ public abstract class BaseSamlTestCase {
 
 	@Before
 	public void setUp() throws Exception {
-		_setupProps();
-
 		Class.forName(ConfigurationServiceBootstrapUtil.class.getName());
 
 		_setupConfiguration();
@@ -252,11 +247,11 @@ public abstract class BaseSamlTestCase {
 
 		samlPeerBinding.setSamlPeerBindingId(_samlPeerBindings.size() + 1);
 		samlPeerBinding.setCompanyId(COMPANY_ID);
+		samlPeerBinding.setSamlPeerEntityId(peerEntityId);
 		samlPeerBinding.setDeleted(false);
 		samlPeerBinding.setSamlNameIdFormat(samlNameIdFormat);
 		samlPeerBinding.setSamlNameIdNameQualifier(samlNameIdNameQualifier);
 		samlPeerBinding.setSamlNameIdValue(samlNameIdValue);
-		samlPeerBinding.setSamlPeerEntityId(peerEntityId);
 
 		_samlPeerBindings.put(
 			samlPeerBinding.getSamlPeerBindingId(), samlPeerBinding);
@@ -742,15 +737,6 @@ public abstract class BaseSamlTestCase {
 
 		userLocalService = getMockPortalService(
 			UserLocalServiceUtil.class, UserLocalService.class);
-	}
-
-	private void _setupProps() {
-		PropsTestUtil.setProps(
-			HashMapBuilder.<String, Object>put(
-				PropsKeys.LIFERAY_HOME, System.getProperty("java.io.tmpdir")
-			).put(
-				"configuration.override.", new Properties()
-			).build());
 	}
 
 	private void _setupSamlBindings() {

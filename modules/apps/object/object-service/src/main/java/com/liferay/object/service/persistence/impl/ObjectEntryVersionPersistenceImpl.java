@@ -42,6 +42,8 @@ import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
 
+import java.sql.Timestamp;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2234,6 +2236,587 @@ public class ObjectEntryVersionPersistenceImpl
 	private static final String _FINDER_COLUMN_OBJECTENTRYID_OBJECTENTRYID_2 =
 		"objectEntryVersion.objectEntryId = ?";
 
+	private FinderPath _finderPathWithPaginationFindByC_CD;
+	private FinderPath _finderPathWithoutPaginationFindByC_CD;
+	private FinderPath _finderPathCountByC_CD;
+
+	/**
+	 * Returns all the object entry versions where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @return the matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByC_CD(
+		long companyId, Date createDate) {
+
+		return findByC_CD(
+			companyId, createDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the object entry versions where companyId = &#63; and createDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @return the range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByC_CD(
+		long companyId, Date createDate, int start, int end) {
+
+		return findByC_CD(companyId, createDate, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entry versions where companyId = &#63; and createDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByC_CD(
+		long companyId, Date createDate, int start, int end,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		return findByC_CD(
+			companyId, createDate, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entry versions where companyId = &#63; and createDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByC_CD(
+		long companyId, Date createDate, int start, int end,
+		OrderByComparator<ObjectEntryVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByC_CD;
+				finderArgs = new Object[] {companyId, _getTime(createDate)};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByC_CD;
+			finderArgs = new Object[] {
+				companyId, _getTime(createDate), start, end, orderByComparator
+			};
+		}
+
+		List<ObjectEntryVersion> list = null;
+
+		if (useFinderCache) {
+			list = (List<ObjectEntryVersion>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ObjectEntryVersion objectEntryVersion : list) {
+					if ((companyId != objectEntryVersion.getCompanyId()) ||
+						!Objects.equals(
+							createDate, objectEntryVersion.getCreateDate())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(4);
+			}
+
+			sb.append(_SQL_SELECT_OBJECTENTRYVERSION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_CD_COMPANYID_2);
+
+			boolean bindCreateDate = false;
+
+			if (createDate == null) {
+				sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_1);
+			}
+			else {
+				bindCreateDate = true;
+
+				sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(ObjectEntryVersionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindCreateDate) {
+					queryPos.add(new Timestamp(createDate.getTime()));
+				}
+
+				list = (List<ObjectEntryVersion>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first object entry version in the ordered set where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry version
+	 * @throws NoSuchObjectEntryVersionException if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion findByC_CD_First(
+			long companyId, Date createDate,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = fetchByC_CD_First(
+			companyId, createDate, orderByComparator);
+
+		if (objectEntryVersion != null) {
+			return objectEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", createDate=");
+		sb.append(createDate);
+
+		sb.append("}");
+
+		throw new NoSuchObjectEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the first object entry version in the ordered set where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry version, or <code>null</code> if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion fetchByC_CD_First(
+		long companyId, Date createDate,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		List<ObjectEntryVersion> list = findByC_CD(
+			companyId, createDate, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last object entry version in the ordered set where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object entry version
+	 * @throws NoSuchObjectEntryVersionException if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion findByC_CD_Last(
+			long companyId, Date createDate,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = fetchByC_CD_Last(
+			companyId, createDate, orderByComparator);
+
+		if (objectEntryVersion != null) {
+			return objectEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", createDate=");
+		sb.append(createDate);
+
+		sb.append("}");
+
+		throw new NoSuchObjectEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the last object entry version in the ordered set where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object entry version, or <code>null</code> if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion fetchByC_CD_Last(
+		long companyId, Date createDate,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		int count = countByC_CD(companyId, createDate);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ObjectEntryVersion> list = findByC_CD(
+			companyId, createDate, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the object entry versions before and after the current object entry version in the ordered set where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param objectEntryVersionId the primary key of the current object entry version
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object entry version
+	 * @throws NoSuchObjectEntryVersionException if a object entry version with the primary key could not be found
+	 */
+	@Override
+	public ObjectEntryVersion[] findByC_CD_PrevAndNext(
+			long objectEntryVersionId, long companyId, Date createDate,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = findByPrimaryKey(
+			objectEntryVersionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ObjectEntryVersion[] array = new ObjectEntryVersionImpl[3];
+
+			array[0] = getByC_CD_PrevAndNext(
+				session, objectEntryVersion, companyId, createDate,
+				orderByComparator, true);
+
+			array[1] = objectEntryVersion;
+
+			array[2] = getByC_CD_PrevAndNext(
+				session, objectEntryVersion, companyId, createDate,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ObjectEntryVersion getByC_CD_PrevAndNext(
+		Session session, ObjectEntryVersion objectEntryVersion, long companyId,
+		Date createDate,
+		OrderByComparator<ObjectEntryVersion> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_OBJECTENTRYVERSION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_CD_COMPANYID_2);
+
+		boolean bindCreateDate = false;
+
+		if (createDate == null) {
+			sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_1);
+		}
+		else {
+			bindCreateDate = true;
+
+			sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(ObjectEntryVersionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		if (bindCreateDate) {
+			queryPos.add(new Timestamp(createDate.getTime()));
+		}
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						objectEntryVersion)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<ObjectEntryVersion> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the object entry versions where companyId = &#63; and createDate = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 */
+	@Override
+	public void removeByC_CD(long companyId, Date createDate) {
+		for (ObjectEntryVersion objectEntryVersion :
+				findByC_CD(
+					companyId, createDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(objectEntryVersion);
+		}
+	}
+
+	/**
+	 * Returns the number of object entry versions where companyId = &#63; and createDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param createDate the create date
+	 * @return the number of matching object entry versions
+	 */
+	@Override
+	public int countByC_CD(long companyId, Date createDate) {
+		FinderPath finderPath = _finderPathCountByC_CD;
+
+		Object[] finderArgs = new Object[] {companyId, _getTime(createDate)};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_OBJECTENTRYVERSION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_CD_COMPANYID_2);
+
+			boolean bindCreateDate = false;
+
+			if (createDate == null) {
+				sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_1);
+			}
+			else {
+				bindCreateDate = true;
+
+				sb.append(_FINDER_COLUMN_C_CD_CREATEDATE_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				if (bindCreateDate) {
+					queryPos.add(new Timestamp(createDate.getTime()));
+				}
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_C_CD_COMPANYID_2 =
+		"objectEntryVersion.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_CD_CREATEDATE_1 =
+		"objectEntryVersion.createDate IS NULL";
+
+	private static final String _FINDER_COLUMN_C_CD_CREATEDATE_2 =
+		"objectEntryVersion.createDate = ?";
+
 	private FinderPath _finderPathFetchByOEI_V;
 
 	/**
@@ -2418,6 +3001,551 @@ public class ObjectEntryVersionPersistenceImpl
 
 	private static final String _FINDER_COLUMN_OEI_V_VERSION_2 =
 		"objectEntryVersion.version = ?";
+
+	private FinderPath _finderPathWithPaginationFindByOEI_S;
+	private FinderPath _finderPathWithoutPaginationFindByOEI_S;
+	private FinderPath _finderPathCountByOEI_S;
+
+	/**
+	 * Returns all the object entry versions where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @return the matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByOEI_S(
+		long objectEntryId, int status) {
+
+		return findByOEI_S(
+			objectEntryId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the object entry versions where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @return the range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByOEI_S(
+		long objectEntryId, int status, int start, int end) {
+
+		return findByOEI_S(objectEntryId, status, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entry versions where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByOEI_S(
+		long objectEntryId, int status, int start, int end,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		return findByOEI_S(
+			objectEntryId, status, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the object entry versions where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectEntryVersionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param start the lower bound of the range of object entry versions
+	 * @param end the upper bound of the range of object entry versions (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object entry versions
+	 */
+	@Override
+	public List<ObjectEntryVersion> findByOEI_S(
+		long objectEntryId, int status, int start, int end,
+		OrderByComparator<ObjectEntryVersion> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByOEI_S;
+				finderArgs = new Object[] {objectEntryId, status};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByOEI_S;
+			finderArgs = new Object[] {
+				objectEntryId, status, start, end, orderByComparator
+			};
+		}
+
+		List<ObjectEntryVersion> list = null;
+
+		if (useFinderCache) {
+			list = (List<ObjectEntryVersion>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (ObjectEntryVersion objectEntryVersion : list) {
+					if ((objectEntryId !=
+							objectEntryVersion.getObjectEntryId()) ||
+						(status != objectEntryVersion.getStatus())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(4);
+			}
+
+			sb.append(_SQL_SELECT_OBJECTENTRYVERSION_WHERE);
+
+			sb.append(_FINDER_COLUMN_OEI_S_OBJECTENTRYID_2);
+
+			sb.append(_FINDER_COLUMN_OEI_S_STATUS_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(ObjectEntryVersionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(objectEntryId);
+
+				queryPos.add(status);
+
+				list = (List<ObjectEntryVersion>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first object entry version in the ordered set where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry version
+	 * @throws NoSuchObjectEntryVersionException if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion findByOEI_S_First(
+			long objectEntryId, int status,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = fetchByOEI_S_First(
+			objectEntryId, status, orderByComparator);
+
+		if (objectEntryVersion != null) {
+			return objectEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("objectEntryId=");
+		sb.append(objectEntryId);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchObjectEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the first object entry version in the ordered set where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object entry version, or <code>null</code> if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion fetchByOEI_S_First(
+		long objectEntryId, int status,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		List<ObjectEntryVersion> list = findByOEI_S(
+			objectEntryId, status, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last object entry version in the ordered set where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object entry version
+	 * @throws NoSuchObjectEntryVersionException if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion findByOEI_S_Last(
+			long objectEntryId, int status,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = fetchByOEI_S_Last(
+			objectEntryId, status, orderByComparator);
+
+		if (objectEntryVersion != null) {
+			return objectEntryVersion;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("objectEntryId=");
+		sb.append(objectEntryId);
+
+		sb.append(", status=");
+		sb.append(status);
+
+		sb.append("}");
+
+		throw new NoSuchObjectEntryVersionException(sb.toString());
+	}
+
+	/**
+	 * Returns the last object entry version in the ordered set where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object entry version, or <code>null</code> if a matching object entry version could not be found
+	 */
+	@Override
+	public ObjectEntryVersion fetchByOEI_S_Last(
+		long objectEntryId, int status,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		int count = countByOEI_S(objectEntryId, status);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<ObjectEntryVersion> list = findByOEI_S(
+			objectEntryId, status, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the object entry versions before and after the current object entry version in the ordered set where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryVersionId the primary key of the current object entry version
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object entry version
+	 * @throws NoSuchObjectEntryVersionException if a object entry version with the primary key could not be found
+	 */
+	@Override
+	public ObjectEntryVersion[] findByOEI_S_PrevAndNext(
+			long objectEntryVersionId, long objectEntryId, int status,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws NoSuchObjectEntryVersionException {
+
+		ObjectEntryVersion objectEntryVersion = findByPrimaryKey(
+			objectEntryVersionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			ObjectEntryVersion[] array = new ObjectEntryVersionImpl[3];
+
+			array[0] = getByOEI_S_PrevAndNext(
+				session, objectEntryVersion, objectEntryId, status,
+				orderByComparator, true);
+
+			array[1] = objectEntryVersion;
+
+			array[2] = getByOEI_S_PrevAndNext(
+				session, objectEntryVersion, objectEntryId, status,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected ObjectEntryVersion getByOEI_S_PrevAndNext(
+		Session session, ObjectEntryVersion objectEntryVersion,
+		long objectEntryId, int status,
+		OrderByComparator<ObjectEntryVersion> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_OBJECTENTRYVERSION_WHERE);
+
+		sb.append(_FINDER_COLUMN_OEI_S_OBJECTENTRYID_2);
+
+		sb.append(_FINDER_COLUMN_OEI_S_STATUS_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(ObjectEntryVersionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(objectEntryId);
+
+		queryPos.add(status);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						objectEntryVersion)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<ObjectEntryVersion> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the object entry versions where objectEntryId = &#63; and status = &#63; from the database.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 */
+	@Override
+	public void removeByOEI_S(long objectEntryId, int status) {
+		for (ObjectEntryVersion objectEntryVersion :
+				findByOEI_S(
+					objectEntryId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(objectEntryVersion);
+		}
+	}
+
+	/**
+	 * Returns the number of object entry versions where objectEntryId = &#63; and status = &#63;.
+	 *
+	 * @param objectEntryId the object entry ID
+	 * @param status the status
+	 * @return the number of matching object entry versions
+	 */
+	@Override
+	public int countByOEI_S(long objectEntryId, int status) {
+		FinderPath finderPath = _finderPathCountByOEI_S;
+
+		Object[] finderArgs = new Object[] {objectEntryId, status};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_OBJECTENTRYVERSION_WHERE);
+
+			sb.append(_FINDER_COLUMN_OEI_S_OBJECTENTRYID_2);
+
+			sb.append(_FINDER_COLUMN_OEI_S_STATUS_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(objectEntryId);
+
+				queryPos.add(status);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String _FINDER_COLUMN_OEI_S_OBJECTENTRYID_2 =
+		"objectEntryVersion.objectEntryId = ? AND ";
+
+	private static final String _FINDER_COLUMN_OEI_S_STATUS_2 =
+		"objectEntryVersion.status = ?";
 
 	public ObjectEntryVersionPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -3090,10 +4218,48 @@ public class ObjectEntryVersionPersistenceImpl
 			new String[] {Long.class.getName()}, new String[] {"objectEntryId"},
 			false);
 
+		_finderPathWithPaginationFindByC_CD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_CD",
+			new String[] {
+				Long.class.getName(), Date.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "createDate"}, true);
+
+		_finderPathWithoutPaginationFindByC_CD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_CD",
+			new String[] {Long.class.getName(), Date.class.getName()},
+			new String[] {"companyId", "createDate"}, true);
+
+		_finderPathCountByC_CD = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_CD",
+			new String[] {Long.class.getName(), Date.class.getName()},
+			new String[] {"companyId", "createDate"}, false);
+
 		_finderPathFetchByOEI_V = new FinderPath(
 			FINDER_CLASS_NAME_ENTITY, "fetchByOEI_V",
 			new String[] {Long.class.getName(), Integer.class.getName()},
 			new String[] {"objectEntryId", "version"}, true);
+
+		_finderPathWithPaginationFindByOEI_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByOEI_S",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"objectEntryId", "status"}, true);
+
+		_finderPathWithoutPaginationFindByOEI_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByOEI_S",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"objectEntryId", "status"}, true);
+
+		_finderPathCountByOEI_S = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByOEI_S",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"objectEntryId", "status"}, false);
 
 		ObjectEntryVersionUtil.setPersistence(this);
 	}
@@ -3136,6 +4302,14 @@ public class ObjectEntryVersionPersistenceImpl
 
 	@Reference
 	protected FinderCache finderCache;
+
+	private static Long _getTime(Date date) {
+		if (date == null) {
+			return null;
+		}
+
+		return date.getTime();
+	}
 
 	private static final String _SQL_SELECT_OBJECTENTRYVERSION =
 		"SELECT objectEntryVersion FROM ObjectEntryVersion objectEntryVersion";

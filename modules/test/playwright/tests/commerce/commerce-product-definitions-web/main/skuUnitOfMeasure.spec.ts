@@ -9,7 +9,9 @@ import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../../fixtures/applicationsMenuPageTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {performLogout} from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
@@ -19,6 +21,7 @@ export const test = mergeTests(
 	apiHelpersTest,
 	applicationsMenuPageTest,
 	commercePagesTest,
+	isolatedSiteTest,
 	dataApiHelpersTest,
 	loginTest()
 );
@@ -76,7 +79,7 @@ test('LPD-33466 User can update pricing quantity of UOM', async ({
 
 	await expect(
 		commerceAdminProductDetailsSkusPage.pricinQuantity
-	).toHaveValue('1');
+	).toHaveValue('1.0');
 
 	await commerceAdminProductDetailsSkusPage.pricinQuantity.fill('2');
 
@@ -92,7 +95,7 @@ test('LPD-33466 User can update pricing quantity of UOM', async ({
 
 	await expect(
 		commerceAdminProductDetailsSkusPage.pricinQuantity
-	).toHaveValue('2');
+	).toHaveValue('2.0');
 });
 
 test('LPD-36797 Quantity selector starting quantity in catalog page and minicart is correct when UOM is set with decimal base unit quantity and decimal multiple order quantity', async ({
@@ -293,9 +296,7 @@ test('LPD-36797 Quantity selector starting quantity in catalog page and minicart
 	);
 
 	try {
-		await commerceThemeMiniumCatalogPage
-			.productCardAddToCartButton(productName1)
-			.click();
+		await commerceThemeMiniumCatalogPage.addToCart(productName1);
 
 		await commerceMiniCartPage.miniCartButton.click();
 
@@ -313,9 +314,7 @@ test('LPD-36797 Quantity selector starting quantity in catalog page and minicart
 			)
 		).toBeVisible();
 
-		await commerceThemeMiniumCatalogPage
-			.productCardAddToCartButton(productName2)
-			.click();
+		await commerceThemeMiniumCatalogPage.addToCart(productName2);
 
 		await commerceMiniCartPage.miniCartButton.click();
 
@@ -2231,3 +2230,754 @@ test('COMMERCE-12398 Verify that the multiple order quantity is applied correctl
 		);
 	}
 });
+
+test(
+	'Order manager can view information about UOM and quantity for each order item',
+	{tag: ['@LPD-57002']},
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		commerceAdminOrdersPage,
+		commerceAdminProductPage,
+		commerceAdminShipmentsPage,
+		page,
+		site,
+	}) => {
+		test.setTimeout(180000);
+
+		let account;
+		let catalog;
+		let channel;
+		let checkoutCart;
+		let option;
+		let postCart;
+		let product;
+		let productSkus;
+		let skuUOM1;
+		let skuUOM2;
+		let skuUOM3;
+		let warehouse;
+
+		await test.step('Create an Account and a Catalog', async () => {
+			account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'business',
+			});
+
+			catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+			channel = await apiHelpers.headlessCommerceAdminChannel.postChannel(
+				{
+					siteGroupId: site.id,
+				}
+			);
+		});
+
+		await test.step('Add 2 UOMs to BLACK and 1 UOM to WHITE', async () => {
+			option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'select',
+				'color',
+				'Color',
+				1
+			);
+
+			product = await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+				{
+					catalogId: catalog.id,
+					name: {en_US: getRandomString()},
+					productConfiguration: {
+						maxOrderQuantity: 10000,
+						minOrderQuantity: 1,
+						minStockQuantity: 5,
+						multipleOrderQuantity: 0.1,
+					},
+					productOptions: [
+						{
+							fieldType: 'select',
+							key: 'color',
+							name: {
+								en_US: 'Color',
+							},
+							optionId: option.id,
+							priority: 1,
+							productOptionValues: [
+								{
+									key: 'black',
+									name: {
+										en_US: 'Black',
+									},
+									priority: 1,
+									quantity: 1,
+								},
+								{
+									key: 'white',
+									name: {
+										en_US: 'White',
+									},
+									priority: 2,
+									quantity: 1,
+								},
+								{
+									key: 'yellow',
+									name: {
+										en_US: 'Yellow',
+									},
+									priority: 2,
+									quantity: 1,
+								},
+							],
+							required: true,
+							skuContributor: true,
+						},
+					],
+				}
+			);
+
+			await applicationsMenuPage.goToProducts();
+
+			await commerceAdminProductPage
+				.managementToolbarItemLink(product.name['en_US'])
+				.click();
+			await commerceAdminProductPage.generateSkus();
+
+			product = (
+				await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+					new URLSearchParams({
+						filter: `name eq '${product.name['en_US']}'`,
+						nestedFields: `skus`,
+					})
+				)
+			).items[0];
+
+			productSkus = product.skus.filter((sku) => {
+				return ['YELLOW', 'WHITE', 'BLACK'].includes(sku.sku);
+			});
+
+			warehouse =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+					{
+						active: true,
+						latitude: getRandomInt(),
+						longitude: getRandomInt(),
+						warehouseItems: [
+							{
+								quantity: 100,
+								sku: productSkus[0].sku,
+							},
+							{
+								quantity: 100,
+								sku: productSkus[1].sku,
+							},
+							{
+								quantity: 100,
+								sku: productSkus[2].sku,
+							},
+						],
+					}
+				);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+				warehouse.id,
+				channel.id
+			);
+
+			skuUOM1 =
+				await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+					productSkus[2].id,
+					{
+						basePrice: 10,
+						incrementalOrderQuantity: 0.2,
+						name: {en_US: 'UOM1'},
+						precision: 1,
+						priority: 0,
+					}
+				);
+
+			skuUOM2 =
+				await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+					productSkus[2].id,
+					{
+						basePrice: 10,
+						incrementalOrderQuantity: 0.7,
+						name: {en_US: 'UOM2'},
+						precision: 1,
+						priority: 0,
+					}
+				);
+
+			skuUOM3 =
+				await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+					productSkus[1].id,
+					{
+						basePrice: 10,
+						incrementalOrderQuantity: 1.3,
+						name: {en_US: 'UOM3'},
+						precision: 1,
+						priority: 0,
+					}
+				);
+
+			const warehouseItems =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.getWarehouseIdWarehouseItemsPage(
+					warehouse.id
+				);
+
+			const warehouseItem = warehouseItems.items.find(
+				(warehouseItem) =>
+					warehouseItem.sku === productSkus[2].sku &&
+					warehouseItem.unitOfMeasureKey === skuUOM2.key
+			);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.patchWarehouseItem(
+				warehouseItem.id,
+				{
+					quantity: 10,
+					sku: warehouseItem.sku,
+					unitOfMeasureKey: warehouseItem.unitOfMeasureKey,
+				}
+			);
+		});
+
+		await test.step('Create a processing order', async () => {
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '1234567890', regionISOCode: 'AL'}
+			);
+
+			postCart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							options: `[{key: ${option.key}, value: 'yellow'}]`,
+							quantity: 2,
+							skuId: productSkus[0].id,
+						},
+						{
+							options: `[{key: ${option.key}, value: 'white'}]`,
+							quantity: 2.6,
+							skuId: productSkus[1].id,
+							skuUnitOfMeasure: {key: skuUOM3.key},
+						},
+						{
+							options: `[{key: ${option.key}, value: 'black'}]`,
+							quantity: 1.2,
+							skuId: productSkus[2].id,
+							skuUnitOfMeasure: {key: skuUOM1.key},
+						},
+						{
+							options: `[{key: ${option.key}, value: 'black'}]`,
+							quantity: 1.4,
+							skuId: productSkus[2].id,
+							skuUnitOfMeasure: {key: skuUOM2.key},
+						},
+					],
+					currencyCode: 'USD',
+				},
+				channel.id
+			);
+
+			checkoutCart =
+				await apiHelpers.headlessCommerceDeliveryCart.checkoutCart(
+					postCart.id
+				);
+
+			await apiHelpers.headlessCommerceAdminOrder.patchOrder(
+				checkoutCart.id,
+				{
+					orderStatus: '10',
+				}
+			);
+		});
+
+		await test.step('Go to Orders and create a shipment and add order items to it', async () => {
+			await commerceAdminOrdersPage.goto();
+			await commerceAdminOrdersPage
+				.menuActionButton(account.name)
+				.click();
+			await commerceAdminOrdersPage.menuItemAction('View').click();
+			await commerceAdminOrdersPage
+				.orderStatusLink('Create Shipment')
+				.click();
+
+			await expect(
+				page.getByText('Processing', {exact: true})
+			).toBeVisible();
+
+			await commerceAdminShipmentsPage.addProductsToShipment.click();
+
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						1,
+						productSkus[0].sku,
+						true
+					)
+				).row
+			).toContainText('2');
+
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM3.key,
+						true
+					)
+				).row
+			).toContainText('2.6');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM3.key,
+						true
+					)
+				).row
+			).toContainText(productSkus[1].sku);
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM1.key,
+						true
+					)
+				).row
+			).toContainText('1.2');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM1.key,
+						true
+					)
+				).row
+			).toContainText(productSkus[2].sku);
+
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM2.key,
+						true
+					)
+				).row
+			).toContainText('1.4');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.shipmentItemsTableRow(
+						4,
+						skuUOM2.key,
+						true
+					)
+				).row
+			).toContainText(productSkus[2].sku);
+
+			await (
+				await commerceAdminShipmentsPage.shipmentItemsTableRowAction(
+					1,
+					productSkus[0].sku
+				)
+			).check();
+			await (
+				await commerceAdminShipmentsPage.shipmentItemsTableRowAction(
+					4,
+					skuUOM3.key
+				)
+			).check();
+			await (
+				await commerceAdminShipmentsPage.shipmentItemsTableRowAction(
+					4,
+					skuUOM2.key
+				)
+			).check();
+			await (
+				await commerceAdminShipmentsPage.shipmentItemsTableRowAction(
+					4,
+					skuUOM1.key
+				)
+			).check();
+
+			await commerceAdminShipmentsPage.shipmentsItemSubmitButton.click();
+		});
+
+		await test.step('Edit each order item and set the quantity in the shipment', async () => {
+			await (
+				await commerceAdminShipmentsPage.editProductTableRow(
+					6,
+					skuUOM1.key,
+					true
+				)
+			).row
+				.getByRole('link')
+				.click();
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toBeVisible();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).focus();
+
+			for (let i = 0; i < 6; i++) {
+				await (
+					await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+						{
+							colIndex: 0,
+							rowValue: warehouse.name['en_US'],
+						}
+					)
+				).press('ArrowUp');
+			}
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toHaveValue('1.2');
+			await commerceAdminShipmentsPage.editProductSaveButton.click();
+
+			await waitForAlert(page.frameLocator('iframe'));
+
+			await commerceAdminShipmentsPage.editProductCloseButton.click();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRow(
+					6,
+					skuUOM2.key,
+					true
+				)
+			).row
+				.getByRole('link')
+				.click();
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toBeVisible();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).fill('1.4');
+			await commerceAdminShipmentsPage.editProductSaveButton.click();
+
+			await waitForAlert(page.frameLocator('iframe'));
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toHaveValue('1.4');
+
+			await commerceAdminShipmentsPage.editProductCloseButton.click();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRow(
+					6,
+					skuUOM3.key,
+					true
+				)
+			).row
+				.getByRole('link')
+				.click();
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toBeVisible();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).fill('2.6');
+			await commerceAdminShipmentsPage.editProductSaveButton.click();
+
+			await waitForAlert(page.frameLocator('iframe'));
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toHaveValue('2.6');
+
+			await commerceAdminShipmentsPage.editProductCloseButton.click();
+
+			await (
+				await commerceAdminShipmentsPage.editProductTableRow(
+					0,
+					productSkus[0].sku,
+					true
+				)
+			).row
+				.getByRole('link')
+				.click();
+			await (
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).fill('2');
+			await commerceAdminShipmentsPage.editProductSaveButton.click();
+
+			await waitForAlert(page.frameLocator('iframe'));
+
+			await expect(
+				await commerceAdminShipmentsPage.editProductTableRowQuantitySelector(
+					{
+						colIndex: 0,
+						rowValue: warehouse.name['en_US'],
+					}
+				)
+			).toHaveValue('2');
+
+			await commerceAdminShipmentsPage.editProductCloseButton.click();
+		});
+
+		await test.step('Assert that the outstanding quantity column displays 0 for each order item', async () => {
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM1.key,
+						true
+					)
+				).row
+			).toContainText('0');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM2.key,
+						true
+					)
+				).row
+			).toContainText('0');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM3.key,
+						true
+					)
+				).row
+			).toContainText('0');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						0,
+						productSkus[0].sku,
+						true
+					)
+				).row
+			).toContainText('0');
+		});
+
+		await test.step('Assert that after click on Finish Processing button, the table keeps showing the right quantities and UOMs', async () => {
+			await commerceAdminShipmentsPage
+				.shipmentStatusLink('Finish Processing')
+				.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM1.key,
+						true
+					)
+				).row
+			).toContainText('1.2');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM2.key,
+						true
+					)
+				).row
+			).toContainText('1.4');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						6,
+						skuUOM3.key,
+						true
+					)
+				).row
+			).toContainText('2.6');
+			await expect(
+				(
+					await commerceAdminShipmentsPage.editProductTableRow(
+						0,
+						productSkus[0].sku,
+						true
+					)
+				).row
+			).toContainText('2');
+		});
+
+		await test.step('Assert that after click on Ship and Deliver button, the table keeps showing the right quantities and UOMs', async () => {
+			const shipmentStatuses = ['Ship', 'Deliver'];
+
+			for (const shipmentStatus of shipmentStatuses) {
+				await commerceAdminShipmentsPage
+					.shipmentStatusLink(shipmentStatus)
+					.click();
+
+				await waitForAlert(page);
+
+				await expect(
+					(
+						await commerceAdminShipmentsPage.editProductTableRow(
+							5,
+							skuUOM1.key,
+							true
+						)
+					).row
+				).toContainText('1.2');
+				await expect(
+					(
+						await commerceAdminShipmentsPage.editProductTableRow(
+							5,
+							skuUOM2.key,
+							true
+						)
+					).row
+				).toContainText('1.4');
+				await expect(
+					(
+						await commerceAdminShipmentsPage.editProductTableRow(
+							5,
+							skuUOM3.key,
+							true
+						)
+					).row
+				).toContainText('2.6');
+				await expect(
+					(
+						await commerceAdminShipmentsPage.editProductTableRow(
+							0,
+							productSkus[0].sku,
+							true
+						)
+					).row
+				).toContainText('2');
+			}
+		});
+	}
+);
+
+test(
+	'UOM incremental order quantity and pricing quantity display double value',
+	{tag: ['@LPD-62187']},
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: 'Catalog',
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {
+					en_US: 'Product',
+				},
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+			sku.id,
+			{
+				incrementalOrderQuantity: 1.5,
+				name: {en_US: 'UOM'},
+				precision: 1,
+				pricingQuantity: 1.5,
+				priority: 0,
+			}
+		);
+
+		await applicationsMenuPage.goToProducts();
+
+		await commerceAdminProductPage.managementToolbarSearchInput.fill(
+			'Product'
+		);
+		await commerceAdminProductPage.managementToolbarSearchInput.press(
+			'Enter'
+		);
+
+		await commerceAdminProductPage.productsTableRowLink('Product').click();
+
+		await commerceAdminProductDetailsPage.goToProductSkus();
+
+		await commerceAdminProductDetailsSkusPage
+			.skusTableRowLink(`${sku.sku}`)
+			.click();
+
+		await commerceAdminProductDetailsSkusPage.goToSkuUOM();
+
+		await commerceAdminProductDetailsSkusPage
+			.uomTableRowLink('UOM')
+			.click();
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.incrementalOrderQuantity
+		).toHaveValue('1.5');
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.pricinQuantity
+		).toHaveValue('1.5');
+	}
+);

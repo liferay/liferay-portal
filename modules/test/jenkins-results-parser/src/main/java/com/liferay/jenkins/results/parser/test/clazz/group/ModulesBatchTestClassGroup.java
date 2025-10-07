@@ -6,8 +6,11 @@
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
+import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,6 +97,29 @@ public abstract class ModulesBatchTestClassGroup extends BatchTestClassGroup {
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
+		}
+	}
+
+	protected void addTestClasses(Set<File> moduleDirs) {
+		Set<File> testModuleDirs = new HashSet<>();
+
+		for (File moduleDir : moduleDirs) {
+			File testModuleDir = _getTestModuleDir(moduleDir);
+
+			if (testModuleDirs.contains(testModuleDir)) {
+				continue;
+			}
+
+			testModuleDirs.add(testModuleDir);
+
+			TestClass testClass = TestClassFactory.newTestClass(
+				this, testModuleDir);
+
+			if (!testClass.hasTestClassMethods()) {
+				continue;
+			}
+
+			addTestClass(testClass);
 		}
 	}
 
@@ -238,5 +264,43 @@ public abstract class ModulesBatchTestClassGroup extends BatchTestClassGroup {
 	protected abstract void setTestClasses() throws IOException;
 
 	protected Set<File> moduleDirsList = new HashSet<>();
+
+	private File _getTestModuleDir(File moduleDir) {
+		List<File> testModuleDirs = new ArrayList<>();
+
+		File currentDir = moduleDir;
+
+		File modulesDir = new File(
+			portalGitWorkingDirectory.getWorkingDirectory(), "modules");
+
+		while ((currentDir != null) &&
+			   !modulesDir.equals(currentDir.getParentFile())) {
+
+			testModuleDirs.add(currentDir);
+
+			currentDir = currentDir.getParentFile();
+		}
+
+		Collections.reverse(testModuleDirs);
+
+		for (File testModuleDir : testModuleDirs) {
+			if (_isTestModuleDir(testModuleDir)) {
+				return testModuleDir;
+			}
+		}
+
+		return moduleDir;
+	}
+
+	private boolean _isTestModuleDir(File testModuleDir) {
+		PortalGitWorkingDirectory.Module module =
+			PortalGitWorkingDirectory.Module.getModule(testModuleDir.toPath());
+
+		if ((module != null) && testModuleDir.equals(module.getFile())) {
+			return true;
+		}
+
+		return false;
+	}
 
 }

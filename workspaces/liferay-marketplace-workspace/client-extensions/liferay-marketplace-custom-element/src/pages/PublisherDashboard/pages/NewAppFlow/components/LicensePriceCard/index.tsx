@@ -21,7 +21,7 @@ type LicensePriceCardProps = {
 	onAdd: (currency: string) => void;
 	onChange: (
 		index: number,
-		price: {key: number; value: number},
+		price: {key: number; value: number | string},
 		currency: string
 	) => void;
 	onDelete: (key: number, currency: string) => void;
@@ -98,14 +98,14 @@ const LicensePriceCard: React.FC<LicensePriceCardProps> = ({
 						<ClayInput
 							className="bg-white license-card-input py-5 text-right"
 							onChange={(event) => {
-								const regExp = /^[0-9.,]*$/;
+								const regExp = /^\d*\.?\d{0,2}$/;
 
 								if (regExp.test(event.target.value)) {
 									onChange(
 										Number(key),
 										{
 											key: Number(key),
-											value: Number(event.target.value),
+											value: event.target.value,
 										},
 										currency
 									);

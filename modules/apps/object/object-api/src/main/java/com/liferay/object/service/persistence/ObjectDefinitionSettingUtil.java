@@ -656,6 +656,195 @@ public class ObjectDefinitionSettingUtil {
 	}
 
 	/**
+	 * Returns all the object definition settings where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the matching object definition settings
+	 */
+	public static List<ObjectDefinitionSetting> findByC_N(
+		long companyId, String name) {
+
+		return getPersistence().findByC_N(companyId, name);
+	}
+
+	/**
+	 * Returns a range of all the object definition settings where companyId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectDefinitionSettingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param start the lower bound of the range of object definition settings
+	 * @param end the upper bound of the range of object definition settings (not inclusive)
+	 * @return the range of matching object definition settings
+	 */
+	public static List<ObjectDefinitionSetting> findByC_N(
+		long companyId, String name, int start, int end) {
+
+		return getPersistence().findByC_N(companyId, name, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the object definition settings where companyId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectDefinitionSettingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param start the lower bound of the range of object definition settings
+	 * @param end the upper bound of the range of object definition settings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object definition settings
+	 */
+	public static List<ObjectDefinitionSetting> findByC_N(
+		long companyId, String name, int start, int end,
+		OrderByComparator<ObjectDefinitionSetting> orderByComparator) {
+
+		return getPersistence().findByC_N(
+			companyId, name, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the object definition settings where companyId = &#63; and name = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectDefinitionSettingModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param start the lower bound of the range of object definition settings
+	 * @param end the upper bound of the range of object definition settings (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching object definition settings
+	 */
+	public static List<ObjectDefinitionSetting> findByC_N(
+		long companyId, String name, int start, int end,
+		OrderByComparator<ObjectDefinitionSetting> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_N(
+			companyId, name, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first object definition setting in the ordered set where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object definition setting
+	 * @throws NoSuchObjectDefinitionSettingException if a matching object definition setting could not be found
+	 */
+	public static ObjectDefinitionSetting findByC_N_First(
+			long companyId, String name,
+			OrderByComparator<ObjectDefinitionSetting> orderByComparator)
+		throws com.liferay.object.exception.
+			NoSuchObjectDefinitionSettingException {
+
+		return getPersistence().findByC_N_First(
+			companyId, name, orderByComparator);
+	}
+
+	/**
+	 * Returns the first object definition setting in the ordered set where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object definition setting, or <code>null</code> if a matching object definition setting could not be found
+	 */
+	public static ObjectDefinitionSetting fetchByC_N_First(
+		long companyId, String name,
+		OrderByComparator<ObjectDefinitionSetting> orderByComparator) {
+
+		return getPersistence().fetchByC_N_First(
+			companyId, name, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object definition setting in the ordered set where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object definition setting
+	 * @throws NoSuchObjectDefinitionSettingException if a matching object definition setting could not be found
+	 */
+	public static ObjectDefinitionSetting findByC_N_Last(
+			long companyId, String name,
+			OrderByComparator<ObjectDefinitionSetting> orderByComparator)
+		throws com.liferay.object.exception.
+			NoSuchObjectDefinitionSettingException {
+
+		return getPersistence().findByC_N_Last(
+			companyId, name, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object definition setting in the ordered set where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object definition setting, or <code>null</code> if a matching object definition setting could not be found
+	 */
+	public static ObjectDefinitionSetting fetchByC_N_Last(
+		long companyId, String name,
+		OrderByComparator<ObjectDefinitionSetting> orderByComparator) {
+
+		return getPersistence().fetchByC_N_Last(
+			companyId, name, orderByComparator);
+	}
+
+	/**
+	 * Returns the object definition settings before and after the current object definition setting in the ordered set where companyId = &#63; and name = &#63;.
+	 *
+	 * @param objectDefinitionSettingId the primary key of the current object definition setting
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object definition setting
+	 * @throws NoSuchObjectDefinitionSettingException if a object definition setting with the primary key could not be found
+	 */
+	public static ObjectDefinitionSetting[] findByC_N_PrevAndNext(
+			long objectDefinitionSettingId, long companyId, String name,
+			OrderByComparator<ObjectDefinitionSetting> orderByComparator)
+		throws com.liferay.object.exception.
+			NoSuchObjectDefinitionSettingException {
+
+		return getPersistence().findByC_N_PrevAndNext(
+			objectDefinitionSettingId, companyId, name, orderByComparator);
+	}
+
+	/**
+	 * Removes all the object definition settings where companyId = &#63; and name = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 */
+	public static void removeByC_N(long companyId, String name) {
+		getPersistence().removeByC_N(companyId, name);
+	}
+
+	/**
+	 * Returns the number of object definition settings where companyId = &#63; and name = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param name the name
+	 * @return the number of matching object definition settings
+	 */
+	public static int countByC_N(long companyId, String name) {
+		return getPersistence().countByC_N(companyId, name);
+	}
+
+	/**
 	 * Returns the object definition setting where objectDefinitionId = &#63; and name = &#63; or throws a <code>NoSuchObjectDefinitionSettingException</code> if it could not be found.
 	 *
 	 * @param objectDefinitionId the object definition ID

@@ -155,6 +155,10 @@ public abstract class BaseDataDefinitionMVCActionCommandTestCase {
 		MockMultipartHttpServletRequest mockMultipartHttpServletRequest =
 			new MockMultipartHttpServletRequest();
 
+		if (fileName == null) {
+			return mockMultipartHttpServletRequest;
+		}
+
 		Class<?> clazz = getClass();
 
 		byte[] bytes = _file.getBytes(

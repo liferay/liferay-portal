@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Collection Filter Tags
 Bundle-SymbolicName: com.liferay.fragment.collection.filter.tags
-Bundle-Version: 1.0.22
+Bundle-Version: 1.0.23
 Web-ContextPath: /fragment-collection-filter-tags

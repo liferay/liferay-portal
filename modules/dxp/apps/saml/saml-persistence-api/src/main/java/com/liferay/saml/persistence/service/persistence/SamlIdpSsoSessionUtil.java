@@ -114,6 +114,66 @@ public class SamlIdpSsoSessionUtil {
 	}
 
 	/**
+	 * Returns the saml idp sso session where userId = &#63; or throws a <code>NoSuchIdpSsoSessionException</code> if it could not be found.
+	 *
+	 * @param userId the user ID
+	 * @return the matching saml idp sso session
+	 * @throws NoSuchIdpSsoSessionException if a matching saml idp sso session could not be found
+	 */
+	public static SamlIdpSsoSession findByUserId(long userId)
+		throws com.liferay.saml.persistence.exception.
+			NoSuchIdpSsoSessionException {
+
+		return getPersistence().findByUserId(userId);
+	}
+
+	/**
+	 * Returns the saml idp sso session where userId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @return the matching saml idp sso session, or <code>null</code> if a matching saml idp sso session could not be found
+	 */
+	public static SamlIdpSsoSession fetchByUserId(long userId) {
+		return getPersistence().fetchByUserId(userId);
+	}
+
+	/**
+	 * Returns the saml idp sso session where userId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching saml idp sso session, or <code>null</code> if a matching saml idp sso session could not be found
+	 */
+	public static SamlIdpSsoSession fetchByUserId(
+		long userId, boolean useFinderCache) {
+
+		return getPersistence().fetchByUserId(userId, useFinderCache);
+	}
+
+	/**
+	 * Removes the saml idp sso session where userId = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @return the saml idp sso session that was removed
+	 */
+	public static SamlIdpSsoSession removeByUserId(long userId)
+		throws com.liferay.saml.persistence.exception.
+			NoSuchIdpSsoSessionException {
+
+		return getPersistence().removeByUserId(userId);
+	}
+
+	/**
+	 * Returns the number of saml idp sso sessions where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the number of matching saml idp sso sessions
+	 */
+	public static int countByUserId(long userId) {
+		return getPersistence().countByUserId(userId);
+	}
+
+	/**
 	 * Returns all the saml idp sso sessions where createDate &lt; &#63;.
 	 *
 	 * @param createDate the create date

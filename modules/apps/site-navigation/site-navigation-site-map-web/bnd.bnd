@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Site Map Web
 Bundle-SymbolicName: com.liferay.site.navigation.site.map.web
-Bundle-Version: 6.0.34
+Bundle-Version: 6.0.35
 Web-ContextPath: /site-navigation-site-map-web
 -dsannotations-options: inherit

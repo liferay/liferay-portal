@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
+import {EEditorType, waitForEditor} from '../../../../../utils/waitFor';
 import {ckeditor4PageTest} from '../../fixtures/ckeditor4PageTest';
 import {ckeditorSamplePageTest} from '../../fixtures/ckeditorSamplePageTest';
 
@@ -23,11 +24,13 @@ export const test = mergeTests(
 	isolatedSiteTest
 );
 
-test.beforeEach(async ({ckeditorSamplePage, site}) => {
+test.beforeEach(async ({ckeditorSamplePage, page, site}) => {
 	await ckeditorSamplePage.createAndGotoSitePage({site});
 
 	await ckeditorSamplePage.selectTab('CKEditor 4');
 	await ckeditorSamplePage.selectTab('Classic');
+
+	await waitForEditor({editorType: EEditorType.CKEDITOR4, page});
 });
 
 test(
@@ -161,15 +164,13 @@ test(
 		});
 
 		await expect(ckeditor4Page.contextMenu.getByLabel('URL')).toHaveValue(
-			'/documents/d/guest/satellite-png'
+			/satellite-png/
 		);
 
 		await ckeditor4Page.contextMenu.getByText('OK').click();
 
 		await expect(
-			ckeditor4Page.editableFrame.locator(
-				'img[src="/documents/d/guest/satellite-png"]'
-			)
+			ckeditor4Page.editableFrame.locator('img[src*="satellite-png"]')
 		).toBeVisible();
 	}
 );

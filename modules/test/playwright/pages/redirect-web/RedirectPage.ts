@@ -58,7 +58,7 @@ export class RedirectPage {
 
 		await this.createButton.click();
 
-		await this.page.getByText(sourceURL).waitFor();
+		await waitForAlert(this.page);
 	}
 
 	async addRedirectPattern(

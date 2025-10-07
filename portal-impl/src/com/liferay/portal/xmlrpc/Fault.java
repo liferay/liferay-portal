@@ -36,26 +36,14 @@ public class Fault implements Response {
 
 	@Override
 	public String toXml() throws XmlRpcException {
-		StringBundler sb = new StringBundler(17);
+		StringBundler sb = new StringBundler(6);
 
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-
-		sb.append("<methodResponse>");
-		sb.append("<fault>");
-		sb.append("<value>");
-		sb.append("<struct>");
-		sb.append("<member>");
-		sb.append("<name>faultCode</name>");
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse>");
+		sb.append("<fault><value><struct><member><name>faultCode</name>");
 		sb.append(XmlRpcUtil.wrapValue(_code));
-		sb.append("</member>");
-		sb.append("<member>");
-		sb.append("<name>faultString</name>");
+		sb.append("</member><member><name>faultString</name>");
 		sb.append(XmlRpcUtil.wrapValue(_description));
-		sb.append("</member>");
-		sb.append("</struct>");
-		sb.append("</value>");
-		sb.append("</fault>");
-		sb.append("</methodResponse>");
+		sb.append("</member></struct></value></fault></methodResponse>");
 
 		return sb.toString();
 	}

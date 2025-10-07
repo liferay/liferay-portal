@@ -105,30 +105,41 @@ public class JSONWebServiceTest {
 	}
 
 	private Class<?> _getTargetClass(Object service) {
-		while (ProxyUtil.isProxyClass(service.getClass())) {
-			InvocationHandler invocationHandler =
-				ProxyUtil.getInvocationHandler(service);
+		while (true) {
+			if (ProxyUtil.isProxyClass(service.getClass())) {
+				InvocationHandler invocationHandler =
+					ProxyUtil.getInvocationHandler(service);
 
-			if (invocationHandler instanceof AopInvocationHandler) {
-				AopInvocationHandler aopInvocationHandler =
-					(AopInvocationHandler)invocationHandler;
+				if (invocationHandler instanceof AopInvocationHandler) {
+					AopInvocationHandler aopInvocationHandler =
+						(AopInvocationHandler)invocationHandler;
 
-				service = aopInvocationHandler.getTarget();
+					service = aopInvocationHandler.getTarget();
+				}
+				else if (invocationHandler instanceof ClassLoaderBeanHandler) {
+					ClassLoaderBeanHandler classLoaderBeanHandler =
+						(ClassLoaderBeanHandler)invocationHandler;
+
+					Object bean = classLoaderBeanHandler.getBean();
+
+					if (bean instanceof ServiceWrapper) {
+						ServiceWrapper<?> serviceWrapper =
+							(ServiceWrapper<?>)bean;
+
+						service = serviceWrapper.getWrappedService();
+					}
+					else {
+						service = bean;
+					}
+				}
 			}
-			else if (invocationHandler instanceof ClassLoaderBeanHandler) {
-				ClassLoaderBeanHandler classLoaderBeanHandler =
-					(ClassLoaderBeanHandler)invocationHandler;
+			else if (service instanceof ServiceWrapper) {
+				ServiceWrapper<?> serviceWrapper = (ServiceWrapper<?>)service;
 
-				Object bean = classLoaderBeanHandler.getBean();
-
-				if (bean instanceof ServiceWrapper) {
-					ServiceWrapper<?> serviceWrapper = (ServiceWrapper<?>)bean;
-
-					service = serviceWrapper.getWrappedService();
-				}
-				else {
-					service = bean;
-				}
+				service = serviceWrapper.getWrappedService();
+			}
+			else {
+				break;
 			}
 		}
 

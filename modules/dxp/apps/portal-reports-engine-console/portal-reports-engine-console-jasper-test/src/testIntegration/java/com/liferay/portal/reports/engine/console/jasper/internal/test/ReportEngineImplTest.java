@@ -113,8 +113,10 @@ public class ReportEngineImplTest extends TestCase {
 
 	@Test
 	public void testExportXls() throws Exception {
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"org.apache.poi.POIDocument", LoggerTestUtil.WARN)) {
+		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
+				"org.apache.poi.POIDocument", LoggerTestUtil.WARN);
+			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+				"org.apache.poi.hpsf.Section", LoggerTestUtil.WARN)) {
 
 			_export(ReportFormat.XLS);
 		}
@@ -135,7 +137,12 @@ public class ReportEngineImplTest extends TestCase {
 			reportDataSourceType, dataSourceFileName, dataSourceReportFileName,
 			reportFormat);
 
-		_reportEngine.compile(reportRequest);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"net.sf.jasperreports.engine.xml.JRTextFieldFactory",
+				LoggerTestUtil.WARN)) {
+
+			_reportEngine.compile(reportRequest);
+		}
 
 		return reportRequest;
 	}

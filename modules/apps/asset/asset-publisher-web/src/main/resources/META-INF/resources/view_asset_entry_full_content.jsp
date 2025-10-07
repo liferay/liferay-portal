@@ -418,7 +418,7 @@ Map<String, Object> fragmentsEditorData = HashMapBuilder.<String, Object>put(
 				<c:if test="<%= availableLanguageIds.length > 1 %>">
 					<div class="autofit-col locale-actions mr-3">
 						<liferay-site-navigation:language
-							formAction="<%= currentURL %>"
+							formAction="<%= viewFullContentURL.toString() %>"
 							languageId="<%= languageId %>"
 							languageIds="<%= availableLanguageIds %>"
 						/>

@@ -92,6 +92,9 @@
 		<finder name="ParentSiteNavigationMenuItemId" return-type="Collection">
 			<finder-column name="parentSiteNavigationMenuItemId" />
 		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column name="type" />
+		</finder>
 		<finder name="S_P" return-type="Collection">
 			<finder-column name="siteNavigationMenuId" />
 			<finder-column name="parentSiteNavigationMenuItemId" />

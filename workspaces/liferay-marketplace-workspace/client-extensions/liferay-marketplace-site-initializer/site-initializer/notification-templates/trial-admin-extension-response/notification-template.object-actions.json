@@ -1,0 +1,18 @@
+[
+	{
+		"active": true,
+		"conditionExpression": "dueStatus == \"Approved\" OR dueStatus == \"Rejected\"",
+		"externalReferenceCode": "TRIAL-ADMIN-EXTENSION-RESPONSE-EMAIL",
+		"label": {
+			"en_US": "Admin Extension Response Email"
+		},
+		"name": "adminExtensionResponse",
+		"objectActionExecutorKey": "notification",
+		"objectActionTriggerKey": "onAfterUpdate",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:TrialExtensionRequest$]",
+		"parameters": {
+			"notificationTemplateExternalReferenceCode": "TRIAL-ADMIN-EXTENSION-RESPONSE",
+			"type": "email"
+		}
+	}
+]

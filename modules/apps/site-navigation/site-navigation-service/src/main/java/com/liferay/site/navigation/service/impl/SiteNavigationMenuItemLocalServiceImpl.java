@@ -304,6 +304,13 @@ public class SiteNavigationMenuItemLocalServiceImpl
 	}
 
 	@Override
+	public List<SiteNavigationMenuItem> getSiteNavigationMenuItems(
+		String type) {
+
+		return siteNavigationMenuItemPersistence.findByType(type);
+	}
+
+	@Override
 	public int getSiteNavigationMenuItemsCount(long siteNavigationMenuId) {
 		return siteNavigationMenuItemPersistence.countBySiteNavigationMenuId(
 			siteNavigationMenuId);

@@ -1,0 +1,15 @@
+assemble:
+    -   fromTask: bootJar
+liferay-testray-etc-spring-boot-oahs:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Liferay Testray Etc Spring Boot OAuth Application Headless Server
+    scopes:
+        -   c_jiraissue.everything
+    type: oAuthApplicationHeadlessServer
+    userAccountScreenName: default-service-account
+liferay-testray-etc-spring-boot-oaua:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Liferay Testray Etc Spring Boot OAuth Application User Agent
+    type: oAuthApplicationUserAgent

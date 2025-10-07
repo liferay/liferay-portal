@@ -22,7 +22,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -140,10 +139,8 @@ public class PluginsBatchTestClassGroup extends BatchTestClassGroup {
 		}
 
 		for (File pluginsDir : pluginsDirs) {
-			testClasses.add(TestClassFactory.newTestClass(this, pluginsDir));
+			addTestClass(TestClassFactory.newTestClass(this, pluginsDir));
 		}
-
-		Collections.sort(testClasses);
 	}
 
 	private List<JobProperty> _getExcludesJobProperties() {

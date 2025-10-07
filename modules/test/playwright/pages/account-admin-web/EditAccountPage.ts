@@ -11,6 +11,7 @@ import {waitForAlert} from '../../utils/waitForAlert';
 import {DataTablePage} from './DataTablePage';
 
 export class EditAccountPage {
+	readonly accountCreationSuccessMessage: Locator;
 	readonly accountEntryAddressesTable: DataTablePage;
 	readonly accountEntryAddressesTableRowRadioButton: (
 		accountName: string
@@ -65,6 +66,9 @@ export class EditAccountPage {
 	readonly vocabularyLabel: (name: string) => Locator;
 
 	constructor(page: Page) {
+		this.accountCreationSuccessMessage = page.getByText(
+			'Thank you for creating an account.'
+		);
 		this.setDefaultAddressFrame = page.frameLocator('iframe');
 		this.accountEntryAddressesTable = new DataTablePage(
 			this.setDefaultAddressFrame,
@@ -251,9 +255,11 @@ export class EditAccountPage {
 		}
 
 		if (domains && domains.length) {
-			await this.addDomainLink.click();
+			await expect(async () => {
+				await this.addDomainLink.click();
 
-			await expect(this.frameDomainInput).toBeEnabled();
+				await expect(this.frameDomainInput).toBeEnabled({timeout: 500});
+			}).toPass();
 
 			await this.frameDomainInput.fill(domains.join());
 			await this.frameSaveButton.click();

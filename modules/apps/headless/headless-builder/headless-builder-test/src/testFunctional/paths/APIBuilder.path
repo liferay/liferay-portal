@@ -47,7 +47,7 @@
 </tr>
 <tr>
 	<td>CHANGE_PUBLICATION_STATUS_BUTTON</td>
-	<td>//div[@class='dropdown-menu show']//button[contains(text(),'Change Publication Status')]</td>
+	<td>//button[@class='dropdown-item' and contains(text(),'Change Publication Status')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -57,7 +57,7 @@
 </tr>
 <tr>
 	<td>COPY_URL</td>
-	<td>//div[@class='dropdown-menu show']//button[contains(text(),'Copy URL')]</td>
+	<td>//button[@class='dropdown-item' and contains(text(),'Copy URL')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -67,7 +67,7 @@
 </tr>
 <tr>
 	<td>DELETE_IN_DROPDOWN_MENU</td>
-	<td>//div[@class='dropdown-menu show']//button[contains(text(),'Delete')]</td>
+	<td>//button[@class='dropdown-item' and contains(text(),'Delete')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -107,7 +107,7 @@
 </tr>
 <tr>
 	<td>EDIT_BUTTON</td>
-	<td>//div[@class='dropdown-menu show']//button[contains(text(),'Edit')]</td>
+	<td>//button[@class='dropdown-item' and contains(text(),'Edit')]</td>
 	<td></td>
 </tr>
 <tr>

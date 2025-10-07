@@ -14,6 +14,8 @@ import com.liferay.headless.commerce.admin.shipment.resource.v1_0.ShippingAddres
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -512,6 +514,10 @@ public class Query {
 		shipmentResource.setContextUriInfo(_uriInfo);
 		shipmentResource.setContextUser(_user);
 		shipmentResource.setGroupLocalService(_groupLocalService);
+		shipmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		shipmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		shipmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -527,6 +533,10 @@ public class Query {
 		shipmentItemResource.setContextUriInfo(_uriInfo);
 		shipmentItemResource.setContextUser(_user);
 		shipmentItemResource.setGroupLocalService(_groupLocalService);
+		shipmentItemResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		shipmentItemResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		shipmentItemResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -543,6 +553,10 @@ public class Query {
 		shippingAddressResource.setContextUriInfo(_uriInfo);
 		shippingAddressResource.setContextUser(_user);
 		shippingAddressResource.setGroupLocalService(_groupLocalService);
+		shippingAddressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		shippingAddressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		shippingAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -561,6 +575,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

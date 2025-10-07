@@ -11,6 +11,6 @@
 	</info>
 
 	<dependencies defaultconf="default">
-		<dependency name="com.liferay.lang.builder" org="com.liferay" rev="1.0.57" />
+		<dependency name="com.liferay.lang.builder" org="com.liferay" rev="1.0.58" />
 	</dependencies>
 </ivy-module>

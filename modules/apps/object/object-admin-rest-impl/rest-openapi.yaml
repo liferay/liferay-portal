@@ -86,6 +86,8 @@ components:
                     type: boolean
                 enableComments:
                     type: boolean
+                enableFormContainer:
+                    type: boolean
                 enableFriendlyURLCustomization:
                     type: boolean
                 enableIndexSearch:
@@ -95,6 +97,10 @@ components:
                 enableObjectEntryDraft:
                     type: boolean
                 enableObjectEntryHistory:
+                    type: boolean
+                enableObjectEntrySchedule:
+                    type: boolean
+                enableObjectEntrySubscription:
                     type: boolean
                 enableObjectEntryVersioning:
                     type: boolean
@@ -173,6 +179,10 @@ components:
                     type: boolean
                 titleObjectFieldName:
                     type: string
+                workflowDefinitionLinks:
+                    items:
+                        $ref: "#/components/schemas/WorkflowDefinitionLink"
+                    type: array
             type: object
         ObjectDefinitionSetting:
             properties:
@@ -201,7 +211,7 @@ components:
                     readOnly: true
                     type: object
                 businessType:
-                    enum: [Aggregation, Attachment, AutoIncrement, Boolean, Date, DateTime, Decimal, Encrypted, Formula, Integer, LongInteger, LongText, MultiselectPicklist, Picklist, PrecisionDecimal, Relationship, RichText, Text]
+                    enum: [Aggregation, Assignee, Attachment, AutoIncrement, Boolean, Date, DateTime, Decimal, Encrypted, Formula, Integer, LongInteger, LongText, MultiselectPicklist, Picklist, PrecisionDecimal, Relationship, RichText, Text]
                     type: string
                 defaultValue:
                     deprecated: true
@@ -689,10 +699,17 @@ components:
                 label_i18n:
                     type: string
             type: object
+        WorkflowDefinitionLink:
+            properties:
+                groupExternalReferenceCode:
+                    type: string
+                workflowDefinitionName:
+                    type: string
+            type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.object.admin.rest.client', and version '1.0.79'."
+        'com.liferay.object.admin.rest.client', and version '1.0.82'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

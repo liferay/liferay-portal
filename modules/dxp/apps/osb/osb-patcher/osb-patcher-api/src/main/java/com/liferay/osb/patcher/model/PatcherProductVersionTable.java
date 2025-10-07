@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.Date;
 
 /**
- * The table class for the &quot;PProductVersion&quot; database table.
+ * The table class for the &quot;OSBPatcher_PProductVersion&quot; database table.
  *
  * @author Brian Wing Shun Chan
  * @see PatcherProductVersion
@@ -58,7 +58,7 @@ public class PatcherProductVersionTable
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private PatcherProductVersionTable() {
-		super("PProductVersion", PatcherProductVersionTable::new);
+		super("OSBPatcher_PProductVersion", PatcherProductVersionTable::new);
 	}
 
 }

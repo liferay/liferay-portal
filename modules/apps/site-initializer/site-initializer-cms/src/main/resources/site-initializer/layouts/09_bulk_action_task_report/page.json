@@ -1,0 +1,25 @@
+{
+	"friendlyURL": "/bulk-action-task-report",
+	"hidden": true,
+	"name_i18n": {
+		"en_US": "Bulk Action Task Report"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "CMS Administrator",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

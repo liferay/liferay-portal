@@ -92,7 +92,7 @@ const getSkuOptionsErrors = (
 			);
 };
 
-const initialSkuOptionsAtomState = {
+const INITIAL_SKU_OPTIONS_ATOM_STATE = {
 	errors: [],
 	miniCartErrors: [],
 	miniCartSkuOptions: [],
@@ -113,6 +113,6 @@ export {
 	getName,
 	getProductOptionName,
 	getSkuOptionsErrors,
-	initialSkuOptionsAtomState,
+	INITIAL_SKU_OPTIONS_ATOM_STATE,
 	isRequired,
 };

@@ -5,10 +5,26 @@
 
 package com.liferay.portal.kernel.service;
 
+import com.liferay.portal.kernel.module.framework.service.IdentifiableOSGiService;
+
 /**
  * @author Raymond Augé
  */
-public interface ServiceWrapper<T> {
+public interface ServiceWrapper<T> extends IdentifiableOSGiService {
+
+	@Override
+	public default String getOSGiServiceIdentifier() {
+		T t = getWrappedService();
+
+		if (t instanceof IdentifiableOSGiService) {
+			IdentifiableOSGiService identifiableOSGiService =
+				(IdentifiableOSGiService)t;
+
+			return identifiableOSGiService.getOSGiServiceIdentifier();
+		}
+
+		return null;
+	}
 
 	public T getWrappedService();
 

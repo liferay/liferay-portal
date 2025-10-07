@@ -88,6 +88,186 @@ public class SamlIdpSsoSessionPersistenceImpl
 	private FinderPath _finderPathWithPaginationFindAll;
 	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathCountAll;
+	private FinderPath _finderPathFetchByUserId;
+
+	/**
+	 * Returns the saml idp sso session where userId = &#63; or throws a <code>NoSuchIdpSsoSessionException</code> if it could not be found.
+	 *
+	 * @param userId the user ID
+	 * @return the matching saml idp sso session
+	 * @throws NoSuchIdpSsoSessionException if a matching saml idp sso session could not be found
+	 */
+	@Override
+	public SamlIdpSsoSession findByUserId(long userId)
+		throws NoSuchIdpSsoSessionException {
+
+		SamlIdpSsoSession samlIdpSsoSession = fetchByUserId(userId);
+
+		if (samlIdpSsoSession == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("userId=");
+			sb.append(userId);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchIdpSsoSessionException(sb.toString());
+		}
+
+		return samlIdpSsoSession;
+	}
+
+	/**
+	 * Returns the saml idp sso session where userId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @return the matching saml idp sso session, or <code>null</code> if a matching saml idp sso session could not be found
+	 */
+	@Override
+	public SamlIdpSsoSession fetchByUserId(long userId) {
+		return fetchByUserId(userId, true);
+	}
+
+	/**
+	 * Returns the saml idp sso session where userId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param userId the user ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching saml idp sso session, or <code>null</code> if a matching saml idp sso session could not be found
+	 */
+	@Override
+	public SamlIdpSsoSession fetchByUserId(
+		long userId, boolean useFinderCache) {
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {userId};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByUserId, finderArgs, this);
+		}
+
+		if (result instanceof SamlIdpSsoSession) {
+			SamlIdpSsoSession samlIdpSsoSession = (SamlIdpSsoSession)result;
+
+			if (userId != samlIdpSsoSession.getUserId()) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_SELECT_SAMLIDPSSOSESSION_WHERE);
+
+			sb.append(_FINDER_COLUMN_USERID_USERID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(userId);
+
+				List<SamlIdpSsoSession> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByUserId, finderArgs, list);
+					}
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							if (!useFinderCache) {
+								finderArgs = new Object[] {userId};
+							}
+
+							_log.warn(
+								"SamlIdpSsoSessionPersistenceImpl.fetchByUserId(long, boolean) with parameters (" +
+									StringUtil.merge(finderArgs) +
+										") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					SamlIdpSsoSession samlIdpSsoSession = list.get(0);
+
+					result = samlIdpSsoSession;
+
+					cacheResult(samlIdpSsoSession);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (SamlIdpSsoSession)result;
+		}
+	}
+
+	/**
+	 * Removes the saml idp sso session where userId = &#63; from the database.
+	 *
+	 * @param userId the user ID
+	 * @return the saml idp sso session that was removed
+	 */
+	@Override
+	public SamlIdpSsoSession removeByUserId(long userId)
+		throws NoSuchIdpSsoSessionException {
+
+		SamlIdpSsoSession samlIdpSsoSession = findByUserId(userId);
+
+		return remove(samlIdpSsoSession);
+	}
+
+	/**
+	 * Returns the number of saml idp sso sessions where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the number of matching saml idp sso sessions
+	 */
+	@Override
+	public int countByUserId(long userId) {
+		SamlIdpSsoSession samlIdpSsoSession = fetchByUserId(userId);
+
+		if (samlIdpSsoSession == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String _FINDER_COLUMN_USERID_USERID_2 =
+		"samlIdpSsoSession.userId = ?";
+
 	private FinderPath _finderPathWithPaginationFindByLtCreateDate;
 	private FinderPath _finderPathWithPaginationCountByLtCreateDate;
 
@@ -855,6 +1035,10 @@ public class SamlIdpSsoSessionPersistenceImpl
 			samlIdpSsoSession);
 
 		finderCache.putResult(
+			_finderPathFetchByUserId,
+			new Object[] {samlIdpSsoSession.getUserId()}, samlIdpSsoSession);
+
+		finderCache.putResult(
 			_finderPathFetchBySamlIdpSsoSessionKey,
 			new Object[] {samlIdpSsoSession.getSamlIdpSsoSessionKey()},
 			samlIdpSsoSession);
@@ -934,7 +1118,12 @@ public class SamlIdpSsoSessionPersistenceImpl
 	protected void cacheUniqueFindersCache(
 		SamlIdpSsoSessionModelImpl samlIdpSsoSessionModelImpl) {
 
-		Object[] args = new Object[] {
+		Object[] args = new Object[] {samlIdpSsoSessionModelImpl.getUserId()};
+
+		finderCache.putResult(
+			_finderPathFetchByUserId, args, samlIdpSsoSessionModelImpl);
+
+		args = new Object[] {
 			samlIdpSsoSessionModelImpl.getSamlIdpSsoSessionKey()
 		};
 
@@ -1404,6 +1593,10 @@ public class SamlIdpSsoSessionPersistenceImpl
 		_finderPathCountAll = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
 			new String[0], new String[0], false);
+
+		_finderPathFetchByUserId = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByUserId",
+			new String[] {Long.class.getName()}, new String[] {"userId"}, true);
 
 		_finderPathWithPaginationFindByLtCreateDate = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByLtCreateDate",

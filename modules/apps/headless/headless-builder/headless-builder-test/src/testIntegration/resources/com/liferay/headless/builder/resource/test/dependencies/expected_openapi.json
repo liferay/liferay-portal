@@ -29,6 +29,10 @@
 			},
 			"FileEntry": {
 				"properties": {
+					"alternativeText": {
+						"readOnly": true,
+						"type": "string"
+					},
 					"externalReferenceCode": {
 						"type": "string"
 					},
@@ -49,6 +53,19 @@
 					},
 					"link": {
 						"$ref": "#/components/schemas/Link"
+					},
+					"metadata": {
+						"additionalProperties": {
+							"description": "optional field that specifies the metadata of the file, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.metadata`)",
+							"type": "object"
+						},
+						"description": "optional field that specifies the metadata of the file, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.metadata`)",
+						"readOnly": true,
+						"type": "object"
+					},
+					"mimeType": {
+						"readOnly": true,
+						"type": "string"
 					},
 					"name": {
 						"type": "string"
@@ -343,6 +360,7 @@
 					"type": {
 						"enum": [
 							"AssetLibrary",
+							"CMS",
 							"Site"
 						],
 						"type": "string"

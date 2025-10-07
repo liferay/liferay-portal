@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-streamhub-batch:
     name: Liferay Stream Hub Batch
-    oAuthApplicationHeadlessServer: liferay-streamhub-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-streamhub-batch-oahs
     type: batch
-liferay-streamhub-batch-oauth-application-headless-server:
+liferay-streamhub-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Stream Hub Batch OAuth Application Headless Server

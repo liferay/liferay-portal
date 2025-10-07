@@ -76,7 +76,6 @@ definition {
 		property custom.properties = "auth.verifier.TunnelAuthVerifier.hosts.allowed=${line.separator}tunneling.servlet.shared.secret=1234567890123456";
 		property databases.size = "1";
 		property minimum.slave.ram = "24";
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -112,7 +111,6 @@ definition {
 	@description = "Verify that the recycle bin of the site is automatically emptied before turning on local staging."
 	@priority = 3
 	test DeleteRecycleBinOnStagingActivation {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

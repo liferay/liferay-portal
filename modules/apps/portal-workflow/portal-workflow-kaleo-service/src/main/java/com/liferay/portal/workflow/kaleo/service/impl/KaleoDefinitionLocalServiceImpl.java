@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.workflow.kaleo.definition.util.WorkflowDefinitionContentUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
@@ -58,6 +59,7 @@ public class KaleoDefinitionLocalServiceImpl
 
 		kaleoDefinition.setModifiedDate(new Date());
 		kaleoDefinition.setActive(true);
+		kaleoDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		kaleoDefinition = kaleoDefinitionPersistence.update(kaleoDefinition);
 
@@ -88,6 +90,7 @@ public class KaleoDefinitionLocalServiceImpl
 
 		kaleoDefinition.setModifiedDate(new Date());
 		kaleoDefinition.setActive(true);
+		kaleoDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		return kaleoDefinitionPersistence.update(kaleoDefinition);
 	}
@@ -106,6 +109,7 @@ public class KaleoDefinitionLocalServiceImpl
 
 		kaleoDefinition.setModifiedDate(new Date());
 		kaleoDefinition.setActive(true);
+		kaleoDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		return kaleoDefinitionPersistence.update(kaleoDefinition);
 	}
@@ -151,6 +155,7 @@ public class KaleoDefinitionLocalServiceImpl
 		kaleoDefinition.setScope(scope);
 		kaleoDefinition.setVersion(version);
 		kaleoDefinition.setActive(false);
+		kaleoDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
 
 		kaleoDefinition = kaleoDefinitionPersistence.update(kaleoDefinition);
 
@@ -175,6 +180,7 @@ public class KaleoDefinitionLocalServiceImpl
 
 		kaleoDefinition.setModifiedDate(new Date());
 		kaleoDefinition.setActive(false);
+		kaleoDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
 
 		return kaleoDefinitionPersistence.update(kaleoDefinition);
 	}

@@ -15,12 +15,13 @@ import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationQueueEntryLocalServiceUtil;
 import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
-import com.liferay.notification.service.NotificationRecipientSettingLocalServiceUtil;
 import com.liferay.notification.service.NotificationTemplateLocalServiceUtil;
+import com.liferay.notification.util.NotificationRecipientSettingUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,14 @@ public class NotificationTemplateUtil {
 			TestPropsValues.getUser(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), notificationRecipientSettings,
 			RandomTestUtil.randomString(), type);
+	}
+
+	public static NotificationContext createNotificationContext(String type)
+		throws Exception {
+
+		return createNotificationContext(
+			TestPropsValues.getUser(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), type);
 	}
 
 	public static NotificationContext createNotificationContext(User user) {
@@ -103,21 +112,27 @@ public class NotificationTemplateUtil {
 
 		if (type.equals(NotificationConstants.TYPE_EMAIL)) {
 			notificationRecipientSettings = Arrays.asList(
-				createNotificationRecipientSetting(
-					NotificationRecipientSettingConstants.NAME_FROM,
-					"[%CURRENT_USER_EMAIL_ADDRESS%]"),
-				createNotificationRecipientSetting(
-					NotificationRecipientSettingConstants.NAME_FROM_NAME,
-					"[%CURRENT_USER_FIRST_NAME%]"),
-				createNotificationRecipientSetting(
-					NotificationRecipientSettingConstants.NAME_TO,
-					"test@liferay.com"));
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_FROM,
+						"[%CURRENT_USER_EMAIL_ADDRESS%]"),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_FROM_NAME,
+						LocalizedMapUtil.getLocalizedMap(
+							"[%CURRENT_USER_FIRST_NAME%]")),
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.NAME_TO,
+						"test@liferay.com"));
 		}
 		else if (type.equals(NotificationConstants.TYPE_USER_NOTIFICATION)) {
 			notificationRecipientSettings = Collections.singletonList(
-				createNotificationRecipientSetting(
-					NotificationRecipientSettingConstants.NAME_USER_SCREEN_NAME,
-					user.getScreenName()));
+				NotificationRecipientSettingUtil.
+					createNotificationRecipientSetting(
+						NotificationRecipientSettingConstants.
+							NAME_USER_SCREEN_NAME,
+						user.getScreenName()));
 		}
 
 		return createNotificationContext(
@@ -141,19 +156,6 @@ public class NotificationTemplateUtil {
 			NotificationQueueEntryConstants.STATUS_UNSENT);
 
 		return notificationQueueEntry;
-	}
-
-	public static NotificationRecipientSetting
-		createNotificationRecipientSetting(String name, String value) {
-
-		NotificationRecipientSetting notificationRecipientSetting =
-			NotificationRecipientSettingLocalServiceUtil.
-				createNotificationRecipientSetting(RandomTestUtil.randomInt());
-
-		notificationRecipientSetting.setName(name);
-		notificationRecipientSetting.setValue(value);
-
-		return notificationRecipientSetting;
 	}
 
 	public static NotificationTemplate createNotificationTemplate(

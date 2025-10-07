@@ -308,60 +308,6 @@ public class ImageLocalServiceUtil {
 		return getService().updateImage(image);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[])}
-	 */
-	@Deprecated
-	public static Image updateImage(long imageId, byte[] bytes)
-		throws PortalException {
-
-		return getService().updateImage(imageId, bytes);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[], String, int, int, int)}
-	 */
-	@Deprecated
-	public static Image updateImage(
-			long imageId, byte[] bytes, String type, int height, int width,
-			int size)
-		throws PortalException {
-
-		return getService().updateImage(
-			imageId, bytes, type, height, width, size);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, File)}
-	 */
-	@Deprecated
-	public static Image updateImage(long imageId, java.io.File file)
-		throws PortalException {
-
-		return getService().updateImage(imageId, file);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream)}
-	 */
-	@Deprecated
-	public static Image updateImage(long imageId, InputStream inputStream)
-		throws PortalException {
-
-		return getService().updateImage(imageId, inputStream);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream, boolean)}
-	 */
-	@Deprecated
-	public static Image updateImage(
-			long imageId, InputStream inputStream, boolean cleanUpStream)
-		throws PortalException {
-
-		return getService().updateImage(imageId, inputStream, cleanUpStream);
-	}
-
 	public static Image updateImage(long companyId, long imageId, byte[] bytes)
 		throws PortalException {
 

@@ -6,6 +6,7 @@
 import {Locator, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -20,6 +21,9 @@ export const test = mergeTests(
 	loginTest(),
 	searchPageTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
 	pageEditorPagesTest
 );
 
@@ -336,6 +340,84 @@ test.describe('Clear and retain facet selections', () => {
 			await expect(lastModifiedPastYearFacetLink).toHaveClass(
 				/facet-term-selected/
 			);
+		});
+	});
+});
+
+test.describe('Custom facet is not registered more than once', () => {
+	test('Shows no registration warning when adding a custom facet with date picker', async ({
+		apiHelpers,
+		page,
+		pageEditorPage,
+		searchPage,
+		site,
+	}) => {
+		let layout: Layout;
+
+		await test.step('Create site page and go to the page', async () => {
+			layout = await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+		});
+
+		await test.step('Add custom facet to new page', async () => {
+			await pageEditorPage.addWidget('Search', 'Search Bar');
+
+			await pageEditorPage.addWidget('Search', 'Custom Facet');
+		});
+
+		await test.step('Configure custom facet to aggregate by date', async () => {
+			const customFacetFragmentId =
+				await pageEditorPage.getFragmentId('Custom Facet');
+
+			await pageEditorPage.clickFragmentOption(
+				customFacetFragmentId,
+				'Configuration'
+			);
+
+			await searchPage.modalIFrame
+				.getByLabel('Aggregation Type', {exact: true})
+				.selectOption('Date Range');
+
+			await searchPage.modalIFrame
+				.getByLabel('Aggregation Field Required')
+				.fill('modified');
+
+			await searchPage.savePortletConfiguration();
+		});
+
+		await test.step('Publish page and exit edit mode', async () => {
+			await pageEditorPage.publishPage();
+
+			await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
+		});
+
+		await test.step('Conduct a sample search', async () => {
+			await searchPage.searchKeywordInMainContent('test');
+
+			await page.getByLabel('Custom Range', {exact: false}).click();
+		});
+
+		await test.step('Expect no warnings about the date picker registration', async () => {
+			let warningOccurred = false;
+
+			page.on('console', (message) => {
+				if (
+					message.type() === 'warning' &&
+					message
+						.text()
+						.includes('DatePicker" is being registered twice')
+				) {
+					warningOccurred = true;
+				}
+			});
+
+			await page.waitForTimeout(500);
+
+			expect(warningOccurred).toBe(false);
 		});
 	});
 });

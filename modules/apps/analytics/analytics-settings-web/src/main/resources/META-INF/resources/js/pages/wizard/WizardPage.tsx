@@ -116,7 +116,7 @@ const WizardPage: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 
 								Liferay.Util.openToast({
 									message: Liferay.Language.get(
-										'dxp-has-successfully-connected-to-analytics-cloud,-complete-your-set-up-in-the-instance-scope-menu'
+										'dxp-has-successfully-connected-to-analytics-cloud,-complete-your-setup-in-the-instance-scope-menu'
 									),
 									type: 'info',
 								});

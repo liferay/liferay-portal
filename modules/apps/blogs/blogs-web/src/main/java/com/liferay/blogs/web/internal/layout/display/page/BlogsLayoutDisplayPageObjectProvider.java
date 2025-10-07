@@ -62,6 +62,11 @@ public class BlogsLayoutDisplayPageObjectProvider
 	}
 
 	@Override
+	public String getExternalReferenceCode() {
+		return _blogsEntry.getExternalReferenceCode();
+	}
+
+	@Override
 	public long getGroupId() {
 		return _blogsEntry.getGroupId();
 	}

@@ -12,19 +12,18 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class ObjectEntryExpirationDateException extends PortalException {
 
-	public ObjectEntryExpirationDateException() {
+	public ObjectEntryExpirationDateException(
+		String message, String messageKey) {
+
+		super(message);
+
+		_messageKey = messageKey;
 	}
 
-	public ObjectEntryExpirationDateException(String msg) {
-		super(msg);
+	public String getMessageKey() {
+		return _messageKey;
 	}
 
-	public ObjectEntryExpirationDateException(String msg, Throwable throwable) {
-		super(msg, throwable);
-	}
-
-	public ObjectEntryExpirationDateException(Throwable throwable) {
-		super(throwable);
-	}
+	private final String _messageKey;
 
 }

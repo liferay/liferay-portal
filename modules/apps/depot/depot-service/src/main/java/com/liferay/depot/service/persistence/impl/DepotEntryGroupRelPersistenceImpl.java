@@ -3799,10 +3799,563 @@ public class DepotEntryGroupRelPersistenceImpl
 	private static final String _FINDER_COLUMN_S_TGI_TOGROUPID_2 =
 		"depotEntryGroupRel.toGroupId = ?";
 
+	private FinderPath _finderPathWithPaginationFindByTGI_T;
+	private FinderPath _finderPathWithoutPaginationFindByTGI_T;
+	private FinderPath _finderPathCountByTGI_T;
+
+	/**
+	 * Returns all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @return the matching depot entry group rels
+	 */
+	@Override
+	public List<DepotEntryGroupRel> findByTGI_T(long toGroupId, int type) {
+		return findByTGI_T(
+			toGroupId, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @return the range of matching depot entry group rels
+	 */
+	@Override
+	public List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end) {
+
+		return findByTGI_T(toGroupId, type, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching depot entry group rels
+	 */
+	@Override
+	public List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end,
+		OrderByComparator<DepotEntryGroupRel> orderByComparator) {
+
+		return findByTGI_T(
+			toGroupId, type, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching depot entry group rels
+	 */
+	@Override
+	public List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end,
+		OrderByComparator<DepotEntryGroupRel> orderByComparator,
+		boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					DepotEntryGroupRel.class)) {
+
+			FinderPath finderPath = null;
+			Object[] finderArgs = null;
+
+			if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+				(orderByComparator == null)) {
+
+				if (useFinderCache) {
+					finderPath = _finderPathWithoutPaginationFindByTGI_T;
+					finderArgs = new Object[] {toGroupId, type};
+				}
+			}
+			else if (useFinderCache) {
+				finderPath = _finderPathWithPaginationFindByTGI_T;
+				finderArgs = new Object[] {
+					toGroupId, type, start, end, orderByComparator
+				};
+			}
+
+			List<DepotEntryGroupRel> list = null;
+
+			if (useFinderCache) {
+				list = (List<DepotEntryGroupRel>)finderCache.getResult(
+					finderPath, finderArgs, this);
+
+				if ((list != null) && !list.isEmpty()) {
+					for (DepotEntryGroupRel depotEntryGroupRel : list) {
+						if ((toGroupId != depotEntryGroupRel.getToGroupId()) ||
+							(type != depotEntryGroupRel.getType())) {
+
+							list = null;
+
+							break;
+						}
+					}
+				}
+			}
+
+			if (list == null) {
+				StringBundler sb = null;
+
+				if (orderByComparator != null) {
+					sb = new StringBundler(
+						4 + (orderByComparator.getOrderByFields().length * 2));
+				}
+				else {
+					sb = new StringBundler(4);
+				}
+
+				sb.append(_SQL_SELECT_DEPOTENTRYGROUPREL_WHERE);
+
+				sb.append(_FINDER_COLUMN_TGI_T_TOGROUPID_2);
+
+				sb.append(_FINDER_COLUMN_TGI_T_TYPE_2);
+
+				if (orderByComparator != null) {
+					appendOrderByComparator(
+						sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				}
+				else {
+					sb.append(DepotEntryGroupRelModelImpl.ORDER_BY_JPQL);
+				}
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					queryPos.add(toGroupId);
+
+					queryPos.add(type);
+
+					list = (List<DepotEntryGroupRel>)QueryUtil.list(
+						query, getDialect(), start, end);
+
+					cacheResult(list);
+
+					if (useFinderCache) {
+						finderCache.putResult(finderPath, finderArgs, list);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return list;
+		}
+	}
+
+	/**
+	 * Returns the first depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a matching depot entry group rel could not be found
+	 */
+	@Override
+	public DepotEntryGroupRel findByTGI_T_First(
+			long toGroupId, int type,
+			OrderByComparator<DepotEntryGroupRel> orderByComparator)
+		throws NoSuchEntryGroupRelException {
+
+		DepotEntryGroupRel depotEntryGroupRel = fetchByTGI_T_First(
+			toGroupId, type, orderByComparator);
+
+		if (depotEntryGroupRel != null) {
+			return depotEntryGroupRel;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("toGroupId=");
+		sb.append(toGroupId);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchEntryGroupRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the first depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching depot entry group rel, or <code>null</code> if a matching depot entry group rel could not be found
+	 */
+	@Override
+	public DepotEntryGroupRel fetchByTGI_T_First(
+		long toGroupId, int type,
+		OrderByComparator<DepotEntryGroupRel> orderByComparator) {
+
+		List<DepotEntryGroupRel> list = findByTGI_T(
+			toGroupId, type, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a matching depot entry group rel could not be found
+	 */
+	@Override
+	public DepotEntryGroupRel findByTGI_T_Last(
+			long toGroupId, int type,
+			OrderByComparator<DepotEntryGroupRel> orderByComparator)
+		throws NoSuchEntryGroupRelException {
+
+		DepotEntryGroupRel depotEntryGroupRel = fetchByTGI_T_Last(
+			toGroupId, type, orderByComparator);
+
+		if (depotEntryGroupRel != null) {
+			return depotEntryGroupRel;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("toGroupId=");
+		sb.append(toGroupId);
+
+		sb.append(", type=");
+		sb.append(type);
+
+		sb.append("}");
+
+		throw new NoSuchEntryGroupRelException(sb.toString());
+	}
+
+	/**
+	 * Returns the last depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching depot entry group rel, or <code>null</code> if a matching depot entry group rel could not be found
+	 */
+	@Override
+	public DepotEntryGroupRel fetchByTGI_T_Last(
+		long toGroupId, int type,
+		OrderByComparator<DepotEntryGroupRel> orderByComparator) {
+
+		int count = countByTGI_T(toGroupId, type);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<DepotEntryGroupRel> list = findByTGI_T(
+			toGroupId, type, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the depot entry group rels before and after the current depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param depotEntryGroupRelId the primary key of the current depot entry group rel
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a depot entry group rel with the primary key could not be found
+	 */
+	@Override
+	public DepotEntryGroupRel[] findByTGI_T_PrevAndNext(
+			long depotEntryGroupRelId, long toGroupId, int type,
+			OrderByComparator<DepotEntryGroupRel> orderByComparator)
+		throws NoSuchEntryGroupRelException {
+
+		DepotEntryGroupRel depotEntryGroupRel = findByPrimaryKey(
+			depotEntryGroupRelId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			DepotEntryGroupRel[] array = new DepotEntryGroupRelImpl[3];
+
+			array[0] = getByTGI_T_PrevAndNext(
+				session, depotEntryGroupRel, toGroupId, type, orderByComparator,
+				true);
+
+			array[1] = depotEntryGroupRel;
+
+			array[2] = getByTGI_T_PrevAndNext(
+				session, depotEntryGroupRel, toGroupId, type, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected DepotEntryGroupRel getByTGI_T_PrevAndNext(
+		Session session, DepotEntryGroupRel depotEntryGroupRel, long toGroupId,
+		int type, OrderByComparator<DepotEntryGroupRel> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_DEPOTENTRYGROUPREL_WHERE);
+
+		sb.append(_FINDER_COLUMN_TGI_T_TOGROUPID_2);
+
+		sb.append(_FINDER_COLUMN_TGI_T_TYPE_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(DepotEntryGroupRelModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(toGroupId);
+
+		queryPos.add(type);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						depotEntryGroupRel)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<DepotEntryGroupRel> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the depot entry group rels where toGroupId = &#63; and type = &#63; from the database.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 */
+	@Override
+	public void removeByTGI_T(long toGroupId, int type) {
+		for (DepotEntryGroupRel depotEntryGroupRel :
+				findByTGI_T(
+					toGroupId, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(depotEntryGroupRel);
+		}
+	}
+
+	/**
+	 * Returns the number of depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @return the number of matching depot entry group rels
+	 */
+	@Override
+	public int countByTGI_T(long toGroupId, int type) {
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					DepotEntryGroupRel.class)) {
+
+			FinderPath finderPath = _finderPathCountByTGI_T;
+
+			Object[] finderArgs = new Object[] {toGroupId, type};
+
+			Long count = (Long)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if (count == null) {
+				StringBundler sb = new StringBundler(3);
+
+				sb.append(_SQL_COUNT_DEPOTENTRYGROUPREL_WHERE);
+
+				sb.append(_FINDER_COLUMN_TGI_T_TOGROUPID_2);
+
+				sb.append(_FINDER_COLUMN_TGI_T_TYPE_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					queryPos.add(toGroupId);
+
+					queryPos.add(type);
+
+					count = (Long)query.uniqueResult();
+
+					finderCache.putResult(finderPath, finderArgs, count);
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			return count.intValue();
+		}
+	}
+
+	private static final String _FINDER_COLUMN_TGI_T_TOGROUPID_2 =
+		"depotEntryGroupRel.toGroupId = ? AND ";
+
+	private static final String _FINDER_COLUMN_TGI_T_TYPE_2 =
+		"depotEntryGroupRel.type = ?";
+
 	public DepotEntryGroupRelPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
 		dbColumnNames.put("uuid", "uuid_");
+		dbColumnNames.put("type", "type_");
 
 		setDBColumnNames(dbColumnNames);
 
@@ -4653,6 +5206,7 @@ public class DepotEntryGroupRelPersistenceImpl
 		ctMergeColumnNames.add("depotEntryId");
 		ctMergeColumnNames.add("searchable");
 		ctMergeColumnNames.add("toGroupId");
+		ctMergeColumnNames.add("type_");
 		ctMergeColumnNames.add("lastPublishDate");
 
 		_ctColumnNamesMap.put(
@@ -4812,6 +5366,25 @@ public class DepotEntryGroupRelPersistenceImpl
 			new String[] {Boolean.class.getName(), Long.class.getName()},
 			new String[] {"searchable", "toGroupId"}, false);
 
+		_finderPathWithPaginationFindByTGI_T = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByTGI_T",
+			new String[] {
+				Long.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"toGroupId", "type_"}, true);
+
+		_finderPathWithoutPaginationFindByTGI_T = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByTGI_T",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"toGroupId", "type_"}, true);
+
+		_finderPathCountByTGI_T = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByTGI_T",
+			new String[] {Long.class.getName(), Integer.class.getName()},
+			new String[] {"toGroupId", "type_"}, false);
+
 		DepotEntryGroupRelUtil.setPersistence(this);
 	}
 
@@ -4881,7 +5454,7 @@ public class DepotEntryGroupRelPersistenceImpl
 		DepotEntryGroupRelPersistenceImpl.class);
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
-		new String[] {"uuid"});
+		new String[] {"uuid", "type"});
 
 	@Override
 	protected FinderCache getFinderCache() {

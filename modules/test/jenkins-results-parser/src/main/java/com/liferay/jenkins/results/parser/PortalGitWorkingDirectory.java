@@ -42,6 +42,17 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return _appServerProperties;
 	}
 
+	public List<File> getJSUnitFiles() {
+		if (_jsUnitFiles != null) {
+			return _jsUnitFiles;
+		}
+
+		_jsUnitFiles = new ArrayList<>(
+			findFiles(null, "describe\\( -- '*.js' '*.jsx' '*.ts' '*.tsx'"));
+
+		return _jsUnitFiles;
+	}
+
 	public String getMajorPortalVersion() {
 		return JenkinsResultsParserUtil.getProperty(
 			getReleaseProperties(), "lp.version.major");
@@ -314,66 +325,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return _testProperties;
 	}
 
-	protected PortalGitWorkingDirectory(
-			String upstreamBranchName, String workingDirectoryPath)
-		throws IOException {
-
-		super(upstreamBranchName, workingDirectoryPath);
-	}
-
-	protected PortalGitWorkingDirectory(
-			String upstreamBranchName, String workingDirectoryPath,
-			String gitRepositoryName)
-		throws IOException {
-
-		super(upstreamBranchName, workingDirectoryPath, gitRepositoryName);
-	}
-
-	private boolean _isNPMTestModuleDir(File moduleDir) {
-		List<File> packageJSONFiles = JenkinsResultsParserUtil.findFiles(
-			moduleDir, "package\\.json");
-
-		for (File packageJSONFile : packageJSONFiles) {
-			JSONObject jsonObject = null;
-
-			try {
-				jsonObject = JenkinsResultsParserUtil.createJSONObject(
-					JenkinsResultsParserUtil.read(packageJSONFile));
-			}
-			catch (IOException ioException) {
-				System.out.println(
-					"Unable to read invalid JSON " + packageJSONFile.getPath());
-
-				continue;
-			}
-			catch (JSONException jsonException) {
-				System.out.println(
-					"Invalid JSON file " + packageJSONFile.getPath());
-
-				continue;
-			}
-
-			if (!jsonObject.has("scripts")) {
-				continue;
-			}
-
-			JSONObject scriptsJSONObject = jsonObject.getJSONObject("scripts");
-
-			if (!scriptsJSONObject.has("test")) {
-				continue;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private Properties _appServerProperties;
-	private Properties _releaseProperties;
-	private Properties _testProperties;
-
-	private static class Module {
+	public static class Module {
 
 		public static Module getModule(Path path) {
 			File file = path.toFile();
@@ -430,5 +382,65 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		private final int _priority;
 
 	}
+
+	protected PortalGitWorkingDirectory(
+			String upstreamBranchName, String workingDirectoryPath)
+		throws IOException {
+
+		super(upstreamBranchName, workingDirectoryPath);
+	}
+
+	protected PortalGitWorkingDirectory(
+			String upstreamBranchName, String workingDirectoryPath,
+			String gitRepositoryName)
+		throws IOException {
+
+		super(upstreamBranchName, workingDirectoryPath, gitRepositoryName);
+	}
+
+	private boolean _isNPMTestModuleDir(File moduleDir) {
+		List<File> packageJSONFiles = JenkinsResultsParserUtil.findFiles(
+			moduleDir, "package\\.json");
+
+		for (File packageJSONFile : packageJSONFiles) {
+			JSONObject jsonObject = null;
+
+			try {
+				jsonObject = JenkinsResultsParserUtil.createJSONObject(
+					JenkinsResultsParserUtil.read(packageJSONFile));
+			}
+			catch (IOException ioException) {
+				System.out.println(
+					"Unable to read invalid JSON " + packageJSONFile.getPath());
+
+				continue;
+			}
+			catch (JSONException jsonException) {
+				System.out.println(
+					"Invalid JSON file " + packageJSONFile.getPath());
+
+				continue;
+			}
+
+			if (!jsonObject.has("scripts")) {
+				continue;
+			}
+
+			JSONObject scriptsJSONObject = jsonObject.getJSONObject("scripts");
+
+			if (!scriptsJSONObject.has("test")) {
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private Properties _appServerProperties;
+	private List<File> _jsUnitFiles;
+	private Properties _releaseProperties;
+	private Properties _testProperties;
 
 }

@@ -27,7 +27,7 @@ public class UnprocessedExceptionCheck extends BaseCheck {
 		String absolutePath = getAbsolutePath();
 
 		if (absolutePath.contains("/modules/core/") ||
-			absolutePath.contains("/modules/etl/") ||
+			absolutePath.contains("/modules/integrations/") ||
 			absolutePath.contains("/modules/sdk/") ||
 			absolutePath.contains("/modules/util/") ||
 			absolutePath.contains("/portal-kernel/") ||

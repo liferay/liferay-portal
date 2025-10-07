@@ -3,7 +3,7 @@
 <project basedir="." name="portal-test-opensearch2" xmlns:antelope="antlib:ise.antelope.tasks" xmlns:if="ant:if" xmlns:unless="ant:unless">
 	<import file="build-test.xml" />
 
-	<property name="opensearch.version" value="2.16.0" />
+	<property name="opensearch.version" value="2.19.2" />
 	<property name="opensearch.analysis-icu.zip.url" value="https://artifacts.opensearch.org/releases/plugins/analysis-icu/${opensearch.version}/analysis-icu-${opensearch.version}.zip" />
 	<property name="opensearch.analysis-kuromoji.zip.url" value="https://artifacts.opensearch.org/releases/plugins/analysis-kuromoji/${opensearch.version}/analysis-kuromoji-${opensearch.version}.zip" />
 	<property name="opensearch.analysis-smartcn.zip.url" value="https://artifacts.opensearch.org/releases/plugins/analysis-smartcn/${opensearch.version}/analysis-smartcn-${opensearch.version}.zip" />

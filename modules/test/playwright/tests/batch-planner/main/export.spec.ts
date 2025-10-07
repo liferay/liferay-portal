@@ -13,6 +13,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {dataMigrationCenterPagesTest} from './fixtures/dataMigrationCenterPagesTest';
+import {parseJSONLToJSON} from './utils/JSONParser';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -354,12 +355,14 @@ test('can export as JSON with all field types mapped', async ({
 				name: 'Test Test',
 			},
 			customAttachment: {
+				alternativeText: expect.any(String),
 				externalReferenceCode: expect.any(String),
 				id: expect.any(Number),
 				link: {
 					href: expect.any(String),
 					label: expect.any(String),
 				},
+				mimeType: expect.any(String),
 				name: expect.any(String),
 				scope: {
 					externalReferenceCode: expect.any(String),
@@ -401,6 +404,70 @@ test('can export as JSONL with excluded fields', async ({
 			['name']
 		)
 	).toBe('{"name":"Stock Entry"}\n');
+});
+
+[
+	{format: 'JSON', parse: JSON.parse},
+	{format: 'JSONL', parse: parseJSONLToJSON},
+].forEach(({format, parse}) => {
+	test(`can see actions node in the downloaded ${format} file`, async ({
+		apiHelpers,
+		dataMigrationCenterPage,
+	}) => {
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition(
+				stockObjectDefinition
+			);
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			stockObjectEntry,
+			'c/stocks'
+		);
+
+		const exportedContent = await dataMigrationCenterPage.exportFile(
+			format,
+			'Stock (v1.0 - Liferay Object REST)'
+		);
+
+		const parsed = parse(exportedContent);
+
+		expect(
+			parsed.find((item: any) => item.name === 'Stock Entry').actions
+		).toEqual({
+			delete: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'DELETE',
+			},
+			get: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'GET',
+			},
+			permissions: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'GET',
+			},
+			replace: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'PUT',
+			},
+			update: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'PATCH',
+			},
+			versions: {
+				href: expect.stringContaining('/o/c/stocks/'),
+				method: 'GET',
+			},
+		});
+	});
 });
 
 test('can see correct custom object name in dropdown', async ({

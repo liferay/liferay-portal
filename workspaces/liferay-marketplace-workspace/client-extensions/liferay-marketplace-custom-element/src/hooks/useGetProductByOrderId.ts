@@ -6,6 +6,7 @@
 import useSWR, {SWRConfiguration} from 'swr';
 
 import MarketplaceDeliveryOrder from '../entity/MarketplaceDeliveryOrder';
+import {MarketplaceDeliveryProduct} from '../entity/MarketplaceDeliveryProduct';
 import {ProductImageFallbackCategories} from '../enums/Product';
 import {Liferay} from '../liferay/liferay';
 import HeadlessCommerceDeliveryCatalog from '../services/rest/HeadlessCommerceDeliveryCatalog';
@@ -58,12 +59,13 @@ const useGetProductByOrderId = (
 					);
 			}
 
-			const marketplaceDeliveryOrder = new MarketplaceDeliveryOrder(
-				placedOrder
-			);
-
 			return {
-				marketplaceDeliveryOrder,
+				marketplaceDeliveryOrder: new MarketplaceDeliveryOrder(
+					placedOrder
+				),
+				marketplaceDeliveryProduct: new MarketplaceDeliveryProduct(
+					product
+				),
 				placedOrder,
 				product,
 			};

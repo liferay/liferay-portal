@@ -12,7 +12,7 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.base.AccountGroupLocalServiceBaseImpl;
 import com.liferay.account.service.persistence.AccountGroupRelPersistence;
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
@@ -90,8 +90,8 @@ public class AccountGroupLocalServiceImpl
 		accountGroup.setType(AccountConstants.ACCOUNT_GROUP_TYPE_STATIC);
 		accountGroup.setExpandoBridgeAttributes(serviceContext);
 
-		if (_incompleteModelManager.isIncompleteModel()) {
-			accountGroup.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+		if (_emptyModelManager.isEmptyModel()) {
+			accountGroup.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
 		else {
 			accountGroup.setStatus(WorkflowConstants.STATUS_APPROVED);
@@ -267,20 +267,20 @@ public class AccountGroupLocalServiceImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public AccountGroup getOrAddIncompleteAccountGroup(
+	public AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, long companyId, long userId,
 			String name)
-		throws Exception {
+		throws PortalException {
 
-		return _incompleteModelManager.getOrAddIncompleteModel(
-			AccountGroup.class, companyId, externalReferenceCode,
-			this::fetchAccountGroupByExternalReferenceCode,
-			this::getAccountGroupByExternalReferenceCode,
+		return _emptyModelManager.getOrAddEmptyModel(
+			AccountGroup.class, companyId,
 			() -> accountGroupLocalService.addAccountGroup(
 				externalReferenceCode, userId, StringPool.BLANK,
 				Validator.isNull(name) ? externalReferenceCode : name,
-				new ServiceContext()));
+				new ServiceContext()),
+			externalReferenceCode,
+			this::fetchAccountGroupByExternalReferenceCode,
+			this::getAccountGroupByExternalReferenceCode);
 	}
 
 	@Override
@@ -354,7 +354,7 @@ public class AccountGroupLocalServiceImpl
 		accountGroup.setName(name);
 		accountGroup.setExpandoBridgeAttributes(serviceContext);
 
-		if (accountGroup.getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+		if (accountGroup.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			accountGroup.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 
@@ -476,7 +476,7 @@ public class AccountGroupLocalServiceImpl
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
-	private IncompleteModelManager _incompleteModelManager;
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

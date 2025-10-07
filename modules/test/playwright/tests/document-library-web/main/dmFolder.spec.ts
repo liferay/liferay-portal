@@ -120,7 +120,7 @@ test(
 
 		await permissionIframe.getByRole('button', {name: 'Save'}).click();
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page.locator('.modal').getByLabel('Close', {exact: true}).click();
 
 		await page.goto(doAsUserIdURL);
 

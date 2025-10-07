@@ -111,6 +111,11 @@ public class DefaultFragmentEntryProcessorContext
 	}
 
 	@Override
+	public boolean isDisablePortletRender() {
+		return _disablePortletRender;
+	}
+
+	@Override
 	public boolean isEditMode() {
 		return Objects.equals(getMode(), FragmentEntryLinkConstants.EDIT);
 	}
@@ -144,6 +149,10 @@ public class DefaultFragmentEntryProcessorContext
 		_infoItemReference = infoItemReference;
 	}
 
+	public void setDisablePortletRender(boolean disablePortletRender) {
+		_disablePortletRender = disablePortletRender;
+	}
+
 	public void setFragmentElementId(String fragmentElementId) {
 		_fragmentElementId = fragmentElementId;
 	}
@@ -173,6 +182,7 @@ public class DefaultFragmentEntryProcessorContext
 	}
 
 	private Map<String, Serializable> _attributes = new LinkedHashMap<>();
+	private boolean _disablePortletRender;
 	private String _fragmentElementId;
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;

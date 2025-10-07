@@ -16,12 +16,14 @@ export class TemplatesPage {
 
 	readonly newButton: Locator;
 	readonly saveButton: Locator;
+	readonly searchBar: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
 		this.newButton = page.getByRole('button', {name: 'Add'});
 		this.saveButton = page.getByRole('button', {exact: true, name: 'Save'});
+		this.searchBar = page.getByLabel('Search for:');
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
@@ -87,7 +89,7 @@ export class TemplatesPage {
 		await waitForAlert(this.page);
 	}
 
-	async createWidgetTemplate(name: string, type: string) {
+	async createWidgetTemplate(name: string, type: string, content?: string) {
 		const typeOption = this.page.getByRole('menuitem', {
 			name: type,
 		});
@@ -120,6 +122,16 @@ export class TemplatesPage {
 			name
 		);
 
+		if (content) {
+			const codeMirror = this.page.locator('.CodeMirror-scroll').last();
+			await codeMirror.click();
+
+			await this.page.keyboard.press('Control+KeyA');
+			await this.page.keyboard.press('Backspace');
+
+			await this.page.keyboard.type(content);
+		}
+
 		await this.saveTemplate(name);
 	}
 
@@ -133,6 +145,37 @@ export class TemplatesPage {
 
 	async editTemplate(name: string) {
 		await this.page.getByRole('link', {exact: true, name}).click();
+	}
+
+	async editWidgetTemplate(name: string) {
+		const link = this.page.getByRole('link', {exact: true, name});
+
+		await expect(async () => {
+			await this.searchBar.fill(name, {timeout: 1000});
+
+			await this.searchBar.press('Enter', {timeout: 1000});
+
+			await expect(link).toBeVisible({timeout: 1000});
+		}).toPass();
+
+		await clickAndExpectToBeVisible({
+			target: this.page.getByPlaceholder('Untitled Template'),
+			trigger: link,
+		});
+	}
+
+	async goToViewUsages(widgetTemplateName: string) {
+		await this.page
+			.locator('tr')
+			.filter({hasText: widgetTemplateName})
+			.getByLabel('Show Actions')
+			.click();
+
+		await this.page
+			.getByRole('menuitem', {exact: true, name: 'View Usages'})
+			.click();
+
+		await this.page.waitForURL(/view_widget_templates_usages/);
 	}
 
 	async getTemplateKey() {

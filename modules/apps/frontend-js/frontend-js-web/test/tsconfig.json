@@ -1,0 +1,52 @@
+{
+	"@generated": "c337a7d03809e5fde638cef4960425ea0fb41a6f",
+	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"checkJs": false,
+		"composite": true,
+		"declarationDir": "../../../../.tsc/types",
+		"emitDeclarationOnly": true,
+		"jsx": "react",
+		"module": "es2022",
+		"moduleResolution": "node",
+		"paths": {
+			"@liferay/accessibility-settings-state-web": [
+				"../../../accessibility/accessibility-settings-state-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"@liferay/frontend-js-state-web": [
+				"../../frontend-js-state-web/src/main/resources/META-INF/resources/main/index.ts"
+			],
+			"@liferay/frontend-js-state-web/react": [
+				"../../frontend-js-state-web/src/main/resources/META-INF/resources/react/index.ts"
+			],
+			"frontend-js-web/legacy": [
+				"./../src/main/resources/META-INF/resources/legacy/index.ts"
+			]
+		},
+		"rootDir": "../../../..",
+		"skipLibCheck": true,
+		"sourceMap": false,
+		"strict": true,
+		"target": "esnext",
+		"tsBuildInfoFile": "../../../../.tsc/buildinfo/frontend-js-web-test.tsbuildinfo",
+		"typeRoots": [
+			"../../../../node_modules/@types"
+		]
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"../../../../global.d.ts",
+		"../src/**/*.ts",
+		"../src/**/*.tsx"
+	],
+	"references": [
+		{
+			"path": "../../../accessibility/accessibility-settings-state-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../frontend-js-state-web/src/main/resources/META-INF/resources/tsconfig.json"
+		}
+	]
+}

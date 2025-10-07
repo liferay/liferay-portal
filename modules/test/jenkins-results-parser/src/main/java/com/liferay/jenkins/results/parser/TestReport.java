@@ -18,6 +18,8 @@ public interface TestReport {
 
 	public String getErrorStackTrace();
 
+	public String getModuleAppPath();
+
 	public String getStatus();
 
 	public String getTestClassName();

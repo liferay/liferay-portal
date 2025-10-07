@@ -225,9 +225,9 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertTextAtTable(linePosition = null,text = null,lineColunm = null) {
+	macro assertTextAtTable(linePosition = null,text = null,lineColumn = null) {
 		var key_linePosition = ${linePosition};
-		var key_colunmPosition = ${lineColunm};
+		var key_columnPosition = ${lineColumn};
 		var key_text = ${text};
 
 		AssertTextEquals(

@@ -202,8 +202,6 @@ definition {
 	@summary = "Default summary"
 	macro createDynamicSegment() {
 		Click(locator1 = "ACSegments#CREATE_SEGMENT_BUTTON");
-
-		ACSegments.selectSegmentType(segmentType = "DYNAMIC");
 	}
 
 	@summary = "Default summary"
@@ -215,13 +213,6 @@ definition {
 		ACSegments.goToSidebarAttributes(criterion = ${criterion});
 
 		ACSegments.addSegmentField(segmentField = ${segmentField});
-	}
-
-	@summary = "Default summary"
-	macro createStaticSegment() {
-		Click(locator1 = "ACSegments#CREATE_SEGMENT_BUTTON");
-
-		ACSegments.selectSegmentType(segmentType = "STATIC");
 	}
 
 	@summary = "Default summary"

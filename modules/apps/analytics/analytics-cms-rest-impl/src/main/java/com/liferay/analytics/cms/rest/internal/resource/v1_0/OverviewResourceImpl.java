@@ -7,6 +7,8 @@ package com.liferay.analytics.cms.rest.internal.resource.v1_0;
 
 import com.liferay.analytics.cms.rest.dto.v1_0.Overview;
 import com.liferay.analytics.cms.rest.dto.v1_0.Trend;
+import com.liferay.analytics.cms.rest.internal.depot.entry.util.DepotEntryUtil;
+import com.liferay.analytics.cms.rest.internal.resource.v1_0.util.ObjectEntryVersionTitleExpressionUtil;
 import com.liferay.analytics.cms.rest.resource.v1_0.OverviewResource;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRelTable;
 import com.liferay.asset.kernel.model.AssetCategoryTable;
@@ -17,37 +19,28 @@ import com.liferay.asset.kernel.model.AssetTagTable;
 import com.liferay.asset.kernel.model.AssetVocabularyGroupRelTable;
 import com.liferay.asset.kernel.model.AssetVocabularyTable;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.model.DepotEntryGroupRel;
-import com.liferay.depot.service.DepotEntryGroupRelLocalService;
-import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.model.ObjectDefinitionTable;
 import com.liferay.object.model.ObjectEntryTable;
+import com.liferay.object.model.ObjectEntryVersionTable;
 import com.liferay.object.model.ObjectFolderTable;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.util.SearchUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -66,17 +59,18 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 	@Override
 	public Overview getContentOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception {
 
-		List<DepotEntry> depotEntries = _getDepotEntries(spaceId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			return _toOverview(0, Trend.Classification.NEUTRAL, 0.0, 0, 0, 0);
 		}
 
-		Long[] groupIds = _getGroupIds(depotEntries);
+		Long[] groupIds = DepotEntryUtil.getGroupIds(depotEntries);
 
 		return _toOverview(
 			_getOverviewObjects(
@@ -89,17 +83,18 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 	@Override
 	public Overview getFileOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception {
 
-		List<DepotEntry> depotEntries = _getDepotEntries(spaceId);
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			contextCompany.getCompanyId(), depotEntryId);
 
 		if (depotEntries.isEmpty()) {
 			return _toOverview(0, Trend.Classification.NEUTRAL, 0.0, 0, 0, 0);
 		}
 
-		Long[] groupIds = _getGroupIds(depotEntries);
+		Long[] groupIds = DepotEntryUtil.getGroupIds(depotEntries);
 
 		return _toOverview(
 			_getOverviewObjects(
@@ -112,19 +107,6 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 	private DateFormat _getDateFormat() {
 		return DateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd");
-	}
-
-	private List<DepotEntry> _getDepotEntries(Long spaceId) throws Exception {
-		List<DepotEntry> depotEntries = new ArrayList<>();
-
-		if (spaceId == null) {
-			depotEntries.addAll(_getViewableDepotEntries());
-		}
-		else {
-			depotEntries.add(_depotEntryService.getDepotEntry(spaceId));
-		}
-
-		return depotEntries;
 	}
 
 	private Date _getEndDate(String rangeEnd) {
@@ -151,25 +133,6 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		return null;
 	}
 
-	private Long[] _getGroupIds(List<DepotEntry> depotEntries) {
-		Long[] groupIds = new Long[0];
-
-		for (DepotEntry depotEntry : depotEntries) {
-			groupIds = ArrayUtil.append(groupIds, depotEntry.getGroupId());
-
-			List<DepotEntryGroupRel> depotEntryGroupRels =
-				_depotEntryGroupRelLocalService.getDepotEntryGroupRels(
-					depotEntry);
-
-			for (DepotEntryGroupRel depotEntryGroupRel : depotEntryGroupRels) {
-				groupIds = ArrayUtil.append(
-					groupIds, depotEntryGroupRel.getGroupId());
-			}
-		}
-
-		return groupIds;
-	}
-
 	private Object[] _getOverviewObjects(
 		String externalReferenceCode, Long[] groupIds, String languageId,
 		String rangeEnd, Integer rangeKey, String rangeStart) {
@@ -190,6 +153,8 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		ObjectDefinitionTable objectDefinitionTable =
 			ObjectDefinitionTable.INSTANCE;
 		ObjectEntryTable objectEntryTable = ObjectEntryTable.INSTANCE;
+		ObjectEntryVersionTable objectEntryVersionTable =
+			ObjectEntryVersionTable.INSTANCE;
 		ObjectFolderTable objectFolderTable = ObjectFolderTable.INSTANCE;
 
 		Long[] assetGroupIds = groupIds;
@@ -209,7 +174,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 			).as(
 				"tagsCount"
 			),
-			DSLFunctionFactoryUtil.count(
+			DSLFunctionFactoryUtil.countDistinct(
 				objectEntryTable.objectEntryId
 			).as(
 				"totalCount"
@@ -229,6 +194,16 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 			objectEntryTable,
 			objectEntryTable.objectDefinitionId.eq(
 				objectDefinitionTable.objectDefinitionId)
+		).innerJoinON(
+			objectEntryVersionTable,
+			objectEntryVersionTable.objectEntryId.eq(
+				objectEntryTable.objectEntryId
+			).and(
+				objectEntryVersionTable.version.eq(objectEntryTable.version)
+			).and(
+				objectEntryVersionTable.status.eq(
+					WorkflowConstants.STATUS_APPROVED)
+			)
 		).innerJoinON(
 			assetEntryTable,
 			assetEntryTable.classPK.eq(objectEntryTable.objectEntryId)
@@ -265,7 +240,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 				assetVocabularyGroupRelTable.groupId.in(assetGroupIds)
 			)
 		).where(
-			_getWhereClause(
+			_getPredicate(
 				externalReferenceCode, groupIds, languageId, false, rangeEnd,
 				rangeKey, rangeStart)
 		);
@@ -277,6 +252,56 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		}
 
 		return results.get(0);
+	}
+
+	private Predicate _getPredicate(
+		String externalReferenceCode, Long[] groupIds, String languageId,
+		boolean previous, String rangeEnd, Integer rangeKey,
+		String rangeStart) {
+
+		Predicate predicate =
+			ObjectFolderTable.INSTANCE.externalReferenceCode.eq(
+				externalReferenceCode);
+
+		predicate = predicate.and(
+			ObjectEntryTable.INSTANCE.status.neq(
+				WorkflowConstants.STATUS_IN_TRASH));
+
+		if (ArrayUtil.isNotEmpty(groupIds)) {
+			predicate = predicate.and(
+				ObjectEntryTable.INSTANCE.groupId.in(groupIds));
+		}
+
+		if (!Validator.isBlank(languageId)) {
+			predicate = predicate.and(
+				DSLFunctionFactoryUtil.castClobText(
+					ObjectEntryVersionTitleExpressionUtil.
+						getLocalizedTitleExpression(languageId)
+				).isNotNull());
+		}
+
+		if (!previous) {
+			predicate = predicate.and(
+				ObjectEntryTable.INSTANCE.createDate.gte(
+					_getStartDate(rangeKey, rangeStart)));
+
+			if (Validator.isNotNull(rangeEnd)) {
+				predicate = predicate.and(
+					ObjectEntryTable.INSTANCE.createDate.lte(
+						_getEndDate(rangeEnd)));
+			}
+		}
+		else {
+			predicate = predicate.and(
+				ObjectEntryTable.INSTANCE.createDate.gte(
+					_getPreviousStartDate(rangeEnd, rangeKey, rangeStart))
+			).and(
+				ObjectEntryTable.INSTANCE.createDate.lt(
+					_getStartDate(rangeKey, rangeStart))
+			);
+		}
+
+		return predicate;
 	}
 
 	private Date _getPreviousStartDate(
@@ -321,6 +346,8 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		ObjectDefinitionTable objectDefinitionTable =
 			ObjectDefinitionTable.INSTANCE;
 		ObjectEntryTable objectEntryTable = ObjectEntryTable.INSTANCE;
+		ObjectEntryVersionTable objectEntryVersionTable =
+			ObjectEntryVersionTable.INSTANCE;
 		ObjectFolderTable objectFolderTable = ObjectFolderTable.INSTANCE;
 
 		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
@@ -340,10 +367,20 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 			objectEntryTable.objectDefinitionId.eq(
 				objectDefinitionTable.objectDefinitionId)
 		).innerJoinON(
+			objectEntryVersionTable,
+			objectEntryVersionTable.objectEntryId.eq(
+				objectEntryTable.objectEntryId
+			).and(
+				objectEntryVersionTable.version.eq(objectEntryTable.version)
+			).and(
+				objectEntryVersionTable.status.eq(
+					WorkflowConstants.STATUS_APPROVED)
+			)
+		).innerJoinON(
 			assetEntryTable,
 			assetEntryTable.classPK.eq(objectEntryTable.objectEntryId)
 		).where(
-			_getWhereClause(
+			_getPredicate(
 				externalReferenceCode, groupIds, languageId, true, rangeEnd,
 				rangeKey, rangeStart)
 		);
@@ -382,90 +419,6 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		calendar.set(Calendar.SECOND, 0);
 
 		return calendar.getTime();
-	}
-
-	private List<DepotEntry> _getViewableDepotEntries() throws Exception {
-		List<DepotEntry> depotEntries = new ArrayList<>();
-
-		SearchUtil.search(
-			Collections.emptyMap(),
-			booleanQuery -> {
-			},
-			null, DepotEntry.class.getName(), null,
-			Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			queryConfig -> {
-			},
-			searchContext -> searchContext.setCompanyId(
-				contextCompany.getCompanyId()),
-			null,
-			document -> {
-				try {
-					depotEntries.add(
-						_depotEntryService.getDepotEntry(
-							GetterUtil.getLong(
-								document.get(Field.ENTRY_CLASS_PK))));
-				}
-				catch (PortalException portalException) {
-					if (_log.isInfoEnabled()) {
-						_log.info(
-							"User does not have access to view space " +
-								document.get(Field.ENTRY_CLASS_PK),
-							portalException);
-					}
-				}
-
-				return null;
-			});
-
-		return depotEntries;
-	}
-
-	private Predicate _getWhereClause(
-		String externalReferenceCode, Long[] groupIds, String languageId,
-		boolean previous, String rangeEnd, Integer rangeKey,
-		String rangeStart) {
-
-		Predicate predicate =
-			ObjectFolderTable.INSTANCE.externalReferenceCode.eq(
-				externalReferenceCode);
-
-		predicate = predicate.and(
-			ObjectEntryTable.INSTANCE.status.neq(
-				WorkflowConstants.STATUS_IN_TRASH));
-
-		if (ArrayUtil.isNotEmpty(groupIds)) {
-			predicate = predicate.and(
-				ObjectEntryTable.INSTANCE.groupId.in(groupIds));
-		}
-
-		if (!Validator.isBlank(languageId)) {
-			predicate = predicate.and(
-				AssetEntryTable.INSTANCE.title.like(
-					"%language-id=\"" + languageId + "\"%"));
-		}
-
-		if (!previous) {
-			predicate = predicate.and(
-				ObjectEntryTable.INSTANCE.createDate.gte(
-					_getStartDate(rangeKey, rangeStart)));
-
-			if (Validator.isNotNull(rangeEnd)) {
-				predicate = predicate.and(
-					ObjectEntryTable.INSTANCE.createDate.lte(
-						_getEndDate(rangeEnd)));
-			}
-		}
-		else {
-			predicate = predicate.and(
-				ObjectEntryTable.INSTANCE.createDate.gte(
-					_getPreviousStartDate(rangeEnd, rangeKey, rangeStart))
-			).and(
-				ObjectEntryTable.INSTANCE.createDate.lt(
-					_getStartDate(rangeKey, rangeStart))
-			);
-		}
-
-		return predicate;
 	}
 
 	private Overview _toOverview(
@@ -524,12 +477,6 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OverviewResourceImpl.class);
-
-	@Reference
-	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
-
-	@Reference
-	private DepotEntryService _depotEntryService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;

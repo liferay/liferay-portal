@@ -62,7 +62,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
-import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.search.ResultRowSplitter;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -1259,10 +1258,6 @@ public class JournalDisplayContext {
 		return false;
 	}
 
-	public boolean isCommentsTabSelected() throws PortalException {
-		return Objects.equals(getTab(), "comments");
-	}
-
 	public boolean isFilterApplied() {
 		if ((getStatus() != WorkflowConstants.STATUS_ANY) ||
 			isNavigationMine() || isNavigationRecent() || isTypeVersions()) {
@@ -1359,10 +1354,8 @@ public class JournalDisplayContext {
 			return true;
 		}
 
-		if ((isTypeWebContent() && !hasResults() && !hasVersionsResults() &&
-			 hasCommentsResults()) ||
-			(isTypeVersions() && !hasVersionsResults() &&
-			 hasCommentsResults())) {
+		if (((isTypeWebContent() && !hasResults()) || isTypeVersions()) &&
+			!hasVersionsResults() && hasCommentsResults() && isSearch()) {
 
 			_searchIn = "comments";
 
@@ -1517,8 +1510,7 @@ public class JournalDisplayContext {
 		if (!hasAssetFilter() && !isHighlightedDDMStructure() &&
 			!isNavigationMine() && !isNavigationRecent() && !isSearch() &&
 			!isTypeVersions() && (getDDMStructureId() <= 0) &&
-			(getStatus() == WorkflowConstants.STATUS_ANY) &&
-			CTCollectionThreadLocal.isProductionMode()) {
+			(getStatus() == WorkflowConstants.STATUS_ANY)) {
 
 			SearchContainer<Object> articleAndFolderSearchContainer =
 				_getArticleAndFolderSearchContainer();
@@ -1561,46 +1553,64 @@ public class JournalDisplayContext {
 			return _articleSearchContainer;
 		}
 
-		List<Document> documents = new ArrayList<>();
-
 		SearchContainer<Object> articleAndFolderSearchContainer =
 			_getArticleAndFolderSearchContainer();
 
-		int end = articleAndFolderSearchContainer.getEnd();
-		int start = articleAndFolderSearchContainer.getStart();
+		if (isHighlightedDDMStructure() || isNavigationStructure() ||
+			isNavigationRecent()) {
 
-		SearchResponse journalFolderSearchResponse =
-			JournalSearcherUtil.searchJournalFolders(
-				searchContext -> _populateSearchContext(
-					start, end, searchContext, false));
+			SearchResponse searchResponse =
+				JournalSearcherUtil.searchJournalArticlesAndJournalFolders(
+					searchContext -> _populateSearchContext(
+						articleAndFolderSearchContainer.getStart(),
+						articleAndFolderSearchContainer.getEnd(), searchContext,
+						false));
 
-		int foldersCount = journalFolderSearchResponse.getTotalHits();
-
-		int journalArticlesStart = start - foldersCount;
-
-		int delta = end - start;
-
-		int journalArticlesEnd = delta + journalArticlesStart;
-
-		if (start < foldersCount) {
-			documents.addAll(journalFolderSearchResponse.getDocuments71());
-
-			journalArticlesEnd = Math.max(1, delta - documents.size());
-
-			journalArticlesStart = 0;
+			articleAndFolderSearchContainer.setResultsAndTotal(
+				() -> JournalSearcherUtil.transformJournalArticleAndFolders(
+					searchResponse.getDocuments71()),
+				searchResponse.getTotalHits());
 		}
+		else {
+			List<Document> documents = new ArrayList<>();
 
-		SearchResponse articleSearchResponse = _getJournalArticleSearchResponse(
-			journalArticlesStart, journalArticlesEnd);
+			int end = articleAndFolderSearchContainer.getEnd();
+			int start = articleAndFolderSearchContainer.getStart();
 
-		if (documents.size() < delta) {
-			documents.addAll(articleSearchResponse.getDocuments71());
+			SearchResponse journalFolderSearchResponse =
+				JournalSearcherUtil.searchJournalFolders(
+					searchContext -> _populateSearchContext(
+						start, end, searchContext, false));
+
+			int foldersCount = journalFolderSearchResponse.getTotalHits();
+
+			int journalArticlesStart = start - foldersCount;
+
+			int delta = end - start;
+
+			int journalArticlesEnd = delta + journalArticlesStart;
+
+			if (start < foldersCount) {
+				documents.addAll(journalFolderSearchResponse.getDocuments71());
+
+				journalArticlesEnd = Math.max(1, delta - documents.size());
+
+				journalArticlesStart = 0;
+			}
+
+			SearchResponse articleSearchResponse =
+				_getJournalArticleSearchResponse(
+					journalArticlesStart, journalArticlesEnd);
+
+			if (documents.size() < delta) {
+				documents.addAll(articleSearchResponse.getDocuments71());
+			}
+
+			articleAndFolderSearchContainer.setResultsAndTotal(
+				() -> JournalSearcherUtil.transformJournalArticleAndFolders(
+					documents),
+				articleSearchResponse.getTotalHits() + foldersCount);
 		}
-
-		articleAndFolderSearchContainer.setResultsAndTotal(
-			() -> JournalSearcherUtil.transformJournalArticleAndFolders(
-				documents),
-			articleSearchResponse.getTotalHits() + foldersCount);
 
 		_articleSearchContainer = articleAndFolderSearchContainer;
 
@@ -1704,7 +1714,7 @@ public class JournalDisplayContext {
 				String.valueOf(highlightedDDMStructureId));
 		}
 
-		String keywords = ParamUtil.getString(_httpServletRequest, "keywords");
+		String keywords = getKeywords();
 
 		if (Validator.isNotNull(keywords)) {
 			portletURL.setParameter("keywords", keywords);

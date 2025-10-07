@@ -47,6 +47,7 @@ export default function ({
 			show={show}
 			trigger={
 				<ClayButtonWithIcon
+					className="color-white control-menu-nav-link"
 					data-qa-id="info"
 					displayType="unstyled"
 					onClick={(event) => {

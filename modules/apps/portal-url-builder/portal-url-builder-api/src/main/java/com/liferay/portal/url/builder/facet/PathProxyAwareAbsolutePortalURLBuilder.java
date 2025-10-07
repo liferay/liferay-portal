@@ -7,7 +7,7 @@ package com.liferay.portal.url.builder.facet;
 
 /**
  * A URL builder that controls prepending the proxy path ({@link
- * com.liferay.portal.util.PropsValues#PORTAL_PROXY_PATH}) to the URL.
+ * com.liferay.portal.kernel.util.PropsValues#PORTAL_PROXY_PATH}) to the URL.
  *
  * <p>
  * By default, the proxy path is always used. However, there are scenarios where

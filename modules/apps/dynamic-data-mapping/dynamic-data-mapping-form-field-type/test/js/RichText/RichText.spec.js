@@ -10,6 +10,39 @@ import React from 'react';
 import RichText from '../../../src/main/resources/META-INF/resources/js/RichText/RichText.es';
 
 describe('RichText component', () => {
+	it('does not have aria-invalid attribute on first render when it is required', () => {
+		render(
+			<RichText
+				label="RichText Label"
+				name="RichTextName"
+				required={true}
+			/>
+		);
+
+		const richTextContainer = document.getElementById(
+			'RichTextNameContainer'
+		);
+
+		expect(richTextContainer.hasAttribute('aria-invalid')).toBe(false);
+	});
+
+	it('does not have aria-invalid attribute when it is required and has a value', () => {
+		render(
+			<RichText
+				label="RichText Label"
+				name="RichTextName"
+				required={true}
+				value="test"
+			/>
+		);
+
+		const richTextContainer = document.getElementById(
+			'RichTextNameContainer'
+		);
+
+		expect(richTextContainer.hasAttribute('aria-invalid')).toBe(false);
+	});
+
 	it('has aria-label attribute when it is rendered', () => {
 		const {getByRole} = render(
 			<RichText label="RichText Label" name="RichTextName" />

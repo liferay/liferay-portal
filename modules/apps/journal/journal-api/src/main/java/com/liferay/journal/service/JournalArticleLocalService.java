@@ -2193,6 +2193,10 @@ public interface JournalArticleLocalService
 			long userId, JournalArticle article)
 		throws PortalException;
 
+	public JournalArticle revertArticle(
+			long userId, long groupId, String articleId, double version)
+		throws PortalException;
+
 	public void setTreePaths(long folderId, String treePath, boolean reindex)
 		throws PortalException;
 

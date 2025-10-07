@@ -88,17 +88,17 @@ const LocalizableTextWithProvider = (props) => (
 	</PageProvider>
 );
 
-beforeAll(() => {
-	Liferay.Language.direction = {
-		en_US: 'ltr',
-	};
-});
-
 afterAll(() => {
 	Liferay.Language.direction = globalLanguageDirection;
 });
 
 afterEach(cleanup);
+
+beforeAll(() => {
+	Liferay.Language.direction = {
+		en_US: 'ltr',
+	};
+});
 
 const defaultLocalizableTextConfig = {
 	defaultLocale: {
@@ -147,384 +147,6 @@ describe('Field LocalizableText', () => {
 		jest.useFakeTimers();
 		fetch.mockResponse(JSON.stringify({}));
 		Liferay.component = jest.fn();
-	});
-
-	it('is not readOnly', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				readOnly={false}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a label', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				label="label"
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has aria-label when the displayStyle is multiline', () => {
-		const {getByRole} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				displayStyle="multiline"
-				label="label"
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const textarea = getByRole('textbox');
-
-		expect(textarea).toHaveAttribute('aria-label', 'label');
-	});
-
-	it('has a placeholder', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				placeholder="Placeholder"
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('is not required', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				required={false}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders values', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders no values when values come empty', () => {
-		const {container} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				value={{}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('shows default language value when no other language is selected', () => {
-		const {container, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const triggerElement = getByTestId('triggerText');
-
-		expect(triggerElement.textContent).toEqual('en-us');
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('emits field edit event on field change', () => {
-		const EXPECTED_VALUE =
-			'{"ca_ES":"Teste ES","en_US":"Test 2 EUA","pt_BR":"Teste BR"}';
-
-		const handleFieldEdited = jest.fn();
-
-		const {container, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				onChange={handleFieldEdited}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const inputComponent = getByTestId('visibleChangeInput');
-
-		fireEvent.change(inputComponent, {
-			target: {
-				value: 'Test 2 EUA',
-			},
-		});
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(handleFieldEdited).toHaveBeenCalledWith(
-			expect.any(Object),
-			EXPECTED_VALUE
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('fills with the selected language value when the selected language is translated', async () => {
-		const {container, findByTestId, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				onChange={jest.fn()}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const triggerButton = getByTestId('triggerButton');
-
-		fireEvent.click(triggerButton);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const dropdownItem = await findByTestId(
-			'availableLocalesDropdownca_ES'
-		);
-
-		fireEvent.click(dropdownItem);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const inputElement = await findByTestId('visibleChangeInput');
-
-		expect(inputElement.value).toEqual('Teste ES');
-
-		expect(triggerButton.textContent).toEqual('ca-es');
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('fills with the default language value when the selected language is not translated', async () => {
-		const {container, findByTestId, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				onChange={jest.fn()}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const triggerElement = getByTestId('triggerText');
-
-		expect(triggerElement.textContent).toEqual('en-us');
-
-		fireEvent.click(triggerElement);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const dropdownItem = await findByTestId(
-			'availableLocalesDropdownja_JP'
-		);
-
-		fireEvent.click(dropdownItem);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const inputComponent = getByTestId('visibleChangeInput');
-
-		expect(triggerElement.textContent).toEqual('ja-jp');
-
-		expect(inputComponent.value).toEqual('Test EUA');
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('adds a new translation for an untranslated item', async () => {
-		const {container, findByTestId, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				onChange={jest.fn()}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const triggerElement = getByTestId('triggerText');
-
-		expect(triggerElement.textContent).toEqual('en-us');
-
-		fireEvent.click(triggerElement);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const dropdownItem = await findByTestId(
-			'availableLocalesDropdownja_JP'
-		);
-
-		fireEvent.click(dropdownItem);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const inputComponent = getByTestId('visibleChangeInput');
-
-		expect(inputComponent.textContent).toEqual('');
-
-		fireEvent.change(inputComponent, {
-			target: {
-				value: 'Test JP',
-			},
-		});
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(inputComponent.value).toEqual('Test JP');
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('removes the translation of an item already translated', async () => {
-		const {container, findByTestId, getByTestId} = render(
-			<LocalizableTextWithProvider
-				{...defaultLocalizableTextConfig}
-				onChange={jest.fn()}
-				value={{
-					ca_ES: 'Teste ES',
-					en_US: 'Test EUA',
-					pt_BR: 'Teste BR',
-				}}
-			/>
-		);
-
-		const triggerElement = getByTestId('triggerText');
-
-		fireEvent.click(triggerElement);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const dropdownItem = await findByTestId(
-			'availableLocalesDropdownpt_BR'
-		);
-
-		fireEvent.click(dropdownItem);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		const inputComponent = getByTestId('visibleChangeInput');
-
-		expect(inputComponent.value).toEqual('Teste BR');
-
-		fireEvent.change(inputComponent, {
-			target: {
-				value: '',
-			},
-		});
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(inputComponent.value).toEqual('');
-
-		expect(container).toMatchSnapshot();
 	});
 
 	describe('Submit Button Label', () => {
@@ -655,5 +277,383 @@ describe('Field LocalizableText', () => {
 
 			expect(inputComponent.maxLength).toBe(25);
 		});
+	});
+
+	it('adds a new translation for an untranslated item', async () => {
+		const {container, findByTestId, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				onChange={jest.fn()}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const triggerElement = getByTestId('triggerText');
+
+		expect(triggerElement.textContent).toEqual('en-us');
+
+		fireEvent.click(triggerElement);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const dropdownItem = await findByTestId(
+			'availableLocalesDropdownja_JP'
+		);
+
+		fireEvent.click(dropdownItem);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const inputComponent = getByTestId('visibleChangeInput');
+
+		expect(inputComponent.textContent).toEqual('');
+
+		fireEvent.change(inputComponent, {
+			target: {
+				value: 'Test JP',
+			},
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(inputComponent.value).toEqual('Test JP');
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('emits field edit event on field change', () => {
+		const EXPECTED_VALUE =
+			'{"ca_ES":"Teste ES","en_US":"Test 2 EUA","pt_BR":"Teste BR"}';
+
+		const handleFieldEdited = jest.fn();
+
+		const {container, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				onChange={handleFieldEdited}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const inputComponent = getByTestId('visibleChangeInput');
+
+		fireEvent.change(inputComponent, {
+			target: {
+				value: 'Test 2 EUA',
+			},
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(handleFieldEdited).toHaveBeenCalledWith(
+			expect.any(Object),
+			EXPECTED_VALUE
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('fills with the default language value when the selected language is not translated', async () => {
+		const {container, findByTestId, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				onChange={jest.fn()}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const triggerElement = getByTestId('triggerText');
+
+		expect(triggerElement.textContent).toEqual('en-us');
+
+		fireEvent.click(triggerElement);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const dropdownItem = await findByTestId(
+			'availableLocalesDropdownja_JP'
+		);
+
+		fireEvent.click(dropdownItem);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const inputComponent = getByTestId('visibleChangeInput');
+
+		expect(triggerElement.textContent).toEqual('ja-jp');
+
+		expect(inputComponent.value).toEqual('Test EUA');
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('fills with the selected language value when the selected language is translated', async () => {
+		const {container, findByTestId, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				onChange={jest.fn()}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const triggerButton = getByTestId('triggerButton');
+
+		fireEvent.click(triggerButton);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const dropdownItem = await findByTestId(
+			'availableLocalesDropdownca_ES'
+		);
+
+		fireEvent.click(dropdownItem);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const inputElement = await findByTestId('visibleChangeInput');
+
+		expect(inputElement.value).toEqual('Teste ES');
+
+		expect(triggerButton.textContent).toEqual('ca-es');
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has a label', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				label="label"
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has aria-label when the displayStyle is multiline', () => {
+		const {getByRole} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				displayStyle="multiline"
+				label="label"
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const textarea = getByRole('textbox');
+
+		expect(textarea).toHaveAttribute('aria-label', 'label');
+	});
+
+	it('has a placeholder', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				placeholder="Placeholder"
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not readOnly', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				readOnly={false}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not required', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				required={false}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('removes the translation of an item already translated', async () => {
+		const {container, findByTestId, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				onChange={jest.fn()}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		const triggerElement = getByTestId('triggerText');
+
+		fireEvent.click(triggerElement);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const dropdownItem = await findByTestId(
+			'availableLocalesDropdownpt_BR'
+		);
+
+		fireEvent.click(dropdownItem);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const inputComponent = getByTestId('visibleChangeInput');
+
+		expect(inputComponent.value).toEqual('Teste BR');
+
+		fireEvent.change(inputComponent, {
+			target: {
+				value: '',
+			},
+		});
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(inputComponent.value).toEqual('');
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders no values when values come empty', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				value={{}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders values', () => {
+		const {container} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('shows default language value when no other language is selected', () => {
+		const {container, getByTestId} = render(
+			<LocalizableTextWithProvider
+				{...defaultLocalizableTextConfig}
+				value={{
+					ca_ES: 'Teste ES',
+					en_US: 'Test EUA',
+					pt_BR: 'Teste BR',
+				}}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		const triggerElement = getByTestId('triggerText');
+
+		expect(triggerElement.textContent).toEqual('en-us');
+
+		expect(container).toMatchSnapshot();
 	});
 });

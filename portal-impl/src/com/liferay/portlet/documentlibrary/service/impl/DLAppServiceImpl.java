@@ -3284,7 +3284,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		FileVersion latestFileVersion = fileVersions.get(
 			fileVersions.size() - 1);
 
-		String sourceFileName = DLAppUtil.getSourceFileName(latestFileVersion);
+		String sourceFileName = latestFileVersion.getFileName();
 
 		DLValidatorUtil.validateFileSize(
 			toRepository.getRepositoryId(), sourceFileName,
@@ -3318,7 +3318,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		for (int i = fileVersions.size() - 2; i >= 0; i--) {
 			FileVersion fileVersion = fileVersions.get(i);
 
-			sourceFileName = DLAppUtil.getSourceFileName(fileVersion);
+			sourceFileName = fileVersion.getFileName();
 
 			FileVersion previousFileVersion = fileVersions.get(i + 1);
 

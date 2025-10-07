@@ -26,6 +26,8 @@ import com.liferay.headless.commerce.delivery.order.resource.v1_0.TermResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -310,7 +312,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrder(placedOrderId: ___){account, accountId, attachments, author, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrder(placedOrderId: ___){account, accountId, attachments, author, authorId, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieve information of the given Placed Order."
@@ -329,7 +331,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCode(externalReferenceCode: ___){account, accountId, attachments, author, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {placedOrderByExternalReferenceCode(externalReferenceCode: ___){account, accountId, attachments, author, authorId, channelId, couponCode, createDate, currencyCode, customFields, errorMessages, externalReferenceCode, friendlyURLSeparator, id, lastPriceUpdateDate, modifiedDate, name, orderStatusInfo, orderType, orderTypeExternalReferenceCode, orderTypeId, orderUUID, paymentMethod, paymentMethodLabel, paymentStatus, paymentStatusInfo, paymentStatusLabel, placedOrderBillingAddress, placedOrderBillingAddressId, placedOrderComments, placedOrderItems, placedOrderShippingAddress, placedOrderShippingAddressId, printedNote, purchaseOrderNumber, requestedDeliveryDate, shipments, shippingMethod, shippingOption, status, steps, summary, useAsBilling, valid, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Retrieve information of the given Placed Order."
@@ -1674,6 +1676,10 @@ public class Query {
 		attachmentResource.setContextUriInfo(_uriInfo);
 		attachmentResource.setContextUser(_user);
 		attachmentResource.setGroupLocalService(_groupLocalService);
+		attachmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		attachmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		attachmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1690,6 +1696,10 @@ public class Query {
 		orderTransitionResource.setContextUriInfo(_uriInfo);
 		orderTransitionResource.setContextUser(_user);
 		orderTransitionResource.setGroupLocalService(_groupLocalService);
+		orderTransitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		orderTransitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		orderTransitionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1704,6 +1714,10 @@ public class Query {
 		placedOrderResource.setContextUriInfo(_uriInfo);
 		placedOrderResource.setContextUser(_user);
 		placedOrderResource.setGroupLocalService(_groupLocalService);
+		placedOrderResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		placedOrderResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		placedOrderResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1720,6 +1734,10 @@ public class Query {
 		placedOrderAddressResource.setContextUriInfo(_uriInfo);
 		placedOrderAddressResource.setContextUser(_user);
 		placedOrderAddressResource.setGroupLocalService(_groupLocalService);
+		placedOrderAddressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		placedOrderAddressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		placedOrderAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1736,6 +1754,10 @@ public class Query {
 		placedOrderCommentResource.setContextUriInfo(_uriInfo);
 		placedOrderCommentResource.setContextUser(_user);
 		placedOrderCommentResource.setGroupLocalService(_groupLocalService);
+		placedOrderCommentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		placedOrderCommentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		placedOrderCommentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1752,6 +1774,10 @@ public class Query {
 		placedOrderItemResource.setContextUriInfo(_uriInfo);
 		placedOrderItemResource.setContextUser(_user);
 		placedOrderItemResource.setGroupLocalService(_groupLocalService);
+		placedOrderItemResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		placedOrderItemResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		placedOrderItemResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1770,6 +1796,10 @@ public class Query {
 		placedOrderItemShipmentResource.setContextUser(_user);
 		placedOrderItemShipmentResource.setGroupLocalService(
 			_groupLocalService);
+		placedOrderItemShipmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		placedOrderItemShipmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		placedOrderItemShipmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1783,6 +1813,10 @@ public class Query {
 		shipmentResource.setContextUriInfo(_uriInfo);
 		shipmentResource.setContextUser(_user);
 		shipmentResource.setGroupLocalService(_groupLocalService);
+		shipmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		shipmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		shipmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1796,6 +1830,9 @@ public class Query {
 		termResource.setContextUriInfo(_uriInfo);
 		termResource.setContextUser(_user);
 		termResource.setGroupLocalService(_groupLocalService);
+		termResource.setResourceActionLocalService(_resourceActionLocalService);
+		termResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		termResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1826,6 +1863,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

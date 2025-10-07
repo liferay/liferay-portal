@@ -20,6 +20,8 @@ export {
 	AutocompleteComponent,
 	CurrencySelector,
 	compareCheckbox,
+	CreateAccount,
+	CreateOrder,
 	DropdownMenu,
 	DropdownMenuComponent,
 	Gallery,

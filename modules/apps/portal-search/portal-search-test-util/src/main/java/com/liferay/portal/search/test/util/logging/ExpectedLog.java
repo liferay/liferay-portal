@@ -5,6 +5,8 @@
 
 package com.liferay.portal.search.test.util.logging;
 
+import com.liferay.portal.test.log.LoggerTestUtil;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -29,7 +31,18 @@ public @interface ExpectedLog {
 
 	public enum Level {
 
-		FINE, FINEST, INFO, WARNING
+		FINE(LoggerTestUtil.DEBUG), FINEST(LoggerTestUtil.TRACE),
+		INFO(LoggerTestUtil.INFO), WARNING(LoggerTestUtil.WARN);
+
+		public String getName() {
+			return _name;
+		}
+
+		private Level(String name) {
+			_name = name;
+		}
+
+		private final String _name;
 
 	}
 

@@ -426,6 +426,11 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 	}
 
 	@Override
+	public boolean isDataDepotLevel() {
+		return _dataLevel.equals(DataLevel.DEPOT);
+	}
+
+	@Override
 	public boolean isDataLocalized() {
 		return _dataLocalized;
 	}
@@ -458,11 +463,6 @@ public abstract class BasePortletDataHandler implements PortletDataHandler {
 
 	public boolean isEmptyControlsAllowed() {
 		return _emptyControlsAllowed;
-	}
-
-	@Override
-	public boolean isModelCountSupported() {
-		return true;
 	}
 
 	@Override

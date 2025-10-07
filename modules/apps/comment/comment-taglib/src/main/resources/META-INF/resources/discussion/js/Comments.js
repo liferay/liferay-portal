@@ -150,6 +150,7 @@ export default function Comments({
 					className,
 					classPK,
 					commentId: response.commentId,
+					externalReferenceCode: response.externalReferenceCode,
 					text: messageTextNode.value,
 				});
 			}

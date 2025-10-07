@@ -72,7 +72,7 @@ definition {
 	macro getSearchEngineVendor() {
 		var liferayHome = PropsUtil.get("liferay.home.dir.name");
 
-		var solrDirExists = FileUtil.exists("${liferayHome}/solr-8.11.1");
+		var solrDirExists = FileUtil.exists("${liferayHome}/solr-8.11.3");
 
 		if (${solrDirExists} == "true") {
 			return "Solr";

@@ -220,6 +220,65 @@ export class EditSXPBlueprintPage {
 		await selectElement.check();
 	}
 
+	async selectAssetTypes(types: string[]) {
+		await this.selectQuerySettingsRadioProperty('Selected Types');
+
+		await this.querySettings
+			.getByRole('button', {name: 'Select Asset Types'})
+			.click();
+
+		await expect(
+			this.page.getByRole('dialog').getByText('Select Types')
+		).toBeVisible();
+
+		for (const type of types) {
+			await this.page
+				.getByRole('checkbox', {
+					exact: true,
+					name: `Select ${type}`,
+				})
+				.check();
+		}
+
+		await this.page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'Done'})
+			.click();
+
+		for (const type of types) {
+			await expect(
+				this.querySettings.locator('li').getByText(type, {exact: true})
+			).toBeVisible();
+		}
+	}
+
+	async selectAssetSubtypes(subtypes: string[], type: string) {
+		const assetListItem = this.querySettings
+			.locator('li')
+			.filter({hasText: type});
+
+		await assetListItem.getByLabel('Select Subtypes').click();
+
+		await expect(
+			this.page.getByRole('dialog').getByText('Select Subtypes')
+		).toBeVisible();
+
+		for (const subtype of subtypes) {
+			await this.page
+				.getByRole('checkbox', {exact: true, name: `Select ${subtype}`})
+				.check();
+		}
+
+		await this.page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'Done'})
+			.click();
+
+		for (const subtype of subtypes) {
+			await expect(assetListItem).toHaveText(new RegExp(subtype));
+		}
+	}
+
 	async selectClauseContributors(option: {labels: string[]; value: boolean}) {
 
 		// If labels is ['*'], then all contributors are selected

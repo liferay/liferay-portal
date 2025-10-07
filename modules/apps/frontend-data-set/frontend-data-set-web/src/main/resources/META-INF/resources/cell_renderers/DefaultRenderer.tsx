@@ -34,7 +34,7 @@ const Wrapper = ({
 	options,
 }: {
 	children: React.ReactNode;
-	options: DefaultRendererOptions;
+	options?: DefaultRendererOptions;
 }) => {
 	return options?.truncate ? (
 		<span
@@ -52,7 +52,7 @@ const Wrapper = ({
 
 const DefaultRenderer: React.FC<
 	{children?: React.ReactNode | undefined} & {
-		options: DefaultRendererOptions;
+		options?: DefaultRendererOptions;
 		value: DefaultRendererValue;
 	}
 > = ({options, value}) => {

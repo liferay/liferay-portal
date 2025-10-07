@@ -12,7 +12,7 @@ import {
 import {
 	addContactRoleNameByEmailByProject,
 	deleteContactRoleNameByEmailByProject,
-} from '~/services/liferay/rest/raysource/LicenseKeys';
+} from '~/services/liferay/rest/raysource/TeamMembers';
 import i18n from '~/utils/I18n';
 import {IAccountRole, IProject} from '~/utils/types';
 

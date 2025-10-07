@@ -136,7 +136,7 @@ const AttributeFilterDropdown: React.FC<IAttributeFilterDropdownProps> = ({
 											eventAttributeDefinitions: Attribute[];
 										};
 									}) => {
-										const modifieldEventAttributeDefinitions = getModifiedEventAttributeDefinitions(
+										const modifiedEventAttributeDefinitions = getModifiedEventAttributeDefinitions(
 											{
 												attribute,
 												attributeOwnerType,
@@ -149,7 +149,7 @@ const AttributeFilterDropdown: React.FC<IAttributeFilterDropdownProps> = ({
 												activeId={attributeId}
 												disabledIds={disabledIds}
 												items={
-													modifieldEventAttributeDefinitions
+													modifiedEventAttributeDefinitions
 												}
 												onEditClick={(
 													attribute: Attribute

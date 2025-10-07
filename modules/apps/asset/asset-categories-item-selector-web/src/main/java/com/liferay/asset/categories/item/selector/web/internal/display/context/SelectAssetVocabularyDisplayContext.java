@@ -9,6 +9,7 @@ import com.liferay.asset.categories.item.selector.web.internal.constants.AssetCa
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -119,8 +120,8 @@ public class SelectAssetVocabularyDisplayContext {
 
 		List<DepotEntry> depotEntries =
 			DepotEntryServiceUtil.getCurrentAndGroupConnectedDepotEntries(
-				_themeDisplay.getScopeGroupId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+				_themeDisplay.getScopeGroupId(), DepotConstants.TYPE_ANY,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (DepotEntry depotEntry : depotEntries) {
 			groupIds.add(depotEntry.getGroupId());

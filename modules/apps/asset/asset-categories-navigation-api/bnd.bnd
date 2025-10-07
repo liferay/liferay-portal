@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Categories Navigation API
 Bundle-SymbolicName: com.liferay.asset.categories.navigation.api
-Bundle-Version: 5.0.14
+Bundle-Version: 5.0.15
 Export-Package: com.liferay.asset.categories.navigation.constants

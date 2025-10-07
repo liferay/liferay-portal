@@ -17,6 +17,7 @@ import com.liferay.headless.delivery.internal.dto.v1_0.mapper.ColumnLayoutStruct
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.ContainerLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.DropZoneLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.FormLayoutStructureItemMapper;
+import com.liferay.headless.delivery.internal.dto.v1_0.mapper.FormRelationshipLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.FormStepContainerLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.FormStepLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.FragmentDropZoneLayoutStructureItemMapper;
@@ -25,12 +26,14 @@ import com.liferay.headless.delivery.internal.dto.v1_0.mapper.LayoutStructureIte
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.RootLayoutStructureItemMapper;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.RowLayoutStructureItemMapper;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.util.structure.CollectionItemLayoutStructureItem;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.ColumnLayoutStructureItem;
 import com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
+import com.liferay.layout.util.structure.FormRelationshipStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStepLayoutStructureItem;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
@@ -44,10 +47,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -133,6 +132,10 @@ public class PageElementDTOConverter
 			DropZoneLayoutStructureItem.class,
 			new DropZoneLayoutStructureItemMapper());
 		_layoutStructureItemMappers.put(
+			FormRelationshipStyledLayoutStructureItem.class,
+			new FormRelationshipLayoutStructureItemMapper(
+				_infoItemServiceRegistry, _portal));
+		_layoutStructureItemMappers.put(
 			FormStepContainerStyledLayoutStructureItem.class,
 			new FormStepContainerLayoutStructureItemMapper(
 				_infoItemServiceRegistry, _portal));
@@ -154,10 +157,9 @@ public class PageElementDTOConverter
 				_fragmentEntryLinkLocalService, _fragmentEntryLocalService,
 				_groupLocalService, _infoItemServiceRegistry, _jsonFactory,
 				_layoutLocalService, _portal, _portletLocalService,
+				_portletPermissionsExporter,
 				_portletPreferencesPortletConfigurationExporter,
-				_portletRegistry, _resourceActionLocalService,
-				_resourcePermissionLocalService, _roleLocalService,
-				_teamLocalService));
+				_portletRegistry));
 		_layoutStructureItemMappers.put(
 			RootLayoutStructureItem.class, new RootLayoutStructureItemMapper());
 		_layoutStructureItemMappers.put(
@@ -259,22 +261,13 @@ public class PageElementDTOConverter
 	private PortletLocalService _portletLocalService;
 
 	@Reference
+	private PortletPermissionsExporter _portletPermissionsExporter;
+
+	@Reference
 	private PortletPreferencesPortletConfigurationExporter
 		_portletPreferencesPortletConfigurationExporter;
 
 	@Reference
 	private PortletRegistry _portletRegistry;
-
-	@Reference
-	private ResourceActionLocalService _resourceActionLocalService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private TeamLocalService _teamLocalService;
 
 }

@@ -160,6 +160,17 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 				_objectFieldLocalService.getObjectFields(
 					_objectDefinition.getObjectDefinitionId())) {
 
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+
+				ObjectRelationship objectRelationship =
+					objectField.getObjectRelationship();
+
+				if (objectRelationship.isEdge()) {
+					continue;
+				}
+			}
+
 			_addObjectField(
 				fdsTableSchemaBuilder, objectField.getLabel(locale, true),
 				objectField);
@@ -309,6 +320,8 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 		if (!Objects.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) &&
 			!Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE) &&
+			!Objects.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) &&
 			!Objects.equals(
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT) &&
@@ -427,6 +440,12 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 	private String _getFieldName(String businessType, String fieldName) {
 		if (fieldName.contains(".creator")) {
 			return StringUtil.replaceLast(fieldName, "creator", "creator.name");
+		}
+
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
+
+			return fieldName + ".name";
 		}
 
 		if (Objects.equals(

@@ -14,8 +14,8 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
 
 import java.util.List;

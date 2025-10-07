@@ -46,16 +46,19 @@ public class Mapping implements Cloneable, Serializable {
 
 	protected String fieldKey;
 
-	public Object getItemReference() {
+	public FragmentMappedValueItemReference getItemReference() {
 		return itemReference;
 	}
 
-	public void setItemReference(Object itemReference) {
+	public void setItemReference(
+		FragmentMappedValueItemReference itemReference) {
+
 		this.itemReference = itemReference;
 	}
 
 	public void setItemReference(
-		UnsafeSupplier<Object, Exception> itemReferenceUnsafeSupplier) {
+		UnsafeSupplier<FragmentMappedValueItemReference, Exception>
+			itemReferenceUnsafeSupplier) {
 
 		try {
 			itemReference = itemReferenceUnsafeSupplier.get();
@@ -65,7 +68,7 @@ public class Mapping implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object itemReference;
+	protected FragmentMappedValueItemReference itemReference;
 
 	@Override
 	public Mapping clone() throws CloneNotSupportedException {

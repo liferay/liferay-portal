@@ -111,6 +111,20 @@ public class OrderSerDes {
 			sb.append("\"");
 		}
 
+		if (order.getAuthor() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"author\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(order.getAuthor()));
+
+			sb.append("\"");
+		}
+
 		if (order.getBillingAddress() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -1404,6 +1418,13 @@ public class OrderSerDes {
 			map.put("advanceStatus", String.valueOf(order.getAdvanceStatus()));
 		}
 
+		if (order.getAuthor() == null) {
+			map.put("author", null);
+		}
+		else {
+			map.put("author", String.valueOf(order.getAuthor()));
+		}
+
 		if (order.getBillingAddress() == null) {
 			map.put("billingAddress", null);
 		}
@@ -2355,6 +2376,9 @@ public class OrderSerDes {
 			else if (Objects.equals(jsonParserFieldName, "advanceStatus")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "author")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "billingAddress")) {
 				return false;
 			}
@@ -2876,6 +2900,11 @@ public class OrderSerDes {
 			else if (Objects.equals(jsonParserFieldName, "advanceStatus")) {
 				if (jsonParserFieldValue != null) {
 					order.setAdvanceStatus((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "author")) {
+				if (jsonParserFieldValue != null) {
+					order.setAuthor((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "billingAddress")) {

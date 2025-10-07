@@ -9,8 +9,10 @@ import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.GroupUrlTitleInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.provider.BaseInfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 
 import org.osgi.service.component.annotations.Component;
@@ -22,19 +24,23 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
 		"info.item.identifier=com.liferay.info.item.GroupUrlTitleInfoItemIdentifier",
+		"item.class.name=com.liferay.blogs.model.BlogsEntry",
 		"service.ranking:Integer=100"
 	},
 	service = InfoItemObjectProvider.class
 )
 public class BlogsEntryInfoItemObjectProvider
-	implements InfoItemObjectProvider<BlogsEntry> {
+	extends BaseInfoItemObjectProvider<BlogsEntry> {
 
 	@Override
-	public BlogsEntry getInfoItem(InfoItemIdentifier infoItemIdentifier)
+	protected BlogsEntry doGetInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
 		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier) &&
 			!(infoItemIdentifier instanceof GroupUrlTitleInfoItemIdentifier)) {
 
 			throw new NoSuchInfoItemException(
@@ -49,6 +55,14 @@ public class BlogsEntryInfoItemObjectProvider
 
 			blogsEntry = _blogsEntryLocalService.fetchBlogsEntry(
 				classPKInfoItemIdentifier.getClassPK());
+		}
+		else if (infoItemIdentifier instanceof ERCInfoItemIdentifier) {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
+
+			blogsEntry =
+				_blogsEntryLocalService.fetchBlogsEntryByExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(), groupId);
 		}
 		else if (infoItemIdentifier instanceof
 					GroupUrlTitleInfoItemIdentifier) {

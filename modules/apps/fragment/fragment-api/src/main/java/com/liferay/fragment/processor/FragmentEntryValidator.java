@@ -6,6 +6,7 @@
 package com.liferay.fragment.processor;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Locale;
 
@@ -15,7 +16,7 @@ import java.util.Locale;
 public interface FragmentEntryValidator {
 
 	public void validateFragmentEntryHTML(
-			String html, String configuration, Locale locale)
+			String html, JSONObject configurationJSONObject, Locale locale)
 		throws PortalException;
 
 }

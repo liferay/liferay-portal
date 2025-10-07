@@ -70,7 +70,12 @@ const PendingOrderItemsFDSPropsTransformer = (props) => {
 						});
 
 						Liferay.fire(commerceEvents.CURRENT_ORDER_UPDATED, {
-							order: {id: props.additionalProps.commerceOrderId},
+							order: {
+								id: parseInt(
+									props.additionalProps.commerceOrderId,
+									10
+								),
+							},
 						});
 					})
 					.catch((error) => {

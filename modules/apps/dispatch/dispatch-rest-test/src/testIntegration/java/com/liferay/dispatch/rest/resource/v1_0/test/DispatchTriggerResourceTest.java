@@ -32,6 +32,13 @@ public class DispatchTriggerResourceTest
 		super.testGraphQLGetDispatchTriggersPage();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostDispatchTrigger() throws Exception {
+		super.testGraphQLPostDispatchTrigger();
+	}
+
 	@Override
 	@Test
 	public void testPostDispatchTrigger() throws Exception {

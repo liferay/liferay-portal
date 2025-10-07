@@ -57,6 +57,9 @@ export class BatchTestEntityAPI {
 			const response = await fetch(path + queryString, {
 				headers:
 					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
 					,headers || {}
 					),
 				method: "DELETE",

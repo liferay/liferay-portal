@@ -114,3 +114,24 @@
 		}
 	}
 }
+
+tr.drop-target {
+	& * {
+		@include common-drop-target;
+	}
+
+	& > td {
+		border-bottom: 2px solid $info !important;
+		border-top: 2px solid $info !important;
+
+		&:first-child {
+			border-left: 2px solid $info !important;
+		}
+
+		&:last-child {
+			border-right: 2px solid $info !important;
+		}
+	}
+
+	@include common-drop-target;
+}

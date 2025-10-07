@@ -78,14 +78,6 @@ public interface KeywordResource {
 
 	public Keyword getKeyword(Long keywordId) throws Exception;
 
-	public Page<Keyword> getKeywordsPage(
-			String search,
-			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
-			com.liferay.portal.kernel.search.filter.Filter filter,
-			Pagination pagination,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws Exception;
-
 	public Page<Keyword> getKeywordsRankedPage(
 			String search, Long siteId, Pagination pagination)
 		throws Exception;
@@ -115,18 +107,6 @@ public interface KeywordResource {
 
 	public Response postAssetLibraryKeywordsPageExportBatch(
 			Long assetLibraryId, String search,
-			com.liferay.portal.kernel.search.filter.Filter filter,
-			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
-			String contentType, String fieldNames)
-		throws Exception;
-
-	public Keyword postKeyword(Keyword keyword) throws Exception;
-
-	public Response postKeywordBatch(String callbackURL, Object object)
-		throws Exception;
-
-	public Response postKeywordsPageExportBatch(
-			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)

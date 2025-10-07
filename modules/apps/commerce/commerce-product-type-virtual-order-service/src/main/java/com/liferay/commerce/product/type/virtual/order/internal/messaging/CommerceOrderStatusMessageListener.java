@@ -27,7 +27,6 @@ import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivity;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivityRegistry;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.DestinationNames;
@@ -117,41 +116,30 @@ public class CommerceOrderStatusMessageListener extends BaseMessageListener {
 			commerceOrderItem.getSku(),
 			commerceOrderItem.getUnitOfMeasureKey());
 
-		long cpConfigurationListId = 0;
-		CPDefinitionInventoryEngine cpDefinitionInventoryEngine = null;
+		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannelByGroupId(
+				commerceOrder.getGroupId());
 
-			CommerceChannel commerceChannel =
-				_commerceChannelLocalService.getCommerceChannelByGroupId(
-					commerceOrder.getGroupId());
+		CPConfigurationList cpConfigurationList =
+			_cpConfigurationListDiscovery.getCPConfigurationList(
+				cpInstance.getCompanyId(), cpInstance.getGroupId(),
+				commerceOrder.getCommerceAccountId(),
+				commerceChannel.getCommerceChannelId(),
+				commerceOrder.getCommerceOrderTypeId());
 
-			CPConfigurationList cpConfigurationList =
-				_cpConfigurationListDiscovery.getCPConfigurationList(
-					cpInstance.getCompanyId(), cpInstance.getGroupId(),
-					commerceOrder.getCommerceAccountId(),
-					commerceChannel.getCommerceChannelId(),
-					commerceOrder.getCommerceOrderTypeId());
+		long cpConfigurationListId =
+			cpConfigurationList.getCPConfigurationListId();
 
-			cpConfigurationListId =
-				cpConfigurationList.getCPConfigurationListId();
+		CPConfigurationEntry cpConfigurationEntry =
+			_cpConfigurationEntryLocalService.fetchCPConfigurationEntry(
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpInstance.getCPDefinitionId(), cpConfigurationListId);
 
-			CPConfigurationEntry cpConfigurationEntry =
-				_cpConfigurationEntryLocalService.fetchCPConfigurationEntry(
-					_classNameLocalService.getClassNameId(CPDefinition.class),
-					cpInstance.getCPDefinitionId(), cpConfigurationListId);
-
-			cpDefinitionInventoryEngine =
-				_cpDefinitionInventoryEngineRegistry.
-					getCPDefinitionInventoryEngine(
-						cpConfigurationEntry.getCPDefinitionInventoryEngine());
-		}
-		else {
-			cpDefinitionInventoryEngine =
-				_cpDefinitionInventoryEngineRegistry.
-					getCPDefinitionInventoryEngine(cpDefinitionInventory);
-		}
+		CPDefinitionInventoryEngine cpDefinitionInventoryEngine =
+			_cpDefinitionInventoryEngineRegistry.getCPDefinitionInventoryEngine(
+				cpConfigurationEntry.getCPDefinitionInventoryEngine());
 
 		if (BigDecimalUtil.lte(
 				stockQuantity,

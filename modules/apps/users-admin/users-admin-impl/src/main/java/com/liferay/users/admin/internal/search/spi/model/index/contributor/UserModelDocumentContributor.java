@@ -33,6 +33,8 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
@@ -72,6 +74,9 @@ public class UserModelDocumentContributor
 			document.addKeyword(Field.TYPE, user.getType());
 			document.addKeyword(Field.USER_ID, user.getUserId());
 			document.addKeyword(Field.USER_NAME, user.getFullName(), true);
+			document.addText(
+				Field.getSortableFieldName(Field.USER_NAME),
+				StringUtil.toLowerCase(user.getFullName()));
 			document.addKeyword(
 				"ancestorOrganizationIds",
 				_getAncestorOrganizationIds(user.getOrganizationIds()));
@@ -127,6 +132,25 @@ public class UserModelDocumentContributor
 					Role.NAME_ACCESSOR));
 
 			_populateAddresses(document, user.getAddresses(), 0, 0);
+
+			for (Locale locale :
+					_language.getAvailableLocales(user.getGroupId())) {
+
+				String languageId = LocaleUtil.toLanguageId(locale);
+
+				document.addText(
+					_localization.getLocalizedName("firstName", languageId),
+					user.getFirstName());
+				document.addText(
+					_localization.getLocalizedName("fullName", languageId),
+					user.getFullName());
+				document.addText(
+					_localization.getLocalizedName("lastName", languageId),
+					user.getLastName());
+				document.addText(
+					_localization.getLocalizedName("middleName", languageId),
+					user.getMiddleName());
+			}
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
@@ -303,6 +327,9 @@ public class UserModelDocumentContributor
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Localization _localization;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

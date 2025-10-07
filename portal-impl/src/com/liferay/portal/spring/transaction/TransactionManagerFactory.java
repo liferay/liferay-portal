@@ -5,8 +5,8 @@
 
 package com.liferay.portal.spring.transaction;
 
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.spring.hibernate.PortalTransactionManager;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.Enumeration;
 import java.util.Properties;

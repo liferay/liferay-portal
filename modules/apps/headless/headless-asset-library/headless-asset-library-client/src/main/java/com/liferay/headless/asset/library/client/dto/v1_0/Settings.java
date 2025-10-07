@@ -153,6 +153,48 @@ public class Settings implements Cloneable, Serializable {
 
 	protected Boolean sharingEnabled;
 
+	public Boolean getTrashEnabled() {
+		return trashEnabled;
+	}
+
+	public void setTrashEnabled(Boolean trashEnabled) {
+		this.trashEnabled = trashEnabled;
+	}
+
+	public void setTrashEnabled(
+		UnsafeSupplier<Boolean, Exception> trashEnabledUnsafeSupplier) {
+
+		try {
+			trashEnabled = trashEnabledUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean trashEnabled;
+
+	public Integer getTrashEntriesMaxAge() {
+		return trashEntriesMaxAge;
+	}
+
+	public void setTrashEntriesMaxAge(Integer trashEntriesMaxAge) {
+		this.trashEntriesMaxAge = trashEntriesMaxAge;
+	}
+
+	public void setTrashEntriesMaxAge(
+		UnsafeSupplier<Integer, Exception> trashEntriesMaxAgeUnsafeSupplier) {
+
+		try {
+			trashEntriesMaxAge = trashEntriesMaxAgeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer trashEntriesMaxAge;
+
 	public Boolean getUseCustomLanguages() {
 		return useCustomLanguages;
 	}

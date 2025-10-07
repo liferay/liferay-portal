@@ -8,6 +8,7 @@ import {Locator, Page} from '@playwright/test';
 import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 
 export class CommerceThemeClassicOrdersPage extends CommerceDNDTablePage {
+	readonly expandProductButton: Locator;
 	readonly orderItemsTable: Locator;
 	readonly orderItemsTableRow: (
 		colPosition: number,
@@ -26,6 +27,10 @@ export class CommerceThemeClassicOrdersPage extends CommerceDNDTablePage {
 			page,
 			'.lfr-layout-structure-item-com-liferay-commerce-order-content-web-internal-fragment-renderer-ordersdatasetfragmentrenderer .fds table'
 		);
+
+		this.expandProductButton = page
+			.locator('.autofit-col-toggle')
+			.getByRole('button');
 
 		this.orderItemsTable = page.locator(
 			'.lfr-layout-structure-item-com-liferay-commerce-order-content-web-internal-fragment-renderer-orderitemsdatasetfragmentrenderer .fds table'

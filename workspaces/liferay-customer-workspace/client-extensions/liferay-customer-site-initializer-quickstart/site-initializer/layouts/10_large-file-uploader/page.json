@@ -7,22 +7,23 @@
 	"permissions": [
 		{
 			"actionIds": [
+				"VIEW"
 			],
-			"roleName": "Guest",
+			"roleName": "Customer",
 			"scope": 4
 		},
 		{
 			"actionIds": [
 				"VIEW"
 			],
-			"roleName": "Site Member",
+			"roleName": "Liferay Staff",
 			"scope": 4
 		},
 		{
 			"actionIds": [
 				"VIEW"
 			],
-			"roleName": "User",
+			"roleName": "Partner",
 			"scope": 4
 		}
 	],

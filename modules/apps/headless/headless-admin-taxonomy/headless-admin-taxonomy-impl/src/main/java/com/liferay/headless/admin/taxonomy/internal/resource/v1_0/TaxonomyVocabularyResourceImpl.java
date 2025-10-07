@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.taxonomy.internal.resource.v1_0;
 
+import com.liferay.asset.categories.admin.web.constants.AssetCategoriesAdminPortletKeys;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
@@ -17,6 +18,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.AssetLibrary;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.AssetType;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyVocabulary;
@@ -40,9 +42,11 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -67,6 +71,8 @@ import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
+import java.io.Serializable;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,10 +91,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/taxonomy-vocabulary.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = TaxonomyVocabularyResource.class
 )
 public class TaxonomyVocabularyResourceImpl
-	extends BaseTaxonomyVocabularyResourceImpl {
+	extends BaseTaxonomyVocabularyResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate
+		<TaxonomyVocabulary> {
 
 	@Override
 	public void deleteAssetLibraryTaxonomyVocabularyByExternalReferenceCode(
@@ -128,6 +137,38 @@ public class TaxonomyVocabularyResourceImpl
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
+		getExportImportDescriptor() {
+
+		return new ExportImportVulcanBatchEngineTaskItemDelegate.
+			ExportImportDescriptor() {
+
+			@Override
+			public String getItemClassName() {
+				return AssetVocabulary.class.getName();
+			}
+
+			@Override
+			public String getLabel() {
+				return "vocabularies";
+			}
+
+			@Override
+			public String getPortletId() {
+				return AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN;
+			}
+
+			@Override
+			public ExportImportVulcanBatchEngineTaskItemDelegate.Scope
+				getScope() {
+
+				return ExportImportVulcanBatchEngineTaskItemDelegate.Scope.SITE;
+			}
+
+		};
 	}
 
 	@Override
@@ -184,6 +225,33 @@ public class TaxonomyVocabularyResourceImpl
 			).build());
 
 		return _toTaxonomyVocabulary(assetVocabulary);
+	}
+
+	@Override
+	public Page<TaxonomyVocabulary> read(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search)
+		throws Exception {
+
+		if (parameters.containsKey("siteId")) {
+			TermsFilter termsFilter = new TermsFilter(Field.GROUP_ID);
+
+			termsFilter.addValue(String.valueOf(parameters.get("siteId")));
+
+			if (filter != null) {
+				BooleanFilter booleanFilter = new BooleanFilter();
+
+				booleanFilter.add(filter, BooleanClauseOccur.MUST);
+				booleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
+
+				filter = booleanFilter;
+			}
+			else {
+				filter = termsFilter;
+			}
+		}
+
+		return super.read(filter, pagination, sorts, parameters, search);
 	}
 
 	@Override
@@ -285,89 +353,6 @@ public class TaxonomyVocabularyResourceImpl
 	}
 
 	@Override
-	protected Page<TaxonomyVocabulary> doGetTaxonomyVocabulariesPage(
-			String search, Aggregation aggregation, Filter filter,
-			Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
-		return SearchUtil.search(
-			HashMapBuilder.put(
-				"create",
-				addAction(
-					ActionKeys.ADD_VOCABULARY, "postTaxonomyVocabulary",
-					AssetCategoriesPermission.RESOURCE_NAME,
-					TaxonomyGroupUtil.getCMSGroupId(
-						contextCompany.getCompanyId()))
-			).put(
-				"createBatch",
-				addAction(
-					ActionKeys.ADD_VOCABULARY, "postTaxonomyVocabularyBatch",
-					AssetCategoriesPermission.RESOURCE_NAME,
-					TaxonomyGroupUtil.getCMSGroupId(
-						contextCompany.getCompanyId()))
-			).put(
-				"deleteBatch",
-				addAction(
-					ActionKeys.DELETE, "deleteTaxonomyVocabularyBatch",
-					AssetCategoriesPermission.RESOURCE_NAME, null)
-			).put(
-				"get",
-				addAction(
-					ActionKeys.VIEW, "getTaxonomyVocabulariesPage",
-					AssetCategoriesPermission.RESOURCE_NAME,
-					TaxonomyGroupUtil.getCMSGroupId(
-						contextCompany.getCompanyId()))
-			).put(
-				"updateBatch",
-				addAction(
-					ActionKeys.UPDATE, "putTaxonomyVocabularyBatch",
-					AssetCategoriesPermission.RESOURCE_NAME, null)
-			).build(),
-			booleanQuery -> {
-			},
-			filter, AssetVocabulary.class.getName(), search, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ASSET_VOCABULARY_ID),
-			searchContext -> {
-				searchContext.addVulcanAggregation(aggregation);
-
-				BooleanFilter booleanFilter = new BooleanFilter();
-
-				booleanFilter.addRequiredTerm(
-					Field.GROUP_ID,
-					TaxonomyGroupUtil.getCMSGroupId(
-						contextCompany.getCompanyId()));
-
-				searchContext.setBooleanClauses(
-					new BooleanClause[] {
-						BooleanClauseFactoryUtil.create(
-							new BooleanQueryImpl() {
-								{
-									if (filter != null) {
-										booleanFilter.add(
-											filter, BooleanClauseOccur.MUST);
-									}
-
-									setPreBooleanFilter(booleanFilter);
-								}
-							},
-							BooleanClauseOccur.MUST.getName())
-					});
-
-				searchContext.setCompanyId(contextCompany.getCompanyId());
-			},
-			sorts,
-			document -> _toTaxonomyVocabulary(
-				_assetVocabularyService.getVocabulary(
-					GetterUtil.getLong(
-						document.get(Field.ASSET_VOCABULARY_ID)))));
-	}
-
-	@Override
 	protected TaxonomyVocabulary doGetTaxonomyVocabulary(
 			Long taxonomyVocabularyId)
 		throws Exception {
@@ -396,29 +381,17 @@ public class TaxonomyVocabularyResourceImpl
 			Long siteId, TaxonomyVocabulary taxonomyVocabulary)
 		throws Exception {
 
-		return _toTaxonomyVocabulary(
-			_addAssetVocabulary(
-				taxonomyVocabulary.getExternalReferenceCode(), siteId,
-				taxonomyVocabulary));
-	}
-
-	@Override
-	protected TaxonomyVocabulary doPostTaxonomyVocabulary(
-			TaxonomyVocabulary taxonomyVocabulary)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		AssetVocabulary assetVocabulary = _addAssetVocabulary(
-			taxonomyVocabulary.getExternalReferenceCode(),
-			TaxonomyGroupUtil.getCMSGroupId(contextCompany.getCompanyId()),
+			taxonomyVocabulary.getExternalReferenceCode(), siteId,
 			taxonomyVocabulary);
 
-		_assetVocabularyGroupRelLocalService.setAssetVocabularyGroupRels(
-			assetVocabulary.getVocabularyId(),
-			_getAssetLibraryGroupIds(taxonomyVocabulary));
+		Group group = _groupLocalService.getGroup(siteId);
+
+		if (FeatureFlagManagerUtil.isEnabled("LPD-17564") && group.isCMS()) {
+			_assetVocabularyGroupRelLocalService.setAssetVocabularyGroupRels(
+				assetVocabulary.getVocabularyId(),
+				_getAssetLibraryGroupIds(taxonomyVocabulary));
+		}
 
 		return _toTaxonomyVocabulary(assetVocabulary);
 	}
@@ -856,9 +829,41 @@ public class TaxonomyVocabularyResourceImpl
 			searchContext -> {
 				searchContext.addVulcanAggregation(aggregation);
 				searchContext.setCompanyId(contextCompany.getCompanyId());
-				searchContext.setGroupIds(
-					SiteConnectedGroupGroupProviderUtil.
-						getCurrentAndAncestorSiteAndDepotGroupIds(groupId));
+
+				Group group = _groupLocalService.getGroup(groupId);
+
+				if (FeatureFlagManagerUtil.isEnabled("LPD-17564") &&
+					group.isCMS()) {
+
+					BooleanFilter booleanFilter = new BooleanFilter();
+
+					booleanFilter.addRequiredTerm(
+						Field.GROUP_ID,
+						TaxonomyGroupUtil.getCMSGroupId(
+							contextCompany.getCompanyId()));
+
+					searchContext.setBooleanClauses(
+						new BooleanClause[] {
+							BooleanClauseFactoryUtil.create(
+								new BooleanQueryImpl() {
+									{
+										if (filter != null) {
+											booleanFilter.add(
+												filter,
+												BooleanClauseOccur.MUST);
+										}
+
+										setPreBooleanFilter(booleanFilter);
+									}
+								},
+								BooleanClauseOccur.MUST.getName())
+						});
+				}
+				else {
+					searchContext.setGroupIds(
+						SiteConnectedGroupGroupProviderUtil.
+							getCurrentAndAncestorSiteAndDepotGroupIds(groupId));
+				}
 			},
 			sorts,
 			document -> _toTaxonomyVocabulary(
@@ -1024,6 +1029,9 @@ public class TaxonomyVocabularyResourceImpl
 		target = "(dto.class.name=com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyVocabulary)"
 	)
 	private DTOActionProvider _dtoActionProvider;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

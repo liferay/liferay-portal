@@ -7,9 +7,6 @@ package com.liferay.notification.internal.type.users.provider;
 
 import com.liferay.notification.constants.NotificationRecipientConstants;
 import com.liferay.notification.context.NotificationContext;
-import com.liferay.notification.model.NotificationRecipient;
-import com.liferay.notification.model.NotificationRecipientSetting;
-import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -52,23 +49,15 @@ public class RoleUsersProvider implements UsersProvider {
 	}
 
 	@Override
-	public List<User> provide(NotificationContext notificationContext)
+	public List<User> provide(
+			NotificationContext notificationContext, List<String> values)
 		throws PortalException {
 
 		Set<Long> userIds = new LinkedHashSet<>();
 
-		NotificationTemplate notificationTemplate =
-			notificationContext.getNotificationTemplate();
-
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
-		for (NotificationRecipientSetting notificationRecipientSetting :
-				notificationRecipient.getNotificationRecipientSettings()) {
-
+		for (String value : values) {
 			Role role = _roleLocalService.getRole(
-				notificationRecipientSetting.getCompanyId(),
-				notificationRecipientSetting.getValue());
+				notificationContext.getCompanyId(), value);
 
 			if ((role.getType() == RoleConstants.TYPE_ORGANIZATION) ||
 				(role.getType() == RoleConstants.TYPE_SITE)) {

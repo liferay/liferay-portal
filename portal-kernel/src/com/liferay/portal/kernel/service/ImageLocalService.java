@@ -284,42 +284,6 @@ public interface ImageLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public Image updateImage(Image image);
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[])}
-	 */
-	@Deprecated
-	public Image updateImage(long imageId, byte[] bytes) throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[], String, int, int, int)}
-	 */
-	@Deprecated
-	public Image updateImage(
-			long imageId, byte[] bytes, String type, int height, int width,
-			int size)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, File)}
-	 */
-	@Deprecated
-	public Image updateImage(long imageId, File file) throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream)}
-	 */
-	@Deprecated
-	public Image updateImage(long imageId, InputStream inputStream)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream, boolean)}
-	 */
-	@Deprecated
-	public Image updateImage(
-			long imageId, InputStream inputStream, boolean cleanUpStream)
-		throws PortalException;
-
 	public Image updateImage(long companyId, long imageId, byte[] bytes)
 		throws PortalException;
 

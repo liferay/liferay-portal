@@ -11,7 +11,21 @@ import getRandomString from '../../utils/getRandomString';
 
 type SegmentSection = 'context' | 'segments' | 'user' | 'user-organization';
 
-type SegmentProperty = 'Date of Birth' | 'First Name' | 'Name';
+type SegmentProperty =
+	| 'Country'
+	| 'Date of Birth'
+	| 'Email Address'
+	| 'First Name'
+	| 'Last Name'
+	| 'Name'
+	| 'Organization'
+	| 'Parent Organization'
+	| 'Regular Role'
+	| 'Segments'
+	| 'Site'
+	| string
+	| 'Tag'
+	| 'Type';
 
 type SegmentProperties = Partial<Record<SegmentSection, SegmentProperty[]>>;
 
@@ -81,9 +95,38 @@ export class SegmentEditorPage {
 
 		await body.waitFor();
 
+		// Map known label exceptions
+
+		const labelMap: Record<string, string> = {
+			'Country': 'Drag Country',
+			'Name': 'Drag Name',
+			'Organization': 'Drag Organization',
+			'Parent Organization': 'Drag Parent Organization',
+			'Segments': 'Drag Segment',
+			'Site': 'Drag Site',
+			'Tag': 'Drag Tag',
+			'Team': 'Drag Team',
+		};
+
+		const label = labelMap[property] ?? `Drag ${property}`;
+
 		// Add property to desired dropzone
 
-		await this.page.locator('li', {hasText: property}).press('Enter');
+		try {
+			await this.page.getByLabel(label, {exact: true}).press('Enter');
+		}
+		catch {
+			try {
+				await this.page
+					.getByRole('menuitem', {exact: true, name: label})
+					.press('Enter');
+			}
+			catch {
+				await this.page
+					.locator('li', {hasText: property})
+					.press('Enter');
+			}
+		}
 
 		await target.press('Enter');
 

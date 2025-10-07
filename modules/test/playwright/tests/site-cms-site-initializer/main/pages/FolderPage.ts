@@ -22,7 +22,7 @@ export class FolderPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.newButton = page.getByLabel('New');
+		this.newButton = page.getByTestId('fdsCreationActionButton').first();
 	}
 
 	async createFolder(name: string) {
@@ -49,12 +49,12 @@ export class FolderPage {
 	async clickOption(folderName: string, optionName: string) {
 		const card = this.page
 			.locator('tr', {hasText: folderName})
-			.or(this.page.locator('.card-row', {hasText: folderName}));
+			.or(this.page.getByRole('row', {name: folderName}));
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
 			target: this.page.getByRole('menuitem', {name: optionName}),
-			trigger: card.getByLabel('More actions'),
+			trigger: card.locator('.dropdown-toggle'),
 		});
 	}
 

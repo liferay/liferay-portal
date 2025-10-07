@@ -1988,60 +1988,180 @@ public class ObjectRelationshipUtil {
 	}
 
 	/**
-	 * Returns the object relationship where objectDefinitionId2 = &#63; and edge = &#63; or throws a <code>NoSuchObjectRelationshipException</code> if it could not be found.
+	 * Returns all the object relationships where objectDefinitionId2 = &#63; and edge = &#63;.
 	 *
 	 * @param objectDefinitionId2 the object definition id2
 	 * @param edge the edge
-	 * @return the matching object relationship
-	 * @throws NoSuchObjectRelationshipException if a matching object relationship could not be found
+	 * @return the matching object relationships
 	 */
-	public static ObjectRelationship findByODI2_E(
-			long objectDefinitionId2, boolean edge)
-		throws com.liferay.object.exception.NoSuchObjectRelationshipException {
+	public static List<ObjectRelationship> findByODI2_E(
+		long objectDefinitionId2, boolean edge) {
 
 		return getPersistence().findByODI2_E(objectDefinitionId2, edge);
 	}
 
 	/**
-	 * Returns the object relationship where objectDefinitionId2 = &#63; and edge = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 * Returns a range of all the object relationships where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectRelationshipModelImpl</code>.
+	 * </p>
 	 *
 	 * @param objectDefinitionId2 the object definition id2
 	 * @param edge the edge
-	 * @return the matching object relationship, or <code>null</code> if a matching object relationship could not be found
+	 * @param start the lower bound of the range of object relationships
+	 * @param end the upper bound of the range of object relationships (not inclusive)
+	 * @return the range of matching object relationships
 	 */
-	public static ObjectRelationship fetchByODI2_E(
-		long objectDefinitionId2, boolean edge) {
+	public static List<ObjectRelationship> findByODI2_E(
+		long objectDefinitionId2, boolean edge, int start, int end) {
 
-		return getPersistence().fetchByODI2_E(objectDefinitionId2, edge);
+		return getPersistence().findByODI2_E(
+			objectDefinitionId2, edge, start, end);
 	}
 
 	/**
-	 * Returns the object relationship where objectDefinitionId2 = &#63; and edge = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 * Returns an ordered range of all the object relationships where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectRelationshipModelImpl</code>.
+	 * </p>
 	 *
 	 * @param objectDefinitionId2 the object definition id2
 	 * @param edge the edge
+	 * @param start the lower bound of the range of object relationships
+	 * @param end the upper bound of the range of object relationships (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching object relationships
+	 */
+	public static List<ObjectRelationship> findByODI2_E(
+		long objectDefinitionId2, boolean edge, int start, int end,
+		OrderByComparator<ObjectRelationship> orderByComparator) {
+
+		return getPersistence().findByODI2_E(
+			objectDefinitionId2, edge, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the object relationships where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ObjectRelationshipModelImpl</code>.
+	 * </p>
+	 *
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 * @param start the lower bound of the range of object relationships
+	 * @param end the upper bound of the range of object relationships (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
-	 * @return the matching object relationship, or <code>null</code> if a matching object relationship could not be found
+	 * @return the ordered range of matching object relationships
 	 */
-	public static ObjectRelationship fetchByODI2_E(
-		long objectDefinitionId2, boolean edge, boolean useFinderCache) {
+	public static List<ObjectRelationship> findByODI2_E(
+		long objectDefinitionId2, boolean edge, int start, int end,
+		OrderByComparator<ObjectRelationship> orderByComparator,
+		boolean useFinderCache) {
 
-		return getPersistence().fetchByODI2_E(
-			objectDefinitionId2, edge, useFinderCache);
+		return getPersistence().findByODI2_E(
+			objectDefinitionId2, edge, start, end, orderByComparator,
+			useFinderCache);
 	}
 
 	/**
-	 * Removes the object relationship where objectDefinitionId2 = &#63; and edge = &#63; from the database.
+	 * Returns the first object relationship in the ordered set where objectDefinitionId2 = &#63; and edge = &#63;.
 	 *
 	 * @param objectDefinitionId2 the object definition id2
 	 * @param edge the edge
-	 * @return the object relationship that was removed
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object relationship
+	 * @throws NoSuchObjectRelationshipException if a matching object relationship could not be found
 	 */
-	public static ObjectRelationship removeByODI2_E(
-			long objectDefinitionId2, boolean edge)
+	public static ObjectRelationship findByODI2_E_First(
+			long objectDefinitionId2, boolean edge,
+			OrderByComparator<ObjectRelationship> orderByComparator)
 		throws com.liferay.object.exception.NoSuchObjectRelationshipException {
 
-		return getPersistence().removeByODI2_E(objectDefinitionId2, edge);
+		return getPersistence().findByODI2_E_First(
+			objectDefinitionId2, edge, orderByComparator);
+	}
+
+	/**
+	 * Returns the first object relationship in the ordered set where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching object relationship, or <code>null</code> if a matching object relationship could not be found
+	 */
+	public static ObjectRelationship fetchByODI2_E_First(
+		long objectDefinitionId2, boolean edge,
+		OrderByComparator<ObjectRelationship> orderByComparator) {
+
+		return getPersistence().fetchByODI2_E_First(
+			objectDefinitionId2, edge, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object relationship in the ordered set where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object relationship
+	 * @throws NoSuchObjectRelationshipException if a matching object relationship could not be found
+	 */
+	public static ObjectRelationship findByODI2_E_Last(
+			long objectDefinitionId2, boolean edge,
+			OrderByComparator<ObjectRelationship> orderByComparator)
+		throws com.liferay.object.exception.NoSuchObjectRelationshipException {
+
+		return getPersistence().findByODI2_E_Last(
+			objectDefinitionId2, edge, orderByComparator);
+	}
+
+	/**
+	 * Returns the last object relationship in the ordered set where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching object relationship, or <code>null</code> if a matching object relationship could not be found
+	 */
+	public static ObjectRelationship fetchByODI2_E_Last(
+		long objectDefinitionId2, boolean edge,
+		OrderByComparator<ObjectRelationship> orderByComparator) {
+
+		return getPersistence().fetchByODI2_E_Last(
+			objectDefinitionId2, edge, orderByComparator);
+	}
+
+	/**
+	 * Returns the object relationships before and after the current object relationship in the ordered set where objectDefinitionId2 = &#63; and edge = &#63;.
+	 *
+	 * @param objectRelationshipId the primary key of the current object relationship
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next object relationship
+	 * @throws NoSuchObjectRelationshipException if a object relationship with the primary key could not be found
+	 */
+	public static ObjectRelationship[] findByODI2_E_PrevAndNext(
+			long objectRelationshipId, long objectDefinitionId2, boolean edge,
+			OrderByComparator<ObjectRelationship> orderByComparator)
+		throws com.liferay.object.exception.NoSuchObjectRelationshipException {
+
+		return getPersistence().findByODI2_E_PrevAndNext(
+			objectRelationshipId, objectDefinitionId2, edge, orderByComparator);
+	}
+
+	/**
+	 * Removes all the object relationships where objectDefinitionId2 = &#63; and edge = &#63; from the database.
+	 *
+	 * @param objectDefinitionId2 the object definition id2
+	 * @param edge the edge
+	 */
+	public static void removeByODI2_E(long objectDefinitionId2, boolean edge) {
+		getPersistence().removeByODI2_E(objectDefinitionId2, edge);
 	}
 
 	/**

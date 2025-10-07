@@ -12,7 +12,6 @@ exports[`Field Text has a helptext 1`] = `
     >
       <input
         aria-describedby="textField_fieldFeedback"
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"
@@ -63,7 +62,6 @@ exports[`Field Text has a label 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"
@@ -106,7 +104,6 @@ exports[`Field Text has a placeholder 1`] = `
       title="Placeholder"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"
@@ -144,7 +141,6 @@ exports[`Field Text has a value 1`] = `
       title="value"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"
@@ -180,7 +176,6 @@ exports[`Field Text has an id 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="Id"
         name="textField"
@@ -216,7 +211,6 @@ exports[`Field Text is not readOnly 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"
@@ -252,7 +246,6 @@ exports[`Field Text is not required 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         aria-required="false"
         class="form-control ddm-field-text"
         id="textField"
@@ -289,7 +282,6 @@ exports[`Field Text is readOnly 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         disabled=""
         id="textField"
@@ -316,7 +308,7 @@ exports[`Field Text is readOnly 1`] = `
 </div>
 `;
 
-exports[`Field Text renders Label if showLabel is true 1`] = `
+exports[`Field Text renders label if showLabel is true 1`] = `
 <div>
   <div
     class="form-group hide"
@@ -332,7 +324,6 @@ exports[`Field Text renders Label if showLabel is true 1`] = `
       data-tooltip-align="top"
     >
       <input
-        aria-invalid="true"
         class="form-control ddm-field-text"
         id="textField"
         name="textField"

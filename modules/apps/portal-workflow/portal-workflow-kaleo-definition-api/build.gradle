@@ -5,5 +5,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 	testCompileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testCompileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.11"
+	testCompileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 }

@@ -1,8 +1,20 @@
 {
+	"general": {
+		"en_US": {
+			"message": "Learn more about spaces.",
+			"url": "https://learn.liferay.com/w/dxp/content-management-system/liferay-cms/spaces/creating-spaces"
+		}
+	},
 	"picklist-builder": {
 		"en_US": {
 			"message": "Learn more about picklists.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/objects/picklists"
+			"url": "https://learn.liferay.com/w/dxp/low-code/objects/picklists"
+		}
+	},
+	"space-memberships": {
+		"en_US": {
+			"message": "Learn more about space memberships.",
+			"url": "https://learn.liferay.com/w/dxp/content-management-system/liferay-cms/spaces/space-memberships"
 		}
 	}
 }

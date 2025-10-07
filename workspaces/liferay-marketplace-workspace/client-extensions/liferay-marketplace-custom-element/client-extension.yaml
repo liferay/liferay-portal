@@ -10,6 +10,7 @@ liferay-marketplace-custom-element:
     name: Liferay Marketplace
     portletCategoryName: category.client-extensions
     properties:
+        accountExternalReferenceCode: SSA-ACCOUNT
         analyticsCloudURL: https://analytics-internal.liferay.com
         cloudConsoleURL: https://console.liferay.cloud
         contactSupportURL: https://www.liferay.com/contact-us

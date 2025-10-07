@@ -12,6 +12,7 @@ import {
 
 export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly closeSidePanelFrame: (isNestedFrame: boolean) => Promise<Locator>;
+	readonly incrementalOrderQuantity: Locator;
 	readonly inventoryTableRow: (
 		colPosition: number,
 		value: number | string,
@@ -77,6 +78,11 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 				strictEqual
 			);
 		};
+		this.incrementalOrderQuantity = page
+			.frameLocator('iframe')
+			.first()
+			.frameLocator('iframe')
+			.getByLabel('Base Unit Quantity');
 		this.inventoryTableRowAction = async (warehouseName: string) => {
 			const inventoriesTableRow = await this.inventoryTableRow(
 				0,

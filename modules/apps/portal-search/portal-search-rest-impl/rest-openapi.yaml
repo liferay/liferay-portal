@@ -158,8 +158,8 @@ paths:
     "/search":
         get:
             description:
-                "Search the company index for matching content. This endpoint is development and requires setting the
-                portal property 'feature.flag.LPD-11232' to true or enabling via Instance Settings > Feature Flags: Developer."
+                "Search the company index for matching content. This endpoint requires setting the
+                portal property 'feature.flag.LPS-179669' to true or enabling via Instance Settings > Feature Flags: Release."
             operationId: getSearchPage
             parameters:
                 -   in: query

@@ -59,12 +59,14 @@ public class SamlPeerBindingCacheModel
 		sb.append(samlPeerBindingId);
 		sb.append(", companyId=");
 		sb.append(companyId);
-		sb.append(", createDate=");
-		sb.append(createDate);
 		sb.append(", userId=");
 		sb.append(userId);
 		sb.append(", userName=");
 		sb.append(userName);
+		sb.append(", createDate=");
+		sb.append(createDate);
+		sb.append(", samlPeerEntityId=");
+		sb.append(samlPeerEntityId);
 		sb.append(", deleted=");
 		sb.append(deleted);
 		sb.append(", samlNameIdFormat=");
@@ -77,8 +79,6 @@ public class SamlPeerBindingCacheModel
 		sb.append(samlNameIdSpProvidedId);
 		sb.append(", samlNameIdValue=");
 		sb.append(samlNameIdValue);
-		sb.append(", samlPeerEntityId=");
-		sb.append(samlPeerEntityId);
 		sb.append("}");
 
 		return sb.toString();
@@ -90,6 +90,14 @@ public class SamlPeerBindingCacheModel
 
 		samlPeerBindingImpl.setSamlPeerBindingId(samlPeerBindingId);
 		samlPeerBindingImpl.setCompanyId(companyId);
+		samlPeerBindingImpl.setUserId(userId);
+
+		if (userName == null) {
+			samlPeerBindingImpl.setUserName("");
+		}
+		else {
+			samlPeerBindingImpl.setUserName(userName);
+		}
 
 		if (createDate == Long.MIN_VALUE) {
 			samlPeerBindingImpl.setCreateDate(null);
@@ -98,13 +106,11 @@ public class SamlPeerBindingCacheModel
 			samlPeerBindingImpl.setCreateDate(new Date(createDate));
 		}
 
-		samlPeerBindingImpl.setUserId(userId);
-
-		if (userName == null) {
-			samlPeerBindingImpl.setUserName("");
+		if (samlPeerEntityId == null) {
+			samlPeerBindingImpl.setSamlPeerEntityId("");
 		}
 		else {
-			samlPeerBindingImpl.setUserName(userName);
+			samlPeerBindingImpl.setSamlPeerEntityId(samlPeerEntityId);
 		}
 
 		samlPeerBindingImpl.setDeleted(deleted);
@@ -147,13 +153,6 @@ public class SamlPeerBindingCacheModel
 			samlPeerBindingImpl.setSamlNameIdValue(samlNameIdValue);
 		}
 
-		if (samlPeerEntityId == null) {
-			samlPeerBindingImpl.setSamlPeerEntityId("");
-		}
-		else {
-			samlPeerBindingImpl.setSamlPeerEntityId(samlPeerEntityId);
-		}
-
 		samlPeerBindingImpl.resetOriginalValues();
 
 		return samlPeerBindingImpl;
@@ -164,10 +163,11 @@ public class SamlPeerBindingCacheModel
 		samlPeerBindingId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
-		createDate = objectInput.readLong();
 
 		userId = objectInput.readLong();
 		userName = objectInput.readUTF();
+		createDate = objectInput.readLong();
+		samlPeerEntityId = objectInput.readUTF();
 
 		deleted = objectInput.readBoolean();
 		samlNameIdFormat = objectInput.readUTF();
@@ -175,7 +175,6 @@ public class SamlPeerBindingCacheModel
 		samlNameIdSpNameQualifier = objectInput.readUTF();
 		samlNameIdSpProvidedId = objectInput.readUTF();
 		samlNameIdValue = objectInput.readUTF();
-		samlPeerEntityId = objectInput.readUTF();
 	}
 
 	@Override
@@ -183,7 +182,6 @@ public class SamlPeerBindingCacheModel
 		objectOutput.writeLong(samlPeerBindingId);
 
 		objectOutput.writeLong(companyId);
-		objectOutput.writeLong(createDate);
 
 		objectOutput.writeLong(userId);
 
@@ -192,6 +190,15 @@ public class SamlPeerBindingCacheModel
 		}
 		else {
 			objectOutput.writeUTF(userName);
+		}
+
+		objectOutput.writeLong(createDate);
+
+		if (samlPeerEntityId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(samlPeerEntityId);
 		}
 
 		objectOutput.writeBoolean(deleted);
@@ -230,26 +237,19 @@ public class SamlPeerBindingCacheModel
 		else {
 			objectOutput.writeUTF(samlNameIdValue);
 		}
-
-		if (samlPeerEntityId == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(samlPeerEntityId);
-		}
 	}
 
 	public long samlPeerBindingId;
 	public long companyId;
-	public long createDate;
 	public long userId;
 	public String userName;
+	public long createDate;
+	public String samlPeerEntityId;
 	public boolean deleted;
 	public String samlNameIdFormat;
 	public String samlNameIdNameQualifier;
 	public String samlNameIdSpNameQualifier;
 	public String samlNameIdSpProvidedId;
 	public String samlNameIdValue;
-	public String samlPeerEntityId;
 
 }

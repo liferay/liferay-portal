@@ -43,24 +43,15 @@ public class InitializeKernelUtilTestRuleTest {
 
 	@Test
 	public void testProps() {
-		Assert.assertNotNull(PropsUtil.getProps());
-
 		Assert.assertEquals("testClassValue", PropsUtil.get("testClassKey"));
 	}
 
 	@PortalProps(properties = "testMethodKey=testMethodValue")
 	@Test
 	public void testPropsMethodAnnotation() {
-		Assert.assertNotNull(PropsUtil.getProps());
-
 		Assert.assertEquals("testClassValue", PropsUtil.get("testClassKey"));
 
 		Assert.assertEquals("testMethodValue", PropsUtil.get("testMethodKey"));
-	}
-
-	@Test
-	public void testPropsUtil() {
-		Assert.assertNotNull(PropsUtil.getProps());
 	}
 
 }

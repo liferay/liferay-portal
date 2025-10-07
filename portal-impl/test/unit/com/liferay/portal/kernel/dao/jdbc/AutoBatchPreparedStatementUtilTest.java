@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -91,7 +91,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testCINITFailure() throws ClassNotFoundException {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 		final NoSuchMethodException noSuchMethodException =
 			new NoSuchMethodException();
@@ -158,7 +158,7 @@ public class AutoBatchPreparedStatementUtilTest {
 					"service.ranking", Integer.MAX_VALUE));
 
 		try {
-			PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+			PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 			doTestConcurrentCancellationException(true);
 			doTestConcurrentCancellationException(false);
@@ -170,7 +170,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testConcurrentExecutionException() {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 		doTestConcurrentExecutionExceptions(true);
 		doTestConcurrentExecutionExceptions(false);
@@ -178,7 +178,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testConcurrentWaitingForFutures() throws SQLException {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 		doTestConcurrentWaitingForFutures(true);
 		doTestConcurrentWaitingForFutures(false);
@@ -186,7 +186,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testConstructor() throws ReflectiveOperationException {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 		Constructor<AutoBatchPreparedStatementUtil> constructor =
 			AutoBatchPreparedStatementUtil.class.getDeclaredConstructor();
@@ -200,7 +200,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testNotSupportBatchUpdates() throws Exception {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
 
 		doTestNotSupportBatchUpdates();
 		doTestNotSupportBatchUpdatesConcurrent();
@@ -208,7 +208,7 @@ public class AutoBatchPreparedStatementUtilTest {
 
 	@Test
 	public void testSupportBatchUpdates() throws Exception {
-		PropsTestUtil.setProps(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "2");
+		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "2");
 
 		doTestSupportBaseUpdates();
 		doTestSupportBaseUpdatesConcurrent();

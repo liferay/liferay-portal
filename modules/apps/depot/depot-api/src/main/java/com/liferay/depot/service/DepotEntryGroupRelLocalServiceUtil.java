@@ -336,9 +336,9 @@ public class DepotEntryGroupRelLocalServiceUtil {
 	}
 
 	public static List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		long groupId, int start, int end) {
+		long groupId, int type, int start, int end) {
 
-		return getService().getDepotEntryGroupRels(groupId, start, end);
+		return getService().getDepotEntryGroupRels(groupId, type, start, end);
 	}
 
 	/**
@@ -389,8 +389,8 @@ public class DepotEntryGroupRelLocalServiceUtil {
 		return getService().getDepotEntryGroupRelsCount(depotEntry);
 	}
 
-	public static int getDepotEntryGroupRelsCount(long groupId) {
-		return getService().getDepotEntryGroupRelsCount(groupId);
+	public static int getDepotEntryGroupRelsCount(long groupId, int type) {
+		return getService().getDepotEntryGroupRelsCount(groupId, type);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery

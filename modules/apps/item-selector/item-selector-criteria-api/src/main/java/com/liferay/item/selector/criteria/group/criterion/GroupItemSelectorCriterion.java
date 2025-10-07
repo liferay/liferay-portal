@@ -19,6 +19,10 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_privateLayout = privateLayout;
 	}
 
+	public int getDepotEntryType() {
+		return _depotEntryType;
+	}
+
 	public long[] getExcludedGroupIds() {
 		return _excludedGroupIds;
 	}
@@ -87,6 +91,10 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 		_allowNavigation = allowNavigation;
 	}
 
+	public void setDepotEntryType(int depotEntryType) {
+		_depotEntryType = depotEntryType;
+	}
+
 	public void setExcludedGroupIds(long[] excludedGroupIds) {
 		_excludedGroupIds = excludedGroupIds;
 	}
@@ -152,6 +160,7 @@ public class GroupItemSelectorCriterion extends BaseItemSelectorCriterion {
 	}
 
 	private boolean _allowNavigation = true;
+	private int _depotEntryType;
 	private long[] _excludedGroupIds;
 	private boolean _includeAllVisibleGroups;
 	private boolean _includeChildSites;

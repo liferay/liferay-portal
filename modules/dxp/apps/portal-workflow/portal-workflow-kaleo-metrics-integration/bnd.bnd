@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Metrics Integration
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.metrics.integration
-Bundle-Version: 2.0.33
+Bundle-Version: 2.0.34
 -dsannotations-options: inherit

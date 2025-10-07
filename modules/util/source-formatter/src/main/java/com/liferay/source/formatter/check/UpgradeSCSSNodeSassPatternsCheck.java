@@ -8,6 +8,7 @@ package com.liferay.source.formatter.check;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.tools.ToolsUtil;
+import com.liferay.source.formatter.check.util.SourceUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,20 +29,27 @@ public class UpgradeSCSSNodeSassPatternsCheck extends BaseUpgradeCheck {
 		boolean replaced = false;
 
 		while (divisionMatcher.find()) {
-			if (ToolsUtil.isInsideQuotes(content, divisionMatcher.start())) {
+			String line = divisionMatcher.group();
+
+			if (ToolsUtil.isInsideQuotes(content, divisionMatcher.start()) ||
+				SourceUtil.containsUnquoted(line, "hsl") ||
+				SourceUtil.containsUnquoted(line, "hsla") ||
+				SourceUtil.containsUnquoted(line, "rgb") ||
+				SourceUtil.containsUnquoted(line, "rgba")) {
+
 				continue;
 			}
 
 			StringBuilder sb = new StringBuilder();
 
 			sb.append("math.div(");
-			sb.append(divisionMatcher.group(1));
-			sb.append(StringPool.COMMA_AND_SPACE);
 			sb.append(divisionMatcher.group(2));
+			sb.append(StringPool.COMMA_AND_SPACE);
+			sb.append(divisionMatcher.group(3));
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 
 			newContent = StringUtil.replace(
-				newContent, divisionMatcher.group(), sb.toString());
+				newContent, divisionMatcher.group(1), sb.toString());
 
 			replaced = true;
 		}
@@ -101,8 +109,10 @@ public class UpgradeSCSSNodeSassPatternsCheck extends BaseUpgradeCheck {
 	}
 
 	private static final Pattern _divisionPattern = Pattern.compile(
-		"(\\w+\\(.+,.+\\)|\\$\\w+|[0-9]+[.]*[0-9]*)\\s*\\/\\s*" +
-			"(\\w+\\(.+,.+\\)|\\$\\w+|[0-9]+[.]*[0-9]*)");
+		"^.*?((\\w+\\([^)]+,[^)]+\\)|\\$[-\\w]+|-?(?:\\d+(?:\\.\\d+)?|" +
+			"\\.\\d+)[a-zA-Z%]*)\\s*/\\s*(\\w+\\([^)]+,[^)]+\\)|\\$[-\\w]+|-?" +
+				"(?:\\d+(?:\\.\\d+)?|\\.\\d+)[a-zA-Z%]*)).*$",
+		Pattern.MULTILINE);
 	private static final Pattern _interpolationPattern = Pattern.compile(
 		"([\\w-\\.]+)\\#\\{([\\w\\.\\$\\(\\), \\&]+)" +
 			"\\}([\\w-\\.\\#\\{\\.\\$\\}]*)");

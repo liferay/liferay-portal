@@ -5,18 +5,12 @@
 
 package com.liferay.feature.flag.web.internal.feature.flag;
 
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 import org.osgi.service.component.annotations.Component;
@@ -32,25 +26,30 @@ public class FeatureFlagManagerImpl implements FeatureFlagManager {
 	public List<FeatureFlag> getFeatureFlags(
 		long companyId, Predicate<FeatureFlag> predicate) {
 
-		return _featureFlagsBagProvider.withFeatureFlagsBag(
-			companyId,
-			featureFlagsBag -> featureFlagsBag.getFeatureFlags(predicate));
+		FeatureFlagsBag featureFlagsBag =
+			_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(companyId);
+
+		return featureFlagsBag.getFeatureFlags(predicate);
 	}
 
 	@Override
 	public String getJSON(long companyId) {
-		return _featureFlagsBagProvider.withFeatureFlagsBag(
-			companyId, FeatureFlagsBag::getJSON);
+		FeatureFlagsBag featureFlagsBag =
+			_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(companyId);
+
+		return featureFlagsBag.getJSON();
 	}
 
 	@Override
 	public boolean isEnabled(long companyId, String key) {
-		if (_isSystemKey(key)) {
+		if (_featureFlagsBagProvider.isSystemKey(key)) {
 			companyId = CompanyConstants.SYSTEM;
 		}
 
-		return _featureFlagsBagProvider.withFeatureFlagsBag(
-			companyId, featureFlagsBag -> featureFlagsBag.isEnabled(key));
+		FeatureFlagsBag featureFlagsBag =
+			_featureFlagsBagProvider.getOrCreateFeatureFlagsBag(companyId);
+
+		return featureFlagsBag.isEnabled(key);
 	}
 
 	@Override
@@ -58,20 +57,13 @@ public class FeatureFlagManagerImpl implements FeatureFlagManager {
 		return isEnabled(CompanyThreadLocal.getCompanyId(), key);
 	}
 
-	private boolean _isSystemKey(String key) {
-		return _systemKeys.computeIfAbsent(
-			key,
-			curKey -> GetterUtil.getBoolean(
-				PropsUtil.get(
-					FeatureFlagConstants.getKey(
-						key,
-						ExtendedObjectClassDefinition.Scope.SYSTEM.
-							getValue()))));
+	@Reference(unbind = "-")
+	protected void setFeatureFlagsBagProvider(
+		FeatureFlagsBagProvider featureFlagsBagProvider) {
+
+		_featureFlagsBagProvider = featureFlagsBagProvider.unwrapProxy();
 	}
 
-	@Reference
 	private FeatureFlagsBagProvider _featureFlagsBagProvider;
-
-	private final Map<String, Boolean> _systemKeys = new ConcurrentHashMap<>();
 
 }

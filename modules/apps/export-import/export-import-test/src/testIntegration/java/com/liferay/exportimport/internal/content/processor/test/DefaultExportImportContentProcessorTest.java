@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
@@ -74,7 +75,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.util.PortalImpl;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 import java.io.InputStream;
@@ -86,8 +86,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Scanner;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1192,7 +1192,7 @@ public class DefaultExportImportContentProcessorTest {
 
 		LayoutSet stagingPrivateLayoutSet = _stagingGroup.getPrivateLayoutSet();
 
-		TreeMap<String, String> stagingPrivateVirtualHostnames =
+		NavigableMap<String, String> stagingPrivateVirtualHostnames =
 			stagingPrivateLayoutSet.getVirtualHostnames();
 
 		Map<Locale, String> stagingPublicLayoutFriendlyURLMap =
@@ -1200,7 +1200,7 @@ public class DefaultExportImportContentProcessorTest {
 
 		LayoutSet stagingPublicLayoutSet = _stagingGroup.getPublicLayoutSet();
 
-		TreeMap<String, String> stagingPublicVirtualHostnames =
+		NavigableMap<String, String> stagingPublicVirtualHostnames =
 			stagingPublicLayoutSet.getVirtualHostnames();
 
 		content = StringUtil.replace(

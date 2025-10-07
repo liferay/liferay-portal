@@ -15,8 +15,8 @@ import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.test.batch.JUnitTestBatch;
 import com.liferay.jenkins.results.parser.test.batch.JUnitTestSelector;
 import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClass;
-import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClassBalancedListSplitter;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
+import com.liferay.jenkins.results.parser.test.clazz.TestClassBalancedListSplitter;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 
@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -204,6 +205,25 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		jsonObject.put("target_duration", getTargetAxisDuration());
 
 		return jsonObject;
+	}
+
+	public List<String> getTestClassMethodNames(
+		File file, Map<String, List<String>> globTestClassMethodNamesMap) {
+
+		for (Map.Entry<String, List<String>> globTestClassMethodEntry :
+				globTestClassMethodNamesMap.entrySet()) {
+
+			String glob = globTestClassMethodEntry.getKey();
+
+			PathMatcher pathMatcher = JenkinsResultsParserUtil.toPathMatcher(
+				_getWorkingDirectory() + "/", glob);
+
+			if (pathMatcher.matches(file.toPath())) {
+				return globTestClassMethodNamesMap.get(glob);
+			}
+		}
+
+		return null;
 	}
 
 	public void writeTestCSVReportFile() throws Exception {
@@ -389,7 +409,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 	protected List<PathMatcher> getIncludesPathMatchers() {
 		if (!isRootCauseAnalysis()) {
-			return getPathMatchers(getIncludesJobProperties());
+			return getIncludePathMatchers(getIncludesJobProperties());
 		}
 
 		List<String> includeGlobs = new ArrayList<>();
@@ -621,13 +641,11 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			else {
 				List<TestClass> batchTestClasses = new ArrayList<>(testClasses);
 
-				JUnitTestClassBalancedListSplitter
-					jUnitTestClassBalancedListSplitter =
-						new JUnitTestClassBalancedListSplitter(
-							targetAxisDuration);
+				TestClassBalancedListSplitter testClassBalancedListSplitter =
+					new TestClassBalancedListSplitter(targetAxisDuration);
 
 				List<List<TestClass>> testClassLists =
-					jUnitTestClassBalancedListSplitter.split(batchTestClasses);
+					testClassBalancedListSplitter.split(batchTestClasses);
 
 				for (List<TestClass> testClassList : testClassLists) {
 					AxisTestClassGroup axisTestClassGroup =
@@ -646,9 +664,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 				return;
 			}
 
-			int testClassCount = testClasses.size();
-
-			if (testClassCount == 0) {
+			if (!containsTestClasses()) {
 				if (!_includeAutoBalanceTests) {
 					return;
 				}
@@ -657,8 +673,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 					0, TestClassGroupFactory.newAxisTestClassGroup(this));
 			}
 			else {
+				List<TestClass> testClasses = getTestClasses();
+
 				int axisSize = (int)Math.ceil(
-					(double)testClassCount / axisCount);
+					(double)getTestClassCount() / axisCount);
 
 				for (List<TestClass> axisTestClasses :
 						Lists.partition(testClasses, axisSize)) {
@@ -706,12 +724,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 
 		long start = System.currentTimeMillis();
 
-		List<PathMatcher> filterPathMatchers = getPathMatchers(
-			getFilterJobProperties());
 		List<PathMatcher> excludesPathMatchers = getPathMatchers(
 			getExcludesJobProperties());
-
-		BatchTestClassGroup batchTestClassGroup = this;
+		List<PathMatcher> filterPathMatchers = getPathMatchers(
+			getFilterJobProperties());
 
 		for (final File javaTestClassFile : _javaTestClassFiles) {
 			if (JenkinsResultsParserUtil.isFileExcluded(
@@ -725,13 +741,26 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 				continue;
 			}
 
-			TestClass testClass = TestClassFactory.newTestClass(
-				batchTestClassGroup, javaTestClassFile);
+			TestClass testClass = null;
+
+			List<String> testClassMethodNames = getTestClassMethodNames(
+				javaTestClassFile, getGlobTestClassMethodNamesMap());
+
+			if ((testClassMethodNames != null) &&
+				!testClassMethodNames.isEmpty()) {
+
+				testClass = TestClassFactory.newTestClass(
+					this, javaTestClassFile, testClassMethodNames);
+			}
+			else {
+				testClass = TestClassFactory.newTestClass(
+					this, javaTestClassFile);
+			}
 
 			if ((testClass != null) && !testClass.isIgnored() &&
 				testClass.hasTestClassMethods()) {
 
-				testClasses.add(testClass);
+				addTestClass(testClass);
 			}
 		}
 
@@ -740,10 +769,8 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
 				"[", getBatchName(), "] Found ",
-				String.valueOf(testClasses.size()), " test classes in ",
+				String.valueOf(getTestClassCount()), " test classes in ",
 				JenkinsResultsParserUtil.toDurationString(duration)));
-
-		Collections.sort(testClasses);
 	}
 
 	protected void setTestClasses(JUnitTestSelector jUnitTestSelector) {
@@ -792,7 +819,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 			if ((testClass != null) && !testClass.isIgnored() &&
 				testClass.hasTestClassMethods()) {
 
-				testClasses.add(testClass);
+				addTestClass(testClass);
 			}
 		}
 
@@ -801,10 +828,8 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		System.out.println(
 			JenkinsResultsParserUtil.combine(
 				"[", getBatchName(), "] Found ",
-				String.valueOf(testClasses.size()), " test classes in ",
+				String.valueOf(getTestClassCount()), " test classes in ",
 				JenkinsResultsParserUtil.toDurationString(duration)));
-
-		Collections.sort(testClasses);
 	}
 
 	private File _getWorkingDirectory() {
@@ -936,7 +961,7 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 	}
 
 	private void _setIncludeAutoBalanceTests() {
-		if (!testClasses.isEmpty()) {
+		if (containsTestClasses()) {
 			_includeAutoBalanceTests = true;
 
 			return;

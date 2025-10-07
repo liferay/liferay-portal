@@ -8,7 +8,9 @@ package com.liferay.fragment.staging.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
 import com.liferay.fragment.test.util.FragmentStagingTestUtil;
 import com.liferay.fragment.test.util.FragmentTestUtil;
@@ -18,6 +20,7 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -29,6 +32,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -108,6 +112,43 @@ public class FragmentCollectionStagingTest {
 	}
 
 	@Test
+	@TestInfo("LPD-57728")
+	public void testMarketplaceFragmentEntriesNotCopiedWhenLocalStagingActivated()
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_liveGroup.getGroupId());
+
+		FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection.getFragmentCollectionId());
+
+		FragmentEntry marketplaceFragmentEntry =
+			FragmentEntryTestUtil.addFragmentEntry(
+				fragmentCollection.getFragmentCollectionId());
+
+		marketplaceFragmentEntry.setMarketplace(true);
+
+		_fragmentEntryLocalService.updateFragmentEntry(
+			marketplaceFragmentEntry);
+
+		_stagingGroup = FragmentStagingTestUtil.enableLocalStaging(_liveGroup);
+
+		FragmentCollection stagingFragmentCollection =
+			_fragmentCollectionLocalService.
+				fetchFragmentCollectionByUuidAndGroupId(
+					fragmentCollection.getUuid(), _stagingGroup.getGroupId());
+
+		Assert.assertNotNull(stagingFragmentCollection);
+
+		List<FragmentEntry> fragmentEntries =
+			_fragmentEntryLocalService.getFragmentEntries(
+				stagingFragmentCollection.getFragmentCollectionId());
+
+		Assert.assertEquals(
+			fragmentEntries.toString(), 2, fragmentEntries.size());
+	}
+
+	@Test
 	public void testSingleFragmentResourceCopiedWhenLocalStagingActivated()
 		throws Exception {
 
@@ -161,6 +202,9 @@ public class FragmentCollectionStagingTest {
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
+
+	@Inject
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _liveGroup;

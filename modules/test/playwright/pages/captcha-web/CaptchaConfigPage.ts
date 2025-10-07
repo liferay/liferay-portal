@@ -66,22 +66,6 @@ export class CaptchaConfigPage {
 		await this.page.getByRole('option', {name: captchaEngine}).click();
 	}
 
-	async disableCaptcha() {
-		await this.goTo();
-
-		await this.maxChallenges.fill('-1');
-
-		await this.disableCreateAccountCaptcha(false);
-
-		await this.disableSendPasswordCaptcha(false);
-
-		await this.disableMessageBoardsEditCategoryCaptcha(false);
-
-		await this.disableMessageBoardsEditMessageCaptcha(false);
-
-		await this.saveConfiguration();
-	}
-
 	async disableCreateAccountCaptcha(saveConfiguration: boolean = true) {
 		await this.createAccountCaptchaEnabled.uncheck();
 		await expect(this.createAccountCaptchaEnabled).not.toBeChecked();

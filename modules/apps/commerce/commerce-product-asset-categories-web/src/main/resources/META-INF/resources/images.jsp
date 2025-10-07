@@ -68,7 +68,7 @@ CategoryCPAttachmentFileEntriesManagementToolbarDisplayContext categoryCPAttachm
 
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand-smallest table-cell-ws-nowrap"
-				name="extension"
+				name="extension[file]"
 				value="<%= HtmlUtil.escape(fileEntry.getExtension()) %>"
 			/>
 

@@ -67,6 +67,8 @@ public class FileEntryInfoItemItemSelectorReturnTypeResolver
 		).put(
 			"classTypeId", (classType != null) ? classType.getClassTypeId() : 0
 		).put(
+			"externalReferenceCode", fileEntry.getExternalReferenceCode()
+		).put(
 			"subtype",
 			(classType != null) ? classType.getName() : StringPool.BLANK
 		).put(

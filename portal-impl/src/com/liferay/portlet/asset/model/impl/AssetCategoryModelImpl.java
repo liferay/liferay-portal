@@ -195,7 +195,7 @@ public class AssetCategoryModelImpl
 	public static final long VOCABULARYID_COLUMN_BITMASK = 128L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.asset.kernel.model.AssetCategory"));
 
 	public AssetCategoryModelImpl() {

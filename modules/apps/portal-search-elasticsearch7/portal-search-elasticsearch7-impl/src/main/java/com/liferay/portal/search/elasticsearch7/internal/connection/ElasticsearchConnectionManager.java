@@ -21,6 +21,8 @@ import com.liferay.portal.search.elasticsearch7.internal.configuration.Elasticse
 import com.liferay.portal.search.elasticsearch7.internal.connection.constants.ConnectionConstants;
 import com.liferay.portal.search.elasticsearch7.internal.helper.SearchLogHelperUtil;
 
+import java.lang.reflect.Field;
+
 import java.net.InetSocketAddress;
 
 import java.util.ArrayList;
@@ -32,6 +34,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.function.Supplier;
 
+import org.apache.http.HttpHost;
+
+import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import org.osgi.framework.BundleContext;
@@ -243,6 +248,32 @@ public class ElasticsearchConnectionManager
 					"REST high level client not found.",
 					elasticsearchConnection.getConnectionId(),
 					preferLocalCluster));
+		}
+
+		try {
+			RestClient restClient = restHighLevelClient.getLowLevelClient();
+
+			Class<?> clazz = restClient.getClass();
+
+			Field blacklistField = clazz.getDeclaredField("blacklist");
+
+			blacklistField.setAccessible(true);
+
+			ConcurrentHashMap<HttpHost, Object> map =
+				(ConcurrentHashMap<HttpHost, Object>)blacklistField.get(
+					restClient);
+
+			for (HttpHost httpHost : map.keySet()) {
+				_log.error(
+					"The REST client network host address " +
+						httpHost.toString() + " is blacklisted");
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to get REST client blacklist field", exception);
+			}
 		}
 
 		return restHighLevelClient;

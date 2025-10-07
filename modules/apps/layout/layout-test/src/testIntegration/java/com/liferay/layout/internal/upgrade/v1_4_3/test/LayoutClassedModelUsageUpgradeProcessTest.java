@@ -79,8 +79,8 @@ public class LayoutClassedModelUsageUpgradeProcessTest {
 		throws Exception {
 
 		return _layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(), _dlFileEntryClassNameId,
-			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			_dlFileEntryClassNameId, RandomTestUtil.nextLong(),
 			RandomTestUtil.randomString(), RandomTestUtil.nextLong(),
 			RandomTestUtil.nextLong(), _serviceContext);
 	}

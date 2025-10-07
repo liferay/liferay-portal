@@ -387,6 +387,14 @@ public class KBArticleLocalServiceWrapper
 	}
 
 	@Override
+	public KBArticle fetchKBArticleByExternalReferenceCode(
+		long groupId, String externalReferenceCode, int version) {
+
+		return _kbArticleLocalService.fetchKBArticleByExternalReferenceCode(
+			groupId, externalReferenceCode, version);
+	}
+
+	@Override
 	public KBArticle fetchKBArticleByUrlTitle(
 		long groupId, long kbFolderId, String urlTitle) {
 
@@ -434,6 +442,15 @@ public class KBArticleLocalServiceWrapper
 		return _kbArticleLocalService.
 			fetchLatestKBArticleByExternalReferenceCode(
 				groupId, externalReferenceCode);
+	}
+
+	@Override
+	public KBArticle fetchLatestKBArticleByExternalReferenceCode(
+		long groupId, String externalReferenceCode, int status) {
+
+		return _kbArticleLocalService.
+			fetchLatestKBArticleByExternalReferenceCode(
+				groupId, externalReferenceCode, status);
 	}
 
 	@Override

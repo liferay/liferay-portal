@@ -13,12 +13,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Brian Wing Shun Chan
@@ -327,9 +327,66 @@ public class LocaleUtil {
 		return displayNames;
 	}
 
+	public static String toJSONString(Locale locale) {
+		Set<Character> extensionKeys = locale.getExtensionKeys();
+		Set<String> unicodeLocaleAttributes =
+			locale.getUnicodeLocaleAttributes();
+		Set<String> unicodeLocaleKeys = locale.getUnicodeLocaleKeys();
+
+		StringBundler sb = new StringBundler(
+			29 + (extensionKeys.size() * 3) +
+				(unicodeLocaleAttributes.size() * 3) +
+					(unicodeLocaleKeys.size() * 3));
+
+		sb.append("{\"country\": \"");
+		sb.append(locale.getCountry());
+		sb.append("\", \"displayCountry\": \"");
+		sb.append(locale.getDisplayCountry());
+		sb.append("\", \"displayLanguage\": \"");
+		sb.append(locale.getDisplayLanguage());
+		sb.append("\", \"displayName\": \"");
+		sb.append(locale.getDisplayName());
+		sb.append("\", \"displayScript\": \"");
+		sb.append(locale.getDisplayScript());
+		sb.append("\", \"displayVariant\": \"");
+		sb.append(locale.getDisplayVariant());
+		sb.append("\", \"extensionKeys\":");
+
+		_putValues(sb, extensionKeys);
+
+		sb.append(",\"ISO3Country\": \"");
+		sb.append(locale.getISO3Country());
+		sb.append("\", \"ISO3Language\": \"");
+		sb.append(locale.getISO3Language());
+		sb.append("\", \"language\": \"");
+		sb.append(locale.getLanguage());
+		sb.append("\", \"script\": \"");
+		sb.append(locale.getScript());
+		sb.append("\", \"unicodeLocaleAttributes\":");
+
+		_putValues(sb, unicodeLocaleAttributes);
+
+		sb.append(", \"unicodeLocaleKeys\":");
+
+		_putValues(sb, unicodeLocaleKeys);
+
+		sb.append(", \"variant\": \"");
+		sb.append(locale.getVariant());
+
+		sb.append("\"}");
+
+		return sb.toString();
+	}
+
 	public static String toLanguageId(Locale locale) {
 		if (locale == null) {
 			locale = _locale;
+		}
+
+		String languageId = _languageIds.get(locale);
+
+		if (languageId != null) {
+			return languageId;
 		}
 
 		String country = locale.getCountry();
@@ -349,7 +406,11 @@ public class LocaleUtil {
 		}
 
 		if (!hasCountry && !hasVariant) {
-			return locale.getLanguage();
+			languageId = locale.getLanguage();
+
+			_languageIds.put(locale, languageId);
+
+			return languageId;
 		}
 
 		int length = 3;
@@ -372,7 +433,11 @@ public class LocaleUtil {
 			sb.append(variant);
 		}
 
-		return sb.toString();
+		languageId = sb.toString();
+
+		_languageIds.put(locale, languageId);
+
+		return languageId;
 	}
 
 	public static String[] toLanguageIds(Collection<Locale> locales) {
@@ -470,15 +535,13 @@ public class LocaleUtil {
 				languageId, CharPool.MINUS, CharPool.UNDERLINE);
 		}
 
-		int pos = languageId.indexOf(CharPool.UNDERLINE);
+		String[] languageIdParts = StringUtil.split(
+			languageId, CharPool.UNDERLINE);
 
-		if (pos == -1) {
+		if (languageIdParts.length < 2) {
 			locale = new Locale(languageId);
 		}
 		else {
-			String[] languageIdParts = StringUtil.split(
-				languageId, CharPool.UNDERLINE);
-
 			String languageCode = languageIdParts[0];
 			String countryCode = languageIdParts[1];
 
@@ -538,11 +601,34 @@ public class LocaleUtil {
 		return displayName;
 	}
 
+	private static void _putValues(StringBundler sb, Collection<?> values) {
+		if (values.isEmpty()) {
+			sb.append("[]");
+
+			return;
+		}
+
+		sb.append("[");
+
+		for (Object value : values) {
+			sb.append("\"");
+			sb.append(value);
+			sb.append("\",");
+		}
+
+		sb.setIndex(sb.length() - 1);
+
+		sb.append("\"]");
+	}
+
 	private static final String _BETA_SUFFIX = " [Beta]";
 
 	private static final Log _log = LogFactoryUtil.getLog(LocaleUtil.class);
 
+	private static final Map<Locale, String> _languageIds =
+		new ConcurrentHashMap<>();
 	private static Locale _locale = new Locale("en", "US");
-	private static final Map<String, Locale> _locales = new HashMap<>();
+	private static final Map<String, Locale> _locales =
+		new ConcurrentHashMap<>();
 
 }

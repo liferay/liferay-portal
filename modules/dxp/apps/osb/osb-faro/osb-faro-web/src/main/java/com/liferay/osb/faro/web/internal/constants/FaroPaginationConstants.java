@@ -6,7 +6,7 @@
 package com.liferay.osb.faro.web.internal.constants;
 
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.Map;
 

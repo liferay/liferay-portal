@@ -9,20 +9,21 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import getCN from 'classnames';
 import React from 'react';
 
-function CharacterThresholdInput({onBlur, onChange, touched, value}) {
+function CharacterThresholdInput({index, onBlur, onChange, touched, value}) {
 	return (
 		<ClayInput.GroupItem
 			className={getCN({
 				'has-error': typeof value !== undefined && value < 0 && touched,
 			})}
 		>
-			<label>
+			<label htmlFor={`characterThreshold${index}`}>
 				{Liferay.Language.get('character-threshold')}
 
 				<ClayTooltipProvider>
 					<span
 						className="c-ml-2"
 						data-tooltip-align="top"
+						tabIndex={0}
 						title={Liferay.Language.get(
 							'character-threshold-for-displaying-suggestions-contributor-help'
 						)}
@@ -34,6 +35,7 @@ function CharacterThresholdInput({onBlur, onChange, touched, value}) {
 
 			<ClayInput
 				aria-label={Liferay.Language.get('character-threshold')}
+				id={`characterThreshold${index}`}
 				min="0"
 				onBlur={onBlur}
 				onChange={onChange}

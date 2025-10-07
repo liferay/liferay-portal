@@ -619,7 +619,7 @@
 									</div>
 								`);
 
-								const titleNode = document.querySelector(
+								const titleNode = portlet._node.querySelector(
 									'.portlet-title-text'
 								);
 
@@ -726,19 +726,25 @@
 										onClickOutside
 									);
 
+									let timeoutId;
+
+									clearTimeout(timeoutId);
+
 									titleNode.addEventListener('blur', () => {
-										titleNode.removeEventListener(
-											'keyup',
-											keyUpFn
-										);
-										confirmEditTitleButton.removeEventListener(
-											'click',
-											confirmEditFn
-										);
-										cancelEditTitleButton.removeEventListener(
-											'click',
-											cancelEditFn
-										);
+										timeoutId = setTimeout(() => {
+											titleNode.removeEventListener(
+												'keyup',
+												keyUpFn
+											);
+											confirmEditTitleButton.removeEventListener(
+												'click',
+												confirmEditFn
+											);
+											cancelEditTitleButton.removeEventListener(
+												'click',
+												cancelEditFn
+											);
+										}, 100);
 									});
 								});
 							}

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Contacts API
 Bundle-SymbolicName: com.liferay.contacts.api
-Bundle-Version: 8.0.3
+Bundle-Version: 8.0.4
 Export-Package:\
 	com.liferay.contacts.constants,\
 	com.liferay.contacts.exception,\

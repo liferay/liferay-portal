@@ -13,6 +13,7 @@ import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupR
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelLocalServiceUtil;
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelLocalServiceUtil;
 import com.liferay.commerce.discount.service.CommerceDiscountLocalServiceUtil;
+import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelLocalServiceUtil;
 import com.liferay.commerce.discount.service.CommerceDiscountRelLocalServiceUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
@@ -34,7 +35,7 @@ import java.util.Calendar;
  */
 public class CommerceDiscountTestUtil {
 
-	public static CommerceDiscount addAccountAndChannelDiscount(
+	public static CommerceDiscount addAccountAndChannelCommerceDiscount(
 			long groupId, long commerceAccountId, long commerceChannelId,
 			String level, long cpDefinitionId)
 		throws Exception {
@@ -60,7 +61,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountAndChannelOrderDiscount(
+	public static CommerceDiscount addAccountAndChannelOrderCommerceDiscount(
 			long groupId, long commerceAccountId, long commerceChannelId,
 			String type)
 		throws Exception {
@@ -85,7 +86,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountDiscount(
+	public static CommerceDiscount addAccountCommerceDiscount(
 			long groupId, long commerceAccountId, String level,
 			long cpDefinitionId)
 		throws Exception {
@@ -106,7 +107,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountGroupAndChannelDiscount(
+	public static CommerceDiscount addAccountGroupAndChannelCommerceDiscount(
 			long groupId, long[] commerceAccountGroupIds,
 			long commerceChannelId, String level, long cpDefinitionId)
 		throws Exception {
@@ -134,9 +135,10 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountGroupAndChannelOrderDiscount(
-			long groupId, long[] commerceAccountGroupIds,
-			long commerceChannelId, String type)
+	public static CommerceDiscount
+			addAccountGroupAndChannelOrderCommerceDiscount(
+				long groupId, long[] commerceAccountGroupIds,
+				long commerceChannelId, String type)
 		throws Exception {
 
 		CommerceDiscount commerceDiscount = addFixedCommerceDiscount(
@@ -161,7 +163,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountGroupDiscount(
+	public static CommerceDiscount addAccountGroupCommerceDiscount(
 			long groupId, long[] commerceAccountGroupIds, String level,
 			long cpDefinitionId)
 		throws Exception {
@@ -184,7 +186,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountGroupOrderDiscount(
+	public static CommerceDiscount addAccountGroupOrderCommerceDiscount(
 			long groupId, long[] commerceAccountGroupIds, String type)
 		throws Exception {
 
@@ -205,7 +207,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addAccountOrderDiscount(
+	public static CommerceDiscount addAccountOrderCommerceDiscount(
 			long groupId, long commerceAccountId, String type)
 		throws Exception {
 
@@ -224,7 +226,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addChannelDiscount(
+	public static CommerceDiscount addChannelCommerceDiscount(
 			long groupId, long commerceChannelId, String level,
 			long cpDefinitionId)
 		throws Exception {
@@ -241,7 +243,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addChannelOrderDiscount(
+	public static CommerceDiscount addChannelOrderCommerceDiscount(
 			long groupId, long commerceChannelId, String type)
 		throws Exception {
 
@@ -256,7 +258,7 @@ public class CommerceDiscountTestUtil {
 		return commerceDiscount;
 	}
 
-	public static CommerceDiscount addCouponDiscount(
+	public static CommerceDiscount addCouponCommerceDiscount(
 			long groupId, double amount, String couponCode,
 			String limitationType, int limitationTimes,
 			int limitationTimesPerAccount, String target, long... targetIds)
@@ -290,12 +292,12 @@ public class CommerceDiscountTestUtil {
 			calendar.get(Calendar.MINUTE), true, serviceContext);
 	}
 
-	public static CommerceDiscount addCouponDiscount(
+	public static CommerceDiscount addCouponCommerceDiscount(
 			long groupId, double amount, String couponCode, String target,
 			long... targetIds)
 		throws Exception {
 
-		return addCouponDiscount(
+		return addCouponCommerceDiscount(
 			groupId, amount, couponCode,
 			CommerceDiscountConstants.LIMITATION_TYPE_LIMITED, 1, 0, target,
 			targetIds);
@@ -378,6 +380,27 @@ public class CommerceDiscountTestUtil {
 				calendar.get(Calendar.MINUTE), true, serviceContext);
 
 		_addTargetDetails(groupId, commerceDiscount, target, null, targetIds);
+
+		return commerceDiscount;
+	}
+
+	public static CommerceDiscount addOrderTypeCommerceDiscount(
+			long groupId, long commerceOrderTypeId, String level,
+			long cpDefinitionId, int priority)
+		throws Exception {
+
+		CommerceDiscount commerceDiscount = addPercentageCommerceDiscount(
+			groupId, BigDecimal.valueOf(RandomTestUtil.randomDouble()), level,
+			CommerceDiscountConstants.TARGET_PRODUCTS, cpDefinitionId);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId);
+
+		CommerceDiscountOrderTypeRelLocalServiceUtil.
+			addCommerceDiscountOrderTypeRel(
+				serviceContext.getUserId(),
+				commerceDiscount.getCommerceDiscountId(), commerceOrderTypeId,
+				priority, ServiceContextTestUtil.getServiceContext(groupId));
 
 		return commerceDiscount;
 	}

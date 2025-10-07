@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Calendar Service
 Bundle-SymbolicName: com.liferay.calendar.service
-Bundle-Version: 6.0.86
+Bundle-Version: 6.0.89
 Import-Package:\
 	!edu.emory.*,\
 	\
@@ -15,6 +15,6 @@ Import-Package:\
 	!org.codehaus.*,\
 	\
 	*
-Liferay-Require-SchemaVersion: 4.3.0
+Liferay-Require-SchemaVersion: 4.4.0
 Liferay-Service: true
 -dsannotations-options: inherit

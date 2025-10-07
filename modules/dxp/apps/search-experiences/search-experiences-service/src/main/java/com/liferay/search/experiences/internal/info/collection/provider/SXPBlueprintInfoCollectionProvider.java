@@ -6,7 +6,6 @@
 package com.liferay.search.experiences.internal.info.collection.provider;
 
 import com.liferay.asset.util.AssetHelper;
-import com.liferay.info.collection.provider.BetaInfoCollectionProvider;
 import com.liferay.info.collection.provider.CollectionQuery;
 import com.liferay.info.collection.provider.FilteredInfoCollectionProvider;
 import com.liferay.info.collection.provider.SingleFormVariationInfoCollectionProvider;
@@ -18,6 +17,7 @@ import com.liferay.info.pagination.Pagination;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -38,7 +38,7 @@ import java.util.Locale;
  * @author Petteri Karttunen
  */
 public abstract class SXPBlueprintInfoCollectionProvider<T>
-	implements BetaInfoCollectionProvider<T>, FilteredInfoCollectionProvider<T>,
+	implements FilteredInfoCollectionProvider<T>,
 			   SingleFormVariationInfoCollectionProvider<T> {
 
 	public SXPBlueprintInfoCollectionProvider(
@@ -90,7 +90,14 @@ public abstract class SXPBlueprintInfoCollectionProvider<T>
 
 	@Override
 	public boolean isAvailable() {
-		return FeatureFlagManagerUtil.isEnabled("LPS-129412");
+		if (FeatureFlagManagerUtil.isEnabled("LPS-129412") &&
+			(sxpBlueprint.getCompanyId() ==
+				CompanyThreadLocal.getCompanyId())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	protected SearchRequestBuilder getSearchRequestBuilder(

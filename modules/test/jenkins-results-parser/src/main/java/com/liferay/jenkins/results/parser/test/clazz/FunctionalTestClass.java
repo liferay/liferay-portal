@@ -5,7 +5,9 @@
 
 package com.liferay.jenkins.results.parser.test.clazz;
 
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.TestReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.poshi.core.PoshiContext;
 
@@ -38,6 +40,35 @@ public class FunctionalTestClass extends BaseTestClass {
 
 		return _testClassMethodName.compareTo(
 			functionalTestClass.getTestClassMethodName());
+	}
+
+	public DownstreamBuildReport getCachedDownstreamBuildReport() {
+		if (!isBuildCachingEnabled()) {
+			return null;
+		}
+
+		TestReport cachedTestReport = getCachedTestReport();
+
+		if (cachedTestReport == null) {
+			return null;
+		}
+
+		return cachedTestReport.getDownstreamBuildReport();
+	}
+
+	public TestReport getCachedTestReport() {
+		if (!isBuildCachingEnabled() || _cachedTestReportSearched) {
+			return _cachedTestReport;
+		}
+
+		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
+
+		_cachedTestReport = batchTestClassGroup.getCachedTestReport(
+			getTestClassMethodName());
+
+		_cachedTestReportSearched = true;
+
+		return _cachedTestReport;
 	}
 
 	@Override
@@ -141,6 +172,8 @@ public class FunctionalTestClass extends BaseTestClass {
 	private static final Pattern _poshiTestCasePattern = Pattern.compile(
 		"(?<namespace>[^\\.]+)\\.(?<className>[^\\#]+)\\#(?<methodName>.*)");
 
+	private TestReport _cachedTestReport;
+	private boolean _cachedTestReportSearched;
 	private final Properties _poshiProperties;
 	private final String _testClassMethodName;
 

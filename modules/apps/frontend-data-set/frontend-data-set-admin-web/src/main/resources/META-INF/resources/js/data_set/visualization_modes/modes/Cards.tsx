@@ -15,10 +15,10 @@ import React, {useEffect, useState} from 'react';
 import '../../../../css/CardsVisualizationMode.scss';
 import AddDataSourceFieldsModalContent from '../../../components/AddDataSourceFieldsModalContent';
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
 } from '../../../utils/constants';
+import getDataSetResourceURL from '../../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
 import {IField, IFieldTreeItem} from '../../../utils/types';
@@ -29,6 +29,7 @@ import FieldAssignmentControls from '../components/FieldAssignmentControls';
 interface IFDSCardsSection {
 	externalReferenceCode: string;
 	fieldName: string;
+	id: string;
 	name: string;
 	rendererName?: string;
 }
@@ -36,6 +37,7 @@ interface ICardsSection {
 	externalReferenceCode?: IFDSCardsSection['externalReferenceCode'];
 	field?: IField;
 	fieldTreeItems: Array<IFieldTreeItem>;
+	id?: IFDSCardsSection['id'];
 	label: string;
 	name: IFDSCardsSection['name'];
 }
@@ -56,10 +58,12 @@ export default function Cards(props: IDataSetSectionProps) {
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const getFDSCardsSections = async () => {
-		const response = await fetch(
-			`${API_URL.CARDS_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS_ERC} eq '${dataSet.externalReferenceCode}')`,
-			{headers: DEFAULT_FETCH_HEADERS}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
+		});
+
+		const response = await fetch(url, {headers: DEFAULT_FETCH_HEADERS});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -99,6 +103,7 @@ export default function Cards(props: IDataSetSectionProps) {
 					field: {
 						name: fdsCardsSection.fieldName,
 					},
+					id: fdsCardsSection.id,
 				};
 			})
 		);
@@ -121,10 +126,13 @@ export default function Cards(props: IDataSetSectionProps) {
 
 		setSaveButtonDisabled(true);
 
-		const response = await fetch(
-			`${API_URL.CARDS_SECTIONS}/by-external-reference-code/${cardsSection.externalReferenceCode}`,
-			{method: 'DELETE'}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			relatedResourceERC: String(cardsSection.externalReferenceCode),
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
+		});
+
+		const response = await fetch(url, {method: 'DELETE'});
 
 		setSaveButtonDisabled(false);
 
@@ -167,18 +175,29 @@ export default function Cards(props: IDataSetSectionProps) {
 	}) => {
 		setSaveButtonDisabled(true);
 
-		let method = 'POST';
-		let url = API_URL.CARDS_SECTIONS;
+		let method;
+		let url;
 
 		if (cardsSection.externalReferenceCode) {
 			method = 'PATCH';
-			url = `${API_URL.CARDS_SECTIONS}/by-external-reference-code/${cardsSection.externalReferenceCode}`;
+
+			url = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relatedResourceERC: cardsSection.externalReferenceCode,
+				relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
+			});
+		}
+		else {
+			method = 'POST';
+
+			url = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
+			});
 		}
 
 		const response = await fetch(url, {
 			body: JSON.stringify({
-				[OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS_ERC]:
-					dataSet.externalReferenceCode,
 				fieldName: field.name,
 				name: cardsSection.name,
 			}),
@@ -220,6 +239,7 @@ export default function Cards(props: IDataSetSectionProps) {
 	useEffect(() => {
 		getFDSCardsSections();
 
+		// eslint-disable-next-line react-compiler/react-compiler
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

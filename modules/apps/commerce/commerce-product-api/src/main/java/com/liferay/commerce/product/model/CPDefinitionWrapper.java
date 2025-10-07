@@ -1421,13 +1421,6 @@ public class CPDefinitionWrapper
 	}
 
 	@Override
-	public boolean isVisible(long cpConfigurationListId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return model.isVisible(cpConfigurationListId);
-	}
-
-	@Override
 	public void persist() {
 		model.persist();
 	}

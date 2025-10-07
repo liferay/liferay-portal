@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
@@ -208,7 +209,7 @@ public class ViewSpacesSectionDisplayContextTest
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_SPACE,
 			new ServiceContext() {
 				{
 					setCompanyId(group.getCompanyId());
@@ -235,7 +236,7 @@ public class ViewSpacesSectionDisplayContextTest
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_SPACE,
 			new ServiceContext() {
 				{
 					setCompanyId(group.getCompanyId());

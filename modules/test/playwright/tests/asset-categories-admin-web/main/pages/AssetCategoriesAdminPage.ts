@@ -39,4 +39,13 @@ export class AssetCategoriesAdminPage {
 	async gotoVocabulary(name: string) {
 		await this.page.getByRole('menuitem', {name}).click();
 	}
+
+	async deleteAllCategories() {
+		await this.page.getByLabel('Select All Items on the Page').check();
+		await this.page.getByRole('button', {name: 'Delete'}).click();
+		await this.page
+			.getByLabel('Delete Categories')
+			.getByRole('button', {name: 'Delete'})
+			.click();
+	}
 }

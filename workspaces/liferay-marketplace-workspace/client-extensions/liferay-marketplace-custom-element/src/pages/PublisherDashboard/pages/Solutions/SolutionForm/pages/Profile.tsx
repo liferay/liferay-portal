@@ -14,20 +14,20 @@ import {
 	SolutionTypes,
 	useSolutionContext,
 } from '../../../../../../context/SolutionContext';
-import {ProductVocabulary} from '../../../../../../enums/Product';
+import {ProductTags, ProductVocabulary} from '../../../../../../enums/Product';
 import i18n from '../../../../../../i18n';
 import {getIconSpriteMap} from '../../../../../../liferay/constants';
 import {getRandomID} from '../../../../../../utils/string';
 
 const tooltipInfo = {
 	categories: i18n.translate(
-		'choose-the-marketplace-category-that-most-accurately-describes-what-your-solution-does-users-looking-for-specific-types-of-solutions-will-often-browse-categories-by-searching-on-a-specific-category-name-in-the-main-marketplace-home-page-having-your-solution-listed-under-the-appropriate-category-will-help-them-find-your-solution'
+		'choose-the-marketplace-category-that-most-accurately-describes-what-your-solution-does-users-looking-for-specific-types-of-solutions-will-often-browse-categories-by-searching-for-a-specific-category-name-on-the-main-marketplace-home-page-having-your-solution-listed-under-the-appropriate-category-will-help-them-find-it'
 	),
 	description: i18n.translate(
 		'you-can-put-anything-you-want-here-but-a-good-guideline-is-no-more-than-4-5-paragraphs-this-field-does-not-allow-any-markup-tags-its-just-text-please-do-not-use-misleading-names-information-or-icons-descriptions-should-be-as-concise-as-possible-ensure-your-icons-images-descriptions-and-tags-are-free-of-profanity-or-other-offensive-material'
 	),
 	name: i18n.translate(
-		'customers-of-the-marketplace-will-see-this-as-the-name-of-the-solution-please-use-a-title-of-no-longer-than-50-characters-titles-longer-than-18-characters-may-be-truncated-the-solution-title-may-contain-the-word-liferay-to-describe-its-use-or-intent-as-long-as-the-name-does-not-imply-official-certification-or-validation-from-liferay-inc-an-example-of-permissible-names-would-be-exchange-connector-for-liferay-or-integration-connector-kit-for-liferay-while-liferay-mail-solution-or-liferay-management-console-would-not-be-permitted-without-explicit-approval-please-refer-to-our-trademark-policy'
+		'customers-of-the-marketplace-will-see-this-as-the-name-of-the-solution-please-use-a-title-no-longer-than-50-characters-titles-longer-than-18-characters-may-be-truncated-the-solution-title-may-contain-the-word-liferay-to-describe-its-use-or-intent-as-long-as-the-name-does-not-imply-official-certification-or-validation-from-liferay-inc-examples-of-permissible-names-would-include-exchange-connector-for-liferay-or-integration-connector-kit-for-liferay-while-liferay-mail-solution-or-liferay-management-console-would-not-be-permitted-without-explicit-approval-please-refer-to-our-trademark-policy'
 	),
 	tags: i18n.translate(
 		'tags-help-to-describe-your-solution-in-the-marketplace-select-the-tags-most-relevant-to-your-solution-they-can-be-changed-if-needed'
@@ -83,6 +83,7 @@ const Profile = () => {
 			preview: URL.createObjectURL(_file),
 			progress: 0,
 			readableSize: filesize(_file.size),
+			tags: [ProductTags.APP_ICON],
 			uploaded: true,
 		};
 
@@ -192,7 +193,6 @@ const Profile = () => {
 					</Form.Label>
 
 					<ClayMultiSelect
-						{...{placeholder: 'Select categories'}}
 						inputName="description-selector"
 						items={categories}
 						key={`cat-${categories.length}`}
@@ -209,6 +209,7 @@ const Profile = () => {
 								target: {name: 'categories', value},
 							})
 						}
+						placeholder="Select categories"
 						sourceItems={getFilteredItems(
 							categories,
 							defaultSourceItems?.categories
@@ -229,7 +230,6 @@ const Profile = () => {
 					</Form.Label>
 
 					<ClayMultiSelect
-						{...{placeholder: 'Select tags'}}
 						inputName="tags-selector"
 						items={tags}
 						key={`tags-${tags.length}`}
@@ -246,6 +246,7 @@ const Profile = () => {
 								target: {name: 'tags', value},
 							})
 						}
+						placeholder="Select tags"
 						sourceItems={getFilteredItems(
 							tags,
 							defaultSourceItems?.tags

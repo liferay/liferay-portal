@@ -93,6 +93,7 @@ export type TResourceType =
 	| 'Price Modifier'
 	| 'Product'
 	| 'Product Attachment'
+	| 'Product Configuration List'
 	| 'Product Group'
 	| 'Product Link'
 	| 'Product Option'

@@ -22,7 +22,6 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -142,8 +141,8 @@ public class TypedPropertiesTest {
 
 	@Test
 	public void testLoadandSaveMultipleComments() throws IOException {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				TypedProperties.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				TypedProperties.class.getName(), LoggerTestUtil.WARN)) {
 
 			TypedProperties typedProperties = _createTypedProperties(
 				"#comment1\n#comment2\ntestKey = \"testValue\"");
@@ -196,8 +195,8 @@ public class TypedPropertiesTest {
 
 	@Test
 	public void testLoadandSaveTrailingComment() throws IOException {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				TypedProperties.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				TypedProperties.class.getName(), LoggerTestUtil.WARN)) {
 
 			TypedProperties typedProperties = _createTypedProperties(
 				"testKey = \"testValue\"\n#comment");
@@ -234,8 +233,8 @@ public class TypedPropertiesTest {
 	public void testLoadBadLine() throws IOException {
 		String line = "testKey = K\"testValue\"";
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				TypedProperties.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				TypedProperties.class.getName(), LoggerTestUtil.WARN)) {
 
 			TypedProperties typedProperties = _createTypedProperties(line);
 

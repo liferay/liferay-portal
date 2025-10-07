@@ -12,6 +12,7 @@ import com.liferay.frontend.data.set.serializer.FDSSerializer;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -44,6 +45,47 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = FDSRenderer.class)
 public class FDSRendererImpl implements FDSRenderer {
 
+	public String getFDSAPIURL(
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject) {
+
+		FDSSerializer fdsSerializer = _getFDSSerializer(
+			fdsName, httpServletRequest);
+
+		if (fdsSerializer != null) {
+			String fdsAPIURL = fdsSerializer.serializeAPIURL(
+				fdsName, httpServletRequest, interpolate,
+				tokenResolutionsJSONObject);
+
+			String additionalAPIURLParameters =
+				fdsSerializer.serializeAdditionalAPIURLParameters(
+					fdsName, httpServletRequest, interpolate,
+					tokenResolutionsJSONObject);
+
+			if (fdsAPIURL.contains(StringPool.QUESTION) &&
+				Validator.isNotNull(additionalAPIURLParameters)) {
+
+				return fdsAPIURL + StringPool.AMPERSAND +
+					additionalAPIURLParameters;
+			}
+
+			if (Validator.isNotNull(additionalAPIURLParameters)) {
+				return fdsAPIURL + StringPool.QUESTION +
+					additionalAPIURLParameters;
+			}
+
+			return fdsAPIURL;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				"No frontend data set serializer is associated with " +
+					fdsName);
+		}
+
+		return StringPool.BLANK;
+	}
+
 	@Override
 	public void render(
 		Map<String, Object> baseProps, String componentId, String fdsName,
@@ -74,7 +116,8 @@ public class FDSRendererImpl implements FDSRenderer {
 					() -> {
 						String additionalAPIURLParameters =
 							fdsSerializer.serializeAdditionalAPIURLParameters(
-								fdsName, httpServletRequest);
+								fdsName, httpServletRequest, true,
+								(JSONObject)props.get("tokenResolutions"));
 
 						if (Validator.isNull(additionalAPIURLParameters)) {
 							return null;
@@ -86,7 +129,8 @@ public class FDSRendererImpl implements FDSRenderer {
 					"apiURL",
 					() -> {
 						String apiURL = fdsSerializer.serializeAPIURL(
-							fdsName, httpServletRequest);
+							fdsName, httpServletRequest, true,
+							(JSONObject)props.get("tokenResolutions"));
 
 						if (Validator.isNull(apiURL)) {
 							return null;

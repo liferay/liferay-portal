@@ -277,20 +277,16 @@ components:
             allOf:
                 -   $ref: "#/components/schemas/PageElementDefinition"
                 -   properties:
-                        backgroundFragmentImage:
-                            $ref: "#/components/schemas/FragmentImage"
-                            # @review
-                            description:
-                                The background fragment image of the container page element.
                         contentVisibility:
                             # @review
                             description:
                                 The content visibility of the container.
+                            enum: [Auto]
                             type: string
                         cssClasses:
                             # @review
                             description:
-                                A list of CSS Classes that are applied to the element.
+                                A list of CSS Classes that are applied to all viewports.
                             items:
                                 type: string
                             type: array
@@ -299,13 +295,6 @@ components:
                             description:
                                 Custom CSS that is applied on the container page element.
                             type: string
-                        customCSSViewports:
-                            # @review
-                            description:
-                                The custom CSS viewports of the container page element.
-                            items:
-                                $ref: "#/components/schemas/CustomCSSViewport"
-                            type: array
                         fragmentLink:
                             $ref: "#/components/schemas/FragmentLink"
                             # @review
@@ -335,19 +324,19 @@ components:
                             description:
                                 the container page element's layout.
                             properties:
-                                containerType:
-                                    # @review
-                                    description:
-                                        The container's type (fixed or fluid).
-                                    enum: [Fixed, Fluid]
+                                align:
+                                    enum: [Baseline, Center, End, None, Start, Stretch]
+                                    type: string
+                                contentDisplay:
+                                    enum: [Block, FlexColumn, FlexRow]
                                     type: string
                                 flexWrap:
                                     enum: [NoWrap, Wrap, WrapReverse]
                                     type: string
+                                justify:
+                                    enum: [Center, End, None, SpaceAround, SpaceBetween, Start]
+                                    type: string
                                 widthType:
-                                    # @review
-                                    description:
-                                        The width's type (fixed or fluid).
                                     enum: [Fixed, Fluid]
                                     type: string
                             type: object
@@ -449,15 +438,19 @@ components:
                     type: object
             type: object
         DefaultFragmentReference:
+            allOf:
+                -   $ref: "#/components/schemas/FragmentReference"
+                -   properties:
+                        defaultFragmentKey:
+                            # @review
+                            description:
+                                The key of the default fragment.
+                            type: string
             # @review
             description:
                 A reference to a default fragment (provided out-of-the-box).
-            properties:
-                defaultFragmentKey:
-                    # @review
-                    description:
-                        The key of the default fragment.
-                    type: string
+            required:
+                -   defaultFragmentKey
             type: object
         DisplayPageActionExecutionResult:
             # @review
@@ -492,11 +485,6 @@ components:
                         The display page template's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The display page template's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -567,6 +555,10 @@ components:
                     # @review
                     description:
                         The display page template's parent folder.
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 thumbnail:
                     $ref: "#/components/schemas/ItemExternalReference"
                     # @review
@@ -590,11 +582,6 @@ components:
                         The display page template folder's creator. It is not returned by default. It can be embedded
                         via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The display page template folder's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -627,11 +614,20 @@ components:
                     description:
                         The display page template folder's name.
                     type: string
+                parentDisplayPageTemplateFolder:
+                    $ref: "#/components/schemas/DisplayPageTemplateFolder"
+                    # @review
+                    description:
+                        The parent display page template folder.
                 parentDisplayPageTemplateFolderExternalReferenceCode:
                     # @review
                     description:
                         The parent display page template folder's external reference code.
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 uuid:
                     # @review
                     description:
@@ -730,6 +726,40 @@ components:
                         The localized message to display when the collection is empty or no results match the applied
                         filters ('No Results Found' by default).
                     type: object
+        FavIcon:
+            # @review
+            description:
+                The FavIcon of the page specification.
+            discriminator:
+                mapping:
+                    ClientExtension: "#/components/schemas/FavIconClientExtension"
+                    ItemExternalReference: "#/components/schemas/FavIconItemExternalReference"
+                propertyName: favIconType
+            properties:
+                favIconType:
+                    # @review
+                    description:
+                        The FavIcon's type (ClientExtension, ItemExternalReference).
+                    enum: [ClientExtension, ItemExternalReference]
+                    type: string
+            type: object
+        FavIconClientExtension:
+            allOf:
+                -   $ref: "#/components/schemas/ClientExtension"
+                -   $ref: "#/components/schemas/FavIcon"
+            # @review
+            description:
+                A unique reference to a FavIcon of type ClientExtension which remains constant across environments.
+            type: object
+        FavIconItemExternalReference:
+            allOf:
+                -   $ref: "#/components/schemas/FavIcon"
+                -   $ref: "#/components/schemas/ItemExternalReference"
+            # @review
+            description:
+                A unique reference to a FavIcon of type ItemExternalReference which remains constant across
+                environments.
+            type: object
         FormConfig:
             # @review
             description:
@@ -929,11 +959,6 @@ components:
                         The fragment composition's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     description:
                         The structured content's creation date.
@@ -1186,6 +1211,16 @@ components:
             allOf:
                 -   $ref: "#/components/schemas/PageElementDefinition"
                 -   properties:
+                        configuration:
+                            # @review
+                            description:
+                                The fragment instance's configuration.
+                            type: string
+                        css:
+                            # @review
+                            description:
+                                The fragment instance's CSS.
+                            type: string
                         cssClasses:
                             # @review
                             description:
@@ -1210,16 +1245,11 @@ components:
                                 The fragment instance's most recent propagation date.
                             format: date-time
                             type: string
-                        datePublished:
-                            description:
-                                The fragment instance's most recent publication date.
-                            format: date-time
-                            type: string
-                        draftPageElementExternalReferenceCode:
+                        draftFragmentInstanceExternalReferenceCode:
                             # @review
                             description:
-                                The external reference code of the corresponding page element in the draft of the page.
-                                Available only in the published page specification.
+                                The external reference code of the corresponding fragment instance in the draft of the
+                                page. Available only in the published page specification.
                             type: string
                         fragmentConfig:
                             additionalProperties:
@@ -1235,18 +1265,29 @@ components:
                             items:
                                 $ref: "#/components/schemas/FragmentField"
                             type: array
-                        fragmentReference:
+                        fragmentInstanceExternalReferenceCode:
                             # @review
                             description:
-                                An external reference to the fragment.
-                            oneOf:
-                                -   $ref: "#/components/schemas/DefaultFragmentReference"
-                                -   $ref: "#/components/schemas/ItemExternalReference"
+                                The fragment instance's external reference code.
+                            type: string
+                        fragmentReference:
+                            $ref: "#/components/schemas/FragmentReference"
+                            # @review
+                            description:
+                                The fragment reference of the fragment instance.
+                            type: object
                         fragmentStyle:
                             $ref: "#/components/schemas/FragmentStyle"
                             # @review
                             description:
                                 The fragment style of the fragment instance page element.
+                            type: string
+                        fragmentType:
+                            # @review
+                            description:
+                                The fragment instance's type (basic, form).
+                            enum: [Basic, Form]
+                            type: string
                         fragmentViewports:
                             # @review
                             description:
@@ -1254,11 +1295,21 @@ components:
                             items:
                                 $ref: "#/components/schemas/FragmentViewport"
                             type: array
+                        html:
+                            # @review
+                            description:
+                                The fragment instance's HTML.
+                            type: string
                         indexed:
                             # @review
                             description:
                                 A flag that indicates whether the fragment instance page element is indexed or not.
                             type: boolean
+                        js:
+                            # @review
+                            description:
+                                The fragment instance's JS.
+                            type: string
                         name:
                             # @review
                             description:
@@ -1285,44 +1336,70 @@ components:
             description:
                 A page element definition of a fragment instance.
             type: object
+        FragmentItemExternalReference:
+            allOf:
+                -   $ref: "#/components/schemas/FragmentReference"
+                -   $ref: "#/components/schemas/ItemExternalReference"
+            # @review
+            description:
+                A unique reference to a fragment which remains constant across environments.
+            type: object
         FragmentLink:
             # @review
             description:
                 A fragment link.
             properties:
-                value_i18n:
-                    additionalProperties:
-                        $ref: "#/components/schemas/FragmentLinkValue"
+                target:
                     # @review
                     description:
-                        The localized fragment link's values.
-                    type: object
+                        The fragment link value's target (blank, self).
+                    enum: [Blank, Self]
+                    type: string
+                value:
+                    $ref: "#/components/schemas/FragmentLinkValue"
+                    description:
+                        The fragment link's value.
+        FragmentLinkInlineValue:
+            # @review
+            allOf:
+                -   $ref: "#/components/schemas/FragmentInlineValue"
+                -   $ref: "#/components/schemas/FragmentLinkValue"
+            description:
+                A unique reference to a FragmentLinkValue of type FragmentInlineValue which remains constant across
+                environments.
+            type: object
+        FragmentLinkMappedValue:
+            # @review
+            allOf:
+                -   $ref: "#/components/schemas/FragmentLinkValue"
+                -   $ref: "#/components/schemas/FragmentMappedValue"
+            description:
+                A unique reference to a FragmentLinkValue of type FragmentMappedValue which remains constant across
+                environments.
+            type: object
         FragmentLinkValue:
             # @review
             description:
                 A fragment link value.
+            discriminator:
+                mapping:
+                    FragmentInlineValue: "#/components/schemas/FragmentLinkInlineValue"
+                    FragmentMappedValue: "#/components/schemas/FragmentLinkMappedValue"
+                propertyName: type
             properties:
-                href:
+                type:
                     # @review
                     description:
                         The fragment link value's hypertext reference. Can be an inline value or mapped to an external
                         value.
-                    oneOf:
-                        -   $ref: "#/components/schemas/FragmentInlineValue"
-                        -   $ref: "#/components/schemas/FragmentMappedValue"
-                target:
-                    # @review
-                    description:
-                        The fragment link value's target (blank, parent, self, top).
-                    enum: [Blank, Parent, Self, Top]
+                    enum: [FragmentInlineValue, FragmentMappedValue]
                     type: string
+            type: object
         FragmentMappedValue:
-            # @review
             description:
                 A fragment mapped value.
             properties:
                 mapping:
-                    # @review
                     description:
                         The mapping of the fragment mapped value.
                     properties:
@@ -1333,12 +1410,59 @@ components:
                             type: string
                         itemReference:
                             # @review
+                            $ref: "#/components/schemas/FragmentMappedValueItemReference"
                             description:
                                 The mapping's item reference.
-                            oneOf:
-                                -   $ref: "#/components/schemas/ItemExternalReference"
-                                -   $ref: "#/components/schemas/ContextReference"
                     type: object
+            type: object
+        FragmentMappedValueItemContextReference:
+            # @review
+            allOf:
+                -   $ref: "#/components/schemas/ContextReference"
+                -   $ref: "#/components/schemas/FragmentMappedValueItemReference"
+            description:
+                A unique reference to a FragmentMappedValueItemReference of type FragmentMappedValueItemContextReference
+                which remains constant across environments.
+            type: object
+        FragmentMappedValueItemExternalReference:
+            # @review
+            allOf:
+                -   $ref: "#/components/schemas/FragmentMappedValueItemReference"
+                -   $ref: "#/components/schemas/ItemExternalReference"
+            description:
+                A unique reference to a FragmentMappedValueItemReference of type
+                FragmentMappedValueItemExternalReference which remains constant across environments.
+            type: object
+        FragmentMappedValueItemReference:
+            description:
+                A fragment mapped value item reference.
+            discriminator:
+                mapping:
+                    ContextReference: "#/components/schemas/FragmentMappedValueItemContextReference"
+                    ItemExternalReference: "#/components/schemas/FragmentMappedValueItemExternalReference"
+                propertyName: type
+            properties:
+                type:
+                    description:
+                        The fragment mapped item reference. Can be a context reference value or external reference to an
+                        external value.
+                    enum: [ContextReference, ItemExternalReference]
+        FragmentReference:
+            # @review
+            description:
+                The reference to the fragment.
+            discriminator:
+                mapping:
+                    DefaultFragmentReference: "#/components/schemas/DefaultFragmentReference"
+                    FragmentItemExternalReference: "#/components/schemas/FragmentItemExternalReference"
+                propertyName: fragmentReferenceType
+            properties:
+                fragmentReferenceType:
+                    # @review
+                    description:
+                        The fragment reference's type (DefaultFragmentReference, FragmentItemExternalReference).
+                    enum: [DefaultFragmentReference, FragmentItemExternalReference]
+                    type: string
             type: object
         FragmentSettingsAllowed:
             # @review
@@ -1514,6 +1638,10 @@ components:
             description:
                 A fragment viewport.
             properties:
+                customCSS:
+                    description:
+                        Custom CSS that is applied to the fragment viewport.
+                    type: string
                 fragmentViewportStyle:
                     # @review
                     description:
@@ -1661,7 +1789,6 @@ components:
                         The fragment viewport's ID.
                     type: string
             required:
-                -   fragmentViewportStyle
                 -   id
             type: object
         FriendlyUrlHistory:
@@ -1720,11 +1847,6 @@ components:
                     description:
                         The master page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -1752,19 +1874,11 @@ components:
                     description:
                         The master page's key.
                     type: string
-                keywordItemExternalReferences:
-                    description:
-                        The external references to the associated keywords.
-                    items:
-                        $ref: "#/components/schemas/ItemExternalReference"
-                    type: array
                 keywords:
                     description:
-                        The associated keywords. They are not returned by default. They can be embedded via
-                        nestedFields.
+                        A list of keywords describing the master page.
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#Keyword
-                    readOnly: true
+                        type: string
                     type: array
                 markedAsDefault:
                     # @review
@@ -1785,14 +1899,9 @@ components:
                     items:
                         $ref: "#/components/schemas/PageSpecification"
                     type: array
-                taxonomyCategories:
-                    # @review
-                    description:
-                        The associated categories. They are not returned by default. They can be embedded via
-                        nestedFields.
+                permissions:
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#TaxonomyCategory
-                    readOnly: true
+                        type: permission
                     type: array
                 taxonomyCategoryItemExternalReferences:
                     # @review
@@ -1831,20 +1940,15 @@ components:
                 showNotification:
                     type: boolean
             type: object
-        NavigationMenuSettings:
+        NavigationSettings:
             # @review
             description:
-                Represents settings related with the site navigation menu of a page.
+                Represents settings related with the site navigation of a page.
             properties:
-                queryString:
-                    # @review
-                    description:
-                        The default parameter for a page.
-                    type: string
                 target:
                     # @review
                     description:
-                        The page's description to be used as summary for search engines.
+                        The ID of the target specific frame.
                     type: string
                 targetType:
                     # @review
@@ -2147,16 +2251,30 @@ components:
                     description:
                         A flag that indicates whether the page is hidden from navigation.
                     type: boolean
-                navigationMenuSettings:
-                    $ref: "#/components/schemas/NavigationMenuSettings"
+                navigationSettings:
+                    $ref: "#/components/schemas/NavigationSettings"
                     # @review
                     description:
-                        The page's site navigation menu settings.
+                        The page's site navigation settings.
                 openGraphSettings:
                     $ref: "#/components/schemas/OpenGraphSettings"
                     # @review
                     description:
                         The page's Open Graph settings.
+                priority:
+                    # @review
+                    description:
+                        The priority of the page, determining the order in which the page will be listed, for example
+                        within the page administration.
+                    format: int32
+                    maximum: 2147483647
+                    minimum: 0
+                    type: integer
+                queryString:
+                    # @review
+                    description:
+                        The default parameter for a page.
+                    type: string
                 seoSettings:
                     $ref: "#/components/schemas/SEOSettings"
                     # @review
@@ -2180,6 +2298,14 @@ components:
                     WidgetPageSpecification: "#/components/schemas/WidgetPageSpecification"
                 propertyName: type
             properties:
+                customFields:
+                    # @review
+                    description:
+                        Custom fields associated with the page specification. Not available if this page specification
+                        belongs to a utility page.
+                    items:
+                        type: customField
+                    type: array
                 externalReferenceCode:
                     description:
                         The page specification's external reference code, unique per site.
@@ -2221,11 +2347,6 @@ components:
                     description:
                         The page template's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2254,19 +2375,11 @@ components:
                     description:
                         The page template's key.
                     type: string
-                keywordItemExternalReferences:
-                    description:
-                        The external references to the associated keywords.
-                    items:
-                        $ref: "#/components/schemas/ItemExternalReference"
-                    type: array
                 keywords:
                     description:
-                        The associated keywords. They are not returned by default. They can be embedded via
-                        nestedFields.
+                        A list of keywords describing the page template.
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#Keyword
-                    readOnly: true
+                        type: string
                     type: array
                 name:
                     # @review
@@ -2293,14 +2406,9 @@ components:
                     # @review
                     description:
                         The settings of the page template.
-                taxonomyCategories:
-                    # @review
-                    description:
-                        The associated categories. They are not returned by default. They can be embedded via
-                        nestedFields.
+                permissions:
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#TaxonomyCategory
-                    readOnly: true
+                        type: permission
                     type: array
                 taxonomyCategoryItemExternalReferences:
                     # @review
@@ -2335,11 +2443,6 @@ components:
                         The page template set's creator. It is not returned by default. It can be embedded via
                         nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page template set's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2372,6 +2475,10 @@ components:
                     description:
                         The page template set's name.
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 uuid:
                     description:
                         A valid external identifier to reference this page template set.
@@ -2383,8 +2490,8 @@ components:
                 The settings of the page template.
             discriminator:
                 mapping:
-                    ContentPageTemplate: "#/components/schemas/ContentPageTemplateSettings"
-                    WidgetPageTemplate: "#/components/schemas/WidgetPageTemplateSettings"
+                    ContentPageTemplateSettings: "#/components/schemas/ContentPageTemplateSettings"
+                    WidgetPageTemplateSettings: "#/components/schemas/WidgetPageTemplateSettings"
                 propertyName: type
             properties:
                 type:
@@ -2571,12 +2678,10 @@ components:
                         The page specification's CSS.
                     type: string
                 favIcon:
+                    $ref: "#/components/schemas/FavIcon"
                     # @review
                     description:
                         The FavIcon of the page specification.
-                    oneOf:
-                        -   $ref: "#/components/schemas/ClientExtension"
-                        -   $ref: "#/components/schemas/ItemExternalReference"
                 globalCSSClientExtensions:
                     description:
                         The client extensions for global CSS associated to the page.
@@ -2647,18 +2752,6 @@ components:
                     description:
                         The page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The page's creator external reference code.
-                    type: string
-                customFields:
-                    # @review
-                    description:
-                        Custom fields associated with the page.
-                    items:
-                        type: customField
-                    type: array
                 dateCreated:
                     # @review
                     description:
@@ -2694,20 +2787,11 @@ components:
                     description:
                         The localized relative URLs to the page's rendered content.
                     type: object
-                keywordItemExternalReferences:
-                    description:
-                        The external references to the associated keywords.
-                    items:
-                        $ref: "#/components/schemas/ItemExternalReference"
-                    type: array
                 keywords:
-                    # @review
                     description:
-                        The associated keywords. They are not returned by default. They can be embedded via
-                        nestedFields.
+                        A list of keywords describing the site page.
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#Keyword
-                    readOnly: true
+                        type: string
                     type: array
                 name_i18n:
                     additionalProperties:
@@ -2736,14 +2820,9 @@ components:
                     description:
                         The parent page external reference code or null if it is a top level page.
                     type: string
-                taxonomyCategories:
-                    # @review
-                    description:
-                        The associated categories. They are not returned by default. They can be embedded via
-                        nestedFields.
+                permissions:
                     items:
-                        $ref: ../../headless-admin-taxonomy/headless-admin-taxonomy-impl/rest-openapi.yaml#TaxonomyCategory
-                    readOnly: true
+                        type: permission
                     type: array
                 taxonomyCategoryItemExternalReferences:
                     # @review
@@ -2860,11 +2939,6 @@ components:
                     description:
                         The utility page's creator. It is not returned by default. It can be embedded via nestedFields.
                     readOnly: true
-                creatorExternalReferenceCode:
-                    # @review
-                    description:
-                        The utility page's creator external reference code.
-                    type: string
                 dateCreated:
                     # @review
                     description:
@@ -2919,6 +2993,10 @@ components:
                         default. It can be requested via nestedFields.
                     items:
                         $ref: "#/components/schemas/PageSpecification"
+                    type: array
+                permissions:
+                    items:
+                        type: permission
                     type: array
                 thumbnail:
                     $ref: "#/components/schemas/ItemExternalReference"
@@ -3065,6 +3143,293 @@ components:
             description:
                 The page element definition of a widget instance.
             type: object
+        WidgetLookAndFeelConfig:
+            # @review
+            description:
+                A widget instance's look and feel configuration.
+            properties:
+                advancedStylingConfig:
+                    properties:
+                        customCSS:
+                            type: string
+                        customCSSClassNames:
+                            type: string
+                    type: object
+                backgroundStylesConfig:
+                    properties:
+                        backgroundColor:
+                            example: "#FF0D0D"
+                            type: string
+                    type: object
+                borderStylesConfig:
+                    properties:
+                        borderColor:
+                            properties:
+                                bottom:
+                                    example: "#FF0D0D"
+                                    type: string
+                                left:
+                                    example: "#FF0D0D"
+                                    type: string
+                                right:
+                                    example: "#FF0D0D"
+                                    type: string
+                                sameForAll:
+                                    type: boolean
+                                top:
+                                    example: "#FF0D0D"
+                                    type: string
+                            type: object
+                        borderStyle:
+                            properties:
+                                bottom:
+                                    enum:
+                                        -   Dashed
+                                        -   Doubled
+                                        -   Dotted
+                                        -   Groove
+                                        -   Hidden
+                                        -   Inset
+                                        -   Outset
+                                        -   Ridge
+                                        -   Solid
+                                    type: string
+                                left:
+                                    enum:
+                                        -   Dashed
+                                        -   Doubled
+                                        -   Dotted
+                                        -   Groove
+                                        -   Hidden
+                                        -   Inset
+                                        -   Outset
+                                        -   Ridge
+                                        -   Solid
+                                    type: string
+                                right:
+                                    enum:
+                                        -   Dashed
+                                        -   Doubled
+                                        -   Dotted
+                                        -   Groove
+                                        -   Hidden
+                                        -   Inset
+                                        -   Outset
+                                        -   Ridge
+                                        -   Solid
+                                    type: string
+                                sameForAll:
+                                    type: boolean
+                                top:
+                                    enum:
+                                        -   Dashed
+                                        -   Doubled
+                                        -   Dotted
+                                        -   Groove
+                                        -   Hidden
+                                        -   Inset
+                                        -   Outset
+                                        -   Ridge
+                                        -   Solid
+                                    type: string
+                            type: object
+                        borderWidth:
+                            properties:
+                                bottom:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                left:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                right:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                sameForAll:
+                                    type: boolean
+                                top:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                            type: object
+                    type: object
+                generalConfig:
+                    properties:
+                        applicationDecorator:
+                            enum: [Barebone, Borderless, Decorate]
+                            type: string
+                        customTitle_i18n:
+                            additionalProperties:
+                                type: string
+                            # @review
+                            description:
+                                The localized custom titles.
+                            type: object
+                        useCustomTitle:
+                            # @review
+                            description:
+                                Whether to use a custom title.
+                            type: boolean
+                    type: object
+                marginAndPaddingConfig:
+                    properties:
+                        margin:
+                            properties:
+                                bottom:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                left:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                right:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                sameForAll:
+                                    type: boolean
+                                top:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                            type: object
+                        padding:
+                            properties:
+                                bottom:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                left:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                right:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                                sameForAll:
+                                    type: boolean
+                                top:
+                                    properties:
+                                        unit:
+                                            enum:
+                                                -   Emphasis
+                                                -   Percentage
+                                                -   Pixel
+                                            type: string
+                                        value:
+                                            type: string
+                                    type: object
+                            type: object
+                    type: object
+                textStylesConfig:
+                    properties:
+                        alignment:
+                            enum: [Center, Justify, Left, Right]
+                            type: string
+                        bold:
+                            type: boolean
+                        color:
+                            example: "#FF0D0D"
+                            type: string
+                        font:
+                            enum: [Arial, Georgia, Tahoma, TimesNewRoman, TrebuchetMS, Verdana]
+                            type: string
+                        italic:
+                            type: boolean
+                        letterSpacing:
+                            type: string
+                        lineHeight:
+                            type: string
+                        size:
+                            type: string
+                        textDecoration:
+                            enum: [None, Overline, Strikethrough, Underline]
+                            type: string
+                        wordSpacing:
+                            type: string
+                    type: object
+            type: object
         WidgetPageSection:
             # @review
             description:
@@ -3085,7 +3450,7 @@ components:
                         A list of the widget instances within this page section.
                     items:
                         $ref: "#/components/schemas/WidgetPageWidgetInstance"
-                    type: array
+                    type: array                    
         WidgetPageSettings:
             allOf:
                 -   $ref: "#/components/schemas/PageSettings"
@@ -3186,23 +3551,11 @@ components:
                             description:
                                 The identifier of the layout template.
                             type: string
-                        navigationMenuSettings:
+                        navigationSettings:
+                            $ref: "#/components/schemas/NavigationSettings"
                             # @review
                             description:
-                                The widget page template's site navigation menu settings.
-                            properties:
-                                target:
-                                    # @review
-                                    description:
-                                        The page's description to be used as summary for search engines.
-                                    type: string
-                                targetType:
-                                    # @review
-                                    description:
-                                        The target's type (specific frame or new tab).
-                                    enum: [SpecificFrame, NewTab]
-                                    type: string
-                            type: object
+                                The widget page template's site navigation settings.
             # @review
             description:
                 The settings of a widget page template.
@@ -3233,298 +3586,10 @@ components:
                             minimum: 0
                             type: integer
                         widgetLookAndFeelConfig:
+                            $ref: "#/components/schemas/WidgetLookAndFeelConfig"
                             # @review
                             description:
                                 The widget instance's look and feel configuration.
-                            items:
-                                properties:
-                                    advancedStylingConfig:
-                                        properties:
-                                            customCSS:
-                                                type: string
-                                            customCSSClassNames:
-                                                type: string
-                                        type: object
-                                    backgroundStylesConfig:
-                                        properties:
-                                            backgroundColor:
-                                                example: "#FF0D0D"
-                                                type: string
-                                        type: object
-                                    borderStylesConfig:
-                                        properties:
-                                            borderColor:
-                                                properties:
-                                                    bottom:
-                                                        example: "#FF0D0D"
-                                                        type: string
-                                                    left:
-                                                        example: "#FF0D0D"
-                                                        type: string
-                                                    right:
-                                                        example: "#FF0D0D"
-                                                        type: string
-                                                    sameForAll:
-                                                        type: boolean
-                                                    top:
-                                                        example: "#FF0D0D"
-                                                        type: string
-                                                type: object
-                                            borderStyle:
-                                                properties:
-                                                    bottom:
-                                                        enum:
-                                                            -   Dashed
-                                                            -   Doubled
-                                                            -   Dotted
-                                                            -   Groove
-                                                            -   Hidden
-                                                            -   Dotted
-                                                            -   Inset
-                                                            -   Outset
-                                                            -   Ridge
-                                                            -   Solid
-                                                        type: string
-                                                    left:
-                                                        enum:
-                                                            -   Dashed
-                                                            -   Doubled
-                                                            -   Dotted
-                                                            -   Groove
-                                                            -   Hidden
-                                                            -   Dotted
-                                                            -   Inset
-                                                            -   Outset
-                                                            -   Ridge
-                                                            -   Solid
-                                                        type: string
-                                                    right:
-                                                        enum:
-                                                            -   Dashed
-                                                            -   Doubled
-                                                            -   Dotted
-                                                            -   Groove
-                                                            -   Hidden
-                                                            -   Dotted
-                                                            -   Inset
-                                                            -   Outset
-                                                            -   Ridge
-                                                            -   Solid
-                                                        type: string
-                                                    sameForAll:
-                                                        type: boolean
-                                                    top:
-                                                        enum:
-                                                            -   Dashed
-                                                            -   Doubled
-                                                            -   Dotted
-                                                            -   Groove
-                                                            -   Hidden
-                                                            -   Dotted
-                                                            -   Inset
-                                                            -   Outset
-                                                            -   Ridge
-                                                            -   Solid
-                                                        type: string
-                                                type: object
-                                            borderWidth:
-                                                properties:
-                                                    bottom:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    left:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    right:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    sameForAll:
-                                                        type: boolean
-                                                    top:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                type: object
-                                        type: object
-                                    generalConfig:
-                                        properties:
-                                            applicationDecorator:
-                                                enum: [Barebone, Borderless, Decorate]
-                                                type: string
-                                            customTitle_i18n:
-                                                additionalProperties:
-                                                    type: string
-                                                # @review
-                                                description:
-                                                    The localized custom titles.
-                                                type: object
-                                            useCustomTitle:
-                                                # @review
-                                                description:
-                                                    Whether to use a custom title.
-                                                type: boolean
-                                        type: object
-                                    marginAndPaddingConfig:
-                                        properties:
-                                            margin:
-                                                properties:
-                                                    bottom:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    left:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    right:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    sameForAll:
-                                                        type: boolean
-                                                    top:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                type: object
-                                            padding:
-                                                properties:
-                                                    bottom:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    left:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    right:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                    sameForAll:
-                                                        type: boolean
-                                                    top:
-                                                        properties:
-                                                            unit:
-                                                                enum:
-                                                                    -   Emphasis
-                                                                    -   Percentage
-                                                                    -   Pixel
-                                                                type: string
-                                                            value:
-                                                                type: string
-                                                        type: object
-                                                type: object
-                                        type: object
-                                    textStylesConfig:
-                                        properties:
-                                            alignment:
-                                                enum: [Center, Justify, Left, Right]
-                                                type: string
-                                            bold:
-                                                type: boolean
-                                            color:
-                                                example: "#FF0D0D"
-                                                type: string
-                                            font:
-                                                enum: [Arial, Georgia, Tahoma, TimesNewRoman, TrebuchetMS, Verdana]
-                                                type: string
-                                            italic:
-                                                type: boolean
-                                            letterSpacing:
-                                                type: string
-                                            lineHeight:
-                                                type: string
-                                            size:
-                                                type: string
-                                            textDecoration:
-                                                enum: [None, Overline, Strikethrough, Underline]
-                                                type: string
-                                            wordSpacing:
-                                                type: string
-                                        type: object
-                                type: object
-                            type: array
             # @review
             description:
                 A widget instance in a widget page.
@@ -3532,7 +3597,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.site.client', and version '1.0.11'."
+        'com.liferay.headless.admin.site.client', and version '1.0.16'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -3545,7 +3610,7 @@ paths:
             # @review
             description:
                 Retrieves the display page template folders of the site.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplateFoldersPage
+            operationId: getSiteDisplayPageTemplateFoldersPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3608,7 +3673,7 @@ paths:
             # @review
             description:
                 Adds a new display page template folder.
-            operationId: postSiteSiteByExternalReferenceCodeDisplayPageTemplateFolder
+            operationId: postSiteDisplayPageTemplateFolder
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3639,7 +3704,7 @@ paths:
             # @review
             description:
                 Deletes a specific display page template folder of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeDisplayPageTemplateFolder
+            operationId: deleteSiteDisplayPageTemplateFolder
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3661,7 +3726,7 @@ paths:
             # @review
             description:
                 Retrieves a specific display page template folder of a site.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplateFolder
+            operationId: getSiteDisplayPageTemplateFolder
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3699,7 +3764,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeDisplayPageTemplateFolder
+            operationId: patchSiteDisplayPageTemplateFolder
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3746,7 +3811,7 @@ paths:
             description:
                 Updates the display page template folder with the given external reference code, or creates it if it
                 does not exist.
-            operationId: putSiteSiteByExternalReferenceCodeDisplayPageTemplateFolder
+            operationId: putSiteDisplayPageTemplateFolder
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3793,7 +3858,7 @@ paths:
             # @review
             description:
                 Retrieves all the display page templates within a display page template folder of a site page.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplateFolderDisplayPageTemplatesPage
+            operationId: getSiteDisplayPageTemplateFolderDisplayPageTemplatesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3840,7 +3905,7 @@ paths:
             # @review
             description:
                 Adds a new display page template in draft status to a display page template folder.
-            operationId: postSiteSiteByExternalReferenceCodeDisplayPageTemplateFolderDisplayPageTemplate
+            operationId: postSiteDisplayPageTemplateFolderDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3885,6 +3950,7 @@ paths:
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-template-folders/{displayPageTemplateFolderExternalReferenceCode}/permissions":
         get:
+            operationId: getSiteDisplayPageTemplateFolderPermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3915,6 +3981,7 @@ paths:
                         application/xml: {}
             tags: ["DisplayPageTemplateFolder"]
         put:
+            operationId: putSiteDisplayPageTemplateFolderPermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -3941,7 +4008,7 @@ paths:
             # @review
             description:
                 Retrieves the display page templates of the site
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplatesPage
+            operationId: getSiteDisplayPageTemplatesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4004,7 +4071,7 @@ paths:
             # @review
             description:
                 Adds a new display page template
-            operationId: postSiteSiteByExternalReferenceCodeDisplayPageTemplate
+            operationId: postSiteDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4035,7 +4102,7 @@ paths:
             # @review
             description:
                 Deletes a specific display page template of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeDisplayPageTemplate
+            operationId: deleteSiteDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4057,7 +4124,7 @@ paths:
             # @review
             description:
                 Retrieves a specific display page template of a site.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplate
+            operationId: getSiteDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4095,7 +4162,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeDisplayPageTemplate
+            operationId: patchSiteDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4142,7 +4209,7 @@ paths:
             description:
                 Updates the display page template with the given external reference code, or creates it if it does not
                 exist.
-            operationId: putSiteSiteByExternalReferenceCodeDisplayPageTemplate
+            operationId: putSiteDisplayPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4189,7 +4256,7 @@ paths:
             # @review
             description:
                 Retrieves the history of previously used URLs for a display page template.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplateFriendlyUrlHistory
+            operationId: getSiteDisplayPageTemplateFriendlyUrlHistory
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4227,7 +4294,7 @@ paths:
             # @review
             description:
                 Retrieves all the page specifications of a display page template.
-            operationId: getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPage
+            operationId: getSiteDisplayPageTemplatePageSpecificationsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4269,7 +4336,7 @@ paths:
             # @review
             description:
                 Adds a new page specification in draft status to a display page template.
-            operationId: postSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecification
+            operationId: postSiteDisplayPageTemplatePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4314,6 +4381,7 @@ paths:
             tags: ["DisplayPageTemplate"]
     "/sites/{siteExternalReferenceCode}/display-page-templates/{displayPageTemplateExternalReferenceCode}/permissions":
         get:
+            operationId: getSiteDisplayPageTemplatePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4344,6 +4412,7 @@ paths:
                         application/xml: {}
             tags: ["DisplayPageTemplate"]
         put:
+            operationId: putSiteDisplayPageTemplatePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4370,7 +4439,7 @@ paths:
             # @review
             description:
                 Retrieves the fragment compositions of the site.
-            operationId: getSiteSiteByExternalReferenceCodeFragmentCompositionsPage
+            operationId: getSiteFragmentCompositionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4429,7 +4498,7 @@ paths:
                 Adds a new fragment composition. If the page element of the fragment composition does not contain a
                 definition property and contains an external reference code, the page element will be retrieved based on
                 the externalReferenceCode and used for creating the fragment composition.
-            operationId: postSiteSiteByExternalReferenceCodeFragmentComposition
+            operationId: postSiteFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4472,7 +4541,7 @@ paths:
             # @review
             description:
                 Deletes a specific fragment composition of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeFragmentComposition
+            operationId: deleteSiteFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4494,7 +4563,7 @@ paths:
             # @review
             description:
                 Retrieves a specific fragment composition of a site.
-            operationId: getSiteSiteByExternalReferenceCodeFragmentComposition
+            operationId: getSiteFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4532,7 +4601,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeFragmentComposition
+            operationId: patchSiteFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4579,7 +4648,7 @@ paths:
             description:
                 Updates the fragment composition with the given external reference code, or creates it if it does not
                 exist.
-            operationId: putSiteSiteByExternalReferenceCodeFragmentComposition
+            operationId: putSiteFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4626,7 +4695,7 @@ paths:
             # @review
             description:
                 Retrieves the master pages of the site.
-            operationId: getSiteSiteByExternalReferenceCodeMasterPagesPage
+            operationId: getSiteMasterPagesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4689,7 +4758,7 @@ paths:
             # @review
             description:
                 Adds a new master page.
-            operationId: postSiteSiteByExternalReferenceCodeMasterPage
+            operationId: postSiteMasterPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4720,7 +4789,7 @@ paths:
             # @review
             description:
                 Deletes a specific master page of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeMasterPage
+            operationId: deleteSiteMasterPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4742,7 +4811,7 @@ paths:
             # @review
             description:
                 Retrieves a specific master page of a site.
-            operationId: getSiteSiteByExternalReferenceCodeMasterPage
+            operationId: getSiteMasterPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4780,7 +4849,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeMasterPage
+            operationId: patchSiteMasterPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4826,7 +4895,7 @@ paths:
             # @review
             description:
                 Updates the master page with the given external reference code, or creates it if it does not exist.
-            operationId: putSiteSiteByExternalReferenceCodeMasterPage
+            operationId: putSiteMasterPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4873,7 +4942,7 @@ paths:
             # @review
             description:
                 Retrieves all the page specifications of a master page.
-            operationId: getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPage
+            operationId: getSiteMasterPagePageSpecificationsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4915,7 +4984,7 @@ paths:
             # @review
             description:
                 Adds a new page specification in draft status to a master page.
-            operationId: postSiteSiteByExternalReferenceCodeMasterPagePageSpecification
+            operationId: postSiteMasterPagePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4960,6 +5029,7 @@ paths:
             tags: ["MasterPage"]
     "/sites/{siteExternalReferenceCode}/master-pages/{masterPageExternalReferenceCode}/permissions":
         get:
+            operationId: getSiteMasterPagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -4990,6 +5060,7 @@ paths:
                         application/xml: {}
             tags: ["MasterPage"]
         put:
+            operationId: putSiteMasterPagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5017,7 +5088,7 @@ paths:
             description:
                 Deletes an experience of a specific page specification of a site page within a site. The default
                 experience cannot be deleted.
-            operationId: deleteSiteSiteByExternalReferenceCodePageExperience
+            operationId: deleteSitePageExperience
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5051,7 +5122,7 @@ paths:
             # @review
             description:
                 Retrieves an experience of a specific page specification of a site page within a site.
-            operationId: getSiteSiteByExternalReferenceCodePageExperience
+            operationId: getSitePageExperience
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5090,7 +5161,7 @@ paths:
             description:
                 Updates an experience of a specific page specification of a site page within a site. Updates only the
                 fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageExperience
+            operationId: patchSitePageExperience
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5136,7 +5207,7 @@ paths:
             # @review
             description:
                 Updates an experience of a specific page specification of a site page within a site.
-            operationId: putSiteSiteByExternalReferenceCodePageExperience
+            operationId: putSitePageExperience
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5183,7 +5254,7 @@ paths:
             # @review
             description:
                 Retrieves all the page rules within an experience in a page specification of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageExperiencePageRulesPage
+            operationId: getSitePageExperiencePageRulesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5229,7 +5300,7 @@ paths:
             # @review
             description:
                 Adds a new page rule to an experience in a page specification in draft status of a site page.
-            operationId: postSiteSiteByExternalReferenceCodePageExperiencePageRule
+            operationId: postSitePageExperiencePageRule
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5277,7 +5348,7 @@ paths:
             description:
                 Deletes a page rule action within a page rule of an experience of a specific page specification of a
                 site page within a site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageRuleAction
+            operationId: deleteSitePageRuleAction
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5312,7 +5383,7 @@ paths:
             description:
                 Retrieves a page rule action within a page rule of an experience of a specific page specification of a
                 site page within a site.
-            operationId: getSiteSiteByExternalReferenceCodePageRuleAction
+            operationId: getSitePageRuleAction
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5352,7 +5423,7 @@ paths:
                 Updates a page rule action within a page rule of an experience of a specific page specification of a
                 site page within a site. Updates only the fields received in the request body, leaving any other fields
                 untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageRuleAction
+            operationId: patchSitePageRuleAction
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5399,7 +5470,7 @@ paths:
             description:
                 Updates a page rule action within a page rule of an experience of a specific page specification of a
                 site page within a site.
-            operationId: putSiteSiteByExternalReferenceCodePageRuleAction
+            operationId: putSitePageRuleAction
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5447,7 +5518,7 @@ paths:
             description:
                 Deletes a page rule condition within a page rule of an experience of a specific page specification of a
                 site page within a site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageRuleCondition
+            operationId: deleteSitePageRuleCondition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5482,7 +5553,7 @@ paths:
             description:
                 Retrieves a page rule condition within a page rule of an experience of a specific page specification of
                 a site page within a site.
-            operationId: getSiteSiteByExternalReferenceCodePageRuleCondition
+            operationId: getSitePageRuleCondition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5522,7 +5593,7 @@ paths:
                 Updates a page rule condition within a page rule of an experience of a specific page specification of a
                 site page within a site. Updates only the fields received in the request body, leaving any other fields
                 untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageRuleCondition
+            operationId: patchSitePageRuleCondition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5569,7 +5640,7 @@ paths:
             description:
                 Updates a page rule condition within a page rule of an experience of a specific page specification of a
                 site page within a site.
-            operationId: putSiteSiteByExternalReferenceCodePageRuleCondition
+            operationId: putSitePageRuleCondition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5616,7 +5687,7 @@ paths:
             # @review
             description:
                 Deletes a page rule within an experience of a specific page specification of a site page within a site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageRule
+            operationId: deleteSitePageRule
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5650,7 +5721,7 @@ paths:
             # @review
             description:
                 Retrieves page rule within an experience of a specific page specification of a site page within a site.
-            operationId: getSiteSiteByExternalReferenceCodePageRule
+            operationId: getSitePageRule
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5689,7 +5760,7 @@ paths:
             description:
                 Updates a page rule within an experience of a specific page specification of a site page within a site.
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageRule
+            operationId: patchSitePageRule
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5735,7 +5806,7 @@ paths:
             # @review
             description:
                 Updates a page rule within an experience of a specific page specification of a site page within a site.
-            operationId: putSiteSiteByExternalReferenceCodePageRule
+            operationId: putSitePageRule
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5782,7 +5853,7 @@ paths:
             # @review
             description:
                 Retrieves all the page rule action actions within an experience in a page specification of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPage
+            operationId: getSitePageRulePageRuleActionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5830,7 +5901,7 @@ paths:
             description:
                 Adds a new page rule action to a page rule in an experience in a page specification in draft status of a
                 site page.
-            operationId: postSiteSiteByExternalReferenceCodePageRulePageRuleAction
+            operationId: postSitePageRulePageRuleAction
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5878,7 +5949,7 @@ paths:
             description:
                 Retrieves all the page rule condition conditions within an experience in a page specification of a site
                 page.
-            operationId: getSiteSiteByExternalReferenceCodePageRulePageRuleConditionsPage
+            operationId: getSitePageRulePageRuleConditionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5926,7 +5997,7 @@ paths:
             description:
                 Adds a new page rule condition to a page rule in an experience in a page specification in draft status
                 of a site page.
-            operationId: postSiteSiteByExternalReferenceCodePageRulePageRuleCondition
+            operationId: postSitePageRulePageRuleCondition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -5973,7 +6044,7 @@ paths:
             # @review
             description:
                 Deletes a page specification of a site page.
-            operationId: deleteSiteSiteByExternalReferenceCodePageSpecification
+            operationId: deleteSitePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6007,7 +6078,7 @@ paths:
             # @review
             description:
                 Retrieves a page specification of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageSpecification
+            operationId: getSitePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6046,7 +6117,7 @@ paths:
             description:
                 Updates a page specification of a site page. Updates only the fields received in the request body,
                 leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageSpecification
+            operationId: patchSitePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6092,7 +6163,7 @@ paths:
             # @review
             description:
                 Updates a page specification of a site page.
-            operationId: putSiteSiteByExternalReferenceCodePageSpecification
+            operationId: putSitePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6139,7 +6210,7 @@ paths:
             # @review
             description:
                 Retrieves all the experiences of a page specification.
-            operationId: getSiteSiteByExternalReferenceCodePageSpecificationPageExperiencesPage
+            operationId: getSitePageSpecificationPageExperiencesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6182,7 +6253,7 @@ paths:
             # @review
             description:
                 Adds a new experience to a page specification of a site page.
-            operationId: postSiteSiteByExternalReferenceCodePageSpecificationPageExperience
+            operationId: postSitePageSpecificationPageExperience
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6230,7 +6301,7 @@ paths:
             # @review
             description:
                 Retrieves all the page elements within an experience in a page specification of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageExperiencePageElementsPage
+            operationId: getSitePageSpecificationPageExperiencePageElementsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6282,7 +6353,7 @@ paths:
             # @review
             description:
                 Adds a new page element to an experience in a page specification in draft status of a site page.
-            operationId: postSiteSiteByExternalReferenceCodePageExperiencePageElement
+            operationId: postSitePageSpecificationPageExperiencePageElement
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6336,7 +6407,7 @@ paths:
             description:
                 Deletes a page element within an experience of a specific page specification of a site page within a
                 site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageElement
+            operationId: deleteSitePageSpecificationPageExperiencePageElement
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6369,7 +6440,7 @@ paths:
             description:
                 Retrieves a page element within an experience of a specific page specification of a site page within a
                 site.
-            operationId: getSiteSiteByExternalReferenceCodePageElement
+            operationId: getSitePageSpecificationPageExperiencePageElement
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6418,7 +6489,7 @@ paths:
             description:
                 Updates a page element within an experience of a specific page specification of a site page within a
                 site. Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageElement
+            operationId: patchSitePageSpecificationPageExperiencePageElement
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6475,7 +6546,7 @@ paths:
             description:
                 Updates a page element within an experience of a specific page specification of a site page within a
                 site.
-            operationId: putSiteSiteByExternalReferenceCodePageElement
+            operationId: putSitePageSpecificationPageExperiencePageElement
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6534,7 +6605,7 @@ paths:
                 Adds a new fragment composition under a page element of an experience in a page specification of a site
                 page. If successful, the response will contain the page element in which the fragment composition is
                 converted.
-            operationId: postSiteSiteByExternalReferenceCodePageElementFragmentComposition
+            operationId: postSitePageSpecificationPageExperiencePageElementFragmentComposition
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6603,7 +6674,7 @@ paths:
             description:
                 Retrieves all the descendant page elements of a page element within an experience in a page
                 specification of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageElementPageElementsPage
+            operationId: getSitePageSpecificationPageExperiencePageElementPageElementsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6661,7 +6732,7 @@ paths:
             # @review
             description:
                 Publishes a page specification in draft status of a site page.
-            operationId: postSiteSiteByExternalReferenceCodePageSpecificationPublish
+            operationId: postSitePageSpecificationPublish
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6705,7 +6776,7 @@ paths:
             # @review
             description:
                 Retrieves the page template sets of the site
-            operationId: getSiteSiteByExternalReferenceCodePageTemplateSetsPage
+            operationId: getSitePageTemplateSetsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6768,7 +6839,7 @@ paths:
             # @review
             description:
                 Adds a new page template set
-            operationId: postSiteSiteByExternalReferenceCodePageTemplateSet
+            operationId: postSitePageTemplateSet
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6799,7 +6870,7 @@ paths:
             # @review
             description:
                 Deletes a specific page template set of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageTemplateSet
+            operationId: deleteSitePageTemplateSet
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6821,7 +6892,7 @@ paths:
             # @review
             description:
                 Retrieves a specific page template set of a site.
-            operationId: getSiteSiteByExternalReferenceCodePageTemplateSet
+            operationId: getSitePageTemplateSet
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6859,7 +6930,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageTemplateSet
+            operationId: patchSitePageTemplateSet
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6906,7 +6977,7 @@ paths:
             description:
                 Updates the page template set with the given external reference code, or creates it if it does not
                 exist.
-            operationId: putSiteSiteByExternalReferenceCodePageTemplateSet
+            operationId: putSitePageTemplateSet
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -6953,7 +7024,7 @@ paths:
             # @review
             description:
                 Retrieves all the page templates within a page template set of a site page.
-            operationId: getSiteSiteByExternalReferenceCodePageTemplateSetPageTemplatesPage
+            operationId: getSitePageTemplateSetPageTemplatesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7000,7 +7071,7 @@ paths:
             # @review
             description:
                 Adds a new page template in draft status to a page template set.
-            operationId: postSiteSiteByExternalReferenceCodePageTemplateSetPageTemplate
+            operationId: postSitePageTemplateSetPageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7045,6 +7116,7 @@ paths:
             tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/page-template-sets/{pageTemplateSetExternalReferenceCode}/permissions":
         get:
+            operationId: getSitePageTemplateSetPermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7075,6 +7147,7 @@ paths:
                         application/xml: {}
             tags: ["PageTemplateSet"]
         put:
+            operationId: putSitePageTemplateSetPermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7101,7 +7174,7 @@ paths:
             # @review
             description:
                 Retrieves the page templates of the site
-            operationId: getSiteSiteByExternalReferenceCodePageTemplatesPage
+            operationId: getSitePageTemplatesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7164,7 +7237,7 @@ paths:
             # @review
             description:
                 Adds a new page template
-            operationId: postSiteSiteByExternalReferenceCodePageTemplate
+            operationId: postSitePageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7195,7 +7268,7 @@ paths:
             # @review
             description:
                 Deletes a specific page template of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodePageTemplate
+            operationId: deleteSitePageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7217,7 +7290,7 @@ paths:
             # @review
             description:
                 Retrieves a specific page template of a site.
-            operationId: getSiteSiteByExternalReferenceCodePageTemplate
+            operationId: getSitePageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7255,7 +7328,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodePageTemplate
+            operationId: patchSitePageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7301,7 +7374,7 @@ paths:
             # @review
             description:
                 Updates the page template with the given external reference code, or creates it if it does not exist.
-            operationId: putSiteSiteByExternalReferenceCodePageTemplate
+            operationId: putSitePageTemplate
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7348,7 +7421,7 @@ paths:
             # @review
             description:
                 Retrieves all the page specifications of a page template.
-            operationId: getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPage
+            operationId: getSitePageTemplatePageSpecificationsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7390,7 +7463,7 @@ paths:
             # @review
             description:
                 Adds a new page specification in draft status to a page template.
-            operationId: postSiteSiteByExternalReferenceCodePageTemplatePageSpecification
+            operationId: postSitePageTemplatePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7435,6 +7508,7 @@ paths:
             tags: ["PageTemplate"]
     "/sites/{siteExternalReferenceCode}/page-templates/{pageTemplateExternalReferenceCode}/permissions":
         get:
+            operationId: getSitePageTemplatePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7465,6 +7539,7 @@ paths:
                         application/xml: {}
             tags: ["PageTemplate"]
         put:
+            operationId: putSitePageTemplatePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7491,7 +7566,7 @@ paths:
             # @review
             description:
                 Retrieves the public pages of the site
-            operationId: getSiteSiteByExternalReferenceCodeSitePagesPage
+            operationId: getSiteSitePagesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7554,7 +7629,7 @@ paths:
             # @review
             description:
                 Adds a new site page
-            operationId: postByExternalReferenceCodeSitePage
+            operationId: postSiteSitePage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7585,7 +7660,7 @@ paths:
             # @review
             description:
                 Deletes a specific public page of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeSitePage
+            operationId: deleteSiteSitePage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7607,7 +7682,7 @@ paths:
             # @review
             description:
                 Retrieves a specific public page of a site.
-            operationId: getSiteSiteByExternalReferenceCodeSitePage
+            operationId: getSiteSitePage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7645,7 +7720,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeSitePage
+            operationId: patchSiteSitePage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7691,7 +7766,7 @@ paths:
             # @review
             description:
                 Updates the site page with the given external reference code, or creates it if it does not exist.
-            operationId: putSiteSiteByExternalReferenceCodeSitePage
+            operationId: putSiteSitePage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7738,7 +7813,7 @@ paths:
             # @review
             description:
                 Retrieves the history of previously used URLs for a page.
-            operationId: getSiteSiteByExternalReferenceCodeSitePageFriendlyUrlHistory
+            operationId: getSiteSitePageFriendlyUrlHistory
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7776,7 +7851,7 @@ paths:
             # @review
             description:
                 Retrieves all the page specifications of a site page.
-            operationId: getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPage
+            operationId: getSiteSitePagePageSpecificationsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7818,7 +7893,7 @@ paths:
             # @review
             description:
                 Adds a new page specification to a site page.
-            operationId: postSiteSiteByExternalReferenceCodeSitePagePageSpecification
+            operationId: postSiteSitePagePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7862,6 +7937,7 @@ paths:
             tags: ["SitePage"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/permissions":
         get:
+            operationId: getSiteSitePagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7892,6 +7968,7 @@ paths:
                         application/xml: {}
             tags: ["SitePage"]
         put:
+            operationId: putSiteSitePagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7918,7 +7995,7 @@ paths:
             # @review
             description:
                 Retrieves all the widget instances of a widget page.
-            operationId: getSiteSiteByExternalReferenceCodeSitePageWidgetInstancesPage
+            operationId: getSiteSitePageWidgetInstancesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -7960,7 +8037,7 @@ paths:
             # @review
             description:
                 Adds a new widget instance to a widget page.
-            operationId: postSiteSiteByExternalReferenceCodeSitePageWidgetInstance
+            operationId: postSiteSitePageWidgetInstance
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8008,7 +8085,7 @@ paths:
             # @review
             description:
                 Deletes a widget instance of a specific widget page or widget page template within a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
+            operationId: deleteSiteSitePageWidgetInstance
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8035,7 +8112,7 @@ paths:
             # @review
             description:
                 Retrieves a widget instance of a widget page or widget page template within a site.
-            operationId: getSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
+            operationId: getSiteSitePageWidgetInstance
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8079,7 +8156,7 @@ paths:
             description:
                 Updates a widget instance of a widget page or widget page template within a site. Updates only the
                 fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
+            operationId: patchSiteSitePageWidgetInstance
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8130,7 +8207,7 @@ paths:
             # @review
             description:
                 Updates a widget instance of a widget page or widget page template within a site.
-            operationId: putSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode
+            operationId: putSiteSitePageWidgetInstance
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8182,7 +8259,7 @@ paths:
             # @review
             description:
                 Retrieves the utility pages of the site.
-            operationId: getSiteSiteByExternalReferenceCodeUtilityPagesPage
+            operationId: getSiteUtilityPagesPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8245,7 +8322,7 @@ paths:
             # @review
             description:
                 Adds a new utility page
-            operationId: postSiteSiteByExternalReferenceCodeUtilityPage
+            operationId: postSiteUtilityPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8276,7 +8353,7 @@ paths:
             # @review
             description:
                 Deletes a specific utility page of a site.
-            operationId: deleteSiteSiteByExternalReferenceCodeUtilityPage
+            operationId: deleteSiteUtilityPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8298,7 +8375,7 @@ paths:
             # @review
             description:
                 Retrieves a specific utility page of a site.
-            operationId: getSiteSiteByExternalReferenceCodeUtilityPage
+            operationId: getSiteUtilityPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8336,7 +8413,7 @@ paths:
             # @review
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
-            operationId: patchSiteSiteByExternalReferenceCodeUtilityPage
+            operationId: patchSiteUtilityPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8382,7 +8459,7 @@ paths:
             # @review
             description:
                 Updates the utility page with the given external reference code, or creates it if it does not exist.
-            operationId: putSiteSiteByExternalReferenceCodeUtilityPage
+            operationId: putSiteUtilityPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8429,7 +8506,7 @@ paths:
             # @review
             description:
                 Retrieves the history of previously used URLs for a utility page.
-            operationId: getSiteSiteByExternalReferenceCodeUtilityPageFriendlyUrlHistory
+            operationId: getSiteUtilityPageFriendlyUrlHistory
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8467,7 +8544,7 @@ paths:
             # @review
             description:
                 Retrieves all the page specifications of a utility page.
-            operationId: getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPage
+            operationId: getSiteUtilityPagePageSpecificationsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8509,7 +8586,7 @@ paths:
             # @review
             description:
                 Adds a new page specification to a utility page.
-            operationId: postSiteSiteByExternalReferenceCodeUtilityPagePageSpecification
+            operationId: postSiteUtilityPagePageSpecification
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8553,6 +8630,7 @@ paths:
             tags: ["UtilityPage"]
     "/sites/{siteExternalReferenceCode}/utility-pages/{utilityPageExternalReferenceCode}/permissions":
         get:
+            operationId: getSiteUtilityPagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode
@@ -8583,6 +8661,7 @@ paths:
                         application/xml: {}
             tags: ["UtilityPage"]
         put:
+            operationId: putSiteUtilityPagePermissionsPage
             parameters:
                 -   in: path
                     name: siteExternalReferenceCode

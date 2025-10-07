@@ -1,4 +1,4 @@
-# Checks for .gradle, .gradle, .gradle, .gradle, .json, .json, .properties, .properties, .xml, or .xml
+# Checks for .gradle, .json, .properties, or .xml
 
 Check | Category | Description
 ----- | -------- | -----------

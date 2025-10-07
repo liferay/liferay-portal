@@ -2,7 +2,6 @@ dependencies {
 	compileInclude group: "com.paypal", name: "paypalhttp", version: "1.0.1"
 	compileInclude group: "com.paypal.sdk", name: "checkout-sdk", version: "2.0.0"
 	compileInclude group: "com.paypal.sdk", name: "rest-api-sdk", version: "1.14.0"
-	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.6"
 	compileInclude group: "org.json", name: "json", version: "20231013"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
@@ -11,6 +10,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:commerce:commerce-api")

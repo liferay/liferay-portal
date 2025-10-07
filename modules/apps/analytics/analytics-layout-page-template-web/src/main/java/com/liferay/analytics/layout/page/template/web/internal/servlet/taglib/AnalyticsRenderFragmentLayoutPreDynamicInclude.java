@@ -73,6 +73,7 @@ public class AnalyticsRenderFragmentLayoutPreDynamicInclude
 			layoutDisplayPageObjectProvider.getClassName(),
 			layoutDisplayPageObjectProvider.getClassPK(),
 			layoutDisplayPageObjectProvider.getDisplayObject(),
+			layoutDisplayPageObjectProvider.getExternalReferenceCode(),
 			httpServletResponse.getWriter(),
 			layoutDisplayPageObjectProvider.getTitle(
 				_portal.getLocale(httpServletRequest)));
@@ -86,7 +87,7 @@ public class AnalyticsRenderFragmentLayoutPreDynamicInclude
 
 	private <T> Map<String, Function<T, String>> _initAttributes(
 		AnalyticsRenderFragmentLayoutUtil.AnalyticsAssetType analyticsAssetType,
-		long classPK, String title) {
+		long classPK, String externalReferenceCode, String title) {
 
 		return TreeMapBuilder.<String, Function<T, String>>put(
 			"data-analytics-asset-id", displayObject -> String.valueOf(classPK)
@@ -96,6 +97,9 @@ public class AnalyticsRenderFragmentLayoutPreDynamicInclude
 		).put(
 			"data-analytics-asset-type",
 			displayObject -> analyticsAssetType.getType()
+		).put(
+			"data-analytics-external-reference-code",
+			displayObject -> externalReferenceCode
 		).putAll(
 			analyticsAssetType.getAttributes()
 		).build();
@@ -103,7 +107,7 @@ public class AnalyticsRenderFragmentLayoutPreDynamicInclude
 
 	private <T> void _printAnalyticsCloudAssetTracker(
 		String className, long classPK, T displayObject,
-		PrintWriter printWriter, String title) {
+		String externalReferenceCode, PrintWriter printWriter, String title) {
 
 		AnalyticsRenderFragmentLayoutUtil.AnalyticsAssetType
 			analyticsAssetType =
@@ -115,7 +119,7 @@ public class AnalyticsRenderFragmentLayoutPreDynamicInclude
 		}
 
 		Map<String, Function<T, String>> attributes = _initAttributes(
-			analyticsAssetType, classPK, title);
+			analyticsAssetType, classPK, externalReferenceCode, title);
 
 		StringBundler sb = new StringBundler((attributes.size() * 5) + 2);
 

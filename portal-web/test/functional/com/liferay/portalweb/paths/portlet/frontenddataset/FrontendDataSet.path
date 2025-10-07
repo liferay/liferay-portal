@@ -105,7 +105,7 @@
 
 <tr>
 	<td>EDIT_FILTER_BUTTON</td>
-	<td>//div[@class='dropdown-menu show']//*[@type="button" and contains(.,'Edit Filter')]</td>
+	<td>//div[@class='dropdown-menu show']//*[@type="button" and contains(.,'Show Results')]</td>
 	<td></td>
 </tr>
 <tr>

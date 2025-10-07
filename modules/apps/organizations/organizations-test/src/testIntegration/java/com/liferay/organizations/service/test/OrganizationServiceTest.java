@@ -97,7 +97,7 @@ public class OrganizationServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteOrganization() throws Exception {
+	public void testGetOrAddEmptyOrganization() throws Exception {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
@@ -119,7 +119,7 @@ public class OrganizationServiceTest {
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
 				Organization organization =
-					_organizationService.getOrAddIncompleteOrganization(
+					_organizationService.getOrAddEmptyOrganization(
 						RandomTestUtil.randomString(),
 						RandomTestUtil.randomString());
 
@@ -133,7 +133,7 @@ public class OrganizationServiceTest {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
-				_organizationService.getOrAddIncompleteOrganization(
+				_organizationService.getOrAddEmptyOrganization(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString());
 

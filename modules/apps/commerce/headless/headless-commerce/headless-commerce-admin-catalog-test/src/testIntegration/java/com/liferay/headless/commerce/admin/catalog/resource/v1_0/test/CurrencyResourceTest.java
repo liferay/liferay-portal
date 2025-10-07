@@ -96,8 +96,8 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 
 		long totalCount = currenciesJSONObject.getLong("totalCount");
 
-		Currency currency1 = testGraphQLGetCurrenciesPage_addCurrency();
-		Currency currency2 = testGraphQLGetCurrenciesPage_addCurrency();
+		Currency currency1 = testGraphQLCurrency_addCurrency(randomCurrency());
+		Currency currency2 = testGraphQLCurrency_addCurrency(randomCurrency());
 
 		currenciesJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(

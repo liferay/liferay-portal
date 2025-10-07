@@ -93,6 +93,16 @@ public class UserGroupSerDes {
 			sb.append(_toJSON(userGroup.getName_i18n()));
 		}
 
+		if (userGroup.getNumberOfUserAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfUserAccounts\": ");
+
+			sb.append(userGroup.getNumberOfUserAccounts());
+		}
+
 		if (userGroup.getRoles() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -161,6 +171,15 @@ public class UserGroupSerDes {
 			map.put("name_i18n", String.valueOf(userGroup.getName_i18n()));
 		}
 
+		if (userGroup.getNumberOfUserAccounts() == null) {
+			map.put("numberOfUserAccounts", null);
+		}
+		else {
+			map.put(
+				"numberOfUserAccounts",
+				String.valueOf(userGroup.getNumberOfUserAccounts()));
+		}
+
 		if (userGroup.getRoles() == null) {
 			map.put("roles", null);
 		}
@@ -197,6 +216,11 @@ public class UserGroupSerDes {
 			else if (Objects.equals(jsonParserFieldName, "name_i18n")) {
 				return true;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "numberOfUserAccounts")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "roles")) {
 				return false;
 			}
@@ -229,6 +253,14 @@ public class UserGroupSerDes {
 				if (jsonParserFieldValue != null) {
 					userGroup.setName_i18n(
 						(Map<String, String>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "numberOfUserAccounts")) {
+
+				if (jsonParserFieldValue != null) {
+					userGroup.setNumberOfUserAccounts(
+						Integer.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "roles")) {

@@ -514,6 +514,59 @@ public interface CSDiagramEntryPersistence
 	public int countByCPDI_S(long CPDefinitionId, String sequence);
 
 	/**
+	 * Returns the cs diagram entry where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchCSDiagramEntryException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching cs diagram entry
+	 * @throws NoSuchCSDiagramEntryException if a matching cs diagram entry could not be found
+	 */
+	public CSDiagramEntry findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchCSDiagramEntryException;
+
+	/**
+	 * Returns the cs diagram entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching cs diagram entry, or <code>null</code> if a matching cs diagram entry could not be found
+	 */
+	public CSDiagramEntry fetchByERC_C(
+		String externalReferenceCode, long companyId);
+
+	/**
+	 * Returns the cs diagram entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching cs diagram entry, or <code>null</code> if a matching cs diagram entry could not be found
+	 */
+	public CSDiagramEntry fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache);
+
+	/**
+	 * Removes the cs diagram entry where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the cs diagram entry that was removed
+	 */
+	public CSDiagramEntry removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchCSDiagramEntryException;
+
+	/**
+	 * Returns the number of cs diagram entries where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching cs diagram entries
+	 */
+	public int countByERC_C(String externalReferenceCode, long companyId);
+
+	/**
 	 * Caches the cs diagram entry in the entity cache if it is enabled.
 	 *
 	 * @param csDiagramEntry the cs diagram entry

@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.lock.model.LockTable;
 import com.liferay.portal.lock.service.LockLocalService;
 import com.liferay.portal.model.impl.LayoutModelImpl;
@@ -156,9 +155,6 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 						LayoutTable.INSTANCE.hidden.eq(true)
 					).and(
 						LayoutTable.INSTANCE.system.eq(true)
-					).and(
-						LayoutTable.INSTANCE.status.eq(
-							WorkflowConstants.STATUS_DRAFT)
 					).and(
 						LayoutTable.INSTANCE.type.in(
 							new String[] {

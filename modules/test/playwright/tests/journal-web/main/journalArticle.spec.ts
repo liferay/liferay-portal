@@ -12,8 +12,10 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
+import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {SystemSettingsPage} from '../../../pages/configuration-admin-web/SystemSettingsPage';
+import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import {getRandomInt} from '../../../utils/getRandomInt';
@@ -55,6 +57,7 @@ const baseTest = mergeTests(
 	loginTest(),
 	pageViewModePagesTest,
 	pagesAdminPagesTest,
+	systemSettingsPageTest,
 	workflowPagesTest
 );
 
@@ -150,6 +153,40 @@ baseTest(
 );
 
 baseTest(
+	'Check if Web Content can be saved as draft after changing default language',
+	{
+		tag: '@LPD-60603',
+	},
+	async ({journalEditArticlePage, page, site, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting(
+			'Web Content',
+			'Administration'
+		);
+
+		await page.getByLabel('Changeable Default Language').check();
+
+		await page.getByRole('button', {name: /save|update/i}).click();
+
+		await waitForAlert(page);
+
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		await journalEditArticlePage.changeDefaultLanguage('pt_BR');
+
+		const title = getRandomString();
+
+		await page.waitForTimeout(5000);
+
+		await journalEditArticlePage.saveAsDraftWithPermissions(title);
+
+		await waitForAlert(
+			page,
+			`Success:${title} was successfully saved as a draft.`
+		);
+	}
+);
+
+baseTest(
 	'Check success message on save as draft',
 	{
 		tag: '@LPD-50230',
@@ -164,6 +201,71 @@ baseTest(
 			page,
 			`Success:${title} was successfully saved as a draft.`
 		);
+	}
+);
+
+baseTest(
+	'Check that upload field is marked as translated',
+	{
+		tag: '@LPD-66008',
+	},
+
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const structureName = 'Test Structure';
+
+		const dataDefinition = getDataStructureDefinition({
+			defaultLanguageId: 'en_US',
+			fields: [
+				{
+					fieldType: 'document_library',
+					name: 'Upload',
+				},
+			],
+			name: structureName,
+		});
+
+		await apiHelpers.dataEngine.createStructure(site.id, dataDefinition);
+
+		await journalEditArticlePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		const title = getRandomString();
+
+		await journalEditArticlePage.fillTitle(title);
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'astronaut.png'
+		);
+
+		const translationButton = page.getByLabel('Select a language, current');
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Not Translated',
+			}),
+			trigger: translationButton,
+		});
+
+		await journalEditArticlePage.selectFileFromDocumentsAndMedia(
+			'planet.png'
+		);
+
+		await translateNameAndMetadataFields(page, structureName);
+
+		await journalEditArticlePage.publishArticle();
+
+		await journalEditArticlePage.editArticle(title);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('option', {
+				name: 'Catalan Language: Translated',
+			}),
+			trigger: translationButton,
+		});
 	}
 );
 
@@ -892,7 +994,7 @@ baseTest(
 		await markAsTranslatedButton.click();
 
 		await expect(
-			page.getByRole('heading', {name: 'Mark "ca_ES" as Translated'})
+			page.getByRole('heading', {name: 'Mark ca_ES as Translated'})
 		).toBeVisible();
 
 		await page.getByRole('button', {name: 'Mark as Translated'}).click();
@@ -1327,7 +1429,107 @@ baseTest(
 
 		await openFieldset(page, 'Fields');
 
+		await checkAccessibility({page, selectors: ['.ddm-label']});
+
 		await expect(textBox).toBeDisabled();
+	}
+);
+
+baseTest(
+	'A non-localizable field value is not deleted when switching and filtering from another translation',
+	{
+		tag: '@LPD-63134',
+	},
+	async ({apiHelpers, journalEditArticlePage, page, site}) => {
+		const localizableFieldName = 'LocalizedText';
+		const nonLocalizableFieldName = 'Text';
+		const structureName = 'Structure';
+
+		await baseTest.step(
+			'Create new structure with localizable and non-localizable fields',
+			async () => {
+				const dataDefinition = getDataStructureDefinition({
+					defaultLanguageId: 'en_US',
+					fields: [
+						{localizable: true, name: localizableFieldName},
+						{localizable: false, name: nonLocalizableFieldName},
+					],
+					name: structureName,
+				});
+
+				await apiHelpers.dataEngine.createStructure(
+					site.id,
+					dataDefinition
+				);
+			}
+		);
+
+		await baseTest.step(
+			'Open new structure and fill both fields',
+			async () => {
+				await journalEditArticlePage.goto({
+					siteUrl: site.friendlyUrlPath,
+					structureName,
+				});
+
+				await page.getByLabel(localizableFieldName).fill('en-us');
+
+				await page
+					.getByLabel(nonLocalizableFieldName, {exact: true})
+					.fill('test');
+			}
+		);
+
+		const translationButton = page.getByRole('combobox', {
+			name: 'Select a language',
+		});
+
+		await baseTest.step(
+			'Switch language, translate localizable field and filter fields by translated',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'Catalan Language: Not Translated',
+					}),
+					trigger: translationButton,
+				});
+
+				await openFieldset(page, 'Fields');
+
+				await page.getByLabel(localizableFieldName).fill('ca-es');
+
+				const translationFilterButton = page.getByRole('combobox', {
+					name: 'Select a Filter',
+				});
+
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						exact: true,
+						name: 'Translated',
+					}),
+					trigger: translationFilterButton,
+				});
+			}
+		);
+
+		await baseTest.step(
+			'Switch back to default language and assert that non localizable field value is still there',
+			async () => {
+				await clickAndExpectToBeVisible({
+					autoClick: true,
+					target: page.getByRole('option', {
+						name: 'English Language: Default',
+					}),
+					trigger: translationButton,
+				});
+
+				await expect(
+					page.getByLabel(nonLocalizableFieldName, {exact: true})
+				).toHaveValue('test');
+			}
+		);
 	}
 );
 
@@ -1645,7 +1847,10 @@ assetPublisherDeprecationTest(
 			.getByRole('option', {name: 'Full Content'})
 			.click();
 		await configurationFrame.getByRole('button', {name: 'Save'}).click();
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		await widgetPagePage.goto(widgetLayout, site.friendlyUrlPath);
 
@@ -1663,17 +1868,24 @@ ckeditor4Test(
 			await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
 		});
 
-		await ckeditor4Page.insertHTML(
-			'<img src="/documents/d/guest/moon-png" />'
-		);
+		await ckeditor4Page.page.getByLabel('Image', {exact: true}).click();
+
+		await ckeditor4Page.selectImageWithItemSelector({
+			cardTitle: 'moon.png',
+		});
 
 		const editableFrame = journalEditArticlePage.page
 			.locator('.edit-article-panel')
 			.frameLocator('iframe[title="editor"]');
 
-		await editableFrame
-			.locator('img[src="/documents/d/guest/moon-png"]')
-			.dblclick();
+		const moonImage = editableFrame.locator(
+			'img[src="/documents/d/guest/moon-png"]'
+		);
+
+		await expect(moonImage).toBeVisible();
+		await expect(moonImage).toHaveAttribute('data-fileentryid');
+
+		await moonImage.dblclick();
 
 		await ckeditor4Page.contextMenu.getByText('Browse Server').click();
 
@@ -1687,9 +1899,12 @@ ckeditor4Test(
 
 		await ckeditor4Page.contextMenu.getByText('OK').click();
 
-		await expect(
-			editableFrame.locator('img[src="/documents/d/guest/satellite-png"]')
-		).toBeVisible();
+		const satelliteImage = editableFrame.locator(
+			'img[src="/documents/d/guest/satellite-png"]'
+		);
+
+		await expect(satelliteImage).toBeVisible();
+		await expect(satelliteImage).toHaveAttribute('data-fileentryid');
 	}
 );
 
@@ -1705,13 +1920,26 @@ ckeditor5Test(
 
 		const articleContentAR = getRandomString();
 		const articleContentEN = getRandomString();
-		const articleContentSource = getRandomString();
 		const articleTitleAR = getRandomString();
 		const articleTitleEN = getRandomString();
 
 		const editable = journalEditArticlePage.page.locator(
 			'.edit-article-panel .ck-content'
 		);
+
+		await ckeditor5Test.step('Expand fields if collapsed', async () => {
+			const fieldsToggle = journalEditArticlePage.page.locator(
+				'.edit-article-panel .collapse-icon.sheet-subtitle'
+			);
+
+			const classList = await fieldsToggle.getAttribute('class');
+
+			if (classList.match(/collapsed/)) {
+				fieldsToggle.click();
+			}
+
+			await expect(editable).toBeVisible();
+		});
 
 		await ckeditor5Test.step(
 			'Add sample English title and content',
@@ -1771,19 +1999,23 @@ ckeditor5Test(
 			await journalEditArticlePage.changeLanguage('en_US');
 		});
 
+		const toolbar =
+			journalEditArticlePage.page.getByLabel('Editor toolbar');
+
+		const sourceButton = toolbar.getByRole('button', {name: 'Source'});
+
+		const sourceTextarea = journalEditArticlePage.page.getByLabel(
+			'Source code editing area'
+		);
+
 		await ckeditor5Test.step(
 			'Change article in source editing',
 			async () => {
-				const toolbar =
-					journalEditArticlePage.page.getByLabel('Editor toolbar');
+				await sourceButton.click();
 
-				await toolbar.getByRole('button', {name: 'Source'}).click();
-
-				const textarea = journalEditArticlePage.page.getByLabel(
-					'Source code editing area'
+				await sourceTextarea.fill(
+					'<a href="#" onclick="alert()">foo</a><script>alert()</script>'
 				);
-
-				await textarea.fill(articleContentSource);
 			}
 		);
 
@@ -1798,9 +2030,11 @@ ckeditor5Test(
 			async () => {
 				await page.getByTitle(articleTitleEN).click();
 
-				await expect(
-					editable.getByText(articleContentSource)
-				).toBeVisible();
+				await sourceButton.click();
+
+				await expect(sourceTextarea).toHaveValue(
+					/<a href="#">foo<\/a>alert\(\)/
+				);
 			}
 		);
 	}
@@ -1889,5 +2123,43 @@ baseTest(
 
 			await waitForAlert(page);
 		}
+	}
+);
+
+baseTest(
+	'Journal Article Shows Wrong Display Date When Published After Draft',
+	{
+		tag: '@LPD-62472',
+	},
+	async ({journalEditArticlePage, journalPage, page, site}) => {
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		baseTest.setTimeout(120000);
+
+		await journalEditArticlePage.saveAsDraftWithPermissions(
+			getRandomString()
+		);
+
+		await page.waitForTimeout(50000);
+
+		await page.getByRole('button', {name: 'Publish'}).click();
+
+		await page.waitForTimeout(50000);
+
+		await page.getByRole('menuitem', {name: 'Publish'}).click();
+
+		await journalPage.changeView('table');
+
+		const firstDisplayDateTd = page
+			.locator('td.lfr-display-date-column')
+			.first();
+
+		const spanInsideTd = firstDisplayDateTd.locator('span');
+
+		await spanInsideTd.waitFor({state: 'visible'});
+
+		const displayDateText = await spanInsideTd.textContent();
+
+		expect(displayDateText).not.toBe('1 Minute ago');
 	}
 );

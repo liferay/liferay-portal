@@ -26,6 +26,8 @@ public interface Build {
 
 	public void addInvocation(Invocation invocation);
 
+	public void addTestrayAttachmentURL(URL testrayAttachmentURL);
+
 	public void addTimelineData(TimelineData timelineData);
 
 	public void archive();
@@ -89,8 +91,6 @@ public interface Build {
 	public Element getGitHubMessageBuildAnchorElement();
 
 	public Element getGitHubMessageElement();
-
-	public Element getGitHubMessageUpstreamJobFailureElement();
 
 	public Map<String, String> getInjectedEnvironmentVariablesMap()
 		throws IOException;
@@ -176,6 +176,8 @@ public interface Build {
 	public boolean hasGenericCIFailure();
 
 	public boolean hasMaximumInvocationCount();
+
+	public boolean isBuildCachingEnabled();
 
 	public boolean isBuildModified();
 

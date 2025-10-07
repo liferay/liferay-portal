@@ -939,44 +939,44 @@ public class CommerceOrderItemLocalServiceTest {
 		JSONObject jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			jsonObject.getString("key"), cpDefinitionOptionRel.getKey());
+			cpDefinitionOptionRel.getKey(), jsonObject.getString("key"));
 		Assert.assertEquals("0", jsonObject.getString("price"));
 		Assert.assertEquals(
-			jsonObject.getString("priceType"),
-			CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC);
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC,
+			jsonObject.getString("priceType"));
 
 		BigDecimal quantity = cpDefinitionOptionValueRel.getQuantity();
 
 		Assert.assertEquals(
-			jsonObject.getString("quantity"),
-			String.valueOf(quantity.stripTrailingZeros()));
+			String.valueOf(quantity.stripTrailingZeros()),
+			jsonObject.getString("quantity"));
 
 		CPInstance linkedCPInstance = _cpInstanceLocalService.fetchCPInstance(
 			cpDefinitionOptionValueRel.getCProductId(),
 			cpDefinitionOptionValueRel.getCPInstanceUuid());
 
 		Assert.assertEquals(
-			jsonObject.getString("skuId"),
-			String.valueOf(linkedCPInstance.getCPInstanceId()));
+			String.valueOf(linkedCPInstance.getCPInstanceId()),
+			jsonObject.getString("skuId"));
 
 		Assert.assertEquals(
-			jsonObject.getString("skuOptionKey"),
-			cpDefinitionOptionRel.getKey());
+			cpDefinitionOptionRel.getKey(),
+			jsonObject.getString("skuOptionKey"));
 		Assert.assertEquals(
-			jsonObject.getString("skuOptionName"),
 			cpDefinitionOptionRel.getName(
-				cpDefinitionOptionRel.getDefaultLanguageId()));
+				cpDefinitionOptionRel.getDefaultLanguageId()),
+			jsonObject.getString("skuOptionName"));
 		Assert.assertEquals(
-			jsonObject.getString("skuOptionValueNames"),
 			JSONUtil.put(
 				cpDefinitionOptionValueRel.getName(
 					cpDefinitionOptionValueRel.getDefaultLanguageId())
-			).toString());
+			).toString(),
+			jsonObject.getString("skuOptionValueNames"));
 		Assert.assertEquals(
-			jsonObject.getString("value"),
 			JSONUtil.put(
 				cpDefinitionOptionValueRel.getKey()
-			).toString());
+			).toString(),
+			jsonObject.getString("value"));
 	}
 
 	@Test(expected = CPDefinitionOptionRelException.class)
@@ -1083,6 +1083,85 @@ public class CommerceOrderItemLocalServiceTest {
 			cpInstance.getCPInstanceId(), StringPool.BLANK, BigDecimal.ONE, 0,
 			BigDecimal.ZERO, StringPool.BLANK, _commerceContext,
 			_serviceContext);
+	}
+
+	@Test
+	public void testAddProductWithSKUContributorOptionAutoFilled()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId());
+
+		CPOption cpOption = _cpOptionLocalService.addCPOption(
+			null, _user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(),
+			CPConstants.PRODUCT_OPTION_SELECT_KEY,
+			RandomTestUtil.randomBoolean(), true, true,
+			RandomTestUtil.randomString(), _serviceContext);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			CPTestUtil.addCPDefinitionOptionRel(
+				_commerceCatalog.getGroupId(), cpDefinition.getCPDefinitionId(),
+				cpOption.getCPOptionId());
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			CPTestUtil.addCPDefinitionOptionValueRel(
+				cpDefinition.getCPDefinitionId(), cpOption.getCPOptionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC,
+				cpOption.isRequired(), cpOption.isSkuContributor(),
+				_serviceContext);
+
+		CPInstance cpInstance = CPTestUtil.addCPDefinitionCPInstance(
+			cpDefinition.getCPDefinitionId(),
+			HashMapBuilder.<Long, List<Long>>put(
+				cpDefinitionOptionRel.getCPDefinitionId(),
+				Collections.singletonList(
+					cpDefinitionOptionValueRel.
+						getCPDefinitionOptionValueRelId())
+			).build());
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse,
+				BigDecimal.valueOf(100), cpInstance.getSku(),
+				StringPool.BLANK));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), StringPool.BLANK, BigDecimal.ONE,
+				0, BigDecimal.ZERO, StringPool.BLANK, _commerceContext,
+				_serviceContext);
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
+			commerceOrderItem.getJson());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			cpDefinitionOptionRel.getKey(), jsonObject.getString("key"));
+		Assert.assertEquals(
+			JSONUtil.put(
+				cpDefinitionOptionValueRel.getKey()
+			).toString(),
+			jsonObject.getString("value"));
 	}
 
 	@Test

@@ -9,7 +9,7 @@ import {
 } from '../../components/ObjectView/objectViewContext';
 
 describe('viewReducer ADD_OBJECT_VIEW_COLUMN', () => {
-	it('preserves column order', () => {
+	it('can add new object field', () => {
 		const state = {
 			objectView: {
 				objectViewColumns: [
@@ -32,16 +32,16 @@ describe('viewReducer ADD_OBJECT_VIEW_COLUMN', () => {
 					{
 						businessType: 'Text',
 						label: {
-							en_US: 'External Reference Code',
+							en_US: 'Status',
 						},
-						name: 'externalReferenceCode',
+						name: 'status',
 					},
 					{
 						businessType: 'Text',
 						label: {
-							en_US: 'Status',
+							en_US: 'External Reference Code',
 						},
-						name: 'status',
+						name: 'externalReferenceCode',
 					},
 					{
 						businessType: 'Text',
@@ -68,6 +68,61 @@ describe('viewReducer ADD_OBJECT_VIEW_COLUMN', () => {
 		);
 
 		expect(result.objectView.objectViewColumns[2].objectFieldName).toBe(
+			'creator'
+		);
+	});
+
+	it('can remove object field', () => {
+		const state = {
+			objectView: {
+				objectViewColumns: [
+					{
+						objectFieldName: 'status',
+					},
+					{
+						objectFieldName: 'externalReferenceCode',
+					},
+					{
+						objectFieldName: 'creator',
+					},
+				],
+				objectViewFilterColumns: [],
+				objectViewSortColumns: [],
+			},
+		} as any;
+
+		const action = {
+			payload: {
+				creationLanguageId: 'en_US',
+				selectedObjectFields: [
+					{
+						businessType: 'Text',
+						label: {
+							en_US: 'Status',
+						},
+						name: 'status',
+					},
+					{
+						businessType: 'Text',
+						label: {
+							en_US: 'Author',
+						},
+						name: 'creator',
+					},
+				],
+			},
+			type: 'ADD_OBJECT_VIEW_COLUMN',
+		} as TAction;
+
+		const result = viewReducer(state, action);
+
+		expect(result.objectView.objectViewColumns.length).toBe(2);
+
+		expect(result.objectView.objectViewColumns[0].objectFieldName).toBe(
+			'status'
+		);
+
+		expect(result.objectView.objectViewColumns[1].objectFieldName).toBe(
 			'creator'
 		);
 	});

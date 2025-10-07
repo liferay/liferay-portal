@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -98,7 +97,7 @@ public class Mapping implements Serializable {
 		description = "The mapping's item reference."
 	)
 	@Valid
-	public Object getItemReference() {
+	public FragmentMappedValueItemReference getItemReference() {
 		if (_itemReferenceSupplier != null) {
 			itemReference = _itemReferenceSupplier.get();
 
@@ -108,7 +107,9 @@ public class Mapping implements Serializable {
 		return itemReference;
 	}
 
-	public void setItemReference(Object itemReference) {
+	public void setItemReference(
+		FragmentMappedValueItemReference itemReference) {
+
 		this.itemReference = itemReference;
 
 		_itemReferenceSupplier = null;
@@ -116,7 +117,8 @@ public class Mapping implements Serializable {
 
 	@JsonIgnore
 	public void setItemReference(
-		UnsafeSupplier<Object, Exception> itemReferenceUnsafeSupplier) {
+		UnsafeSupplier<FragmentMappedValueItemReference, Exception>
+			itemReferenceUnsafeSupplier) {
 
 		_itemReferenceSupplier = () -> {
 			try {
@@ -133,10 +135,10 @@ public class Mapping implements Serializable {
 
 	@GraphQLField(description = "The mapping's item reference.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Object itemReference;
+	protected FragmentMappedValueItemReference itemReference;
 
 	@JsonIgnore
-	private Supplier<Object> _itemReferenceSupplier;
+	private Supplier<FragmentMappedValueItemReference> _itemReferenceSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -181,7 +183,7 @@ public class Mapping implements Serializable {
 			sb.append("\"");
 		}
 
-		Object itemReference = getItemReference();
+		FragmentMappedValueItemReference itemReference = getItemReference();
 
 		if (itemReference != null) {
 			if (sb.length() > 1) {
@@ -190,18 +192,7 @@ public class Mapping implements Serializable {
 
 			sb.append("\"itemReference\": ");
 
-			if (itemReference instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)itemReference));
-			}
-			else if (itemReference instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)itemReference));
-				sb.append("\"");
-			}
-			else {
-				sb.append(itemReference);
-			}
+			sb.append(String.valueOf(itemReference));
 		}
 
 		sb.append("}");

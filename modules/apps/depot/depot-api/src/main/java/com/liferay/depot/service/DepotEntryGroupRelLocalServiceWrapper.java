@@ -383,10 +383,10 @@ public class DepotEntryGroupRelLocalServiceWrapper
 
 	@Override
 	public java.util.List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		long groupId, int start, int end) {
+		long groupId, int type, int start, int end) {
 
 		return _depotEntryGroupRelLocalService.getDepotEntryGroupRels(
-			groupId, start, end);
+			groupId, type, start, end);
 	}
 
 	/**
@@ -445,9 +445,9 @@ public class DepotEntryGroupRelLocalServiceWrapper
 	}
 
 	@Override
-	public int getDepotEntryGroupRelsCount(long groupId) {
+	public int getDepotEntryGroupRelsCount(long groupId, int type) {
 		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-			groupId);
+			groupId, type);
 	}
 
 	@Override

@@ -10,15 +10,16 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.test.rule.NewEnvTestRule;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
-
-import java.util.Collections;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Tina Tian
@@ -54,139 +55,154 @@ public class ServletContextClassLoaderPoolTest {
 
 	@Test
 	public void testMisc() {
-		PropsTestUtil.setProps(Collections.emptyMap());
-
 		new ServletContextClassLoaderPool();
 
 		ServletContextClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
 	}
 
 	private void _testGetClassLoader(boolean fallback) {
-		PropsTestUtil.setProps(
-			PropsKeys.SERVLET_CONTEXT_CLASS_LOADER_POOL_FALLBACK,
-			String.valueOf(fallback));
+		try (MockedStatic<PropsUtil> propsUtilMockedStatic = Mockito.mockStatic(
+				PropsUtil.class)) {
 
-		Thread currentThread = Thread.currentThread();
+			propsUtilMockedStatic.when(
+				() -> PropsUtil.get(
+					PropsKeys.SERVLET_CONTEXT_CLASS_LOADER_POOL_FALLBACK)
+			).thenReturn(
+				String.valueOf(fallback)
+			);
 
-		ClassLoader contextClassLoader = currentThread.getContextClassLoader();
+			Thread currentThread = Thread.currentThread();
 
-		if (fallback) {
-			Assert.assertSame(
-				contextClassLoader,
-				ServletContextClassLoaderPool.getClassLoader(null));
-			Assert.assertSame(
-				contextClassLoader,
-				ServletContextClassLoaderPool.getClassLoader(
-					_TEST_SERVLET_CONTEXT_NAME));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getClassLoader(null));
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getClassLoader(
-					_TEST_SERVLET_CONTEXT_NAME));
-		}
+			ClassLoader contextClassLoader =
+				currentThread.getContextClassLoader();
 
-		ServletContextClassLoaderPool.register(
-			_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
+			if (fallback) {
+				Assert.assertSame(
+					contextClassLoader,
+					ServletContextClassLoaderPool.getClassLoader(null));
+				Assert.assertSame(
+					contextClassLoader,
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getClassLoader(null));
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
 
-		Assert.assertSame(
-			_TEST_CLASS_LOADER,
-			ServletContextClassLoaderPool.getClassLoader(
-				_TEST_SERVLET_CONTEXT_NAME));
+			ServletContextClassLoaderPool.register(
+				_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
 
-		ServletContextClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
-
-		if (fallback) {
-			Assert.assertSame(
-				contextClassLoader,
-				ServletContextClassLoaderPool.getClassLoader(
-					_TEST_SERVLET_CONTEXT_NAME));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getClassLoader(
-					_TEST_SERVLET_CONTEXT_NAME));
-		}
-
-		ClassLoaderPool.register(
-			_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
-
-		if (fallback) {
 			Assert.assertSame(
 				_TEST_CLASS_LOADER,
 				ServletContextClassLoaderPool.getClassLoader(
 					_TEST_SERVLET_CONTEXT_NAME));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getClassLoader(
-					_TEST_SERVLET_CONTEXT_NAME));
-		}
 
-		ClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
+			ServletContextClassLoaderPool.unregister(
+				_TEST_SERVLET_CONTEXT_NAME);
+
+			if (fallback) {
+				Assert.assertSame(
+					contextClassLoader,
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
+
+			ClassLoaderPool.register(
+				_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
+
+			if (fallback) {
+				Assert.assertSame(
+					_TEST_CLASS_LOADER,
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getClassLoader(
+						_TEST_SERVLET_CONTEXT_NAME));
+			}
+
+			ClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
+		}
 	}
 
 	private void _testGetServletContextName(boolean fallback) {
-		PropsTestUtil.setProps(
-			PropsKeys.SERVLET_CONTEXT_CLASS_LOADER_POOL_FALLBACK,
-			String.valueOf(fallback));
+		try (MockedStatic<PropsUtil> propsUtilMockedStatic = Mockito.mockStatic(
+				PropsUtil.class)) {
 
-		if (fallback) {
-			Assert.assertEquals(
-				"null",
-				ServletContextClassLoaderPool.getServletContextName(null));
-			Assert.assertEquals(
-				"null",
-				ServletContextClassLoaderPool.getServletContextName(
-					_TEST_CLASS_LOADER));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getServletContextName(null));
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getServletContextName(
-					_TEST_CLASS_LOADER));
-		}
+			propsUtilMockedStatic.when(
+				() -> PropsUtil.get(
+					PropsKeys.SERVLET_CONTEXT_CLASS_LOADER_POOL_FALLBACK)
+			).thenReturn(
+				String.valueOf(fallback)
+			);
 
-		ServletContextClassLoaderPool.register(
-			_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
+			if (fallback) {
+				Assert.assertEquals(
+					"null",
+					ServletContextClassLoaderPool.getServletContextName(null));
+				Assert.assertEquals(
+					"null",
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getServletContextName(null));
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
 
-		Assert.assertEquals(
-			_TEST_SERVLET_CONTEXT_NAME,
-			ServletContextClassLoaderPool.getServletContextName(
-				_TEST_CLASS_LOADER));
+			ServletContextClassLoaderPool.register(
+				_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
 
-		ServletContextClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
-
-		if (fallback) {
-			Assert.assertEquals(
-				"null",
-				ServletContextClassLoaderPool.getServletContextName(
-					_TEST_CLASS_LOADER));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getServletContextName(
-					_TEST_CLASS_LOADER));
-		}
-
-		ClassLoaderPool.register(
-			_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
-
-		if (fallback) {
 			Assert.assertEquals(
 				_TEST_SERVLET_CONTEXT_NAME,
 				ServletContextClassLoaderPool.getServletContextName(
 					_TEST_CLASS_LOADER));
-		}
-		else {
-			Assert.assertNull(
-				ServletContextClassLoaderPool.getServletContextName(
-					_TEST_CLASS_LOADER));
-		}
 
-		ClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
+			ServletContextClassLoaderPool.unregister(
+				_TEST_SERVLET_CONTEXT_NAME);
+
+			if (fallback) {
+				Assert.assertEquals(
+					"null",
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
+
+			ClassLoaderPool.register(
+				_TEST_SERVLET_CONTEXT_NAME, _TEST_CLASS_LOADER);
+
+			if (fallback) {
+				Assert.assertEquals(
+					_TEST_SERVLET_CONTEXT_NAME,
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
+			else {
+				Assert.assertNull(
+					ServletContextClassLoaderPool.getServletContextName(
+						_TEST_CLASS_LOADER));
+			}
+
+			ClassLoaderPool.unregister(_TEST_SERVLET_CONTEXT_NAME);
+		}
 	}
 
 	private static final ClassLoader _TEST_CLASS_LOADER = new ClassLoader() {

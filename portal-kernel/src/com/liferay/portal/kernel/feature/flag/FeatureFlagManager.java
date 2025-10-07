@@ -20,6 +20,11 @@ public interface FeatureFlagManager {
 
 	public boolean isEnabled(long companyId, String key);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *		#isEnabled(long, String)}
+	 */
+	@Deprecated
 	public boolean isEnabled(String key);
 
 }

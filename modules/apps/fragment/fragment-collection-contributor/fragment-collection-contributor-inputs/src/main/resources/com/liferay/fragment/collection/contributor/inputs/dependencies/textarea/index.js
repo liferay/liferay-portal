@@ -1,18 +1,18 @@
 const currentLength = document.getElementById(
-	`${fragmentNamespace}-current-length`
+	`${fragmentElementId}-current-length`
 );
 const errorMessage = document.getElementById(
-	`${fragmentNamespace}-textarea-error-message`
+	`${fragmentElementId}-textarea-error-message`
 );
-const formGroup = document.getElementById(`${fragmentNamespace}-form-group`);
-const lengthInfo = document.getElementById(`${fragmentNamespace}-length-info`);
+const formGroup = document.getElementById(`${fragmentElementId}-form-group`);
+const lengthInfo = document.getElementById(`${fragmentElementId}-length-info`);
 const lengthWarning = document.getElementById(
-	`${fragmentNamespace}-length-warning`
+	`${fragmentElementId}-length-warning`
 );
 const lengthWarningText = document.getElementById(
-	`${fragmentNamespace}-length-warning-text`
+	`${fragmentElementId}-length-warning-text`
 );
-const textarea = document.getElementById(`${fragmentNamespace}-textarea`);
+const textarea = document.getElementById(`${fragmentElementId}-textarea`);
 
 function main() {
 	if (layoutMode === 'edit' && textarea) {
@@ -65,7 +65,7 @@ function main() {
 						inputElement: textarea,
 						inputName: input.name,
 						localizationInputsContainer: textarea.parentNode,
-						namespace: fragmentNamespace,
+						namespace: fragmentElementId,
 					});
 
 					textarea.addEventListener('change', (event) => {
@@ -77,12 +77,12 @@ function main() {
 						defaultLanguageId,
 						inputElement: textarea,
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-textarea-readonly`
+							`${fragmentElementId}-textarea-readonly`
 						),
 						unlocalizedFieldsState:
 							input.attributes.unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

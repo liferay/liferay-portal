@@ -48,10 +48,10 @@ function getFormPayload(form: AnalyticsType.HTMLElement) {
 		});
 	}
 
-	if (form.dataset.analyticsAssetExternalReferenceCode) {
+	if (form.dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:
-				form.dataset.analyticsAssetExternalReferenceCode.trim(),
+				form.dataset.analyticsExternalReferenceCode.trim(),
 		});
 	}
 

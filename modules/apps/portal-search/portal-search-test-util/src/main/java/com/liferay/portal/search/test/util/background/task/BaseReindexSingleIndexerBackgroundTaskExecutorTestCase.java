@@ -18,18 +18,15 @@ import com.liferay.portal.kernel.search.background.task.ReindexStatusMessageSend
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.internal.SearchEngineHelperImpl;
 import com.liferay.portal.search.internal.background.task.ReindexSingleIndexerBackgroundTaskExecutor;
 import com.liferay.portal.search.test.util.search.engine.SearchEngineFixture;
-import com.liferay.portal.util.PropsImpl;
 
 import java.io.Serializable;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -41,11 +38,6 @@ import org.osgi.framework.ServiceRegistration;
  * @author Adam Brandizzi
  */
 public abstract class BaseReindexSingleIndexerBackgroundTaskExecutorTestCase {
-
-	@BeforeClass
-	public static void setUpClass() {
-		PropsUtil.setProps(new PropsImpl());
-	}
 
 	@Before
 	public void setUp() throws Exception {

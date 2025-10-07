@@ -7,8 +7,6 @@ package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
-import com.liferay.portal.search.elasticsearch7.internal.document.DefaultElasticsearchDocumentFactory;
-import com.liferay.portal.search.elasticsearch7.internal.document.ElasticsearchDocumentFactory;
 import com.liferay.portal.search.elasticsearch7.internal.facet.FacetProcessor;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.cluster.ClusterRequestExecutorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.document.DocumentRequestExecutorFixture;
@@ -30,8 +28,7 @@ public class ElasticsearchEngineAdapterFixture {
 
 	public void setUp() {
 		_searchEngineAdapter = createSearchEngineAdapter(
-			_elasticsearchClientResolver, _getElasticsearchDocumentFactory(),
-			_facetProcessor);
+			_elasticsearchClientResolver, _facetProcessor);
 	}
 
 	public void tearDown() {
@@ -40,7 +37,6 @@ public class ElasticsearchEngineAdapterFixture {
 
 	protected static SearchEngineAdapter createSearchEngineAdapter(
 		ElasticsearchClientResolver elasticsearchClientResolver,
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory,
 		FacetProcessor<?> facetProcessor) {
 
 		ClusterRequestExecutorFixture clusterRequestExecutorFixture =
@@ -54,8 +50,6 @@ public class ElasticsearchEngineAdapterFixture {
 			new DocumentRequestExecutorFixture() {
 				{
 					setElasticsearchClientResolver(elasticsearchClientResolver);
-					setElasticsearchDocumentFactory(
-						elasticsearchDocumentFactory);
 				}
 			};
 
@@ -118,30 +112,15 @@ public class ElasticsearchEngineAdapterFixture {
 		_elasticsearchClientResolver = elasticsearchClientResolver;
 	}
 
-	protected void setElasticsearchDocumentFactory(
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
-
-		_elasticsearchDocumentFactory = elasticsearchDocumentFactory;
-	}
-
 	protected void setFacetProcessor(
 		FacetProcessor<SearchRequestBuilder> facetProcessor) {
 
 		_facetProcessor = facetProcessor;
 	}
 
-	private ElasticsearchDocumentFactory _getElasticsearchDocumentFactory() {
-		if (_elasticsearchDocumentFactory != null) {
-			return _elasticsearchDocumentFactory;
-		}
-
-		return new DefaultElasticsearchDocumentFactory();
-	}
-
 	private static SearchRequestExecutorFixture _searchRequestExecutorFixture;
 
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
-	private ElasticsearchDocumentFactory _elasticsearchDocumentFactory;
 	private FacetProcessor<SearchRequestBuilder> _facetProcessor;
 	private SearchEngineAdapter _searchEngineAdapter;
 

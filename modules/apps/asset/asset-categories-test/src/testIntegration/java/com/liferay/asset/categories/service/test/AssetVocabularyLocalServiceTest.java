@@ -54,12 +54,12 @@ public class AssetVocabularyLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteVocabulary() throws Exception {
+	public void testGetOrAddEmptyVocabulary() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_assetVocabularyLocalService.getOrAddIncompleteVocabulary(
+			_assetVocabularyLocalService.getOrAddEmptyVocabulary(
 				StringUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId());
 
@@ -75,12 +75,12 @@ public class AssetVocabularyLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AssetVocabulary vocabulary =
-				_assetVocabularyLocalService.getOrAddIncompleteVocabulary(
+				_assetVocabularyLocalService.getOrAddEmptyVocabulary(
 					StringUtil.randomString(), TestPropsValues.getUserId(),
 					_group.getGroupId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, vocabulary.getStatus());
+				WorkflowConstants.STATUS_EMPTY, vocabulary.getStatus());
 		}
 	}
 
@@ -92,12 +92,12 @@ public class AssetVocabularyLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AssetVocabulary vocabulary =
-				_assetVocabularyLocalService.getOrAddIncompleteVocabulary(
+				_assetVocabularyLocalService.getOrAddEmptyVocabulary(
 					StringUtil.randomString(), TestPropsValues.getUserId(),
 					_group.getGroupId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, vocabulary.getStatus());
+				WorkflowConstants.STATUS_EMPTY, vocabulary.getStatus());
 
 			Locale locale = _portal.getSiteDefaultLocale(_group.getGroupId());
 			String title = RandomTestUtil.randomString();

@@ -12,36 +12,20 @@ import ClayTabs from '@clayui/tabs';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import {useCache} from '../../contexts/CacheContext';
-import {useStateDispatch} from '../../contexts/StateContext';
-import selectStructureERC from '../../selectors/selectStructureERC';
-import selectStructureName from '../../selectors/selectStructureName';
-import selectStructureStatus from '../../selectors/selectStructureStatus';
-import {ReferencedStructure, Structure} from '../../types/Structure';
-import getReferencedStructureLabel from '../../utils/getReferencedStructureLabel';
-import getStructureEditURL from '../../utils/getStructureEditURL';
+import getLocalizedValue from '../../../common/utils/getLocalizedValue';
+import {ReferencedStructure} from '../../types/Structure';
 import Breadcrumb from '../Breadcrumb';
 import ERCInput from '../ERCInput';
 import Input from '../Input';
-import Spaces from '../Spaces';
+import SpacesSelector from '../SpacesSelector';
+import WorkflowTab from './WorkflowTab';
 
 export default function ReferencedStructureSettings({
 	referencedStructure,
 }: {
 	referencedStructure: ReferencedStructure;
 }) {
-	const {data: structures} = useCache('structures');
-
-	const label = getReferencedStructureLabel(
-		referencedStructure.erc,
-		structures
-	);
-
-	const structure = structures.get(referencedStructure.erc);
-
-	if (!structure) {
-		return null;
-	}
+	const label = getLocalizedValue(referencedStructure.label);
 
 	return (
 		<ClayLayout.ContainerFluid className="px-4" size="md" view>
@@ -55,7 +39,9 @@ export default function ReferencedStructureSettings({
 			>
 				<span>
 					{sub(
-						Liferay.Language.get('x-is-a-referenced-structure'),
+						Liferay.Language.get(
+							'x-is-a-referenced-content-structure'
+						),
 						label
 					)}
 				</span>
@@ -63,7 +49,7 @@ export default function ReferencedStructureSettings({
 				<ClayLink
 					className="ml-1"
 					displayType="unstyled"
-					href={getStructureEditURL(structure)}
+					href={referencedStructure.editURL}
 					target="_blank"
 				>
 					{sub(
@@ -82,17 +68,17 @@ export default function ReferencedStructureSettings({
 					</ClayTabs.Item>
 
 					<ClayTabs.Item>
-						{Liferay.Language.get('validations')}
+						{Liferay.Language.get('workflow')}
 					</ClayTabs.Item>
 				</ClayTabs.List>
 
 				<ClayTabs.Panels fade>
 					<ClayTabs.TabPane className="px-0">
-						<GeneralTab structure={structure} />
+						<GeneralTab referencedStructure={referencedStructure} />
 					</ClayTabs.TabPane>
 
 					<ClayTabs.TabPane className="px-0">
-						<ValidationsTab />
+						<WorkflowTab disabled={true} />
 					</ClayTabs.TabPane>
 				</ClayTabs.Panels>
 			</ClayTabs>
@@ -100,12 +86,12 @@ export default function ReferencedStructureSettings({
 	);
 }
 
-function GeneralTab({structure}: {structure: Structure}) {
-	const dispatch = useStateDispatch();
-
-	const name = selectStructureName(structure);
-	const erc = selectStructureERC(structure);
-	const status = selectStructureStatus(structure);
+function GeneralTab({
+	referencedStructure,
+}: {
+	referencedStructure: ReferencedStructure;
+}) {
+	const {erc, name} = referencedStructure;
 
 	return (
 		<div>
@@ -115,33 +101,21 @@ function GeneralTab({structure}: {structure: Structure}) {
 				</p>
 
 				<ClayLabel displayType="warning">
-					{Liferay.Language.get('referenced-structure')}
+					{Liferay.Language.get('referenced-content-structure')}
 				</ClayLabel>
 			</div>
 
 			<Input
-				disabled={status === 'published'}
-				label={Liferay.Language.get('structure-name')}
-				onValueChange={(value) =>
-					dispatch({name: value, type: 'update-structure'})
-				}
+				disabled
+				label={Liferay.Language.get('content-structure-name')}
+				onValueChange={() => {}}
 				required
 				value={name}
 			/>
 
-			<ERCInput
-				disabled
-				onValueChange={(value) =>
-					dispatch({erc: value, type: 'update-structure'})
-				}
-				value={erc}
-			/>
+			<ERCInput disabled onValueChange={() => {}} value={erc} />
 
-			<Spaces disabled structure={structure} />
+			<SpacesSelector disabled structure={referencedStructure} />
 		</div>
 	);
-}
-
-function ValidationsTab() {
-	return <div></div>;
 }

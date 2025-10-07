@@ -335,7 +335,7 @@ public class PortalHotfixRelease {
 
 	private static final Pattern _hotfixURLPattern = Pattern.compile(
 		"https?://.+/(?<hotfixName>liferay-(hotfix|security-de|security-dxp|" +
-			"dxp-\\d{4}.q\\d+.\\d+-hotfix)-" +
+			"dxp-\\d{4}.q\\d+.\\d+(-lts)?-hotfix)-" +
 				"(?<hotfixVersion>\\d+)(-\\d{6}-\\d)?(-)?(\\d{4})?)");
 	private static final Pattern _mirrorsURLPattern = Pattern.compile(
 		"https?://(mirrors(.lax.liferay.com)?/)?(?<urlPath>.+)");

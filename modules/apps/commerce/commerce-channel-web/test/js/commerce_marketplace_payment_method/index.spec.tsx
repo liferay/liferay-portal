@@ -110,7 +110,7 @@ describe('CommerceMarketplacePaymentMethod', () => {
 		).toBeTruthy();
 	});
 
-	it('renders modal connection with markeplace needed', async () => {
+	it('renders modal connection with marketplace needed', async () => {
 		const {fetch} = require('frontend-js-web');
 
 		fetch.mockResponseOnce(JSON.stringify({authorized: false, data: null}));

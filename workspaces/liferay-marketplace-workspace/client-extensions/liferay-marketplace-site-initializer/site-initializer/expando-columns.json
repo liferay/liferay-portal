@@ -1,38 +1,5 @@
 [
 	{
-		"dataType": 16,
-		"defaultValue": [
-			"No",
-			"Yes"
-		],
-		"modelResource": "com.liferay.commerce.product.model.CPAttachmentFileEntry",
-		"name": "App Icon",
-		"properties": {
-			"display-type": "selection-list",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "App Icon",
-		"properties": {
-			"hidden": true,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
-			"width": "0"
-		}
-	},
-	{
 		"dataType": 15,
 		"defaultValue": "Marketplace Developer",
 		"modelResource": "com.liferay.account.model.AccountEntry",
@@ -67,21 +34,6 @@
 		"properties": {
 			"height": 150,
 			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 1,
-		"defaultValue": false,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Collects Personal Data",
-		"properties": {
-			"hidden": true,
 			"indexType": 2,
 			"localizeField": false,
 			"localizeFieldName": true,
@@ -161,63 +113,6 @@
 	},
 	{
 		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Current Requirements",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Developer Name",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Developer Website",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Documentation",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
 		"modelResource": "com.liferay.commerce.product.model.CPInstance",
 		"name": "Download Count",
 		"properties": {
@@ -260,20 +155,6 @@
 	},
 	{
 		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Github Username",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
 		"modelResource": "com.liferay.account.model.AccountEntry",
 		"name": "Homepage URL",
 		"properties": {
@@ -283,51 +164,6 @@
 			"localizeFieldName": true,
 			"secret": false,
 			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 3,
-		"defaultValue": 202310031639,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Import Create Date",
-		"properties": {
-			"hidden": true,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 3,
-		"defaultValue": 202310031639,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Import Modified Date",
-		"properties": {
-			"hidden": true,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 3,
-		"defaultValue": 202310031639,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Import Status Date",
-		"properties": {
-			"hidden": true,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
 			"width": "0"
 		}
 	},
@@ -347,347 +183,11 @@
 	},
 	{
 		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Instructions",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Latest Version",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "License",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 16,
-		"defaultValue": [
-			"Liferay DXP 7.4 U10",
-			"Liferay Portal 7.4 GA10",
-			"Liferay DXP 7.4 U20",
-			"Liferay Portal 7.4 GA20",
-			"Liferay DXP 7.4 U30",
-			"Liferay Portal 7.4 GA30",
-			"Liferay DXP 7.4 U40",
-			"Liferay Portal 7.4 GA40",
-			"Liferay DXP 7.4 U50",
-			"Liferay Portal 7.4 GA50",
-			"Liferay DXP 7.4 U60",
-			"Liferay Portal 7.4 GA60",
-			"Liferay DXP 7.4 U70",
-			"Liferay Portal 7.4 GA70",
-			"Liferay DXP 7.4 U80",
-			"Liferay Portal 7.4 GA80",
-			"Liferay DXP 7.4 U90",
-			"Liferay Portal 7.4 GA90",
-			"Liferay DXP 7.4 U91",
-			"Liferay Portal 7.4 GA91",
-			"Liferay DXP 7.4 U92",
-			"Liferay Portal 7.4 GA92",
-			"Liferay DXP 7.4 U93",
-			"Liferay Portal 7.4 GA93",
-			"Liferay DXP 7.4 U94",
-			"Liferay Portal 7.4 GA94",
-			"Liferay DXP 7.4 U95",
-			"Liferay Portal 7.4 GA95",
-			"Liferay DXP 7.4 U96",
-			"Liferay Portal 7.4 GA96",
-			"Liferay DXP 7.4 U97",
-			"Liferay Portal 7.4 GA97",
-			"Liferay DXP 7.4 U98",
-			"Liferay Portal 7.4 GA98",
-			"Liferay DXP 7.4 U99",
-			"Liferay Portal 7.4 GA99",
-			"Liferay DXP 7.4 U100",
-			"Liferay Portal 7.4 GA100",
-			"Liferay DXP 7.4 U101",
-			"Liferay Portal 7.4 GA101",
-			"Liferay DXP 7.4 U102",
-			"Liferay Portal 7.4 GA102",
-			"Liferay DXP 7.4 U103",
-			"Liferay Portal 7.4 GA103",
-			"Liferay DXP 7.4 U104",
-			"Liferay Portal 7.4 GA104",
-			"Liferay DXP 7.4 U105",
-			"Liferay Portal 7.4 GA105",
-			"Liferay DXP 7.4 U106",
-			"Liferay Portal 7.4 GA106",
-			"Liferay DXP 7.4 U107",
-			"Liferay Portal 7.4 GA107",
-			"Liferay DXP 7.4 U108",
-			"Liferay Portal 7.4 GA108",
-			"Liferay DXP 7.4 U109",
-			"Liferay Portal 7.4 GA109",
-			"Liferay DXP 7.4 U110",
-			"Liferay Portal 7.4 GA110"
-		],
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Liferay Version",
-		"properties": {
-			"display-type": "checkbox",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": true,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 16,
-		"defaultValue": [
-			"Liferay DXP 7.4 U1",
-			"Liferay Portal 7.4 GA1",
-			"Liferay DXP 7.4 U2",
-			"Liferay Portal 7.4 GA2",
-			"Liferay DXP 7.4 U3",
-			"Liferay Portal 7.4 GA3",
-			"Liferay DXP 7.4 U4",
-			"Liferay Portal 7.4 GA4",
-			"Liferay DXP 7.4 U5",
-			"Liferay Portal 7.4 GA5",
-			"Liferay DXP 7.4 U6",
-			"Liferay Portal 7.4 GA6",
-			"Liferay DXP 7.4 U7",
-			"Liferay Portal 7.4 GA7",
-			"Liferay DXP 7.4 U8",
-			"Liferay Portal 7.4 GA8",
-			"Liferay DXP 7.4 U9",
-			"Liferay Portal 7.4 GA9",
-			"Liferay DXP 7.4 U10",
-			"Liferay Portal 7.4 GA10",
-			"Liferay DXP 7.4 U11",
-			"Liferay Portal 7.4 GA11",
-			"Liferay DXP 7.4 U12",
-			"Liferay Portal 7.4 GA12",
-			"Liferay DXP 7.4 U13",
-			"Liferay Portal 7.4 GA13",
-			"Liferay DXP 7.4 U14",
-			"Liferay Portal 7.4 GA14",
-			"Liferay DXP 7.4 U15",
-			"Liferay Portal 7.4 GA15",
-			"Liferay DXP 7.4 U16",
-			"Liferay Portal 7.4 GA16",
-			"Liferay DXP 7.4 U17",
-			"Liferay Portal 7.4 GA17",
-			"Liferay DXP 7.4 U19",
-			"Liferay Portal 7.4 GA19",
-			"Liferay DXP 7.4 U20",
-			"Liferay Portal 7.4 GA20",
-			"Liferay DXP 7.4 U21",
-			"Liferay Portal 7.4 GA21",
-			"Liferay DXP 7.4 U22",
-			"Liferay Portal 7.4 GA22",
-			"Liferay DXP 7.4 U23",
-			"Liferay Portal 7.4 GA23",
-			"Liferay DXP 7.4 U24",
-			"Liferay Portal 7.4 GA24",
-			"Liferay DXP 7.4 U25",
-			"Liferay Portal 7.4 GA25",
-			"Liferay DXP 7.4 U26",
-			"Liferay Portal 7.4 GA26",
-			"Liferay DXP 7.4 U27",
-			"Liferay Portal 7.4 GA27",
-			"Liferay DXP 7.4 U28",
-			"Liferay Portal 7.4 GA28",
-			"Liferay DXP 7.4 U29",
-			"Liferay Portal 7.4 GA29",
-			"Liferay DXP 7.4 U30",
-			"Liferay Portal 7.4 GA30",
-			"Liferay DXP 7.4 U31",
-			"Liferay Portal 7.4 GA31",
-			"Liferay DXP 7.4 U32",
-			"Liferay Portal 7.4 GA32",
-			"Liferay DXP 7.4 U33",
-			"Liferay Portal 7.4 GA33",
-			"Liferay DXP 7.4 U34",
-			"Liferay Portal 7.4 GA34",
-			"Liferay DXP 7.4 U35",
-			"Liferay Portal 7.4 GA35",
-			"Liferay DXP 7.4 U36",
-			"Liferay Portal 7.4 GA36",
-			"Liferay DXP 7.4 U37",
-			"Liferay Portal 7.4 GA37",
-			"Liferay DXP 7.4 U38",
-			"Liferay Portal 7.4 GA38",
-			"Liferay DXP 7.4 U39",
-			"Liferay Portal 7.4 GA39",
-			"Liferay DXP 7.4 U40",
-			"Liferay Portal 7.4 GA40",
-			"Liferay DXP 7.4 U41",
-			"Liferay Portal 7.4 GA41",
-			"Liferay DXP 7.4 U42",
-			"Liferay Portal 7.4 GA42",
-			"Liferay DXP 7.4 U43",
-			"Liferay Portal 7.4 GA43",
-			"Liferay DXP 7.4 U44",
-			"Liferay Portal 7.4 GA44",
-			"Liferay DXP 7.4 U45",
-			"Liferay Portal 7.4 GA45",
-			"Liferay DXP 7.4 U46",
-			"Liferay Portal 7.4 GA46",
-			"Liferay DXP 7.4 U47",
-			"Liferay Portal 7.4 GA47",
-			"Liferay DXP 7.4 U48",
-			"Liferay Portal 7.4 GA48",
-			"Liferay DXP 7.4 U49",
-			"Liferay Portal 7.4 GA49",
-			"Liferay DXP 7.4 U50",
-			"Liferay Portal 7.4 GA50",
-			"Liferay DXP 7.4 U51",
-			"Liferay Portal 7.4 GA51",
-			"Liferay DXP 7.4 U52",
-			"Liferay Portal 7.4 GA52",
-			"Liferay DXP 7.4 U53",
-			"Liferay Portal 7.4 GA53",
-			"Liferay DXP 7.4 U54",
-			"Liferay Portal 7.4 GA54",
-			"Liferay DXP 7.4 U55",
-			"Liferay Portal 7.4 GA55",
-			"Liferay DXP 7.4 U56",
-			"Liferay Portal 7.4 GA56",
-			"Liferay DXP 7.4 U57",
-			"Liferay Portal 7.4 GA57",
-			"Liferay DXP 7.4 U58",
-			"Liferay Portal 7.4 GA58",
-			"Liferay DXP 7.4 U59",
-			"Liferay Portal 7.4 GA59",
-			"Liferay DXP 7.4 U60",
-			"Liferay Portal 7.4 GA60",
-			"Liferay DXP 7.4 U61",
-			"Liferay Portal 7.4 GA61",
-			"Liferay DXP 7.4 U62",
-			"Liferay Portal 7.4 GA62",
-			"Liferay DXP 7.4 U63",
-			"Liferay Portal 7.4 GA63",
-			"Liferay DXP 7.4 U64",
-			"Liferay Portal 7.4 GA64",
-			"Liferay DXP 7.4 U65",
-			"Liferay Portal 7.4 GA65",
-			"Liferay DXP 7.4 U66",
-			"Liferay Portal 7.4 GA66",
-			"Liferay DXP 7.4 U67",
-			"Liferay Porta l 7.4 GA67",
-			"Liferay DXP 7.4 U68",
-			"Liferay Portal 7.4 GA68",
-			"Liferay DXP 7.4 U69",
-			"Liferay Portal 7.4 GA69",
-			"Liferay DXP 7.4 U70",
-			"Liferay Portal 7.4 GA70",
-			"Liferay DXP 7.4 U71",
-			"Liferay Porta l 7.4 GA71",
-			"Liferay DXP 7.4 U72",
-			"Liferay Portal 7.4 GA72",
-			"Liferay DXP 7.4 U73",
-			"Liferay Portal 7.4 GA73",
-			"Liferay DXP 7.4 U74",
-			"Liferay Portal 7.4 GA74",
-			"Liferay DXP 7.4 U75",
-			"Liferay Portal 7.4 GA75",
-			"Liferay DXP 7.4 U76",
-			"Liferay Portal 7.4 GA76",
-			"Liferay DXP 7.4 U77",
-			"Liferay Portal 7.4 GA77",
-			"Liferay DXP 7.4 U78",
-			"Liferay Portal 7.4 GA78",
-			"Liferay DXP 7.4 U79",
-			"Liferay Portal 7.4 GA79",
-			"Liferay DXP 7.4 U80",
-			"Liferay Portal 7.4 GA80",
-			"Liferay DXP 7.4 U81",
-			"Liferay Portal 7.4 GA81",
-			"Liferay DXP 7.4 U82",
-			"Liferay Portal 7.4 GA82",
-			"Liferay DXP 7.4 U83",
-			"Liferay Portal 7.4 GA83",
-			"Liferay DXP 7.4 U84",
-			"Liferay Portal 7.4 GA84",
-			"Liferay DXP 7.4 U85",
-			"Liferay Portal 7.4 GA85",
-			"Liferay DXP 7.4 U86",
-			"Liferay Portal 7.4 GA86"
-		],
-		"modelResource": "com.liferay.commerce.product.model.CPAttachmentFileEntry",
-		"name": "Liferay Version",
-		"properties": {
-			"display-type": "checkbox",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": true,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Past Versions Work With",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
 		"modelResource": "com.liferay.account.model.AccountEntry",
 		"name": "Paypal Email Address",
 		"properties": {
 			"hidden": false,
 			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Profile",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 2,
 			"localizeField": false,
 			"localizeFieldName": true,
 			"secret": false,
@@ -768,7 +268,7 @@
 	{
 		"dataType": 15,
 		"modelResource": "com.liferay.commerce.model.CommerceOrder",
-		"name": "trial-virtualhost",
+		"name": "trial-virtual-host",
 		"properties": {
 			"hidden": false,
 			"indexType": 2,
@@ -822,79 +322,9 @@
 		}
 	},
 	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "analytics-group-id",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Source",
-		"properties": {
-			"hidden": false,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Publisher Icon",
-		"properties": {
-			"hidden": true,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": true,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Reference",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
 		"dataType": 3,
 		"modelResource": "com.liferay.commerce.product.model.CPInstance",
 		"name": "Release Date",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Release Notes",
 		"properties": {
 			"hidden": false,
 			"indexType": 2,
@@ -921,55 +351,8 @@
 	},
 	{
 		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Site Initializer",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
 		"modelResource": "com.liferay.commerce.product.model.CPInstance",
 		"name": "Source",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 16,
-		"defaultValue": [
-			"No",
-			"Yes"
-		],
-		"modelResource": "com.liferay.commerce.product.model.CPAttachmentFileEntry",
-		"name": "Source Files",
-		"properties": {
-			"display-type": "selection-list",
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": false,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Support",
 		"properties": {
 			"hidden": false,
 			"indexType": 2,
@@ -1010,50 +393,7 @@
 	},
 	{
 		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Terms",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "Terms Text",
-		"properties": {
-			"height": "150",
-			"hidden": false,
-			"indexType": 0,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
 		"modelResource": "com.liferay.commerce.product.model.CPInstance",
-		"name": "Version",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
 		"name": "Version",
 		"properties": {
 			"hidden": false,
@@ -1571,19 +911,5 @@
 		"dataType": 15,
 		"modelResource": "com.liferay.dispatch.model.DispatchTrigger",
 		"name": "fileName"
-	},
-	{
-		"dataType": 15,
-		"modelResource": "com.liferay.commerce.product.model.CPDefinition",
-		"name": "version",
-		"properties": {
-			"hidden": false,
-			"indexType": 2,
-			"localizeField": false,
-			"localizeFieldName": true,
-			"secret": false,
-			"visibleWithUpdatePermission": false,
-			"width": "0"
-		}
 	}
 ]

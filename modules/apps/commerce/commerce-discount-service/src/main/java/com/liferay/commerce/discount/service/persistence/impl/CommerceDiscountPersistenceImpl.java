@@ -606,6 +606,15 @@ public class CommerceDiscountPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -1002,6 +1011,14 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByUuid(uuid);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1613,6 +1630,15 @@ public class CommerceDiscountPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2029,6 +2055,15 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByUuid_C(
+				uuid, companyId);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2586,6 +2621,15 @@ public class CommerceDiscountPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2944,6 +2988,15 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByCompanyId(
+				companyId);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3535,6 +3588,15 @@ public class CommerceDiscountPersistenceImpl
 				companyId, couponCode, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_C(
+					companyId, couponCode, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		couponCode = Objects.toString(couponCode, "");
 
 		StringBundler sb = null;
@@ -3952,6 +4014,15 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByC_C(long companyId, String couponCode) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_C(companyId, couponCode);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByC_C(
+				companyId, couponCode);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		couponCode = Objects.toString(couponCode, "");
@@ -4552,6 +4623,15 @@ public class CommerceDiscountPersistenceImpl
 				displayDate, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtD_S(
+					displayDate, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4962,6 +5042,15 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByLtD_S(Date displayDate, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtD_S(displayDate, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByLtD_S(
+				displayDate, status);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5560,6 +5649,15 @@ public class CommerceDiscountPersistenceImpl
 				expirationDate, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtE_S(
+					expirationDate, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5970,6 +6068,15 @@ public class CommerceDiscountPersistenceImpl
 	public int filterCountByLtE_S(Date expirationDate, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtE_S(expirationDate, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByLtE_S(
+				expirationDate, status);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -6887,6 +6994,15 @@ public class CommerceDiscountPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_L_A_S(
+					companyId, level, active, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		level = Objects.toString(level, "");
 
 		StringBundler sb = null;
@@ -7344,6 +7460,15 @@ public class CommerceDiscountPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_L_A_S(companyId, level, active, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceDiscount> commerceDiscounts = findByC_L_A_S(
+				companyId, level, active, status);
+
+			commerceDiscounts = InlineSQLHelperUtil.filter(commerceDiscounts);
+
+			return commerceDiscounts.size();
 		}
 
 		level = Objects.toString(level, "");

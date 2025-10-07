@@ -1,5 +1,17 @@
 # Liferay Gradle Plugins JSDoc Change Log
 
+## 2.0.79 - 2024-11-05
+
+### Dependencies
+- [LPD-40537] Update the com.liferay.gradle.plugins.node dependency to version
+8.1.1.
+
+## 2.0.78 - 2024-10-28
+
+### Dependencies
+- [LRCI-4827] Update the com.liferay.gradle.plugins.node dependency to version
+8.1.0.
+
 ## 2.0.76 - 2024-06-14
 
 ### Dependencies
@@ -607,6 +619,7 @@ the same application.
 [LPD-23882]: https://issues.liferay.com/browse/LPD-23882
 [LPD-24865]: https://issues.liferay.com/browse/LPD-24865
 [LPD-28512]: https://issues.liferay.com/browse/LPD-28512
+[LPD-40537]: https://issues.liferay.com/browse/LPD-40537
 [LPS-0]: https://issues.liferay.com/browse/LPS-0
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-69802]: https://issues.liferay.com/browse/LPS-69802
@@ -673,6 +686,7 @@ the same application.
 [LPS-149634]: https://issues.liferay.com/browse/LPS-149634
 [LPS-150857]: https://issues.liferay.com/browse/LPS-150857
 [LPS-181508]: https://issues.liferay.com/browse/LPS-181508
+[LRCI-4827]: https://issues.liferay.com/browse/LRCI-4827
 [LRDOCS-4111]: https://issues.liferay.com/browse/LRDOCS-4111
 [LRDOCS-6412]: https://issues.liferay.com/browse/LRDOCS-6412
 [LRQA-52072]: https://issues.liferay.com/browse/LRQA-52072

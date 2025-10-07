@@ -20,7 +20,7 @@ export const NEW_APP_BUILD_FLOW_ITEMS = [
 		parseSchema: (context: NewAppInitialState) =>
 			zodSchema.appPublishing.build.safeParse(context.build),
 		path: '',
-		title: i18n.translate('provide-app-build'),
+		title: () => i18n.translate('provide-app-build'),
 	},
 
 	{
@@ -30,6 +30,6 @@ export const NEW_APP_BUILD_FLOW_ITEMS = [
 			),
 		label: i18n.translate('submit'),
 		path: 'submit',
-		title: i18n.translate('review-and-submit-app'),
+		title: () => i18n.translate('review-and-submit-app'),
 	},
 ];

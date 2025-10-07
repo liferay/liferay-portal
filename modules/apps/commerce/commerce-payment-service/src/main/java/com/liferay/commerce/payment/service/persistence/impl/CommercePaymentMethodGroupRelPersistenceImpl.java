@@ -584,6 +584,16 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -951,6 +961,16 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
+				findByGroupId(groupId);
+
+			commercePaymentMethodGroupRels = InlineSQLHelperUtil.filter(
+				commercePaymentMethodGroupRels, groupId);
+
+			return commercePaymentMethodGroupRels.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1521,6 +1541,16 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 			return findByG_A(groupId, active, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A(
+					groupId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1906,6 +1936,16 @@ public class CommercePaymentMethodGroupRelPersistenceImpl
 	public int filterCountByG_A(long groupId, boolean active) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_A(groupId, active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentMethodGroupRel> commercePaymentMethodGroupRels =
+				findByG_A(groupId, active);
+
+			commercePaymentMethodGroupRels = InlineSQLHelperUtil.filter(
+				commercePaymentMethodGroupRels, groupId);
+
+			return commercePaymentMethodGroupRels.size();
 		}
 
 		StringBundler sb = new StringBundler(3);

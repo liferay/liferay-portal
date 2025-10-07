@@ -11,6 +11,7 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {systemSettingsPageTest} from '../../../../fixtures/systemSettingsPageTest';
 import {liferayConfig} from '../../../../liferay.config';
 import {getRandomInt} from '../../../../utils/getRandomInt';
@@ -30,24 +31,27 @@ export const test = mergeTests(
 		'LPD-20379': {enabled: true},
 	}),
 	loginTest(),
+	pageEditorPagesTest,
 	systemSettingsPageTest
 );
 
 test(
 	'Commerce Classic Header main fragment is correctly displayed',
 	{tag: ['@LPD-23780']},
-	async ({apiHelpers, page}) => {
-		test.setTimeout(180000);
+	async ({apiHelpers, page, pageEditorPage}) => {
+		test.setTimeout(120000);
 
 		const {site} = await classicCommerceSetUp(
 			apiHelpers,
 			`classic-commerce`
 		);
 
-		await page.goto(`/web${site.friendlyUrlPath}`);
+		await page.goto(`/web${site.friendlyUrlPath}?p_l_mode=edit`, {
+			waitUntil: 'networkidle',
+		});
 
-		await page.getByRole('link', {exact: true, name: 'Edit'}).click();
-		await page.getByLabel('Page Design Options').click();
+		await pageEditorPage.goToSidebarTab('Page Design Options');
+
 		await page.getByLabel('Commerce Classic Master').click();
 		await page.getByLabel('Publish', {exact: true}).click();
 

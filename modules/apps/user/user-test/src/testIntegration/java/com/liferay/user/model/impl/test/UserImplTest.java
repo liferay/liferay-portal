@@ -151,6 +151,8 @@ public class UserImplTest {
 
 		_userLocalService.addUserGroupUser(
 			userGroup.getUserGroupId(), _user.getUserId());
+
+		_user = _userLocalService.getUser(_user.getUserId());
 	}
 
 	private void _addInheritedSiteRole() throws Exception {

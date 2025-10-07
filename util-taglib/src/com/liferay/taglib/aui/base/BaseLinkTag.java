@@ -45,6 +45,14 @@ public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSup
 		_crossOrigin = crossOrigin;
 	}
 
+	public boolean getHashedFile() {
+		return _hashedFile;
+	}
+
+	public void setHashedFile(boolean hashedFile) {
+		_hashedFile = hashedFile;
+	}
+
 	public String getHref() {
 		return _href;
 	}
@@ -96,6 +104,7 @@ public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSup
 	protected void cleanUp() {
 		_cssClass = null;
 		_crossOrigin = null;
+		_hashedFile = false;
 		_href = null;
 		_id = null;
 		_integrity = null;
@@ -113,6 +122,7 @@ public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSup
 
 	private String _cssClass = null;
 	private String _crossOrigin = null;
+	private boolean _hashedFile;
 	private String _href = null;
 	private String _id = null;
 	private String _integrity = null;

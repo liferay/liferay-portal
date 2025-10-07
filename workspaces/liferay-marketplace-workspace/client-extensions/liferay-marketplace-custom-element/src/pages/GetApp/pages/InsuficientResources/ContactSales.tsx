@@ -17,7 +17,7 @@ const ContactSalesPage = () => {
 		<div>
 			<Header
 				description={i18n.translate(
-					'the-selected-project-does-not-meet-the-necessary-resource-requirements-for-this-app-Please-contact-sales-to-request-additional-resources'
+					'the-selected-project-does-not-meet-the-necessary-resource-requirements-for-this-app-please-contact-sales-to-request-additional-resources'
 				)}
 				title={i18n.translate('insufficient-resource-requirements')}
 			/>

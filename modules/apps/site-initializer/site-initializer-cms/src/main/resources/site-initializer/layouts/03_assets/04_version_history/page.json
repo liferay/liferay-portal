@@ -1,0 +1,25 @@
+{
+	"friendlyURL": "/version-history",
+	"hidden": true,
+	"name_i18n": {
+		"en_US": "Version History"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "CMS Administrator",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		}
+	],
+	"private": false,
+	"system": false,
+	"type": "Content"
+}

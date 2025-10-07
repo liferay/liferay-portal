@@ -1,0 +1,32 @@
+{
+	"dependencies": {
+		"@clayui/alert": "3.148.0",
+		"@clayui/autocomplete": "3.149.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/drop-down": "3.149.0",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
+		"@clayui/label": "3.144.1",
+		"@clayui/layout": "3.144.1",
+		"@clayui/link": "3.144.1",
+		"@clayui/sticker": "3.147.0",
+		"@liferay/frontend-data-set-web": "*",
+		"classnames": "2.3.1",
+		"commerce-frontend-js": "*",
+		"frontend-js-components-web": "*",
+		"frontend-js-web": "*",
+		"prop-types": "15.7.2",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"main": "js/index.js",
+	"name": "@liferay/commerce-fragment-impl",
+	"private": true,
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format",
+		"test": "node-scripts test"
+	},
+	"version": "1.0.2"
+}

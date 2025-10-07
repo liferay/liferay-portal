@@ -527,7 +527,6 @@ definition {
 	@description = "This is a use case for LPS-83326 and LPS-99287. Verify is possible export/import Web Content Folder with a Workflow."
 	@priority = 3
 	test ExportImportWebContentFolderWithWorkflow {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

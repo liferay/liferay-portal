@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.resource.manager.ClassLoaderResourceManager;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -34,12 +35,14 @@ import com.liferay.portal.kernel.settings.SettingsLocatorHelper;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletException;
+import jakarta.portlet.PortletURL;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -166,16 +169,30 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 		}
 
 		try {
-			_configureTargetService(
+			configurationModel = _bindConfiguration(
 				configurationModel, properties,
 				configurationScopeDisplayContext.getScope(),
 				configurationScopeDisplayContext.getScopePK());
 
-			String redirect = ParamUtil.getString(actionRequest, "redirect");
+			PortletURL portletURL = PortletURLBuilder.createRenderURL(
+				PortalUtil.getLiferayPortletResponse(actionResponse)
+			).setParameter(
+				"factoryPid", configurationModel.getFactoryPid()
+			).buildPortletURL();
 
-			if (Validator.isNotNull(redirect)) {
-				actionResponse.sendRedirect(redirect);
+			if (configurationModel.isFactory()) {
+				portletURL.setParameter(
+					"mvcRenderCommandName",
+					"/configuration_admin/view_factory_instances");
 			}
+			else {
+				portletURL.setParameter(
+					"mvcRenderCommandName",
+					"/configuration_admin/edit_configuration");
+				portletURL.setParameter("pid", configurationModel.getID());
+			}
+
+			actionResponse.sendRedirect(portletURL.toString());
 		}
 		catch (ConfigurationModelListenerException
 					configurationModelListenerException) {
@@ -195,7 +212,7 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 		return true;
 	}
 
-	private void _configureTargetService(
+	private ConfigurationModel _bindConfiguration(
 			ConfigurationModel configurationModel,
 			Dictionary<String, Object> properties,
 			ExtendedObjectClassDefinition.Scope scope, Serializable scopePK)
@@ -221,7 +238,7 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 
 					String pid = configurationModel.getID();
 
-					if (!configurationModel.isFactory() && scoped) {
+					if (scoped) {
 						pid = pid + ".scoped";
 					}
 
@@ -278,6 +295,8 @@ public class BindConfigurationMVCActionCommand implements MVCActionCommand {
 			}
 
 			configuration.update(configuredProperties);
+
+			return new ConfigurationModel(configuration, configurationModel);
 		}
 		catch (ConfigurationModelListenerException
 					configurationModelListenerException) {

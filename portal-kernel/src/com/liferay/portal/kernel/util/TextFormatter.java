@@ -316,7 +316,7 @@ public class TextFormatter {
 			String lowerCaseFirstChar = StringUtil.toLowerCase(
 				s.substring(0, 1));
 
-			return s = lowerCaseFirstChar.concat(s.substring(1));
+			return lowerCaseFirstChar.concat(s.substring(1));
 		}
 
 		StringBuilder sb = new StringBuilder(s);
@@ -371,7 +371,7 @@ public class TextFormatter {
 
 		String lowerCaseFirstChar = StringUtil.toLowerCase(s.substring(0, 1));
 
-		return s = lowerCaseFirstChar.concat(s.substring(1));
+		return lowerCaseFirstChar.concat(s.substring(1));
 	}
 
 	private static String _formatM(String s) {

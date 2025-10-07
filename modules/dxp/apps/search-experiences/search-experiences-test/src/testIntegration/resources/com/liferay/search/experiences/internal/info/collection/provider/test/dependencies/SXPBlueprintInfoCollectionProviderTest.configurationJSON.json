@@ -1,0 +1,26 @@
+{
+	"advancedConfiguration": {
+	},
+	"aggregationConfiguration": {
+	},
+	"generalConfiguration": {
+		"clauseContributorsExcludes": [
+		],
+		"clauseContributorsIncludes": [
+			"*"
+		],
+		"collectionProvider": true,
+		"searchableAssetTypes": [
+			"com.liferay.journal.model.JournalArticle"
+		]
+	},
+	"highlightConfiguration": {
+	},
+	"parameterConfiguration": {
+	},
+	"queryConfiguration": {
+		"applyIndexerClauses": true
+	},
+	"sortConfiguration": {
+	}
+}

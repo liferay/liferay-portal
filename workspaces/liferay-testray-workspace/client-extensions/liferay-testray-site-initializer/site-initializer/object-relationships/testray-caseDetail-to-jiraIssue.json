@@ -1,0 +1,12 @@
+{
+	"deletionType": "disassociate",
+	"label": {
+		"en_US": "CaseDetailsToIssues"
+	},
+	"name": "caseDetailsToJiraIssues",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:CaseDetail$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:JiraIssue$]",
+	"objectDefinitionName2": "JiraIssue",
+	"system": false,
+	"type": "manyToMany"
+}

@@ -25,6 +25,7 @@ import com.liferay.portal.test.rule.Inject;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,6 +64,24 @@ public class ListTypeDefinitionResourceTest
 				RandomTestUtil.randomLocaleStringMap(), true,
 				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
 				true, serviceContext);
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSpecificationIdListTypeDefinitionsPage()
+		throws Exception {
+
+		super.testGraphQLGetSpecificationIdListTypeDefinitionsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostSpecificationIdListTypeDefinition()
+		throws Exception {
+
+		super.testGraphQLPostSpecificationIdListTypeDefinition();
 	}
 
 	@Override
@@ -134,6 +153,22 @@ public class ListTypeDefinitionResourceTest
 		throws Exception {
 
 		return _cpSpecificationOption.getCPSpecificationOptionId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteSpecificationListTypeDefinition_getSpecificationId()
+		throws Exception {
+
+		return _cpSpecificationOption.getCPSpecificationOptionId();
+	}
+
+	@Override
+	protected ListTypeDefinition
+			testGraphQLListTypeDefinition_addListTypeDefinition()
+		throws Exception {
+
+		return _addListTypeDefinition(randomListTypeDefinition());
 	}
 
 	@Override

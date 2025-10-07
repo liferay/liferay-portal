@@ -5,13 +5,18 @@
 
 package com.liferay.asset.list.item.selector.web.internal.layout.list.retriever;
 
+import com.liferay.asset.list.model.AssetListEntry;
+import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.layout.list.retriever.ClassedModelListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReference;
 import com.liferay.layout.list.retriever.ListObjectReferenceFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
@@ -22,7 +27,32 @@ public class AssetEntryListListObjectReferenceFactory
 
 	@Override
 	public ListObjectReference getListObjectReference(JSONObject jsonObject) {
-		return new ClassedModelListObjectReference(jsonObject);
+		String classPK = jsonObject.getString("classPK");
+
+		return new ClassedModelListObjectReference(
+			JSONUtil.put(
+				"className", jsonObject.getLong("className")
+			).put(
+				"classPK", classPK
+			).put(
+				"itemType",
+				() -> {
+					AssetListEntry assetListEntry =
+						_assetListEntryLocalService.fetchAssetListEntry(
+							GetterUtil.getLong(classPK));
+
+					if (assetListEntry == null) {
+						return jsonObject.getString("itemType");
+					}
+
+					return assetListEntry.getAssetEntryType();
+				}
+			).put(
+				"title", jsonObject.getString("title")
+			));
 	}
+
+	@Reference
+	private AssetListEntryLocalService _assetListEntryLocalService;
 
 }

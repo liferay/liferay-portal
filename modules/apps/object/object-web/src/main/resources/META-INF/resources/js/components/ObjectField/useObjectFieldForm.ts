@@ -22,6 +22,7 @@ interface IUseObjectFieldForm {
 	forbiddenLastChars?: string[];
 	forbiddenNames?: string[];
 	initialValues: Partial<ObjectField>;
+	objectFields?: Partial<ObjectField>[];
 	onSubmit: (field: ObjectField) => void;
 }
 
@@ -30,6 +31,7 @@ export function useObjectFieldForm({
 	forbiddenLastChars,
 	forbiddenNames,
 	initialValues,
+	objectFields,
 	onSubmit,
 }: IUseObjectFieldForm) {
 	const validate = (field: Partial<ObjectField>) => {
@@ -120,6 +122,19 @@ export function useObjectFieldForm({
 
 			if (!settings.objectRelationshipName) {
 				errors.objectRelationshipName = constantsUtils.REQUIRED_MSG;
+			}
+		}
+		else if (field.businessType === 'Assignee' && objectFields) {
+			if (
+				objectFields.some(
+					({businessType, externalReferenceCode}) =>
+						businessType === 'Assignee' &&
+						externalReferenceCode !== field.externalReferenceCode
+				)
+			) {
+				errors.businessType = Liferay.Language.get(
+					'an-object-definition-can-only-have-one-assignee-field'
+				);
 			}
 		}
 		else if (field.businessType === 'Attachment') {

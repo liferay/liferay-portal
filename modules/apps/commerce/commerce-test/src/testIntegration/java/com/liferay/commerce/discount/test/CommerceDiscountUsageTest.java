@@ -192,7 +192,7 @@ public class CommerceDiscountUsageTest {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 35, couponCode,
 				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, 0,
 				CommerceDiscountConstants.TARGET_PRODUCTS,
@@ -330,7 +330,7 @@ public class CommerceDiscountUsageTest {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 10, couponCode,
 				CommerceDiscountConstants.LIMITATION_TYPE_LIMITED, 3, 0,
 				CommerceDiscountConstants.TARGET_PRODUCTS,
@@ -423,7 +423,7 @@ public class CommerceDiscountUsageTest {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 35, couponCode,
 				CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, 0,
 				CommerceDiscountConstants.TARGET_PRODUCTS,
@@ -518,7 +518,7 @@ public class CommerceDiscountUsageTest {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 10, couponCode,
 				CommerceDiscountConstants.TARGET_PRODUCTS,
 				cpDefinition.getCPDefinitionId());
@@ -682,7 +682,7 @@ public class CommerceDiscountUsageTest {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 10, couponCode, limitationType,
 				limitationTimes, limitationTimesPerAccount,
 				CommerceDiscountConstants.TARGET_PRODUCTS,

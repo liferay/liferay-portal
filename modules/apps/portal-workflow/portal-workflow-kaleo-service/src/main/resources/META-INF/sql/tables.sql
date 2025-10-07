@@ -63,6 +63,7 @@ create table KaleoDefinition (
 	scope VARCHAR(75) null,
 	version INTEGER,
 	active_ BOOLEAN,
+	status INTEGER,
 	primary key (kaleoDefinitionId, ctCollectionId)
 );
 

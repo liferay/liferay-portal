@@ -63,6 +63,11 @@ public class JournalArticleLayoutDisplayPageObjectProvider
 	}
 
 	@Override
+	public String getExternalReferenceCode() {
+		return _article.getExternalReferenceCode();
+	}
+
+	@Override
 	public long getGroupId() {
 		return _article.getGroupId();
 	}

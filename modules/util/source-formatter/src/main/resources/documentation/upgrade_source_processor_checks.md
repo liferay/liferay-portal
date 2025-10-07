@@ -14,8 +14,6 @@ UpgradeJSPFieldSetGroupCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Run
 UpgradeJavaAssetEntryAssetCategoriesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replaces methods referring to class `AssetEntryAssetCategory` in class `AssetCategoryLocalService` with equivalent methods in class `AssetEntryAssetCategoryRelLocalService`. |
 UpgradeJavaBaseFragmentCollectionContributorExtendedClassesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Adds FragmentCollectionKey to Component annotation in classes that extend `BaseFragmentCollectionContributor` |
 UpgradeJavaBaseModelListenerCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Add parameter in the onAfterUpdate and onBeforeUpdate methods of the BaseModelListener class. |
-UpgradeJavaBasePanelAppExtendedClassesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replace the setPortlet method with getPortlet. |
-UpgradeJavaCommerceOrderValidatorCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replace the parameter Int for BigDecimal of method validate of 'CommerceOrderValidator' interface. |
 UpgradeJavaDDMFormValuesSerializerTrackerCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replaces the references of `DDMFormValuesSerializerTracker` class and also its methods usages. |
 UpgradeJavaDisplayPageInfoItemCapabilityCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Replace all references of DisplayPageInfoItemCapability to InfoItemCapability |
 UpgradeJavaFDSActionProviderCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Reorder parameters in the getDropdownItems method of the FDSDataProvider interface. |

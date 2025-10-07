@@ -59,7 +59,8 @@ export const ViewContainer: React.FC<Omit<IViewProps, 'channel'>> = ({
 
 	return (
 		<SafeResults
-			{...{data, error, loading}}
+			data={data}
+			error={error}
 			errorProps={{
 				href: toRoute(Routes.SETTINGS_CHANNELS, {groupId}),
 				linkLabel: Liferay.Language.get('go-to-properties'),
@@ -68,6 +69,7 @@ export const ViewContainer: React.FC<Omit<IViewProps, 'channel'>> = ({
 				),
 				subtitle: Liferay.Language.get('property-not-found')
 			}}
+			loading={loading}
 			onReload={refetch}
 			pageDisplay
 			spacer

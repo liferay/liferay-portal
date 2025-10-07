@@ -85,7 +85,21 @@ public class OpenAPIResourceImpl {
 
 	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
 		{
+			add(ChannelResourceImpl.class);
+
+			add(ConnectionInfoResourceImpl.class);
+
+			add(ExpiredAssetResourceImpl.class);
+
 			add(InventoryAnalysisResourceImpl.class);
+
+			add(ObjectEntryAcquisitionChannelResourceImpl.class);
+
+			add(ObjectEntryHistogramMetricResourceImpl.class);
+
+			add(ObjectEntryMetricResourceImpl.class);
+
+			add(ObjectEntryTopPagesResourceImpl.class);
 
 			add(OverviewResourceImpl.class);
 

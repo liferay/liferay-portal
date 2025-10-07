@@ -127,6 +127,12 @@ public class ClientExtensionCommerceCheckoutStep
 				 _paymentMethodKey.equals(
 					 commerceOrder.getCommercePaymentMethodKey()))) {
 
+				_portalCatapult.launch(
+					commerceOrder.getCompanyId(), Http.Method.POST,
+					_oAuth2ApplicationExternalReferenceCode, jsonObject,
+					"/active", currentUser.getUserId()
+				).get();
+
 				return true;
 			}
 		}

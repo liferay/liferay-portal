@@ -9,7 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.scheduler.internal.configuration.SchedulerEngineHelperConfiguration;
 
@@ -24,15 +24,14 @@ public class SchedulerEngineHelperConfigurationUpgradeProcess
 	extends UpgradeProcess {
 
 	public SchedulerEngineHelperConfigurationUpgradeProcess(
-		ConfigurationAdmin configurationAdmin, Props props) {
+		ConfigurationAdmin configurationAdmin) {
 
 		_configurationAdmin = configurationAdmin;
-		_props = props;
 	}
 
 	@Override
 	public void doUpgrade() throws Exception {
-		String audiMessageScheduleJobString = _props.get(
+		String audiMessageScheduleJobString = PropsUtil.get(
 			_LEGACY_AUDIT_MESSAGE_SCHEDULER_JOB);
 
 		if (Validator.isNull(audiMessageScheduleJobString)) {
@@ -57,6 +56,5 @@ public class SchedulerEngineHelperConfigurationUpgradeProcess
 		"audit.message.scheduler.job";
 
 	private final ConfigurationAdmin _configurationAdmin;
-	private final Props _props;
 
 }

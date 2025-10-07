@@ -11,18 +11,23 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.friendly.url.configuration.FriendlyURLSeparatorCompanyConfiguration;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -76,6 +81,51 @@ public class JournalArticleLayoutDisplayPageProviderTest {
 	@After
 	public void tearDown() throws Exception {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
+		JournalArticle article = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		LayoutDisplayPageObjectProvider layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				article.getGroupId(),
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					new ERCInfoItemIdentifier(
+						article.getExternalReferenceCode())));
+
+		Assert.assertEquals(
+			article, layoutDisplayPageObjectProvider.getDisplayObject());
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		Group companyGroup = company.getGroup();
+
+		layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				companyGroup.getGroupId(),
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					new ERCInfoItemIdentifier(
+						article.getExternalReferenceCode(),
+						_group.getExternalReferenceCode())));
+
+		Assert.assertEquals(
+			article, layoutDisplayPageObjectProvider.getDisplayObject());
+
+		layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				companyGroup.getGroupId(),
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					new ERCInfoItemIdentifier(
+						article.getExternalReferenceCode())));
+
+		Assert.assertNull(layoutDisplayPageObjectProvider);
 	}
 
 	@Test
@@ -318,8 +368,14 @@ public class JournalArticleLayoutDisplayPageProviderTest {
 		}
 	}
 
+	@Inject
+	private CompanyLocalService _companyLocalService;
+
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private JournalArticle _journalArticle;
 

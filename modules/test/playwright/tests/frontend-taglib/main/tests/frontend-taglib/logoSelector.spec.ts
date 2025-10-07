@@ -7,39 +7,26 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../../../fixtures/loginTest';
 import getRandomString from '../../../../../utils/getRandomString';
 import getFragmentDefinition from '../../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import {samplePageTest} from '../../fixtures/samplePageTest';
+import {TabName} from '../../pages/SamplePage';
 
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
-	isolatedSiteTest,
-	loginTest(),
 	samplePageTest
 );
-
-const fragmentName = getRandomString();
-let layout: Layout;
-const linkName = 'Logo Selector';
 
 test(
 	'Logo selector changes do not affect to every selector in the page',
 	{tag: '@LPD-39308'},
-	async ({page, samplePage, site}) => {
-		await test.step('Create a content site and the taglib sample widget', async () => {
-			await samplePage.setupSampleWidget({
-				site,
-			});
-		});
-
-		await test.step('Select Panel link', async () => {
-			await samplePage.selectLink(linkName);
+	async ({page, samplePage}) => {
+		await test.step('Select Logo Selector link', async () => {
+			await samplePage.selectTab(TabName.LOGO_SELECTOR);
 		});
 
 		await test.step('Open modal to change first logo selector and fire change event', async () => {
@@ -74,6 +61,8 @@ test(
 	'Logo Selector can be rendered in a fragment',
 	{tag: '@LPD-43308'},
 	async ({apiHelpers, page, site}) => {
+		const fragmentName = getRandomString();
+
 		await test.step('Create a fragment collection with a custom basic fragment', async () => {
 			const {fragmentCollectionId} =
 				await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
@@ -91,6 +80,8 @@ test(
 			});
 		});
 
+		let layout: Layout;
+
 		await test.step('Add fragment to a page', async () => {
 			const basicFragmentDefinition = getFragmentDefinition({
 				id: getRandomString(),
@@ -107,7 +98,7 @@ test(
 		await test.step('Check that logo selector is available on the page', async () => {
 			await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
 
-			const logoSelector = await page.getByRole('img', {
+			const logoSelector = page.getByRole('img', {
 				name: 'Current Logo',
 			});
 

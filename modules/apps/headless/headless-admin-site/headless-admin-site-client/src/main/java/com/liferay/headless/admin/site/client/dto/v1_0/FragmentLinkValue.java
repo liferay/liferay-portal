@@ -19,59 +19,38 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class FragmentLinkValue implements Cloneable, Serializable {
+public abstract class FragmentLinkValue implements Cloneable, Serializable {
 
 	public static FragmentLinkValue toDTO(String json) {
 		return FragmentLinkValueSerDes.toDTO(json);
 	}
 
-	public Object getHref() {
-		return href;
+	public Type getType() {
+		return type;
 	}
 
-	public void setHref(Object href) {
-		this.href = href;
-	}
-
-	public void setHref(UnsafeSupplier<Object, Exception> hrefUnsafeSupplier) {
-		try {
-			href = hrefUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Object href;
-
-	public Target getTarget() {
-		return target;
-	}
-
-	public String getTargetAsString() {
-		if (target == null) {
+	public String getTypeAsString() {
+		if (type == null) {
 			return null;
 		}
 
-		return target.toString();
+		return type.toString();
 	}
 
-	public void setTarget(Target target) {
-		this.target = target;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
-	public void setTarget(
-		UnsafeSupplier<Target, Exception> targetUnsafeSupplier) {
-
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
 		try {
-			target = targetUnsafeSupplier.get();
+			type = typeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Target target;
+	protected Type type;
 
 	@Override
 	public FragmentLinkValue clone() throws CloneNotSupportedException {
@@ -104,16 +83,17 @@ public class FragmentLinkValue implements Cloneable, Serializable {
 		return FragmentLinkValueSerDes.toJSON(this);
 	}
 
-	public static enum Target {
+	public static enum Type {
 
-		BLANK("Blank"), PARENT("Parent"), SELF("Self"), TOP("Top");
+		FRAGMENT_INLINE_VALUE("FragmentInlineValue"),
+		FRAGMENT_MAPPED_VALUE("FragmentMappedValue");
 
-		public static Target create(String value) {
-			for (Target target : values()) {
-				if (Objects.equals(target.getValue(), value) ||
-					Objects.equals(target.name(), value)) {
+		public static Type create(String value) {
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value) ||
+					Objects.equals(type.name(), value)) {
 
-					return target;
+					return type;
 				}
 			}
 
@@ -129,7 +109,7 @@ public class FragmentLinkValue implements Cloneable, Serializable {
 			return _value;
 		}
 
-		private Target(String value) {
+		private Type(String value) {
 			_value = value;
 		}
 

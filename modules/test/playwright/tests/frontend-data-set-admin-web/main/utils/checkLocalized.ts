@@ -21,6 +21,8 @@ export default async function checkLocalized({
 
 		expect(parent.locator('.lexicon-icon-en-us')).toBeVisible();
 
-		expect(parent.getByTitle('Open Localizations')).toBeVisible();
+		expect(
+			parent.locator('[aria-label="Open Localizations"]')
+		).toBeVisible();
 	});
 }

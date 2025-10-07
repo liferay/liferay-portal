@@ -18,7 +18,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -154,8 +153,8 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 			JSONObject expectedJSONObject, FragmentEntryLink fragmentEntryLink)
 		throws Exception {
 
-		JSONObject editablesJSONObject = JSONFactoryUtil.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject editablesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject configurationJSONObject = editablesJSONObject.getJSONObject(
 			FragmentEntryProcessorConstants.

@@ -1,0 +1,22 @@
+.space-members-with-list {
+	padding: 24px;
+
+	.permission-select-trigger-text {
+		max-width: 300px !important;
+	}
+
+	.members-list {
+		max-height: 200px;
+		overflow-y: auto;
+
+		html:not(#__):not(#___) .cadmin & {
+			max-height: 200px;
+		}
+
+		li {
+			&:not(:last-child) {
+				margin-bottom: 8px;
+			}
+		}
+	}
+}

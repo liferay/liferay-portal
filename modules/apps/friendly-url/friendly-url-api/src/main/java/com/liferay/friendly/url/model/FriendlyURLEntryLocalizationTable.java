@@ -43,9 +43,6 @@ public class FriendlyURLEntryLocalizationTable
 	public final Column<FriendlyURLEntryLocalizationTable, String> languageId =
 		createColumn(
 			"languageId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<FriendlyURLEntryLocalizationTable, String> urlTitle =
-		createColumn(
-			"urlTitle", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<FriendlyURLEntryLocalizationTable, Long> groupId =
 		createColumn("groupId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<FriendlyURLEntryLocalizationTable, Long> classNameId =
@@ -53,6 +50,9 @@ public class FriendlyURLEntryLocalizationTable
 			"classNameId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<FriendlyURLEntryLocalizationTable, Long> classPK =
 		createColumn("classPK", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<FriendlyURLEntryLocalizationTable, String> urlTitle =
+		createColumn(
+			"urlTitle", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private FriendlyURLEntryLocalizationTable() {
 		super(

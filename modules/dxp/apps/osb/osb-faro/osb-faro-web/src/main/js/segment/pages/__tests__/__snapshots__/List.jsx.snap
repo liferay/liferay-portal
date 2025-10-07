@@ -57,30 +57,12 @@ exports[`List should render 1`] = `
           <div
             class="header-section"
           >
-            <div
-              class="dropdown"
+            <a
+              class="button-root btn btn-primary"
+              href="/workspace/23/123/contacts/segments/create?type=DYNAMIC"
             >
-              <button
-                aria-controls="clay-dropdown-menu-1"
-                aria-expanded="false"
-                aria-haspopup="true"
-                aria-label="Menu"
-                class="dropdown-toggle btn btn-primary"
-                type="button"
-              >
-                <span>
-                  Create Segment
-                </span>
-                <svg
-                  class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
-                  role="presentation"
-                >
-                  <use
-                    href="#caret-bottom"
-                  />
-                </svg>
-              </button>
-            </div>
+              Create Segment
+            </a>
           </div>
         </div>
       </div>
@@ -165,7 +147,7 @@ exports[`List should render 1`] = `
                           class="dropdown dropdown-root filter-and-order-root"
                         >
                           <button
-                            aria-controls="clay-dropdown-menu-2"
+                            aria-controls="clay-dropdown-menu-1"
                             aria-expanded="false"
                             aria-haspopup="true"
                             class="dropdown-toggle d-flex align-items-center btn btn-outline-borderless btn-sm btn-outline-secondary"
@@ -303,22 +285,6 @@ exports[`List should render 1`] = `
                           class="content-container"
                         >
                           <div
-                            class="icon-container"
-                          >
-                            <div
-                              class="sticker sticker-root sticker-static segment-sticker-root sticker-rounded sticker-dark"
-                            >
-                              <svg
-                                class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
-                                role="presentation"
-                              >
-                                <use
-                                  href="#individual_dynamic_segment"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                          <div
                             class="text-truncate"
                           >
                             <div
@@ -388,7 +354,7 @@ exports[`List should render 1`] = `
                             class="dropdown dropdown-action"
                           >
                             <button
-                              aria-controls="clay-dropdown-menu-3"
+                              aria-controls="clay-dropdown-menu-2"
                               aria-expanded="false"
                               aria-haspopup="true"
                               aria-label="Menu"
@@ -421,7 +387,7 @@ exports[`List should render 1`] = `
                     class="dropdown dropdown-root pagination-items-per-page"
                   >
                     <button
-                      aria-controls="clay-dropdown-menu-4"
+                      aria-controls="clay-dropdown-menu-3"
                       aria-expanded="false"
                       aria-haspopup="true"
                       class="dropdown-toggle button-root btn btn-sm btn-secondary"

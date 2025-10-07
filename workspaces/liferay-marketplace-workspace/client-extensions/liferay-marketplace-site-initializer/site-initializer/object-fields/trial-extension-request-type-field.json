@@ -1,0 +1,29 @@
+{
+	"object-fields": [
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"externalReferenceCode": "TRIAL-EXTENSION-REQUEST-DUE-STATUS",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Due Status"
+			},
+			"listTypeDefinitionExternalReferenceCode": "TRIAL-EXTENSION-REQUEST-STATUS",
+			"localized": false,
+			"name": "dueStatus",
+			"objectFieldSettings": [
+				{
+					"name": "defaultValueType",
+					"value": "inputAsValue"
+				}
+			],
+			"required": true,
+			"state": false,
+			"type": "String",
+			"unique": false
+		}
+	],
+	"objectDefinitionId": "[$OBJECT_DEFINITION_ID:TrialExtensionRequest$]"
+}

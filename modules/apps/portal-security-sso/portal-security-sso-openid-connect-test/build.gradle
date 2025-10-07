@@ -1,6 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "com.nimbusds", name: "nimbus-jose-jwt", version: "9.40"
+	testIntegrationImplementation group: "com.nimbusds", name: "nimbus-jose-jwt", version: "10.4"
 	testIntegrationImplementation group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
 	testIntegrationImplementation project(":apps:portal-security-sso:portal-security-sso-openid-connect-api")

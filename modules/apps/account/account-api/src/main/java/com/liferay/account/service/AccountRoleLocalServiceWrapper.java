@@ -382,12 +382,12 @@ public class AccountRoleLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.account.model.AccountRole getOrAddIncompleteAccountRole(
+	public com.liferay.account.model.AccountRole getOrAddEmptyAccountRole(
 			String externalReferenceCode, long companyId, long userId,
 			long accountEntryId, String name)
-		throws Exception {
+		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _accountRoleLocalService.getOrAddIncompleteAccountRole(
+		return _accountRoleLocalService.getOrAddEmptyAccountRole(
 			externalReferenceCode, companyId, userId, accountEntryId, name);
 	}
 

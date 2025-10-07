@@ -6,13 +6,13 @@
 package com.liferay.portal.security.content.security.policy.internal;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.frontend.spa.FrontendSPA;
 import com.liferay.portal.kernel.security.SecureRandom;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.content.security.policy.internal.configuration.ContentSecurityPolicyConfiguration;
 import com.liferay.portal.security.content.security.policy.internal.configuration.ContentSecurityPolicyConfigurationUtil;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -55,6 +55,8 @@ public class ContentSecurityPolicyNonceManager {
 		httpServletRequest = _portal.getOriginalServletRequest(
 			httpServletRequest);
 
+		HttpSession httpSession = httpServletRequest.getSession();
+
 		ContentSecurityPolicyConfiguration contentSecurityPolicyConfiguration =
 			ContentSecurityPolicyConfigurationUtil.
 				getContentSecurityPolicyConfiguration(httpServletRequest);
@@ -62,8 +64,8 @@ public class ContentSecurityPolicyNonceManager {
 		if (!contentSecurityPolicyConfiguration.enabled()) {
 			nonce = StringPool.BLANK;
 		}
-		else if (PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED) {
-			HttpSession httpSession = httpServletRequest.getSession();
+		else if (_frontendSPA.isEnabled(
+					_portal.getCompanyId(httpServletRequest))) {
 
 			nonce = (String)httpSession.getAttribute(_NONCE);
 
@@ -102,6 +104,9 @@ public class ContentSecurityPolicyNonceManager {
 
 	private static final String _NONCE =
 		ContentSecurityPolicyNonceManager.class.getName() + "#NONCE";
+
+	@Reference
+	private FrontendSPA _frontendSPA;
 
 	@Reference
 	private Portal _portal;

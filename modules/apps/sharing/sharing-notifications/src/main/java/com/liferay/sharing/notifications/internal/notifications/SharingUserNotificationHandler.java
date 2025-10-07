@@ -5,7 +5,10 @@
 
 package com.liferay.sharing.notifications.internal.notifications;
 
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRenderer;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
@@ -13,6 +16,7 @@ import com.liferay.portal.kernel.notifications.BaseModelUserNotificationHandler;
 import com.liferay.portal.kernel.notifications.UserNotificationHandler;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -47,6 +51,43 @@ public class SharingUserNotificationHandler
 		return _getMessage(
 			_jsonFactory.createJSONObject(userNotificationEvent.getPayload()),
 			userNotificationEvent);
+	}
+
+	@Override
+	protected String getLink(
+			UserNotificationEvent userNotificationEvent,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			userNotificationEvent.getPayload());
+
+		SharingEntry sharingEntry = _sharingEntryLocalService.fetchSharingEntry(
+			jsonObject.getLong("classPK"));
+
+		if (sharingEntry == null) {
+			return super.getLink(userNotificationEvent, serviceContext);
+		}
+
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		if (themeDisplay == null) {
+			return super.getLink(userNotificationEvent, serviceContext);
+		}
+
+		AssetRendererFactory<Object> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				sharingEntry.getClassName());
+
+		if (assetRendererFactory == null) {
+			return super.getLink(userNotificationEvent, serviceContext);
+		}
+
+		AssetRenderer<Object> assetRenderer =
+			assetRendererFactory.getAssetRenderer(sharingEntry.getClassPK());
+
+		return assetRenderer.getURLViewInContext(
+			themeDisplay, StringPool.BLANK);
 	}
 
 	@Override

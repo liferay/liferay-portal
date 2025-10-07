@@ -58,7 +58,7 @@ public class UpdateOAuthClientEntryMVCActionCommand
 			if (oAuthClientEntryId > 0) {
 				_oAuthClientEntryService.updateOAuthClientEntry(
 					oAuthClientEntryId, authRequestParametersJSON,
-					authServerWellKnownURI, infoJSON, metadataCacheTime,
+					authServerWellKnownURI, null, infoJSON, metadataCacheTime,
 					oidcUserInfoMapperJSON, tokenRequestParametersJSON);
 			}
 			else {
@@ -68,7 +68,7 @@ public class UpdateOAuthClientEntryMVCActionCommand
 
 				_oAuthClientEntryService.addOAuthClientEntry(
 					themeDisplay.getUserId(), authRequestParametersJSON,
-					authServerWellKnownURI, infoJSON, metadataCacheTime,
+					authServerWellKnownURI, null, infoJSON, metadataCacheTime,
 					oidcUserInfoMapperJSON, tokenRequestParametersJSON);
 			}
 

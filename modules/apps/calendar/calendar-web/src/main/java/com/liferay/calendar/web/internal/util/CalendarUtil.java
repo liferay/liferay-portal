@@ -86,7 +86,7 @@ public class CalendarUtil {
 			long days = JCalendarUtil.getDaysBetween(
 				startTimeJCalendar, endTimeJCalendar);
 
-			for (int i = 0; i <= days; i++) {
+			for (int i = 0; i < days; i++) {
 				int year = startTimeJCalendar.get(java.util.Calendar.YEAR);
 
 				Map<Integer, List<Integer>> rulesMonth =

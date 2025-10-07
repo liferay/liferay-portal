@@ -8,11 +8,14 @@ package com.liferay.jenkins.results.parser.job.property;
 import java.nio.file.PathMatcher;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael Hashimoto
  */
 public interface GlobJobProperty extends JobProperty {
+
+	public Map<String, List<String>> getGlobTestClassMethodNamesMap();
 
 	public List<PathMatcher> getPathMatchers();
 

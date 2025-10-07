@@ -40,13 +40,13 @@ public class ComboRequestAbsolutePortalURLBuilderTest
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Parameterized.Parameters(name = "{0}: context={1}, proxy={2}, cdnHost={3}")
+	@Parameterized.Parameters(name = "{0}: cdnHost={1}, context={2}, proxy={3}")
 	public static Collection<Object[]> data() {
 		return Arrays.asList(
 			new Object[][] {
 				{0, false, false, false}, {1, false, false, true},
-				{2, true, false, false}, {3, true, true, false},
-				{4, false, true, false}
+				{2, false, true, false}, {3, false, true, true},
+				{4, true, false, false}
 			});
 	}
 
@@ -55,8 +55,8 @@ public class ComboRequestAbsolutePortalURLBuilderTest
 		super.setUp();
 
 		_absolutePortalURLBuilder = new AbsolutePortalURLBuilderImpl(
-			mockCacheHelper(), mockPortal(context, proxy, cdnHost),
-			mockHttpServletRequest());
+			mockCacheHelper(), mockHashedFilesRegistry(),
+			mockPortal(context, proxy, cdnHost), mockHttpServletRequest());
 
 		Bundle bundle = Mockito.mock(Bundle.class);
 
@@ -122,53 +122,53 @@ public class ComboRequestAbsolutePortalURLBuilderTest
 			_comboRequestAbsolutePortalURLBuilder.build());
 	}
 
-	@Parameterized.Parameter(3)
+	@Parameterized.Parameter(1)
 	public boolean cdnHost;
 
-	@Parameterized.Parameter(1)
+	@Parameterized.Parameter(2)
 	public boolean context;
 
 	@Parameterized.Parameter
 	public int index;
 
-	@Parameterized.Parameter(2)
+	@Parameterized.Parameter(3)
 	public boolean proxy;
 
 	private static final String[] _RESULTS = {
 		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
-		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
+		"/proxy/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
 		"/context/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
 		"/proxy/context/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
-		"/proxy/combo?minifierType=js&t=0&/file.js&/path/to/file2.js"
+		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js"
 	};
 
 	private static final String[] _RESULTS_ADD_FILE_HONORS_ORDERING = {
 		"/combo?minifierType=js&t=0&/jquery/jquery.min.js&/jquery/init.js" +
 			"&/jquery/ajax.js",
-		"/combo?minifierType=js&t=0&/jquery/jquery.min.js&/jquery/init.js" +
-			"&/jquery/ajax.js",
+		"/proxy/combo?minifierType=js&t=0&/jquery/jquery.min.js" +
+			"&/jquery/init.js&/jquery/ajax.js",
 		"/context/combo?minifierType=js&t=0&/jquery/jquery.min.js" +
 			"&/jquery/init.js&/jquery/ajax.js",
 		"/proxy/context/combo?minifierType=js&t=0&/jquery/jquery.min.js" +
 			"&/jquery/init.js&/jquery/ajax.js",
-		"/proxy/combo?minifierType=js&t=0&/jquery/jquery.min.js" +
-			"&/jquery/init.js&/jquery/ajax.js"
+		"/combo?minifierType=js&t=0&/jquery/jquery.min.js&/jquery/init.js" +
+			"&/jquery/ajax.js"
 	};
 
 	private static final String[] _RESULTS_ADD_FILE_REMOVES_QUERY_STRING = {
 		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
-		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
+		"/proxy/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
 		"/context/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
 		"/proxy/context/combo?minifierType=js&t=0&/file.js&/path/to/file2.js",
-		"/proxy/combo?minifierType=js&t=0&/file.js&/path/to/file2.js"
+		"/combo?minifierType=js&t=0&/file.js&/path/to/file2.js"
 	};
 
 	private static final String[] _RESULTS_TIMESTAMP = {
 		"/combo?minifierType=js&t=13&/file.js&/path/to/file2.js",
-		"/combo?minifierType=js&t=13&/file.js&/path/to/file2.js",
+		"/proxy/combo?minifierType=js&t=13&/file.js&/path/to/file2.js",
 		"/context/combo?minifierType=js&t=13&/file.js&/path/to/file2.js",
 		"/proxy/context/combo?minifierType=js&t=13&/file.js&/path/to/file2.js",
-		"/proxy/combo?minifierType=js&t=13&/file.js&/path/to/file2.js"
+		"/combo?minifierType=js&t=13&/file.js&/path/to/file2.js"
 	};
 
 	private AbsolutePortalURLBuilder _absolutePortalURLBuilder;

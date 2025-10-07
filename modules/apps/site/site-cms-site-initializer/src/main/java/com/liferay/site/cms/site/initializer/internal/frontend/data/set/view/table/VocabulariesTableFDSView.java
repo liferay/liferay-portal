@@ -53,6 +53,10 @@ public class VocabulariesTableFDSView extends BaseTableFDSView {
 				true
 			)
 		).add(
+			"scopeKey", "space",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"spaceTableCellRenderer")
+		).add(
 			"dateModified", "modified",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"dateTime"

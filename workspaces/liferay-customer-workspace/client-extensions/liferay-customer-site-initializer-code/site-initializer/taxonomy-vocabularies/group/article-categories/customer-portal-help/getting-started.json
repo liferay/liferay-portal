@@ -1,0 +1,16 @@
+{
+	"description_i18n": {
+		"en_US": "<p>Whether you are part of a brand new project which is just starting or you are now joining an already existing project, this article is for you! Follow along to learn how to access, activate and make the most of your Liferay Support resources.</p>",
+		"es_ES": "<p>Tanto si eres parte de un proyecto que acaba de empezar como si te has unido a uno ya existente, este artículo es para ti. Continúa para saber cómo acceder, activar y sacar lo máximo de los recursos de Soporte de Liferay.</p>",
+		"ja_JP": "<p>開始したばかりの新しいプロジェクトに参加している方も、既存のプロジェクトに参加している方も、こちらの記事をぜひご覧ください。Liferayサポートリソースへのアクセス、アクティベーション、ベストな活用方法などをご紹介します。</p>",
+		"pt_BR": "<p>Quer você esteja participando de um projeto totalmente novo que está apenas começando, ou esteja ingressando agora em um projeto já existente, este artigo é para você! Acompanhe para aprender como acessar, ativar e aproveitar ao máximo os seus recursos do Liferay Support.</p>"
+	},
+	"name": "Getting Started",
+	"name_i18n": {
+		"en_US": "Getting Started",
+		"es-ES": "Cómo empezar",
+		"ja-JP": "はじめに",
+		"pt-BR": "Primeiros passos"
+	},
+	"viewableBy": "Anyone"
+}

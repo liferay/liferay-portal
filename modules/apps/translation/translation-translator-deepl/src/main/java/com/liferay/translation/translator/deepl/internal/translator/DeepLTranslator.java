@@ -5,6 +5,7 @@
 
 package com.liferay.translation.translator.deepl.internal.translator;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.url.URLBuilder;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -74,7 +76,7 @@ public class DeepLTranslator extends BaseTranslator {
 			deepLTranslatorConfiguration);
 
 		String targetLanguageCode = StringUtil.toUpperCase(
-			getLanguageCode(translatorPacket.getTargetLanguageId()));
+			_getTargetLanguageCode(translatorPacket.getTargetLanguageId()));
 
 		if (!supportedLanguageCodes.contains(targetLanguageCode)) {
 			throw new TranslatorException(
@@ -122,21 +124,52 @@ public class DeepLTranslator extends BaseTranslator {
 		};
 	}
 
+	@Override
+	protected String getLanguageCode(String languageId) {
+		if (StringUtil.endsWith(languageId, "ES")) {
+			return "es";
+		}
+
+		return super.getLanguageCode(languageId);
+	}
+
 	private List<String> _getSupportedLanguageCodes(
 			DeepLTranslatorConfiguration deepLTranslatorConfiguration)
 		throws PortalException {
 
 		Http.Options options = new Http.Options();
 
-		options.addPart("type", "target");
 		options.setMethod(Http.Method.GET);
 
 		return JSONUtil.toList(
 			_jsonFactory.createJSONArray(
 				_invoke(
 					deepLTranslatorConfiguration.authKey(), options,
-					deepLTranslatorConfiguration.validateLanguageURL())),
+					URLBuilder.create(
+						deepLTranslatorConfiguration.validateLanguageURL()
+					).addParameter(
+						"type", "target"
+					).build())),
 			jsonObject -> jsonObject.getString("language"), _log);
+	}
+
+	private String _getTargetLanguageCode(String languageId) {
+		if (StringUtil.startsWith(languageId, "en") ||
+			StringUtil.startsWith(languageId, "pt")) {
+
+			return StringUtil.replace(
+				languageId, CharPool.UNDERLINE, CharPool.DASH);
+		}
+
+		if (StringUtil.startsWith(languageId, "zh")) {
+			if (StringUtil.endsWith(languageId, "TW")) {
+				return "zh-HANT";
+			}
+
+			return "zh-HANS";
+		}
+
+		return getLanguageCode(languageId);
 	}
 
 	private String _invoke(String authKey, Http.Options options, String url)

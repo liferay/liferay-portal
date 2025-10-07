@@ -68,20 +68,70 @@
 	{
 		"actions": [
 		],
-		"name": "App Editor",
-		"type": 6
-	},
-	{
-		"actions": [
-		],
-		"name": "Invited Member",
-		"type": 6
-	},
-	{
-		"actions": [
-		],
 		"name": "Solution Publisher",
 		"type": 6
+	},
+	{
+		"actions": [
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.commerce.model.CommerceOrderType",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.commerce.product.model.CommerceCatalog",
+				"scope": 1
+			},
+			{
+				"actionId": "MANAGE_COMMERCE_ORDER_PRICES",
+				"resource": "com.liferay.commerce.order",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW_COMMERCE_ORDERS",
+				"resource": "com.liferay.commerce.order",
+				"scope": 1
+			}
+		],
+		"name": "Finance Administrator",
+		"type": 1
+	},
+	{
+		"actions": [
+			{
+				"actionId": "VIEW_COMMERCE_ORDERS",
+				"resource": "com.liferay.commerce.order",
+				"scope": 3
+			},
+			{
+				"actionId": "ADD_COMMERCE_ORDER",
+				"resource": "com.liferay.commerce.order",
+				"scope": 3
+			}
+		],
+		"name": "SSA",
+		"type": 6
+	},
+	{
+		"actions": [
+			{
+				"actionId": "VIEW_COMMERCE_ORDERS",
+				"resource": "com.liferay.commerce.order",
+				"scope": 3
+			},
+			{
+				"actionId": "ADD_COMMERCE_ORDER",
+				"resource": "com.liferay.commerce.order",
+				"scope": 3
+			}
+		],
+		"name": "SSA Admin",
+		"type": 6
+	},
+	{
+		"name": "SSA User",
+		"type": 1
 	},
 	{
 		"actions": [
@@ -95,7 +145,7 @@
 		"type": 1
 	},
 	{
-		"name": "Account Administrator (Regular)",
+		"name": "Dashboard Viewer",
 		"type": 1
 	}
 ]

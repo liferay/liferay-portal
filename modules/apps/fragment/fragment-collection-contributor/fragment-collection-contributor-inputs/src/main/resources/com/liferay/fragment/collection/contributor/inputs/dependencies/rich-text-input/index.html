@@ -15,35 +15,35 @@
 [/@]
 
 <div class="rich-text-input [#if !input.showLabel || !input.label?has_content]rich-text-input--hidden-label[/#if]">
-	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0" data-localizable="${input.localizable?string('true', 'false')}" data-readonly-label="${readonlyLabel}" id="${fragmentEntryLinkNamespace}-rich-text-input">
+	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0" data-readonly-label="${readonlyLabel}" id="${fragmentElementId}-rich-text-input">
 		<div class="d-flex">
-			<div class="flex-grow-1" id="${fragmentEntryLinkNamespace + '-wrapper'}">
-				[@liferay_layout["render-editor"] content=input.value name=fragmentEntryLinkNamespace + "-" + input.name label=inputLabel layoutMode=layoutMode required=input.required /]
+			<div class="flex-grow-1" id="${fragmentElementId + '-wrapper'}">
+				[@liferay_layout["render-editor"] content=input.value name=fragmentElementId + "-" + input.name label=inputLabel layoutMode=layoutMode required=input.required /]
 			</div>
 
 			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-3 pt-3" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="tooltip" tabindex="0">
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-3 pt-3" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" role="tooltip" tabindex="0">
 					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
 				</div>
 			[/#if]
 		</div>
 
-		[#if input.errorMessage?has_content]
-			<p class="font-weight-semi-bold mt-1 text-danger">
-				<svg class="lexicon-icon lexicon-icon-info-circle" focusable="false" role="presentation">
-					<use xlink:href="${siteSpritemap}#info-circle" />
-				</svg>
+		<p class="font-weight-semi-bold mt-1 text-danger[#if !input.errorMessage?has_content] d-none[/#if]" id="${fragmentElementId}-error-message">
+			[@clay["icon"] symbol="info-circle" /]
 
-				<span>
-					${input.errorMessage}
-				</span>
+			<span data-required-error="${languageUtil.get(locale, 'this-field-is-required')}" id="${fragmentElementId}-error-message-text" role="status">
+				${input.errorMessage}
+			</span>
+		</p>
+
+		[#if input.showHelpText && input.helpText?has_content]
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-rich-text-input-help-text">
+				${htmlUtil.escape(input.helpText)}
 			</p>
 		[/#if]
 
-		[#if input.showHelpText && input.helpText?has_content]
-			<p class="mb-0 mt-1 text-secondary" id="${fragmentEntryLinkNamespace}-rich-text-input-help-text">
-				${htmlUtil.escape(input.helpText)}
-			</p>
+		[#if input.required]
+			<input aria-hidden="true" class="d-none" id="${fragmentElementId}-ckeditor-required" required />
 		[/#if]
 	</div>
 </div>

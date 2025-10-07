@@ -45,10 +45,10 @@ public class FriendlyURLEntryLocalizationWrapper
 		attributes.put("companyId", getCompanyId());
 		attributes.put("friendlyURLEntryId", getFriendlyURLEntryId());
 		attributes.put("languageId", getLanguageId());
-		attributes.put("urlTitle", getUrlTitle());
 		attributes.put("groupId", getGroupId());
 		attributes.put("classNameId", getClassNameId());
 		attributes.put("classPK", getClassPK());
+		attributes.put("urlTitle", getUrlTitle());
 
 		return attributes;
 	}
@@ -92,12 +92,6 @@ public class FriendlyURLEntryLocalizationWrapper
 			setLanguageId(languageId);
 		}
 
-		String urlTitle = (String)attributes.get("urlTitle");
-
-		if (urlTitle != null) {
-			setUrlTitle(urlTitle);
-		}
-
 		Long groupId = (Long)attributes.get("groupId");
 
 		if (groupId != null) {
@@ -114,6 +108,12 @@ public class FriendlyURLEntryLocalizationWrapper
 
 		if (classPK != null) {
 			setClassPK(classPK);
+		}
+
+		String urlTitle = (String)attributes.get("urlTitle");
+
+		if (urlTitle != null) {
+			setUrlTitle(urlTitle);
 		}
 	}
 

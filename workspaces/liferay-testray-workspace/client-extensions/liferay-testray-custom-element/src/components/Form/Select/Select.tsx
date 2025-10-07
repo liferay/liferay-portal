@@ -4,7 +4,7 @@
  */
 
 import classNames from 'classnames';
-import {InputHTMLAttributes} from 'react';
+import {InputHTMLAttributes, ReactNode} from 'react';
 
 import {BaseWrapper} from '../Base';
 
@@ -16,7 +16,7 @@ type InputSelectProps = {
 	forceSelectOption?: boolean;
 	id?: string;
 	isLoading?: boolean;
-	label?: string;
+	label?: string | ReactNode;
 	name: string;
 	options: {label: string; value: string | number}[];
 	register?: any;

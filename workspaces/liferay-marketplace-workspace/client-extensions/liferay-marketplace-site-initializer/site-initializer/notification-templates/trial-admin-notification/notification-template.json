@@ -1,0 +1,28 @@
+{
+	"description": "New Trial has been started",
+	"editorType": "richText",
+	"externalReferenceCode": "TRIAL-STARTED",
+	"name": "Trial | New Trial Started",
+	"name_i18n": {
+		"en_US": "Trial | New Trial Started"
+	},
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Marketplace"
+			},
+			"to": {
+				"en-US": "test@liferay.com"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Liferay Marketplace - New trial started"
+	},
+	"system": false,
+	"type": "email"
+}

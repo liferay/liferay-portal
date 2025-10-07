@@ -116,7 +116,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 	@Override
 	public String getStatusMessage(boolean showUpgradeSteps) {
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(5);
 
 		sb.append(_checkPortal(showUpgradeSteps));
 
@@ -128,9 +128,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 		if (_hasUnsatisfiedUpgradeComponents()) {
 			sb.append("Unsatisfied components prevent upgrade processes to ");
-			sb.append("be registered");
-
-			sb.append(StringPool.NEW_LINE);
+			sb.append("be registered\n");
 		}
 
 		return sb.toString();

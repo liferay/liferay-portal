@@ -1,4 +1,4 @@
 Bundle-Activator: com.liferay.portal.file.install.internal.activator.FileInstallImplBundleActivator
 Bundle-Name: Liferay Portal File Install Implementation
 Bundle-SymbolicName: com.liferay.portal.file.install.impl
-Bundle-Version: 4.0.34
+Bundle-Version: 4.0.35

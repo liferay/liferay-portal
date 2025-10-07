@@ -9,6 +9,7 @@ import com.liferay.analytics.reports.rest.dto.v1_0.AssetHistogramMetric;
 import com.liferay.analytics.reports.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.reports.rest.resource.v1_0.AssetHistogramMetricResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -41,9 +42,12 @@ public class AssetHistogramMetricResourceImpl
 			Integer rangeKey)
 		throws Exception {
 
-		List<Long> analyticsCloudChannelIds = new ArrayList<>();
-
 		Group group = _groupLocalService.getGroup(groupId);
+
+		AnalyticsSettingsManagerUtil.checkSiteIdSynced(
+			_analyticsSettingsManager, group);
+
+		List<Long> analyticsCloudChannelIds = new ArrayList<>();
 
 		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
 			groupId);

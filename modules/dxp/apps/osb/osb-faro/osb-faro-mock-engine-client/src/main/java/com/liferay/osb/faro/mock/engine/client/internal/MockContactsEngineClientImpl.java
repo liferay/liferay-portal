@@ -10,6 +10,7 @@ import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.constants.FilterConstants;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.Individual;
+import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
 import com.liferay.osb.faro.engine.client.util.FilterUtil;
@@ -133,6 +134,14 @@ public class MockContactsEngineClientImpl
 	}
 
 	@Override
+	public Results<ProjectUsageMetric> getProjectUsageMetrics(
+		FaroProject faroProject, Date sinceDate) {
+
+		return contactsEngineClient.getProjectUsageMetrics(
+			faroProject, sinceDate);
+	}
+
+	@Override
 	public Results<Individual> getSimilarIndividuals(
 		FaroProject faroProject, String individualId, String query,
 		List<String> fields, int cur, int delta,
@@ -165,6 +174,20 @@ public class MockContactsEngineClientImpl
 			});
 
 		return new Results<>(individuals, individuals.size());
+	}
+
+	@Override
+	public void insertBQProjects(List<FaroProject> faroProjects)
+		throws Exception {
+
+		contactsEngineClient.insertBQProjects(faroProjects);
+	}
+
+	@Override
+	public void updateBQProject(FaroProject faroProject, Date startDate)
+		throws Exception {
+
+		contactsEngineClient.updateBQProject(faroProject, startDate);
 	}
 
 	protected Results<Individual> getIndividuals(

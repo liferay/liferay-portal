@@ -12,4 +12,7 @@
 		<suppress checks="MethodNamingCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/util/LayoutServiceContextHelperImpl\.java" />
 		<suppress checks="VariableDeclarationAsUsedCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/struts/UpdateLayoutStrutsAction\.java" />
 	</checkstyle>
+	<source-check>
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="layout-page-template-service/src/main/java/com/liferay/layout/page/template/service/impl/LayoutPageTemplateEntryLocalServiceImpl\.java" />
+	</source-check>
 </suppressions>

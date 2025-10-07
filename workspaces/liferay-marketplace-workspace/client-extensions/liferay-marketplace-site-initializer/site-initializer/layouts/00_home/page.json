@@ -1,0 +1,13 @@
+{
+	"description": "",
+	"fragmentCompositionDefinitionPath": "page-definition.json",
+	"friendlyURL": "/home",
+	"hidden": true,
+	"name": "Home",
+	"name_i18n": {
+		"en_US": "Home"
+	},
+	"private": false,
+	"system": false,
+	"type": "content"
+}

@@ -19,21 +19,6 @@ import com.liferay.portal.search.internal.legacy.stats.StatsResultsTranslatorImp
 import com.liferay.portal.search.internal.stats.StatsResponseBuilderFactoryImpl;
 import com.liferay.portal.search.solr8.internal.connection.SolrClientManager;
 import com.liferay.portal.search.solr8.internal.facet.FacetProcessor;
-import com.liferay.portal.search.solr8.internal.filter.BooleanFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.DateRangeFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.DateRangeTermFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.ExistsFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.GeoBoundingBoxFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.GeoDistanceFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.GeoDistanceRangeFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.GeoPolygonFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.MissingFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.PrefixFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.QueryFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.RangeTermFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.SolrFilterTranslator;
-import com.liferay.portal.search.solr8.internal.filter.TermFilterTranslatorImpl;
-import com.liferay.portal.search.solr8.internal.filter.TermsFilterTranslatorImpl;
 import com.liferay.portal.search.solr8.internal.search.response.DefaultSearchSearchResponseAssemblerHelperImpl;
 import com.liferay.portal.search.solr8.internal.search.response.SearchSearchResponseAssemblerHelper;
 import com.liferay.portal.search.solr8.internal.sort.SolrSortFieldTranslator;
@@ -80,9 +65,6 @@ public class SearchRequestExecutorFixture {
 		ReflectionTestUtil.setFieldValue(
 			_baseSolrQueryAssemblerImpl, "_statsTranslator",
 			createStatsTranslator());
-		ReflectionTestUtil.setFieldValue(
-			_baseSolrQueryAssemblerImpl, "_filterTranslator",
-			createSolrFilterTranslator());
 
 		if (facetProcessor != null) {
 			ReflectionTestUtil.setFieldValue(
@@ -218,55 +200,6 @@ public class SearchRequestExecutorFixture {
 			createStatsTranslator());
 
 		return searchSolrQueryAssemblerImpl;
-	}
-
-	protected SolrFilterTranslator createSolrFilterTranslator() {
-		SolrFilterTranslator solrFilterTranslator = new SolrFilterTranslator();
-
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_booleanFilterTranslator",
-			new BooleanFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_dateRangeFilterTranslator",
-			new DateRangeFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_dateRangeTermFilterTranslator",
-			new DateRangeTermFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_existsFilterTranslator",
-			new ExistsFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_geoBoundingBoxFilterTranslator",
-			new GeoBoundingBoxFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_geoDistanceFilterTranslator",
-			new GeoDistanceFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_geoDistanceRangeFilterTranslator",
-			new GeoDistanceRangeFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_geoPolygonFilterTranslator",
-			new GeoPolygonFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_missingFilterTranslator",
-			new MissingFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_prefixFilterTranslator",
-			new PrefixFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_queryFilterTranslator",
-			new QueryFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_rangeTermFilterTranslator",
-			new RangeTermFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_termFilterTranslator",
-			new TermFilterTranslatorImpl());
-		ReflectionTestUtil.setFieldValue(
-			solrFilterTranslator, "_termsFilterTranslator",
-			new TermsFilterTranslatorImpl());
-
-		return solrFilterTranslator;
 	}
 
 	protected StatsTranslator createStatsTranslator() {

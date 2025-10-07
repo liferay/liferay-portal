@@ -39,7 +39,6 @@ test('LPP-55641 Variable Shipping Rate is calculated based only on shippable pro
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -175,7 +174,6 @@ test(
 	}) => {
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 

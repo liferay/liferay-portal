@@ -76,10 +76,9 @@ public class CTScoreLocalServiceWrapper
 
 	@Override
 	public com.liferay.change.tracking.model.CTScore decrementScore(
-		long ctCollectionId, long modelClassNameId) {
+		long ctCollectionId, int score) {
 
-		return _ctScoreLocalService.decrementScore(
-			ctCollectionId, modelClassNameId);
+		return _ctScoreLocalService.decrementScore(ctCollectionId, score);
 	}
 
 	/**
@@ -324,10 +323,9 @@ public class CTScoreLocalServiceWrapper
 
 	@Override
 	public com.liferay.change.tracking.model.CTScore incrementScore(
-		long ctCollectionId, long modelClassNameId) {
+		long ctCollectionId, int score) {
 
-		return _ctScoreLocalService.incrementScore(
-			ctCollectionId, modelClassNameId);
+		return _ctScoreLocalService.incrementScore(ctCollectionId, score);
 	}
 
 	/**

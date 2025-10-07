@@ -248,6 +248,13 @@ public class CommerceDiscountRelLocalServiceUtil {
 	}
 
 	public static CommerceDiscountRel fetchCommerceDiscountRel(
+		long commerceDiscountId, String className, long classPK) {
+
+		return getService().fetchCommerceDiscountRel(
+			commerceDiscountId, className, classPK);
+	}
+
+	public static CommerceDiscountRel fetchCommerceDiscountRel(
 		String className, long classPK) {
 
 		return getService().fetchCommerceDiscountRel(className, classPK);

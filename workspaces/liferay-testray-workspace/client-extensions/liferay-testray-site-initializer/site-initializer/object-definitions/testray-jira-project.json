@@ -1,0 +1,41 @@
+{
+	"active": true,
+	"defaultLanguageId": "en_US",
+	"enableIndexSearch": false,
+	"label": {
+		"en_US": "Testray Jira Project"
+	},
+	"modifiable": true,
+	"name": "JiraProject",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Name"
+			},
+			"localized": false,
+			"name": "name",
+			"readOnly": "false",
+			"required": false,
+			"state": false,
+			"system": false,
+			"type": "String",
+			"unique": false
+		}
+	],
+	"objectFolderExternalReferenceCode": "TESTRAY",
+	"panelCategoryKey": "control_panel.object",
+	"parameterRequired": false,
+	"pluralLabel": {
+		"en_US": "Testray Jira Projects"
+	},
+	"portlet": true,
+	"restContextPath": "/o/c/jiraprojects",
+	"scope": "company",
+	"system": false,
+	"titleObjectFieldName": "externalReferenceCode"
+}

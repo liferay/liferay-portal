@@ -13,6 +13,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.testray.rest.dto.v1_0.TestrayBuildMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayCaseTypeMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayComponentMetric;
+import com.liferay.testray.rest.dto.v1_0.TestrayIssueMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayRoutineMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayRunMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayTeamMetric;
@@ -68,6 +69,12 @@ public interface TestrayStatusMetricResource {
 				Long testrayBuildId, String testrayCasePriorities,
 				String testrayCaseTypes, Long testrayRunId,
 				String testrayTeamIds, Pagination pagination)
+		throws Exception;
+
+	public Page<TestrayIssueMetric>
+			getTestrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetricsPage(
+				Long testrayJiraIssueId, Long testrayBuildId,
+				Pagination pagination)
 		throws Exception;
 
 	public Page<TestrayRoutineMetric>

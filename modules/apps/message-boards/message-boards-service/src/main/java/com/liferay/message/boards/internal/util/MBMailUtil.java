@@ -5,6 +5,7 @@
 
 package com.liferay.message.boards.internal.util;
 
+import com.liferay.mail.kernel.service.MailService;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.petra.io.StreamUtil;
@@ -23,7 +24,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.mail.BodyPart;
 import jakarta.mail.Message;
@@ -110,14 +110,6 @@ public class MBMailUtil {
 		return GetterUtil.getLong(parts[1]);
 	}
 
-	public static int getMessageIdStringOffset() {
-		if (PropsValues.POP_SERVER_SUBDOMAIN.length() == 0) {
-			return 1;
-		}
-
-		return 0;
-	}
-
 	public static long getParentMessageId(Message message) throws Exception {
 		long parentMessageId = -1;
 
@@ -181,16 +173,16 @@ public class MBMailUtil {
 	}
 
 	public static String getReplyToAddress(
-		long categoryId, long messageId, String mx,
+		MailService mailService, long categoryId, long messageId, String mx,
 		String defaultMailingListAddress) {
 
-		if (PropsValues.POP_SERVER_SUBDOMAIN.length() <= 0) {
+		if (!hasSubdomain(mailService)) {
 			return defaultMailingListAddress;
 		}
 
 		return StringBundler.concat(
 			MESSAGE_POP_PORTLET_PREFIX, categoryId, StringPool.PERIOD,
-			messageId, StringPool.AT, PropsValues.POP_SERVER_SUBDOMAIN,
+			messageId, StringPool.AT, mailService.getPOPServerSubdomain(),
 			StringPool.PERIOD, mx);
 	}
 
@@ -225,22 +217,27 @@ public class MBMailUtil {
 		return subject;
 	}
 
-	public static boolean hasMailIdHeader(Message message) throws Exception {
+	public static boolean hasMailIdHeader(
+			MailService mailService, Message message)
+		throws Exception {
+
 		String[] messageIds = message.getHeader("Message-ID");
 
-		if (messageIds == null) {
+		if ((messageIds == null) || !hasSubdomain(mailService)) {
 			return false;
 		}
 
 		for (String messageId : messageIds) {
-			if (Validator.isNotNull(PropsValues.POP_SERVER_SUBDOMAIN) &&
-				messageId.contains(PropsValues.POP_SERVER_SUBDOMAIN)) {
-
+			if (messageId.contains(mailService.getPOPServerSubdomain())) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	public static boolean hasSubdomain(MailService mailService) {
+		return Validator.isNotNull(mailService.getPOPServerSubdomain());
 	}
 
 	private static String[] _getMessageIdStringParts(String messageIdString) {

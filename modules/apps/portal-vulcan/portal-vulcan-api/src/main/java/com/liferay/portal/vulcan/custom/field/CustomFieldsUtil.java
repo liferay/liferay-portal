@@ -6,9 +6,12 @@
 package com.liferay.portal.vulcan.custom.field;
 
 import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -16,9 +19,12 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.portlet.expando.model.impl.ExpandoColumnImpl;
 
 import java.io.Serializable;
 
@@ -109,66 +115,71 @@ public class CustomFieldsUtil {
 
 			String name = customField.getName();
 
-			int attributeType = expandoBridge.getAttributeType(name);
+			try {
+				EmptyModelManagerUtil.getOrAddEmptyModel(
+					ExpandoColumn.class, companyId, name,
+					(__, ___) -> {
+						if (!expandoBridge.hasAttribute(name)) {
+							return null;
+						}
 
-			if (ExpandoColumnConstants.isArray(attributeType) &&
-				(attributeType !=
-					ExpandoColumnConstants.STRING_ARRAY_LOCALIZED)) {
+						return _expandoColumn;
+					},
+					(__, ___) -> {
+						if (!expandoBridge.hasAttribute(name)) {
 
-				_validateArray(customField, data);
+							// TODO LPD-65443 Throw exception to handle error
+
+							return null;
+						}
+
+						return _expandoColumn;
+					},
+					() -> {
+						expandoBridge.addAttribute(
+							name,
+							_toAttributeType(customField.getAttributeType()));
+
+						return _expandoColumn;
+					});
+			}
+			catch (PortalException portalException) {
+				throw new RuntimeException(portalException);
 			}
 
-			if (ExpandoColumnConstants.BOOLEAN == attributeType) {
-				_validateCustomField(customField, data, Boolean.class);
+			int attributeType = expandoBridge.getAttributeType(name);
 
+			if (ExpandoColumnConstants.BOOLEAN == attributeType) {
 				map.put(name, GetterUtil.getBoolean(data));
 			}
 			else if (ExpandoColumnConstants.BOOLEAN_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Boolean.class);
-
 				map.put(
 					name,
 					_toArray(boolean.class, data, GetterUtil::getBoolean));
 			}
 			else if (ExpandoColumnConstants.DATE == attributeType) {
-				_validateCustomField(
-					customField, data, Date.class, String.class);
-
 				map.put(name, _toDate(data));
 			}
 			else if (ExpandoColumnConstants.DATE_ARRAY == attributeType) {
-				_validateArrayCustomField(
-					customField, data, Date.class, String.class);
-
 				map.put(
 					name,
 					_toArray(Date.class, data, CustomFieldsUtil::_toDate));
 			}
 			else if (ExpandoColumnConstants.DOUBLE == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getDouble(data));
 			}
 			else if (ExpandoColumnConstants.DOUBLE_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(
 					name, _toArray(double.class, data, GetterUtil::getDouble));
 			}
 			else if (ExpandoColumnConstants.FLOAT == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getFloat(data));
 			}
 			else if (ExpandoColumnConstants.FLOAT_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(
 					name, _toArray(float.class, data, GetterUtil::getFloat));
 			}
 			else if (ExpandoColumnConstants.GEOLOCATION == attributeType) {
-				_validateCustomField(customField, data, Geo.class);
-
 				Geo geo = customValue.getGeo();
 
 				map.put(
@@ -180,64 +191,39 @@ public class CustomFieldsUtil {
 					).toString());
 			}
 			else if (ExpandoColumnConstants.INTEGER == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getInteger(data));
 			}
 			else if (ExpandoColumnConstants.INTEGER_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(
 					name, _toArray(int.class, data, GetterUtil::getInteger));
 			}
 			else if (ExpandoColumnConstants.LONG == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getLong(data));
 			}
 			else if (ExpandoColumnConstants.LONG_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(name, _toArray(long.class, data, GetterUtil::getLong));
 			}
 			else if (ExpandoColumnConstants.NUMBER == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getNumber(data));
 			}
 			else if (ExpandoColumnConstants.NUMBER_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(
 					name, _toArray(Number.class, data, GetterUtil::getNumber));
 			}
 			else if (ExpandoColumnConstants.SHORT == attributeType) {
-				_validateCustomField(customField, data, Number.class);
-
 				map.put(name, GetterUtil.getShort(data));
 			}
 			else if (ExpandoColumnConstants.SHORT_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, Number.class);
-
 				map.put(
 					name, _toArray(short.class, data, GetterUtil::getShort));
 			}
 			else if (ExpandoColumnConstants.STRING == attributeType) {
-				_validateCustomField(customField, data, String.class);
-
-				map.put(name, GetterUtil.getString(data));
+				map.put(name, String.valueOf(data));
 			}
 			else if (ExpandoColumnConstants.STRING_ARRAY == attributeType) {
-				_validateArrayCustomField(customField, data, String.class);
-
-				map.put(
-					name, _toArray(String.class, data, GetterUtil::getString));
+				map.put(name, _toArray(String.class, data, String::valueOf));
 			}
 			else if (ExpandoColumnConstants.STRING_LOCALIZED == attributeType) {
-				_validateCustomField(customField, data, String.class);
-				_validateCustomField(
-					customField, customValue.getData_i18n(), Map.class);
-
 				map.put(
 					name,
 					(Serializable)LocalizedMapUtil.getLocalizedMap(
@@ -354,26 +340,10 @@ public class CustomFieldsUtil {
 		return false;
 	}
 
-	private static boolean _isValidCustomField(
-		Object value, Class<?>... classes) {
-
-		if (value == null) {
-			return true;
-		}
-
-		for (Class<?> clazz : classes) {
-			if (clazz.isInstance(value)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	private static <T, U> Serializable _toArray(
 		Class<? extends U> clazz, Object data, Function<Object, U> function) {
 
-		Serializable newArray = null;
+		Serializable serializable = (Serializable)data;
 
 		Class<?> dataClass = data.getClass();
 
@@ -384,16 +354,16 @@ public class CustomFieldsUtil {
 
 			int length = Array.getLength(data);
 
-			newArray = (Serializable)Array.newInstance(clazz, length);
+			serializable = (Serializable)Array.newInstance(clazz, length);
 
 			for (int i = 0; i < length; i++) {
-				Array.set(newArray, i, function.apply(Array.get(data, i)));
+				Array.set(serializable, i, function.apply(Array.get(data, i)));
 			}
 		}
 		else if (data instanceof Collection) {
 			Collection<?> collection = (Collection<?>)data;
 
-			newArray = (Serializable)Array.newInstance(
+			serializable = (Serializable)Array.newInstance(
 				clazz, collection.size());
 
 			int i = 0;
@@ -401,11 +371,26 @@ public class CustomFieldsUtil {
 			Iterator<T> iterator = (Iterator<T>)collection.iterator();
 
 			while (iterator.hasNext()) {
-				Array.set(newArray, i++, function.apply(iterator.next()));
+				Array.set(serializable, i++, function.apply(iterator.next()));
 			}
 		}
 
-		return newArray;
+		return serializable;
+	}
+
+	private static int _toAttributeType(
+		CustomField.AttributeType attributeType) {
+
+		for (Map.Entry<Integer, CustomField.AttributeType> entry :
+				_attributeTypes.entrySet()) {
+
+			if (attributeType == entry.getValue()) {
+				return entry.getKey();
+			}
+		}
+
+		throw new IllegalArgumentException(
+			"Invalid attribute type: " + attributeType);
 	}
 
 	private static CustomField _toCustomField(
@@ -415,11 +400,15 @@ public class CustomFieldsUtil {
 
 		String key = entry.getKey();
 
-		int attributeType = expandoBridge.getAttributeType(key);
+		int type = expandoBridge.getAttributeType(key);
 
-		if (ExpandoColumnConstants.GEOLOCATION == attributeType) {
+		if (ExpandoColumnConstants.GEOLOCATION == type) {
 			return new CustomField() {
 				{
+					setAttributeType(
+						() -> NestedFieldsSupplier.supply(
+							"customFields.attributeType",
+							nestedField -> _attributeTypes.get(type)));
 					setCustomValue(
 						() -> {
 							JSONObject jsonObject =
@@ -450,25 +439,28 @@ public class CustomFieldsUtil {
 
 		return new CustomField() {
 			{
+				setAttributeType(
+					() -> NestedFieldsSupplier.supply(
+						"customFields.attributeType",
+						nestedField -> _attributeTypes.get(type)));
 				setCustomValue(
 					() -> new CustomValue() {
 						{
 							setData(
 								() -> _getValue(
-									attributeType, locale,
+									type, locale,
 									_getValue(
-										attributeType, displayType, entry,
-										expandoBridge, key)));
+										type, displayType, entry, expandoBridge,
+										key)));
 							setData_i18n(
 								() -> _getLocalizedValues(
-									acceptAllLanguages, attributeType,
+									acceptAllLanguages, type,
 									_getValue(
-										attributeType, displayType, entry,
-										expandoBridge, key)));
+										type, displayType, entry, expandoBridge,
+										key)));
 						}
 					});
-				setDataType(
-					() -> ExpandoColumnConstants.getDataType(attributeType));
+				setDataType(() -> ExpandoColumnConstants.getDataType(type));
 				setName(entry::getKey);
 			}
 		};
@@ -483,7 +475,7 @@ public class CustomFieldsUtil {
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 		try {
-			return dateFormat.parse((String)data);
+			return dateFormat.parse(String.valueOf(data));
 		}
 		catch (ParseException parseException) {
 			throw new IllegalArgumentException(
@@ -491,66 +483,62 @@ public class CustomFieldsUtil {
 		}
 	}
 
-	private static void _validateArray(CustomField customField, Object value) {
-		if ((value instanceof Collection<?>) ||
-			value.getClass(
-			).isArray()) {
-
-			return;
-		}
-
-		throw new IllegalArgumentException(
-			"Unable to parse custom field \"" + customField.getName() + "\"");
-	}
-
-	private static void _validateArrayCustomField(
-		CustomField customField, Object value, Class<?>... classes) {
-
-		if (value == null) {
-			return;
-		}
-
-		for (Class<?> clazz : classes) {
-			boolean valid = true;
-
-			if (Collection.class.isInstance(value)) {
-				Collection<?> collection = (Collection<?>)value;
-
-				Iterator<?> iterator = collection.iterator();
-
-				if (iterator.hasNext()) {
-					valid = _isValidCustomField(iterator.next(), clazz);
-				}
-			}
-			else if (value.getClass(
-					).isArray()) {
-
-				if (Array.getLength(value) > 0) {
-					valid = _isValidCustomField(Array.get(value, 0), clazz);
-				}
-			}
-			else {
-				valid = false;
-			}
-
-			if (valid) {
-				return;
-			}
-		}
-
-		throw new IllegalArgumentException(
-			"Unable to parse custom field \"" + customField.getName() + "\"");
-	}
-
-	private static void _validateCustomField(
-		CustomField customField, Object value, Class<?>... classes) {
-
-		if (_isValidCustomField(value, classes)) {
-			return;
-		}
-
-		throw new IllegalArgumentException(
-			"Unable to parse custom field \"" + customField.getName() + "\"");
-	}
+	private static final Map<Integer, CustomField.AttributeType>
+		_attributeTypes = HashMapBuilder.put(
+			ExpandoColumnConstants.BOOLEAN, CustomField.AttributeType.BOOLEAN
+		).put(
+			ExpandoColumnConstants.BOOLEAN_ARRAY,
+			CustomField.AttributeType.BOOLEAN_ARRAY
+		).put(
+			ExpandoColumnConstants.DATE, CustomField.AttributeType.DATE
+		).put(
+			ExpandoColumnConstants.DATE_ARRAY,
+			CustomField.AttributeType.DATE_ARRAY
+		).put(
+			ExpandoColumnConstants.DOUBLE, CustomField.AttributeType.DOUBLE
+		).put(
+			ExpandoColumnConstants.DOUBLE_ARRAY,
+			CustomField.AttributeType.DOUBLE_ARRAY
+		).put(
+			ExpandoColumnConstants.FLOAT, CustomField.AttributeType.FLOAT
+		).put(
+			ExpandoColumnConstants.FLOAT_ARRAY,
+			CustomField.AttributeType.FLOAT_ARRAY
+		).put(
+			ExpandoColumnConstants.GEOLOCATION,
+			CustomField.AttributeType.GEOLOCATION
+		).put(
+			ExpandoColumnConstants.INTEGER, CustomField.AttributeType.INTEGER
+		).put(
+			ExpandoColumnConstants.INTEGER_ARRAY,
+			CustomField.AttributeType.INTEGER_ARRAY
+		).put(
+			ExpandoColumnConstants.LONG, CustomField.AttributeType.LONG
+		).put(
+			ExpandoColumnConstants.LONG_ARRAY,
+			CustomField.AttributeType.LONG_ARRAY
+		).put(
+			ExpandoColumnConstants.NUMBER, CustomField.AttributeType.NUMBER
+		).put(
+			ExpandoColumnConstants.NUMBER_ARRAY,
+			CustomField.AttributeType.NUMBER_ARRAY
+		).put(
+			ExpandoColumnConstants.SHORT, CustomField.AttributeType.SHORT
+		).put(
+			ExpandoColumnConstants.SHORT_ARRAY,
+			CustomField.AttributeType.SHORT_ARRAY
+		).put(
+			ExpandoColumnConstants.STRING, CustomField.AttributeType.STRING
+		).put(
+			ExpandoColumnConstants.STRING_ARRAY,
+			CustomField.AttributeType.STRING_ARRAY
+		).put(
+			ExpandoColumnConstants.STRING_ARRAY_LOCALIZED,
+			CustomField.AttributeType.STRING_ARRAY_LOCALIZED
+		).put(
+			ExpandoColumnConstants.STRING_LOCALIZED,
+			CustomField.AttributeType.STRING_LOCALIZED
+		).build();
+	private static final ExpandoColumn _expandoColumn = new ExpandoColumnImpl();
 
 }

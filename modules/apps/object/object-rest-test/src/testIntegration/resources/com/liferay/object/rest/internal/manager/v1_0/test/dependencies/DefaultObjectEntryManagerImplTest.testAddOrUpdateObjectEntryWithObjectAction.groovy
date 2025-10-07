@@ -5,4 +5,4 @@ Map<String, Serializable> values = new HashMap<>();
 
 values.put("integerObjectField", integerObjectField + 1);
 
-ObjectEntryLocalServiceUtil.updateObjectEntry(creator, id, values, new ServiceContext());
+ObjectEntryLocalServiceUtil.updateObjectEntry(creator, id, 0, values, new ServiceContext());

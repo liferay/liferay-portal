@@ -6,3 +6,7 @@
 --%>
 
 <%@ include file="/init.jsp" %>
+
+<%
+ImportErrorsDisplayContext importErrorsDisplayContext = new ImportErrorsDisplayContext(request, renderResponse);
+%>

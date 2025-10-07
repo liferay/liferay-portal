@@ -25,8 +25,8 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;

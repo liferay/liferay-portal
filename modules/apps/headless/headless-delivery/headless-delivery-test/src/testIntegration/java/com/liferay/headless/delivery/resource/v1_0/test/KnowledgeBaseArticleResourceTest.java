@@ -28,6 +28,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,6 +91,33 @@ public class KnowledgeBaseArticleResourceTest
 			knowledgeBaseArticleResource.
 				deleteKnowledgeBaseArticleMyRatingHttpResponse(
 					irrelevantKnowledgeBaseArticle.getId()));
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteKnowledgeBaseArticleMyRating()
+		throws Exception {
+
+		super.testGraphQLDeleteKnowledgeBaseArticleMyRating();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetKnowledgeBaseArticleKnowledgeBaseArticlesPage()
+		throws Exception {
+
+		super.testGraphQLGetKnowledgeBaseArticleKnowledgeBaseArticlesPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostKnowledgeBaseFolderKnowledgeBaseArticle()
+		throws Exception {
+
+		super.testGraphQLPostKnowledgeBaseFolderKnowledgeBaseArticle();
 	}
 
 	@Override

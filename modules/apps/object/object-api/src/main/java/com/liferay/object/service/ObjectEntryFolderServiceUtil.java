@@ -59,6 +59,13 @@ public class ObjectEntryFolderServiceUtil {
 			externalReferenceCode, groupId, companyId);
 	}
 
+	public static ObjectEntryFolder fetchObjectEntryFolder(
+			long objectEntryFolderId)
+		throws PortalException {
+
+		return getService().fetchObjectEntryFolder(objectEntryFolderId);
+	}
+
 	public static ObjectEntryFolder
 			fetchObjectEntryFolderByExternalReferenceCode(
 				String externalReferenceCode, long groupId, long companyId)
@@ -100,6 +107,15 @@ public class ObjectEntryFolderServiceUtil {
 			groupId, companyId, parentObjectEntryFolderId);
 	}
 
+	public static ObjectEntryFolder getOrAddEmptyObjectEntryFolder(
+			String externalReferenceCode, long groupId, long companyId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().getOrAddEmptyObjectEntryFolder(
+			externalReferenceCode, groupId, companyId, serviceContext);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -107,6 +123,38 @@ public class ObjectEntryFolderServiceUtil {
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static ObjectEntryFolder moveObjectEntryFolderToTrash(
+			ObjectEntryFolder objectEntryFolder,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().moveObjectEntryFolderToTrash(
+			objectEntryFolder, serviceContext);
+	}
+
+	public static ObjectEntryFolder restoreObjectEntryFolderFromTrash(
+			ObjectEntryFolder objectEntryFolder,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().restoreObjectEntryFolderFromTrash(
+			objectEntryFolder, serviceContext);
+	}
+
+	public static void subscribeObjectEntryFolder(
+			long groupId, long objectEntryFolderId)
+		throws PortalException {
+
+		getService().subscribeObjectEntryFolder(groupId, objectEntryFolderId);
+	}
+
+	public static void unsubscribeObjectEntryFolder(
+			long groupId, long objectEntryFolderId)
+		throws PortalException {
+
+		getService().unsubscribeObjectEntryFolder(groupId, objectEntryFolderId);
 	}
 
 	public static ObjectEntryFolder updateObjectEntryFolder(

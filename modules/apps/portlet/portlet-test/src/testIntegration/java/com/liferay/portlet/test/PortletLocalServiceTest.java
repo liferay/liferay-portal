@@ -12,12 +12,8 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -73,13 +69,7 @@ public class PortletLocalServiceTest {
 
 			String enabledFFKey = RandomTestUtil.randomString();
 
-			PropsTestUtil.setProps(
-				HashMapBuilder.<String, Object>put(
-					PropsKeys.COMPANY_DEFAULT_WEB_ID,
-					PropsUtil.get(PropsKeys.COMPANY_DEFAULT_WEB_ID)
-				).put(
-					"feature.flag." + enabledFFKey, Boolean.TRUE.toString()
-				).build());
+			PropsUtil.set("feature.flag." + enabledFFKey, "true");
 
 			TestCustomAttributesDisplay enabledFFCustomAttributesDisplay =
 				new TestCustomAttributesDisplay(enabledFFKey);
@@ -137,8 +127,6 @@ public class PortletLocalServiceTest {
 				customAttributesDisplays.size());
 		}
 		finally {
-			PropsUtil.setProps(_props);
-
 			for (ServiceRegistration<?> serviceRegistration :
 					serviceRegistrations) {
 
@@ -149,9 +137,6 @@ public class PortletLocalServiceTest {
 
 	@Inject
 	private PortletLocalService _portletLocalService;
-
-	@Inject
-	private Props _props;
 
 	private class TestCustomAttributesDisplay
 		extends BaseCustomAttributesDisplay {

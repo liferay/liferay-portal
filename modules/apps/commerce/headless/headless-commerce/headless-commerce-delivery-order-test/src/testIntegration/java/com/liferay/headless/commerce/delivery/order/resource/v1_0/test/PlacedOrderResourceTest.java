@@ -149,8 +149,8 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 	@Override
 	protected String[] getIgnoredEntityFieldNames() {
 		return new String[] {
-			"account", "accountId", "author", "orderDate", "orderId",
-			"orderType"
+			"account", "accountId", "author", "authorId", "orderDate",
+			"orderId", "orderType"
 		};
 	}
 
@@ -173,6 +173,7 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		return new PlacedOrder() {
 			{
 				accountId = _accountEntry.getAccountEntryId();
+				authorId = _user.getUserId();
 				channelId = _commerceChannel.getCommerceChannelId();
 				couponCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -370,6 +371,7 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 		return new PlacedOrder() {
 			{
 				accountId = commerceOrder.getCommerceAccountId();
+				authorId = _user.getUserId();
 				channelId = _commerceChannel.getCommerceChannelId();
 				couponCode = commerceOrder.getCouponCode();
 				createDate = commerceOrder.getCreateDate();
@@ -472,12 +474,23 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 			RandomTestUtil.randomString() + StringPool.AMPERSAND);
 		commerceOrder.setRequestedDeliveryDate(RandomTestUtil.nextDate());
 
+		User filterUser = UserTestUtil.addUser(testCompany);
+
+		commerceOrder.setUserId(filterUser.getUserId());
+
 		commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			commerceOrder);
 
 		Page<PlacedOrder> page = placedOrderResource.getChannelPlacedOrdersPage(
 			_commerceChannel.getCommerceChannelId(), null,
 			String.format("(account eq '%s')", accountEntry.getName()),
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		page = placedOrderResource.getChannelPlacedOrdersPage(
+			_commerceChannel.getCommerceChannelId(), null,
+			String.format("(authorId eq %s)", filterUser.getUserId()),
 			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(1, page.getTotalCount());

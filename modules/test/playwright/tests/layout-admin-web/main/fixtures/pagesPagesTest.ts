@@ -5,6 +5,7 @@
 
 import {test} from '@playwright/test';
 
+import {ContentPageTranslationPage} from '../pages/ContentPageTranslationPage';
 import {PageConfigurationPage} from '../pages/PageConfigurationPage';
 import {PageTreePage} from '../pages/PageTreePage';
 import {SimulationMenuPage} from '../pages/SimulationMenuPage';
@@ -12,12 +13,16 @@ import {UtilityPageConfigurationPage} from '../pages/UtilityPageConfigurationPag
 import {UtilityPagesPage} from '../pages/UtilityPagesPage';
 
 const pagesPagesTest = test.extend<{
+	contentPageTranslationPage: ContentPageTranslationPage;
 	pageConfigurationPage: PageConfigurationPage;
 	pageTreePage: PageTreePage;
 	simulationMenuPage: SimulationMenuPage;
 	utilityPageConfigurationPage: UtilityPageConfigurationPage;
 	utilityPagesPage: UtilityPagesPage;
 }>({
+	contentPageTranslationPage: async ({page}, use) => {
+		await use(new ContentPageTranslationPage(page));
+	},
 	pageConfigurationPage: async ({page}, use) => {
 		await use(new PageConfigurationPage(page));
 	},

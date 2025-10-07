@@ -1,0 +1,70 @@
+.catalog-card {
+    border: solid 1px #E2E2E4;
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 192px;
+    padding: 24px;
+    position: relative;
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    width: 323px;
+}
+
+.catalog-card-description {
+    font-size: 13px;
+    font-weight: 400;
+    height: 60px;
+    letter-spacing: 0%;
+    line-height: 20px;
+    overflow: hidden;
+}
+
+.catalog-card-header {
+    height: 40px;
+}
+
+.catalog-card-name {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0%;
+    line-height: 20px;
+}
+
+.catalog-card-paragraph {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    font-size: 14px;
+    font-weight: 400;
+    height: 60px;
+    letter-spacing: 0%;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 340px;
+}
+
+.catalog-card:hover {
+    background: #FBFCFE !important;
+    border: 1px solid #BBD2FF;
+    box-shadow: 0px 6px 12px 0px #3C3C3C0F;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.container-gap {
+    gap: 24px;
+}
+
+.image-container .catalog-image {
+    border-radius: 50px;
+    height: 40px;
+    object-fit: contain;
+    overflow: hidden;
+    -webkit-user-drag: none;
+    user-drag: none;
+    width: 40px;
+}
+
+.stars {
+    color: #FDCC4A;
+}

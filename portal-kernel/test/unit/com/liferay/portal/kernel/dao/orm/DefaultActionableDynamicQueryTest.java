@@ -12,9 +12,6 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.ProxyFactory;
 
 import java.util.Collections;
 
@@ -46,8 +43,6 @@ public class DefaultActionableDynamicQueryTest {
 		).setPropertyFactory(
 			Mockito.mock(PropertyFactory.class, Mockito.RETURNS_MOCKS)
 		);
-
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
 
 		_portalExecutorManagerSnapshot = ReflectionTestUtil.getAndSetFieldValue(
 			DefaultActionableDynamicQuery.class,

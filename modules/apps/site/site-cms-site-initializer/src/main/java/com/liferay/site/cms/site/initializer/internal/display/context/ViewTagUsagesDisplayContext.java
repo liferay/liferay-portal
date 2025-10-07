@@ -31,17 +31,13 @@ public class ViewTagUsagesDisplayContext {
 	}
 
 	public String getAPIURL() {
-		StringBundler sb = new StringBundler(4);
-
-		sb.append("/o/search/v1.0/search?emptySearch=true&");
-		sb.append("filter=keywords in ('");
-		sb.append(ParamUtil.getString(_httpServletRequest, "keywordName"));
-		sb.append("')&nestedFields=embedded");
-
-		return sb.toString();
+		return StringBundler.concat(
+			"/o/search/v1.0/search?emptySearch=true&filter=keywords in ('",
+			ParamUtil.getString(_httpServletRequest, "keywordName"),
+			"')&nestedFields=embedded");
 	}
 
-	public Map<String, Object> getBreadcrumbReactData() throws Exception {
+	public Map<String, Object> getBreadcrumbProps() throws Exception {
 		return HashMapBuilder.<String, Object>put(
 			"breadcrumbItems",
 			JSONUtil.putAll(
@@ -52,7 +48,7 @@ public class ViewTagUsagesDisplayContext {
 					() -> PortalUtil.getLayoutFullURL(
 						LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/view_tags"),
+							"/categorization/view-tags"),
 						_themeDisplay)
 				).put(
 					"label", LanguageUtil.get(_themeDisplay.getLocale(), "tags")
@@ -67,6 +63,8 @@ public class ViewTagUsagesDisplayContext {
 						ParamUtil.getString(_httpServletRequest, "keywordName"))
 				)
 			)
+		).put(
+			"hideSpace", true
 		).build();
 	}
 

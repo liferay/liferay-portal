@@ -618,8 +618,8 @@ public class LazyBlobEntryModelImpl
 	private String _uuid;
 	private long _lazyBlobEntryId;
 	private long _groupId;
-	private LazyBlobEntryBlob1BlobModel _blob1BlobModel;
-	private LazyBlobEntryBlob2BlobModel _blob2BlobModel;
+	private transient LazyBlobEntryBlob1BlobModel _blob1BlobModel;
+	private transient LazyBlobEntryBlob2BlobModel _blob2BlobModel;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);

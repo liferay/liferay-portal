@@ -70,9 +70,7 @@ test(
 
 		await test.step('Check the default language is "en_US"', async () => {
 			expect(
-				page.frameLocator('iframe').getByRole('button', {
-					name: 'en_US',
-				})
+				page.frameLocator('iframe').getByTitle('en_US')
 			).toBeVisible();
 		});
 	}

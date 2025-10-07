@@ -63,10 +63,10 @@ public class SamlSpMessageCacheModel
 		sb.append(createDate);
 		sb.append(", samlIdpEntityId=");
 		sb.append(samlIdpEntityId);
-		sb.append(", samlIdpResponseKey=");
-		sb.append(samlIdpResponseKey);
 		sb.append(", expirationDate=");
 		sb.append(expirationDate);
+		sb.append(", samlIdpResponseKey=");
+		sb.append(samlIdpResponseKey);
 		sb.append("}");
 
 		return sb.toString();
@@ -93,18 +93,18 @@ public class SamlSpMessageCacheModel
 			samlSpMessageImpl.setSamlIdpEntityId(samlIdpEntityId);
 		}
 
-		if (samlIdpResponseKey == null) {
-			samlSpMessageImpl.setSamlIdpResponseKey("");
-		}
-		else {
-			samlSpMessageImpl.setSamlIdpResponseKey(samlIdpResponseKey);
-		}
-
 		if (expirationDate == Long.MIN_VALUE) {
 			samlSpMessageImpl.setExpirationDate(null);
 		}
 		else {
 			samlSpMessageImpl.setExpirationDate(new Date(expirationDate));
+		}
+
+		if (samlIdpResponseKey == null) {
+			samlSpMessageImpl.setSamlIdpResponseKey("");
+		}
+		else {
+			samlSpMessageImpl.setSamlIdpResponseKey(samlIdpResponseKey);
 		}
 
 		samlSpMessageImpl.resetOriginalValues();
@@ -119,8 +119,8 @@ public class SamlSpMessageCacheModel
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		samlIdpEntityId = objectInput.readUTF();
-		samlIdpResponseKey = objectInput.readUTF();
 		expirationDate = objectInput.readLong();
+		samlIdpResponseKey = objectInput.readUTF();
 	}
 
 	@Override
@@ -137,21 +137,21 @@ public class SamlSpMessageCacheModel
 			objectOutput.writeUTF(samlIdpEntityId);
 		}
 
+		objectOutput.writeLong(expirationDate);
+
 		if (samlIdpResponseKey == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(samlIdpResponseKey);
 		}
-
-		objectOutput.writeLong(expirationDate);
 	}
 
 	public long samlSpMessageId;
 	public long companyId;
 	public long createDate;
 	public String samlIdpEntityId;
-	public String samlIdpResponseKey;
 	public long expirationDate;
+	public String samlIdpResponseKey;
 
 }

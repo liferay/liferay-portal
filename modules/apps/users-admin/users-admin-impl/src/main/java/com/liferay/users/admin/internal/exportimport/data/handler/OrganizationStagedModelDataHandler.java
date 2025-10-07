@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.OrgLabor;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
@@ -412,7 +413,8 @@ public class OrganizationStagedModelDataHandler
 
 		UsersAdminUtil.updateAddresses(
 			Organization.class.getName(),
-			importedOrganization.getOrganizationId(), addresses);
+			importedOrganization.getOrganizationId(), addresses,
+			ListTypeConstants.ORGANIZATION_ADDRESS);
 	}
 
 	private Organization _importCountry(

@@ -257,6 +257,28 @@
 			}
 		}
 	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+		const panels = document.querySelectorAll('.panel-group .panel');
+
+		panels.forEach(panel => {
+			if (window.innerWidth <= 768) {
+				const panelBody = panel.querySelector('.panel-collapse');
+
+				if (panelBody) {
+					panelBody.classList.remove('show');
+					panelBody.classList.add('collapse');
+				}
+
+				const panelHeaderButton = panel.querySelector('.panel-header-link');
+
+				if (panelHeaderButton) {
+					panelHeaderButton.classList.add('collapsed');
+					panelHeaderButton.setAttribute('aria-expanded', 'false');
+				}
+			}
+		});
+	});
 </@>
 
 <style>

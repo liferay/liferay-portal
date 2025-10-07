@@ -93,6 +93,11 @@ public abstract class BaseItemSelectorViewDescriptor
 	}
 
 	@Override
+	public boolean isShowBreadcrumb() {
+		return false;
+	}
+
+	@Override
 	public boolean isShowSearch() {
 		return true;
 	}

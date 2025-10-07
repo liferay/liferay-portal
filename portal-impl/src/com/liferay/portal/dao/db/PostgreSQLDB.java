@@ -141,8 +141,8 @@ public class PostgreSQLDB extends BaseDB {
 	@Override
 	public String getRecreateSQL(String databaseName) {
 		return StringBundler.concat(
-			"drop database ", databaseName, ";\n", "create database ",
-			databaseName, " encoding = 'UNICODE';\n");
+			"drop database ", databaseName, ";\ncreate database ", databaseName,
+			" encoding = 'UNICODE';\n");
 	}
 
 	@Override

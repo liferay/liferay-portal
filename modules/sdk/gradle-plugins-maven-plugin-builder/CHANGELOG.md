@@ -1,5 +1,16 @@
 # Liferay Gradle Plugins Maven Plugin Builder Change Log
 
+## 2.0.3 - 2025-01-08
+
+### Commits
+- [LPD-15162] Pin version (f636f23295)
+- [LPD-15162] Move tests (f23b048eff)
+- [LPD-15162] Update README.markdown (5e6c766cd3)
+- [LPD-15162] Update plugins Gradle version (7757c65773)
+
+### Dependencies
+- [LPD-15162] Update the com.liferay.gradle.util dependency to version 1.0.49.
+
 ## 2.0.2 - 2023-08-14
 
 ### Commits
@@ -432,6 +443,7 @@ version 2.4.
 - [LPS-51081] use only 1.0.5 (4d9c09dfce)
 - [LPS-51081] Update to Gradle 2.4 (9966e0be8d)
 
+[LPD-15162]: https://issues.liferay.com/browse/LPD-15162
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-51801]: https://issues.liferay.com/browse/LPS-51801
 [LPS-55187]: https://issues.liferay.com/browse/LPS-55187

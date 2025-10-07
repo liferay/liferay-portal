@@ -75,6 +75,7 @@
 
 		<action path="/portal/update_password" type="com.liferay.portal.action.UpdatePasswordAction">
 			<forward name="portal.update_password" path="portal.update_password" />
+			<forward name="portal.update_password_utility_page" path="portal.update_password_utility_page" />
 		</action>
 
 		<action path="/portal/update_reminder_query" type="com.liferay.portal.action.UpdateReminderQueryAction">

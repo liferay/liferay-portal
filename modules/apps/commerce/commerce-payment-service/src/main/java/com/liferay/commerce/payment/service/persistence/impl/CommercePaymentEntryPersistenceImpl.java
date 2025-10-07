@@ -588,6 +588,15 @@ public class CommercePaymentEntryPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -949,6 +958,16 @@ public class CommercePaymentEntryPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentEntry> commercePaymentEntries = findByCompanyId(
+				companyId);
+
+			commercePaymentEntries = InlineSQLHelperUtil.filter(
+				commercePaymentEntries);
+
+			return commercePaymentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1550,6 +1569,15 @@ public class CommercePaymentEntryPersistenceImpl
 				companyId, classNameId, classPK, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_C_C(
+					companyId, classNameId, classPK, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1948,6 +1976,16 @@ public class CommercePaymentEntryPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_C_C(companyId, classNameId, classPK);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentEntry> commercePaymentEntries = findByC_C_C(
+				companyId, classNameId, classPK);
+
+			commercePaymentEntries = InlineSQLHelperUtil.filter(
+				commercePaymentEntries);
+
+			return commercePaymentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -2597,6 +2635,15 @@ public class CommercePaymentEntryPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_C_C_T(
+					companyId, classNameId, classPK, type, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3017,6 +3064,16 @@ public class CommercePaymentEntryPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_C_C_T(companyId, classNameId, classPK, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentEntry> commercePaymentEntries = findByC_C_C_T(
+				companyId, classNameId, classPK, type);
+
+			commercePaymentEntries = InlineSQLHelperUtil.filter(
+				commercePaymentEntries);
+
+			return commercePaymentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(5);
@@ -3715,6 +3772,15 @@ public class CommercePaymentEntryPersistenceImpl
 				end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_C_C_P_T(
+					companyId, classNameId, classPK, paymentStatus, type,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4155,6 +4221,16 @@ public class CommercePaymentEntryPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_C_C_P_T(
 				companyId, classNameId, classPK, paymentStatus, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentEntry> commercePaymentEntries = findByC_C_C_P_T(
+				companyId, classNameId, classPK, paymentStatus, type);
+
+			commercePaymentEntries = InlineSQLHelperUtil.filter(
+				commercePaymentEntries);
+
+			return commercePaymentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(6);

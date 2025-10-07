@@ -229,6 +229,7 @@ const ItemSelectorPreview = ({
 					imageId={currentItem.fileEntryId || currentItem.fileentryid}
 					imageSrc={currentItem.url}
 					itemReturnType={itemReturnType}
+					mimeType={currentItem.mimetype}
 					onCancel={handleCancelEditing}
 					onSave={handleSaveEditedImage}
 					saveURL={editImageURL}
@@ -265,6 +266,7 @@ ItemSelectorPreview.propTypes = {
 			base64: PropTypes.string,
 			fileEntryId: PropTypes.string,
 			metadata: PropTypes.string,
+			mimetype: PropTypes.string,
 			returntype: PropTypes.string.isRequired,
 			title: PropTypes.string.isRequired,
 			url: PropTypes.string,

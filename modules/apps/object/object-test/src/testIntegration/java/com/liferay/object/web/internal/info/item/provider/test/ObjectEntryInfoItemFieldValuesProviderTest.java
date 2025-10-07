@@ -57,9 +57,11 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -70,6 +72,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -179,6 +182,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 	}
 
+	@FeatureFlag("LPD-17564")
 	@Test
 	public void testObjectEntryInfoItemFieldValuesProvider() throws Exception {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
@@ -211,7 +215,12 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			).put(
 				"attachmentObjectFieldName", fileEntry.getFileEntryId()
 			).put(
+				"expirationDate",
+				new Date(System.currentTimeMillis() + Time.DAY)
+			).put(
 				"picklistObjectFieldName", _listTypeEntryKey
+			).put(
+				"reviewDate", new Date(System.currentTimeMillis() + Time.DAY)
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 
@@ -252,14 +261,15 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, false, true, true,
-			false, false, null,
+			TestPropsValues.getUserId(), 0, null, false, true, false, true,
+			true, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			true, ObjectDefinitionConstants.SCOPE_SITE,
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Collections.emptyList(), Arrays.asList(objectFields));
+			Collections.emptyList(), Arrays.asList(objectFields),
+			Collections.emptyList());
 	}
 
 	private void _assertInfoFieldValue(

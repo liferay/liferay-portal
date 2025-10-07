@@ -8,9 +8,10 @@ import ClayModal from '@clayui/modal';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
-import {API_URL, FDS_DEFAULT_PROPS} from '../../js/utils/constants';
+import {FDS_DEFAULT_PROPS} from '../../js/utils/constants';
 
 import './FDSAdminItemSelector.scss';
+import getDataSetResourceURL from '../../js/utils/getDataSetResourceURL';
 
 interface ISelectedItem {
 	externalReferenceCode: string;
@@ -66,21 +67,14 @@ const FDSAdminItemSelector = ({
 			<ClayModal.Body>
 				<FrontendDataSet
 					{...FDS_DEFAULT_PROPS}
-					apiURL={API_URL.DATA_SETS}
+					apiURL={getDataSetResourceURL({})}
 					id={`${namespace}FDSAdminItemSelector`}
-					onSelect={({
-						selectedItems,
-					}: {
-						selectedItems: Array<ISelectedItem>;
-					}) => {
-						setSelectedItem({
-							externalReferenceCode:
-								selectedItems[0].externalReferenceCode,
-							id: selectedItems[0].id,
-							label: selectedItems[0].label,
-						});
+					onSelectedItemsChange={(
+						selectedItems: Array<ISelectedItem>
+					) => {
+						setSelectedItem(selectedItems[0]);
 					}}
-					selectedItems={[selectedItem?.externalReferenceCode]}
+					selectedItems={[selectedItem]}
 					selectedItemsKey="externalReferenceCode"
 					selectionType="single"
 					views={views}

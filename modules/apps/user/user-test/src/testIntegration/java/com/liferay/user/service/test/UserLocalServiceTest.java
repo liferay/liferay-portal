@@ -7,15 +7,20 @@ package com.liferay.user.service.test;
 
 import com.liferay.announcements.kernel.service.AnnouncementsDeliveryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.bean.ClassLoaderBeanHandler;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.ContactBirthdayException;
 import com.liferay.portal.kernel.exception.NoSuchTicketException;
 import com.liferay.portal.kernel.exception.PasswordExpiredException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -83,6 +88,7 @@ import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -108,7 +114,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
-import com.liferay.portal.util.DigesterImpl;
 
 import java.sql.Connection;
 
@@ -255,6 +260,21 @@ public class UserLocalServiceTest {
 				TestPropsValues.getUserId()));
 
 		Assert.assertTrue(Validator.isNotNull(user.getPassword()));
+	}
+
+	@Test(expected = ContactBirthdayException.class)
+	public void testAddUserWithInvalidBirthday() throws Exception {
+		_userLocalService.addUser(
+			0, TestPropsValues.getCompanyId(), true, StringPool.BLANK,
+			StringPool.BLANK, false, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com", LocaleUtil.US,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), 0, 0, true, 1, 1, 2099,
+			StringPool.BLANK, UserConstants.TYPE_REGULAR, new long[0],
+			new long[0], new long[0], new long[0], false,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
+				TestPropsValues.getUserId()));
 	}
 
 	@Test(expected = UserEmailAddressException.class)
@@ -937,7 +957,7 @@ public class UserLocalServiceTest {
 
 		try (AutoCloseable autoCloseable1 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					DigesterImpl.class, "_BASE_64", false);
+					DigesterUtil.class, "_BASE_64", false);
 			AutoCloseable autoCloseable2 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
 					PasswordEncryptorUtil.class,
@@ -1048,6 +1068,77 @@ public class UserLocalServiceTest {
 		finally {
 			PermissionThreadLocal.setPermissionChecker(oldPermissionChecker);
 		}
+	}
+
+	@Test
+	public void testSearchByKeywords() throws Exception {
+		User user1 = UserTestUtil.addUser();
+
+		List<User> users = _userLocalService.search(
+			TestPropsValues.getCompanyId(), user1.getScreenName(),
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, (OrderByComparator<User>)null);
+
+		Assert.assertEquals(users.toString(), 1, users.size());
+
+		User user2 = users.get(0);
+
+		Assert.assertEquals(user1.getUserId(), user2.getUserId());
+
+		users = _userLocalService.search(
+			TestPropsValues.getCompanyId(), user1.getFullName(),
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, (OrderByComparator<User>)null);
+
+		Assert.assertEquals(users.toString(), 1, users.size());
+
+		user2 = users.get(0);
+
+		Assert.assertEquals(user1.getUserId(), user2.getUserId());
+
+		users = _userLocalService.search(
+			TestPropsValues.getCompanyId(),
+			StringPool.QUOTE + user1.getFirstName() + StringPool.QUOTE,
+			WorkflowConstants.STATUS_APPROVED, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, (OrderByComparator<User>)null);
+
+		Assert.assertEquals(users.toString(), 1, users.size());
+
+		user2 = users.get(0);
+
+		Assert.assertEquals(user1.getUserId(), user2.getUserId());
+	}
+
+	@Test
+	public void testSearchBySocial() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		List<User> users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), null, null, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(users.contains(user));
+
+		_testSearchBySocialWithGroup();
+		_testSearchBySocialWithGroupAndUserGroup();
+		_testSearchBySocialWithUserGroup();
+	}
+
+	@Test
+	public void testSearchCountBySocial() throws Exception {
+		int usersCount1 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), null, null, null);
+
+		UserTestUtil.addUser();
+
+		int usersCount2 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), null, null, null);
+
+		Assert.assertEquals(usersCount1 + 1, usersCount2);
+
+		_testSearchCountBySocialWithGroup();
+		_testSearchCountBySocialWithGroupAndUserGroup();
+		_testSearchCountBySocialWithUserGroup();
 	}
 
 	@Test
@@ -1329,12 +1420,8 @@ public class UserLocalServiceTest {
 		ServiceWrapper<UserLocalService> serviceWrapper =
 			(ServiceWrapper<UserLocalService>)aopInvocationHandler.getTarget();
 
-		ClassLoaderBeanHandler classLoaderBeanHandler =
-			(ClassLoaderBeanHandler)ProxyUtil.getInvocationHandler(
-				serviceWrapper.getWrappedService());
-
 		UserLocalServiceImpl userLocalServiceImpl =
-			(UserLocalServiceImpl)classLoaderBeanHandler.getBean();
+			(UserLocalServiceImpl)serviceWrapper.getWrappedService();
 
 		user.setLoginDate(new Date());
 		user.setLastLoginDate(new Date());
@@ -1502,7 +1589,7 @@ public class UserLocalServiceTest {
 	public void testUpdateTicketWithModifiedEncryption() throws Exception {
 		try (AutoCloseable autoCloseable1 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					DigesterImpl.class, "_BASE_64", false);
+					DigesterUtil.class, "_BASE_64", false);
 			AutoCloseable autoCloseable2 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
 					PasswordEncryptorUtil.class,
@@ -1560,6 +1647,55 @@ public class UserLocalServiceTest {
 		catch (Throwable throwable) {
 			throw new Exception(throwable);
 		}
+	}
+
+	@Test
+	public void testUpdateUserWithRequiredAssetVocabulary() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		Group companyGroup = company.getGroup();
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId(), _portal.getClassNameId(User.class),
+			AssetCategoryConstants.ALL_CLASS_TYPE_PK, true);
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			companyGroup.getGroupId(), assetVocabulary.getVocabularyId());
+
+		long[] assetCategoryIds = {assetCategory.getCategoryId()};
+
+		_assetEntryLocalService.updateEntry(
+			user.getUserId(), companyGroup.getGroupId(), user.getCreateDate(),
+			user.getModifiedDate(), User.class.getName(), user.getUserId(),
+			user.getUuid(), 0, assetCategoryIds, null, true, false, null, null,
+			null, null, null, user.getFullName(), null, null, null, null, 0, 0,
+			null);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				companyGroup.getGroupId(), user.getUserId());
+
+		serviceContext.setAssetCategoryIds(null);
+
+		Group group = GroupTestUtil.addGroup();
+
+		long[] groupIds = {companyGroup.getGroupId(), group.getGroupId()};
+
+		user = _userLocalService.updateUser(
+			user.getUserId(), StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, false, StringPool.BLANK, StringPool.BLANK,
+			user.getScreenName(), user.getEmailAddress(), false, null,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, user.getFirstName(), user.getMiddleName(),
+			user.getLastName(), 0, 0, user.isMale(), Calendar.JANUARY, 12, 1980,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, groupIds,
+			null, null, null, null, serviceContext);
+
+		Assert.assertArrayEquals(groupIds, user.getGroupIds());
 	}
 
 	@Test
@@ -1719,6 +1855,146 @@ public class UserLocalServiceTest {
 		}
 	}
 
+	private void _testSearchBySocialWithGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addUser();
+
+		List<User> users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			null, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(users.contains(user));
+
+		_userLocalService.addGroupUser(group.getGroupId(), user);
+
+		users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			null, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(users.contains(user));
+	}
+
+	private void _testSearchBySocialWithGroupAndUserGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user1 = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(group.getGroupId(), user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroup(user2.getUserId(), userGroup);
+
+		List<User> users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			new long[] {userGroup.getUserGroupId()}, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(users.contains(user1));
+		Assert.assertFalse(users.contains(user2));
+
+		_userLocalService.addGroupUser(group.getGroupId(), user2);
+		_userGroupLocalService.addUserUserGroup(user1.getUserId(), userGroup);
+
+		users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			new long[] {userGroup.getUserGroupId()}, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(users.contains(user1));
+		Assert.assertTrue(users.contains(user2));
+	}
+
+	private void _testSearchBySocialWithUserGroup() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		List<User> users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), null,
+			new long[] {userGroup.getUserGroupId()}, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(users.contains(user));
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		users = _userLocalService.searchBySocial(
+			TestPropsValues.getCompanyId(), null,
+			new long[] {userGroup.getUserGroupId()}, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(users.contains(user));
+	}
+
+	private void _testSearchCountBySocialWithGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addUser();
+
+		int usersCount1 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			null, null);
+
+		_userLocalService.addGroupUser(group.getGroupId(), user);
+
+		int usersCount2 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			null, null);
+
+		Assert.assertEquals(usersCount1 + 1, usersCount2);
+	}
+
+	private void _testSearchCountBySocialWithGroupAndUserGroup()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		User user1 = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(group.getGroupId(), user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroup(user2.getUserId(), userGroup);
+
+		int usersCount1 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			new long[] {userGroup.getUserGroupId()}, null);
+
+		_userLocalService.addGroupUser(group.getGroupId(), user2);
+		_userGroupLocalService.addUserUserGroup(user1.getUserId(), userGroup);
+
+		int usersCount2 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			new long[] {userGroup.getUserGroupId()}, null);
+
+		Assert.assertEquals(usersCount1 + 2, usersCount2);
+	}
+
+	private void _testSearchCountBySocialWithUserGroup() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		int usersCount1 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), null,
+			new long[] {userGroup.getUserGroupId()}, null);
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		int usersCount2 = _userLocalService.searchCountBySocial(
+			TestPropsValues.getCompanyId(), null,
+			new long[] {userGroup.getUserGroupId()}, null);
+
+		Assert.assertEquals(usersCount1 + 1, usersCount2);
+	}
+
 	private void _testVerifyEmailAddress(boolean expired) throws Exception {
 		try (SafeCloseable safeCloseable = _updateSecurityWithSafeCloseable(
 				TestPropsValues.getCompanyId(), true)) {
@@ -1854,6 +2130,9 @@ public class UserLocalServiceTest {
 	@Inject
 	private AnnouncementsDeliveryLocalService
 		_announcementsDeliveryLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	private AuditMessageProcessor _auditMessageProcessor;
 	private BundleActivator _bundleActivator;

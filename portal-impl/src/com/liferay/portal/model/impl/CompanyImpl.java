@@ -27,15 +27,15 @@ import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import java.security.Key;
 
 import java.util.Locale;
+import java.util.NavigableMap;
 import java.util.TimeZone;
-import java.util.TreeMap;
 
 /**
  * @author Brian Wing Shun Chan
@@ -133,7 +133,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 			if (_group != null) {
 				_groupId = _group.getGroupId();
 
-				groupIdUpdateEntityCacheConsumer.accept(_groupId);
+				groupIdUpdateEntityCacheBiConsumer.accept(this, _groupId);
 			}
 		}
 
@@ -193,7 +193,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 			LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
 				groupId, false);
 
-			TreeMap<String, String> virtualHostnames =
+			NavigableMap<String, String> virtualHostnames =
 				layoutSet.getVirtualHostnames();
 
 			if (!virtualHostnames.isEmpty()) {
@@ -205,7 +205,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 			LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
 				groupId, true);
 
-			TreeMap<String, String> virtualHostnames =
+			NavigableMap<String, String> virtualHostnames =
 				layoutSet.getVirtualHostnames();
 
 			if (!virtualHostnames.isEmpty()) {
@@ -233,7 +233,7 @@ public class CompanyImpl extends CompanyBaseImpl {
 		LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
 			groupId, privateLayout);
 
-		TreeMap<String, String> virtualHostnames =
+		NavigableMap<String, String> virtualHostnames =
 			layoutSet.getVirtualHostnames();
 
 		if (!virtualHostnames.isEmpty()) {
@@ -274,7 +274,8 @@ public class CompanyImpl extends CompanyBaseImpl {
 
 		_virtualHostname = virtualHost.getHostname();
 
-		virtualHostnameUpdateEntityCacheConsumer.accept(_virtualHostname);
+		virtualHostnameUpdateEntityCacheBiConsumer.accept(
+			this, _virtualHostname);
 
 		return _virtualHostname;
 	}

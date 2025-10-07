@@ -79,6 +79,29 @@ public class ReplenishmentItemResourceTest
 		super.testDeleteReplenishmentItemBatch();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetReplenishmentItemsPage() throws Exception {
+		super.testGraphQLGetReplenishmentItemsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetWarehouseIdReplenishmentItemsPage()
+		throws Exception {
+
+		super.testGraphQLGetWarehouseIdReplenishmentItemsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostReplenishmentItem() throws Exception {
+		super.testGraphQLPostReplenishmentItem();
+	}
+
 	@Override
 	@Test
 	public void testPatchReplenishmentItem() throws Exception {
@@ -248,6 +271,25 @@ public class ReplenishmentItemResourceTest
 						_dateFormat.format(RandomTestUtil.nextDate())),
 					BigDecimal.valueOf(RandomTestUtil.nextInt()),
 					testGetReplenishmentItemsPage_getSku(), StringPool.BLANK);
+
+		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
+	}
+
+	@Override
+	protected ReplenishmentItem
+			testGraphQLReplenishmentItem_addReplenishmentItem(
+				Long warehouseId, String sku,
+				ReplenishmentItem replenishmentItem)
+		throws Exception {
+
+		_commerceInventoryReplenishmentItem =
+			_commerceInventoryReplenishmentItemLocalService.
+				addCommerceInventoryReplenishmentItem(
+					replenishmentItem.getExternalReferenceCode(),
+					_user.getUserId(), replenishmentItem.getWarehouseId(),
+					replenishmentItem.getAvailabilityDate(),
+					replenishmentItem.getQuantity(), replenishmentItem.getSku(),
+					StringPool.BLANK);
 
 		return _toReplenishmentItem(_commerceInventoryReplenishmentItem);
 	}

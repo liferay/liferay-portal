@@ -34,6 +34,11 @@ public interface CPDefinitionHelper {
 			Locale locale)
 		throws PortalException;
 
+	public CPCatalogEntry getCPCatalogEntry(
+			long commerceAccountId, long groupId, long cpDefinitionId,
+			Locale locale, boolean secure)
+		throws PortalException;
+
 	public String getDefaultImageFileURL(
 			long commerceAccountId, long cpDefinitionId)
 		throws PortalException;

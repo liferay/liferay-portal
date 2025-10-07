@@ -5,8 +5,12 @@
 
 package com.liferay.object.internal.search.spi.model.query.contributor;
 
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.search.spi.model.registrar.ModelSearchSettings;
@@ -35,6 +39,19 @@ public class ObjectFieldModelPreFilterContributor
 			booleanFilter.addRequiredTerm(
 				"objectDefinitionId", objectDefinitionId);
 		}
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-17564")) {
+
+			return;
+		}
+
+		TermsFilter termsFilter = new TermsFilter(
+			Field.getSortableFieldName(Field.NAME));
+
+		termsFilter.addValues("displaydate", "expirationdate", "reviewdate");
+
+		booleanFilter.add(termsFilter, BooleanClauseOccur.MUST_NOT);
 	}
 
 }

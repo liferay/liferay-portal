@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -39,8 +40,11 @@ public class ExpandoUtil {
 				continue;
 			}
 
-			if (ExpandoColumnConstants.DATE == expandoBridge.getAttributeType(
-					attributeName)) {
+			Object attributeValue = expandoAttributes.get(attributeName);
+
+			if ((ExpandoColumnConstants.DATE == expandoBridge.getAttributeType(
+					attributeName)) &&
+				(attributeValue.getClass() != Date.class)) {
 
 				expandoBridge.setAttribute(
 					attributeName,

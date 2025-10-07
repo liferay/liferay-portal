@@ -14,7 +14,6 @@
 			"accountEntryRestricted": false,
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": false,
 			"externalReferenceCode": "N1A0_ADYEN_WEBHOOK",

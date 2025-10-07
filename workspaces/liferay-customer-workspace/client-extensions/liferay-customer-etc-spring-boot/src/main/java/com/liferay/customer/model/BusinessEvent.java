@@ -55,11 +55,8 @@ public class BusinessEvent {
 		return _accountId;
 	}
 
-	public String getActivityHistoryURL(
-		String lxcDXPServerProtocol, String lxcDXPMainDomain) {
-
-		return getURL(lxcDXPServerProtocol, lxcDXPMainDomain) +
-			"/activity-history";
+	public String getActivityHistoryURL(String customerPortalURL) {
+		return getURL(customerPortalURL) + "/activity-history";
 	}
 
 	public long getBusinessEventId() {
@@ -74,10 +71,8 @@ public class BusinessEvent {
 		return _creatorId;
 	}
 
-	public String getEditURL(
-		String lxcDXPServerProtocol, String lxcDXPMainDomain) {
-
-		return getURL(lxcDXPServerProtocol, lxcDXPMainDomain) + "/edit";
+	public String getEditURL(String customerPortalURL) {
+		return getURL(customerPortalURL) + "/edit";
 	}
 
 	public String getEventStatusKey() {
@@ -104,12 +99,10 @@ public class BusinessEvent {
 		return _targetGoLiveDateTime;
 	}
 
-	public String getURL(String lxcDXPServerProtocol, String lxcDXPMainDomain) {
-		StringBundler sb = new StringBundler(7);
+	public String getURL(String customerPortalURL) {
+		StringBundler sb = new StringBundler(5);
 
-		sb.append(lxcDXPServerProtocol);
-		sb.append("://");
-		sb.append(lxcDXPMainDomain);
+		sb.append(customerPortalURL);
 		sb.append("/project/#/");
 		sb.append(_accountExternalReferenceCode);
 		sb.append("/business-events/");

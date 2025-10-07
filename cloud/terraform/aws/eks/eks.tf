@@ -1,5 +1,8 @@
 module "eks" {
 	cluster_addons={
+		amazon-cloudwatch-observability={
+			most_recent=true
+		}
 		aws-ebs-csi-driver={
 			most_recent=true
 		}
@@ -37,6 +40,7 @@ module "eks" {
 			disk_size=var.root_volume_size
 			iam_role_additional_policies={
 				AmazonEBSCSIDriverPolicy="arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+				CloudWatchAgentServerPolicy="arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 			}
 			instance_types=[var.node_instance_type]
 			max_size=var.node_group_max_size

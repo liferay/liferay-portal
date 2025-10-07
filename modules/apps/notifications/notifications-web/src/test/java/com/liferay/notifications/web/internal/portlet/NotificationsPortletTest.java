@@ -27,7 +27,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -90,8 +89,8 @@ public class NotificationsPortletTest {
 			String.valueOf(
 				userNotificationDelivery.getUserNotificationDeliveryId()));
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				NotificationsPortlet.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				NotificationsPortlet.class.getName(), LoggerTestUtil.WARN)) {
 
 			_notificationsPortlet.updateUserNotificationDelivery(
 				mockLiferayPortletActionRequest,

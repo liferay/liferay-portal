@@ -4,8 +4,7 @@
  */
 
 import {ModalStatus} from 'frontend-js-components-web';
-
-import {TRenderer} from '../FrontendDataSetContext';
+import React from 'react';
 
 export declare function FrontendDataSet({
 	actionParameterName,
@@ -34,7 +33,6 @@ export declare function FrontendDataSet({
 	nestedItemsReferenceKey,
 	onActionDropdownItemClick,
 	onBulkActionItemClick,
-	onSelect,
 	overrideEmptyResultView,
 	pagination,
 	portletId,
@@ -62,6 +60,27 @@ export enum DisplayType {
 	SUCCESS = 'success',
 	UNSTYLED = 'unstyled',
 	WARNING = 'warning',
+}
+
+export interface IEmptyState {
+	description?: string;
+	image?: string;
+	imageReducedMotion?: string;
+	title?: string;
+}
+
+export interface IEmptyStateConfiguration extends IEmptyState {
+	filtered?: {
+		filters?: IEmptyState;
+		search?: IEmptyState;
+		searchAndFilters?: IEmptyState;
+	};
+}
+
+export enum EConfigInURLBehavior {
+	OFF = 'off',
+	PUSH = 'push',
+	REPLACE = 'replace',
 }
 
 export interface IInlineEditingSettings {
@@ -106,11 +125,19 @@ export interface ICreationActionItem {
 		| string;
 }
 
+export enum EItemActionsType {
+	GROUP = 'group',
+	ITEM = 'item',
+}
+
 export interface IItemsActions {
+	className?: string;
 	data?: IItemActionsData;
+	disabled?: boolean;
 	href?: string;
 	icon?: string;
 	id?: string | number;
+	isDisabled?: (item: any) => boolean;
 	isVisible?: (item: any) => boolean;
 	items?: IItemsActions[];
 	label?: string;
@@ -128,7 +155,7 @@ export interface IItemsActions {
 		| 'modal-permissions'
 		| 'sidePanel'
 		| 'event';
-	type?: string;
+	type?: EItemActionsType | `${EItemActionsType}`;
 }
 
 export interface IItemActionsData {
@@ -206,9 +233,26 @@ export interface ICardSchema {
 	title: string;
 }
 
-export type ISchema = ITableSchema | ICardSchema;
+export interface IHeader {
+	title?: string;
+}
 
-export type TViews = {
+export interface IListTitleRenderer {
+	component: ({itemData}: {itemData: any}) => JSX.Element;
+}
+
+export interface IListSchema {
+	description: string;
+	image?: string;
+	sticker?: string;
+	symbol: string;
+	title: string;
+	titleRenderer: IListTitleRenderer;
+}
+
+export type ISchema = ITableSchema | ICardSchema | IListSchema;
+
+export interface IView {
 	component?: any;
 	contentRenderer?: string;
 	contentRendererClientExtension?: boolean;
@@ -217,9 +261,18 @@ export type TViews = {
 	label?: string;
 	name?: string;
 	schema?: ISchema;
+	setItemComponentProps?: ({item, props}: {item: any; props: any}) => any;
 	thumbnail?: string;
 	views?: Array<any>;
-};
+}
+
+export type TOnFileDrop = (droppedFiles: File[], dropTarget: any) => void;
+
+export interface IFileDropSettings {
+	enabled: boolean;
+	isDropTarget: ({item}: {item: any}) => boolean;
+	onFileDrop?: TOnFileDrop;
+}
 
 export interface IFrontendDataSetProps {
 	actionParameterName?: string;
@@ -228,6 +281,7 @@ export interface IFrontendDataSetProps {
 	apiURL?: string;
 	appURL?: string;
 	bulkActions?: any[];
+	configInURLSettings?: EConfigInURLBehavior;
 	creationMenu?: {
 		loadData?: Function;
 		primaryItems: Array<ICreationActionItem>;
@@ -241,20 +295,16 @@ export interface IFrontendDataSetProps {
 	};
 	customViews?: string;
 	customViewsEnabled?: boolean;
-	emptyState?: {
-		description?: string;
-		image?: string;
-		title?: string;
-	};
+	defaultSelectedItems?: any[];
+	emptyState?: IEmptyStateConfiguration;
 	enableInlineAddModeSetting?: {
 		defaultBodyContent?: object;
 	};
+	fileDropSettings?: IFileDropSettings;
 	filters?: Array<any>;
 	formId?: string;
 	formName?: string;
-	header?: {
-		title?: string;
-	};
+	header?: IHeader;
 	id: string;
 	infoPanelComponent?: React.ComponentType<IInfoPanelComponent>;
 	inlineAddingSettings?: {
@@ -270,7 +320,6 @@ export interface IFrontendDataSetProps {
 	nestedItemsReferenceKey?: string;
 	onActionDropdownItemClick?: any;
 	onBulkActionItemClick?: any;
-	onSelect?: ({selectedItems}: {selectedItems: Array<any>}) => void;
 	onSelectedItemsChange?: (selectedItems: Array<any>) => void;
 	overrideEmptyResultView?: boolean;
 	pagination?: {
@@ -280,11 +329,12 @@ export interface IFrontendDataSetProps {
 	};
 	portletId?: string;
 	selectedItems?: any[];
-	selectedItemsKey?: string;
+	selectedItemsKey?: string | undefined;
 	selectionType?: 'single' | 'multiple';
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
 	showManagementBar?: boolean;
+	showNavBarWhenSelected?: boolean;
 	showPagination?: boolean;
 	showSearch?: boolean;
 	showSelectAll?: boolean;
@@ -292,7 +342,7 @@ export interface IFrontendDataSetProps {
 	sorts?: TSort[];
 	style?: 'default' | 'fluid' | 'stacked';
 	uniformActionsDisplay?: boolean;
-	views: TViews[];
+	views: IView[];
 	viewsTitle?: string;
 }
 
@@ -318,11 +368,39 @@ export interface ISuccessNotification {
 	showSuccessNotification?: boolean;
 }
 
-export {
-	IClientExtensionRenderer,
-	IInternalRenderer,
-} from '../FrontendDataSetContext';
-export {INTERNAL_CELL_RENDERERS as FDS_INTERNAL_CELL_RENDERERS} from '../cell_renderers/InternalCellRenderer';
+export interface IDataSetData {
+	items: Array<any>;
+	lastPage: number;
+	page: number;
+	pageSize?: number;
+	totalCount: number;
+}
+
+export interface IHTMLElementBuilder {
+	(args: any): HTMLElement;
+}
+
+export interface IClientExtensionRenderer {
+	externalReferenceCode?: string;
+	htmlElementBuilder?: IHTMLElementBuilder;
+	name?: string;
+	type: 'clientExtension';
+	url?: string;
+}
+
+export interface IInternalRenderer {
+	component: React.ComponentType<any>;
+	default?: boolean;
+	label?: string;
+	name?: string;
+	schema?: ISchema;
+	symbol?: string;
+	type: 'internal';
+	url?: string;
+}
+
+export type TRenderer = IClientExtensionRenderer | IInternalRenderer;
+
 export {
 	DEFAULT_FETCH_HEADERS,
 	FDS_ARRAY_FIELD_NAME_DELIMITER,
@@ -331,4 +409,42 @@ export {
 	FDS_NESTED_FIELD_NAME_PARENT_SUFFIX,
 } from '../constants';
 
-export {Card} from '../views/cards/Cards';
+export enum EConfigInURLKeys {
+	ACTIVE_FILTERS = 'filters',
+	ACTIVE_SORTS = 'sorts',
+	DELTA = 'delta',
+	PAGE_NUMBER = 'page',
+	SEARCH_PARAM = 'q',
+	VIEW_NAME = 'view',
+	VISIBLE_FIELDS = 'vf',
+}
+
+export interface IConfigInURL {
+	[EConfigInURLKeys.ACTIVE_FILTERS]: Array<any>;
+	[EConfigInURLKeys.ACTIVE_SORTS]: Array<TSort>;
+	[EConfigInURLKeys.DELTA]: number;
+	[EConfigInURLKeys.PAGE_NUMBER]: number;
+	[EConfigInURLKeys.SEARCH_PARAM]: string;
+	[EConfigInURLKeys.VIEW_NAME]: string;
+	[EConfigInURLKeys.VISIBLE_FIELDS]: VisibleFieldNames;
+}
+
+export type IConfigInURLUpdaterThunk<K extends keyof IConfigInURL> = (
+	value: IConfigInURL[K]
+) => (viewsDispatch: Function) => void;
+
+export type IConfigInURLGetter<K extends keyof IConfigInURL> = () =>
+	| IConfigInURL[K]
+	| undefined;
+
+export type IConfigReader<K extends keyof IConfigInURL> = (
+	value: IConfigInURL[K] | undefined
+) => IConfigInURL[K] | undefined;
+
+export type IConfigWriter<K extends keyof IConfigInURL> = (
+	value: IConfigInURL[K]
+) => IConfigInURL[K] | undefined;
+
+export type VisibleFieldNames = {
+	[fieldName: string]: boolean;
+};

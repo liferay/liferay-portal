@@ -53,11 +53,10 @@ public class FriendlyUrlHistoryResourceImpl
 		parentClass = DisplayPageTemplate.class, value = "friendlyUrlHistory"
 	)
 	@Override
-	public FriendlyUrlHistory
-			getSiteSiteByExternalReferenceCodeDisplayPageTemplateFriendlyUrlHistory(
-				String siteExternalReferenceCode,
-				@NestedFieldId(value = "externalReferenceCode") String
-					displayPageTemplateExternalReferenceCode)
+	public FriendlyUrlHistory getSiteDisplayPageTemplateFriendlyUrlHistory(
+			String siteExternalReferenceCode,
+			@NestedFieldId(value = "externalReferenceCode") String
+				displayPageTemplateExternalReferenceCode)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
@@ -84,11 +83,10 @@ public class FriendlyUrlHistoryResourceImpl
 
 	@NestedField(parentClass = SitePage.class, value = "friendlyUrlHistory")
 	@Override
-	public FriendlyUrlHistory
-			getSiteSiteByExternalReferenceCodeSitePageFriendlyUrlHistory(
-				String siteExternalReferenceCode,
-				@NestedFieldId(value = "externalReferenceCode") String
-					sitePageExternalReferenceCode)
+	public FriendlyUrlHistory getSiteSitePageFriendlyUrlHistory(
+			String siteExternalReferenceCode,
+			@NestedFieldId(value = "externalReferenceCode") String
+				sitePageExternalReferenceCode)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {
@@ -120,11 +118,10 @@ public class FriendlyUrlHistoryResourceImpl
 
 	@NestedField(parentClass = UtilityPage.class, value = "friendlyUrlHistory")
 	@Override
-	public FriendlyUrlHistory
-			getSiteSiteByExternalReferenceCodeUtilityPageFriendlyUrlHistory(
-				String siteExternalReferenceCode,
-				@NestedFieldId(value = "externalReferenceCode") String
-					utilityPageExternalReferenceCode)
+	public FriendlyUrlHistory getSiteUtilityPageFriendlyUrlHistory(
+			String siteExternalReferenceCode,
+			@NestedFieldId(value = "externalReferenceCode") String
+				utilityPageExternalReferenceCode)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-35443")) {

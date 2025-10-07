@@ -10,6 +10,7 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import {MetadataFieldsManager} from './MetadataFieldsManager';
 import {TranslationManagerProps} from './Types';
 import useTranslationProgress from './useTranslationProgress';
 
@@ -48,26 +49,31 @@ export default function TranslationOptions({
 	});
 
 	const markAsTranslatedHandler = () => {
+		const metaDataValues = MetadataFieldsManager.getAllMetadataValues(
+			initialFields,
+			selectedLanguageId
+		);
+
 		Liferay.fire('inputLocalized:markAsTranslated', {selectedLanguageId});
+
+		MetadataFieldsManager.restoreAllMetadataValues(
+			selectedLanguageId,
+			metaDataValues,
+			defaultLanguageId
+		);
+
+		Liferay.fire('inputLocalized:updateTranslationStatus');
+
 		Liferay.fire('journal:storeState', {
 			fieldName: Liferay.Language.get('mark-as-translated'),
 		});
 	};
 
 	const resetButtonHandler = () => {
-		Object.keys(initialFields)
-			.flatMap((fieldName) => {
-				return Array.from(
-					document.querySelectorAll<HTMLInputElement>(
-						`[type="hidden"][data-field-name="${fieldName}"]`
-					)
-				).filter(
-					(input) => input.dataset.languageid === selectedLanguageId
-				);
-			})
-			.map((input) => {
-				input.remove();
-			});
+		MetadataFieldsManager.resetAllMetadataValues(
+			initialFields,
+			selectedLanguageId
+		);
 
 		Liferay.fire('inputLocalized:resetTranslations', {
 			defaultLanguageId,

@@ -51,21 +51,35 @@ public class ExportImportReportEntryTable
 	public final Column<ExportImportReportEntryTable, Long> classNameId =
 		createColumn(
 			"classNameId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, Long> classPK =
+		createColumn("classPK", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<ExportImportReportEntryTable, Long>
 		exportImportConfigurationId = createColumn(
 			"exportImportConfigurationId", Long.class, Types.BIGINT,
 			Column.FLAG_DEFAULT);
-	public final Column<ExportImportReportEntryTable, Clob> error =
-		createColumn("error", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, Clob> errorMessage =
+		createColumn(
+			"errorMessage", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<ExportImportReportEntryTable, Clob> errorStacktrace =
 		createColumn(
 			"errorStacktrace", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
-	public final Column<ExportImportReportEntryTable, Boolean> resolved =
+	public final Column<ExportImportReportEntryTable, String> modelName =
 		createColumn(
-			"resolved", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+			"modelName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, Integer> origin =
+		createColumn(
+			"origin", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, String> scope =
+		createColumn("scope", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, String> scopeKey =
+		createColumn(
+			"scopeKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ExportImportReportEntryTable, Integer> type =
 		createColumn(
 			"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
+	public final Column<ExportImportReportEntryTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private ExportImportReportEntryTable() {
 		super("ExportImportReportEntry", ExportImportReportEntryTable::new);

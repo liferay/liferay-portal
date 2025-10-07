@@ -13,13 +13,9 @@ const LiferayURL = `${Liferay.ThemeDisplay.getPortalURL()}${siteURL.substring(
 	siteURL.lastIndexOf('/')
 )}`;
 
-const HelpCenterURL = 'https://help.liferay.com/hc';
-
 export const PAGE_ROUTER_TYPES = {
 	onboarding: (externalReferenceCode: string) =>
 		`${LiferayURL}/${ROUTE_TYPES.onboarding}/#/${externalReferenceCode}`,
 	project: (externalReferenceCode: string) =>
 		`${LiferayURL}/${ROUTE_TYPES.project}/#/${externalReferenceCode}`,
-	request: (zendeskTicketId: string) =>
-		`${HelpCenterURL}/${ROUTE_TYPES.request}/${zendeskTicketId}`,
 };

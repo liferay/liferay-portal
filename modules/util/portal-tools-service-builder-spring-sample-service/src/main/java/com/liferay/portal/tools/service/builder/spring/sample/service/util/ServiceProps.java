@@ -17,10 +17,6 @@ import java.util.Properties;
  */
 public class ServiceProps {
 
-	public static void addProperties(Properties properties) {
-		_instance._configuration.addProperties(properties);
-	}
-
 	public static boolean contains(String key) {
 		return _instance._configuration.contains(key);
 	}
@@ -43,10 +39,6 @@ public class ServiceProps {
 
 	public static Properties getProperties() {
 		return _instance._configuration.getProperties();
-	}
-
-	public static void removeProperties(Properties properties) {
-		_instance._configuration.removeProperties(properties);
 	}
 
 	public static void set(String key, String value) {

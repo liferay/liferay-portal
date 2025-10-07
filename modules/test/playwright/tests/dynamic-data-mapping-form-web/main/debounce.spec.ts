@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect, mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {formsPagesTest} from '../../../fixtures/formsPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -36,15 +36,7 @@ test.describe('Data engine debounce', () => {
 
 		await expect(page.getByLabel('Confirm Numeric')).toBeVisible();
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		const confirmationField = newTabPage.getByLabel('Confirm Numeric');
 

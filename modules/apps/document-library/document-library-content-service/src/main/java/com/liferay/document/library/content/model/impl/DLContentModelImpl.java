@@ -760,7 +760,7 @@ public class DLContentModelImpl
 	private long _repositoryId;
 	private String _path;
 	private String _version;
-	private DLContentDataBlobModel _dataBlobModel;
+	private transient DLContentDataBlobModel _dataBlobModel;
 	private long _size;
 
 	public <T> T getColumnValue(String columnName) {

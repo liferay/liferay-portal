@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.login.AuthLoginGroupSettingsUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.sso.SSOUtil;
@@ -38,7 +40,6 @@ import com.liferay.portal.struts.Action;
 import com.liferay.portal.struts.constants.ActionConstants;
 import com.liferay.portal.struts.model.ActionForward;
 import com.liferay.portal.struts.model.ActionMapping;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.LiferayPortletUtil;
 import com.liferay.portlet.RenderParametersPool;
 import com.liferay.portlet.internal.RenderData;
@@ -83,7 +84,20 @@ public class LayoutAction implements Action {
 			Layout requestedLayout = (Layout)httpServletRequest.getAttribute(
 				WebKeys.REQUESTED_LAYOUT);
 
-			if (requestedLayout != null) {
+			if ((requestedLayout == null) ||
+				!AuthLoginGroupSettingsUtil.isPromptEnabled(
+					requestedLayout.getGroupId())) {
+
+				String redirect = PortalUtil.getLayoutURL(
+					themeDisplay.getLayout(), themeDisplay);
+
+				if (_log.isDebugEnabled()) {
+					_log.debug("Redirect default layout to " + redirect);
+				}
+
+				httpServletResponse.sendRedirect(redirect);
+			}
+			else {
 				String redirectParam = "redirect";
 
 				if (Validator.isNotNull(PropsValues.AUTH_LOGIN_PORTLET_NAME)) {
@@ -133,16 +147,6 @@ public class LayoutAction implements Action {
 				}
 
 				httpServletResponse.sendRedirect(authLoginURL);
-			}
-			else {
-				String redirect = PortalUtil.getLayoutURL(
-					themeDisplay.getLayout(), themeDisplay);
-
-				if (_log.isDebugEnabled()) {
-					_log.debug("Redirect default layout to " + redirect);
-				}
-
-				httpServletResponse.sendRedirect(redirect);
 			}
 
 			return null;

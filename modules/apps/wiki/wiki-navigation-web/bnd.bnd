@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Wiki Navigation Web
 Bundle-SymbolicName: com.liferay.wiki.navigation.web
-Bundle-Version: 6.0.41
+Bundle-Version: 6.0.42
 Web-ContextPath: /wiki-navigation-web

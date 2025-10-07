@@ -94,7 +94,7 @@ export class MessageBoardsPage {
 
 		await this.saveButton.click();
 
-		await this.page.getByLabel('close', {exact: true}).click();
+		await this.page.getByLabel('Close', {exact: true}).click();
 	}
 
 	async setRoleCategoryPermissions(
@@ -123,6 +123,6 @@ export class MessageBoardsPage {
 
 		await this.saveButton.click();
 
-		await this.page.getByLabel('close', {exact: true}).click();
+		await this.page.getByLabel('Close', {exact: true}).click();
 	}
 }

@@ -7,7 +7,9 @@ package com.liferay.knowledge.base.web.internal.info.item.provider;
 
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.provider.BaseInfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.service.KBArticleLocalService;
@@ -26,36 +28,50 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
 		"item.class.name=com.liferay.knowledge.base.model.KBArticle",
 		"service.ranking:Integer=100"
 	},
 	service = InfoItemObjectProvider.class
 )
 public class KBArticleInfoItemObjectProvider
-	implements InfoItemObjectProvider<KBArticle> {
+	extends BaseInfoItemObjectProvider<KBArticle> {
 
 	@Override
-	public KBArticle getInfoItem(InfoItemIdentifier infoItemIdentifier)
+	protected KBArticle doGetInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
 			throw new NoSuchInfoItemException(
 				"Unsupported info item identifier " + infoItemIdentifier);
 		}
 
 		KBArticle kbArticle = null;
 
-		String version = infoItemIdentifier.getVersion();
-
 		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
 				(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
-			kbArticle = _getKbArticle(version, classPKInfoItemIdentifier);
+			kbArticle = _getKBArticle(
+				classPKInfoItemIdentifier.getClassPK(),
+				classPKInfoItemIdentifier.getVersion());
+		}
+		else {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
+
+			kbArticle = _getKBArticle(
+				ercInfoItemIdentifier.getExternalReferenceCode(), groupId,
+				ercInfoItemIdentifier.getVersion());
 		}
 
 		if ((kbArticle == null) ||
-			(!Objects.equals(version, InfoItemIdentifier.VERSION_LATEST) &&
+			(!Objects.equals(
+				infoItemIdentifier.getVersion(),
+				InfoItemIdentifier.VERSION_LATEST) &&
 			 kbArticle.isDraft())) {
 
 			throw new NoSuchInfoItemException(
@@ -66,36 +82,49 @@ public class KBArticleInfoItemObjectProvider
 		return kbArticle;
 	}
 
-	private KBArticle _getKbArticle(
-		String version, ClassPKInfoItemIdentifier classPKInfoItemIdentifier) {
+	private KBArticle _getKBArticle(long classPK, String version) {
+		if (Validator.isNull(version) ||
+			Objects.equals(
+				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
-		KBArticle kbArticle;
+			return _kbArticleLocalService.fetchLatestKBArticle(
+				classPK, WorkflowConstants.STATUS_APPROVED);
+		}
+
+		if (Objects.equals(version, InfoItemIdentifier.VERSION_LATEST)) {
+			return _kbArticleLocalService.fetchLatestKBArticle(
+				classPK, WorkflowConstants.STATUS_ANY);
+		}
+
+		KBArticle latestKBArticle = _kbArticleLocalService.fetchLatestKBArticle(
+			classPK, WorkflowConstants.STATUS_ANY);
+
+		return _kbArticleLocalService.fetchKBArticle(
+			classPK, latestKBArticle.getGroupId(),
+			GetterUtil.getInteger(version));
+	}
+
+	private KBArticle _getKBArticle(
+		String externalReferenceCode, long groupId, String version) {
 
 		if (Validator.isNull(version) ||
 			Objects.equals(
 				version, InfoItemIdentifier.VERSION_LATEST_APPROVED)) {
 
-			kbArticle = _kbArticleLocalService.fetchLatestKBArticle(
-				classPKInfoItemIdentifier.getClassPK(),
-				WorkflowConstants.STATUS_APPROVED);
-		}
-		else if (Objects.equals(version, InfoItemIdentifier.VERSION_LATEST)) {
-			kbArticle = _kbArticleLocalService.fetchLatestKBArticle(
-				classPKInfoItemIdentifier.getClassPK(),
-				WorkflowConstants.STATUS_ANY);
-		}
-		else {
-			KBArticle latestKBArticle =
-				_kbArticleLocalService.fetchLatestKBArticle(
-					classPKInfoItemIdentifier.getClassPK(),
-					WorkflowConstants.STATUS_ANY);
-
-			kbArticle = _kbArticleLocalService.fetchKBArticle(
-				classPKInfoItemIdentifier.getClassPK(),
-				latestKBArticle.getGroupId(), GetterUtil.getInteger(version));
+			return _kbArticleLocalService.
+				fetchLatestKBArticleByExternalReferenceCode(
+					groupId, externalReferenceCode,
+					WorkflowConstants.STATUS_APPROVED);
 		}
 
-		return kbArticle;
+		if (Objects.equals(version, InfoItemIdentifier.VERSION_LATEST)) {
+			return _kbArticleLocalService.
+				fetchLatestKBArticleByExternalReferenceCode(
+					groupId, externalReferenceCode);
+		}
+
+		return _kbArticleLocalService.fetchKBArticleByExternalReferenceCode(
+			groupId, externalReferenceCode, GetterUtil.getInteger(version));
 	}
 
 	@Reference

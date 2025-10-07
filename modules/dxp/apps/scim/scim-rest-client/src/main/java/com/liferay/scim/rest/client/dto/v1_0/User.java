@@ -46,16 +46,16 @@ public class User implements Cloneable, Serializable {
 
 	protected Boolean active;
 
-	public Object[] getAddresses() {
+	public Address[] getAddresses() {
 		return addresses;
 	}
 
-	public void setAddresses(Object[] addresses) {
+	public void setAddresses(Address[] addresses) {
 		this.addresses = addresses;
 	}
 
 	public void setAddresses(
-		UnsafeSupplier<Object[], Exception> addressesUnsafeSupplier) {
+		UnsafeSupplier<Address[], Exception> addressesUnsafeSupplier) {
 
 		try {
 			addresses = addressesUnsafeSupplier.get();
@@ -65,7 +65,7 @@ public class User implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object[] addresses;
+	protected Address[] addresses;
 
 	public String getDisplayName() {
 		return displayName;

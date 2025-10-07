@@ -20,4 +20,8 @@ public class NoSuchInfoItemException extends PortalException {
 		super(throwable);
 	}
 
+	public NoSuchInfoItemException(Throwable throwable) {
+		super(throwable);
+	}
+
 }

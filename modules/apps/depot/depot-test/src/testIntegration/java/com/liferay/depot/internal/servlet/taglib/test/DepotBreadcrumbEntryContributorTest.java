@@ -6,6 +6,7 @@
 package com.liferay.depot.internal.servlet.taglib.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.language.Language;
@@ -173,6 +174,7 @@ public class DepotBreadcrumbEntryContributorTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), description
 			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
 		_depotEntries.add(depotEntry);

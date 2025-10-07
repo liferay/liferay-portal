@@ -7,6 +7,7 @@ package com.liferay.knowledge.base.web.internal.layout.display.page;
 
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.knowledge.base.constants.KBFolderConstants;
@@ -42,44 +43,6 @@ public class KBArticleLayoutDisplayPageProvider
 	public String getDefaultURLSeparator() {
 		return FriendlyURLResolverConstants.
 			URL_SEPARATOR_KNOWLEDGE_BASE_ARTICLE;
-	}
-
-	@Override
-	public LayoutDisplayPageObjectProvider<KBArticle>
-		getLayoutDisplayPageObjectProvider(
-			InfoItemReference infoItemReference) {
-
-		try {
-			InfoItemIdentifier infoItemIdentifier =
-				infoItemReference.getInfoItemIdentifier();
-
-			if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
-				return null;
-			}
-
-			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-				(ClassPKInfoItemIdentifier)
-					infoItemReference.getInfoItemIdentifier();
-
-			KBArticle kbArticle = _kbArticleLocalService.fetchKBArticle(
-				classPKInfoItemIdentifier.getClassPK());
-
-			if (kbArticle == null) {
-				kbArticle = _kbArticleLocalService.fetchLatestKBArticle(
-					classPKInfoItemIdentifier.getClassPK(),
-					WorkflowConstants.STATUS_ANY);
-			}
-
-			if ((kbArticle == null) || kbArticle.isDraft()) {
-				return null;
-			}
-
-			return new KBArticleLayoutDisplayPageObjectProvider(
-				kbArticle, _assetHelper);
-		}
-		catch (PortalException portalException) {
-			throw new RuntimeException(portalException);
-		}
 	}
 
 	@Override
@@ -128,6 +91,60 @@ public class KBArticleLayoutDisplayPageProvider
 					kbArticle.getResourcePrimKey(), kbArticle.getGroupId());
 
 			if ((latestKBArticle == null) || latestKBArticle.isExpired()) {
+				return null;
+			}
+
+			return new KBArticleLayoutDisplayPageObjectProvider(
+				kbArticle, _assetHelper);
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+	}
+
+	@Override
+	protected KBArticleLayoutDisplayPageObjectProvider
+		doGetLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
+
+		try {
+			InfoItemIdentifier infoItemIdentifier =
+				infoItemReference.getInfoItemIdentifier();
+
+			if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+				!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
+				return null;
+			}
+
+			KBArticle kbArticle = null;
+
+			if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+					(ClassPKInfoItemIdentifier)
+						infoItemReference.getInfoItemIdentifier();
+
+				kbArticle = _kbArticleLocalService.fetchKBArticle(
+					classPKInfoItemIdentifier.getClassPK());
+
+				if (kbArticle == null) {
+					kbArticle = _kbArticleLocalService.fetchLatestKBArticle(
+						classPKInfoItemIdentifier.getClassPK(),
+						WorkflowConstants.STATUS_ANY);
+				}
+			}
+			else {
+				ERCInfoItemIdentifier ercInfoItemIdentifier =
+					(ERCInfoItemIdentifier)infoItemIdentifier;
+
+				kbArticle =
+					_kbArticleLocalService.
+						fetchLatestKBArticleByExternalReferenceCode(
+							groupId,
+							ercInfoItemIdentifier.getExternalReferenceCode());
+			}
+
+			if ((kbArticle == null) || kbArticle.isDraft()) {
 				return null;
 			}
 

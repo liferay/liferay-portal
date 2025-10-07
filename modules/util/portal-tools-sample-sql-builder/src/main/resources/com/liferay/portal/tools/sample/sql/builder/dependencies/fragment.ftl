@@ -39,14 +39,16 @@
 			<#assign
 				contentLayoutModels = dataFactory.newContentPageLayoutModels(groupId, groupId + "_web_content_" + contentLayoutCount)
 
-				segmentsExperienceModel = dataFactory.newSegmentsExperienceModel(contentLayoutModels)
+				segmentsExperienceModels = dataFactory.newSegmentsExperienceModels(contentLayoutModels)
 			/>
 
-			${dataFactory.toInsertSQL(segmentsExperienceModel)}
+			<#list segmentsExperienceModels as segmentsExperienceModel>
+				${dataFactory.toInsertSQL(segmentsExperienceModel)}
+			</#list>
 
 			<#list contentLayoutModels as contentLayoutModel>
 				<#assign
-					fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(journalArticleModel, contentLayoutModel, segmentsExperienceModel.getSegmentsExperienceId())
+					fragmentEntryLinkModels = dataFactory.newFragmentEntryLinkModels(journalArticleModel, contentLayoutModel, segmentsExperienceModels)
 
 					layoutPageTemplateStructureModel = dataFactory.newLayoutPageTemplateStructureModel(contentLayoutModel)
 				/>

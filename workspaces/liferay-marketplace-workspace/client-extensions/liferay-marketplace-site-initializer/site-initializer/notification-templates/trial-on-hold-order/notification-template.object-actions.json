@@ -1,0 +1,18 @@
+[
+	{
+		"active": true,
+		"conditionExpression": "orderStatus == 20 AND (orderTypeExternalReferenceCode == \"SOLUTIONS7\" OR orderTypeExternalReferenceCode == \"SSA_SAAS\")",
+		"externalReferenceCode": "TRIAL-ORDER-ON-HOLD-EMAIL",
+		"label": {
+			"en_US": "Trial | Order On Hold"
+		},
+		"name": "trialOrderOnHold",
+		"objectActionExecutorKey": "notification",
+		"objectActionTriggerKey": "onAfterUpdate",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:CommerceOrder$]",
+		"parameters": {
+			"notificationTemplateExternalReferenceCode": "TRIAL-ON-HOLD-ORDER",
+			"type": "email"
+		}
+	}
+]

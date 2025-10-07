@@ -719,6 +719,15 @@ public class PatcherBuildLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateComments(
+			long patcherBuildId, String comments)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherBuildLocalService.updateComments(
+			patcherBuildId, comments);
+	}
+
+	@Override
 	public com.liferay.osb.patcher.model.PatcherBuild updateNotified(
 			long patcherBuildId, boolean notified)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -737,6 +746,26 @@ public class PatcherBuildLocalServiceWrapper
 			patcherBuildId, latestKeyBuild, latestSupportTicketBuild);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, int qaStatus,
+			String supportTicket, int type)
+		throws Exception {
+
+		return _patcherBuildLocalService.updatePatcherBuild(
+			userId, patcherBuildId, qaStatus, supportTicket, type);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, String fileName, int qaStatus,
+			String sourceName, int status)
+		throws Exception {
+
+		return _patcherBuildLocalService.updatePatcherBuild(
+			userId, patcherBuildId, fileName, qaStatus, sourceName, status);
+	}
+
 	/**
 	 * Updates the patcher build in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -752,6 +781,51 @@ public class PatcherBuildLocalServiceWrapper
 		com.liferay.osb.patcher.model.PatcherBuild patcherBuild) {
 
 		return _patcherBuildLocalService.updatePatcherBuild(patcherBuild);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updatePatcherFixId(
+			long patcherBuildId, long patcherFixId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherBuildLocalService.updatePatcherFixId(
+			patcherBuildId, patcherFixId);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateQaFields(
+			long userId, long patcherBuildId, String qaComments, int qaStatus)
+		throws Exception {
+
+		return _patcherBuildLocalService.updateQaFields(
+			userId, patcherBuildId, qaComments, qaStatus);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateQaStatus(
+			long userId, long patcherBuildId, int qaStatus)
+		throws Exception {
+
+		return _patcherBuildLocalService.updateQaStatus(
+			userId, patcherBuildId, qaStatus);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateRequestKey(
+			long patcherBuildId, String requestKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherBuildLocalService.updateRequestKey(
+			patcherBuildId, requestKey);
+	}
+
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuild updateStatus(
+			long userId, long patcherBuildId, int status)
+		throws Exception {
+
+		return _patcherBuildLocalService.updateStatus(
+			userId, patcherBuildId, status);
 	}
 
 	@Override

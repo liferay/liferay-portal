@@ -256,6 +256,13 @@ public class SamlIdpSsoSessionLocalServiceWrapper
 
 	@Override
 	public com.liferay.saml.persistence.model.SamlIdpSsoSession
+		fetchSamlIdpSsoByUserId(long userId) {
+
+		return _samlIdpSsoSessionLocalService.fetchSamlIdpSsoByUserId(userId);
+	}
+
+	@Override
+	public com.liferay.saml.persistence.model.SamlIdpSsoSession
 		fetchSamlIdpSsoSession(long samlIdpSsoSessionId) {
 
 		return _samlIdpSsoSessionLocalService.fetchSamlIdpSsoSession(

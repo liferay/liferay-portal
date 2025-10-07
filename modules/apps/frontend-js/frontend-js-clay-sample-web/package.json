@@ -1,6 +1,9 @@
 {
 	"dependencies": {
-		"@clayui/alert": "3.129.1",
+		"@clayui/alert": "3.148.0",
+		"@clayui/date-picker": "3.149.1",
+		"@clayui/tabs": "3.149.2",
+		"frontend-js-web": "*",
 		"react": "18.2.0"
 	},
 	"main": "js/App.js",
@@ -10,5 +13,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "2.0.38"
+	"version": "2.0.41"
 }

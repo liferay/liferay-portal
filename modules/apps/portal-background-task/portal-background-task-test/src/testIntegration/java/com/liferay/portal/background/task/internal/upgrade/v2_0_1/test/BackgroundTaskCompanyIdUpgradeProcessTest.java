@@ -9,8 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -22,6 +25,7 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
 import java.io.Serializable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,14 +49,6 @@ public class BackgroundTaskCompanyIdUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_backgroundTask = _backgroundTaskLocalService.createBackgroundTask(
-			_counterLocalService.increment());
-
-		_backgroundTask.setTaskContextMap(_getTaskContextMap(true));
-
-		_backgroundTask = _backgroundTaskLocalService.updateBackgroundTask(
-			_backgroundTask);
-
 		_upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.portal.background.task.internal.upgrade.v2_0_1." +
@@ -61,6 +57,14 @@ public class BackgroundTaskCompanyIdUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
+		_backgroundTask = _backgroundTaskLocalService.createBackgroundTask(
+			_counterLocalService.increment());
+
+		_backgroundTask.setTaskContextMap(_getTaskContextMap(true));
+
+		_backgroundTask = _backgroundTaskLocalService.updateBackgroundTask(
+			_backgroundTask);
+
 		Map<String, Serializable> taskContextMap =
 			_backgroundTask.getTaskContextMap();
 
@@ -78,6 +82,32 @@ public class BackgroundTaskCompanyIdUpgradeProcessTest {
 
 		Assert.assertTrue(
 			Objects.equals(_getTaskContextMap(false), taskContextMap));
+	}
+
+	@Test
+	public void testUpgradeWithEmptyTaskContextMap() throws Exception {
+		_backgroundTask = _backgroundTaskLocalService.createBackgroundTask(
+			_counterLocalService.increment());
+
+		_backgroundTask.setTaskContextMap(new HashMap<>());
+
+		_backgroundTask = _backgroundTaskLocalService.updateBackgroundTask(
+			_backgroundTask);
+
+		DB db = DBManagerUtil.getDB();
+
+		db.runSQL(
+			"update BackgroundTask set taskContextMap = '{}' where " +
+				"backgroundTaskId = " + _backgroundTask.getBackgroundTaskId());
+
+		_upgradeProcess.upgrade();
+
+		_entityCache.clearCache();
+
+		_backgroundTask = _backgroundTaskLocalService.getBackgroundTask(
+			_backgroundTask.getBackgroundTaskId());
+
+		Assert.assertNotNull(_backgroundTask.getTaskContextMap());
 	}
 
 	private Map<String, Serializable> _getTaskContextMap(boolean addCompanyId) {
@@ -124,6 +154,7 @@ public class BackgroundTaskCompanyIdUpgradeProcessTest {
 	)
 	private static UpgradeStepRegistrator _upgradeStepRegistrator;
 
+	@DeleteAfterTestRun
 	private BackgroundTask _backgroundTask;
 
 	@Inject

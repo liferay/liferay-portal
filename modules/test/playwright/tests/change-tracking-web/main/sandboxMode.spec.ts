@@ -30,6 +30,76 @@ test.afterEach(async ({changeTrackingPage}) => {
 	await changeTrackingPage.toggleSandboxConfiguration(false);
 });
 
+test('LPD-53979 Assert warning alert appears when sandbox mode is enabled and Owner role does not have publishing permission', async ({
+	changeTrackingPage,
+	page,
+}) => {
+	await changeTrackingPage.goto();
+
+	await page.getByLabel('Options').click();
+
+	await page.getByRole('menuitem', {name: 'Settings'}).click();
+
+	const sandboxOnlyCheckbox = page.getByRole('checkbox', {
+		name: 'enable-sandbox-only',
+	});
+
+	await expect(sandboxOnlyCheckbox).toBeChecked();
+
+	const warningAlert = page.getByText(
+		'Currently, any publication owner can publish the publication'
+	);
+
+	await expect(warningAlert).toBeVisible();
+
+	const editPermissionsButton = page.getByRole('button', {
+		name: 'Edit Permissions',
+	});
+
+	await editPermissionsButton.click();
+
+	await page.waitForTimeout(300);
+
+	const ownerRole = page.locator('tr').filter({hasText: 'Owner'});
+
+	const checkbox = ownerRole
+		.locator('td')
+		.nth(5)
+		.locator('.custom-control > label > .custom-control-input');
+
+	await checkbox.uncheck();
+
+	const saveButton = page.getByRole('button', {name: 'Save'});
+
+	await saveButton.click();
+
+	const closeButton = page
+		.locator('.modal')
+		.getByLabel('Close', {exact: true});
+
+	await closeButton.click();
+
+	await expect(warningAlert).toBeHidden();
+
+	await changeTrackingPage.toggleSandboxConfiguration(false);
+
+	await expect(warningAlert).toBeHidden();
+
+	await editPermissionsButton.click();
+
+	await checkbox.check();
+
+	await saveButton.click();
+
+	await closeButton.click();
+
+	await expect(warningAlert).toBeHidden();
+
+	await changeTrackingPage.toggleSandboxConfiguration(true);
+
+	await expect(warningAlert).toBeVisible();
+});
+
 test('LPD-34602 Add view-only mode for production when using Publications sandbox', async ({
 	apiHelpers,
 	changeTrackingPage,

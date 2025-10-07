@@ -88,7 +88,10 @@ test(
 
 		await waitForAlert(permissionsIFrame);
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		// Publish
 
@@ -434,7 +437,10 @@ test(
 
 		await waitForAlert(permissionsIFrame);
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		// Publish
 
@@ -509,7 +515,10 @@ test(
 
 		await configurationIFrame.getByRole('button', {name: 'Save'}).click();
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		await pageEditorPage.publishPage();
 
@@ -530,18 +539,19 @@ test(
 			.getByRole('menuitem', {name: layoutTitle});
 
 		await expect(async () => {
-			await dropdownButton.click();
+			await dropdownButton.click({timeout: 2000});
 
 			await expect(dropdownOption).toBeVisible({timeout: 1000});
 			await expect(dropdownOption).toContainText('deprecated');
 
-			await dropdownOption.click();
+			await dropdownOption.click({timeout: 2000});
+
+			await expect(
+				page.getByText(`${layoutTitle} (Scope) deprecated`)
+			).toBeVisible({timeout: 2000});
 		}).toPass();
 
 		// Check that the page is set as scope
 
-		await expect(
-			page.getByText(`${layoutTitle} (Scope) deprecated`)
-		).toBeVisible();
 	}
 );

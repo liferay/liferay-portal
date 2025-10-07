@@ -156,6 +156,16 @@ public class RoleLocalServiceWrapper
 		_roleLocalService.clearUserRoles(userId);
 	}
 
+	@Override
+	public Role copyRole(
+			long userId, String name, long sourceRoleId,
+			ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _roleLocalService.copyRole(
+			userId, name, sourceRoleId, serviceContext);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -550,12 +560,12 @@ public class RoleLocalServiceWrapper
 	}
 
 	@Override
-	public Role getOrAddIncompleteRole(
+	public Role getOrAddEmptyRole(
 			String externalReferenceCode, long companyId, long userId,
 			String className, long classPK, String name, int type)
-		throws Exception {
+		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _roleLocalService.getOrAddIncompleteRole(
+		return _roleLocalService.getOrAddEmptyRole(
 			externalReferenceCode, companyId, userId, className, classPK, name,
 			type);
 	}

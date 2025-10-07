@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.asset.display.page.portlet.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
@@ -53,6 +54,7 @@ public class DepotEntryAssetDisplayPageFriendlyURLResolverTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), StringUtil.randomString()
 			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
 		ServiceContextThreadLocal.pushServiceContext(

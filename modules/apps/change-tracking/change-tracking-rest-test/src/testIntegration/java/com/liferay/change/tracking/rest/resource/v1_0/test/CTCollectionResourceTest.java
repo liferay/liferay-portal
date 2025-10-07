@@ -362,13 +362,6 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 	}
 
 	@Override
-	protected CTCollection testGraphQLCTCollection_addCTCollection()
-		throws Exception {
-
-		return ctCollectionResource.postCTCollection(randomCTCollection());
-	}
-
-	@Override
 	protected CTCollection testPatchCTCollection_addCTCollection()
 		throws Exception {
 

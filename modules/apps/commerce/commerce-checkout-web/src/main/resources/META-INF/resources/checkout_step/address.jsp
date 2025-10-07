@@ -77,14 +77,12 @@ String paramName = baseAddressCheckoutStepDisplayContext.getParamName();
 		boolean shippingUsedAsBilling = baseAddressCheckoutStepDisplayContext.isShippingUsedAsBilling();
 		%>
 
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-43000") %>'>
-			<div>
-				<react:component
-					module="{AddressSubtypeAutocomplete} from commerce-checkout-web"
-					props="<%= baseAddressCheckoutStepDisplayContext.getContext(currentCommerceAddress, Objects.equals(CommerceCheckoutWebKeys.SHIPPING_ADDRESS_PARAM_NAME, paramName) ? (shippingUsedAsBilling || (commerceAddressId == 0) ? CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING : CommerceAddressConstants.ADDRESS_TYPE_SHIPPING) : CommerceAddressConstants.ADDRESS_TYPE_BILLING) %>"
-				/>
-			</div>
-		</c:if>
+		<div>
+			<react:component
+				module="{AddressSubtypeAutocomplete} from commerce-checkout-web"
+				props="<%= baseAddressCheckoutStepDisplayContext.getContext(currentCommerceAddress, Objects.equals(CommerceCheckoutWebKeys.SHIPPING_ADDRESS_PARAM_NAME, paramName) ? (shippingUsedAsBilling || (commerceAddressId == 0) ? CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING : CommerceAddressConstants.ADDRESS_TYPE_SHIPPING) : CommerceAddressConstants.ADDRESS_TYPE_BILLING) %>"
+			/>
+		</div>
 
 		<div class="form-group-autofit">
 			<aui:input disabled="<%= (commerceAddressId > 0) || !hasManageAddressesPermission %>" label="name" name="name" placeholder="name" wrapperCssClass="form-group-item" />

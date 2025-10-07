@@ -74,11 +74,11 @@ export class SiteSettingsLocalizationPage {
 	async disableAllLanguagesExceptSp(siteUrl?: Site['friendlyUrlPath']) {
 		await this.goto(siteUrl);
 
-		await this.page.getByLabel('Transfer Item Left to Right').click();
+		await this.page.getByLabel('Transfer Item Right to Left').click();
 
 		await this.page
 			.getByRole('listbox')
-			.first()
+			.nth(1)
 			.selectOption([
 				'en_US',
 				'ar_SA',
@@ -94,7 +94,7 @@ export class SiteSettingsLocalizationPage {
 				'sv_SE',
 			]);
 
-		await this.page.getByLabel('Transfer Item Left to Right').click();
+		await this.page.getByLabel('Transfer Item Right to Left').click();
 
 		await this.siteSettingsPage.saveConfiguration();
 	}

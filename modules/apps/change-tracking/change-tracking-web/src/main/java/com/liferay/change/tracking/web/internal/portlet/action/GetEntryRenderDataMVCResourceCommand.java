@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -992,6 +993,16 @@ public class GetEntryRenderDataMVCResourceCommand
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
+		long plid = ctEntry.getModelClassPK();
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if ((layout != null) && (layout.isDenied() || layout.isPending())) {
+			layout = layout.fetchDraftLayout();
+
+			plid = layout.getPlid();
+		}
+
 		List<SegmentsExperience> segmentsExperiences = new ArrayList<>(
 			_segmentsExperienceLocalService.dslQuery(
 				DSLQueryFactoryUtil.select(
@@ -999,8 +1010,7 @@ public class GetEntryRenderDataMVCResourceCommand
 				).from(
 					SegmentsExperienceTable.INSTANCE
 				).where(
-					SegmentsExperienceTable.INSTANCE.plid.eq(
-						ctEntry.getModelClassPK())
+					SegmentsExperienceTable.INSTANCE.plid.eq(plid)
 				)));
 
 		if (segmentsExperiences.isEmpty()) {
@@ -1614,6 +1624,9 @@ public class GetEntryRenderDataMVCResourceCommand
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private Portal _portal;

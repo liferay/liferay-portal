@@ -8,8 +8,8 @@ package com.liferay.depot.web.internal.application.list;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.web.internal.application.controller.DepotApplicationController;
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

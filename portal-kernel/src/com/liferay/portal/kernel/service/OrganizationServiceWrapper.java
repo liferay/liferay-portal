@@ -248,11 +248,11 @@ public class OrganizationServiceWrapper
 	}
 
 	@Override
-	public Organization getOrAddIncompleteOrganization(
+	public Organization getOrAddEmptyOrganization(
 			String externalReferenceCode, String name)
-		throws Exception {
+		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _organizationService.getOrAddIncompleteOrganization(
+		return _organizationService.getOrAddEmptyOrganization(
 			externalReferenceCode, name);
 	}
 

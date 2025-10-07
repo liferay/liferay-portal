@@ -1,0 +1,17 @@
+@import 'atlas-variables';
+
+.carousel {
+	.carousel-previous,
+	.carousel-next {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	.carousel-previous {
+		left: 0;
+	}
+
+	.carousel-next {
+		right: 0;
+	}
+}

@@ -4,6 +4,7 @@
  */
 
 import {config} from '../config/index';
+import {ObjectFields} from '../contexts/ObjectDataContext';
 import draftServiceFetch, {OnNetworkStatus} from './draftServiceFetch';
 import serviceFetch from './serviceFetch';
 
@@ -24,11 +25,6 @@ export interface FormField {
 	typeLabel: string;
 }
 
-export interface FormFieldSet {
-	fields: FormField[];
-	label?: string;
-}
-
 export default {
 	getFormConfig({classNameId}: {classNameId: string}) {
 		return serviceFetch<{supportStatus: boolean}>(config.getFormConfigURL, {
@@ -43,7 +39,7 @@ export default {
 		classNameId: string;
 		classTypeId: string;
 	}) {
-		return serviceFetch<FormFieldSet[]>(config.getFormFieldsURL, {
+		return serviceFetch<ObjectFields>(config.getFormFieldsURL, {
 			body: {
 				classNameId,
 				classTypeId,

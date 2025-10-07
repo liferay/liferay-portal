@@ -12,6 +12,7 @@ import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.model.LayoutLocalization;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.service.LayoutLocalizationLocalService;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -21,7 +22,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelListener;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
+import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -45,6 +48,13 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 	public void onAfterRemove(Layout layout) {
 		if (layout == null) {
 			return;
+		}
+
+		if (!CTCollectionThreadLocal.isProductionMode()) {
+			CTPersistence<?> ctPersistence =
+				_layoutLocalService.getCTPersistence();
+
+			ctPersistence.flush();
 		}
 
 		_clientExtensionEntryRelLocalService.deleteClientExtensionEntryRels(
@@ -139,6 +149,9 @@ public class LayoutModelListener extends BaseModelListener<Layout> {
 
 	@Reference
 	private LayoutLocalizationLocalService _layoutLocalizationLocalService;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private LayoutRevisionLocalService _layoutRevisionLocalService;

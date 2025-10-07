@@ -59,6 +59,16 @@ public class ObjectEntryManagerUtil {
 			existingObjectEntry.setKeywords(objectEntry::getKeywords);
 		}
 
+		if (objectEntry.getObjectEntryFolderExternalReferenceCode() != null) {
+			existingObjectEntry.setObjectEntryFolderExternalReferenceCode(
+				objectEntry::getObjectEntryFolderExternalReferenceCode);
+		}
+
+		if (objectEntry.getObjectEntryFolderId() != null) {
+			existingObjectEntry.setObjectEntryFolderId(
+				objectEntry::getObjectEntryFolderId);
+		}
+
 		existingObjectEntry.setPermissions(objectEntry::getPermissions);
 
 		if (objectEntry.getProperties() != null) {

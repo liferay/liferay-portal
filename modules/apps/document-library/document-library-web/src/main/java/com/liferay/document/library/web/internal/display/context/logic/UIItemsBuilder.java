@@ -14,8 +14,12 @@ import com.liferay.document.library.display.context.DLUIItemKeys;
 import com.liferay.document.library.kernel.document.conversion.DocumentConversionUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.model.DLFileShortcutConstants;
+import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryMetadataLocalServiceUtil;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.document.library.web.internal.display.context.helper.FileEntryDisplayContextHelper;
@@ -23,6 +27,10 @@ import com.liferay.document.library.web.internal.display.context.helper.FileShor
 import com.liferay.document.library.web.internal.helper.DLTrashHelper;
 import com.liferay.document.library.web.internal.util.DLSubscriptionUtil;
 import com.liferay.document.library.web.internal.util.FolderItemSelectorURLProvider;
+import com.liferay.dynamic.data.mapping.kernel.StorageEngineManagerUtil;
+import com.liferay.dynamic.data.mapping.util.DDMBeanTranslatorUtil;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidator;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -36,6 +44,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -60,11 +69,11 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 import com.liferay.taglib.security.PermissionsURLTag;
@@ -408,6 +417,8 @@ public class UIItemsBuilder {
 			"imageURL",
 			_dlURLHelper.getPreviewURL(
 				_fileEntry, _fileVersion, _themeDisplay, StringPool.BLANK)
+		).putData(
+			"mimeType", HtmlUtil.escapeAttribute(_fileEntry.getMimeType())
 		).setKey(
 			DLUIItemKeys.EDIT_IMAGE
 		).setLabel(
@@ -887,6 +898,10 @@ public class UIItemsBuilder {
 			return false;
 		}
 
+		if (!_isValidDDMFormValues(_fileVersion)) {
+			return false;
+		}
+
 		FileVersion latestFileVersion = _fileEntry.getLatestFileVersion();
 
 		return !Objects.equals(
@@ -1306,7 +1321,61 @@ public class UIItemsBuilder {
 		return _trashEnabled;
 	}
 
+	private boolean _isValidDDMFormValues(FileVersion fileVersion)
+		throws PortalException {
+
+		if (!(fileVersion.getModel() instanceof DLFileVersion)) {
+			return true;
+		}
+
+		DLFileVersion dlFileVersion = (DLFileVersion)fileVersion.getModel();
+
+		if (dlFileVersion.getFileEntryTypeId() ==
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT) {
+
+			return true;
+		}
+
+		try {
+			_validateDLFileVersionDDMFormValues(dlFileVersion);
+
+			return true;
+		}
+		catch (DDMFormValuesValidationException
+					ddmFormValuesValidationException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(ddmFormValuesValidationException);
+			}
+
+			return false;
+		}
+	}
+
+	private void _validateDLFileVersionDDMFormValues(
+			DLFileVersion dlFileVersion)
+		throws PortalException {
+
+		DDMFormValuesValidator ddmFormValuesValidator =
+			_ddmFormValuesValidatorSnapshot.get();
+
+		for (DLFileEntryMetadata dlFileEntryMetadata :
+				DLFileEntryMetadataLocalServiceUtil.
+					getFileVersionFileEntryMetadatas(
+						dlFileVersion.getFileVersionId())) {
+
+			ddmFormValuesValidator.validate(
+				DDMBeanTranslatorUtil.translate(
+					StorageEngineManagerUtil.getDDMFormValues(
+						dlFileEntryMetadata.getDDMStorageId())));
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(UIItemsBuilder.class);
+
+	private static final Snapshot<DDMFormValuesValidator>
+		_ddmFormValuesValidatorSnapshot = new Snapshot<>(
+			UIItemsBuilder.class, DDMFormValuesValidator.class);
 
 	private String _currentURL;
 	private final DLTrashHelper _dlTrashHelper;

@@ -75,7 +75,7 @@ export function Publishers() {
 						{
 							id: 'dateCreated',
 							name: 'Created at',
-							render: formatDate,
+							render: (createDate) => formatDate(createDate),
 							sortable: true,
 						},
 						{

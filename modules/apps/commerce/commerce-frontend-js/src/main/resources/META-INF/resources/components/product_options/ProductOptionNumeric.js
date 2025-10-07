@@ -11,9 +11,9 @@ import React, {useEffect, useState} from 'react';
 import skuOptionsAtom from '../../utilities/atoms/skuOptionsAtom';
 import Asterisk from './Asterisk';
 import {
+	INITIAL_SKU_OPTIONS_ATOM_STATE,
 	getProductOptionName,
 	getSkuOptionsErrors,
-	initialSkuOptionsAtomState,
 	isRequired,
 } from './utils';
 
@@ -83,7 +83,6 @@ const ProductOptionNumeric = ({
 						...(skuOptionsAtomState[skuOptionsKey] || []),
 						{
 							key: productOption.key,
-							required: productOption.required,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
 							value: [value],
@@ -98,7 +97,7 @@ const ProductOptionNumeric = ({
 						miniCartErrors: [],
 						miniCartSkuOptions: [],
 					})
-				: setSkuOptionsAtomState(initialSkuOptionsAtomState); // eslint-disable-next-line react-hooks/exhaustive-deps
+				: setSkuOptionsAtomState(INITIAL_SKU_OPTIONS_ATOM_STATE); // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const handleChange = ({target: {value}}) => {
@@ -121,7 +120,6 @@ const ProductOptionNumeric = ({
 				if (skuOption.skuOptionKey === productOption.key) {
 					return {
 						key: productOption.key,
-						required: productOption.required,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
 						value: [value],
@@ -136,7 +134,6 @@ const ProductOptionNumeric = ({
 				...currentSkuOptions,
 				{
 					key: productOption.key,
-					required: productOption.required,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,
 					value: [value],

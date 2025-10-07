@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Product Navigation Site Administration
 Bundle-SymbolicName: com.liferay.product.navigation.site.administration
-Bundle-Version: 6.0.60
+Bundle-Version: 6.0.61
 Web-ContextPath: /product-navigation-site-administration

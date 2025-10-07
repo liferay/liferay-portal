@@ -17,15 +17,22 @@ import {
 	SkuOptions,
 	getOfferingTypes,
 } from '../../enums/Product';
-import {Liferay} from '../../liferay/liferay';
-import {createProductVirtualEntry} from '../../utils/api';
 import {base64ToText, fileToBase64} from '../../utils/file';
 import HeadlessCommerceAdminCatalogImpl from '../rest/HeadlessCommerceAdminCatalog';
 import HeadlessCommerceAdminPricing from '../rest/HeadlessCommerceAdminPricing';
 import BaseAppPublish from './BaseAppPublish';
+import PublisherAsset from './PublisherAsset';
 
 type ProductConfig = {
 	isDraft: boolean;
+	isEdit?: boolean;
+};
+
+type TemporaryData = {
+	compatibleOfferings: any | null;
+	description: {[key: string]: string} | null;
+	name: {[key: string]: string} | null;
+	productCategories: Partial<Categories>[] | null;
 };
 
 function normalizeCategory(category: {
@@ -65,6 +72,12 @@ function isTierPriceChanged(
 
 export default class AppPublish extends BaseAppPublish {
 	private config: ProductConfig = {isDraft: false};
+	private temporary: TemporaryData = {
+		compatibleOfferings: null,
+		description: null,
+		name: null,
+		productCategories: null,
+	};
 
 	constructor(private context: NewAppInitialState) {
 		super();
@@ -91,6 +104,7 @@ export default class AppPublish extends BaseAppPublish {
 		for (const productOptionValue of productOptionValues) {
 			const sku = await HeadlessCommerceAdminCatalogImpl.createProductSKU(
 				{
+					neverExpire: true,
 					published: true,
 					purchasable: true,
 					sku: productOptionValue.name.en_US,
@@ -208,25 +222,11 @@ export default class AppPublish extends BaseAppPublish {
 				);
 			}
 
-			await HeadlessCommerceAdminCatalogImpl.updateProduct(
-				_product.productId as number,
-				{
-					categories: productCategories,
-					description: {en_US: description},
-					name: {en_US: name},
-					...this.getProductStatus(),
-				}
-			);
+			this.temporary.description = {en_US: description};
+			this.temporary.name = {en_US: name};
+			this.temporary.productCategories = productCategories;
 
-			const product = await HeadlessCommerceAdminCatalogImpl.getProduct(
-				_product.productId,
-				new URLSearchParams({
-					nestedFields:
-						'attachments,catalog,images,productSpecifications,productOptions,productVirtualSettings,skus',
-				})
-			);
-
-			return product;
+			return _product;
 		}
 
 		const product =
@@ -272,32 +272,13 @@ export default class AppPublish extends BaseAppPublish {
 	}
 
 	async syncBuild(product: Product) {
-		const {
-			_product,
-			build: {appType, liferayPackages, resourceRequirements},
-		} = this.context;
-
-		const specifications = [
-			{
-				key: ProductSpecificationKey.APP_TYPE,
-				value: appType as string,
-			},
-		];
-
-		if (appType === ProductType.CLOUD) {
-			const resourceRequirementSpecifications = [
-				{
-					key: ProductSpecificationKey.APP_BUILD_NUMBER_OF_CPUS,
-					value: resourceRequirements.cpu as string,
-				},
-				{
-					key: ProductSpecificationKey.APP_BUILD_RAM_IN_GBS,
-					value: resourceRequirements.ram as string,
-				},
-			];
-
-			specifications.push(...resourceRequirementSpecifications);
+		if (this.config.isEdit) {
+			return;
 		}
+
+		const {
+			build: {appType, resourceRequirements},
+		} = this.context;
 
 		const {
 			[ProductVocabulary.LIFERAY_PLATFORM_OFFERING]:
@@ -315,52 +296,33 @@ export default class AppPublish extends BaseAppPublish {
 			)
 			.map(normalizeCategory);
 
-		await HeadlessCommerceAdminCatalogImpl.updateProduct(
-			product.productId,
+		this.temporary.compatibleOfferings = compatibleOfferings;
+
+		const specifications = [
 			{
-				categories: [...product.categories, ...compatibleOfferings],
-				...this.getProductStatus(),
-			}
-		);
+				key: ProductSpecificationKey.APP_TYPE,
+				value: appType as string,
+			},
+		];
 
-		const liferayVersions = [];
-
-		for (const liferayPackage of liferayPackages) {
-			const {file, versions} = liferayPackage;
-
-			if (file && file.file) {
-				const formData = new FormData();
-				const blob = new Blob([file.file]);
-
-				formData.append('file', blob, file.fileName);
-				formData.append(
-					'productVirtualSettingsFileEntry',
-					JSON.stringify({version: versions.toString()})
-				);
-
-				await createProductVirtualEntry({
-					body: formData,
-					callback: () => {},
-					virtualSettingId: _product?.productVirtualSettings.id ?? '',
-				});
-			}
-
-			liferayVersions.push(...versions);
+		if (appType === ProductType.CLOUD) {
+			specifications.push(
+				...[
+					{
+						key: ProductSpecificationKey.APP_BUILD_NUMBER_OF_CPUS,
+						value: resourceRequirements.cpu as string,
+					},
+					{
+						key: ProductSpecificationKey.APP_BUILD_RAM_IN_GBS,
+						value: resourceRequirements.ram as string,
+					},
+				]
+			);
 		}
 
-		const liferayVersionSpecifications = Array.from(
-			new Set(liferayVersions)
-		)
-			.toSorted()
-			.map((version) => ({
-				key: ProductSpecificationKey.LIFERAY_VERSION,
-				value: version,
-			}));
+		await this.processLiferayPackages(product);
 
-		await BaseAppPublish.updateSpecifications(product, [
-			...specifications,
-			...liferayVersionSpecifications,
-		]);
+		await BaseAppPublish.updateSpecifications(product, [...specifications]);
 	}
 
 	async syncLicensing(product: Product) {
@@ -400,42 +362,39 @@ export default class AppPublish extends BaseAppPublish {
 	async syncSupport(product: Product) {
 		const {support} = this.context;
 
-		await BaseAppPublish.updateSpecifications(product, [
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_USAGE_TERMS_URL,
-				value: support.appUsageTermsURL,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_DOCUMENTATION_URL,
-				value: support.documentationURL,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_EMAIL,
-				value: support.email,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_INSTALLATION_GUIDE_URL,
-				value: support.installationGuideURL,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_PHONE,
-				value: support.phone,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_PUBLISHER_WEBSITE_URL,
-				value: support.publisherWebsiteURL,
-			},
-
-			{
-				key: ProductSpecificationKey.APP_SUPPORT_URL,
-				value: support.url,
-			},
-		]);
+		await BaseAppPublish.updateSpecifications(
+			product,
+			[
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_USAGE_TERMS_URL,
+					value: support.appUsageTermsURL,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_DOCUMENTATION_URL,
+					value: support.documentationURL,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_EMAIL,
+					value: support.email,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_INSTALLATION_GUIDE_URL,
+					value: support.installationGuideURL,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_PHONE,
+					value: support.phone,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_PUBLISHER_WEBSITE_URL,
+					value: support.publisherWebsiteURL,
+				},
+				{
+					key: ProductSpecificationKey.APP_SUPPORT_URL,
+					value: support.url,
+				},
+			].filter((spec) => spec.value)
+		);
 	}
 
 	async syncStorefront(product: Product) {
@@ -487,9 +446,7 @@ export default class AppPublish extends BaseAppPublish {
 
 			this.context._product = product;
 
-			await AppPublish.deleteReferences(
-				this.context.references.imagesToDelete
-			);
+			await this.cleanUp();
 
 			for (const sync of [
 				this.syncBuild.bind(this),
@@ -508,27 +465,25 @@ export default class AppPublish extends BaseAppPublish {
 					console.error(`Unable to sync ${sync.name}`, error);
 				}
 			}
+
+			await this.updateProduct(product);
 		}
 		catch (error) {
 			console.error(error);
+
+			throw error;
 		}
 
 		return product;
 	}
 
-	private async deleteUnusedPriceLists(priceLists: PriceList[]) {
-		const currencies = Object.keys(this.context.licensing.prices);
-
-		const priceListsToDelete = priceLists.filter(
-			({catalogId, currencyCode}) =>
-				this.context.catalog.id === catalogId &&
-				!currencies.includes(currencyCode)
+	private async cleanUp() {
+		await AppPublish.deleteReferences(
+			this.context.references.imagesToDelete
 		);
 
-		await Promise.allSettled(
-			priceListsToDelete.map(({id}) =>
-				HeadlessCommerceAdminPricing.deletePriceList(id)
-			)
+		await AppPublish.deleteLiferayPackages(
+			this.context.references.buildsToDelete
 		);
 	}
 
@@ -554,8 +509,6 @@ export default class AppPublish extends BaseAppPublish {
 			})
 		);
 
-		await this.deleteUnusedPriceLists(response.items);
-
 		for (const currencyCode in this.context.licensing.prices) {
 			const prices = this.context.licensing.prices[currencyCode];
 
@@ -570,7 +523,7 @@ export default class AppPublish extends BaseAppPublish {
 					active: true,
 					catalogId: this.context.catalog.id,
 					currencyCode,
-					name: `${Liferay.CommerceContext.account?.accountName} ${currencyCode} Price List`,
+					name: `${this.context.catalog.name} ${currencyCode} Price List`,
 					type: 'price-list',
 				});
 			}
@@ -579,6 +532,10 @@ export default class AppPublish extends BaseAppPublish {
 				await HeadlessCommerceAdminPricing.getPriceListEntries(
 					priceList.id,
 					new URLSearchParams({
+						filter: SearchBuilder.in(
+							'skuId',
+							skus.map(({id}) => id)
+						),
 						nestedFields: 'product,sku',
 						pageSize: '-1',
 					})
@@ -695,6 +652,21 @@ export default class AppPublish extends BaseAppPublish {
 		);
 	}
 
+	private async updateProduct(product: Product) {
+		await HeadlessCommerceAdminCatalogImpl.updateProduct(
+			product.productId,
+			{
+				categories: [
+					...(this.temporary.productCategories ?? product.categories),
+					...(this.temporary.compatibleOfferings ?? []),
+				],
+				description: this.temporary.description ?? product.description,
+				name: this.temporary.name ?? product.name,
+				...this.getProductStatus(),
+			}
+		);
+	}
+
 	private async deleteUnusedTierPrices(
 		tierPrices: TierPrice[],
 		tierPricesEntries: TierPrice[]
@@ -712,6 +684,44 @@ export default class AppPublish extends BaseAppPublish {
 			priceEntriesToDelete.map(({id}) =>
 				HeadlessCommerceAdminPricing.deleteTierPrice(id)
 			)
+		);
+	}
+
+	async processLiferayPackages(product: Product) {
+		const {
+			build: {liferayPackages},
+		} = this.context;
+
+		const liferayVersions = [];
+
+		for (const liferayPackage of liferayPackages) {
+			const {file, versions} = liferayPackage;
+
+			if (file && file.file) {
+				const publisherAsset = new PublisherAsset(
+					file,
+					product,
+					versions.toString()
+				);
+
+				await publisherAsset.process();
+			}
+			liferayVersions.push(...versions);
+		}
+
+		const liferayVersionSpecifications = Array.from(
+			new Set(liferayVersions)
+		)
+			.toSorted()
+			.map((version) => ({
+				key: ProductSpecificationKey.LIFERAY_VERSION,
+				value: version,
+			}));
+
+		await BaseAppPublish.updateSpecifications(
+			product,
+			liferayVersionSpecifications,
+			{exactMatch: true}
 		);
 	}
 }

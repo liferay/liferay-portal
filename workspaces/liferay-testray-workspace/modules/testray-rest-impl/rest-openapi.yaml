@@ -205,6 +205,17 @@ components:
                 testrayStatusMetric:
                     $ref: "#/components/schemas/TestrayStatusMetric"
             type: object
+        TestrayIssueMetric:
+            properties:
+                testrayIssueKey:
+                    type: string
+                testrayIssueTitle:
+                    type: string
+                testrayIssueType:
+                    type: string
+                testrayStatusMetric:
+                    $ref: "#/components/schemas/TestrayStatusMetric"
+            type: object
         TestrayRoutineDurationReport:
             properties:
                 testrayCaseFlaky:
@@ -1033,6 +1044,44 @@ paths:
                             schema:
                                 items:
                                     $ref: "#/components/schemas/TestrayTeamMetric"
+                                type: array
+            tags: ["TestrayStatusMetric"]
+    "/testray-status-metrics/by-testray-jiraIssueId/{testrayJiraIssueId}/testray-issues-metrics":
+        get:
+            operationId: getTestrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetricsPage
+            parameters:
+                -   in: path
+                    name: testrayJiraIssueId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: string
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: string
+                -   in: query
+                    name: testrayBuildId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/TestrayIssueMetric"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/TestrayIssueMetric"
                                 type: array
             tags: ["TestrayStatusMetric"]
     "/testray-status-metrics/by-testray-projectId/{testrayProjectId}/testray-routines-metrics":

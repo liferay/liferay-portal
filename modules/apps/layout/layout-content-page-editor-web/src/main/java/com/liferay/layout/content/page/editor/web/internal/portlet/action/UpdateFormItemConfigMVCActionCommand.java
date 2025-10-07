@@ -110,7 +110,7 @@ public class UpdateFormItemConfigMVCActionCommand
 
 			String inputFieldId = GetterUtil.getString(
 				_fragmentEntryConfigurationParser.getFieldValue(
-					fragmentEntryLink.getEditableValues(),
+					fragmentEntryLink.getEditableValuesJSONObject(),
 					new FragmentConfigurationField(
 						"inputFieldId", "string", "", false, "text"),
 					themeDisplay.getLocale()));
@@ -204,7 +204,8 @@ public class UpdateFormItemConfigMVCActionCommand
 							addedFragmentEntryLinks, jsonObject,
 							formStyledLayoutStructureItem, true,
 							themeDisplay.getLayout(), layoutStructure,
-							themeDisplay.getLocale(), segmentsExperienceId,
+							themeDisplay.getLocale(), false,
+							segmentsExperienceId,
 							ServiceContextFactory.getInstance(
 								httpServletRequest),
 							uniqueInfoFieldIds));
@@ -244,7 +245,8 @@ public class UpdateFormItemConfigMVCActionCommand
 							addedFragmentEntryLinks, jsonObject,
 							formStyledLayoutStructureItem, false,
 							themeDisplay.getLayout(), layoutStructure,
-							themeDisplay.getLocale(), segmentsExperienceId,
+							themeDisplay.getLocale(), false,
+							segmentsExperienceId,
 							ServiceContextFactory.getInstance(
 								httpServletRequest),
 							newUniqueInfoFieldIds.toArray(new String[0])));

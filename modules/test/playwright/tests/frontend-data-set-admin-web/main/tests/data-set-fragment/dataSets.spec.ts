@@ -188,7 +188,7 @@ test(
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['ID', 'Field Name', '']);
+			).toEqual(['ID', 'Field Name', 'Manage Columns Visibility']);
 		});
 
 		await test.step('Unassign data set', async () => {
@@ -398,7 +398,7 @@ test(
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['Title', 'Description', '']);
+			).toEqual(['Title', 'Description', 'Manage Columns Visibility']);
 
 			expect(
 				await dataSetFragmentPage.table.bodyRows
@@ -451,7 +451,7 @@ test(
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['Role Type', 'Name', '']);
+			).toEqual(['Role Type', 'Name', 'Manage Columns Visibility']);
 
 			expect(
 				await dataSetFragmentPage.table.bodyRows.count()
@@ -508,7 +508,11 @@ test(
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['Vocabulary Name', 'Number of Categories', '']);
+			).toEqual([
+				'Vocabulary Name',
+				'Number of Categories',
+				'Manage Columns Visibility',
+			]);
 
 			expect(
 				await dataSetFragmentPage.table.bodyRows

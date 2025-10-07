@@ -10,14 +10,15 @@ import React from 'react';
 import {Cell, Pie, PieChart, ResponsiveContainer} from 'recharts';
 
 import i18n from '../../../../i18n';
+import {percentage as getPercentage} from '../../util';
 
 import './DonutKPIChart.scss';
-import {percentage as getPercentage} from '../../util';
 
 type DonutKPIChartProps = {
 	annualTargetCurrent: number;
 	annualTargetTotal: number | string;
 	colors: string[];
+	externalPage?: boolean;
 	monthlyIncreasePct?: number;
 	monthlyIncreaseValue?: number;
 	monthlyIncreaseValueIsGrowing?: number;
@@ -29,6 +30,7 @@ const DonutKPIChart: React.FC<DonutKPIChartProps> = ({
 	annualTargetCurrent,
 	annualTargetTotal,
 	colors,
+	externalPage,
 	monthlyIncreasePct = 0,
 	monthlyIncreaseValue = 0,
 	monthlyIncreaseValueIsGrowing = false,
@@ -41,8 +43,8 @@ const DonutKPIChart: React.FC<DonutKPIChartProps> = ({
 	);
 
 	const data = [
-		{name: 'filed', value: percentage},
-		{name: 'remainder', value: 100 - percentage},
+		{name: 'filed', value: Math.min(percentage, 100)},
+		{name: 'remainder', value: Math.max(0, 100 - percentage)},
 	];
 
 	return (
@@ -53,12 +55,19 @@ const DonutKPIChart: React.FC<DonutKPIChartProps> = ({
 				{onClick && (
 					<span className="align-items-center d-flex justify-content-center">
 						<Button
-							className="details-button rounded-lg text-nowrap"
+							className="align-items-center d-flex details-button rounded-lg text-nowrap"
 							displayType="secondary"
 							onClick={onClick}
 							size="sm"
 						>
-							{i18n.translate('view-details')}
+							{i18n.translate('view-details')}{' '}
+							{externalPage && (
+								<ClayIcon
+									className="ml-1 mt-0"
+									style={{fontSize: 8}}
+									symbol="shortcut"
+								/>
+							)}
 						</Button>
 					</span>
 				)}
@@ -92,7 +101,11 @@ const DonutKPIChart: React.FC<DonutKPIChartProps> = ({
 								x="52%"
 								y="52%"
 							>
-								<tspan fontSize="44">{percentage}</tspan>
+								<tspan
+									fontSize={percentage >= 100 ? '40' : '44'}
+								>
+									{percentage}
+								</tspan>
 								<tspan fontSize="14">%</tspan>
 							</text>
 						</PieChart>

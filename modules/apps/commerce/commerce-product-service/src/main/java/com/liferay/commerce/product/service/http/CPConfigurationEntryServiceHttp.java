@@ -56,8 +56,8 @@ public class CPConfigurationEntryServiceHttp {
 				java.math.BigDecimal minStockQuantity,
 				java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 				boolean shippable, double shippingExtraPrice,
-				boolean shipSeparately, boolean taxExempt, boolean visible,
-				double weight, double width)
+				boolean shipSeparately, boolean taxExempt, double weight,
+				double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -74,8 +74,7 @@ public class CPConfigurationEntryServiceHttp {
 				displayStockQuantity, freeShipping, height, lowStockActivity,
 				maxOrderQuantity, minOrderQuantity, minStockQuantity,
 				multipleOrderQuantity, purchasable, shippable,
-				shippingExtraPrice, shipSeparately, taxExempt, visible, weight,
-				width);
+				shippingExtraPrice, shipSeparately, taxExempt, weight, width);
 
 			Object returnObj = null;
 
@@ -288,8 +287,8 @@ public class CPConfigurationEntryServiceHttp {
 				java.math.BigDecimal minStockQuantity,
 				java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 				boolean shippable, double shippingExtraPrice,
-				boolean shipSeparately, boolean taxExempt, boolean visible,
-				double weight, double width)
+				boolean shipSeparately, boolean taxExempt, double weight,
+				double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -305,8 +304,7 @@ public class CPConfigurationEntryServiceHttp {
 				depth, displayAvailability, displayStockQuantity, freeShipping,
 				height, lowStockActivity, maxOrderQuantity, minOrderQuantity,
 				minStockQuantity, multipleOrderQuantity, purchasable, shippable,
-				shippingExtraPrice, shipSeparately, taxExempt, visible, weight,
-				width);
+				shippingExtraPrice, shipSeparately, taxExempt, weight, width);
 
 			Object returnObj = null;
 
@@ -348,8 +346,8 @@ public class CPConfigurationEntryServiceHttp {
 			double.class, String.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, boolean.class, boolean.class,
-			double.class, boolean.class, boolean.class, boolean.class,
-			double.class, double.class
+			double.class, boolean.class, boolean.class, double.class,
+			double.class
 		};
 	private static final Class<?>[] _deleteCPConfigurationEntryParameterTypes1 =
 		new Class[] {long.class};
@@ -368,7 +366,7 @@ public class CPConfigurationEntryServiceHttp {
 			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			java.math.BigDecimal.class, java.math.BigDecimal.class,
 			boolean.class, boolean.class, double.class, boolean.class,
-			boolean.class, boolean.class, double.class, double.class
+			boolean.class, double.class, double.class
 		};
 
 }

@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.contributor.RoleContributor;
-import com.liferay.portal.util.PropsValues;
 
 /**
  * @author Brian Wing Shun Chan
@@ -37,9 +36,7 @@ public class PermissionCheckerUtil {
 				PermissionThreadLocal.getPermissionChecker();
 
 			if (permissionChecker == null) {
-				Class<?> clazz = Class.forName(PropsValues.PERMISSIONS_CHECKER);
-
-				permissionChecker = (PermissionChecker)clazz.newInstance();
+				permissionChecker = new AdvancedPermissionChecker();
 			}
 
 			permissionChecker.init(

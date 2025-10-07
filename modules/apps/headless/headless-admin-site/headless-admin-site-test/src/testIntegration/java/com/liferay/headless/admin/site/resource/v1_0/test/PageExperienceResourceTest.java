@@ -6,11 +6,9 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.headless.admin.site.client.dto.v1_0.ContainerPageElementDefinition;
-import com.liferay.headless.admin.site.client.dto.v1_0.PageElement;
-import com.liferay.headless.admin.site.client.dto.v1_0.PageElementDefinition;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.PageElementsTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -45,13 +43,18 @@ public class PageExperienceResourceTest
 		_draftLayout = _layout.fetchDraftLayout();
 	}
 
+	@Ignore
 	@Override
 	@Test
-	public void testDeleteSiteSiteByExternalReferenceCodePageExperience()
-		throws Exception {
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		super.testBatchEngineDeleteImportTask();
+	}
 
+	@Override
+	@Test
+	public void testDeleteSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
-			testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience_addPageExperience(
+			testPostSitePageSpecificationPageExperience_addPageExperience(
 				randomPageExperience());
 
 		Assert.assertNotNull(
@@ -60,10 +63,9 @@ public class PageExperienceResourceTest
 					postPageExperience.getExternalReferenceCode(),
 					testGroup.getGroupId()));
 
-		pageExperienceResource.
-			deleteSiteSiteByExternalReferenceCodePageExperience(
-				testGroup.getExternalReferenceCode(),
-				postPageExperience.getExternalReferenceCode());
+		pageExperienceResource.deleteSitePageExperience(
+			testGroup.getExternalReferenceCode(),
+			postPageExperience.getExternalReferenceCode());
 
 		Assert.assertNull(
 			_segmentsExperienceLocalService.
@@ -72,10 +74,9 @@ public class PageExperienceResourceTest
 					testGroup.getGroupId()));
 
 		try {
-			pageExperienceResource.
-				deleteSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					postPageExperience.getExternalReferenceCode());
+			pageExperienceResource.deleteSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode());
 
 			Assert.fail();
 		}
@@ -89,27 +90,23 @@ public class PageExperienceResourceTest
 
 	@Override
 	@Test
-	public void testGetSiteSiteByExternalReferenceCodePageExperience()
-		throws Exception {
-
+	public void testGetSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
-			testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience_addPageExperience(
+			testPostSitePageSpecificationPageExperience_addPageExperience(
 				randomPageExperience());
 
 		PageExperience getPageExperience =
-			pageExperienceResource.
-				getSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					postPageExperience.getExternalReferenceCode());
+			pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode());
 
 		assertEquals(postPageExperience, getPageExperience);
 		assertValid(getPageExperience);
 
 		try {
-			pageExperienceResource.
-				getSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					RandomTestUtil.randomString());
+			pageExperienceResource.getSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString());
 
 			Assert.fail();
 		}
@@ -121,39 +118,26 @@ public class PageExperienceResourceTest
 		}
 	}
 
-	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetSiteSiteByExternalReferenceCodePageExperience()
-		throws Exception {
-
-		super.testGraphQLGetSiteSiteByExternalReferenceCodePageExperience();
-	}
-
-	@Override
-	@Test
-	public void testPatchSiteSiteByExternalReferenceCodePageExperience()
-		throws Exception {
-
+	public void testPatchSitePageExperience() throws Exception {
 		PageExperience postPageExperience =
-			testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience_addPageExperience(
+			testPostSitePageSpecificationPageExperience_addPageExperience(
 				randomPageExperience());
 
 		PageExperience pathPageExperience =
-			pageExperienceResource.
-				patchSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					postPageExperience.getExternalReferenceCode(),
-					postPageExperience);
+			pageExperienceResource.patchSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				postPageExperience.getExternalReferenceCode(),
+				postPageExperience);
 
 		assertEquals(postPageExperience, pathPageExperience);
 		assertValid(pathPageExperience);
 
 		try {
-			pageExperienceResource.
-				patchSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					RandomTestUtil.randomString(), randomPageExperience());
+			pageExperienceResource.patchSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomPageExperience());
 
 			Assert.fail();
 		}
@@ -167,25 +151,19 @@ public class PageExperienceResourceTest
 
 	@Override
 	@Test
-	public void testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience()
-		throws Exception {
-
-		super.
-			testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience();
+	public void testPostSitePageSpecificationPageExperience() throws Exception {
+		super.testPostSitePageSpecificationPageExperience();
 	}
 
 	@Override
 	@Test
-	public void testPutSiteSiteByExternalReferenceCodePageExperience()
-		throws Exception {
-
+	public void testPutSitePageExperience() throws Exception {
 		PageExperience pageExperience = randomPageExperience();
 
 		PageExperience putPageExperience =
-			pageExperienceResource.
-				putSiteSiteByExternalReferenceCodePageExperience(
-					testGroup.getExternalReferenceCode(),
-					pageExperience.getExternalReferenceCode(), pageExperience);
+			pageExperienceResource.putSitePageExperience(
+				testGroup.getExternalReferenceCode(),
+				pageExperience.getExternalReferenceCode(), pageExperience);
 
 		assertEquals(pageExperience, putPageExperience);
 		assertValid(putPageExperience);
@@ -204,36 +182,7 @@ public class PageExperienceResourceTest
 			Collections.singletonMap("en-US", RandomTestUtil.randomString()));
 
 		pageExperience.setPageElements(
-			new PageElement[] {
-				new PageElement() {
-					{
-						setPageElementDefinition(
-							new ContainerPageElementDefinition() {
-								{
-									setIndexed(true);
-									setType(
-										PageElementDefinition.Type.CONTAINER);
-								}
-							});
-						setPageElements(new PageElement[0]);
-						setPosition(0);
-					}
-				},
-				new PageElement() {
-					{
-						setPageElementDefinition(
-							new ContainerPageElementDefinition() {
-								{
-									setIndexed(true);
-									setType(
-										PageElementDefinition.Type.CONTAINER);
-								}
-							});
-						setPageElements(new PageElement[0]);
-						setPosition(1);
-					}
-				}
-			});
+			PageElementsTestUtil.getPageElements(2, null));
 		pageExperience.setPageSpecificationExternalReferenceCode(
 			_draftLayout.getExternalReferenceCode());
 		pageExperience.setSegmentExternalReferenceCode(
@@ -246,21 +195,20 @@ public class PageExperienceResourceTest
 
 	@Override
 	protected PageExperience
-			testGetSiteSiteByExternalReferenceCodePageSpecificationPageExperiencesPage_addPageExperience(
+			testGetSitePageSpecificationPageExperiencesPage_addPageExperience(
 				String siteExternalReferenceCode,
 				String pageSpecificationExternalReferenceCode,
 				PageExperience pageExperience)
 		throws Exception {
 
-		return pageExperienceResource.
-			postSiteSiteByExternalReferenceCodePageSpecificationPageExperience(
-				siteExternalReferenceCode,
-				pageSpecificationExternalReferenceCode, pageExperience);
+		return pageExperienceResource.postSitePageSpecificationPageExperience(
+			siteExternalReferenceCode, pageSpecificationExternalReferenceCode,
+			pageExperience);
 	}
 
 	@Override
 	protected String
-			testGetSiteSiteByExternalReferenceCodePageSpecificationPageExperiencesPage_getPageSpecificationExternalReferenceCode()
+			testGetSitePageSpecificationPageExperiencesPage_getPageSpecificationExternalReferenceCode()
 		throws Exception {
 
 		return _draftLayout.getExternalReferenceCode();
@@ -268,15 +216,14 @@ public class PageExperienceResourceTest
 
 	@Override
 	protected PageExperience
-			testPostSiteSiteByExternalReferenceCodePageSpecificationPageExperience_addPageExperience(
+			testPostSitePageSpecificationPageExperience_addPageExperience(
 				PageExperience pageExperience)
 		throws Exception {
 
-		return pageExperienceResource.
-			postSiteSiteByExternalReferenceCodePageSpecificationPageExperience(
-				testGroup.getExternalReferenceCode(),
-				pageExperience.getPageSpecificationExternalReferenceCode(),
-				pageExperience);
+		return pageExperienceResource.postSitePageSpecificationPageExperience(
+			testGroup.getExternalReferenceCode(),
+			pageExperience.getPageSpecificationExternalReferenceCode(),
+			pageExperience);
 	}
 
 	private Layout _draftLayout;

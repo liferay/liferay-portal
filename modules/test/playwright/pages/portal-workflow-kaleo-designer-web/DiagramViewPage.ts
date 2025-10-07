@@ -18,7 +18,7 @@ export class DiagramViewPage {
 	readonly workflowDefinitionTitle: Locator;
 
 	constructor(page: Page) {
-		this.backButton = page.getByRole('link', {name: 'Back'});
+		this.backButton = page.getByTitle('Back');
 		this.definitionInfoButton = page.getByRole('button', {
 			name: 'Definition Info',
 		});

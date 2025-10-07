@@ -76,7 +76,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 		}
 		else if (status == BackgroundTaskConstants.STATUS_QUEUED) {
 			long backgroundTaskId = message.getLong(
-				BackgroundTaskConstants.BACKGROUND_TASK_ID);
+				BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 			if (!_backgroundTaskLockHelper.isLockedBackgroundTask(
 					new BackgroundTaskImpl(
@@ -95,7 +95,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 	private void _deleteBackgroundTask(Message message) throws Exception {
 		long backgroundTaskId = message.getLong(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID);
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.fetchBackgroundTask(backgroundTaskId);
@@ -162,7 +162,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 	private void _sendUserNotificationEvents(Message message) throws Exception {
 		long backgroundTaskId = message.getLong(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID);
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskLocalService.fetchBackgroundTask(backgroundTaskId);
@@ -204,7 +204,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 	private void _translateBackgroundTaskStatusMessage(Message message) {
 		long backgroundTaskId = message.getLong(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID);
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 		BackgroundTaskStatus backgroundTaskStatus =
 			_backgroundTaskStatusRegistry.getBackgroundTaskStatus(

@@ -17,8 +17,8 @@ import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProtectedClassLoaderObjectInputStream;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

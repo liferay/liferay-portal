@@ -44,9 +44,8 @@ public class GreeterBundleActivator implements BundleActivator {
 		ServiceTracker<Bus, Bus> serviceTracker = ServiceTrackerFactory.open(
 			bundleContext,
 			StringBundler.concat(
-				"(&(objectClass=", Bus.class.getName(), ")(",
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH, "=",
-				"/soap-test))"));
+				"(&(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
+				"=/soap-test)(objectClass=", Bus.class.getName(), "))"));
 
 		Bus bus = serviceTracker.waitForService(10_000);
 

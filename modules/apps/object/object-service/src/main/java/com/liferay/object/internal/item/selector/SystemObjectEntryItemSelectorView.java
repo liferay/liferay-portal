@@ -22,7 +22,9 @@ import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -209,13 +211,24 @@ public class SystemObjectEntryItemSelectorView
 
 		@Override
 		public String getPayload() {
+			Map<String, Object> modelAttributes =
+				_baseModel.getModelAttributes();
+
+			SystemObjectDefinitionManager systemObjectDefinitionManager =
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(
+						_objectDefinition.getName());
+
+			Column<?, Long> primaryKeyColumn =
+				systemObjectDefinitionManager.getPrimaryKeyColumn();
+
 			return JSONUtil.put(
 				"className", _objectDefinition.getClassName()
 			).put(
 				"classNameId",
 				_portal.getClassNameId(_objectDefinition.getClassName())
 			).put(
-				"classPK", _baseModel.getPrimaryKeyObj()
+				"classPK", modelAttributes.get(primaryKeyColumn.getName())
 			).put(
 				"title",
 				StringBundler.concat(

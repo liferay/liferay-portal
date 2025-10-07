@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/link": "3.128.0",
-		"@clayui/popover": "3.139.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/link": "3.144.1",
+		"@clayui/popover": "3.148.0",
 		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
@@ -15,5 +15,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "5.0.73"
+	"version": "5.0.78"
 }

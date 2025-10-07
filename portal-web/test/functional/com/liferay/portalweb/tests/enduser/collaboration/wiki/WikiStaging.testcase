@@ -299,6 +299,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewRenamedChildPageAfterPublishing {
+		property portal.acceptance = "false";
+
 		JSONWiki.addWikiPage(
 			groupName = "Site Name (Staging)",
 			site = "false",

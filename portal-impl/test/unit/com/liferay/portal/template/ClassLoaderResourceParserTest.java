@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -56,8 +55,9 @@ public class ClassLoaderResourceParserTest {
 
 		Assert.assertNull(classLoaderResourceParser.getURL(templateId));
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				ClassLoaderResourceParser.class.getName(), Level.FINEST)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ClassLoaderResourceParser.class.getName(),
+				LoggerTestUtil.TRACE)) {
 
 			Assert.assertNull(classLoaderResourceParser.getURL(templateId));
 

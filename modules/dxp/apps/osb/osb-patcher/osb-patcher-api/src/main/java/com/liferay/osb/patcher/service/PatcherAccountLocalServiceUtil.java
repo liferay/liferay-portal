@@ -36,6 +36,13 @@ public class PatcherAccountLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherAccountLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherAccount addPatcherAccount(
+			long userId, long accountEntryId, String accountEntryCode)
+		throws PortalException {
+
+		return getService().addPatcherAccount(
+			userId, accountEntryId, accountEntryCode);
+	}
 
 	/**
 	 * Adds the patcher account to the database. Also notifies the appropriate model listeners.
@@ -340,6 +347,10 @@ public class PatcherAccountLocalServiceUtil {
 	 */
 	public static int getPatcherAccountsCount() {
 		return getService().getPatcherAccountsCount();
+	}
+
+	public static int getPatcherAccountsCount(long companyId, String keyword) {
+		return getService().getPatcherAccountsCount(companyId, keyword);
 	}
 
 	public static List<PatcherAccount> getPatcherBuildPatcherAccounts(

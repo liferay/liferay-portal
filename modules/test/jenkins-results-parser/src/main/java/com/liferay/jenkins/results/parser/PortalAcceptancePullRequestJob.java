@@ -41,6 +41,12 @@ public class PortalAcceptancePullRequestJob
 				return batchTestClassGroups;
 			}
 
+			if ((jsonObject != null) && jsonObject.has("batches")) {
+				batchTestClassGroups = super.getBatchTestClassGroups();
+
+				return batchTestClassGroups;
+			}
+
 			PortalGitWorkingDirectory portalGitWorkingDirectory =
 				getPortalGitWorkingDirectory();
 

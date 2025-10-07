@@ -7,8 +7,10 @@ package com.liferay.portal.kernel.sanitizer;
 
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -55,6 +57,8 @@ public class SanitizerUtil {
 
 	private static final ServiceTrackerList<Sanitizer> _sanitizers =
 		ServiceTrackerListFactory.open(
-			SystemBundleUtil.getBundleContext(), Sanitizer.class);
+			SystemBundleUtil.getBundleContext(), Sanitizer.class,
+			Collections.reverseOrder(
+				new PropertyServiceReferenceComparator<>("sanitizer.order")));
 
 }

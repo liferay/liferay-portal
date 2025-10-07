@@ -216,25 +216,6 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testrayRunComparisonByTestrayRoutineIdTestrayRoutine(testrayRoutineId: ___){}}"}' -u 'test@liferay.com:test'
-	 */
-	@GraphQLField
-	public Object testrayRunComparisonByTestrayRoutineIdTestrayRoutine(
-			@GraphQLName("testrayRoutineId") Long testrayRoutineId)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_testrayRunComparisonResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			testrayRunComparisonResource ->
-				testrayRunComparisonResource.
-					getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine(
-						testrayRoutineId));
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testrayRunComparison(filter: ___, testrayRunId1: ___, testrayRunId2: ___){results, testrayCaseResultComparisons}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
@@ -252,6 +233,25 @@ public class Query {
 					testrayRunId1, testrayRunId2,
 					_filterBiFunction.apply(
 						testrayRunComparisonResource, filterString)));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testrayRunComparisonByTestrayRoutineIdTestrayRoutine(testrayRoutineId: ___){}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public Object testrayRunComparisonByTestrayRoutineIdTestrayRoutine(
+			@GraphQLName("testrayRoutineId") Long testrayRoutineId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_testrayRunComparisonResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			testrayRunComparisonResource ->
+				testrayRunComparisonResource.
+					getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine(
+						testrayRoutineId));
 	}
 
 	/**
@@ -439,6 +439,30 @@ public class Query {
 					getTestrayStatusMetricByTestrayBuildIdTestrayBuildTestrayTeamsMetricsPage(
 						testrayBuildId, testrayCasePriorities, testrayCaseTypes,
 						testrayRunId, testrayTeamIds,
+						Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetrics(page: ___, pageSize: ___, testrayBuildId: ___, testrayJiraIssueId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField
+	public TestrayStatusMetricPage
+			testrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetrics(
+				@GraphQLName("testrayJiraIssueId") Long testrayJiraIssueId,
+				@GraphQLName("testrayBuildId") Long testrayBuildId,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_testrayStatusMetricResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			testrayStatusMetricResource -> new TestrayStatusMetricPage(
+				testrayStatusMetricResource.
+					getTestrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetricsPage(
+						testrayJiraIssueId, testrayBuildId,
 						Pagination.of(page, pageSize))));
 	}
 

@@ -8,16 +8,6 @@ import '@testing-library/jest-dom/extend-expect';
 import {getDataSetProps} from '../../components/ListTypeDefinition/ListTypeTable';
 
 describe('getDataSetProps', () => {
-	beforeAll(() => {
-		global.Liferay = {
-			...global.Liferay,
-			FeatureFlags: {
-				...global.Liferay?.FeatureFlags,
-				'LPD-24055': true,
-			},
-		};
-	});
-
 	it('displays the add entry button when a system picklist is selected', async () => {
 		const fireModal = () => {};
 		const pickListId = -1;

@@ -5,9 +5,11 @@
 
 package com.liferay.account.internal.object.system;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryTable;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.resource.v1_0.AccountResource;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -152,6 +154,16 @@ public class AccountEntrySystemObjectDefinitionManager
 	}
 
 	@Override
+	public BaseModel<?> getOrAddEmptyBaseModel(
+			String externalReferenceCode, User user)
+		throws PortalException {
+
+		return _accountEntryService.getOrAddEmptyAccountEntry(
+			externalReferenceCode, externalReferenceCode,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+	}
+
+	@Override
 	public Page<?> getPage(
 			User user, String search, Filter filter, Pagination pagination,
 			Sort[] sorts)
@@ -234,6 +246,9 @@ public class AccountEntrySystemObjectDefinitionManager
 
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference
 	private AccountResource.Factory _accountResourceFactory;

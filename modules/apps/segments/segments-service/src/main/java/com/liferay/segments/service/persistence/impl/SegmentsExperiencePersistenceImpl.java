@@ -1948,6 +1948,16 @@ public class SegmentsExperiencePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2312,6 +2322,16 @@ public class SegmentsExperiencePersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByGroupId(
+				groupId);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3402,6 +3422,16 @@ public class SegmentsExperiencePersistenceImpl
 			return findByG_P(groupId, plid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_P(
+					groupId, plid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3785,6 +3815,16 @@ public class SegmentsExperiencePersistenceImpl
 	public int filterCountByG_P(long groupId, long plid) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_P(groupId, plid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_P(
+				groupId, plid);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -4398,6 +4438,16 @@ public class SegmentsExperiencePersistenceImpl
 				groupId, segmentsEntryId, plid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_S_P(
+					groupId, segmentsEntryId, plid, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4801,6 +4851,16 @@ public class SegmentsExperiencePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_S_P(groupId, segmentsEntryId, plid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_S_P(
+				groupId, segmentsEntryId, plid);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -5849,6 +5909,16 @@ public class SegmentsExperiencePersistenceImpl
 				groupId, plid, priority, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_P_GtP(
+					groupId, plid, priority, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -6250,6 +6320,16 @@ public class SegmentsExperiencePersistenceImpl
 	public int filterCountByG_P_GtP(long groupId, long plid, int priority) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_P_GtP(groupId, plid, priority);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_P_GtP(
+				groupId, plid, priority);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -6854,6 +6934,16 @@ public class SegmentsExperiencePersistenceImpl
 				groupId, plid, priority, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_P_LtP(
+					groupId, plid, priority, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -7255,6 +7345,16 @@ public class SegmentsExperiencePersistenceImpl
 	public int filterCountByG_P_LtP(long groupId, long plid, int priority) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_P_LtP(groupId, plid, priority);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_P_LtP(
+				groupId, plid, priority);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -7868,6 +7968,16 @@ public class SegmentsExperiencePersistenceImpl
 				groupId, plid, active, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_P_A(
+					groupId, plid, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -8268,6 +8378,16 @@ public class SegmentsExperiencePersistenceImpl
 	public int filterCountByG_P_A(long groupId, long plid, boolean active) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_P_A(groupId, plid, active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_P_A(
+				groupId, plid, active);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -8929,6 +9049,16 @@ public class SegmentsExperiencePersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_S_P_A(
+					groupId, segmentsEntryId, plid, active, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -9313,6 +9443,16 @@ public class SegmentsExperiencePersistenceImpl
 			return findByG_S_P_A(
 				groupId, segmentsEntryIds, plid, active, start, end,
 				orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_S_P_A(
+					groupId, segmentsEntryIds, plid, active, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		if (segmentsEntryIds == null) {
@@ -9859,6 +9999,16 @@ public class SegmentsExperiencePersistenceImpl
 			return countByG_S_P_A(groupId, segmentsEntryId, plid, active);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences = findByG_S_P_A(
+				groupId, segmentsEntryId, plid, active);
+
+			segmentsExperiences = InlineSQLHelperUtil.filter(
+				segmentsExperiences, groupId);
+
+			return segmentsExperiences.size();
+		}
+
 		StringBundler sb = new StringBundler(5);
 
 		sb.append(_FILTER_SQL_COUNT_SEGMENTSEXPERIENCE_WHERE);
@@ -9922,6 +10072,15 @@ public class SegmentsExperiencePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_S_P_A(groupId, segmentsEntryIds, plid, active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SegmentsExperience> segmentsExperiences =
+				InlineSQLHelperUtil.filter(
+					findByG_S_P_A(groupId, segmentsEntryIds, plid, active),
+					groupId);
+
+			return segmentsExperiences.size();
 		}
 
 		if (segmentsEntryIds == null) {

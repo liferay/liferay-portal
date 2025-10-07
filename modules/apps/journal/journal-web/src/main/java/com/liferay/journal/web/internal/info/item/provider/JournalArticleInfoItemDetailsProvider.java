@@ -5,9 +5,12 @@
 
 package com.liferay.journal.web.internal.info.item.provider;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.GroupKeyInfoItemIdentifier;
+import com.liferay.info.item.GroupUrlTitleInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.journal.model.JournalArticle;
 
@@ -19,11 +22,14 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = Constants.SERVICE_RANKING + ":Integer=10",
+	property = {
+		Constants.SERVICE_RANKING + ":Integer=10",
+		"item.class.name=com.liferay.journal.model.JournalArticle"
+	},
 	service = InfoItemDetailsProvider.class
 )
 public class JournalArticleInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<JournalArticle> {
+	extends BaseInfoItemDetailsProvider<JournalArticle> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -31,12 +37,46 @@ public class JournalArticleInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(JournalArticle journalArticle) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				JournalArticle.class.getName(),
-				journalArticle.getResourcePrimKey()));
+	protected InfoItemIdentifierFactory<JournalArticle>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				JournalArticle journalArticle) {
+
+				return new ClassPKInfoItemIdentifier(
+					journalArticle.getResourcePrimKey());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+			@Override
+			public GroupKeyInfoItemIdentifier createGroupKeyInfoItemIdentifier(
+				long groupId, JournalArticle journalArticle) {
+
+				return new GroupKeyInfoItemIdentifier(
+					journalArticle.getGroupId(), journalArticle.getArticleId());
+			}
+
+			@Override
+			public GroupUrlTitleInfoItemIdentifier
+				createGroupUrlTitleInfoItemIdentifier(
+					long groupId, JournalArticle journalArticle) {
+
+				return new GroupUrlTitleInfoItemIdentifier(
+					journalArticle.getGroupId(), journalArticle.getUrlTitle());
+			}
+
+		};
 	}
 
 }

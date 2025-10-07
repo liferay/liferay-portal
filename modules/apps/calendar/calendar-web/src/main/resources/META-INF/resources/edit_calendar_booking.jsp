@@ -589,10 +589,6 @@ while (manageableCalendarsIterator.hasNext()) {
 		['liferay-calendar-message-util', 'json']
 	);
 
-	Liferay.Util.focusFormField(
-		document.<portlet:namespace />fm.<portlet:namespace />title
-	);
-
 	<%
 	String titleCurrentValue = ParamUtil.getString(request, "titleCurrentValue");
 	%>

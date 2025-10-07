@@ -28,15 +28,12 @@ public class LazyBlobEntryLocalServiceImpl
 
 		lazyBlobEntry.setUuid(serviceContext.getUuid());
 		lazyBlobEntry.setGroupId(groupId);
-
-		UnsyncByteArrayInputStream unsyncByteArrayInputStream =
-			new UnsyncByteArrayInputStream(bytes);
-
-		OutputBlob outputBlob = new OutputBlob(
-			unsyncByteArrayInputStream, bytes.length);
-
-		lazyBlobEntry.setBlob1(outputBlob);
-		lazyBlobEntry.setBlob2(outputBlob);
+		lazyBlobEntry.setBlob1(
+			new OutputBlob(
+				new UnsyncByteArrayInputStream(bytes), bytes.length));
+		lazyBlobEntry.setBlob2(
+			new OutputBlob(
+				new UnsyncByteArrayInputStream(bytes), bytes.length));
 
 		return lazyBlobEntryPersistence.update(lazyBlobEntry);
 	}

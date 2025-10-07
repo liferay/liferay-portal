@@ -38,95 +38,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for can add comment for user."
-	@priority = 4
-	test CanAddComment {
-		User.openUsersAdmin();
-
-		User.addCP(
-			userComment = "test",
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		Alert.viewSuccessMessage();
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		AssertElementPresent(
-			locator1 = "TextArea#COMMENTS",
-			userComment = "test");
-
-		AssertConsoleTextNotPresent(value1 = "java.lang.NullPointerException");
-	}
-
-	@description = "This is a use case for LPS-159181. Assert user can add widget to its private site page."
-	@priority = 4
-	test CanAddWidgettoMyDashbaordPage {
-		UserBar.gotoDropdownItem(dropdownItem = "My Dashboard");
-
-		Portlet.addPG(portletName = "Calendar");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Dashboard");
-
-		Portlet.viewDefaultTitle(portletName = "Calendar");
-	}
-
-	@description = "This is a use case for LPS-159181. Assert user can add widget to its public site page."
-	@priority = 4
-	test CanAddWidgettoMyProfilePage {
-		Navigator.gotoPersonalSite();
-
-		Portlet.addPG(portletName = "Asset Publisher");
-
-		Navigator.gotoPersonalSite();
-
-		Portlet.viewDefaultTitle(portletName = "Asset Publisher");
-	}
-
-	@description = "This test changes to cards view for users."
-	@priority = 4
-	test CanChangeToCardsView {
-		JSONUser.addUser(
-			userEmailAddress = "userea1@liferay.com",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		User.openUsersAdmin();
-
-		ManagementBar.changeDisplayStyle(displayStyle = "Cards");
-
-		LexiconCard.viewCardTitle(card = "userfn1 userln1");
-
-		LexiconCard.viewCardSubtitle(
-			card = "userfn1 userln1",
-			cardSubtitle = "usersn1");
-	}
-
-	@description = "This test changes to list view for users."
-	@priority = 4
-	test CanChangeToListView {
-		JSONUser.addUser(
-			userEmailAddress = "userea1@liferay.com",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		User.openUsersAdmin();
-
-		ManagementBar.changeDisplayStyle(displayStyle = "List");
-
-		LexiconList.viewListEntryTitle(listEntry = "userfn1 userln1");
-
-		LexiconList.viewListEntrySubtitle(
-			listEntry = "userfn1 userln1",
-			listEntrySubtitle = "usersn1");
-	}
-
 	@description = "This is a use case for LPS-79937. Portlet options are visible from Control Panel when direct.servlet.context.enabled=false."
 	@priority = 4
 	test CanExportUsersWithDirectServletContextDisabled {
@@ -143,169 +54,6 @@ definition {
 		AssertConfirm(value1 = "Warning: This CSV file contains user supplied inputs. Opening a CSV file in a spreadsheet program may be dangerous.");
 
 		AssertConsoleTextNotPresent(value1 = "jakarta.servlet.ServletException");
-	}
-
-	@description = "LPS-196309 | As an admin, I can assert that if the account the user is associated is deleted, the user will be listed again by using the filter type 'Unassociated Users'."
-	@priority = 4
-	test CanFilterByUnassociatedUsersAfterDeletingTheAssociatedAccount {
-		property portal.acceptance = "false";
-
-		task ("Given an account with an account user") {
-			JSONAccountEntry.addAccountEntry(
-				accountEntryName = "Test Account",
-				accountEntryType = "Business");
-
-			JSONUser.addUser(
-				userEmailAddress = "user1@liferay.com",
-				userFirstName = "user1",
-				userLastName = "user1",
-				userScreenName = "user1");
-
-			JSONAccountEntryUser.addExistUsertoAccount(
-				accountEntryName = "Test Account",
-				userEmailAddress = "user1@liferay.com");
-		}
-
-		task ("When the admin navigates to the Users and Organizations page") {
-			User.openUsersAdmin();
-		}
-
-		task ("When the admin sets the filter to view Unassociated Users") {
-			ManagementBar.setFilterAndOrder(filterBy = "Unassociated Users");
-		}
-
-		task ("Then can assert that only the test user is listed") {
-			LexiconEntry.viewEntryName(rowEntry = "test");
-
-			LexiconEntry.viewNoEntry(rowEntry = "user1");
-		}
-
-		task ("When the account is deleted") {
-			Account.openAccountsAdmin();
-
-			Account.deleteAccount(accountName = "Test Account");
-
-			LexiconEntry.viewNoEntry(rowEntry = "Test Account");
-		}
-
-		task ("Then the admin can assert that both users are listed") {
-			User.openUsersAdmin();
-
-			ManagementBar.setFilterAndOrder(filterBy = "Unassociated Users");
-
-			for (var userName : list "test,user1") {
-				LexiconEntry.viewEntryName(rowEntry = ${userName});
-			}
-		}
-	}
-
-	@description = "LPS-196309 | As an admin, I can assert that if the user is removed from the organization, will be listed again by using the filter type 'Unassociated Users'."
-	@priority = 4
-	test CanFilterByUnassociatedUsersAfterRemovingUserFromOrganization {
-		property portal.acceptance = "false";
-
-		task ("Given a user and an organization is created and the user is linked to the organization") {
-			JSONUser.addUser(
-				userEmailAddress = "user1@liferay.com",
-				userFirstName = "user1",
-				userLastName = "user1",
-				userScreenName = "user1");
-
-			JSONOrganization.addOrganization(organizationName = "Org1");
-
-			JSONOrganization.assignUserToOrganization(
-				organizationName = "Org1",
-				userEmailAddress = "user1@liferay.com");
-		}
-
-		task ("When the admin navigates to the Users and Organizations page") {
-			User.openUsersAdmin();
-		}
-
-		task ("And the admin sets the filter to view Unassociated Users") {
-			ManagementBar.setFilterAndOrder(filterBy = "Unassociated Users");
-		}
-
-		task ("Then can assert that only the test user is listed") {
-			LexiconEntry.viewEntryName(rowEntry = "test");
-
-			LexiconEntry.viewNoEntry(rowEntry = "user1");
-		}
-
-		task ("When the admin removes user from the organization") {
-			User.openUsersAdmin();
-
-			UserNavigator.gotoUser(userScreenName = "user1");
-
-			UserNavigator.gotoOrganizations();
-
-			Click(locator1 = "Icon#DELETE");
-
-			Click(locator1 = "Icon#BACK");
-		}
-
-		task ("Then can assert that both users are listed") {
-			ManagementBar.setFilterAndOrder(filterBy = "Unassociated Users");
-
-			for (var userName : list "test,user1") {
-				LexiconEntry.viewEntryName(rowEntry = ${userName});
-			}
-		}
-	}
-
-	@description = "This is a use case for LPS-202027. As and admin i cannot create a new user with a date of birth in the future."
-	@priority = 4
-	test CannotAddUserWithDateOfBirthInTheFuture {
-		task ("Given an User with a date of birth in the future") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Users",
-				panel = "Control Panel",
-				portlet = "Users and Organizations");
-
-			User.addCP(
-				userBirthday = "1/1/2099",
-				userEmailAddress = "userea@liferay.com",
-				userFirstName = "userfn",
-				userLastName = "userln",
-				userScreenName = "usersn");
-		}
-
-		task ("When an error message appears") {
-			Alert.viewErrorMessage(errorMessage = "Error:Please enter a valid date.");
-		}
-
-		task ("And the date of birth is changed with the correct date") {
-			Type(
-				locator1 = "UsersAndOrganizationsEditUser#DETAILS_BIRTHDAY_FIELD",
-				value1 = "1/1/1970");
-
-			AssertClick(
-				locator1 = "Button#SUBMIT",
-				value1 = "Save");
-
-			Alert.viewSuccessMessage();
-
-			Navigator.gotoBack();
-		}
-
-		task ("Then the user is created correctly") {
-			AssertElementPresent(
-				key_rowEntry = "userfn userln",
-				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
-		}
-	}
-
-	@priority = 4
-	test CannotViewSiteSettingsInUserPersonalSite {
-		Navigator.gotoPersonalSite();
-
-		ProductMenuHelper.openProductMenu();
-
-		ProductMenuHelper.expandCategory(category = "Configuration");
-
-		AssertElementNotPresent(
-			key_portlet = "Site Settings",
-			locator1 = "ProductMenu#PORTLET");
 	}
 
 	@description = "This test changes password through the API Explorer GUI."
@@ -385,7 +133,8 @@ definition {
 	@description = "This test changes password through the Password Reset link sent in email."
 	@priority = 4
 	test ChangingPasswordIsSuccessfulViaPasswordResetLink {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.smtp.server.enabled = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -425,377 +174,6 @@ definition {
 		User.loginPG(
 			password = "Password1",
 			userEmailAddress = "userea@liferay.com");
-	}
-
-	@priority = 4
-	test DeleteUser {
-		property portal.acceptance = "true";
-
-		User.openUsersAdmin();
-
-		User.addCP(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		User.deactivateCP(
-			deactivateType = "Actions",
-			userFirstName = "userfn");
-
-		User.openUsersAdmin();
-
-		User.searchCP(searchTerm = "usersn");
-
-		User.viewNoUsersFoundCP();
-
-		User.openUsersAdmin();
-
-		User.deleteCP(
-			deactivateType = "Actions",
-			userFirstName = "userfn");
-
-		User.openUsersAdmin();
-
-		ManagementBar.setFilterAndOrder(filterBy = "Inactive");
-
-		User.searchCP(searchTerm = "usersn");
-
-		User.viewNoUsersFoundCP();
-	}
-
-	@description = "This is a use case for LPS-121271."
-	@priority = 4
-	test EditAlertsandAnnouncementsDelivery {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		User.editUserAlertsAndAnnouncementsDeliveryCP(
-			checkbox = "Enable",
-			deliveryOptions = "General,Test");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		UserNavigator.gotoAlertsAndAnnouncementsDelivery();
-
-		AssertChecked(
-			key_tableEntry = "General",
-			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
-
-		AssertChecked(
-			key_tableEntry = "Test",
-			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
-
-		AssertNotChecked(
-			key_tableEntry = "News",
-			locator1 = "LexiconTable#TABLE_ENTRY_CHECKBOX");
-	}
-
-	@priority = 4
-	test EditUserAdditionalEmailAddresses {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		UserNavigator.gotoContact();
-
-		Navigator.gotoNavNested(navNested = "Contact Information");
-
-		User.addContactInformation(
-			address = "additional1@liferay.com",
-			contactType = "add-email-address-link");
-
-		User.viewContactInformation(
-			address = "additional1@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional1@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.addContactInformation(
-			address = "additional2@liferay.com",
-			contactType = "add-email-address-link",
-			makePrimary = "true");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional2@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.addContactInformation(
-			address = "additional3@liferay.com",
-			contactType = "add-email-address-link");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = "additional1@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional2@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = "additional3@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		UserNavigator.gotoEdit(rowEntry = "additional2@liferay.com");
-
-		User.editPrimary(makePrimary = "false");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = "additional2@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional3@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.makePrimary(rowEntry = "additional2@liferay.com");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = "additional1@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional2@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = "additional3@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.removeContactInformation(rowEntry = "additional3@liferay.com");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional2@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-
-		User.removeContactInformation(rowEntry = "additional2@liferay.com");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = "additional1@liferay.com",
-			searchContainerType = "emailAddressesSearchContainer");
-	}
-
-	@priority = 4
-	test EditUserAddresses {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		UserNavigator.gotoContact();
-
-		User.addContactInformation(
-			city = "Diamond Bar",
-			contactType = "add-address-link",
-			country = "United States",
-			postalCode = 91765,
-			region = "California",
-			street1 = "1400 Montefino Ave");
-
-		User.viewAddress(
-			city = "Diamond Bar",
-			country = "United States",
-			postalCode = 91765,
-			region = "California",
-			street1 = "1400 Montefino Ave");
-
-		User.viewIsPrimary(primaryValue = "1400 Montefino Ave");
-
-		User.addContactInformation(
-			city = "Chicago",
-			contactType = "add-address-link",
-			country = "United States",
-			makePrimary = "true",
-			postalCode = 60606,
-			region = "Illinois",
-			street1 = "205 West Wacker Dr");
-
-		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
-
-		User.addContactInformation(
-			city = "Raleigh",
-			contactType = "add-address-link",
-			country = "United States",
-			postalCode = 27607,
-			region = "North Carolina",
-			street1 = "4000 Westchase Blvd");
-
-		User.viewNotPrimary(primaryValue = "1400 Montefino Ave");
-
-		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
-
-		User.viewNotPrimary(primaryValue = "4000 Westchase Blvd");
-
-		Click.waitForMenuToggleJSClick(
-			key_listEntry = "205 West Wacker Dr",
-			locator1 = "LexiconList#LIST_ENTRY_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Edit");
-
-		User.editPrimary(makePrimary = "false");
-
-		User.viewNotPrimary(primaryValue = "205 West Wacker Dr");
-
-		User.viewIsPrimary(primaryValue = "4000 Westchase Blvd");
-
-		User.makeAddressPrimary(listEntry = "205 West Wacker Dr");
-
-		User.viewNotPrimary(primaryValue = "1400 Montefino Ave");
-
-		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
-
-		User.viewNotPrimary(primaryValue = "4000 Westchase Blvd");
-
-		User.removeAddress(listEntry = "4000 Westchase Blvd");
-
-		User.viewIsPrimary(primaryValue = "205 West Wacker Dr");
-
-		User.removeAddress(listEntry = "205 West Wacker Dr");
-
-		User.viewIsPrimary(primaryValue = "1400 Montefino Ave");
-	}
-
-	@priority = 4
-	test EditUserDisplaySettings {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		User.editUserDisplaySettingsCP(
-			displaySettingsGreeting = "Welcome Selenium01!",
-			userScreenName = "usersn");
-	}
-
-	@priority = 4
-	test EditUserPhoneNumbers {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		UserNavigator.gotoUser(userScreenName = "usersn");
-
-		UserNavigator.gotoContact();
-
-		Navigator.gotoNavNested(navNested = "Contact Information");
-
-		User.addContactInformation(
-			contactType = "add-phone-number-link",
-			extension = 111,
-			number = 1111111111);
-
-		User.viewContactInformation(
-			extension = 111,
-			number = 1111111111,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 1111111111,
-			searchContainerType = "phonesSearchContainer");
-
-		User.addContactInformation(
-			contactType = "add-phone-number-link",
-			makePrimary = "true",
-			number = 2222222222);
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 2222222222,
-			searchContainerType = "phonesSearchContainer");
-
-		User.addContactInformation(
-			contactType = "add-phone-number-link",
-			number = 3333333333);
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = 1111111111,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 2222222222,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = 3333333333,
-			searchContainerType = "phonesSearchContainer");
-
-		UserNavigator.gotoEdit(rowEntry = 2222222222);
-
-		User.editPrimary(makePrimary = "false");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = 2222222222,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 3333333333,
-			searchContainerType = "phonesSearchContainer");
-
-		User.makePrimary(rowEntry = 2222222222);
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = 1111111111,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 2222222222,
-			searchContainerType = "phonesSearchContainer");
-
-		User.viewNotPrimary(
-			contactInfoPrimaryValue = 3333333333,
-			searchContainerType = "phonesSearchContainer");
-
-		User.removeContactInformation(rowEntry = 3333333333);
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 2222222222,
-			searchContainerType = "phonesSearchContainer");
-
-		User.removeContactInformation(rowEntry = 2222222222);
-
-		User.viewIsPrimary(
-			contactInfoPrimaryValue = 1111111111,
-			searchContainerType = "phonesSearchContainer");
 	}
 
 	@priority = 4
@@ -930,7 +308,8 @@ definition {
 	@description = "This is a use case for LPS-145025. No redirect and language is changed when change the language in password reset page."
 	@priority = 4
 	test LanguageChangedAndNoRedirectWhenChangeLanguageInPasswordResetPage {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.smtp.server.enabled = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -1123,101 +502,6 @@ definition {
 	}
 
 	@priority = 4
-	test SearchUser {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		User.basicSearchCP(
-			userBasicSearch = "Basic",
-			userEmailAddress = "userea@liferay.com",
-			userName = "userfn userln",
-			userScreenName = "usersn");
-
-		Search.clearSearchResult();
-	}
-
-	@priority = 4
-	test SearchUserFullName {
-		User.openUsersAdmin();
-
-		User.addCP(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		User.openUsersAdmin();
-
-		User.basicSearchCP(
-			userBasicSearch = "Full Name",
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userName = "userfn userln",
-			userScreenName = "usersn");
-	}
-
-	@priority = 4
-	test SearchUserQuotes {
-		User.openUsersAdmin();
-
-		User.addCP(
-			userEmailAddress = "userea1@liferay.com",
-			userFirstName = "userfn1",
-			userLastName = "userln1",
-			userScreenName = "usersn1");
-
-		User.openUsersAdmin();
-
-		User.addCP(
-			userEmailAddress = "userea2@liferay.com",
-			userFirstName = "userfn2",
-			userLastName = "userln2",
-			userScreenName = "usersn2");
-
-		User.openUsersAdmin();
-
-		var key_userScreenName = "usersn1";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_NAME",
-			value1 = "userfn1 userln1");
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME",
-			value1 = "usersn1");
-
-		var key_userScreenName = "usersn2";
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_NAME",
-			value1 = "userfn2 userln2");
-
-		AssertTextEquals(
-			locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME",
-			value1 = "usersn2");
-
-		User.basicSearchCP(
-			userBasicSearch = "Quotes",
-			userEmailAddress = "userea1@liferay.com",
-			userName = "userfn1 userln1",
-			userScreenName = "usersn1");
-
-		var key_userScreenName = "usersn2";
-
-		AssertElementNotPresent(locator1 = "UsersAndOrganizations#USER_TABLE_NAME");
-
-		AssertElementNotPresent(locator1 = "UsersAndOrganizations#USER_TABLE_SCREEN_NAME");
-	}
-
-	@priority = 4
 	test SiteRoleIsEmptyWithEmptyMessage {
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -1237,7 +521,8 @@ definition {
 	@description = "This is a use case for LPS-60180. This test asserts that the proper error message displays when the passwords entered in the Password Reset link do not match."
 	@priority = 4
 	test SpecificErrorMessageDisplaysWhenPasswordsDoNotMatch {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.smtp.server.enabled = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -1474,7 +759,9 @@ definition {
 	@description = "This is a use case for LPS-176074. TC-2: Email verification notification template could be set to include user's first name."
 	@priority = 4
 	test ViewEmailVerificationNotificationTemplateUpdated {
-		property custom.properties = "company.security.strangers.verify=true${line.separator}jsonws.web.service.paths.excludes=${line.separator}mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property custom.properties = "company.security.strangers.verify=true${line.separator}jsonws.web.service.paths.excludes=";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -1566,7 +853,9 @@ definition {
 	@description = "This is a use case for LPS-85534 and LPS-176074 TC-1. Account created notification template could be set to include user's first name."
 	@priority = 4
 	test ViewEmailWithPasswordSetupLinkSendToNewUser {
-		property custom.properties = "jsonws.web.service.paths.excludes=${line.separator}mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -1845,7 +1134,9 @@ definition {
 	@description = "This is a use case for LPS-111136"
 	@priority = 4
 	test WelcomeEmailContainsVirtualHostSendToNewUser {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid${line.separator}virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";

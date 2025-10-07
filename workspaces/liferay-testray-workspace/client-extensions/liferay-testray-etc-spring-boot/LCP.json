@@ -1,0 +1,31 @@
+{
+	"cpu": 1,
+	"env": {
+		"JAVA_VERSION": "zulu21",
+		"JDK_JAVA_OPTIONS": "--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.http=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.https=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=jdk.zipfs/jdk.nio.zipfs=ALL-UNNAMED"
+	},
+	"environments": {
+		"infra": {
+			"deploy": false
+		}
+	},
+	"id": "__PROJECT_ID__",
+	"kind": "Deployment",
+	"livenessProbe": {
+		"httpGet": {
+			"path": "/ready",
+			"port": 58081
+		}
+	},
+	"loadBalancer": {
+		"targetPort": 58081
+	},
+	"memory": 1024,
+	"readinessProbe": {
+		"httpGet": {
+			"path": "/ready",
+			"port": 58081
+		}
+	},
+	"scale": 1
+}

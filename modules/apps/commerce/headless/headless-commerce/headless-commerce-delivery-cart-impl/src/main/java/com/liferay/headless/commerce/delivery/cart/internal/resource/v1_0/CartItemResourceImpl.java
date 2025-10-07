@@ -31,6 +31,7 @@ import com.liferay.headless.commerce.delivery.cart.resource.v1_0.CartItemResourc
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
@@ -118,10 +119,6 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 					externalReferenceCode);
 		}
 
-		if (!commerceOrder.isOpen()) {
-			throw new NoSuchOrderException();
-		}
-
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), null,
 			CommerceOrderItem.class.getName(), search, pagination,
@@ -183,10 +180,6 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			cartId);
-
-		if (!commerceOrder.isOpen()) {
-			throw new NoSuchOrderException();
-		}
 
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), null,
@@ -279,15 +272,29 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		CommerceOrder commerceOrder = commerceOrderItem.getCommerceOrder();
 
-		commerceOrderItem = _commerceOrderItemService.updateCommerceOrderItem(
-			commerceOrderItem.getCommerceOrderItemId(), cartItem.getQuantity(),
-			_commerceContextFactory.create(
-				commerceOrder.getCommerceAccountId(),
-				commerceOrder.getGroupId(), null,
-				commerceOrder.getCommerceOrderId(),
-				contextCompany.getCompanyId()),
-			_serviceContextHelper.getServiceContext(
-				commerceOrder.getGroupId()));
+		String options = GetterUtil.getString(cartItem.getOptions());
+
+		CommerceContext commerceContext = _commerceContextFactory.create(
+			commerceOrder.getCommerceAccountId(), commerceOrder.getGroupId(),
+			null, commerceOrder.getCommerceOrderId(),
+			contextCompany.getCompanyId());
+
+		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
+			commerceOrder.getGroupId());
+
+		if (Validator.isNotNull(options)) {
+			commerceOrderItem =
+				_commerceOrderItemService.updateCommerceOrderItem(
+					commerceOrderItem.getExternalReferenceCode(),
+					commerceOrderItem.getCommerceOrderItemId(), options,
+					cartItem.getQuantity(), commerceContext, serviceContext);
+		}
+		else {
+			commerceOrderItem =
+				_commerceOrderItemService.updateCommerceOrderItem(
+					commerceOrderItem.getCommerceOrderItemId(),
+					cartItem.getQuantity(), commerceContext, serviceContext);
+		}
 
 		long shippingAddressId = GetterUtil.getLong(
 			cartItem.getShippingAddressId());

@@ -7,8 +7,8 @@ package com.liferay.portal.servlet.filters.etag;
 
 import com.liferay.portal.kernel.servlet.RestrictedByteBufferCacheServletResponse;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.AsyncEvent;

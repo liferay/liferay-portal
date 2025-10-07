@@ -7,6 +7,7 @@ package com.liferay.object.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.info.field.InfoField;
+import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.type.OptionInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.form.InfoForm;
@@ -26,7 +27,6 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
-import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -40,7 +40,6 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectState;
 import com.liferay.object.model.ObjectStateFlow;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
-import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
@@ -48,8 +47,9 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateLocalService;
 import com.liferay.object.service.ObjectStateTransitionLocalService;
+import com.liferay.object.test.util.ObjectActionTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
-import com.liferay.petra.string.StringPool;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -60,12 +60,15 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
@@ -85,6 +88,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Jürgen Kappler
  */
+@FeatureFlags(
+	featureFlags = {
+		@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPD-50377")
+	}
+)
 @RunWith(Arquillian.class)
 public class ObjectEntryInfoItemFormProviderTest {
 
@@ -186,126 +194,29 @@ public class ObjectEntryInfoItemFormProviderTest {
 				TestPropsValues.getUserId(),
 				_childObjectDefinition.getObjectDefinitionId());
 
-		ObjectDefinition parentObjectDefinition = _addObjectDefinition(
-			new TextObjectFieldBuilder(
-			).labelMap(
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
-			).name(
-				"parentTextObjectFieldName"
-			).build());
+		_childInfoForm = _getInfoForm(_childObjectDefinition);
 
-		parentObjectDefinition =
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				TestPropsValues.getUserId(),
-				parentObjectDefinition.getObjectDefinitionId());
+		_parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"parentTextObjectFieldName"
+					).build()));
 
-		_objectRelationship =
-			_objectRelationshipLocalService.addObjectRelationship(
-				null, TestPropsValues.getUserId(),
-				parentObjectDefinition.getObjectDefinitionId(),
-				_childObjectDefinition.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				StringUtil.randomId(), false,
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+		_parentInfoForm = _getInfoForm(_parentObjectDefinition);
 	}
 
 	@Test
-	public void testObjectEntryInfoItemFormProvider() throws Exception {
-		ObjectAction objectAction = _objectActionLocalService.addObjectAction(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_childObjectDefinition.getObjectDefinitionId(), true,
-			StringPool.BLANK, RandomTestUtil.randomString(),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			RandomTestUtil.randomString(),
-			ObjectActionExecutorConstants.KEY_WEBHOOK,
-			ObjectActionTriggerConstants.KEY_STANDALONE,
-			UnicodePropertiesBuilder.put(
-				"url", RandomTestUtil.randomString()
-			).build(),
-			false);
-
-		InfoItemFormProvider<?> infoItemFormProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFormProvider.class,
-				_childObjectDefinition.getClassName());
-
-		InfoForm infoForm = infoItemFormProvider.getInfoForm(
-			String.valueOf(_childObjectDefinition.getObjectDefinitionId()), 0);
-
-		Assert.assertNotNull(infoForm);
-		Assert.assertNotNull(infoForm.getInfoField(objectAction.getName()));
-		Assert.assertNotNull(
-			infoForm.getInfoField("attachmentObjectFieldName"));
-
-		ObjectField objectField = _objectFieldLocalService.getObjectField(
-			_childObjectDefinition.getObjectDefinitionId(),
-			"attachmentObjectFieldName");
-
-		Assert.assertNotNull(
-			infoForm.getInfoField(
-				objectField.getObjectFieldId() + "#downloadURL"));
-		Assert.assertNotNull(
-			infoForm.getInfoField(
-				objectField.getObjectFieldId() + "#fileName"));
-		Assert.assertNotNull(
-			infoForm.getInfoField(
-				objectField.getObjectFieldId() + "#mimeType"));
-		Assert.assertNotNull(
-			infoForm.getInfoField(objectField.getObjectFieldId() + "#size"));
-
-		Assert.assertNotNull(
-			infoForm.getInfoField("parentTextObjectFieldName"));
-
-		_assertOptionInfoFieldTypes(
-			infoForm, _listTypeEntry1.getKey(), _listTypeEntry2.getKey());
-
-		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			TestPropsValues.getGroupId(),
-			_childObjectDefinition.getObjectDefinitionId(),
-			HashMapBuilder.<String, Serializable>put(
-				"picklistObjectFieldName", _listTypeEntry2.getKey()
-			).build());
-
-		try {
-			ServiceContextThreadLocal.pushServiceContext(
-				_getServiceContext(objectEntry));
-
-			_assertOptionInfoFieldTypes(
-				infoItemFormProvider.getInfoForm(
-					String.valueOf(
-						_childObjectDefinition.getObjectDefinitionId()),
-					0),
-				_listTypeEntry2.getKey(), _listTypeEntry3.getKey());
-
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			MockHttpServletRequest mockHttpServletRequest =
-				(MockHttpServletRequest)serviceContext.getRequest();
-
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				TestPropsValues.getGroupId(), 0);
-
-			mockHttpServletRequest.setAttribute(
-				LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
-				_journalArticleLayoutDisplayPageProvider.
-					getLayoutDisplayPageObjectProvider(
-						new InfoItemReference(
-							JournalArticle.class.getName(),
-							journalArticle.getResourcePrimKey())));
-
-			_assertOptionInfoFieldTypes(
-				infoItemFormProvider.getInfoForm(
-					String.valueOf(
-						_childObjectDefinition.getObjectDefinitionId()),
-					0),
-				_listTypeEntry1.getKey(), _listTypeEntry2.getKey());
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+	public void testGetInfoForm() throws Exception {
+		_testGetInfoFormWithAttachmentObjectField();
+		_testGetInfoFormWithEnableObjectEntrySchedule();
+		_testGetInfoFormWithObjectAction();
+		_testGetInfoFormWithObjectRelationship();
+		_testGetInfoFormWithPicklistObjectField();
 	}
 
 	private ListTypeEntry _addListTypeEntry() throws Exception {
@@ -322,14 +233,15 @@ public class ObjectEntryInfoItemFormProviderTest {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, false, true, false,
-			false, false, null,
+			TestPropsValues.getUserId(), 0, null, false, true, false, true,
+			false, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			true, ObjectDefinitionConstants.SCOPE_SITE,
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Collections.emptyList(), Arrays.asList(objectFields));
+			Collections.emptyList(), Arrays.asList(objectFields),
+			Collections.emptyList());
 	}
 
 	private void _addObjectStateTransition(
@@ -344,6 +256,18 @@ public class ObjectEntryInfoItemFormProviderTest {
 					objectStateFlow.getObjectStateFlowId(),
 					sourceObjectState.getObjectStateId(),
 					targetObjectState.getObjectStateId())));
+	}
+
+	private void _assertInfoField(
+		boolean expectedEditable, String infoFieldName, InfoForm infoForm) {
+
+		InfoField<?> infoField = infoForm.getInfoField(infoFieldName);
+
+		Assert.assertEquals(expectedEditable, infoField.isEditable());
+	}
+
+	private void _assertInfoField(String infoFieldName, InfoForm infoForm) {
+		Assert.assertNotNull(infoForm.getInfoField(infoFieldName));
 	}
 
 	private void _assertOptionInfoFieldType(
@@ -384,6 +308,17 @@ public class ObjectEntryInfoItemFormProviderTest {
 		return objectFieldSetting;
 	}
 
+	private InfoForm _getInfoForm(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		InfoItemFormProvider<?> infoItemFormProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormProvider.class, objectDefinition.getClassName());
+
+		return infoItemFormProvider.getInfoForm(
+			String.valueOf(objectDefinition.getObjectDefinitionId()), 0);
+	}
+
 	private ObjectState _getObjectState(
 		ListTypeEntry listTypeEntry, ObjectStateFlow objectStateFlow) {
 
@@ -392,33 +327,150 @@ public class ObjectEntryInfoItemFormProviderTest {
 			objectStateFlow.getObjectStateFlowId());
 	}
 
-	private ServiceContext _getServiceContext(ObjectEntry objectEntry)
+	private void _testGetInfoFormWithAttachmentObjectField() throws Exception {
+		_assertInfoField("attachmentObjectFieldName", _childInfoForm);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			_childObjectDefinition.getObjectDefinitionId(),
+			"attachmentObjectFieldName");
+
+		_assertInfoField(
+			objectField.getObjectFieldId() + "#downloadURL", _childInfoForm);
+		_assertInfoField(
+			objectField.getObjectFieldId() + "#fileName", _childInfoForm);
+		_assertInfoField(
+			objectField.getObjectFieldId() + "#mimeType", _childInfoForm);
+		_assertInfoField(
+			objectField.getObjectFieldId() + "#size", _childInfoForm);
+	}
+
+	private void _testGetInfoFormWithEnableObjectEntrySchedule()
+		throws Exception {
+
+		_assertInfoField(false, "displayDate", _childInfoForm);
+		_assertInfoField(false, "expirationDate", _childInfoForm);
+		_assertInfoField(false, "reviewDate", _childInfoForm);
+
+		_childObjectDefinition.setEnableObjectEntrySchedule(true);
+
+		_childObjectDefinition =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				_childObjectDefinition);
+
+		_objectDefinitionLocalService.deployObjectDefinition(
+			_childObjectDefinition);
+
+		_childInfoForm = _getInfoForm(_childObjectDefinition);
+
+		_assertInfoField(true, "displayDate", _childInfoForm);
+		_assertInfoField(true, "expirationDate", _childInfoForm);
+		_assertInfoField(true, "reviewDate", _childInfoForm);
+	}
+
+	private void _testGetInfoFormWithObjectAction() throws Exception {
+		ObjectAction objectAction = ObjectActionTestUtil.addObjectAction(
+			ObjectActionExecutorConstants.KEY_WEBHOOK,
+			ObjectActionTriggerConstants.KEY_STANDALONE, _childObjectDefinition,
+			UnicodePropertiesBuilder.put(
+				"url", RandomTestUtil.randomString()
+			).build());
+
+		_assertInfoField(
+			objectAction.getName(), _getInfoForm(_childObjectDefinition));
+	}
+
+	private void _testGetInfoFormWithObjectRelationship() throws Exception {
+		_objectRelationship = ObjectRelationshipTestUtil.addObjectRelationship(
+			_objectRelationshipLocalService, _parentObjectDefinition,
+			_childObjectDefinition);
+
+		_childInfoForm = _getInfoForm(_childObjectDefinition);
+		_parentInfoForm = _getInfoForm(_parentObjectDefinition);
+
+		_assertInfoField("parentTextObjectFieldName", _childInfoForm);
+		_assertInfoField("parentTextObjectFieldName", _parentInfoForm);
+
+		InfoFieldSet infoFieldSet =
+			(InfoFieldSet)_parentInfoForm.getInfoFieldSetEntry(
+				_parentObjectDefinition.getName());
+
+		InfoFieldSet relationshipInfoFieldSet =
+			(InfoFieldSet)infoFieldSet.getInfoFieldSetEntry(
+				_objectRelationship.getName());
+
+		Assert.assertNotNull(
+			relationshipInfoFieldSet.getInfoFieldSetEntry(
+				"attachmentObjectFieldName"));
+		Assert.assertNotNull(
+			relationshipInfoFieldSet.getInfoFieldSetEntry(
+				"picklistObjectFieldName"));
+	}
+
+	private void _testGetInfoFormWithPicklistObjectField() throws Exception {
+		_assertOptionInfoFieldTypes(
+			_childInfoForm, _listTypeEntry1.getKey(), _listTypeEntry2.getKey());
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			TestPropsValues.getGroupId(),
+			_childObjectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"picklistObjectFieldName", _listTypeEntry2.getKey()
+			).build());
+
+		try {
+			ServiceContextThreadLocal.pushServiceContext(
+				_updateServiceContext(
+					objectEntry.getObjectEntryId(),
+					_layoutDisplayPageProviderRegistry.
+						getLayoutDisplayPageProviderByClassName(
+							_childObjectDefinition.getClassName())));
+
+			_assertOptionInfoFieldTypes(
+				_getInfoForm(_childObjectDefinition), _listTypeEntry2.getKey(),
+				_listTypeEntry3.getKey());
+
+			JournalArticle journalArticle = JournalTestUtil.addArticle(
+				TestPropsValues.getGroupId(), 0);
+
+			_updateServiceContext(
+				journalArticle.getResourcePrimKey(),
+				_journalArticleLayoutDisplayPageProvider);
+
+			_assertOptionInfoFieldTypes(
+				_getInfoForm(_childObjectDefinition), _listTypeEntry1.getKey(),
+				_listTypeEntry2.getKey());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	private ServiceContext _updateServiceContext(
+			long classPK,
+			LayoutDisplayPageProvider<?> layoutDisplayPageProvider)
 		throws Exception {
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId());
+			ServiceContextThreadLocal.getServiceContext();
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		if (serviceContext == null) {
+			serviceContext = ServiceContextTestUtil.getServiceContext();
+		}
 
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
-			_layoutDisplayPageProviderRegistry.
-				getLayoutDisplayPageProviderByClassName(
-					_childObjectDefinition.getClassName());
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
-		mockHttpServletRequest.setAttribute(
+		httpServletRequest.setAttribute(
 			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
 			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
 				new InfoItemReference(
-					_childObjectDefinition.getClassName(),
-					objectEntry.getObjectEntryId())));
+					layoutDisplayPageProvider.getClassName(), classPK)));
 
-		serviceContext.setRequest(mockHttpServletRequest);
+		serviceContext.setRequest(httpServletRequest);
 
 		return serviceContext;
 	}
 
+	private InfoForm _childInfoForm;
 	private ObjectDefinition _childObjectDefinition;
 
 	@Inject
@@ -453,9 +505,6 @@ public class ObjectEntryInfoItemFormProviderTest {
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	@Inject
-	private ObjectActionLocalService _objectActionLocalService;
-
-	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
@@ -479,5 +528,8 @@ public class ObjectEntryInfoItemFormProviderTest {
 	@Inject
 	private ObjectStateTransitionLocalService
 		_objectStateTransitionLocalService;
+
+	private InfoForm _parentInfoForm;
+	private ObjectDefinition _parentObjectDefinition;
 
 }

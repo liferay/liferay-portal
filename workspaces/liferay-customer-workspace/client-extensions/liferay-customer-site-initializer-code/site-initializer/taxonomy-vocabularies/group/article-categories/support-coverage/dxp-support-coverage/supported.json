@@ -1,0 +1,20 @@
+{
+	"name": "Supported",
+	"name_i18n": {
+		"en_US": "Supported",
+		"es-ES": "Soportado",
+		"ja-JP": "サポート範囲",
+		"pt-BR": "Suportado"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "background-image",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/supported.png$]"
+		},
+		{
+			"key": "icon-name",
+			"value": "check-circle"
+		}
+	],
+	"viewableBy": "Anyone"
+}

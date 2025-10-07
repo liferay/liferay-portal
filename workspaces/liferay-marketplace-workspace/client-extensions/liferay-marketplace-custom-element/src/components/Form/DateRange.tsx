@@ -4,7 +4,7 @@
  */
 
 import DatePicker from '@clayui/date-picker';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 type DateRangeProps = {
 	label?: string;
@@ -14,6 +14,10 @@ type DateRangeProps = {
 
 const DateRange: React.FC<DateRangeProps> = ({label, onChange, value}) => {
 	const [currentDate, setCurrentDate] = useState(value);
+
+	useEffect(() => {
+		setCurrentDate(value);
+	}, [value]);
 
 	return (
 		<div>

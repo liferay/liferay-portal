@@ -15,6 +15,7 @@ import com.liferay.headless.delivery.dto.v1_0.ContextReference;
 import com.liferay.layout.util.structure.FormStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -56,6 +57,16 @@ public class FormLayoutStructureItemImporter
 
 		FormConfig formConfig = formPageElementDefinition.getFormConfig();
 
+		if (formConfig == null) {
+			formStyledLayoutStructureItem.setIndexed(
+				GetterUtil.getBoolean(
+					formPageElementDefinition.getIndexed(), true));
+			formStyledLayoutStructureItem.setName(
+				formPageElementDefinition.getName());
+
+			return formStyledLayoutStructureItem;
+		}
+
 		if (formConfig.getFormReference() instanceof ContextReference) {
 			formStyledLayoutStructureItem.setFormConfig(
 				FormStyledLayoutStructureItem.
@@ -77,7 +88,8 @@ public class FormLayoutStructureItemImporter
 		formStyledLayoutStructureItem.setFormType(
 			_toFormType(formConfig.getFormType()));
 		formStyledLayoutStructureItem.setIndexed(
-			formPageElementDefinition.getIndexed());
+			GetterUtil.getBoolean(
+				formPageElementDefinition.getIndexed(), true));
 		formStyledLayoutStructureItem.setName(
 			formPageElementDefinition.getName());
 		formStyledLayoutStructureItem.setNumberOfSteps(

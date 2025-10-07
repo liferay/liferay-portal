@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -84,31 +85,55 @@ public class EditAccountUserMVCActionCommand
 
 		accountUserContact.setPrefixListTypeId(
 			_getListTypeId(
-				accountUser.getCompanyId(), actionRequest,
-				"prefixListTypeValue", ListTypeConstants.CONTACT_PREFIX));
+				"prefixListTypeValue", actionRequest,
+				ListTypeConstants.CONTACT_PREFIX, accountUser));
 		accountUserContact.setSuffixListTypeId(
 			_getListTypeId(
-				accountUser.getCompanyId(), actionRequest,
-				"suffixListTypeValue", ListTypeConstants.CONTACT_SUFFIX));
+				"suffixListTypeValue", actionRequest,
+				ListTypeConstants.CONTACT_SUFFIX, accountUser));
 
 		_contactLocalService.updateContact(accountUserContact);
 	}
 
 	private long _getListTypeId(
-		long companyId, PortletRequest portletRequest, String parameterName,
-		String type) {
+			String parameterName, PortletRequest portletRequest, String type,
+			User user)
+		throws Exception {
 
 		String parameterValue = ParamUtil.getString(
 			portletRequest, parameterName);
 
-		if (Validator.isNull(parameterValue)) {
-			return 0;
+		if (Validator.isNotNull(parameterValue)) {
+			ListType listType = _listTypeLocalService.addListType(
+				user.getCompanyId(), parameterValue, type);
+
+			return listType.getListTypeId();
 		}
 
-		ListType listType = _listTypeLocalService.addListType(
-			companyId, parameterValue, type);
+		User currentUser = _portal.getUser(portletRequest);
 
-		return listType.getListTypeId();
+		if (type.equals(ListTypeConstants.CONTACT_PREFIX)) {
+			if (!UsersAdminUtil.hasUpdateFieldPermission(
+					_permissionCheckerFactory.create(currentUser), currentUser,
+					user, "prefix")) {
+
+				Contact contact = user.getContact();
+
+				return contact.getPrefixListTypeId();
+			}
+		}
+		else {
+			if (!UsersAdminUtil.hasUpdateFieldPermission(
+					_permissionCheckerFactory.create(currentUser), currentUser,
+					user, "suffix")) {
+
+				Contact contact = user.getContact();
+
+				return contact.getSuffixListTypeId();
+			}
+		}
+
+		return 0;
 	}
 
 	@Reference

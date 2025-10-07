@@ -6,7 +6,6 @@
 package com.liferay.marketplace;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
-import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.SkuResource;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.Order;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
 import com.liferay.headless.commerce.admin.order.client.pagination.Page;
@@ -82,8 +81,6 @@ public class DXPRestController extends BaseRestController {
 			return order;
 		}
 
-		SkuResource skuResource = _marketplaceService.getSkuResource();
-
 		Page<OrderItem> orderItemPage =
 			_marketplaceService.getOrderItemResource(
 			).getOrderIdOrderItemsPage(
@@ -92,7 +89,7 @@ public class DXPRestController extends BaseRestController {
 
 		Map<String, String> productSpecificationsMap =
 			_marketplaceService.getProductSpecificationsMap(
-				skuResource.getSku(
+				_marketplaceService.getSku(
 					orderItemPage.fetchFirstItem(
 					).getSkuId()
 				).getProductId());

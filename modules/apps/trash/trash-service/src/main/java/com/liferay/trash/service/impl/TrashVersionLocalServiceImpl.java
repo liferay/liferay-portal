@@ -52,7 +52,7 @@ public class TrashVersionLocalServiceImpl
 
 	@Override
 	public TrashVersion deleteTrashVersion(String className, long classPK) {
-		TrashVersion trashVersion = trashVersionPersistence.fetchByC_C(
+		TrashVersion trashVersion = trashVersionPersistence.fetchByCN_CPK(
 			_classNameLocalService.getClassNameId(className), classPK);
 
 		if (trashVersion != null) {
@@ -64,7 +64,7 @@ public class TrashVersionLocalServiceImpl
 
 	@Override
 	public TrashVersion fetchVersion(String className, long classPK) {
-		return trashVersionPersistence.fetchByC_C(
+		return trashVersionPersistence.fetchByCN_CPK(
 			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
@@ -79,7 +79,7 @@ public class TrashVersionLocalServiceImpl
 			return trashVersionPersistence.findByEntryId(entryId);
 		}
 
-		return trashVersionPersistence.findByE_C(
+		return trashVersionPersistence.findByE_CN(
 			entryId, _classNameLocalService.getClassNameId(className));
 	}
 

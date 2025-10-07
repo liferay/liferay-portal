@@ -7,21 +7,27 @@ package com.liferay.layout.admin.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -67,8 +73,34 @@ public class GetLayoutActionsMVCResourceCommandTest {
 	@Test
 	@TestInfo("LPS-132422")
 	public void testGetActionDropdownItems() throws Exception {
+		_assertActionDropdownItems(
+			_layout.getPlid(), "Edit", "Translate", "View", "Preview Draft",
+			"Convert to Page Template", "Make a Copy", "Export for Translation",
+			"Import Translation", "Configure", "Permissions", "Delete");
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getCompanyId(), _group.getGroupId(),
+				TestPropsValues.getUserId());
+
+		serviceContext.setAttribute(
+			"layout.instanceable.allowed", Boolean.TRUE);
+
+		Layout layout = LayoutLocalServiceUtil.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_EMPTY, false, StringPool.BLANK,
+			serviceContext);
+
+		_assertActionDropdownItems(layout.getPlid(), "Edit", "Delete");
+	}
+
+	private void _assertActionDropdownItems(long plid, String... actions)
+		throws Exception {
+
 		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest();
+			_getMockLiferayResourceRequest(plid);
 
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			new MockLiferayResourceResponse();
@@ -86,12 +118,6 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		JSONArray actionDropdownItemsJSONArray =
 			_getActionDropdownItemsJSONArray(
 				jsonObject.getJSONArray("actions"));
-
-		String[] actions = {
-			"Edit", "Translate", "View", "Preview Draft",
-			"Convert to Page Template", "Make a Copy", "Export for Translation",
-			"Import Translation", "Configure", "Permissions", "Delete"
-		};
 
 		Assert.assertEquals(
 			actions.length, actionDropdownItemsJSONArray.length());
@@ -121,7 +147,7 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		return allDropdownItemsJSONArray;
 	}
 
-	private MockLiferayResourceRequest _getMockLiferayResourceRequest()
+	private MockLiferayResourceRequest _getMockLiferayResourceRequest(long plid)
 		throws Exception {
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
@@ -141,8 +167,7 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		mockLiferayResourceRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		mockLiferayResourceRequest.setParameter(
-			"plid", String.valueOf(_layout.getPlid()));
+		mockLiferayResourceRequest.setParameter("plid", String.valueOf(plid));
 
 		return mockLiferayResourceRequest;
 	}

@@ -5,6 +5,7 @@
 
 package com.liferay.document.library.item.selector.web.internal.folder;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.document.library.constants.DLPortletKeys;
@@ -201,8 +202,8 @@ public class DLFolderItemSelectorView
 		try {
 			return ListUtil.toList(
 				_depotEntryService.getCurrentAndGroupConnectedDepotEntries(
-					themeDisplay.getRefererGroupId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS),
+					themeDisplay.getRefererGroupId(), DepotConstants.TYPE_ANY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
 				DepotEntry::getGroupId);
 		}
 		catch (Exception exception) {

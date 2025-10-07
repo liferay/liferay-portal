@@ -25,4 +25,8 @@
 	<c:if test="<%= summaryMenu %>">
 		<%@ include file="/process_list_menu/items/summary.jspf" %>
 	</c:if>
+
+	<c:if test="<%= detailsMenu %>">
+		<%@ include file="/process_list_menu/items/details.jspf" %>
+	</c:if>
 </liferay-ui:icon-menu>

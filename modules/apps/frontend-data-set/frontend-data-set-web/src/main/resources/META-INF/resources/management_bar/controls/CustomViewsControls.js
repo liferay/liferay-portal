@@ -18,7 +18,7 @@ import React, {useContext, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import ViewsContext from '../../views/ViewsContext';
-import {VIEWS_ACTION_TYPES} from '../../views/viewsReducer';
+import {EViewsActionTypes} from '../../views/viewsReducer';
 
 const DEFAULT_VIEW_ID = 'DEFAULT_VIEW';
 
@@ -141,7 +141,7 @@ const CustomViewsControls = () => {
 					});
 
 					viewsDispatch({
-						type: VIEWS_ACTION_TYPES.ADD_OR_UPDATE_CUSTOM_VIEW,
+						type: EViewsActionTypes.ADD_OR_UPDATE_CUSTOM_VIEW,
 						value: {
 							id,
 							viewState,
@@ -218,7 +218,7 @@ const CustomViewsControls = () => {
 					});
 
 					viewsDispatch({
-						type: VIEWS_ACTION_TYPES.RENAME_ACTIVE_CUSTOM_VIEW,
+						type: EViewsActionTypes.RENAME_ACTIVE_CUSTOM_VIEW,
 						value: {
 							label,
 						},
@@ -284,7 +284,7 @@ const CustomViewsControls = () => {
 					});
 
 					viewsDispatch({
-						type: VIEWS_ACTION_TYPES.DELETE_CUSTOM_VIEW,
+						type: EViewsActionTypes.DELETE_CUSTOM_VIEW,
 						value: {
 							id,
 						},
@@ -340,12 +340,12 @@ const CustomViewsControls = () => {
 	const handleSelectionChange = (id) => {
 		if (id === DEFAULT_VIEW_ID) {
 			viewsDispatch({
-				type: VIEWS_ACTION_TYPES.RESET_TO_DEFAULT_VIEW,
+				type: EViewsActionTypes.RESET_TO_DEFAULT_VIEW,
 			});
 		}
 		else {
 			viewsDispatch({
-				type: VIEWS_ACTION_TYPES.UPDATE_ACTIVE_CUSTOM_VIEW,
+				type: EViewsActionTypes.UPDATE_ACTIVE_CUSTOM_VIEW,
 				value: id,
 			});
 		}

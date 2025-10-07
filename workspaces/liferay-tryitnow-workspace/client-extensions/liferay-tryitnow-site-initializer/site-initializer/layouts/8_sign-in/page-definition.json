@@ -53,7 +53,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -85,7 +85,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -123,6 +123,293 @@
 									}
 								},
 								"type": "Widget"
+							}
+						],
+						"type": "Section"
+					},
+					{
+						"definition": {
+							"fragmentStyle": {
+								"borderWidth": "0",
+								"marginTop": "5",
+								"width": "65%"
+							},
+							"indexed": true,
+							"layout": {
+								"marginTop": 4,
+								"widthType": "Fixed"
+							}
+						},
+						"pageElements": [
+							{
+								"definition": {
+									"fragmentStyle": {
+										"backgroundColor": "colorNeutral0",
+										"borderColor": "colorNeutral0",
+										"borderRadius": "10px",
+										"borderWidth": "1px"
+									},
+									"indexed": true,
+									"layout": {
+										"borderColor": "colorNeutral0"
+									}
+								},
+								"pageElements": [
+									{
+										"definition": {
+											"fragmentStyle": {
+												"paddingBottom": "4",
+												"paddingTop": "4"
+											},
+											"gutters": true,
+											"indexed": true,
+											"modulesPerRow": 2,
+											"numberOfColumns": 2,
+											"reverseOrder": false,
+											"rowViewports": [
+												{
+													"id": "landscapeMobile",
+													"rowViewportDefinition": {
+														"modulesPerRow": 1
+													}
+												},
+												{
+													"id": "portraitMobile",
+													"rowViewportDefinition": {
+													}
+												},
+												{
+													"id": "tablet",
+													"rowViewportDefinition": {
+													}
+												}
+											],
+											"verticalAlignment": "middle"
+										},
+										"pageElements": [
+											{
+												"definition": {
+													"columnViewports": [
+														{
+															"columnViewportDefinition": {
+																"size": 12
+															},
+															"id": "landscapeMobile"
+														},
+														{
+															"columnViewportDefinition": {
+															},
+															"id": "portraitMobile"
+														},
+														{
+															"columnViewportDefinition": {
+															},
+															"id": "tablet"
+														}
+													],
+													"size": 2
+												},
+												"pageElements": [
+													{
+														"definition": {
+															"indexed": true,
+															"layout": {
+																"align": "Center",
+																"contentDisplay": "FlexRow",
+																"justify": "Center"
+															}
+														},
+														"pageElements": [
+															{
+																"definition": {
+																	"fragment": {
+																		"key": "BASIC_COMPONENT-image"
+																	},
+																	"fragmentConfig": {
+																		"imageSize": "w-0"
+																	},
+																	"fragmentFields": [
+																		{
+																			"id": "image-square",
+																			"value": {
+																				"fragmentImage": {
+																					"description": {
+																						"value_i18n": {
+																							"en_US": ""
+																						}
+																					},
+																					"title": {
+																						"value": "lock.png"
+																					},
+																					"url": {
+																						"mapping": {
+																							"fieldKey": "FileEntry_previewImage",
+																							"itemReference": {
+																								"className": "com.liferay.portal.kernel.repository.model.FileEntry",
+																								"classPK": "[#DOCUMENT_FILE_ENTRY_ID:/site-initializer/documents/group/M2H8/Look and Feel/Sign In Master Page/lock.png#]"
+																							}
+																						}
+																					}
+																				},
+																				"fragmentLink": {
+																					"value": {
+																						"href": {
+																							"mapping": {
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	],
+																	"indexed": true
+																},
+																"type": "Fragment"
+															}
+														],
+														"type": "Section"
+													}
+												],
+												"type": "Column"
+											},
+											{
+												"definition": {
+													"columnViewports": [
+														{
+															"columnViewportDefinition": {
+																"size": 12
+															},
+															"id": "landscapeMobile"
+														},
+														{
+															"columnViewportDefinition": {
+															},
+															"id": "portraitMobile"
+														},
+														{
+															"columnViewportDefinition": {
+															},
+															"id": "tablet"
+														}
+													],
+													"size": 10
+												},
+												"pageElements": [
+													{
+														"definition": {
+															"fragmentStyle": {
+																"paddingLeft": "3",
+																"paddingRight": "3"
+															},
+															"indexed": true,
+															"layout": {
+																"paddingLeft": 1,
+																"paddingRight": 1
+															}
+														},
+														"pageElements": [
+															{
+																"definition": {
+																	"fragment": {
+																		"key": "dialect-text",
+																		"siteKey": "Guest"
+																	},
+																	"fragmentConfig": {
+																		"textType": "h5",
+																		"truncateText": false
+																	},
+																	"fragmentFields": [
+																		{
+																			"id": "element-text",
+																			"value": {
+																				"fragmentLink": {
+																				},
+																				"text": {
+																					"value_i18n": {
+																						"en_US": "First Time Access"
+																					}
+																				}
+																			}
+																		}
+																	],
+																	"fragmentStyle": {
+																		"fontWeight": "fontWeightBold",
+																		"marginBottom": "3"
+																	},
+																	"indexed": true
+																},
+																"type": "Fragment"
+															},
+															{
+																"definition": {
+																	"fragment": {
+																		"key": "dialect-text",
+																		"siteKey": "Guest"
+																	},
+																	"fragmentConfig": {
+																		"textType": "text-paragraph",
+																		"truncateText": false
+																	},
+																	"fragmentFields": [
+																		{
+																			"id": "element-text",
+																			"value": {
+																				"fragmentLink": {
+																				},
+																				"text": {
+																					"value_i18n": {
+																						"en_US": "You must be logged in using the super user credentials sent to you in your welcome email to access the platform and start exploring your Prebuilt Trial. Without these credentials, you won't be able to enter the environment or experience its full capabilities."
+																					}
+																				}
+																			}
+																		}
+																	],
+																	"fragmentStyle": {
+																		"marginBottom": "3"
+																	},
+																	"indexed": true
+																},
+																"type": "Fragment"
+															},
+															{
+																"definition": {
+																	"fragment": {
+																		"key": "dialect-text",
+																		"siteKey": "Guest"
+																	},
+																	"fragmentConfig": {
+																		"textType": "text-paragraph-sm",
+																		"truncateText": false
+																	},
+																	"fragmentFields": [
+																		{
+																			"id": "element-text",
+																			"value": {
+																				"fragmentLink": {
+																				},
+																				"text": {
+																					"value_i18n": {
+																						"en_US": "Haven't received the e-mail? Check your spam folder or contact Liferay Support"
+																					}
+																				}
+																			}
+																		}
+																	],
+																	"indexed": true
+																},
+																"type": "Fragment"
+															}
+														],
+														"type": "Section"
+													}
+												],
+												"type": "Column"
+											}
+										],
+										"type": "Row"
+									}
+								],
+								"type": "Section"
 							}
 						],
 						"type": "Section"

@@ -406,8 +406,8 @@ public class ExportImportPerformanceTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), draftLayout.getPlid(),
-				defaultSegmentsExperienceId,
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				draftLayout.getPlid(), defaultSegmentsExperienceId,
 				_generateContentLayoutStructureJSONObject(draftLayout));
 
 		_layoutLocalService.copyLayoutContent(draftLayout, layout);

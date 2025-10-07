@@ -107,6 +107,7 @@ definition {
 	@priority = 3
 	test CanDeleteImageWithRegRole {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -1200,6 +1201,7 @@ definition {
 	@priority = 3
 	test CannotEditEntryWhenUserHasNoPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -1241,6 +1243,7 @@ definition {
 	@priority = 3
 	test CannotEditOwnComment {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -1288,6 +1291,8 @@ definition {
 	@description = "This is a test for LPS-136785. It checks that a guest cannot rate an entry without permissions."
 	@priority = 3
 	test CannotRateEntryAsGuest {
+		property portal.acceptance = "false";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -1320,6 +1325,7 @@ definition {
 	@priority = 3
 	test CannotReplyToCommentWithoutPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -1375,6 +1381,7 @@ definition {
 	@priority = 3
 	test CannotSubscribeToCommentWithoutPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
@@ -1577,6 +1584,7 @@ definition {
 	@refactordone
 	test CannotViewDraftWithoutPermissions {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",

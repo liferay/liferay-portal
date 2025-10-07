@@ -7,7 +7,7 @@
 	<description/>
 	<groupId>com.liferay</groupId>
 	<artifactId>com.liferay.lang.builder</artifactId>
-	<version>1.0.57</version>
+	<version>1.0.58</version>
 	<goalPrefix>lang-builder</goalPrefix>
 	<isolatedRealm>false</isolatedRealm>
 	<inheritedByDefault>true</inheritedByDefault>
@@ -87,13 +87,13 @@
 			<groupId>com.liferay</groupId>
 			<artifactId>org.apache.logging.log4j.core</artifactId>
 			<type>jar</type>
-			<version>2.17.1.LIFERAY-PATCHED-1</version>
+			<version>2.17.1.LIFERAY-PATCHED-2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<type>jar</type>
-			<version>2.15.1</version>
+			<version>2.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.firemaples</groupId>

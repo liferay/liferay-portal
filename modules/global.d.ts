@@ -73,7 +73,7 @@ declare module Liferay {
 
 	export function detach(
 		event: string | EventHandler,
-		callback?: () => void
+		callback?: (event?: any) => void
 	): void;
 
 	export function fire(type: string, context?: any): void;

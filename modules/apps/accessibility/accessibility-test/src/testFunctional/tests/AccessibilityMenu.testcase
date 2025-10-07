@@ -387,8 +387,6 @@ definition {
 	@description = "LPS-178192. Verifies ON state can persist to first login user."
 	@priority = 3
 	test GuestConfigurationOnStateWillPersistForFirstLogin {
-		property portal.acceptance = "true";
-
 		task ("Given create a new user") {
 			JSONUser.addUser(
 				userEmailAddress = "userea@liferay.com",

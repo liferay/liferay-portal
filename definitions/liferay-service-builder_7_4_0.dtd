@@ -15,6 +15,14 @@ development of services.
 service-builder-import*)>
 
 <!--
+The api-package-path value specifies the package of the generated API code.
+-->
+
+<!ATTLIST service-builder
+	api-package-path CDATA #IMPLIED
+>
+
+<!--
 The package-path value specifies the package of the generated code.
 -->
 <!ATTLIST service-builder
@@ -830,6 +838,16 @@ specified, one will be generated from the finder name.
 >
 
 <!--
+The pretouch value specifies if the finder path is marked as "touched" when
+initialized. A "touched" finder path means that its corresponding finder cache
+is allowed to be populated. The default value is false.
+-->
+
+<!ATTLIST finder
+	pretouch CDATA #IMPLIED
+>
+
+<!--
 The return-type value specifies the return type of the finder. Valid values are
 "Collection" or the name of the entity. If the value is "Collection", then this
 finder returns a list of entities. If the value is the name of the entity, then
@@ -837,6 +855,15 @@ this finder returns at most one entity.
 -->
 <!ATTLIST finder
 	return-type CDATA #REQUIRED
+>
+
+<!--
+The skip-db-index-optimization-and-finder-generation value specifies whether to
+skip optimizing database index and finder related methods during generation. The
+default value is false.
+-->
+<!ATTLIST finder
+	skip-db-index-optimization-and-finder-generation #IMPLIED
 >
 
 <!--

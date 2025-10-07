@@ -33,9 +33,11 @@ export default function useOrderItems(
 		}
 	}, [activePage, fetchMore]);
 
-	return [
-		{activePage, setActivePage},
-		pageSize ?? PAGE_SIZE,
-		{data, loading: networkStatus === NetworkStatus.loading},
-	];
+	return {
+		activePage,
+		data,
+		loading: networkStatus === NetworkStatus.loading,
+		pageSize: pageSize ?? PAGE_SIZE,
+		setActivePage,
+	};
 }

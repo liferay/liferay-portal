@@ -1,0 +1,15 @@
+{
+	"object-entries": [
+		{
+			"externalReferenceCode": "TOTAL-AMOUNT",
+			"name": "totalAmount",
+			"value": "{\"USD\": 0}"
+		},
+		{
+			"externalReferenceCode": "PROJECTS-USING-MARKETPLACE",
+			"name": "projectsUsingMarketplace",
+			"value": "{}"
+		}
+	],
+	"objectDefinitionName": "Reports"
+}

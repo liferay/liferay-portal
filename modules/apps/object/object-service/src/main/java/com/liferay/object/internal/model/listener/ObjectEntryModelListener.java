@@ -96,12 +96,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		try {
 			_updateObjectViewFilterColumn(StringPool.BLANK, objectEntry);
-		}
-		catch (PortalException portalException) {
-			throw new ModelListenerException(portalException);
-		}
 
-		try {
 			long userId = PrincipalThreadLocal.getUserId();
 
 			if (userId == 0) {
@@ -110,31 +105,20 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			User user = _userLocalService.getUser(userId);
 
-			_executeObjectActions(
-				ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE, objectEntry,
-				objectEntry, user);
-
-			if (!FeatureFlagManagerUtil.isEnabled(
-					objectEntry.getCompanyId(), "LPD-34594")) {
-
-				return;
-			}
-
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.getObjectDefinition(
-					objectEntry.getObjectDefinitionId());
-
-			if (!objectDefinition.isRootDescendantNode() ||
-				!objectDefinition.isRootNode()) {
-
-				return;
+			if (!objectEntry.isInTrash()) {
+				_executeObjectActions(
+					ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
+					objectEntry, objectEntry, user);
 			}
 
 			ObjectEntry rootObjectEntry =
 				_objectEntryLocalService.fetchObjectEntry(
 					objectEntry.getRootObjectEntryId());
 
-			if (rootObjectEntry == null) {
+			if (!FeatureFlagManagerUtil.isEnabled(
+					objectEntry.getCompanyId(), "LPD-34594") ||
+				(rootObjectEntry == null)) {
+
 				return;
 			}
 

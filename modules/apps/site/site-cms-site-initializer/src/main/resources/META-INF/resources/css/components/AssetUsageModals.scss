@@ -1,0 +1,16 @@
+.cms-asset-usage-list-modal {
+	.modal-body {
+		max-height: calc(100vh - 230px) !important;
+	}
+}
+
+.cms-detailed-asset-usage-modal {
+	td:nth-child(3) {
+		text-align: right !important;
+	}
+
+	th:nth-child(4),
+	td:nth-child(4) {
+		display: none !important;
+	}
+}

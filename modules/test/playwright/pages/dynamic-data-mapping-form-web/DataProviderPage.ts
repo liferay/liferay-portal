@@ -30,8 +30,9 @@ export class DataProviderPage {
 			.getByPlaceholder('Enter a label.');
 		this.outputPathInputField = page.getByPlaceholder('Enter the path.');
 		this.outputTypeSelect = page
-			.getByLabel('PathTypeChoose an OptionLabel')
-			.getByLabel('Type');
+			.getByLabel('outputs')
+			.getByRole('combobox')
+			.and(page.getByLabel('Type'));
 		this.page = page;
 		this.passwordInputField = page.getByPlaceholder('Enter a password.');
 		this.saveButton = page.getByRole('button', {name: 'Save'});

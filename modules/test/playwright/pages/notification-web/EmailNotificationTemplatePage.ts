@@ -31,20 +31,17 @@ export class EmailNotificationTemplatePage {
 	readonly freeMarkerEntity: Locator;
 	readonly notificationTemplatesPage: NotificationTemplatesPage;
 	readonly organizationRolesGroupTitle: Locator;
-	readonly primaryRecipientRoles: Locator;
-	readonly primaryRecipientUserEmailAddress: Locator;
 	readonly primaryRecipientType: Locator;
+	readonly primaryRecipients: Locator;
 	readonly regularRolesGroupTitle: Locator;
 	readonly richTextField: Locator;
 	readonly richTextSourceButton: Locator;
 	readonly richTextSourceField: Locator;
 	readonly saveButton: Locator;
-	readonly secondaryRecipientRolesBCC: Locator;
-	readonly secondaryRecipientRolesCC: Locator;
 	readonly secondaryRecipientTypeBCC: Locator;
 	readonly secondaryRecipientTypeCC: Locator;
-	readonly secondaryRecipientsBCCInput: Locator;
-	readonly secondaryRecipientsCCInput: Locator;
+	readonly secondaryRecipientsBCC: Locator;
+	readonly secondaryRecipientsCC: Locator;
 	readonly senderEmailAddress: Locator;
 	readonly senderName: Locator;
 
@@ -70,10 +67,7 @@ export class EmailNotificationTemplatePage {
 		this.primaryRecipientType = page.getByLabel('Type' + 'Mandatory', {
 			exact: true,
 		});
-		this.primaryRecipientRoles = page.getByLabel('Role' + 'Mandatory');
-		this.primaryRecipientUserEmailAddress = page.locator(
-			'input[id="primaryRecipients"]'
-		);
+		this.primaryRecipients = page.getByLabel('RecipientsMandatory');
 		this.regularRolesGroupTitle = page
 			.getByText('Regular Roles')
 			.locator('visible=true');
@@ -86,24 +80,18 @@ export class EmailNotificationTemplatePage {
 			.getByLabel('Rich Text Editor')
 			.getByRole('textbox');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
-		this.secondaryRecipientRolesBCC = page
-			.getByLabel('Role', {exact: true})
-			.last();
-		this.secondaryRecipientRolesCC = page
-			.getByLabel('Role', {exact: true})
-			.first();
 		this.secondaryRecipientTypeBCC = page
 			.getByLabel('Type', {exact: true})
 			.last();
 		this.secondaryRecipientTypeCC = page
 			.getByLabel('Type', {exact: true})
 			.first();
-		this.secondaryRecipientsBCCInput = page.locator(
-			'#secondaryRecipientsBCC'
-		);
-		this.secondaryRecipientsCCInput = page.locator(
-			'#secondaryRecipientsCC'
-		);
+		this.secondaryRecipientsBCC = page
+			.getByLabel('Recipients', {exact: true})
+			.last();
+		this.secondaryRecipientsCC = page
+			.getByLabel('Recipients', {exact: true})
+			.first();
 		this.senderEmailAddress = page.getByLabel(
 			'Email Address' + 'Mandatory'
 		);
@@ -132,15 +120,11 @@ export class EmailNotificationTemplatePage {
 
 		await this.senderName.fill(notificationTemplateInfo.senderName);
 
-		await this.primaryRecipientUserEmailAddress.fill(
-			notificationTemplateInfo.recipients
-		);
+		await this.primaryRecipients.fill(notificationTemplateInfo.recipients);
 
-		await this.secondaryRecipientsCCInput.fill(notificationTemplateInfo.cc);
+		await this.secondaryRecipientsCC.fill(notificationTemplateInfo.cc);
 
-		await this.secondaryRecipientsBCCInput.fill(
-			notificationTemplateInfo.bcc
-		);
+		await this.secondaryRecipientsBCC.fill(notificationTemplateInfo.bcc);
 
 		await this.contentSubject.fill(notificationTemplateInfo.subject);
 	}

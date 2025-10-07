@@ -11,7 +11,9 @@ import React from 'react';
 import ObjectEntryFooter from '../../../object_entries/object_entry/ObjectEntryFooter';
 
 function renderObjectEntryFooter() {
-	return render(<ObjectEntryFooter backURL="" submitRef="" />);
+	return render(
+		<ObjectEntryFooter backURL="" portletNamespace="" submitRef="" />
+	);
 }
 
 describe('ObjectEntryFooter component', () => {
@@ -35,6 +37,18 @@ describe('ObjectEntryFooter component', () => {
 		expect(
 			screen.getByRole('button', {name: 'cancel'})
 		).toBeInTheDocument();
+	});
+
+	it('renders publish button with caret-bottom symbol', async () => {
+		renderObjectEntryFooter();
+
+		const publishButton = screen.getByRole('button', {name: 'publish'});
+
+		const caretBottomIcon = publishButton.querySelector(
+			'.lfr-object__entries-schedule-panel-publish-icon'
+		);
+
+		expect(caretBottomIcon).toBeInTheDocument();
 	});
 
 	it('renders publishing options dropdown after clicking on publish button', async () => {

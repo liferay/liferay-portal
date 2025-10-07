@@ -6,5 +6,5 @@
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check"
 	},
-	"version": "6.0.1"
+	"version": "6.0.2"
 }

@@ -102,7 +102,6 @@ test('COMMERCE-12809 As a buyer, I want to be able to verify the included and ex
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: 'ProductDetailsSite',
 			siteGroupId: site.id,
 		});
 
@@ -348,7 +347,6 @@ test('COMMERCE-8153 Verify the visibility rules', async ({
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'ProductDetailsSite',
 		siteGroupId: site.id,
 	});
 
@@ -524,7 +522,6 @@ test('LPD-33807 Mapped product add to cart', async ({
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'DiagramSite',
 		siteGroupId: site.id,
 	});
 
@@ -805,7 +802,6 @@ test('LPD-33075 Verify buyers can view the SKU of a product on the product card 
 	);
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -865,7 +861,6 @@ test('LPD-3424 Can click AddToButton button multiple times on Diagram Product Di
 	);
 
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -948,7 +943,6 @@ test('LPD-37780 Friendly URLs history for products', async ({
 	});
 
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -1166,3 +1160,97 @@ test('LPD-52731 Product shows in catalog after updating Account Group Visibility
 
 	await expect(page.getByText(product.name['en_US'])).toBeVisible();
 });
+
+test(
+	'If AccountGroupFilter is enabled and the relationship is deleted, product should not show',
+	{tag: '@LPD-65844'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productPublisherPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		const accountGroup =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
+
+		apiHelpers.data.push({id: accountGroup.id, type: 'accountGroup'});
+
+		await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
+			account.externalReferenceCode,
+			accountGroup.externalReferenceCode
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productAccountGroupFilter: true,
+				productAccountGroups: [
+					{accountGroupId: accountGroup.id, id: 0},
+				],
+			});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Publisher');
+
+		await expect(
+			productPublisherPage.productCard(product.name.en_US)
+		).toBeVisible();
+
+		await page.goto(`/web/${site.name}`);
+
+		await expect(
+			productPublisherPage.productCard(product.name.en_US)
+		).toBeVisible();
+
+		const productAccountGroups =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductAccountGroups(
+				product.productId
+			);
+
+		await apiHelpers.headlessCommerceAdminCatalog.deleteProductAccountGroup(
+			productAccountGroups.items[0].id
+		);
+
+		await page.goto(`/web/${site.name}`);
+
+		await expect(
+			productPublisherPage.productCard(product.name.en_US)
+		).not.toBeVisible();
+	}
+);

@@ -1,0 +1,52 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.headless.asset.library.dto.v1_0.ConnectedSite;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+
+/**
+ * @author Alan Huang
+ */
+public class MissingEmptyLinesAfterReferencingVariable {
+
+	protected ConnectedSite method(
+			DepotEntryGroupRel depotEntryGroupRel,
+			DTOConverterContext dtoConverterContext,
+			GroupLocalService groupLocalService)
+		throws Exception {
+
+		return new ConnectedSite() {
+			{
+				Group group = groupLocalService.getGroup(
+					depotEntryGroupRel.getToGroupId());
+
+				setExternalReferenceCode(group::getExternalReferenceCode);
+				setId(group::getGroupId);
+				setLogo(
+					() -> {
+						ThemeDisplay themeDisplay = new ThemeDisplay() {
+							{
+								setCompany(
+									companyLocalService.getCompany(
+										group.getCompanyId()));
+								setPathImage(null);
+							}
+						};
+
+						return group.getLogoURL(themeDisplay, true);
+					});
+				setName(() -> group.getName(dtoConverterContext.getLocale()));
+				setSearchable(depotEntryGroupRel::isSearchable);
+			}
+		};
+	}
+
+}

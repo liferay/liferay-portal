@@ -9,13 +9,11 @@ import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.service.PatcherAccountLocalService;
 import com.liferay.osb.patcher.util.PatcherProductVersionUtil;
-import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.BaseIndexer;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -24,9 +22,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
-import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -48,31 +44,6 @@ public class PatcherAccountIndexer extends BaseIndexer<PatcherAccount> {
 	@Override
 	public String getClassName() {
 		return CLASS_NAME;
-	}
-
-	@Override
-	public void postProcessContextQuery(
-			BooleanQuery contextQuery, SearchContext searchContext)
-		throws Exception {
-
-		BooleanQuery booleanQuery = new BooleanQueryImpl();
-
-		String accountEntryCode = GetterUtil.getString(
-			searchContext.getAttribute("accountEntryCode"));
-
-		if (Validator.isNotNull(accountEntryCode)) {
-			booleanQuery.addExactTerm("accountEntryCode", accountEntryCode);
-		}
-
-		if (GetterUtil.getBoolean(
-				searchContext.getAttribute("advancedSearch"))) {
-
-			setBooleanQuery(booleanQuery, searchContext);
-		}
-
-		if (booleanQuery.hasClauses()) {
-			contextQuery.add(booleanQuery, BooleanClauseOccur.MUST);
-		}
 	}
 
 	@Override
@@ -174,60 +145,6 @@ public class PatcherAccountIndexer extends BaseIndexer<PatcherAccount> {
 			});
 
 		indexableActionableDynamicQuery.performActions();
-	}
-
-	protected void setBooleanQuery(
-			BooleanQuery booleanQuery, SearchContext searchContext)
-		throws Exception {
-
-		String accountEntryCode = GetterUtil.getString(
-			searchContext.getAttribute("accountEntryCode"));
-
-		if (Validator.isNotNull(accountEntryCode)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "accountEntryCode",
-				PatcherUtil.prepareKeywords(accountEntryCode), false);
-		}
-
-		String patcherBuildName = GetterUtil.getString(
-			searchContext.getAttribute("patcherBuildName"));
-
-		if (Validator.isNotNull(patcherBuildName)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherBuildName",
-				PatcherUtil.prepareKeywords(patcherBuildName), true);
-		}
-
-		String patcherBuildSupportTicket = GetterUtil.getString(
-			searchContext.getAttribute("patcherBuildSupportTicket"));
-
-		if (Validator.isNotNull(patcherBuildSupportTicket)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherBuildSupportTicket",
-				PatcherUtil.prepareKeywords(patcherBuildSupportTicket), true);
-		}
-
-		long patcherProjectVersionIdFilter = GetterUtil.getLong(
-			searchContext.getAttribute("patcherProjectVersionIdFilter"));
-
-		if (patcherProjectVersionIdFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherProjectVersionId",
-				patcherProjectVersionIdFilter, true);
-		}
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			String field, Object value, boolean like)
-		throws Exception {
-
-		if (searchContext.isAndSearch()) {
-			booleanQuery.addRequiredTerm(field, String.valueOf(value), like);
-		}
-		else {
-			booleanQuery.addTerm(field, String.valueOf(value), like);
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

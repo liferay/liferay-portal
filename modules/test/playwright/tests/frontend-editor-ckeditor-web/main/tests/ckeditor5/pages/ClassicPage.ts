@@ -9,7 +9,10 @@ export class ClassicPage {
 	readonly editable: Locator;
 	readonly itemSelectorFrame: FrameLocator;
 	readonly page: Page;
-	readonly toolbar: Locator;
+	readonly toolbar: {
+		buttonLabels: Locator;
+		container: Locator;
+	};
 	readonly videoSelectorFrame: FrameLocator;
 
 	constructor(page: Page) {
@@ -21,6 +24,13 @@ export class ClassicPage {
 
 		this.page = page;
 
-		this.toolbar = page.getByLabel('Editor toolbar');
+		const toolbarContainer = page.getByLabel('Editor toolbar');
+
+		this.toolbar = {
+			buttonLabels: toolbarContainer
+				.getByRole('button')
+				.locator('.ck-button__label'),
+			container: toolbarContainer,
+		};
 	}
 }

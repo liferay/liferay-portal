@@ -55,7 +55,7 @@ ViewAccountEntriesManagementToolbarDisplayContext viewAccountEntriesManagementTo
 					href="<%= rowURL %>"
 					name="name"
 					truncate="<%= true %>"
-					value="<%= accountEntryDisplay.getName() %>"
+					value="<%= HtmlUtil.escape(accountEntryDisplay.getName()) %>"
 				/>
 
 				<liferay-ui:search-container-column-text

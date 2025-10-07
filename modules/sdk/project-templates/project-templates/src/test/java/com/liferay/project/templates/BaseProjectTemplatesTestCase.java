@@ -179,6 +179,11 @@ public interface BaseProjectTemplatesTestCase {
 	public static final boolean TEST_DEBUG_BUNDLE_DIFFS = Boolean.getBoolean(
 		"test.debug.bundle.diffs");
 
+	public static final String UNRELEASED_QUARTERLY_LIFERAY_VERSION = "2025.q3";
+
+	public static final String WORKSPACE_QUARTERLY_LIFERAY_VERSION =
+		"2025.q2.1";
+
 	public static final Pattern antBndPluginVersionPattern = Pattern.compile(
 		".*com\\.liferay\\.ant\\.bnd[:-]([0-9]+\\.[0-9]+\\.[0-9]+).*",
 		Pattern.DOTALL | Pattern.MULTILINE);
@@ -635,6 +640,10 @@ public interface BaseProjectTemplatesTestCase {
 			TemporaryFolder temporaryFolder, String liferayVersion)
 		throws Exception {
 
+		if (liferayVersion.startsWith(UNRELEASED_QUARTERLY_LIFERAY_VERSION)) {
+			liferayVersion = WORKSPACE_QUARTERLY_LIFERAY_VERSION;
+		}
+
 		String name = "test-workspace";
 
 		File destinationDir = temporaryFolder.newFolder(
@@ -653,6 +662,10 @@ public interface BaseProjectTemplatesTestCase {
 			TemporaryFolder temporaryFolder, String buildType, String name,
 			String liferayVersion, MavenExecutor mavenExecutor)
 		throws Exception {
+
+		if (liferayVersion.startsWith(UNRELEASED_QUARTERLY_LIFERAY_VERSION)) {
+			liferayVersion = WORKSPACE_QUARTERLY_LIFERAY_VERSION;
+		}
 
 		File workspaceDir;
 
@@ -1130,6 +1143,16 @@ public interface BaseProjectTemplatesTestCase {
 		return projectTemplatesArgs.getLiferayVersion();
 	}
 
+	public default String getJavaxOrJakartaPackagePrefix(
+		String liferayVersion) {
+
+		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			return "jakarta";
+		}
+
+		return "javax";
+	}
+
 	public default String getLiferayWorkspaceProduct(String liferayVersion) {
 		if (liferayVersion.startsWith("20")) {
 			return "dxp-2024.q1.1";
@@ -1309,15 +1332,7 @@ public interface BaseProjectTemplatesTestCase {
 			gradleWorkspaceModulesDir, template, name, "--liferay-product",
 			liferayProduct, "--liferay-version", liferayVersion);
 
-		if (VersionUtil.getMinorVersion(liferayVersion) < 3) {
-			testContains(
-				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
-		}
-		else {
-			testContains(
-				gradleProjectDir, "build.gradle",
-				DEPENDENCY_RELEASE_PORTAL_API);
-		}
+		testGradlePortalReleaseDependency(gradleProjectDir, liferayVersion);
 
 		testContains(
 			gradleProjectDir, "package.json",
@@ -1327,6 +1342,11 @@ public interface BaseProjectTemplatesTestCase {
 		testNotContains(
 			gradleProjectDir, "package.json",
 			"target/classes/META-INF/resources");
+
+		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			testPortletUpdatedForJakarta(
+				gradleProjectDir, packageName, className);
+		}
 
 		File mavenWorkspaceDir = buildWorkspace(
 			temporaryFolder, "maven", "mavenWS", liferayVersion, mavenExecutor);
@@ -1424,6 +1444,11 @@ public interface BaseProjectTemplatesTestCase {
 				"resources/META-INF/resources/view.jsp",
 				"resources/META-INF/resources/css/main.scss"
 			};
+
+			if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+				testPortletUpdatedForJakarta(
+					gradleProjectDir, packageName, className);
+			}
 		}
 		else {
 			resourceFileNames = new String[] {
@@ -1554,6 +1579,14 @@ public interface BaseProjectTemplatesTestCase {
 		testNotContains(
 			gradleProjectDir, "build.gradle", true, "^repositories \\{.*");
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
+
+		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			testContains(
+				gradleProjectDir, "src/main/webapp/WEB-INF/web.xml",
+				"version=\"6.0\" xmlns=\"https://jakarta.ee/xml/ns/jakartaee",
+				"xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
+					"https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd");
+		}
 
 		File mavenWorkspaceDir = buildWorkspace(
 			temporaryFolder, "maven", "mavenWS", liferayVersion, mavenExecutor);
@@ -1861,6 +1894,38 @@ public interface BaseProjectTemplatesTestCase {
 		Assert.assertNotNull("Missing " + name, zipFile.getEntry(name));
 	}
 
+	public default void testFileUpdatedForJakarta(
+			File gradleProjectDir, String filePath)
+		throws IOException {
+
+		testNotContains(gradleProjectDir, filePath, "javax");
+		testContains(gradleProjectDir, filePath, "jakarta");
+
+		if (filePath.endsWith(".jsp")) {
+			testNotContains(
+				gradleProjectDir, filePath,
+				"http://java.sun.com/jsp/jstl/core");
+			testContains(gradleProjectDir, filePath, "jakarta.tags.core");
+		}
+	}
+
+	public default void testGradlePortalReleaseDependency(
+			File gradleProjectDir, String liferayVersion)
+		throws IOException {
+
+		if (VersionUtil.isLiferayQuarterlyVersion(liferayVersion) ||
+			(VersionUtil.getMinorVersion(liferayVersion) < 3)) {
+
+			testContains(
+				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
+		}
+		else {
+			testContains(
+				gradleProjectDir, "build.gradle",
+				DEPENDENCY_RELEASE_PORTAL_API);
+		}
+	}
+
 	public default File testNotContains(
 			File dir, String fileName, boolean regex, String... strings)
 		throws IOException {
@@ -1881,6 +1946,22 @@ public interface BaseProjectTemplatesTestCase {
 		Assert.assertFalse("Unexpected " + fileName, file.exists());
 
 		return file;
+	}
+
+	public default void testPortletUpdatedForJakarta(
+			File gradleProjectDir, String packageName, String className)
+		throws IOException {
+
+		String portletFolderPath =
+			"src/main/java/" + packageName.replace('.', '/') + "/portlet/";
+
+		testFileUpdatedForJakarta(
+			gradleProjectDir, portletFolderPath + className + "Portlet.java");
+
+		testFileUpdatedForJakarta(
+			gradleProjectDir, "src/main/resources/META-INF/resources/init.jsp");
+		testFileUpdatedForJakarta(
+			gradleProjectDir, "src/main/resources/content/Language.properties");
 	}
 
 	public default File testStartsWith(File dir, String fileName, String prefix)
@@ -1979,6 +2060,20 @@ public interface BaseProjectTemplatesTestCase {
 				gradleProjectDir, "src/main/webapp/WEB-INF/liferay-portlet.xml",
 				"liferay-portlet-app_7_3_0.dtd");
 		}
+	}
+
+	public default void testTLDUpdatedForJakarta(
+			File gradleProjectDir, String tldFilePath)
+		throws IOException {
+
+		testFileUpdatedForJakarta(gradleProjectDir, tldFilePath);
+
+		testContains(
+			gradleProjectDir, tldFilePath,
+			"xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"",
+			"xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
+				"https://jakarta.ee/xml/ns/jakartaee" +
+					"/web-jsptaglibrary_3_0.xsd");
 	}
 
 	public default void testWarsDiff(File warFile1, File warFile2)

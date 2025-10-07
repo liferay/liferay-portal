@@ -1,0 +1,30 @@
+#set ($h1 = '##')
+$h1 Check GETTING_STARTED.md#platform.bndrun for more information.
+
+-distro: ${targetPlatformDistro};x-whitelist=osgi.wiring.host
+-resolve.effective: active
+-runprovidedcapabilities:\
+	osgi.service;objectClass:List<String>='com.liferay.asset.kernel.service.persistence.AssetCategoryPersistence',\
+	osgi.service;objectClass:List<String>='com.liferay.frontend.js.loader.modules.extender.npm.NPMResolver',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.configuration.Configuration',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.dao.orm.SessionFactory',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.json.JSONFactory',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.language.Language',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.model.Portlet',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.portlet.PortletPreferencesFactory',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.portlet.PortletURLFactory',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.service.persistence.LayoutSetPersistence',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.File',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.Http',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.MimeTypes',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.Portal',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.PrefsProps',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.util.Props',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.uuid.PortalUUID',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.xml.SAXReader',\
+	osgi.service;objectClass:List<String>='com.liferay.portal.kernel.zip.ZipReaderFactory',\
+	osgi.service;objectClass:List<String>='jakarta.servlet.ServletContext',\
+	osgi.service;objectClass:List<String>='jakarta.sql.DataSource',\
+	osgi.wiring.package;osgi.wiring.package=com.sun.nio.file
+-runrequires: osgi.identity;filter:='(osgi.identity=${project.bundle.Bundle-SymbolicName})'

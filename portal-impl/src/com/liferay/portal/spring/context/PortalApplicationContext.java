@@ -7,8 +7,8 @@ package com.liferay.portal.spring.context;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.spring.bean.LiferayBeanFactory;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.FileNotFoundException;
 

@@ -13,9 +13,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.search.facet.collector.FacetCollector;
 import com.liferay.portal.kernel.search.facet.collector.TermCollector;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -37,6 +40,7 @@ import java.util.Locale;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -55,7 +59,7 @@ public class AssetCategoriesSearchFacetDisplayContextTest
 
 	@Override
 	public FacetDisplayContext createFacetDisplayContext(String parameterValue)
-		throws ConfigurationException {
+		throws Exception {
 
 		return createFacetDisplayContext(parameterValue, "count:desc");
 	}
@@ -65,12 +69,11 @@ public class AssetCategoriesSearchFacetDisplayContextTest
 			String parameterValue, String order)
 		throws ConfigurationException {
 
-		RenderRequest renderRequest = Mockito.mock(RenderRequest.class);
-
 		AssetCategoriesSearchFacetDisplayContextBuilder
 			assetCategoriesSearchFacetDisplayContextBuilder =
 				new AssetCategoriesSearchFacetDisplayContextBuilder(
-					renderRequest);
+					Mockito.mock(GroupLocalService.class),
+					Mockito.mock(RenderRequest.class));
 
 		assetCategoriesSearchFacetDisplayContextBuilder.
 			setAssetCategoryLocalService(_assetCategoryLocalService);
@@ -141,6 +144,171 @@ public class AssetCategoriesSearchFacetDisplayContextTest
 			bucketDisplayContexts.toString(), 0, bucketDisplayContexts.size());
 
 		_excludedGroupId = 0;
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDisplayStyleGroup() {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGetDisplayStyleGroupWithConfiguration() {
+	}
+
+	@Test
+	public void testGetGroupVocabularyExternalReferenceCodes()
+		throws Exception {
+
+		long assetCategoryId = RandomTestUtil.randomLong();
+		long groupId = RandomTestUtil.randomLong();
+
+		AssetCategory assetCategory1 = _createAssetCategory(
+			assetCategoryId, groupId);
+
+		long assetVocabularyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			assetCategory1.getVocabularyId()
+		).thenReturn(
+			assetVocabularyId
+		);
+
+		AssetVocabulary assetVocabulary = Mockito.mock(AssetVocabulary.class);
+
+		String assetVocabularyExternalReferenceCode =
+			RandomTestUtil.randomString();
+
+		Mockito.when(
+			assetVocabulary.getExternalReferenceCode()
+		).thenReturn(
+			assetVocabularyExternalReferenceCode
+		);
+
+		Mockito.when(
+			assetVocabulary.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		String title = RandomTestUtil.randomString();
+
+		Mockito.when(
+			assetVocabulary.getTitle(Mockito.any(Locale.class))
+		).thenReturn(
+			title
+		);
+
+		Mockito.when(
+			assetVocabulary.getVocabularyId()
+		).thenReturn(
+			assetVocabularyId
+		);
+
+		AssetVocabularyLocalService assetVocabularyLocalService = Mockito.mock(
+			AssetVocabularyLocalService.class);
+
+		Mockito.when(
+			assetVocabularyLocalService.fetchAssetVocabulary(assetVocabularyId)
+		).thenReturn(
+			assetVocabulary
+		);
+
+		Group group = Mockito.mock(Group.class);
+
+		String groupExternalReferenceCode = RandomTestUtil.randomString();
+
+		Mockito.when(
+			group.getExternalReferenceCode()
+		).thenReturn(
+			groupExternalReferenceCode
+		);
+
+		GroupLocalService groupLocalService = Mockito.mock(
+			GroupLocalService.class);
+
+		Mockito.when(
+			groupLocalService.fetchGroup(groupId)
+		).thenReturn(
+			group
+		);
+
+		FacetCollector facetCollector = Mockito.mock(FacetCollector.class);
+
+		TermCollector termCollector = Mockito.mock(TermCollector.class);
+
+		Mockito.when(
+			termCollector.getFrequency()
+		).thenReturn(
+			1
+		);
+
+		Mockito.when(
+			termCollector.getTerm()
+		).thenReturn(
+			String.valueOf(assetCategoryId)
+		);
+
+		Mockito.when(
+			facetCollector.getTermCollectors()
+		).thenReturn(
+			ListUtil.fromArray(termCollector)
+		);
+
+		Mockito.when(
+			facet.getFacetCollector()
+		).thenReturn(
+			facetCollector
+		);
+
+		Mockito.when(
+			facet.getFieldName()
+		).thenReturn(
+			"assetCategoryIds"
+		);
+
+		AssetCategoriesSearchFacetDisplayContextBuilder
+			assetCategoriesSearchFacetDisplayContextBuilder =
+				new AssetCategoriesSearchFacetDisplayContextBuilder(
+					groupLocalService, Mockito.mock(RenderRequest.class));
+
+		assetCategoriesSearchFacetDisplayContextBuilder.
+			setAssetCategoryLocalService(_assetCategoryLocalService);
+		assetCategoriesSearchFacetDisplayContextBuilder.
+			setAssetVocabularyLocalService(assetVocabularyLocalService);
+		assetCategoriesSearchFacetDisplayContextBuilder.
+			setAssetCategoryPermissionChecker(assetCategory2 -> true);
+		assetCategoriesSearchFacetDisplayContextBuilder.setDisplayStyle(
+			"cloud");
+		assetCategoriesSearchFacetDisplayContextBuilder.setFacet(facet);
+		assetCategoriesSearchFacetDisplayContextBuilder.setFrequenciesVisible(
+			true);
+		assetCategoriesSearchFacetDisplayContextBuilder.setLocale(
+			LocaleUtil.US);
+		assetCategoriesSearchFacetDisplayContextBuilder.setMaxTerms(10);
+		assetCategoriesSearchFacetDisplayContextBuilder.setParameterName(
+			"category");
+		assetCategoriesSearchFacetDisplayContextBuilder.setPortal(
+			_getPortal(null));
+
+		AssetCategoriesSearchFacetDisplayContext
+			assetCategoriesSearchFacetDisplayContext =
+				assetCategoriesSearchFacetDisplayContextBuilder.build();
+
+		Assert.assertEquals(
+			ListUtil.fromArray(
+				groupExternalReferenceCode + "&&" +
+					assetVocabularyExternalReferenceCode),
+			assetCategoriesSearchFacetDisplayContext.
+				getGroupVocabularyExternalReferenceCodes());
+		Assert.assertEquals(
+			ListUtil.fromArray(assetVocabularyId),
+			assetCategoriesSearchFacetDisplayContext.getVocabularyIds());
+		Assert.assertEquals(
+			ListUtil.fromArray(title),
+			assetCategoriesSearchFacetDisplayContext.getVocabularyNames());
 	}
 
 	@Override
@@ -407,6 +575,7 @@ public class AssetCategoriesSearchFacetDisplayContextTest
 		AssetCategoriesSearchFacetDisplayContextBuilder
 			assetCategoriesSearchFacetDisplayContextBuilder =
 				new AssetCategoriesSearchFacetDisplayContextBuilder(
+					Mockito.mock(GroupLocalService.class),
 					getRenderRequest(group));
 
 		assetCategoriesSearchFacetDisplayContextBuilder.setPortal(

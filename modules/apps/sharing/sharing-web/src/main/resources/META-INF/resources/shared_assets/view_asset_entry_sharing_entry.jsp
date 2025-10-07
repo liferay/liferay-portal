@@ -61,6 +61,7 @@ else {
 	<liferay-asset:asset-display
 		renderer="<%= viewSharingEntryAssetEntryDisplayContext.getAssetRenderer() %>"
 		showComments="<%= false %>"
+		showHeader="<%= false %>"
 	/>
 
 	<c:if test="<%= viewSharingEntryAssetEntryDisplayContext.isCommentable() %>">

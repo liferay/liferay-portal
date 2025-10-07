@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect, mergeTests} from '@playwright/test';
+import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {instanceSettingsPagesTest} from '../../../fixtures/instanceSettingsPagesTest';
 import {ldapConfigurationPagesTest} from '../../../fixtures/ldapConfigurationPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -16,6 +17,7 @@ import {
 	TLdapConfiguration,
 	TLdapServer,
 } from '../../../helpers/LdapConfigurationHelper';
+import {InstanceSettingsPage} from '../../../pages/configuration-admin-web/InstanceSettingsPage';
 import {SystemSettingsPage} from '../../../pages/configuration-admin-web/SystemSettingsPage';
 import {LdapConfigurationPage} from '../../../pages/portal-security-ldap/LdapConfigurationPage';
 import {LdapServerPage} from '../../../pages/portal-security-ldap/LdapServerPage';
@@ -33,7 +35,10 @@ export const test = mergeTests(
 	ldapConfigurationPagesTest,
 	systemSettingsPageTest,
 	usersAndOrganizationsPagesTest,
-	userGroupsPageTest
+	userGroupsPageTest,
+	featureFlagsTest({
+		'LPD-45613': {enabled: true, system: true},
+	})
 );
 
 const LDAP_GROUP_1 = 'ldapgroup1';
@@ -987,6 +992,44 @@ test('smoke: Add LDAP server, verify connection, users, and groups are mapped pr
 	});
 });
 
+test('LPD-59415 Verify that both System/Instance level LDAP settings have the same UI', async ({
+	page,
+}) => {
+	const systemSettingsPage = new SystemSettingsPage(page);
+	const instanceSettingsPage = new InstanceSettingsPage(page);
+	const ldapSettingsTabKeys = ['General', 'Servers', 'Export', 'Import'];
+
+	await test.step('Compare URLs from LDAP settings tabs (System and Instance level) and make sure they render the same UI', async () => {
+		for (const key of ldapSettingsTabKeys) {
+			await systemSettingsPage.goToSystemSetting('LDAP', key);
+			await instanceSettingsPage.goToInstanceSetting('LDAP', key);
+
+			const systemSettingsUrl = systemSettingsPage.page.url();
+			const instanceSettingsUrl = instanceSettingsPage.page.url();
+
+			const [, systemConfigurationScreenKey] = systemSettingsUrl.split(
+				'_configurationScreenKey'
+			);
+			const [, instanceConfigurationScreenKey] =
+				instanceSettingsUrl.split('_configurationScreenKey');
+
+			expect(systemConfigurationScreenKey).toBe(
+				instanceConfigurationScreenKey
+			);
+			expect(
+				systemSettingsUrl.includes(
+					'_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen'
+				)
+			).toBeTruthy();
+			expect(
+				instanceSettingsUrl.includes(
+					'_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen'
+				)
+			).toBeTruthy();
+		}
+	});
+});
+
 async function invokeLdapImport(page: Page, ldapServer?: TLdapServer) {
 	if (ldapServer) {
 		await updateLdapServerCustomMapping(ldapServer, page);
@@ -1011,6 +1054,35 @@ async function invokeLdapImport(page: Page, ldapServer?: TLdapServer) {
 		await serverAdministrationPage.executeScript(script);
 	});
 }
+
+test('LPD-57008 Verify if the unused error keywords fields are no longer present', async ({
+	ldapConfigurationPage,
+}) => {
+	await test.step('Go to LDAP Connection tab', async () => {
+		await ldapConfigurationPage.goToConnectionTab();
+	});
+
+	await test.step('Check if unused password error keywords fields are visible', async () => {
+		const errorKeywordFields: Locator[] = [
+			ldapConfigurationPage.page.getByLabel(
+				'Error Password Age Keywords'
+			),
+			ldapConfigurationPage.page.getByLabel(
+				'Error Password Not Changeable Keywords'
+			),
+			ldapConfigurationPage.page.getByLabel(
+				'Error Password Syntax Keywords'
+			),
+			ldapConfigurationPage.page.getByLabel(
+				'Error Password Trivial Text Keywords'
+			),
+		];
+
+		for (const errorKeywordField of errorKeywordFields) {
+			await expect(errorKeywordField).not.toBeVisible();
+		}
+	});
+});
 
 async function resetLdapImportSystemSettings(
 	systemSettingsPage: SystemSettingsPage

@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
-import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.math.BigDecimal;
@@ -194,11 +193,11 @@ public class MappedProductDTOConverter
 						}
 
 						return _productConfigurationDTOConverter.toDTO(
-							new DefaultDTOConverterContext(
-								_dtoConverterRegistry,
+							new ProductConfigurationDTOConverterContext(
+								mappedProductDTOConverterContext.
+									getCommerceContext(),
 								cpDefinition.getCPDefinitionId(),
-								mappedProductDTOConverterContext.getLocale(),
-								null, null));
+								mappedProductDTOConverterContext.getLocale()));
 					});
 				setProductExternalReferenceCode(
 					() -> {
@@ -563,9 +562,6 @@ public class MappedProductDTOConverter
 
 	@Reference
 	private CSDiagramEntryLocalService _csDiagramEntryLocalService;
-
-	@Reference
-	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference
 	private Language _language;

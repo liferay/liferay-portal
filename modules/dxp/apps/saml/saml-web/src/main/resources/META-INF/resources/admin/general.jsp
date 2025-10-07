@@ -22,10 +22,12 @@ if (Validator.isNotNull(entityId)) {
 	keystoreIncorrectPassword = x509CertificateStatus.getStatus() == GeneralTabDefaultViewDisplayContext.X509CertificateStatus.Status.SAML_KEYSTORE_PASSWORD_INCORRECT;
 }
 
+boolean roleSp = StringUtil.equalsIgnoreCase(samlProviderConfiguration.role(), SamlProviderConfigurationKeys.SAML_ROLE_SP) || StringUtil.equalsIgnoreCase(samlProviderConfiguration.role(), SamlProviderConfigurationKeys.SAML_ROLE_IB);
 String samlRole = unicodeProperties.getProperty(PortletPropsKeys.SAML_ROLE, samlProviderConfiguration.role());
-boolean samlRoleIdpOptionDisabled = StringUtil.equalsIgnoreCase(samlProviderConfiguration.role(), SamlProviderConfigurationKeys.SAML_ROLE_SP) && !generalTabDefaultViewDisplayContext.isRoleIdPAvailable();
 
 String samlRoleHelpMessage = StringPool.BLANK;
+
+boolean samlRoleIdpOptionDisabled = roleSp && !generalTabDefaultViewDisplayContext.isRoleIdPAvailable();
 
 if (samlRoleIdpOptionDisabled) {
 	samlRoleHelpMessage = "the-identity-provider-role-has-been-disabled-it-can-be-re-enabled-in-system-settings";
@@ -52,13 +54,17 @@ if (samlRoleIdpOptionDisabled) {
 			</div>
 		</c:if>
 
-		<c:if test="<%= samlProviderConfigurationHelper.isEnabled() && StringUtil.equalsIgnoreCase(samlProviderConfiguration.role(), SamlProviderConfigurationKeys.SAML_ROLE_SP) && !localEntityManager.hasDefaultIdpRole() %>">
+		<c:if test="<%= samlProviderConfigurationHelper.isEnabled() && roleSp && !localEntityManager.hasDefaultIdpRole() %>">
 			<div class="portlet-msg-info">
 				<liferay-ui:message key="you-must-configure-at-least-one-identity-provider-connection-for-saml-to-function" />
 			</div>
 		</c:if>
 
 		<aui:select disabled="<%= samlRoleIdpOptionDisabled %>" helpMessage="<%= samlRoleHelpMessage %>" label="saml-role" name='<%= "settings--" + PortletPropsKeys.SAML_ROLE + "--" %>' required="<%= !samlRoleIdpOptionDisabled %>">
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-29737") %>'>
+				<aui:option label="identity-broker" selected="<%= samlRole.equals(SamlProviderConfigurationKeys.SAML_ROLE_IB) %>" value="<%= SamlProviderConfigurationKeys.SAML_ROLE_IB %>" />
+			</c:if>
+
 			<aui:option label="identity-provider" selected="<%= samlRole.equals(SamlProviderConfigurationKeys.SAML_ROLE_IDP) %>" value="<%= SamlProviderConfigurationKeys.SAML_ROLE_IDP %>" />
 			<aui:option label="service-provider" selected="<%= samlRole.equals(SamlProviderConfigurationKeys.SAML_ROLE_SP) %>" value="<%= SamlProviderConfigurationKeys.SAML_ROLE_SP %>" />
 		</aui:select>
@@ -101,7 +107,7 @@ if (samlRoleIdpOptionDisabled) {
 
 		<br />
 
-		<c:if test="<%= StringUtil.equalsIgnoreCase(samlProviderConfiguration.role(), SamlProviderConfigurationKeys.SAML_ROLE_SP) %>">
+		<c:if test="<%= roleSp %>">
 			<aui:fieldset label="encryption-certificate-and-private-key">
 				<liferay-util:include page="/admin/certificate_info.jsp" servletContext="<%= application %>">
 					<liferay-util:param name="certificateUsage" value="<%= LocalEntityManager.CertificateUsage.ENCRYPTION.name() %>" />

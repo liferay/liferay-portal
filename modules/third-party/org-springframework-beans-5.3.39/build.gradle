@@ -1,0 +1,24 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task patch(type: PatchTask)
+
+dependencies {
+	api group: "commons-logging", name: "commons-logging", version: "1.2"
+	api group: "org.springframework", name: "spring-beans", version: "5.3.39"
+	api group: "org.springframework", name: "spring-core", version: "5.3.39"
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/springframework/beans/CachedIntrospectionResults.java"
+	originalLibModuleName = "spring-beans"
+}

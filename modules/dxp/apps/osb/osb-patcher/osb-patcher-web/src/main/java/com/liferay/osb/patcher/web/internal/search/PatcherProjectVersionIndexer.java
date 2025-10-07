@@ -46,15 +46,15 @@ public class PatcherProjectVersionIndexer
 	}
 
 	@Override
-	public void postProcessContextQuery(
-			BooleanQuery contextQuery, SearchContext searchContext)
+	public void postProcessContextBooleanFilter(
+			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
 
 		long patcherProductVersionId = GetterUtil.getLong(
 			searchContext.getAttribute("patcherProductVersionId"));
 
 		if (patcherProductVersionId > 0) {
-			contextQuery.addRequiredTerm(
+			contextBooleanFilter.addRequiredTerm(
 				"patcherProductVersionId", patcherProductVersionId);
 		}
 	}

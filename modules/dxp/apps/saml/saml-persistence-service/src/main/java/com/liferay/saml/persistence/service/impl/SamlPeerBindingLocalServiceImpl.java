@@ -33,10 +33,9 @@ public class SamlPeerBindingLocalServiceImpl
 
 	@Override
 	public SamlPeerBinding addSamlPeerBinding(
-			long userId, String samlNameIdFormat,
+			long userId, String samlPeerEntityId, String samlNameIdFormat,
 			String samlNameIdNameQualifier, String samlNameIdSpNameQualifier,
-			String samlNameIdSpProvidedId, String samlNameIdValue,
-			String samlPeerEntityId)
+			String samlNameIdSpProvidedId, String samlNameIdValue)
 		throws PortalException {
 
 		User user = _userLocalService.getUserById(userId);
@@ -47,25 +46,25 @@ public class SamlPeerBindingLocalServiceImpl
 		samlPeerBinding.setCompanyId(user.getCompanyId());
 		samlPeerBinding.setUserId(user.getUserId());
 		samlPeerBinding.setUserName(user.getFullName());
+		samlPeerBinding.setSamlPeerEntityId(samlPeerEntityId);
 		samlPeerBinding.setSamlNameIdFormat(samlNameIdFormat);
 		samlPeerBinding.setSamlNameIdNameQualifier(samlNameIdNameQualifier);
 		samlPeerBinding.setSamlNameIdSpNameQualifier(samlNameIdSpNameQualifier);
 		samlPeerBinding.setSamlNameIdSpProvidedId(samlNameIdSpProvidedId);
 		samlPeerBinding.setSamlNameIdValue(samlNameIdValue);
-		samlPeerBinding.setSamlPeerEntityId(samlPeerEntityId);
 
 		return samlPeerBindingPersistence.update(samlPeerBinding);
 	}
 
 	@Override
 	public SamlPeerBinding fetchSamlPeerBinding(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId) {
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue) {
 
 		List<SamlPeerBinding> samlPeerBindings = getSamlPeerBindings(
-			companyId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdValue, samlPeerEntityId);
+			companyId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier, samlNameIdValue);
 
 		if (!samlPeerBindings.isEmpty()) {
 			return samlPeerBindings.get(0);
@@ -76,9 +75,9 @@ public class SamlPeerBindingLocalServiceImpl
 
 	@Override
 	public List<SamlPeerBinding> getSamlPeerBindings(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId) {
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue) {
 
 		List<SamlPeerBinding> samlPeerBindings =
 			samlPeerBindingPersistence.findByC_D_SNIV(
@@ -89,27 +88,27 @@ public class SamlPeerBindingLocalServiceImpl
 			samlPeerBindings,
 			samlPeerBinding ->
 				Objects.equals(
+					GetterUtil.getString(samlPeerEntityId),
+					samlPeerBinding.getSamlPeerEntityId()) &&
+				Objects.equals(
 					GetterUtil.getString(samlNameIdFormat),
 					samlPeerBinding.getSamlNameIdFormat()) &&
 				Objects.equals(
 					GetterUtil.getString(samlNameIdNameQualifier),
-					samlPeerBinding.getSamlNameIdNameQualifier()) &&
-				Objects.equals(
-					GetterUtil.getString(samlPeerEntityId),
-					samlPeerBinding.getSamlPeerEntityId()));
+					samlPeerBinding.getSamlNameIdNameQualifier()));
 	}
 
 	@Override
 	public List<SamlPeerBinding> getUserSamlPeerBindings(
-			long userId, boolean deleted, String samlNameIdFormat,
-			String samlNameIdNameQualifier, String samlPeerEntityId)
+			long userId, String samlPeerEntityId, boolean deleted,
+			String samlNameIdFormat, String samlNameIdNameQualifier)
 		throws PortalException {
 
 		User user = _userLocalService.getUserById(userId);
 
 		List<SamlPeerBinding> samlPeerBindings =
-			samlPeerBindingPersistence.findByC_U_D_SPEI(
-				user.getCompanyId(), userId, deleted, samlPeerEntityId,
+			samlPeerBindingPersistence.findByC_U_SPEI_D(
+				user.getCompanyId(), userId, samlPeerEntityId, deleted,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		return ListUtil.filter(

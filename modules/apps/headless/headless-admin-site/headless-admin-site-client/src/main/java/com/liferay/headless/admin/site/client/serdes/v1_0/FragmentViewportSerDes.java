@@ -46,6 +46,20 @@ public class FragmentViewportSerDes {
 
 		sb.append("{");
 
+		if (fragmentViewport.getCustomCSS() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"customCSS\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fragmentViewport.getCustomCSS()));
+
+			sb.append("\"");
+		}
+
 		if (fragmentViewport.getFragmentViewportStyle() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -90,6 +104,14 @@ public class FragmentViewportSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (fragmentViewport.getCustomCSS() == null) {
+			map.put("customCSS", null);
+		}
+		else {
+			map.put(
+				"customCSS", String.valueOf(fragmentViewport.getCustomCSS()));
+		}
+
 		if (fragmentViewport.getFragmentViewportStyle() == null) {
 			map.put("fragmentViewportStyle", null);
 		}
@@ -124,7 +146,12 @@ public class FragmentViewportSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "fragmentViewportStyle")) {
+			if (Objects.equals(jsonParserFieldName, "customCSS")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "fragmentViewportStyle")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -139,7 +166,14 @@ public class FragmentViewportSerDes {
 			FragmentViewport fragmentViewport, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "fragmentViewportStyle")) {
+			if (Objects.equals(jsonParserFieldName, "customCSS")) {
+				if (jsonParserFieldValue != null) {
+					fragmentViewport.setCustomCSS((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "fragmentViewportStyle")) {
+
 				if (jsonParserFieldValue != null) {
 					fragmentViewport.setFragmentViewportStyle(
 						FragmentViewportStyleSerDes.toDTO(

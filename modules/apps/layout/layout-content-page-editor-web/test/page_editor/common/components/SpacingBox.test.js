@@ -247,7 +247,7 @@ describe('SpacingBox', () => {
 		expect(screen.getByText('111px')).toBeInTheDocument();
 	});
 
-	describe('LenghtInput inside SpacingBox', () => {
+	describe('LengthInput inside SpacingBox', () => {
 		it('does not render the input when user does not have update permission', () => {
 			render(<SpacingBoxTest canSetCustomValue={false} />);
 

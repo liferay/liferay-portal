@@ -372,11 +372,11 @@ public class ListTypeEntryLocalServiceUtil {
 		return getService().getListTypeEntryByUuidAndCompanyId(uuid, companyId);
 	}
 
-	public static ListTypeEntry getOrAddIncompleteListTypeEntry(
+	public static ListTypeEntry getOrAddEmptyListTypeEntry(
 			long userId, long listTypeDefinitionId, String key)
 		throws PortalException {
 
-		return getService().getOrAddIncompleteListTypeEntry(
+		return getService().getOrAddEmptyListTypeEntry(
 			userId, listTypeDefinitionId, key);
 	}
 

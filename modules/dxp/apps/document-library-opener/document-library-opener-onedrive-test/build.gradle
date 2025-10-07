@@ -1,0 +1,6 @@
+dependencies {
+	testIntegrationImplementation project(":apps:document-library-opener:document-library-opener-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

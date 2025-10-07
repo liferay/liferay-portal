@@ -12,8 +12,8 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.store.test.util.BaseStoreTestCase;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -41,7 +41,7 @@ public class AdvancedFileSystemStoreTest extends BaseStoreTestCase {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		_rootDir =
-			_props.get(PropsKeys.LIFERAY_HOME) +
+			PropsUtil.get(PropsKeys.LIFERAY_HOME) +
 				"/test/store/advanced_file_system";
 
 		_configuration = _configurationAdmin.getConfiguration(
@@ -72,9 +72,6 @@ public class AdvancedFileSystemStoreTest extends BaseStoreTestCase {
 
 	@Inject
 	private static ConfigurationAdmin _configurationAdmin;
-
-	@Inject
-	private static Props _props;
 
 	private static String _rootDir;
 

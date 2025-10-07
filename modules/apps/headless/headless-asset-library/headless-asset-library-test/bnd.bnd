@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Headless Asset Library Test
 Bundle-SymbolicName: com.liferay.headless.asset.library.test
 Bundle-Version: 1.0.0
--includeresource: com.liferay.headless.asset.library.client.jar=com.liferay.headless.asset.library.client-*.jar;lib:=true
+-includeresource:\
+	com.liferay.headless.asset.library.client.jar=com.liferay.headless.asset.library.client-*.jar;lib:=true,\
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true

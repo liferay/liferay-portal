@@ -10,6 +10,6 @@ package com.liferay.exportimport.kernel.lar;
  */
 public enum DataLevel {
 
-	PORTAL, PORTLET_INSTANCE, SITE
+	DEPOT, PORTAL, PORTLET_INSTANCE, SITE
 
 }

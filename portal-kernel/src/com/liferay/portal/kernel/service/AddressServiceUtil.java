@@ -47,6 +47,14 @@ public class AddressServiceUtil {
 		getService().deleteAddress(addressId);
 	}
 
+	public static Address fetchAddressByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().fetchAddressByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static Address getAddress(long addressId) throws PortalException {
 		return getService().getAddress(addressId);
 	}
@@ -63,6 +71,14 @@ public class AddressServiceUtil {
 
 		return getService().getListTypeAddresses(
 			className, classPK, listTypeIds);
+	}
+
+	public static Address getOrAddEmptyAddress(
+			String externalReferenceCode, String className, long classPK)
+		throws PortalException {
+
+		return getService().getOrAddEmptyAddress(
+			externalReferenceCode, className, classPK);
 	}
 
 	/**

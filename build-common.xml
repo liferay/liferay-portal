@@ -620,6 +620,8 @@ information.
 	<macrodef name="generate-backend-batch-junit-report">
 		<attribute name="junit.failure.count" />
 		<attribute name="junit.failure.message.element" />
+		<attribute default="0.0" name="test.class.duration" />
+		<attribute default="" name="test.class.file.name" />
 		<attribute name="test.class.name" />
 		<attribute name="test.command.name" />
 		<attribute default="." name="test.results.dir" />
@@ -631,16 +633,165 @@ information.
 				<format pattern="yyyy-MM-dd_kk:mm:ss" property="junit.timestamp" />
 			</tstamp>
 
-			<echo file="@{test.results.dir}/TEST-@{test.class.name}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+			<local name="test.class.file.name" />
 
-			<testsuite errors="@{junit.failure.count}" failures="@{junit.failure.count}" hostname="localhost" name="@{test.class.name}" skipped="0" tests="1" time="0.0" timestamp="${junit.timestamp}">
+			<condition else="@{test.class.file.name}" property="test.class.file.name" value="@{test.class.name}">
+				<equals arg1="@{test.class.file.name}" arg2="" />
+			</condition>
+
+			<echo>Writing @{test.results.dir}/TEST-${test.class.file.name}.xml</echo>
+
+			<echo file="@{test.results.dir}/TEST-${test.class.file.name}.xml"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+
+			<testsuite errors="@{junit.failure.count}" failures="@{junit.failure.count}" hostname="localhost" name="@{test.class.name}" skipped="0" tests="1" time="@{test.class.duration}" timestamp="${junit.timestamp}">
 				<properties />
-				<testcase classname="@{test.class.name}" name="@{test.command.name}" time="0.0">
+				<testcase classname="@{test.class.name}" name="@{test.command.name}" time="@{test.class.duration}">
 					@{junit.failure.message.element}
 				</testcase>
 				<system-out></system-out>
 				<system-err></system-err>
 			</testsuite>]]></echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="generate-backend-batch-junit-report-ant-target">
+		<attribute name="ant.target.failure.count" />
+		<attribute default="" name="ant.target.failure.message" />
+		<attribute default="" name="ant.target.failure.stacktrace" />
+		<attribute name="ant.target.file" />
+		<attribute name="ant.target.name" />
+		<attribute name="ant.target.start.time" />
+
+		<sequential>
+			<local name="ant.target.duration" />
+			<local name="ant.target.failure.message" />
+			<local name="ant.target.failure.message.element" />
+			<local name="ant.target.failure.stacktrace" />
+
+			<beanshell>
+				<![CDATA[
+					long duration = System.currentTimeMillis() - Long.valueOf("@{ant.target.start.time}");
+
+					project.setProperty("ant.target.duration", String.valueOf((double)duration / 1000));
+				]]>
+			</beanshell>
+
+			<condition else="@{ant.target.failure.message}" property="ant.target.failure.message" value="@{ant.target.file} @{ant.target.name} was not executed. Please check the logs for details.">
+				<equals arg1="@{ant.target.failure.message}" arg2="" />
+			</condition>
+
+			<antelope:stringutil property="ant.target.failure.stacktrace" string="@{ant.target.failure.stacktrace}">
+				<antelope:replace regex="&amp;" replacement="&amp;amp;" />
+				<antelope:replace regex="&apos;" replacement="&amp;apos;" />
+				<antelope:replace regex="&gt;" replacement="&amp;gt;" />
+				<antelope:replace regex="&lt;" replacement="&amp;lt;" />
+				<antelope:replace regex="&quot;" replacement="&amp;quot;" />
+			</antelope:stringutil>
+
+			<if>
+				<equals arg1="@{ant.target.failure.count}" arg2="0" />
+				<then>
+					<property name="ant.target.failure.message.element" value="" />
+				</then>
+				<else>
+					<property name="ant.target.failure.message.element"><![CDATA[<failure message="${ant.target.failure.message}">${ant.target.failure.stacktrace}</failure>]]></property>
+				</else>
+			</if>
+
+			<local name="test.class.name" />
+
+			<propertyregex
+				global="true"
+				input="@{ant.target.file}"
+				override="yes"
+				property="test.class.name"
+				regexp="\/"
+				replace="."
+			/>
+
+			<generate-backend-batch-junit-report
+				junit.failure.count="@{ant.target.failure.count}"
+				junit.failure.message.element="${ant.target.failure.message.element}"
+				test.class.duration="${ant.target.duration}"
+				test.class.file.name="${test.class.name}.@{ant.target.name}"
+				test.class.name="${test.class.name}"
+				test.command.name="@{ant.target.name}"
+				test.results.dir="modules/test-results"
+			/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="generate-backend-batch-junit-report-gradle-task">
+		<attribute name="gradle.task.failure.count" />
+		<attribute default="" name="gradle.task.failure.message" />
+		<attribute default="" name="gradle.task.failure.stacktrace" />
+		<attribute name="gradle.task.module.dir" />
+		<attribute name="gradle.task.start.time" />
+		<attribute name="gradle.task.name" />
+
+		<sequential>
+			<local name="gradle.task.duration" />
+			<local name="gradle.task.name" />
+			<local name="gradle.task.failure.message" />
+			<local name="gradle.task.failure.message.element" />
+			<local name="gradle.task.failure.stacktrace" />
+
+			<beanshell>
+				<![CDATA[
+					long duration = System.currentTimeMillis() - Long.valueOf("@{gradle.task.start.time}");
+
+					project.setProperty("gradle.task.duration", String.valueOf((double)duration / 1000));
+				]]>
+			</beanshell>
+
+			<condition else="@{gradle.task.name}" property="gradle.task.name" value="assemble">
+				<or>
+					<contains string="@{gradle.task.name}" substring="assemble" />
+					<contains string="@{gradle.task.name}" substring="compileTestIntegrationJava" />
+				</or>
+			</condition>
+
+			<condition else="@{gradle.task.failure.message}" property="gradle.task.failure.message" value="@{gradle.task.module.dir} ${gradle.task.name} was not executed. Please check the logs for details.">
+				<equals arg1="@{gradle.task.failure.message}" arg2="" />
+			</condition>
+
+			<antelope:stringutil property="gradle.task.failure.stacktrace" string="@{gradle.task.failure.stacktrace}">
+				<antelope:replace regex="&amp;" replacement="&amp;amp;" />
+				<antelope:replace regex="&apos;" replacement="&amp;apos;" />
+				<antelope:replace regex="&gt;" replacement="&amp;gt;" />
+				<antelope:replace regex="&lt;" replacement="&amp;lt;" />
+				<antelope:replace regex="&quot;" replacement="&amp;quot;" />
+			</antelope:stringutil>
+
+			<if>
+				<equals arg1="@{gradle.task.failure.count}" arg2="0" />
+				<then>
+					<property name="gradle.task.failure.message.element" value="" />
+				</then>
+				<else>
+					<property name="gradle.task.failure.message.element"><![CDATA[<failure message="${gradle.task.failure.message}">${gradle.task.failure.stacktrace}</failure>]]></property>
+				</else>
+			</if>
+
+			<local name="test.class.name" />
+
+			<propertyregex
+				global="true"
+				input="@{gradle.task.module.dir}"
+				override="yes"
+				property="test.class.name"
+				regexp="\/"
+				replace="."
+			/>
+
+			<generate-backend-batch-junit-report
+				junit.failure.count="@{gradle.task.failure.count}"
+				junit.failure.message.element="${gradle.task.failure.message.element}"
+				test.class.duration="${gradle.task.duration}"
+				test.class.name="${test.class.name}"
+				test.command.name="${gradle.task.name}"
+				test.results.dir="modules/test-results"
+			/>
 		</sequential>
 	</macrodef>
 
@@ -651,7 +802,7 @@ information.
 		<sequential>
 			<generate-backend-batch-junit-report
 				junit.failure.count="1"
-				junit.failure.message.element="&lt;failure message=&quot;@{test.task.name} could not be executed. Please check the logs for details.&quot; /&gt;"
+				junit.failure.message.element="&lt;failure message=&quot;@{test.task.name} was not executed. Please check the logs for details.&quot; /&gt;"
 				test.class.name="@{test.class.name}"
 				test.command.name="testRun"
 				test.results.dir="modules/test-results"
@@ -1115,7 +1266,14 @@ information.
 
 			<prepare-portal-artifact-pom snapshot.version.suffix="${snapshot.version.suffix}" />
 
-			<delete dir="${build.repository.local.actual.dir}/com/liferay/portal/com.liferay.${processed.artifact.name}" />
+			<if>
+				<not>
+					<isset property="env.JENKINS_HOME" />
+				</not>
+				<then>
+					<delete dir="${build.repository.local.actual.dir}/com/liferay/portal/com.liferay.${processed.artifact.name}" />
+				</then>
+			</if>
 
 			<artifact:install file="${artifact.name}.@{packaging}">
 				<attach-files />
@@ -1893,6 +2051,17 @@ artifact.url=${remote.repository.cdn.url}/com/liferay/portal/com.liferay.${proce
 								symbolic="${sync.dir.symbolic}"
 								toDir="${project.dir}/modules/node_modules_cache"
 							/>
+
+							<if>
+								<available file="${project.dir}/${build.binaries.cache.dir}/.yarn/dxp/apps/osb/osb-faro/offline-cache" type="dir" />
+								<then>
+									<sync-dir
+										dir="${project.dir}/${build.binaries.cache.dir}/.yarn/dxp/apps/osb/osb-faro/offline-cache"
+										symbolic="${sync.dir.symbolic}"
+										toDir="${project.dir}/modules/dxp/apps/osb/osb-faro/node_modules_cache"
+									/>
+								</then>
+							</if>
 						</then>
 						<else>
 							<gradle-execute dir="${project.dir}/modules" task="setUpYarnOfflineCache">

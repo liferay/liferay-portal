@@ -1,0 +1,89 @@
+[
+	{
+		"externalReferenceCode": "CMSPRIMARYNAVIGATION",
+		"menuItems": [
+			{
+				"displayIcon": "home",
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION1",
+				"friendlyURL": "/home",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"displayIcon": "analytics",
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION2",
+				"friendlyURL": "/dashboard",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION3",
+				"menuItems": [
+					{
+						"displayIcon": "sheets",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION4",
+						"friendlyURL": "/all",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "catalog",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION5",
+						"friendlyURL": "/contents",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "documents-and-media",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION6",
+						"friendlyURL": "/files",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Assets"
+				},
+				"type": "node"
+			},
+			{
+				"displayIcon": "users",
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION7",
+				"friendlyURL": "/shared-with-me",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION8",
+				"menuItems": [
+					{
+						"displayIcon": "edit-layout",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION9",
+						"friendlyURL": "/structures",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "vocabulary",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION10",
+						"friendlyURL": "/categorization",
+						"privateLayout": false,
+						"type": "layout"
+					},
+					{
+						"displayIcon": "trash",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION11",
+						"friendlyURL": "/recycle-bin",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Admin"
+				},
+				"type": "node"
+			}
+		],
+		"name": "CMS Primary Navigation"
+	}
+]

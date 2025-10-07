@@ -2580,6 +2580,8 @@ definition {
 
 	@priority = 3
 	test SearchViaBlueprintsPreviewWithAttributes {
+		property portal.acceptance = "quarantine";
+
 		JSONCategory.addVocabulary(
 			groupName = "Guest",
 			title = "Test Vocabulary");
@@ -3279,7 +3281,9 @@ definition {
 			key_entryTitle = "Test Blueprint 1",
 			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Blueprints.viewNoEntry(title = "Test Blueprint 1");
 
@@ -3292,6 +3296,14 @@ definition {
 		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
 		for (var count : list "2,3,4") {
+			AssertNotChecked.assertNotCheckedNotVisible(
+				key_entryTitle = "Test Blueprint ${count}",
+				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
+		}
+
+		Check.checkNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
+
+		for (var count : list "2,3,4") {
 			AssertChecked.assertCheckedNotVisible(
 				key_entryTitle = "Test Blueprint ${count}",
 				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
@@ -3299,17 +3311,13 @@ definition {
 
 		Uncheck.uncheckNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
-		for (var count : list "2,3,4") {
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_entryTitle = "Test Blueprint ${count}",
-				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
-		}
-
 		Search.searchCP(searchTerm = 2);
 
 		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Blueprints.viewNoEntry(title = "Test Blueprint 2");
 
@@ -3317,13 +3325,7 @@ definition {
 
 		Blueprints.viewEntryTitle(title = "Test Blueprint 4");
 
-		Check.checkNotVisible(
-			key_entryTitle = "Test Blueprint 3",
-			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
-
-		Click(
-			key_text = "Select All",
-			locator1 = "Link#ANY");
+		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
 		AssertChecked.assertCheckedNotVisible(
 			key_entryTitle = "Test Blueprint 3",
@@ -3333,7 +3335,9 @@ definition {
 			key_entryTitle = "Test Blueprint 4",
 			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Blueprints.viewNoEntry(title = "Test Blueprint 3");
 
@@ -4518,7 +4522,9 @@ definition {
 			key_entryTitle = "Test Element 1",
 			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Blueprints.viewNoEntry(title = "Test Element 1");
 
@@ -4531,6 +4537,14 @@ definition {
 		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
 		for (var count : list "2,3,4") {
+			AssertNotChecked.assertNotCheckedNotVisible(
+				key_entryTitle = "Test Element ${count}",
+				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
+		}
+
+		Check.checkNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
+
+		for (var count : list "2,3,4") {
 			AssertChecked.assertCheckedNotVisible(
 				key_entryTitle = "Test Element ${count}",
 				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
@@ -4538,17 +4552,13 @@ definition {
 
 		Uncheck.uncheckNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
-		for (var count : list "2,3,4") {
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_entryTitle = "Test Element ${count}",
-				locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
-		}
-
 		Search.searchCP(searchTerm = 2);
 
 		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Blueprints.viewNoEntry(title = "Test Element 2");
 
@@ -4556,13 +4566,7 @@ definition {
 
 		Blueprints.viewEntryTitle(title = "Test Element 4");
 
-		Check.checkNotVisible(
-			key_entryTitle = "Test Element 3",
-			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
-
-		Click(
-			key_text = "Select All",
-			locator1 = "Link#ANY");
+		Click.clickAtNotVisible(locator1 = "Checkbox#FDS_SELECT_ALL");
 
 		AssertChecked.assertCheckedNotVisible(
 			key_entryTitle = "Test Element 3",
@@ -4572,7 +4576,9 @@ definition {
 			key_entryTitle = "Test Element 4",
 			locator1 = "Blueprints#BLUEPRINTS_ADMIN_ENTRY_CHECKBOX");
 
-		Button.clickTrash();
+		Click(locator1 = "Icon#NAVBAR_ELLIPSIS");
+
+		DropdownMenuItem.click(menuItem = "Delete");
 
 		Alert.viewErrorMessage(errorMessage = "System read only elements cannot be deleted.");
 
@@ -4698,7 +4704,9 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Elements Reference - Liferay Learn");
+		var documentationSuffix = "Liferay Official Documentation - Liferay Learn";
+
+		SelectWindow(value1 = "Search Blueprints Elements Reference - ${documentationSuffix}");
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 
@@ -4713,7 +4721,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Creating and Managing Search Blueprints - Liferay Learn");
+		SelectWindow(value1 = "Creating and Managing Search Blueprints - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4728,7 +4736,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Creating and Managing Search Blueprints - Liferay Learn");
+		SelectWindow(value1 = "Creating and Managing Search Blueprints - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4743,7 +4751,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4752,7 +4760,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4761,7 +4769,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4770,7 +4778,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4779,7 +4787,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4788,7 +4796,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Search Blueprints Configuration Reference - Liferay Learn");
+		SelectWindow(value1 = "Search Blueprints Configuration Reference - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "Edit Blueprint - ${siteName}");
 
@@ -4805,7 +4813,7 @@ definition {
 			key_linkText = "Learn more",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Creating Elements - Liferay Learn");
+		SelectWindow(value1 = "Creating Elements - ${documentationSuffix}");
 
 		Close.closeAndSelectWindow(value1 = "View Element - ${siteName}");
 
@@ -4829,7 +4837,7 @@ definition {
 			key_linkText = "Learn how",
 			locator1 = "Blueprints#DOC_LINK_GENERIC");
 
-		SelectWindow(value1 = "Using a Search Blueprint on a Search Page - Liferay Learn");
+		SelectWindow(value1 = "Using a Search Blueprint on a Search Page - ${documentationSuffix}");
 	}
 
 	@priority = 3

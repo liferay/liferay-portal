@@ -32,12 +32,12 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -361,7 +361,7 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 			testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress_addPlacedOrderAddress()
 		throws Exception {
 
-		return testGraphQLPlacedOrderAddress_addPlacedOrderAddress();
+		return testGraphQLPlacedOrderPlacedOrderAddress_addPlacedOrderAddress();
 	}
 
 	@Test
@@ -517,7 +517,7 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 			testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress_addPlacedOrderAddress()
 		throws Exception {
 
-		return testGraphQLPlacedOrderAddress_addPlacedOrderAddress();
+		return testGraphQLPlacedOrderPlacedOrderAddress_addPlacedOrderAddress();
 	}
 
 	@Test
@@ -659,7 +659,7 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 			testGraphQLGetPlacedOrderPlacedOrderBillingAddress_addPlacedOrderAddress()
 		throws Exception {
 
-		return testGraphQLPlacedOrderAddress_addPlacedOrderAddress();
+		return testGraphQLPlacedOrderPlacedOrderAddress_addPlacedOrderAddress();
 	}
 
 	@Test
@@ -803,11 +803,11 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 			testGraphQLGetPlacedOrderPlacedOrderShippingAddress_addPlacedOrderAddress()
 		throws Exception {
 
-		return testGraphQLPlacedOrderAddress_addPlacedOrderAddress();
+		return testGraphQLPlacedOrderPlacedOrderAddress_addPlacedOrderAddress();
 	}
 
 	protected PlacedOrderAddress
-			testGraphQLPlacedOrderAddress_addPlacedOrderAddress()
+			testGraphQLPlacedOrderPlacedOrderAddress_addPlacedOrderAddress()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1118,6 +1118,10 @@ public abstract class BasePlacedOrderAddressResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

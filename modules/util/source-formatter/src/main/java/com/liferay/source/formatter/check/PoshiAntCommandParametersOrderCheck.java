@@ -43,24 +43,24 @@ public class PoshiAntCommandParametersOrderCheck extends BaseFileCheck {
 				String previousParameter = null;
 
 				while (matcher3.find()) {
-					String paratemter = matcher3.group();
+					String parameter = matcher3.group();
 
 					if (previousParameter != null) {
 						int compare = parameterNameComparator.compare(
-							previousParameter, paratemter);
+							previousParameter, parameter);
 
 						if (compare > 0) {
 							content = StringUtil.replaceFirst(
-								content, paratemter, previousParameter,
+								content, parameter, previousParameter,
 								matcher1.start());
 
 							return StringUtil.replaceFirst(
-								content, previousParameter, paratemter,
+								content, previousParameter, parameter,
 								matcher1.start());
 						}
 					}
 
-					previousParameter = paratemter;
+					previousParameter = parameter;
 				}
 			}
 		}
@@ -87,22 +87,22 @@ public class PoshiAntCommandParametersOrderCheck extends BaseFileCheck {
 			String previousParameter = null;
 
 			while (matcher.find()) {
-				String paratemter = matcher.group();
+				String parameter = matcher.group();
 
 				if (previousParameter != null) {
 					int compare = parameterNameComparator.compare(
-						previousParameter, paratemter);
+						previousParameter, parameter);
 
 					if (compare > 0) {
 						content = StringUtil.replaceFirst(
-							content, paratemter, previousParameter, x);
+							content, parameter, previousParameter, x);
 
 						return StringUtil.replaceFirst(
-							content, previousParameter, paratemter, x);
+							content, previousParameter, parameter, x);
 					}
 				}
 
-				previousParameter = paratemter;
+				previousParameter = parameter;
 			}
 		}
 
@@ -121,10 +121,10 @@ public class PoshiAntCommandParametersOrderCheck extends BaseFileCheck {
 		@Override
 		public int compare(String parameter1, String parameter2) {
 			return super.compare(
-				_getParamterName(parameter1), _getParamterName(parameter2));
+				_getParameterName(parameter1), _getParameterName(parameter2));
 		}
 
-		private String _getParamterName(String parameter) {
+		private String _getParameterName(String parameter) {
 			int x = parameter.indexOf(StringPool.EQUAL);
 
 			return parameter.substring(0, x);

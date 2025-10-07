@@ -627,8 +627,9 @@ public class CommonSearchRequestBuilderAssemblerImpl
 		<org.opensearch.client.opensearch._types.aggregations.Aggregation>
 			_pipelineAggregationTranslator;
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private QueryTranslator<QueryVariant> _queryTranslator;
+	private final QueryTranslator<QueryVariant> _queryTranslator =
+		new com.liferay.portal.search.opensearch2.internal.query.
+			OpenSearchQueryTranslator();
 
 	@Reference
 	private StatsTranslator _statsTranslator;

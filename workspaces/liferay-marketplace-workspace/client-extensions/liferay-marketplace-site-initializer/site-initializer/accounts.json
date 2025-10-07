@@ -8,5 +8,10 @@
 		"externalReferenceCode": "MKT-ACCOUNT-3",
 		"name": "QA Acme",
 		"type": "person"
+	},
+	{
+		"externalReferenceCode": "SSA-ACCOUNT",
+		"name": "SSA Account",
+		"type": "business"
 	}
 ]

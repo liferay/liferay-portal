@@ -18,6 +18,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -37,9 +39,14 @@ import java.util.function.Supplier;
 	description = "A reference to a default fragment (provided out-of-the-box).",
 	value = "DefaultFragmentReference"
 )
+@io.swagger.v3.oas.annotations.media.Schema(
+	description = "A reference to a default fragment (provided out-of-the-box).",
+	requiredProperties = {"defaultFragmentKey"}
+)
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DefaultFragmentReference")
-public class DefaultFragmentReference implements Serializable {
+public class DefaultFragmentReference
+	extends FragmentReference implements Serializable {
 
 	public static DefaultFragmentReference toDTO(String json) {
 		return ObjectMapperUtil.readValue(DefaultFragmentReference.class, json);
@@ -88,6 +95,7 @@ public class DefaultFragmentReference implements Serializable {
 
 	@GraphQLField(description = "The key of the default fragment.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	@NotEmpty
 	protected String defaultFragmentKey;
 
 	@JsonIgnore
@@ -133,6 +141,23 @@ public class DefaultFragmentReference implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(defaultFragmentKey));
+
+			sb.append("\"");
+		}
+
+		FragmentReferenceType fragmentReferenceType =
+			getFragmentReferenceType();
+
+		if (fragmentReferenceType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentReferenceType\": ");
+
+			sb.append("\"");
+
+			sb.append(fragmentReferenceType);
 
 			sb.append("\"");
 		}

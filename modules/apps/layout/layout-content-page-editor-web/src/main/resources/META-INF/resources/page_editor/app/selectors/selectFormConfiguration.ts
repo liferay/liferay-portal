@@ -13,23 +13,37 @@ import type {
 	LayoutDataItem,
 } from '../../types/layout_data/LayoutData';
 
+type ReturnType =
+	| {
+			classNameId: string;
+			classTypeId: string;
+			fieldSetName: string | null;
+			formId: string;
+	  }
+	| Record<string, never>;
+
 export default function selectFormConfiguration(
 	item: LayoutDataItem,
 	layoutData: LayoutData
-):
-	| {classNameId: string; classTypeId: string; formId: string}
-	| Record<string, never> {
+): ReturnType {
 	if (!item) {
 		return {};
 	}
 
-	const findFormConfiguration: (
-		childItem: LayoutDataItem
-	) =>
-		| {classNameId: string; classTypeId: string; formId: string}
-		| Record<string, never> = (childItem) => {
+	let fieldSetName: string | null = null;
+
+	const findFormConfiguration: (childItem: LayoutDataItem) => ReturnType = (
+		childItem
+	) => {
 		if (!childItem) {
 			return {};
+		}
+
+		if (
+			childItem.type === LAYOUT_DATA_ITEM_TYPES.formRelationship &&
+			!fieldSetName
+		) {
+			fieldSetName = childItem.config.contentType;
 		}
 
 		if (childItem.type === LAYOUT_DATA_ITEM_TYPES.form) {
@@ -40,6 +54,7 @@ export default function selectFormConfiguration(
 				return {
 					classNameId,
 					classTypeId: childItem.config?.classTypeId || '',
+					fieldSetName,
 					formId: childItem.itemId,
 				};
 			}
@@ -53,6 +68,7 @@ export default function selectFormConfiguration(
 				return {
 					classNameId: selectedMappingTypes!.type.id,
 					classTypeId: selectedMappingTypes!.subtype?.id || '',
+					fieldSetName,
 					formId: childItem.itemId,
 				};
 			}

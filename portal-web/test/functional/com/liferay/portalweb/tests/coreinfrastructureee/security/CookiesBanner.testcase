@@ -35,7 +35,7 @@ definition {
 	@description = "This is a use case for LPS-152844. Combined AC-1, AC-2, AC-3, AC-4. Verify that Cookie Banner could be enabled, and customized."
 	@priority = 5
 	test CookiesBannerCouldBeEnabledAndCustomized {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -59,7 +59,7 @@ definition {
 	@description = "This is a use case for LPS-148320. Combined AC-1, AC-3. Verify that Cookie Banner could be enabled and customized via OSGI file."
 	@priority = 5
 	test CookiesBannerCouldBeEnabledAndCustomizedViaOSGIFile {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -119,7 +119,7 @@ definition {
 	@description = "This is a use case for LPS-148320. Combined AC-1, AC-2, AC-4. Verify Privacy Policy Links can be configured from a local site similarly to an external page with giving its url."
 	@priority = 5
 	test PrivacyPolicyLinksCanBeConfiguredFromALocalSite {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

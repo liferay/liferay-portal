@@ -735,7 +735,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		if (ArrayUtil.contains(classNames, Group.class.getName()) ||
 			ArrayUtil.contains(classNames, Organization.class.getName())) {
 
-			UserBag userBag = UserBagFactoryUtil.create(userId);
+			UserBag userBag = UserBagFactoryUtil.create(user);
 
 			if (ArrayUtil.contains(classNames, Group.class.getName())) {
 				for (Group group : userBag.getUserGroups()) {

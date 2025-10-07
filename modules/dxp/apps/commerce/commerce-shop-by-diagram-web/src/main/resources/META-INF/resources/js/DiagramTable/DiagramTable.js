@@ -30,33 +30,28 @@ import TableHead from './TableHead';
 const PAGE_SIZE = 15;
 
 function formatCpInstances(cpInstances, quantities) {
-	const formattedCpInstances = cpInstances.reduce(
-		(selectedCpInstances, cpInstance) => {
-			if (!cpInstance.selected) {
-				return selectedCpInstances;
-			}
+	return cpInstances.reduce((selectedCpInstances, cpInstance) => {
+		if (!cpInstance.selected) {
+			return selectedCpInstances;
+		}
 
-			const skuOptions = formatProductOptions(
-				cpInstance.skuOptions,
-				cpInstance.productOptions
-			);
+		const skuOptions = formatProductOptions(
+			cpInstance.skuOptions,
+			cpInstance.productOptions
+		);
 
-			return [
-				...selectedCpInstances,
-				{
-					inCart: false,
-					quantity:
-						quantities[cpInstance.skuId] ||
-						cpInstance.initialQuantity,
-					skuId: cpInstance.skuId,
-					skuOptions,
-				},
-			];
-		},
-		[]
-	);
-
-	return formattedCpInstances;
+		return [
+			...selectedCpInstances,
+			{
+				inCart: false,
+				quantity:
+					quantities[cpInstance.skuId] || cpInstance.initialQuantity,
+				skuId: cpInstance.skuId,
+				skuOptions,
+				validQuantity: true,
+			},
+		];
+	}, []);
 }
 
 function DiagramTable({

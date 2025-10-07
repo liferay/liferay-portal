@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -51,6 +52,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,6 +69,13 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 	@Rule
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		for (AccountEntry accountEntry : _getAllAccountEntries()) {
+			_accountEntryLocalService.deleteAccountEntry(accountEntry);
+		}
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -289,11 +298,18 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
+	private static List<AccountEntry> _getAllAccountEntries() throws Exception {
+		return _accountEntryLocalService.getAccountEntries(
+			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
 	private Role _addOrganizationRole() throws Exception {
 		return _roleLocalService.addRole(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
+			RandomTestUtil.randomString(), _user.getUserId(), null, 0,
 			RandomTestUtil.randomString(), null, null,
-			RoleConstants.TYPE_ORGANIZATION, null, null);
+			RoleConstants.TYPE_ORGANIZATION, null,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertSearch(AccountEntry... expectedAccountEntries)
@@ -319,12 +335,6 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 			baseModelSearchResult.getBaseModels());
 	}
 
-	private List<AccountEntry> _getAllAccountEntries() throws Exception {
-		return _accountEntryLocalService.getAccountEntries(
-			TestPropsValues.getCompanyId(), WorkflowConstants.STATUS_APPROVED,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
 	private boolean _hasPermission(
 			PermissionChecker permissionChecker, AccountEntry accountEntry,
 			String actionId)
@@ -343,7 +353,7 @@ public class AccountEntryServiceWhenSearchingAccountEntriesTest {
 	}
 
 	@Inject
-	private AccountEntryLocalService _accountEntryLocalService;
+	private static AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
 	private AccountEntryOrganizationRelLocalService

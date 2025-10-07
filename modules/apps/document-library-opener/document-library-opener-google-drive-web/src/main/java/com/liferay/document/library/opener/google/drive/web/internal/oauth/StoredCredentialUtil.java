@@ -37,10 +37,6 @@ public class StoredCredentialUtil {
 
 	public static void clear() {
 		_clear();
-
-		if (ClusterExecutorUtil.isEnabled()) {
-			_executeOnCluster(new MethodHandler(_clearMethodKey));
-		}
 	}
 
 	public static void clear(long companyId) {
@@ -184,8 +180,6 @@ public class StoredCredentialUtil {
 		StoredCredential.class);
 	private static final MethodKey _clearCompanyMethodKey = new MethodKey(
 		StoredCredentialUtil.class, "_clear", long.class);
-	private static final MethodKey _clearMethodKey = new MethodKey(
-		StoredCredentialUtil.class, "_clear");
 	private static final MethodKey _deleteMethodKey = new MethodKey(
 		StoredCredentialUtil.class, "_delete", long.class, String.class);
 	private static final Map<Long, Map<String, StoredCredential>>

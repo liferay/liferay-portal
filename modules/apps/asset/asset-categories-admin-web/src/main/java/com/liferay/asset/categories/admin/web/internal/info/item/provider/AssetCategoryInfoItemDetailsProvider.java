@@ -6,9 +6,10 @@
 package com.liferay.asset.categories.admin.web.internal.info.item.provider;
 
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 
 import org.osgi.service.component.annotations.Component;
@@ -16,9 +17,12 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Jürgen Kappler
  */
-@Component(service = InfoItemDetailsProvider.class)
+@Component(
+	property = "item.class.name=com.liferay.asset.kernel.model.AssetCategory",
+	service = InfoItemDetailsProvider.class
+)
 public class AssetCategoryInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<AssetCategory> {
+	extends BaseInfoItemDetailsProvider<AssetCategory> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -26,11 +30,29 @@ public class AssetCategoryInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(AssetCategory assetCategory) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				AssetCategory.class.getName(), assetCategory.getCategoryId()));
+	protected InfoItemIdentifierFactory<AssetCategory>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				AssetCategory assetCategory) {
+
+				return new ClassPKInfoItemIdentifier(
+					assetCategory.getCategoryId());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 }

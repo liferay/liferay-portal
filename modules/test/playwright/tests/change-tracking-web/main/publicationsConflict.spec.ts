@@ -51,66 +51,71 @@ test(
 			title: layoutTitle,
 		});
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+		try {
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-		await pageEditorPage.addFragment('Basic Components', 'Heading');
+			await pageEditorPage.addFragment('Basic Components', 'Heading');
 
-		await pageEditorPage.publishPage();
+			await pageEditorPage.publishPage();
 
-		// Edit fragment in publication
+			// Edit fragment in publication
 
-		await changeTrackingPage.workOnPublication(ctCollection);
+			await changeTrackingPage.workOnPublication(ctCollection);
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-		const headingId = await pageEditorPage.getFragmentId('Heading');
+			const headingId = await pageEditorPage.getFragmentId('Heading');
 
-		await pageEditorPage.editTextEditable(
-			headingId,
-			'element-text',
-			'Edited Text'
-		);
+			await pageEditorPage.editTextEditable(
+				headingId,
+				'element-text',
+				'Edited Text'
+			);
 
-		await pageEditorPage.publishPage();
+			await pageEditorPage.publishPage();
 
-		// Delete fragment from production
+			// Delete fragment from production
 
-		await changeTrackingPage.workOnProduction();
+			await changeTrackingPage.workOnProduction();
 
-		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
 
-		await pageEditorPage.deleteFragment(headingId);
+			await pageEditorPage.deleteFragment(headingId);
 
-		await pageEditorPage.publishPage();
+			await pageEditorPage.publishPage();
 
-		// Review and discard publication changes
+			// Review and discard publication changes
 
-		await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+			await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
 
-		await page.getByRole('link', {name: 'Publish'}).click();
+			await page.getByRole('link', {name: 'Publish'}).click();
 
-		await expect(page.getByText('Checking Changes')).toBeVisible();
+			await expect(page.getByText('Checking Changes')).toBeVisible();
 
-		for (let i = 0; i < 2; i++) {
-			await page
-				.getByRole('link', {name: 'Discard Change'})
-				.first()
-				.click();
+			for (let i = 0; i < 2; i++) {
+				await page
+					.getByRole('link', {name: 'Discard Change'})
+					.first()
+					.click();
 
-			await page.getByRole('button', {name: 'Discard'}).click();
+				await page.getByRole('button', {name: 'Discard'}).click();
+			}
+
+			// Assert entries deleted
+
+			await page.getByRole('button', {name: 'Publish'}).click();
+
+			await expect(
+				page.getByRole('link', {name: ctCollection.body.name})
+			).toBeVisible();
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await expect(page.getByText('Heading Example')).not.toBeVisible();
 		}
-
-		// Assert entries deleted
-
-		await page.getByRole('button', {name: 'Publish'}).click();
-
-		await expect(
-			page.getByRole('link', {name: ctCollection.body.name})
-		).toBeVisible();
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await expect(page.getByText('Heading Example')).not.toBeVisible();
+		finally {
+			await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
+		}
 	}
 );
 

@@ -48,6 +48,8 @@
 			<defaultValue>embedded</defaultValue>
 			<validationRegex>(embedded)</validationRegex>
 		</requiredProperty>
+		<requiredProperty key="jakartaCompatible">
+		</requiredProperty>
 		<requiredProperty key="liferayProduct">
 			<defaultValue>portal</defaultValue>
 			<validationRegex>(dxp)|(portal)</validationRegex>

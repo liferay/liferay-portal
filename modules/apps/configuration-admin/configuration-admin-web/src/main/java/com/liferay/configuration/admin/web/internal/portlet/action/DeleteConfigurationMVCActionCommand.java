@@ -6,8 +6,9 @@
 package com.liferay.configuration.admin.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.configuration.admin.web.internal.display.context.ConfigurationScopeDisplayContext;
+import com.liferay.configuration.admin.web.internal.display.context.ConfigurationScopeDisplayContextFactory;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationModelRetriever;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -50,9 +51,13 @@ public class DeleteConfigurationMVCActionCommand implements MVCActionCommand {
 		}
 
 		try {
+			ConfigurationScopeDisplayContext configurationScopeDisplayContext =
+				ConfigurationScopeDisplayContextFactory.create(actionRequest);
+
 			Configuration configuration =
 				_configurationModelRetriever.getConfiguration(
-					pid, ExtendedObjectClassDefinition.Scope.SYSTEM, null);
+					pid, configurationScopeDisplayContext.getScope(),
+					configurationScopeDisplayContext.getScopePK());
 
 			if (configuration == null) {
 				return false;

@@ -9,9 +9,12 @@ import com.liferay.application.list.constants.ApplicationListWebKeys;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.application.list.display.context.logic.PersonalMenuEntryHelper;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemList;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Permission;
@@ -20,6 +23,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -28,6 +32,7 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleServiceUtil;
+import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.service.permission.RolePermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -35,6 +40,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -42,6 +48,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.web.internal.role.type.contributor.util.RoleTypeContributorRetrieverUtil;
 import com.liferay.segments.service.SegmentsEntryRoleLocalServiceUtil;
+import com.liferay.taglib.security.PermissionsURLTag;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderResponse;
@@ -70,6 +77,127 @@ public class RoleDisplayContext {
 				httpServletRequest);
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+	}
+
+	public List<DropdownItem> getActionDropdownItems(Role role)
+		throws Exception {
+
+		String currentURL = PortalUtil.getCurrentURL(_httpServletRequest);
+		PermissionChecker permissionChecker =
+			_themeDisplay.getPermissionChecker();
+
+		return DropdownItemListBuilder.add(
+			() -> RolePermissionUtil.contains(
+				permissionChecker, role.getRoleId(), ActionKeys.UPDATE),
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_renderResponse
+					).setMVCPath(
+						"/edit_role.jsp"
+					).setBackURL(
+						currentURL
+					).setTabs1(
+						"details"
+					).setParameter(
+						"roleId", role.getRoleId()
+					).buildString());
+				dropdownItem.setIcon("pencil");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "edit"));
+			}
+		).add(
+			() ->
+				!Objects.equals(role.getName(), RoleConstants.OWNER) &&
+				RolePermissionUtil.contains(
+					permissionChecker, role.getRoleId(),
+					ActionKeys.PERMISSIONS),
+			dropdownItem -> {
+				int[] roleTypes = {role.getType()};
+
+				if (role.getType() != RoleConstants.TYPE_REGULAR) {
+					roleTypes = new int[] {
+						RoleConstants.TYPE_REGULAR, role.getType()
+					};
+				}
+
+				dropdownItem.setData(
+					HashMapBuilder.<String, Object>put(
+						"action", "permissions"
+					).put(
+						"permissionsURL",
+						PermissionsURLTag.doTag(
+							StringPool.BLANK, Role.class.getName(),
+							role.getTitle(_themeDisplay.getLocale()), null,
+							String.valueOf(role.getRoleId()),
+							LiferayWindowState.POP_UP.toString(), roleTypes,
+							_httpServletRequest)
+					).build());
+				dropdownItem.setIcon("cog");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "permissions"));
+			}
+		).add(
+			() ->
+				_currentRoleTypeContributor.isAllowDelete(role) &&
+				RolePermissionUtil.contains(
+					permissionChecker, role.getRoleId(), ActionKeys.DELETE),
+			dropdownItem -> {
+				dropdownItem.setData(
+					HashMapBuilder.<String, Object>put(
+						"action", "delete"
+					).put(
+						"confirmationMessage",
+						LanguageUtil.get(
+							_httpServletRequest,
+							"are-you-sure-you-want-to-delete-this-role?-task-" +
+								"assignments-may-be-deleted")
+					).put(
+						"deleteRoleURL",
+						PortletURLBuilder.createActionURL(
+							_renderResponse
+						).setActionName(
+							"deleteRole"
+						).setMVCPath(
+							"/view.jsp"
+						).setRedirect(
+							currentURL
+						).setParameter(
+							"roleId", role.getRoleId()
+						).buildString()
+					).build());
+				dropdownItem.setIcon("trash");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "delete"));
+			}
+		).add(
+			() -> PortalPermissionUtil.contains(
+				permissionChecker, ActionKeys.ADD_ROLE),
+			dropdownItem -> {
+				dropdownItem.setData(
+					HashMapBuilder.<String, Object>put(
+						"action", "copy"
+					).put(
+						"copyRoleURL",
+						PortletURLBuilder.createRenderURL(
+							_renderResponse
+						).setMVCPath(
+							"/copy_role.jsp"
+						).setBackURL(
+							currentURL
+						).setParameter(
+							"roleId", role.getRoleId()
+						).setWindowState(
+							LiferayWindowState.POP_UP
+						).buildString()
+					).put(
+						"roleName", role.getName()
+					).build());
+				dropdownItem.setIcon("copy");
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "duplicate"));
+			}
+		).build();
 	}
 
 	public String getActionLabel(String resourceName, String actionId) {

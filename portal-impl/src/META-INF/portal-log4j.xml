@@ -39,20 +39,17 @@
 		<Logger level="ERROR" name="com.ecyrd.jspwiki" />
 		<Logger level="ERROR" name="com.liferay" />
 		<Logger level="INFO" name="com.liferay.bean.portlet" />
-		<Logger level="ERROR" name="com.liferay.mail.service.impl.MailServiceImpl" />
 		<Logger level="INFO" name="com.liferay.portal.action.JSONServiceAction" />
 		<Logger level="WARN" name="com.liferay.portal.action.LayoutAction" />
 		<Logger level="WARN" name="com.liferay.portal.bean.BeanLocatorImpl" />
 		<Logger level="INFO" name="com.liferay.portal.bootstrap.ModuleFrameworkImpl" />
 		<Logger level="INFO" name="com.liferay.portal.bootstrap.log" />
 		<Logger level="INFO" name="com.liferay.portal.cluster" />
-		<Logger level="WARN" name="com.liferay.portal.configuration.ConfigurationImpl" />
 		<Logger level="DEBUG" name="com.liferay.portal.convert" />
 		<Logger level="INFO" name="com.liferay.portal.dao.db" />
 		<Logger level="INFO" name="com.liferay.portal.dao.db.BaseDB" />
 		<Logger level="INFO" name="com.liferay.portal.dao.init.DBInitUtil" />
 		<Logger level="INFO" name="com.liferay.portal.dao.jdbc.DataSourceFactoryImpl" />
-		<Logger level="ERROR" name="com.liferay.portal.dao.jdbc.pool" />
 		<Logger level="ERROR" name="com.liferay.portal.dao.orm.common.SQLTransformer" />
 		<Logger level="ERROR" name="com.liferay.portal.dao.orm.hibernate.SessionFactoryImpl" />
 		<Logger level="FATAL" name="com.liferay.portal.dao.orm.hibernate.VerifySessionFactoryWrapper" />
@@ -81,9 +78,11 @@
 		<Logger level="ERROR" name="com.liferay.portal.kernel.bean.PortalBeanLocatorUtil" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.cluster" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.dao.db.BaseDBProcess" />
+		<Logger level="WARN" name="com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.dao.orm.QueryUtil" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.deploy" />
+		<Logger level="WARN" name="com.liferay.portal.kernel.internal.configuration.ConfigurationImpl" />
 		<Logger level="ERROR" name="com.liferay.portal.kernel.lar" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.messaging.config.DefaultMessagingConfigurator" />
 		<Logger level="ERROR" name="com.liferay.portal.kernel.model.Image" />
@@ -107,6 +106,7 @@
 		<Logger level="ERROR" name="com.liferay.portal.kernel.util.ClassUtil" />
 		<Logger level="ERROR" name="com.liferay.portal.kernel.util.JavaDetector" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.util.LoggingTimer" />
+		<Logger level="INFO" name="com.liferay.portal.kernel.util.PropsUtil" />
 		<Logger level="WARN" name="com.liferay.portal.kernel.util.ReferenceRegistry" />
 		<Logger level="INFO" name="com.liferay.portal.kernel.util.ServerDetector" />
 		<Logger level="WARN" name="com.liferay.portal.language.LanguageResources" />
@@ -178,7 +178,6 @@
 		<Logger level="DEBUG" name="com.liferay.portal.util.MaintenanceUtil" />
 		<Logger level="INFO" name="com.liferay.portal.util.PortalImpl" />
 		<Logger level="ERROR" name="com.liferay.portal.util.PortalInstances" />
-		<Logger level="INFO" name="com.liferay.portal.util.PropsUtil" />
 		<Logger level="INFO" name="com.liferay.portal.verify" />
 		<Logger level="ERROR" name="com.liferay.portal.webdav" />
 		<Logger level="ERROR" name="com.liferay.portal.webserver.WebServerServlet" />
@@ -217,7 +216,6 @@
 		<Logger level="ERROR" name="org.apache.pdfbox" />
 		<Logger level="ERROR" name="org.apache.velocity" />
 		<Logger level="ERROR" name="org.apache.xbean" />
-		<Logger level="ERROR" name="org.elasticsearch.client.RestClient" />
 		<Logger level="ERROR" name="org.hibernate" />
 		<Logger level="OFF" name="org.hibernate.event.def.AbstractFlushingEventListener" />
 		<Logger level="ERROR" name="org.hibernate.util.JDBCExceptionReporter" />

@@ -16,6 +16,20 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class InfoItemUtil {
 
+	public static long getDepotEntryId(HttpServletRequest httpServletRequest) {
+		Object object = httpServletRequest.getAttribute(
+			InfoDisplayWebKeys.INFO_ITEM);
+
+		DepotEntry depotEntry =
+			object instanceof DepotEntry ? (DepotEntry)object : null;
+
+		if (depotEntry != null) {
+			return depotEntry.getDepotEntryId();
+		}
+
+		return 0;
+	}
+
 	public static long getGroupId(HttpServletRequest httpServletRequest) {
 		Object object = httpServletRequest.getAttribute(
 			InfoDisplayWebKeys.INFO_ITEM);

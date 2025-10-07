@@ -11,9 +11,11 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 import com.liferay.portal.vulcan.jackson.databind.ser.VulcanPropertyFilter;
+import com.liferay.portal.vulcan.util.FieldsUtil;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Ivica Cardic
@@ -30,10 +32,15 @@ public class ObjectWriterFactory {
 			simpleFilterProvider.setFailOnUnknownId(false);
 		}
 		else {
+			Set<String> expandedFieldNames = new HashSet<>();
+
+			for (String fieldName : includeFieldNames) {
+				expandedFieldNames.addAll(FieldsUtil.expand(fieldName));
+			}
+
 			simpleFilterProvider.addFilter(
 				"Liferay.Vulcan",
-				VulcanPropertyFilter.of(
-					new HashSet<>(includeFieldNames), null));
+				VulcanPropertyFilter.of(expandedFieldNames, null));
 		}
 
 		return objectMapper.writer(simpleFilterProvider);

@@ -8,6 +8,7 @@ package com.liferay.site.cms.site.initializer.internal.fragment.renderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 
 import jakarta.servlet.RequestDispatcher;
@@ -65,7 +66,8 @@ public abstract class BaseJSPSectionFragmentRenderer<T>
 	}
 
 	protected abstract T getDisplayContext(
-		HttpServletRequest httpServletRequest);
+			HttpServletRequest httpServletRequest)
+		throws PortalException;
 
 	protected String getJSPPath() {
 		return StringBundler.concat(

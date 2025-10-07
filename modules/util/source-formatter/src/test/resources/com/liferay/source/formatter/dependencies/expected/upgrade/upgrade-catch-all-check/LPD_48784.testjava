@@ -17,7 +17,6 @@ public class LPD_48784 {
 	public void method(long companyId, String sku, String unitOfMeasureKey) {
 		CommerceInventoryBookedQuantityLocalServiceUtil.getCommerceBookedQuantity(123, "test123");
 		CommerceInventoryBookedQuantityLocalServiceUtil.getCommerceInventoryBookedQuantity(companyId, sku, StringPool.BLANK);
-		_commerceInventoryBookedQuantityLocalService.getCommerceBookedQuantity(123, "test123");
 		_commerceInventoryBookedQuantityLocalService.getCommerceInventoryBookedQuantity(companyId, sku, StringPool.BLANK);
 	}
 

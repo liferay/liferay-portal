@@ -4,7 +4,6 @@ Bundle-Version: 1.0.0
 Import-Package:\
 	!io.fabric8.kubernetes.client.server.mock,\
 	!io.fabric8.mockwebserver.*,\
-	!io.fabric8.zjsonpatch,\
 	\
 	!javax.annotation.meta,\
 	\
@@ -31,4 +30,5 @@ Import-Package:\
 	org.xml.sax
 -includeresource:\
 	@kubernetes-server-mock-[0-9.]*.jar,\
-	@mockwebserver-[0-9.]*.jar
+	@mockwebserver-[0-9.]*.jar,\
+	@zjsonpatch-[0-9.]*.jar

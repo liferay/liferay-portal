@@ -16,6 +16,8 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {systemSettingsPageTest} from '../../../../fixtures/systemSettingsPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
+import {liferayConfig} from '../../../../liferay.config';
+import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
@@ -115,7 +117,9 @@ test('LPD-25831 Placed orders widget configuration to display full addresses and
 		shippingAddressId: address.id,
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`, {
+		waitUntil: 'networkidle',
+	});
 
 	await widgetPagePage.addPortlet('Placed Orders');
 
@@ -143,6 +147,8 @@ test('LPD-25831 Placed orders widget configuration to display full addresses and
 	await page.goto(`/web/${site.name}`);
 
 	await placedOrdersPage.optionsButton.click();
+
+	await expect(placedOrdersPage.configurationMenuItem).toBeVisible();
 
 	await placedOrdersPage.configurationMenuItem.click();
 	await placedOrdersPage.configurationIFrameShowFullAddressToggle.check();
@@ -187,16 +193,21 @@ test(
 		placedOrderPage,
 		placedOrdersPage,
 		site,
-		widgetPagePage,
 	}) => {
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 
@@ -251,9 +262,10 @@ test(
 			shippingAddressId: address.id,
 		});
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Placed Orders');
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
 
 		await placedOrdersPage.viewButton.click();
 
@@ -266,7 +278,10 @@ test(
 			'Payment Methods'
 		);
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
 
 		await placedOrdersPage.viewButton.click();
 
@@ -281,13 +296,366 @@ test(
 			'Payment Methods'
 		);
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
 
 		await placedOrdersPage.viewButton.click();
 
 		await expect(placedOrderPage.reorderButton).toBeVisible();
 
 		await expect(placedOrderPage.retryPaymentButton).toBeHidden();
+	}
+);
+
+test(
+	'Bundled product are shown with option values in the placed order details',
+	{tag: ['@COMMERCE-12610', '@LPD-39379']},
+	async ({
+		apiHelpers,
+		applicationsMenuPage,
+		commerceAdminChannelsPage,
+		commerceAdminProductPage,
+		page,
+		placedOrderPage,
+		placedOrdersPage,
+		site,
+	}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2C'
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productSkus1 = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product1.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku1 = productSkus1[0];
+
+		const product2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
+
+		const productSkus2 = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product2.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku2 = productSkus2[0];
+
+		const option1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'select',
+				'color',
+				'Color',
+				1
+			);
+		const option2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'checkbox',
+				'checkbox',
+				'Checkbox',
+				2
+			);
+		const option3 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'date',
+				'date',
+				'Date',
+				3
+			);
+		const option4 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'numeric',
+				'numeric',
+				'Numeric',
+				4
+			);
+		const option5 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'text',
+				'text',
+				'Text',
+				5
+			);
+		const option6 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'checkbox_multiple',
+				'checkbox_multiple',
+				'checkbox_multiple',
+				6
+			);
+		const option7 =
+			await apiHelpers.headlessCommerceAdminCatalog.postOption(
+				'radio',
+				'radio',
+				'Radio',
+				7
+			);
+
+		let product = await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+			{
+				catalogId: catalog.id,
+				name: {en_US: 'ProductBundle'},
+				productOptions: [
+					{
+						fieldType: 'select',
+						key: 'color',
+						name: {
+							en_US: 'Color',
+						},
+						optionId: option1.id,
+						priceType: 'static',
+						priority: 1,
+						productOptionValues: [
+							{
+								deltaPrice: 20.0,
+								key: 'blue',
+								name: {
+									en_US: 'Blue',
+								},
+								priority: 1,
+								quantity: 1,
+								skuId: sku1.id,
+							},
+							{
+								deltaPrice: 30.0,
+								key: 'white',
+								name: {
+									en_US: 'White',
+								},
+								priority: 2,
+								quantity: 1,
+								skuId: sku2.id,
+							},
+						],
+						skuContributor: true,
+					},
+					{
+						fieldType: 'checkbox',
+						key: 'checkbox',
+						name: {
+							en_US: 'Checkbox',
+						},
+						optionId: option2.id,
+						priceType: 'static',
+						priority: 2,
+						skuContributor: false,
+					},
+					{
+						fieldType: 'date',
+						key: 'date',
+						name: {
+							en_US: 'Date',
+						},
+						optionId: option3.id,
+						priceType: 'static',
+						priority: 3,
+						skuContributor: false,
+					},
+					{
+						fieldType: 'numeric',
+						key: 'numeric',
+						name: {
+							en_US: 'Numeric',
+						},
+						optionId: option4.id,
+						priceType: 'static',
+						priority: 4,
+						skuContributor: false,
+					},
+					{
+						fieldType: 'text',
+						key: 'text',
+						name: {
+							en_US: 'Text',
+						},
+						optionId: option5.id,
+						priceType: 'static',
+						priority: 5,
+						skuContributor: false,
+					},
+					{
+						fieldType: 'checkbox_multiple',
+						key: 'checkbox_multiple',
+						name: {
+							en_US: 'Checkbox Multiple',
+						},
+						optionId: option6.id,
+						priceType: 'static',
+						priority: 6,
+						productOptionValues: [
+							{
+								key: 'value1',
+								name: {
+									en_US: 'value1',
+								},
+								priority: 1,
+							},
+							{
+								key: 'value2',
+								name: {
+									en_US: 'value2',
+								},
+								priority: 2,
+							},
+						],
+						skuContributor: false,
+					},
+					{
+						fieldType: 'radio',
+						key: 'radio',
+						name: {
+							en_US: 'Radio',
+						},
+						optionId: option7.id,
+						priceType: 'static',
+						priority: 7,
+						productOptionValues: [
+							{
+								key: 'value1',
+								name: {
+									en_US: 'value1',
+								},
+								priority: 1,
+							},
+							{
+								key: 'value2',
+								name: {
+									en_US: 'value2',
+								},
+								priority: 2,
+							},
+						],
+						skuContributor: false,
+					},
+				],
+			}
+		);
+
+		await applicationsMenuPage.goToProducts();
+
+		await commerceAdminProductPage.managementToolbarSearchInput.fill(
+			'ProductBundle'
+		);
+		await commerceAdminProductPage.managementToolbarSearchInput.press(
+			'Enter'
+		);
+		await commerceAdminProductPage
+			.productsTableRowLink('ProductBundle')
+			.click();
+		await commerceAdminProductPage.generateSkus();
+
+		product = (
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq '${product.name['en_US']}'`,
+					nestedFields: `skus`,
+				})
+			)
+		).items[0];
+
+		const productSkus = product.skus.filter((sku) => {
+			return ['BLUE'].includes(sku.sku);
+		});
+
+		const sku = productSkus[0];
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: [
+						{
+							quantity: 100,
+							sku: sku.sku,
+						},
+					],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'person',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '12345', regionISOCode: 'AL'}
+			);
+
+		const postCart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				billingAddressId: address.id,
+				cartItems: [
+					{
+						options: `[{key: ${option2.key}, value: 'checkbox'}, {key: ${option3.key}, value: '10-23-2023'}, {key: ${option4.key}, value: '10'}, {key: ${option5.key}, value: 'Text Content'}, {key: ${option6.key}, value: ['value1', 'value2']}, {key: ${option7.key}, value: 'value2'}]`,
+						quantity: 1,
+						skuId: sku.id,
+					},
+				],
+				currencyCode: 'USD',
+				shippingAddressId: address.id,
+			},
+			channel.id
+		);
+
+		await apiHelpers.headlessCommerceDeliveryCart.checkoutCart(postCart.id);
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
+
+		await placedOrdersPage.viewButton.click();
+
+		await expect(
+			placedOrderPage.page.getByText(
+				'Blue,\ncheckbox,\n10-23-2023, 10, Text Content, value1,\nvalue2,\nvalue2'
+			)
+		).toBeVisible();
 	}
 );
 
@@ -299,7 +667,7 @@ test('LPD-26643 Reorder from placed orders details page', async ({
 	page,
 }) => {
 	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'admin',
+		name: getRandomString(),
 		type: 'business',
 	});
 
@@ -371,14 +739,15 @@ test('LPD-26643 Reorder from placed orders details page', async ({
 	);
 
 	await performLogout(page);
+	await performLoginViaApi({page, screenName: user.alternateName});
 
-	await performLogin(page, user.alternateName);
+	await page.goto(`/web/${site.name}`, {waitUntil: 'networkidle'});
 
-	await page.goto(`/web/${site.name}`);
+	await commerceMiniCartPage.miniCartButton.click();
 
-	await commerceMiniCartPage.submitCart();
+	await expect(commerceMiniCartPage.miniCartItem('U-joint')).toBeVisible();
 
-	await expect(page.getByText('U-joint')).toBeVisible();
+	await commerceMiniCartPage.submitButton.click();
 
 	await checkoutPage.chooseShippingAddress({index: 1});
 
@@ -396,21 +765,44 @@ test('LPD-26643 Reorder from placed orders details page', async ({
 
 	await expect(page.getByText('U-joint')).toBeVisible();
 
-	await commerceAdminOrderDetailsPage.reorder();
+	try {
+		await commerceAdminOrderDetailsPage.reorderButton.click();
 
-	await expect(page.getByText('U-joint')).toBeVisible();
+		await expect(commerceAdminOrderDetailsPage.reorderButton).toBeHidden();
 
-	await checkoutPage.chooseShippingAddress({index: 1});
+		await commerceAdminOrderDetailsPage.checkoutButton.click();
 
-	await expect(page.getByText('Standard Delivery (+$ 15.00)')).toBeVisible();
+		await expect(page.getByText('U-joint')).toBeVisible();
 
-	await checkoutPage.continueButton.click();
+		await checkoutPage.chooseShippingAddress({index: 1});
 
-	await expect(page.getByText('U-joint')).toBeVisible();
+		await expect(
+			page.getByText('Standard Delivery (+$ 15.00)')
+		).toBeVisible();
 
-	await checkoutPage.continueButton.click();
+		await checkoutPage.continueButton.click();
 
-	await expect(checkoutPage.orderSuccessMessage).toBeVisible();
+		await expect(page.getByText('U-joint')).toBeVisible();
+
+		await checkoutPage.continueButton.click();
+
+		await expect(checkoutPage.orderSuccessMessage).toBeVisible();
+	}
+	finally {
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: 'test'});
+
+		const orders =
+			await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+
+		if (orders && orders.items) {
+			for (const order of orders.items) {
+				await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+					order.id
+				);
+			}
+		}
+	}
 });
 
 test('LPD-32095 A user can search orders by account name', async ({
@@ -419,10 +811,16 @@ test('LPD-32095 A user can search orders by account name', async ({
 	page,
 	placedOrdersPage,
 	site,
-	widgetPagePage,
 }) => {
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
@@ -435,7 +833,6 @@ test('LPD-32095 A user can search orders by account name', async ({
 	};
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -479,14 +876,14 @@ test('LPD-32095 A user can search orders by account name', async ({
 		type: 'business',
 	});
 
-	apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
 		account2.id,
 		[userAccount.emailAddress]
 	);
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Placed Orders');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+	);
 
 	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
 		.getProduct(product.productId)
@@ -553,9 +950,10 @@ test('LPD-32095 A user can search orders by account name', async ({
 	await expect(placedOrdersPage.orderAccountName(account1.name)).toHaveCount(
 		0
 	);
-	await expect(placedOrdersPage.orderAccountName(account2.name)).toHaveCount(
-		1
-	);
+	await expect(
+		(await placedOrdersPage.searchTableRowByValue(6, account2.name, true))
+			.row
+	).toBeVisible();
 });
 
 test(
@@ -567,7 +965,6 @@ test(
 		page,
 		placedOrdersPage,
 		site,
-		widgetPagePage,
 	}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: getRandomString(),
@@ -609,7 +1006,6 @@ test(
 
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 
@@ -706,14 +1102,21 @@ test(
 			shippingAddressId: address.id,
 		});
 
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Placed Orders');
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
 
 		await performLogout(page);
 		await performLogin(page, userAccount.alternateName);
@@ -755,15 +1158,20 @@ test('LPD-33783 Placed orders table displays correct fields', async ({
 	page,
 	placedOrdersPage,
 	site,
-	widgetPagePage,
 }) => {
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'Placed order Channel',
 		siteGroupId: site.id,
 	});
 
@@ -779,9 +1187,10 @@ test('LPD-33783 Placed orders table displays correct fields', async ({
 		orderStatus: '0',
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Placed Orders');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await expect(placedOrdersPage.table).toBeVisible();
 
@@ -814,15 +1223,20 @@ test('LPD-33658 Assert date and time are displayed as order date', async ({
 	page,
 	placedOrdersPage,
 	site,
-	widgetPagePage,
 }) => {
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -836,9 +1250,9 @@ test('LPD-33658 Assert date and time are displayed as order date', async ({
 		type: 'business',
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Placed Orders');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+	);
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
@@ -934,7 +1348,6 @@ test('LPD-33658 Global Settings for order date configuration', async ({
 	placedOrdersPage,
 	site,
 	systemSettingsPage,
-	widgetPagePage,
 }) => {
 	await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
 
@@ -944,14 +1357,20 @@ test('LPD-33658 Global Settings for order date configuration', async ({
 			await page.getByTestId('submitConfiguration').click();
 		}
 
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 
@@ -986,9 +1405,9 @@ test('LPD-33658 Global Settings for order date configuration', async ({
 			user.emailAddress
 		);
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Placed Orders');
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+		);
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
@@ -1130,7 +1549,7 @@ test('LPD-41952 Reorder from placed orders details page with different currency 
 	};
 
 	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'admin',
+		name: getRandomString(),
 		type: 'business',
 	});
 
@@ -1226,21 +1645,41 @@ test('LPD-41952 Reorder from placed orders details page with different currency 
 
 	await expect(commerceAdminOrderDetailsPage.reorderButton).toBeVisible();
 
-	await commerceAdminOrderDetailsPage.reorderButton.click();
+	try {
+		await commerceAdminOrderDetailsPage.reorderButton.click();
 
-	await expect(commerceAdminOrderDetailsPage.reorderButton).toBeHidden();
-	await expect(commerceAdminOrderDetailsPage.checkoutButton).toBeVisible();
-	await expect(
-		page
-			.locator('.col-md-3 > .commerce-panel > div')
-			.first()
-			.filter({hasText: '¥'})
-	).toBeVisible();
-	await expect(
-		page
-			.locator('.col-md-3 > .commerce-panel > div:nth-child(2)')
-			.filter({hasText: '¥'})
-	).toBeVisible();
+		await expect(commerceAdminOrderDetailsPage.reorderButton).toBeHidden();
+
+		await expect(
+			commerceAdminOrderDetailsPage.checkoutButton
+		).toBeVisible();
+		await expect(
+			page
+				.locator('.col-md-3 > .commerce-panel > div')
+				.first()
+				.filter({hasText: '¥'})
+		).toBeVisible();
+		await expect(
+			page
+				.locator('.col-md-3 > .commerce-panel > div:nth-child(2)')
+				.filter({hasText: '¥'})
+		).toBeVisible();
+	}
+	finally {
+		await performLogout(page);
+		await performLoginViaApi({page, screenName: 'test'});
+
+		const orders =
+			await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+
+		if (orders && orders.items) {
+			for (const order of orders.items) {
+				await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+					order.id
+				);
+			}
+		}
+	}
 });
 
 test('LPD-41398 Local date format', async ({
@@ -1342,7 +1781,6 @@ test('LPD-41398 Local date format', async ({
 
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 
@@ -1567,7 +2005,6 @@ test(
 
 		const channel =
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				name: getRandomString(),
 				siteGroupId: site.id,
 			});
 

@@ -143,8 +143,8 @@ public class LayoutCacheModel
 		sb.append(layoutPrototypeUuid);
 		sb.append(", layoutPrototypeLinkEnabled=");
 		sb.append(layoutPrototypeLinkEnabled);
-		sb.append(", sourcePrototypeLayoutUuid=");
-		sb.append(sourcePrototypeLayoutUuid);
+		sb.append(", layoutSetPrototypeLayoutERC=");
+		sb.append(layoutSetPrototypeLayoutERC);
 		sb.append(", publishDate=");
 		sb.append(publishDate);
 		sb.append(", lastPublishDate=");
@@ -313,11 +313,12 @@ public class LayoutCacheModel
 
 		layoutImpl.setLayoutPrototypeLinkEnabled(layoutPrototypeLinkEnabled);
 
-		if (sourcePrototypeLayoutUuid == null) {
-			layoutImpl.setSourcePrototypeLayoutUuid("");
+		if (layoutSetPrototypeLayoutERC == null) {
+			layoutImpl.setLayoutSetPrototypeLayoutERC("");
 		}
 		else {
-			layoutImpl.setSourcePrototypeLayoutUuid(sourcePrototypeLayoutUuid);
+			layoutImpl.setLayoutSetPrototypeLayoutERC(
+				layoutSetPrototypeLayoutERC);
 		}
 
 		if (publishDate == Long.MIN_VALUE) {
@@ -416,7 +417,7 @@ public class LayoutCacheModel
 		layoutPrototypeUuid = objectInput.readUTF();
 
 		layoutPrototypeLinkEnabled = objectInput.readBoolean();
-		sourcePrototypeLayoutUuid = objectInput.readUTF();
+		layoutSetPrototypeLayoutERC = objectInput.readUTF();
 		publishDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
 
@@ -577,11 +578,11 @@ public class LayoutCacheModel
 
 		objectOutput.writeBoolean(layoutPrototypeLinkEnabled);
 
-		if (sourcePrototypeLayoutUuid == null) {
+		if (layoutSetPrototypeLayoutERC == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(sourcePrototypeLayoutUuid);
+			objectOutput.writeUTF(layoutSetPrototypeLayoutERC);
 		}
 
 		objectOutput.writeLong(publishDate);
@@ -638,7 +639,7 @@ public class LayoutCacheModel
 	public long masterLayoutPlid;
 	public String layoutPrototypeUuid;
 	public boolean layoutPrototypeLinkEnabled;
-	public String sourcePrototypeLayoutUuid;
+	public String layoutSetPrototypeLayoutERC;
 	public long publishDate;
 	public long lastPublishDate;
 	public int status;

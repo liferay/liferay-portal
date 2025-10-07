@@ -13,6 +13,8 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.base.ObjectRelationshipServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
+import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -72,23 +74,17 @@ public class ObjectRelationshipServiceImpl
 			objectRelationshipPersistence.findByPrimaryKey(
 				objectRelationshipId);
 
-		ModelResourcePermission<ObjectEntry> modelResourcePermission =
-			_objectEntryService.getModelResourcePermission(
-				objectRelationship.getObjectDefinitionId2());
-
-		modelResourcePermission.check(
-			getPermissionChecker(), primaryKey2, ActionKeys.UPDATE);
+		_checkModelResourcePermission(
+			objectRelationship.getObjectDefinitionId2(), primaryKey2,
+			ActionKeys.UPDATE);
 
 		if (Objects.equals(
 				objectRelationship.getType(),
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
 
-			modelResourcePermission =
-				_objectEntryService.getModelResourcePermission(
-					objectRelationship.getObjectDefinitionId1());
-
-			modelResourcePermission.check(
-				getPermissionChecker(), primaryKey1, ActionKeys.UPDATE);
+			_checkModelResourcePermission(
+				objectRelationship.getObjectDefinitionId1(), primaryKey1,
+				ActionKeys.UPDATE);
 		}
 
 		objectRelationshipLocalService.addObjectRelationshipMappingTableValues(
@@ -196,6 +192,33 @@ public class ObjectRelationshipServiceImpl
 			deletionType, edge, labelMap, objectField);
 	}
 
+	private void _checkModelResourcePermission(
+			long objectDefinitionId, long objectEntryId, String actionId)
+		throws PortalException {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
+
+		if (objectDefinition.isUnmodifiableSystemObject()) {
+			SystemObjectDefinitionManager systemObjectDefinitionManager =
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManager(
+						objectDefinition.getName());
+
+			systemObjectDefinitionManager.checkModelResourcePermission(
+				objectDefinition.getPrimaryKey(), getPermissionChecker(),
+				objectEntryId, actionId);
+		}
+		else {
+			ModelResourcePermission<ObjectEntry> modelResourcePermission =
+				_objectEntryService.getModelResourcePermission(
+					objectDefinitionId);
+
+			modelResourcePermission.check(
+				getPermissionChecker(), objectEntryId, actionId);
+		}
+	}
+
 	@Reference(
 		target = "(model.class.name=com.liferay.object.model.ObjectDefinition)"
 	)
@@ -207,5 +230,9 @@ public class ObjectRelationshipServiceImpl
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
 
 }

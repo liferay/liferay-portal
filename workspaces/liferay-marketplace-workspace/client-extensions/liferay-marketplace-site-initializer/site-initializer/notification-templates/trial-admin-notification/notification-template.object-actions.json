@@ -1,0 +1,18 @@
+[
+	{
+		"active": true,
+		"conditionExpression": "orderStatus == 1 AND orderTypeExternalReferenceCode == \"SSA_SAAS\"",
+		"externalReferenceCode": "TRIAL-ADMIN-NOTIFICATION-EMAIL",
+		"label": {
+			"en_US": "Trial | New Trial Started"
+		},
+		"name": "trialNewTrialStarted",
+		"objectActionExecutorKey": "notification",
+		"objectActionTriggerKey": "onAfterUpdate",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:CommerceOrder$]",
+		"parameters": {
+			"notificationTemplateExternalReferenceCode": "TRIAL-STARTED",
+			"type": "email"
+		}
+	}
+]

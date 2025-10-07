@@ -181,6 +181,8 @@ test(
 			});
 
 			await filtersPage.saveAddFilterForm();
+
+			await waitForAlert(page);
 		});
 
 		await test.step('Check that the client extension filter is in the list and it is "Active" by default', async () => {

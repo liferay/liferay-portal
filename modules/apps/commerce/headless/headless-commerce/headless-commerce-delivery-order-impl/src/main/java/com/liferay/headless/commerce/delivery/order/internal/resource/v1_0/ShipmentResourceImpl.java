@@ -11,7 +11,7 @@ import com.liferay.commerce.model.CommerceShipment;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.Shipment;
-import com.liferay.headless.commerce.delivery.order.internal.odate.entity.v1_0.ShipmentEntityModel;
+import com.liferay.headless.commerce.delivery.order.internal.odata.entity.v1_0.ShipmentEntityModel;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.ShipmentResource;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;

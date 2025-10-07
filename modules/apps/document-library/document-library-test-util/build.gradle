@@ -1,10 +1,10 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "org.springframework.test", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
+	compileOnly group: "org.springframework", name: "spring-test", version: "6.2.9"
 	compileOnly project(":core:petra:petra-string")
 }
 

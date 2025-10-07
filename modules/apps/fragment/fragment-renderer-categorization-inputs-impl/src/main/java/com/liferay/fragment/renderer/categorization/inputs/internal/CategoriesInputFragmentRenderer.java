@@ -37,7 +37,6 @@ import java.io.PrintWriter;
 
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,11 +48,8 @@ import org.osgi.service.component.annotations.Reference;
 public class CategoriesInputFragmentRenderer extends BaseInputFragmentRenderer {
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", getClass());
 
 		try {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -63,14 +59,15 @@ public class CategoriesInputFragmentRenderer extends BaseInputFragmentRenderer {
 						"/internal/dependencies/configuration.json"));
 
 			return _fragmentEntryConfigurationParser.translateConfiguration(
-				jsonObject, resourceBundle);
+				jsonObject,
+				ResourceBundleUtil.getBundle("content.Language", getClass()));
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(jsonException);
 			}
 
-			return StringPool.BLANK;
+			return null;
 		}
 	}
 
@@ -81,10 +78,7 @@ public class CategoriesInputFragmentRenderer extends BaseInputFragmentRenderer {
 
 	@Override
 	public String getLabel(Locale locale) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", getClass());
-
-		return language.get(resourceBundle, "categories");
+		return language.get(locale, "categories");
 	}
 
 	@Override
@@ -180,8 +174,8 @@ public class CategoriesInputFragmentRenderer extends BaseInputFragmentRenderer {
 	private int[] _getVisibilityTypes(FragmentEntryLink fragmentEntryLink) {
 		String vocabularyType = GetterUtil.getString(
 			_fragmentEntryConfigurationParser.getFieldValue(
-				fragmentEntryLink.getConfiguration(),
-				fragmentEntryLink.getEditableValues(),
+				fragmentEntryLink.getConfigurationJSONObject(),
+				fragmentEntryLink.getEditableValuesJSONObject(),
 				LocaleUtil.getMostRelevantLocale(), "vocabularyType"));
 
 		if (Objects.equals(vocabularyType, "all")) {

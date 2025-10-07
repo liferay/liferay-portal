@@ -6,6 +6,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-security:portal-security-script-management-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")

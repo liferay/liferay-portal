@@ -2,10 +2,9 @@ components:
     schemas:
         AssetLibraryTestEntity:
             properties:
-                assetLibraryId:
-                    format: int64
+                assetLibraryKey:
                     readOnly: true
-                    type: integer
+                    type: string
                 dateCreated:
                     format: date-time
                     type: string
@@ -24,6 +23,10 @@ components:
             description:
                 "https://www.schema.org/Document"
             properties:
+                customFields:
+                    items:
+                        type: customField
+                    type: array
                 externalReferenceCode:
                     type: string
                 id:
@@ -32,6 +35,10 @@ components:
                     type: integer
                 name:
                     type: string
+                nestedField:
+                    type: string
+                relatedCompanyTestEntity:
+                    $ref: "#/components/schemas/CompanyTestEntity"
             type: object
         ChildTestEntity1:
             allOf:
@@ -190,6 +197,9 @@ components:
             type: object
         MultipartTestEntity:
             properties:
+                id:
+                    format: int64
+                    type: integer
                 name:
                     type: string
             type: object
@@ -231,6 +241,34 @@ components:
             properties:
                 property1:
                     type: string
+            type: object
+        ScopedTestEntity:
+            properties:
+                assetLibraryKey:
+                    readOnly: true
+                    type: string
+                dateCreated:
+                    format: date-time
+                    type: string
+                dateModified:
+                    format: date-time
+                    type: string
+                description:
+                    type: string
+                externalReferenceCode:
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                siteId:
+                    format: int64
+                    readOnly: true
+                    type: integer
             type: object
         SiteTestEntity:
             properties:
@@ -360,7 +398,7 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
-    /asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities:
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities":
         get:
             operationId: getAssetLibraryERCAssetLibraryTestEntitiesPage
             parameters:
@@ -411,7 +449,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ERCAssetLibraryTestEntity"
             tags: ["ERCAssetLibraryTestEntity"]
-    /asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}:
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}":
         delete:
             operationId: deleteAssetLibraryERCAssetLibraryTestEntity
             parameters:
@@ -489,7 +527,62 @@ paths:
                     description:
                         "OK"
             tags: ["ERCAssetLibraryTestEntity"]
-    /asset-libraries/{assetLibraryExternalReferenceCode}/erc-scoped-test-entities:
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-asset-library-test-entities/{ercAssetLibraryTestEntityExternalReferenceCode}/permissions":
+        get:
+            operationId: getAssetLibraryERCAssetLibraryTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercAssetLibraryTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCAssetLibraryTestEntity"]
+        put:
+            operationId: putAssetLibraryERCAssetLibraryTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: assetLibraryExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercAssetLibraryTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCAssetLibraryTestEntity"]
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-scoped-test-entities":
         get:
             operationId: getAssetLibraryERCScopedTestEntitiesPage
             parameters:
@@ -540,7 +633,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ERCScopedTestEntity"
             tags: ["ERCScopedTestEntity"]
-    /asset-libraries/{assetLibraryExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}:
+    "/asset-libraries/{assetLibraryExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}":
         delete:
             operationId: deleteAssetLibraryERCScopedTestEntity
             parameters:
@@ -618,7 +711,7 @@ paths:
                     description:
                         "OK"
             tags: ["ERCScopedTestEntity"]
-    /asset-libraries/{assetLibraryId}/asset-library-test-entities:
+    "/asset-libraries/{assetLibraryId}/asset-library-test-entities":
         get:
             operationId: getAssetLibraryAssetLibraryTestEntitiesPage
             parameters:
@@ -644,7 +737,7 @@ paths:
                     description:
                         "OK"
             tags: ["AssetLibraryTestEntity"]
-    /asset-libraries/{assetLibraryId}/asset-library-test-entities/by-external-reference-code/{externalReferenceCode}:
+    "/asset-libraries/{assetLibraryId}/asset-library-test-entities/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode
             parameters:
@@ -665,7 +758,175 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["AssetLibraryTestEntity"]
-    /batch-test-entities:
+    "/asset-libraries/{assetLibraryId}/scoped-test-entities":
+        get:
+            operationId: getAssetLibraryScopedTestEntitiesPage
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScopedTestEntity"
+                                type: array
+                        "application/xml":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScopedTestEntity"
+                                type: array
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        post:
+            operationId: postAssetLibraryScopedTestEntity
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+            tags: ["ScopedTestEntity"]
+    "/asset-libraries/{assetLibraryId}/scoped-test-entities/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteAssetLibraryScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ScopedTestEntity"]
+        get:
+            operationId: getAssetLibraryScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        patch:
+            operationId: patchAssetLibraryScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        put:
+            operationId: putAssetLibraryScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+    "/batch-test-entities":
         get:
             operationId: getBatchTestEntitiesPage
             responses:
@@ -704,7 +965,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/BatchTestEntity"
             tags: ["BatchTestEntity"]
-    /batch-test-entities/by-external-reference-code/{externalReferenceCode}:
+    "/batch-test-entities/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteBatchTestEntityByExternalReferenceCode
             parameters:
@@ -714,9 +975,12 @@ paths:
                     schema:
                         type: string
             responses:
-                204:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
                     description:
-                        "No Content"
+                        "OK"
             tags: ["BatchTestEntity"]
         get:
             operationId: getBatchTestEntityByExternalReferenceCode
@@ -766,7 +1030,7 @@ paths:
                     description:
                         "OK"
             tags: ["BatchTestEntity"]
-    /batch-test-entities/{batchTestEntityId}:
+    "/batch-test-entities/{batchTestEntityId}":
         get:
             operationId: getBatchTestEntity
             parameters:
@@ -788,7 +1052,7 @@ paths:
                     description:
                         "OK"
             tags: ["BatchTestEntity"]
-    /company-test-entities:
+    "/company-test-entities":
         get:
             operationId: getCompanyTestEntitiesPage
             responses:
@@ -827,7 +1091,23 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/CompanyTestEntity"
             tags: ["CompanyTestEntity"]
-    /company-test-entities/by-external-reference-code/{externalReferenceCode}:
+    "/company-test-entities/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteCompanyTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        "OK"
+            tags: ["CompanyTestEntity"]
         get:
             operationId: getCompanyTestEntityByExternalReferenceCode
             parameters:
@@ -876,7 +1156,7 @@ paths:
                     description:
                         "OK"
             tags: ["CompanyTestEntity"]
-    /company-test-entities/{companyTestEntityId}:
+    "/company-test-entities/{companyTestEntityId}":
         get:
             operationId: getCompanyTestEntity
             parameters:
@@ -956,7 +1236,7 @@ paths:
                     description:
                         "OK"
             tags: ["CompanyTestEntity"]
-    /company-test-entities/{companyTestEntityId}/permissions:
+    "/company-test-entities/{companyTestEntityId}/permissions":
         get:
             operationId: getCompanyTestEntityPermissionsPage
             parameters:
@@ -995,7 +1275,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["CompanyTestEntity"]
-    /entity-model-resource-test-entities1:
+    "/entity-model-resource-test-entities1":
         get:
             description:
                 "Retrieve all EntityModelResourceTestEntity1 items."
@@ -1016,7 +1296,7 @@ paths:
                     description:
                         "OK"
             tags: ["EntityModelResourceTestEntity1"]
-    /entity-model-resource-test-entities2/{entityModelResourceTestEntity2Id}:
+    "/entity-model-resource-test-entities2/{entityModelResourceTestEntity2Id}":
         get:
             description:
                 "Retrieve a EntityModelResourceTestEntity2 item. (EntityModelResource and
@@ -1041,7 +1321,7 @@ paths:
                     description:
                         "OK"
             tags: ["EntityModelResourceTestEntity2"]
-    /filters:
+    "/filters":
         get:
             operationId: getFiltersPage
             responses:
@@ -1060,7 +1340,7 @@ paths:
                     description:
                         "OK"
             tags: ["Filter"]
-    /multipart-test-entities/{multipartTestEntityId}:
+    "/multipart-test-entities/{multipartTestEntityId}":
         get:
             operationId: getMultipartTestEntity
             parameters:
@@ -1134,7 +1414,33 @@ paths:
                     description:
                         "OK"
             tags: ["MultipartTestEntity"]
-    /reserved-word:
+    "/multipart-test-entity":
+        post:
+            operationId: postMultipartTestEntity
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+                    multipart/form-data:
+                        schema:
+                            $ref: "#/components/schemas/MultipartTestEntity"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/MultipartTestEntity"
+                    description:
+                        "OK"
+            tags: ["MultipartTestEntity"]
+    "/reserved-word":
         post:
             operationId: postReservedWord
             requestBody:
@@ -1151,7 +1457,7 @@ paths:
                     description:
                         "OK"
             tags: ["TestEntity"]
-    /schemas:
+    "/schemas":
         get:
             operationId: getSchemasPage
             responses:
@@ -1170,7 +1476,7 @@ paths:
                     description:
                         "OK"
             tags: ["Schema"]
-    /site-test-entities/{siteTestEntityId}:
+    "/site-test-entities/{siteTestEntityId}":
         get:
             operationId: getSiteTestEntity
             parameters:
@@ -1252,7 +1558,7 @@ paths:
                     description:
                         "OK"
             tags: ["SiteTestEntity"]
-    /site-test-entities/{siteTestEntityId}/permissions:
+    "/site-test-entities/{siteTestEntityId}/permissions":
         get:
             operationId: getSiteTestEntityPermissionsPage
             parameters:
@@ -1291,7 +1597,7 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["SiteTestEntity"]
-    /sites/{siteExternalReferenceCode}/erc-scoped-test-entities:
+    "/sites/{siteExternalReferenceCode}/erc-scoped-test-entities":
         get:
             operationId: getSiteERCScopedTestEntitiesPage
             parameters:
@@ -1342,17 +1648,17 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ERCScopedTestEntity"
             tags: ["ERCScopedTestEntity"]
-    /sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}:
+    "/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}":
         delete:
             operationId: deleteSiteERCScopedTestEntity
             parameters:
                 -   in: path
-                    name: ercScopedTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercScopedTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1366,12 +1672,12 @@ paths:
             operationId: getSiteERCScopedTestEntity
             parameters:
                 -   in: path
-                    name: ercScopedTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercScopedTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1391,12 +1697,12 @@ paths:
             operationId: putSiteERCScopedTestEntity
             parameters:
                 -   in: path
-                    name: ercScopedTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercScopedTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1420,7 +1726,7 @@ paths:
                     description:
                         "OK"
             tags: ["ERCScopedTestEntity"]
-    /sites/{siteExternalReferenceCode}/erc-site-test-entities:
+    "/sites/{siteExternalReferenceCode}/erc-site-test-entities":
         get:
             operationId: getSiteERCSiteTestEntitiesPage
             parameters:
@@ -1471,17 +1777,17 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ERCSiteTestEntity"
             tags: ["ERCSiteTestEntity"]
-    /sites/{siteExternalReferenceCode}/erc-site-test-entities/{ercSiteTestEntityExternalReferenceCode}:
+    "/sites/{siteExternalReferenceCode}/erc-site-test-entities/{ercSiteTestEntityExternalReferenceCode}":
         delete:
             operationId: deleteSiteERCSiteTestEntity
             parameters:
                 -   in: path
-                    name: ercSiteTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercSiteTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1495,12 +1801,12 @@ paths:
             operationId: getSiteERCSiteTestEntity
             parameters:
                 -   in: path
-                    name: ercSiteTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercSiteTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1520,12 +1826,12 @@ paths:
             operationId: putSiteERCSiteTestEntity
             parameters:
                 -   in: path
-                    name: ercSiteTestEntityExternalReferenceCode
+                    name: siteExternalReferenceCode
                     required: true
                     schema:
                         type: string
                 -   in: path
-                    name: siteExternalReferenceCode
+                    name: ercSiteTestEntityExternalReferenceCode
                     required: true
                     schema:
                         type: string
@@ -1549,7 +1855,232 @@ paths:
                     description:
                         "OK"
             tags: ["ERCSiteTestEntity"]
-    /sites/{siteId}/site-test-entities:
+    "/sites/{siteExternalReferenceCode}/erc-site-test-entities/{ercSiteTestEntityExternalReferenceCode}/permissions":
+        get:
+            operationId: getSiteERCSiteTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercSiteTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ERCSiteTestEntity"]
+        put:
+            operationId: putSiteERCSiteTestEntityPermissionsPage
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: ercSiteTestEntityExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                    description:
+                        "OK"
+            tags: ["ERCSiteTestEntity"]
+    "/sites/{siteId}/scoped-test-entities":
+        get:
+            operationId: getSiteScopedTestEntitiesPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScopedTestEntity"
+                                type: array
+                        "application/xml":
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ScopedTestEntity"
+                                type: array
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        post:
+            operationId: postSiteScopedTestEntity
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+            tags: ["ScopedTestEntity"]
+    "/sites/{siteId}/scoped-test-entities/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteSiteScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ScopedTestEntity"]
+        get:
+            operationId: getSiteScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        patch:
+            operationId: patchSiteScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+        put:
+            operationId: putSiteScopedTestEntityByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ScopedTestEntity"
+            responses:
+                200:
+                    content:
+                        "application/json":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                        "application/xml":
+                            schema:
+                                $ref: "#/components/schemas/ScopedTestEntity"
+                    description:
+                        "OK"
+            tags: ["ScopedTestEntity"]
+    "/sites/{siteId}/site-test-entities":
         get:
             operationId: getSiteSiteTestEntitiesPage
             parameters:
@@ -1602,21 +2133,21 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/SiteTestEntity"
             tags: ["SiteTestEntity"]
-    /sites/{siteId}/site-test-entities/by-external-reference-code/{externalReferenceCode}:
+    "/sites/{siteId}/site-test-entities/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteSiteSiteTestEntityByExternalReferenceCode
             parameters:
-                -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
                 -   in: path
                     name: siteId
                     required: true
                     schema:
                         format: int64
                         type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
             responses:
                 204:
                     content:
@@ -1627,16 +2158,16 @@ paths:
             operationId: getSiteSiteTestEntityByExternalReferenceCode
             parameters:
                 -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
                     name: siteId
                     required: true
                     schema:
                         format: int64
                         type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
             responses:
                 200:
                     content:
@@ -1653,16 +2184,16 @@ paths:
             operationId: putSiteSiteTestEntityByExternalReferenceCode
             parameters:
                 -   in: path
-                    name: externalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
                     name: siteId
                     required: true
                     schema:
                         format: int64
                         type: integer
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
@@ -1683,7 +2214,7 @@ paths:
                     description:
                         "OK"
             tags: ["SiteTestEntity"]
-    /sorts:
+    "/sorts":
         get:
             operationId: getSortsPage
             responses:
@@ -1702,9 +2233,14 @@ paths:
                     description:
                         "OK"
             tags: ["Sort"]
-    /test-entities:
+    "/test-entities":
         get:
             operationId: getTestEntitiesPage
+            parameters:
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
             responses:
                 200:
                     content:
@@ -1741,7 +2277,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/TestEntity"
             tags: ["TestEntity"]
-    /test-entities/count:
+    "/test-entities/count":
         get:
             description:
                 Retrieves the count.
@@ -1757,7 +2293,7 @@ paths:
                     description:
                         "OK"
             tags: ["TestEntity"]
-    /test-entities/multipart/bulk:
+    "/test-entities/multipart/bulk":
         post:
             operationId: postTestEntityMultipartBulk
             requestBody:
@@ -1775,7 +2311,7 @@ paths:
                     description:
                         "OK"
             tags: ["TestEntity"]
-    /test-entities/{testEntityId}:
+    "/test-entities/{testEntityId}":
         delete:
             operationId: deleteTestEntity
             parameters:
@@ -1886,7 +2422,35 @@ paths:
                     description:
                         "OK"
             tags: ["TestEntity"]
-    /test-entities/{testEntityId}/test-entity-address:
+    "/test-entities/{testEntityId}/status":
+        put:
+            operationId: putTestEntityStatus
+            parameters:
+                -   in: path
+                    name: testEntityId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/TestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/TestEntity"
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TestEntity"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TestEntity"
+            tags: ["TestEntity"]
+    "/test-entities/{testEntityId}/test-entity-address":
         get:
             operationId: getTestEntityTestEntityAddress
             parameters:

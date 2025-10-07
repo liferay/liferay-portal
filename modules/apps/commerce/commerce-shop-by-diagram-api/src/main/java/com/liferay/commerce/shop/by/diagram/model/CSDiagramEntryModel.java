@@ -8,6 +8,7 @@ package com.liferay.commerce.shop.by.diagram.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
@@ -30,7 +31,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CSDiagramEntryModel
 	extends AuditedModel, BaseModel<CSDiagramEntry>, CTModel<CSDiagramEntry>,
-			MVCCModel, ShardedModel {
+			ExternalReferenceCodeModel, MVCCModel, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -85,6 +86,23 @@ public interface CSDiagramEntryModel
 	 */
 	@Override
 	public void setCtCollectionId(long ctCollectionId);
+
+	/**
+	 * Returns the external reference code of this cs diagram entry.
+	 *
+	 * @return the external reference code of this cs diagram entry
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this cs diagram entry.
+	 *
+	 * @param externalReferenceCode the external reference code of this cs diagram entry
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the cs diagram entry ID of this cs diagram entry.

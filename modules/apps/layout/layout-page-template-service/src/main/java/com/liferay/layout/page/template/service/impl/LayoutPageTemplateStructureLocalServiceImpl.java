@@ -19,8 +19,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -149,11 +147,12 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 
 	@Override
 	public LayoutPageTemplateStructure updateLayoutPageTemplateStructureData(
-			long groupId, long plid, long segmentsExperienceId, String data)
+			long userId, long groupId, long plid, long segmentsExperienceId,
+			String data)
 		throws PortalException {
 
 		if (CheckUnlockedLayoutThreadLocal.isCheckUnlockedLayout()) {
-			_checkUnlockedLayout(plid);
+			_checkUnlockedLayout(userId, plid);
 		}
 
 		// Layout page template structure
@@ -179,7 +178,7 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 		if (layoutPageTemplateStructureRel == null) {
 			_layoutPageTemplateStructureRelLocalService.
 				addLayoutPageTemplateStructureRel(
-					PrincipalThreadLocal.getUserId(), groupId,
+					userId, groupId,
 					layoutPageTemplateStructure.
 						getLayoutPageTemplateStructureId(),
 					segmentsExperienceId, data,
@@ -193,17 +192,17 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 					segmentsExperienceId, data);
 		}
 
-		_updateLayoutStatus(PrincipalThreadLocal.getUserId(), plid);
+		_updateLayoutStatus(userId, plid);
 
 		return layoutPageTemplateStructure;
 	}
 
 	@Override
 	public LayoutPageTemplateStructure updateLayoutPageTemplateStructureData(
-			long groupId, long plid, String data)
+			long userId, long groupId, long plid, String data)
 		throws PortalException {
 
-		_checkUnlockedLayout(plid);
+		_checkUnlockedLayout(userId, plid);
 
 		long defaultSegmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
@@ -211,15 +210,15 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 
 		return layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				groupId, plid, defaultSegmentsExperienceId, data);
+				userId, groupId, plid, defaultSegmentsExperienceId, data);
 	}
 
-	private void _checkUnlockedLayout(long plid) throws PortalException {
+	private void _checkUnlockedLayout(long userId, long plid)
+		throws PortalException {
+
 		Layout layout = _layoutLocalService.fetchLayout(plid);
 
-		if ((layout != null) &&
-			!layout.isUnlocked(Constants.EDIT, GuestOrUserUtil.getUserId())) {
-
+		if ((layout != null) && !layout.isUnlocked(Constants.EDIT, userId)) {
 			throw new LockedLayoutException();
 		}
 	}

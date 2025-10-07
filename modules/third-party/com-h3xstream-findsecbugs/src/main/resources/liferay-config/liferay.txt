@@ -751,20 +751,20 @@ com/liferay/portal/util/PrefsPropsUtil.getStringArray(Ljava/lang/String;Ljava/la
 com/liferay/portal/util/PrefsPropsUtil.getStringArray(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)[Ljava/lang/String;:SAFE
 com/liferay/portal/util/PrefsPropsUtil.getStringFromNames(J[Ljava/lang/String;)Ljava/lang/String;:SAFE
 
-com/liferay/portal/util/PropsUtil.get(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;)Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.get(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.get(Ljava/lang/String;)Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.get(Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.getArray(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;)[Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.getArray(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)[Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.getArray(Ljava/lang/String;)[Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.getArray(Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)[Ljava/lang/String;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties()Ljava/util/Properties;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties(Z)Ljava/util/Properties;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;)Ljava/util/Properties;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;Z)Ljava/util/Properties;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Z)Ljava/util/Properties;:SAFE
-com/liferay/portal/util/PropsUtil.getProperties(Ljava/lang/String;Z)Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.get(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;)Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.get(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.get(Ljava/lang/String;)Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.get(Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getArray(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;)[Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getArray(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)[Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getArray(Ljava/lang/String;)[Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getArray(Ljava/lang/String;Lcom/liferay/portal/kernel/configuration/Filter;)[Ljava/lang/String;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties()Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties(Z)Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;)Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;Z)Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties(Lcom/liferay/portal/kernel/model/Company;Ljava/lang/String;Z)Ljava/util/Properties;:SAFE
+com.liferay.portal.kernel.util.PropsUtil.getProperties(Ljava/lang/String;Z)Ljava/util/Properties;:SAFE
 
 com/liferay/portal/kernel/util/PrefsPropsUtil.getContent(JLjava/lang/String;)Ljava/lang/String;:SAFE
 com/liferay/portal/kernel/util/PrefsPropsUtil.getContent(Ljavax/portlet/PortletPreferences;JLjava/lang/String;)Ljava/lang/String;:SAFE

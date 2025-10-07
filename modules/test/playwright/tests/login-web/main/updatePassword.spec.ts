@@ -26,14 +26,11 @@ test.afterEach('Reset Captcha configuration', async ({captchaConfigPage}) => {
 
 test('LPD-52234: Check if you can change languages in the update password page', async ({
 	apiHelpers,
-	captchaConfigPage,
 	page,
 }) => {
 	const userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
 
 	try {
-		await captchaConfigPage.disableCaptcha();
-
 		await performLogout(page);
 
 		await page.goto(liferayConfig.environment.baseUrl);
@@ -43,6 +40,7 @@ test('LPD-52234: Check if you can change languages in the update password page',
 		await page.getByLabel('Email Address').fill(userAccount.emailAddress);
 		await page.getByRole('button', {name: 'Send New Password'}).click();
 
+		await page.waitForLoadState('domcontentloaded');
 		await performLoginViaApi({page, screenName: 'test'});
 
 		const ticket =

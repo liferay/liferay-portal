@@ -1445,186 +1445,186 @@ public class LayoutUtil {
 	}
 
 	/**
-	 * Returns all the layouts where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns all the layouts where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the matching layouts
 	 */
-	public static List<Layout> findBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid) {
+	public static List<Layout> findByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns a range of all the layouts where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns a range of all the layouts where layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
 	 * </p>
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @return the range of matching layouts
 	 */
-	public static List<Layout> findBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid, int start, int end) {
+	public static List<Layout> findByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC, int start, int end) {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid, start, end);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layouts where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns an ordered range of all the layouts where layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
 	 * </p>
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching layouts
 	 */
-	public static List<Layout> findBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid, int start, int end,
+	public static List<Layout> findByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC, int start, int end,
 		OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid, start, end, orderByComparator);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC, start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layouts where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns an ordered range of all the layouts where layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
 	 * </p>
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching layouts
 	 */
-	public static List<Layout> findBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid, int start, int end,
+	public static List<Layout> findByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC, int start, int end,
 		OrderByComparator<Layout> orderByComparator, boolean useFinderCache) {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid, start, end, orderByComparator,
+		return getPersistence().findByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC, start, end, orderByComparator,
 			useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout in the ordered set where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the first layout in the ordered set where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout
 	 * @throws NoSuchLayoutException if a matching layout could not be found
 	 */
-	public static Layout findBySourcePrototypeLayoutUuid_First(
-			String sourcePrototypeLayoutUuid,
+	public static Layout findByLayoutSetPrototypeLayoutERC_First(
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid_First(
-			sourcePrototypeLayoutUuid, orderByComparator);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC_First(
+			layoutSetPrototypeLayoutERC, orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout in the ordered set where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the first layout in the ordered set where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout, or <code>null</code> if a matching layout could not be found
 	 */
-	public static Layout fetchBySourcePrototypeLayoutUuid_First(
-		String sourcePrototypeLayoutUuid,
+	public static Layout fetchByLayoutSetPrototypeLayoutERC_First(
+		String layoutSetPrototypeLayoutERC,
 		OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().fetchBySourcePrototypeLayoutUuid_First(
-			sourcePrototypeLayoutUuid, orderByComparator);
+		return getPersistence().fetchByLayoutSetPrototypeLayoutERC_First(
+			layoutSetPrototypeLayoutERC, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout in the ordered set where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the last layout in the ordered set where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout
 	 * @throws NoSuchLayoutException if a matching layout could not be found
 	 */
-	public static Layout findBySourcePrototypeLayoutUuid_Last(
-			String sourcePrototypeLayoutUuid,
+	public static Layout findByLayoutSetPrototypeLayoutERC_Last(
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid_Last(
-			sourcePrototypeLayoutUuid, orderByComparator);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC_Last(
+			layoutSetPrototypeLayoutERC, orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout in the ordered set where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the last layout in the ordered set where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout, or <code>null</code> if a matching layout could not be found
 	 */
-	public static Layout fetchBySourcePrototypeLayoutUuid_Last(
-		String sourcePrototypeLayoutUuid,
+	public static Layout fetchByLayoutSetPrototypeLayoutERC_Last(
+		String layoutSetPrototypeLayoutERC,
 		OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().fetchBySourcePrototypeLayoutUuid_Last(
-			sourcePrototypeLayoutUuid, orderByComparator);
+		return getPersistence().fetchByLayoutSetPrototypeLayoutERC_Last(
+			layoutSetPrototypeLayoutERC, orderByComparator);
 	}
 
 	/**
-	 * Returns the layouts before and after the current layout in the ordered set where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the layouts before and after the current layout in the ordered set where layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param plid the primary key of the current layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout
 	 * @throws NoSuchLayoutException if a layout with the primary key could not be found
 	 */
-	public static Layout[] findBySourcePrototypeLayoutUuid_PrevAndNext(
-			long plid, String sourcePrototypeLayoutUuid,
+	public static Layout[] findByLayoutSetPrototypeLayoutERC_PrevAndNext(
+			long plid, String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findBySourcePrototypeLayoutUuid_PrevAndNext(
-			plid, sourcePrototypeLayoutUuid, orderByComparator);
+		return getPersistence().findByLayoutSetPrototypeLayoutERC_PrevAndNext(
+			plid, layoutSetPrototypeLayoutERC, orderByComparator);
 	}
 
 	/**
-	 * Removes all the layouts where sourcePrototypeLayoutUuid = &#63; from the database.
+	 * Removes all the layouts where layoutSetPrototypeLayoutERC = &#63; from the database.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 */
-	public static void removeBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid) {
+	public static void removeByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC) {
 
-		getPersistence().removeBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid);
+		getPersistence().removeByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns the number of layouts where sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the number of layouts where layoutSetPrototypeLayoutERC = &#63;.
 	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the number of matching layouts
 	 */
-	public static int countBySourcePrototypeLayoutUuid(
-		String sourcePrototypeLayoutUuid) {
+	public static int countByLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().countBySourcePrototypeLayoutUuid(
-			sourcePrototypeLayoutUuid);
+		return getPersistence().countByLayoutSetPrototypeLayoutERC(
+			layoutSetPrototypeLayoutERC);
 	}
 
 	/**
@@ -2971,6 +2971,86 @@ public class LayoutUtil {
 	}
 
 	/**
+	 * Returns all the layouts where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @return the matching layouts
+	 */
+	public static List<Layout> findByC_C(long classNameId, long[] classPKs) {
+		return getPersistence().findByC_C(classNameId, classPKs);
+	}
+
+	/**
+	 * Returns a range of all the layouts where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @return the range of matching layouts
+	 */
+	public static List<Layout> findByC_C(
+		long classNameId, long[] classPKs, int start, int end) {
+
+		return getPersistence().findByC_C(classNameId, classPKs, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C(
+		long classNameId, long[] classPKs, int start, int end,
+		OrderByComparator<Layout> orderByComparator) {
+
+		return getPersistence().findByC_C(
+			classNameId, classPKs, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C(
+		long classNameId, long[] classPKs, int start, int end,
+		OrderByComparator<Layout> orderByComparator, boolean useFinderCache) {
+
+		return getPersistence().findByC_C(
+			classNameId, classPKs, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
 	 * Removes all the layouts where classNameId = &#63; and classPK = &#63; from the database.
 	 *
 	 * @param classNameId the class name ID
@@ -2989,6 +3069,17 @@ public class LayoutUtil {
 	 */
 	public static int countByC_C(long classNameId, long classPK) {
 		return getPersistence().countByC_C(classNameId, classPK);
+	}
+
+	/**
+	 * Returns the number of layouts where classNameId = &#63; and classPK = any &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @return the number of matching layouts
+	 */
+	public static int countByC_C(long classNameId, long[] classPKs) {
+		return getPersistence().countByC_C(classNameId, classPKs);
 	}
 
 	/**
@@ -4105,22 +4196,23 @@ public class LayoutUtil {
 	}
 
 	/**
-	 * Returns all the layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns all the layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the matching layouts
 	 */
-	public static List<Layout> findByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid) {
+	public static List<Layout> findByG_P_LSPLE(
+		long groupId, boolean privateLayout,
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().findByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid);
+		return getPersistence().findByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns a range of all the layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns a range of all the layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
@@ -4128,21 +4220,21 @@ public class LayoutUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @return the range of matching layouts
 	 */
-	public static List<Layout> findByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static List<Layout> findByG_P_LSPLE(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		int start, int end) {
 
-		return getPersistence().findByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid, start, end);
+		return getPersistence().findByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns an ordered range of all the layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
@@ -4150,23 +4242,23 @@ public class LayoutUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching layouts
 	 */
-	public static List<Layout> findByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static List<Layout> findByG_P_LSPLE(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		int start, int end, OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().findByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid, start, end,
+		return getPersistence().findByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns an ordered range of all the layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
@@ -4174,140 +4266,141 @@ public class LayoutUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching layouts
 	 */
-	public static List<Layout> findByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static List<Layout> findByG_P_LSPLE(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		int start, int end, OrderByComparator<Layout> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid, start, end,
+		return getPersistence().findByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC, start, end,
 			orderByComparator, useFinderCache);
 	}
 
 	/**
-	 * Returns the first layout in the ordered set where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the first layout in the ordered set where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout
 	 * @throws NoSuchLayoutException if a matching layout could not be found
 	 */
-	public static Layout findByG_P_SPLU_First(
+	public static Layout findByG_P_LSPLE_First(
 			long groupId, boolean privateLayout,
-			String sourcePrototypeLayoutUuid,
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findByG_P_SPLU_First(
-			groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().findByG_P_LSPLE_First(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the first layout in the ordered set where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the first layout in the ordered set where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching layout, or <code>null</code> if a matching layout could not be found
 	 */
-	public static Layout fetchByG_P_SPLU_First(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static Layout fetchByG_P_LSPLE_First(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().fetchByG_P_SPLU_First(
-			groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().fetchByG_P_LSPLE_First(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout in the ordered set where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the last layout in the ordered set where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout
 	 * @throws NoSuchLayoutException if a matching layout could not be found
 	 */
-	public static Layout findByG_P_SPLU_Last(
+	public static Layout findByG_P_LSPLE_Last(
 			long groupId, boolean privateLayout,
-			String sourcePrototypeLayoutUuid,
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findByG_P_SPLU_Last(
-			groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().findByG_P_LSPLE_Last(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the last layout in the ordered set where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the last layout in the ordered set where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching layout, or <code>null</code> if a matching layout could not be found
 	 */
-	public static Layout fetchByG_P_SPLU_Last(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static Layout fetchByG_P_LSPLE_Last(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().fetchByG_P_SPLU_Last(
-			groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().fetchByG_P_LSPLE_Last(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layouts before and after the current layout in the ordered set where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the layouts before and after the current layout in the ordered set where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param plid the primary key of the current layout
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout
 	 * @throws NoSuchLayoutException if a layout with the primary key could not be found
 	 */
-	public static Layout[] findByG_P_SPLU_PrevAndNext(
+	public static Layout[] findByG_P_LSPLE_PrevAndNext(
 			long plid, long groupId, boolean privateLayout,
-			String sourcePrototypeLayoutUuid,
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().findByG_P_SPLU_PrevAndNext(
-			plid, groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().findByG_P_LSPLE_PrevAndNext(
+			plid, groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns all the layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns all the layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the matching layouts that the user has permission to view
 	 */
-	public static List<Layout> filterFindByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid) {
+	public static List<Layout> filterFindByG_P_LSPLE(
+		long groupId, boolean privateLayout,
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().filterFindByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid);
+		return getPersistence().filterFindByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns a range of all the layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns a range of all the layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
@@ -4315,21 +4408,21 @@ public class LayoutUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @return the range of matching layouts that the user has permission to view
 	 */
-	public static List<Layout> filterFindByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static List<Layout> filterFindByG_P_LSPLE(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		int start, int end) {
 
-		return getPersistence().filterFindByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid, start, end);
+		return getPersistence().filterFindByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the layouts that the user has permissions to view where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns an ordered range of all the layouts that the user has permissions to view where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutModelImpl</code>.
@@ -4337,85 +4430,88 @@ public class LayoutUtil {
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param start the lower bound of the range of layouts
 	 * @param end the upper bound of the range of layouts (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching layouts that the user has permission to view
 	 */
-	public static List<Layout> filterFindByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid,
+	public static List<Layout> filterFindByG_P_LSPLE(
+		long groupId, boolean privateLayout, String layoutSetPrototypeLayoutERC,
 		int start, int end, OrderByComparator<Layout> orderByComparator) {
 
-		return getPersistence().filterFindByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid, start, end,
+		return getPersistence().filterFindByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC, start, end,
 			orderByComparator);
 	}
 
 	/**
-	 * Returns the layouts before and after the current layout in the ordered set of layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the layouts before and after the current layout in the ordered set of layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param plid the primary key of the current layout
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next layout
 	 * @throws NoSuchLayoutException if a layout with the primary key could not be found
 	 */
-	public static Layout[] filterFindByG_P_SPLU_PrevAndNext(
+	public static Layout[] filterFindByG_P_LSPLE_PrevAndNext(
 			long plid, long groupId, boolean privateLayout,
-			String sourcePrototypeLayoutUuid,
+			String layoutSetPrototypeLayoutERC,
 			OrderByComparator<Layout> orderByComparator)
 		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
 
-		return getPersistence().filterFindByG_P_SPLU_PrevAndNext(
-			plid, groupId, privateLayout, sourcePrototypeLayoutUuid,
+		return getPersistence().filterFindByG_P_LSPLE_PrevAndNext(
+			plid, groupId, privateLayout, layoutSetPrototypeLayoutERC,
 			orderByComparator);
 	}
 
 	/**
-	 * Removes all the layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63; from the database.
+	 * Removes all the layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63; from the database.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 */
-	public static void removeByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid) {
+	public static void removeByG_P_LSPLE(
+		long groupId, boolean privateLayout,
+		String layoutSetPrototypeLayoutERC) {
 
-		getPersistence().removeByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid);
+		getPersistence().removeByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns the number of layouts where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the number of layouts where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the number of matching layouts
 	 */
-	public static int countByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid) {
+	public static int countByG_P_LSPLE(
+		long groupId, boolean privateLayout,
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().countByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid);
+		return getPersistence().countByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC);
 	}
 
 	/**
-	 * Returns the number of layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and sourcePrototypeLayoutUuid = &#63;.
+	 * Returns the number of layouts that the user has permission to view where groupId = &#63; and privateLayout = &#63; and layoutSetPrototypeLayoutERC = &#63;.
 	 *
 	 * @param groupId the group ID
 	 * @param privateLayout the private layout
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc
 	 * @return the number of matching layouts that the user has permission to view
 	 */
-	public static int filterCountByG_P_SPLU(
-		long groupId, boolean privateLayout, String sourcePrototypeLayoutUuid) {
+	public static int filterCountByG_P_LSPLE(
+		long groupId, boolean privateLayout,
+		String layoutSetPrototypeLayoutERC) {
 
-		return getPersistence().filterCountByG_P_SPLU(
-			groupId, privateLayout, sourcePrototypeLayoutUuid);
+		return getPersistence().filterCountByG_P_LSPLE(
+			groupId, privateLayout, layoutSetPrototypeLayoutERC);
 	}
 
 	/**

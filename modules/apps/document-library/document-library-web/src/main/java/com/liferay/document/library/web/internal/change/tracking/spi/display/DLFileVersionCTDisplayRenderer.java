@@ -23,8 +23,6 @@ import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.document.library.preview.DLPreviewRendererProvider;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
-import com.liferay.frontend.taglib.clay.servlet.taglib.LinkTag;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,8 +30,8 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.InputStream;
 
@@ -272,33 +270,6 @@ public class DLFileVersionCTDisplayRenderer
 			dlFileEntry.getName(), parts[0]);
 	}
 
-	protected static String getDownloadLink(
-		DisplayBuilder<?> displayBuilder, DLFileVersion dlFileVersion) {
-
-		DisplayContext<?> displayContext = displayBuilder.getDisplayContext();
-
-		LinkTag linkTag = new LinkTag();
-
-		linkTag.setDisplayType("primary");
-		linkTag.setHref(
-			displayContext.getDownloadURL(
-				dlFileVersion.getVersion(), dlFileVersion.getSize(),
-				dlFileVersion.getFileName()));
-		linkTag.setIcon("download");
-		linkTag.setLabel("download");
-		linkTag.setSmall(true);
-		linkTag.setType("button");
-
-		try {
-			return linkTag.doTagAsString(
-				displayContext.getHttpServletRequest(),
-				displayContext.getHttpServletResponse());
-		}
-		catch (Exception exception) {
-			return ReflectionUtil.throwException(exception);
-		}
-	}
-
 	@Override
 	protected void buildDisplay(DisplayBuilder<DLFileVersion> displayBuilder) {
 		DLFileVersion dlFileVersion = displayBuilder.getModel();
@@ -318,7 +289,11 @@ public class DLFileVersionCTDisplayRenderer
 		).display(
 			"size", dlFileVersion.getSize()
 		).display(
-			"download", getDownloadLink(displayBuilder, dlFileVersion), false
+			"download",
+			getDownloadLink(
+				displayBuilder.getDisplayContext(), dlFileVersion.getVersion(),
+				dlFileVersion.getSize(), dlFileVersion.getFileName()),
+			false
 		);
 	}
 

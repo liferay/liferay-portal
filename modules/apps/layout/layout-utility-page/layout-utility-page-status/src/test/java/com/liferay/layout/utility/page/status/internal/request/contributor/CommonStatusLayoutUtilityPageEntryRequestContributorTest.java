@@ -8,31 +8,30 @@ package com.liferay.layout.utility.page.status.internal.request.contributor;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
-import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.I18nServlet;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.util.PortalInstances;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -80,7 +79,7 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 	public static void tearDownClass() {
 		_i18nServletMockedStatic.close();
 		_permissionThreadLocalMockedStatic.close();
-		_portalInstancePoolMockedStatic.close();
+		_portalInstancesMockedStatic.close();
 	}
 
 	@Before
@@ -88,128 +87,108 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		_setUpCommonStatusLayoutUtilityPageEntryRequestContributor();
 
 		_permissionThreadLocalMockedStatic.clearInvocations();
+		_portalInstancesMockedStatic.reset();
 	}
 
 	@Test
-	public void testAddParametersWithDefaultVirtualHostAndWithoutCurrentURL()
+	public void testAddAttributesAndParametersWithDefaultVirtualHostAndWithoutCurrentURL()
 		throws PortalException {
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			RandomTestUtil.randomLong(), 0, RandomTestUtil.randomString());
-
-		_mockPortal(null, virtualHost.getHostname(), null);
-		_mockVirtualHostLocalService(virtualHost);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()), null,
-			null, null);
-		_assertSetPermissionChecker(0);
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong()),
+			null, null, null, null, null, 0);
 	}
 
 	@Test
-	public void testAddParametersWithoutVirtualHostAndWithoutCurrentURL()
+	public void testAddAttributesAndParametersWithoutVirtualHostAndWithoutCurrentURL()
 		throws PortalException {
 
-		_mockPortal(null, null, null);
-		_mockVirtualHostLocalService(null);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()), null,
-			null, null);
-		_assertSetPermissionChecker(0);
+		_testAddAttributesAndParameters(
+			null, _getDynamicServletRequest(RandomTestUtil.randomString(), 0L),
+			null, null, null, null, null, 0);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithContextPath()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithContextPath()
 		throws PortalException {
 
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_mockPortal(
-			null, virtualHost.getHostname(), RandomTestUtil.randomString());
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()),
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), null,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			RandomTestUtil.randomString(), 1);
 	}
 
 	@Test
 	@TestInfo("LPD-56619")
-	public void testAddParametersWithVirtualHostAndWithCurrentURLWithInactiveGroup()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithInactiveGroup()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			StringPool.SLASH, RandomTestUtil.randomString(), "/test/test");
-
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
 
 		String groupFriendlyURL =
 			StringPool.SLASH + RandomTestUtil.randomString();
 
 		_mockGroupLocalService(
-			virtualHost.getCompanyId(),
+			layout.getCompanyId(),
 			_mockGroup(
 				false, layout.getCompanyId(), RandomTestUtil.randomLong(),
 				groupFriendlyURL),
 			groupFriendlyURL);
 
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				StringPool.SLASH, RandomTestUtil.randomString(), "/test/test"),
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			_PATH_PROXY, 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithCurrentURLWithoutValidGroup()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithoutValidGroup()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			StringPool.SLASH, RandomTestUtil.randomString(), "/test/test");
-
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
 
 		String groupFriendlyURL =
 			StringPool.SLASH + RandomTestUtil.randomString();
 
-		_mockGroupLocalService(
-			virtualHost.getCompanyId(), null, groupFriendlyURL);
+		_mockGroupLocalService(layout.getCompanyId(), null, groupFriendlyURL);
 
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				StringPool.SLASH, RandomTestUtil.randomString(), "/test/test"),
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			_PATH_PROXY, 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithLayouts()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithLayouts()
 		throws PortalException {
 
 		long companyId = RandomTestUtil.randomLong();
@@ -222,30 +201,28 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		Layout virtualHostGroupLayout = _mockLayout(
 			companyId, RandomTestUtil.randomLong());
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			groupFriendlyURL, "/test/test");
-
 		Group group = _mockGroup(true, companyId, groupId, groupFriendlyURL);
-		VirtualHost virtualHost = _mockVirtualHost(
-			companyId, virtualHostGroupLayout.getGroupId(),
-			virtualHostGroupLayout, null);
 
 		_mockGroupLocalService(companyId, group, groupFriendlyURL);
 
 		_mockLayoutLocalService(groupId, layout, null);
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
 
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				groupFriendlyURL, "/test/test"),
+			_getDynamicServletRequest(_PATH_CONTEXT, companyId),
 			String.valueOf(group.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				companyId, virtualHostGroupLayout.getGroupId(),
+				virtualHostGroupLayout, null),
+			_PATH_PROXY, 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithLayoutsWithoutViewPermission()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithLayoutsWithoutViewPermission()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
@@ -253,38 +230,36 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		String groupFriendlyURL =
 			StringPool.SLASH + RandomTestUtil.randomString();
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			groupFriendlyURL, "/test/test");
-
 		Layout virtualHostGroupLayout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			virtualHostGroupLayout.getCompanyId(),
-			virtualHostGroupLayout.getGroupId(), virtualHostGroupLayout, null);
 
 		Group group = _mockGroup(
 			true, virtualHostGroupLayout.getCompanyId(),
 			RandomTestUtil.randomLong(), groupFriendlyURL);
 
 		_mockGroupLocalService(
-			virtualHost.getCompanyId(), group, groupFriendlyURL);
+			virtualHostGroupLayout.getCompanyId(), group, groupFriendlyURL);
 
 		_mockLayoutLocalService(group.getGroupId(), null, null);
 
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				groupFriendlyURL, "/test/test"),
+			_getDynamicServletRequest(
+				_PATH_CONTEXT, virtualHostGroupLayout.getCompanyId()),
 			String.valueOf(virtualHostGroupLayout.getGroupId()), languageId,
-			String.valueOf(virtualHostGroupLayout.getLayoutId()));
-		_assertSetPermissionChecker(2);
+			String.valueOf(virtualHostGroupLayout.getLayoutId()),
+			_getLayoutSet(
+				virtualHostGroupLayout.getCompanyId(),
+				virtualHostGroupLayout.getGroupId(), virtualHostGroupLayout,
+				null),
+			_PATH_PROXY, 2);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithoutLayouts()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithValidGroupWithoutLayouts()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
@@ -292,85 +267,72 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		String groupFriendlyURL =
 			StringPool.SLASH + RandomTestUtil.randomString();
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			groupFriendlyURL, "/test/test");
-
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
 
 		Group group = _mockGroup(
 			true, layout.getCompanyId(), RandomTestUtil.randomLong(),
 			groupFriendlyURL);
 
-		_mockGroupLocalService(
-			virtualHost.getCompanyId(), group, groupFriendlyURL);
+		_mockGroupLocalService(layout.getCompanyId(), group, groupFriendlyURL);
 
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				groupFriendlyURL, "/test/test"),
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(2);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			_PATH_PROXY, 2);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithInvalidCurrentURL()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithInvalidCurrentURL()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			StringPool.SLASH + RandomTestUtil.randomString());
-
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				StringPool.SLASH + RandomTestUtil.randomString()),
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			_PATH_PROXY, 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostAndWithLanguageId()
+	public void testAddAttributesAndParametersWithVirtualHostAndWithLanguageId()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			StringPool.SLASH);
-
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT),
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				StringPool.SLASH),
+			_getDynamicServletRequest(_PATH_CONTEXT, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			_PATH_PROXY, 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostWithoutLayoutsAndWithCurrentURLWithValidGroupWithoutLayouts()
+	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithCurrentURLWithValidGroupWithoutLayouts()
 		throws PortalException {
 
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
@@ -378,138 +340,133 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		String groupFriendlyURL =
 			StringPool.SLASH + RandomTestUtil.randomString();
 
-		String currentURL = StringBundler.concat(
-			_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-			groupFriendlyURL, "/test/test");
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(), null,
-			null);
-
 		Group group = _mockGroup(
-			true, virtualHost.getCompanyId(), RandomTestUtil.randomLong(),
+			true, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 			groupFriendlyURL);
 
-		_mockGroupLocalService(
-			virtualHost.getCompanyId(), group, groupFriendlyURL);
+		_mockGroupLocalService(group.getCompanyId(), group, groupFriendlyURL);
 
-		_mockPortal(currentURL, virtualHost.getHostname(), _PATH_PROXY);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(_PATH_CONTEXT), null, null, null);
-		_assertSetPermissionChecker(2);
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				groupFriendlyURL, "/test/test"),
+			_getDynamicServletRequest(_PATH_CONTEXT, group.getCompanyId()),
+			null, null, null,
+			_getLayoutSet(
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(), null,
+				null),
+			_PATH_PROXY, 2);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostWithoutLayoutsAndWithoutCurrentURL()
+	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithoutCurrentURL()
 		throws PortalException {
 
-		VirtualHost virtualHost = _mockVirtualHost();
-
-		_mockPortal(null, virtualHost.getHostname(), null);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()), null,
-			null, null);
-		_assertSetPermissionChecker(0);
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong()),
+			null, null, null, null, null, 0);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostWithPathProxy()
-		throws PortalException {
-
-		Layout layout = _mockLayout(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_mockPortal(
-			null, virtualHost.getHostname(), RandomTestUtil.randomString());
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(null),
-			String.valueOf(layout.getGroupId()), null,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
-	}
-
-	@Test
-	public void testAddParametersWithVirtualHostWithPrivateLayoutAndWithoutCurrentURL()
+	public void testAddAttributesAndParametersWithVirtualHostWithPathProxy()
 		throws PortalException {
 
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), null, layout);
-
-		_mockPortal(null, virtualHost.getHostname(), null);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()),
+		_testAddAttributesAndParameters(
+			null, _getDynamicServletRequest(null, layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), null,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			RandomTestUtil.randomString(), 1);
 	}
 
 	@Test
-	public void testAddParametersWithVirtualHostWithPublicLayoutAndWithoutCurrentURL()
+	public void testAddAttributesAndParametersWithVirtualHostWithPrivateLayoutAndWithoutCurrentURL()
 		throws PortalException {
 
 		Layout layout = _mockLayout(
 			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		VirtualHost virtualHost = _mockVirtualHost(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_mockPortal(null, virtualHost.getHostname(), null);
-
-		_assertAttributesAndParameters(
-			_getDynamicServletRequest(RandomTestUtil.randomString()),
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(
+				RandomTestUtil.randomString(), layout.getCompanyId()),
 			String.valueOf(layout.getGroupId()), null,
-			String.valueOf(layout.getLayoutId()));
-		_assertSetPermissionChecker(1);
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), null, layout),
+			null, 1);
 	}
 
-	private void _assertAttributesAndParameters(
-		DynamicServletRequest dynamicServletRequest, String groupId,
-		String languageId, String layoutId) {
+	@Test
+	public void testAddAttributesAndParametersWithVirtualHostWithPublicLayoutAndWithoutCurrentURL()
+		throws PortalException {
 
-		_commonStatusLayoutUtilityPageEntryRequestContributor.
-			addAttributesAndParameters(dynamicServletRequest);
+		Layout layout = _mockLayout(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 
-		Assert.assertEquals(
-			groupId, dynamicServletRequest.getParameter("groupId"));
-		Assert.assertEquals(
-			layoutId, dynamicServletRequest.getParameter("layoutId"));
-		Assert.assertEquals(
-			languageId,
-			dynamicServletRequest.getAttribute(WebKeys.I18N_LANGUAGE_ID));
-	}
-
-	private void _assertSetPermissionChecker(int wantedNumberOfInvocations) {
-		_permissionThreadLocalMockedStatic.verify(
-			() -> PermissionThreadLocal.setPermissionChecker(
-				_permissionChecker),
-			Mockito.times(wantedNumberOfInvocations));
-
-		_permissionThreadLocalMockedStatic.verify(
-			() -> PermissionThreadLocal.setPermissionChecker(
-				_originalPermissionChecker),
-			Mockito.times(wantedNumberOfInvocations));
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(
+				RandomTestUtil.randomString(), layout.getCompanyId()),
+			String.valueOf(layout.getGroupId()), null,
+			String.valueOf(layout.getLayoutId()),
+			_getLayoutSet(
+				layout.getCompanyId(), layout.getGroupId(), layout, null),
+			null, 1);
 	}
 
 	private DynamicServletRequest _getDynamicServletRequest(
-		String contextPath) {
+		String contextPath, Long companyId) {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setContextPath(contextPath);
 
+		mockHttpServletRequest.setAttribute(WebKeys.COMPANY_ID, companyId);
+
 		return new DynamicServletRequest(mockHttpServletRequest);
+	}
+
+	private LayoutSet _getLayoutSet(
+			long companyId, long groupId, Layout privateLayout,
+			Layout publicLayout)
+		throws PortalException {
+
+		Group group = _mockGroup(true, companyId, groupId, null);
+
+		_mockLayoutLocalService(groupId, publicLayout, privateLayout);
+
+		LayoutSet layoutSet = Mockito.mock(LayoutSet.class);
+
+		Mockito.when(
+			layoutSet.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		Mockito.when(
+			layoutSet.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		Mockito.when(
+			layoutSet.getGroup()
+		).thenReturn(
+			group
+		);
+
+		_setUpPortalInstancesMockedStatic(layoutSet);
+
+		return layoutSet;
 	}
 
 	private Group _mockGroup(
@@ -555,9 +512,7 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		);
 	}
 
-	private Layout _mockLayout(long companyId, long groupId)
-		throws PortalException {
-
+	private Layout _mockLayout(long companyId, long groupId) {
 		Layout layout = Mockito.mock(Layout.class);
 
 		Mockito.when(
@@ -597,58 +552,13 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		);
 	}
 
-	private LayoutSet _mockLayoutSet(Group group) throws PortalException {
-		LayoutSet layoutSet = Mockito.mock(LayoutSet.class);
-
-		long companyId = group.getCompanyId();
-
-		Mockito.when(
-			layoutSet.getCompanyId()
-		).thenReturn(
-			companyId
-		);
-
-		long groupId = group.getGroupId();
-
-		Mockito.when(
-			layoutSet.getGroupId()
-		).thenReturn(
-			groupId
-		);
-
-		Mockito.when(
-			layoutSet.getGroup()
-		).thenReturn(
-			group
-		);
-
-		return layoutSet;
-	}
-
-	private void _mockLayoutSetLocalService(
-			LayoutSet layoutSet, VirtualHost virtualHost)
-		throws PortalException {
-
-		Mockito.when(
-			_layoutSetLocalService.getLayoutSet(virtualHost.getLayoutSetId())
-		).thenReturn(
-			layoutSet
-		);
-	}
-
-	private void _mockPortal(String currentURL, String host, String pathProxy)
+	private void _mockPortal(String currentURL, String pathProxy)
 		throws PortalException {
 
 		Mockito.when(
 			_portal.getCurrentURL(Mockito.any(DynamicServletRequest.class))
 		).thenReturn(
 			currentURL
-		);
-
-		Mockito.when(
-			_portal.getHost(Mockito.any(DynamicServletRequest.class))
-		).thenReturn(
-			host
 		);
 
 		Mockito.when(
@@ -663,75 +573,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 			_portal.getUser(Mockito.any(DynamicServletRequest.class))
 		).thenReturn(
 			user
-		);
-	}
-
-	private VirtualHost _mockVirtualHost() throws PortalException {
-		VirtualHost virtualHost = _mockVirtualHost(
-			RandomTestUtil.randomLong(), 0, RandomTestUtil.randomString());
-
-		Group group = _mockGroup(
-			true, virtualHost.getCompanyId(), RandomTestUtil.randomLong(),
-			null);
-
-		_mockLayoutLocalService(group.getGroupId(), null, null);
-		_mockLayoutSetLocalService(_mockLayoutSet(group), virtualHost);
-
-		_mockVirtualHostLocalService(virtualHost);
-
-		return virtualHost;
-	}
-
-	private VirtualHost _mockVirtualHost(
-			long companyId, long groupId, Layout privateLayout,
-			Layout publicLayout)
-		throws PortalException {
-
-		VirtualHost virtualHost = _mockVirtualHost(
-			companyId, RandomTestUtil.randomLong(),
-			RandomTestUtil.randomString());
-
-		Group group = _mockGroup(true, companyId, groupId, null);
-
-		_mockLayoutLocalService(groupId, publicLayout, privateLayout);
-		_mockLayoutSetLocalService(_mockLayoutSet(group), virtualHost);
-
-		_mockVirtualHostLocalService(virtualHost);
-
-		return virtualHost;
-	}
-
-	private VirtualHost _mockVirtualHost(
-		long companyId, long layoutSetId, String name) {
-
-		VirtualHost virtualHost = Mockito.mock(VirtualHost.class);
-
-		Mockito.when(
-			virtualHost.getCompanyId()
-		).thenReturn(
-			companyId
-		);
-
-		Mockito.when(
-			virtualHost.getHostname()
-		).thenReturn(
-			name
-		);
-
-		Mockito.when(
-			virtualHost.getLayoutSetId()
-		).thenReturn(
-			layoutSetId
-		);
-
-		return virtualHost;
-	}
-
-	private void _mockVirtualHostLocalService(VirtualHost virtualHost) {
-		Mockito.when(
-			_virtualHostLocalService.fetchVirtualHost(Mockito.anyString())
-		).thenReturn(
-			virtualHost
 		);
 	}
 
@@ -751,12 +592,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 			_commonStatusLayoutUtilityPageEntryRequestContributor,
 			"_layoutService", _layoutService);
 
-		_layoutSetLocalService = Mockito.mock(LayoutSetLocalService.class);
-
-		ReflectionTestUtil.setFieldValue(
-			_commonStatusLayoutUtilityPageEntryRequestContributor,
-			"_layoutSetLocalService", _layoutSetLocalService);
-
 		_setUpPermissionCheckerFactory();
 
 		ReflectionTestUtil.setFieldValue(
@@ -768,12 +603,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		ReflectionTestUtil.setFieldValue(
 			_commonStatusLayoutUtilityPageEntryRequestContributor, "_portal",
 			_portal);
-
-		_virtualHostLocalService = Mockito.mock(VirtualHostLocalService.class);
-
-		ReflectionTestUtil.setFieldValue(
-			_commonStatusLayoutUtilityPageEntryRequestContributor,
-			"_virtualHostLocalService", _virtualHostLocalService);
 
 		_userLocalService = Mockito.mock(UserLocalService.class);
 
@@ -795,6 +624,61 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 		);
 	}
 
+	private void _setUpPortalInstancesMockedStatic(LayoutSet layoutSet) {
+		_portalInstancesMockedStatic.when(
+			() -> PortalInstances.getCompanyId(
+				Mockito.any(HttpServletRequest.class))
+		).thenAnswer(
+			invocationOnMock -> {
+				HttpServletRequest httpServletRequest =
+					invocationOnMock.getArgument(0, HttpServletRequest.class);
+
+				httpServletRequest.setAttribute(
+					WebKeys.VIRTUAL_HOST_LAYOUT_SET, layoutSet);
+
+				return httpServletRequest.getAttribute(WebKeys.COMPANY_ID);
+			}
+		);
+	}
+
+	private void _testAddAttributesAndParameters(
+			String currentURL, DynamicServletRequest dynamicServletRequest,
+			String groupId, String languageId, String layoutId,
+			LayoutSet layoutSet, String pathProxy,
+			int wantedNumberOfInvocations)
+		throws PortalException {
+
+		_mockPortal(currentURL, pathProxy);
+
+		_commonStatusLayoutUtilityPageEntryRequestContributor.
+			addAttributesAndParameters(dynamicServletRequest);
+
+		Assert.assertEquals(
+			groupId, dynamicServletRequest.getParameter("groupId"));
+		Assert.assertEquals(
+			layoutId, dynamicServletRequest.getParameter("layoutId"));
+		Assert.assertEquals(
+			layoutSet,
+			dynamicServletRequest.getAttribute(
+				WebKeys.VIRTUAL_HOST_LAYOUT_SET));
+		Assert.assertEquals(
+			languageId,
+			dynamicServletRequest.getAttribute(WebKeys.I18N_LANGUAGE_ID));
+
+		_permissionThreadLocalMockedStatic.verify(
+			() -> PermissionThreadLocal.setPermissionChecker(
+				_permissionChecker),
+			Mockito.times(wantedNumberOfInvocations));
+
+		_permissionThreadLocalMockedStatic.verify(
+			() -> PermissionThreadLocal.setPermissionChecker(
+				_originalPermissionChecker),
+			Mockito.times(wantedNumberOfInvocations));
+
+		_portalInstancesMockedStatic.verify(
+			() -> PortalInstances.getCompanyId(dynamicServletRequest));
+	}
+
 	private static final String _PATH_CONTEXT = "/context";
 
 	private static final String _PATH_PROXY = "/proxy";
@@ -805,19 +689,17 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 	private static final MockedStatic<PermissionThreadLocal>
 		_permissionThreadLocalMockedStatic = Mockito.mockStatic(
 			PermissionThreadLocal.class);
-	private static final MockedStatic<PortalInstancePool>
-		_portalInstancePoolMockedStatic = Mockito.mockStatic(
-			PortalInstancePool.class);
+	private static final MockedStatic<PortalInstances>
+		_portalInstancesMockedStatic = Mockito.mockStatic(
+			PortalInstances.class);
 
 	private CommonStatusLayoutUtilityPageEntryRequestContributor
 		_commonStatusLayoutUtilityPageEntryRequestContributor;
 	private GroupLocalService _groupLocalService;
 	private LayoutService _layoutService;
-	private LayoutSetLocalService _layoutSetLocalService;
 	private PermissionChecker _permissionChecker;
 	private PermissionCheckerFactory _permissionCheckerFactory;
 	private Portal _portal;
 	private UserLocalService _userLocalService;
-	private VirtualHostLocalService _virtualHostLocalService;
 
 }

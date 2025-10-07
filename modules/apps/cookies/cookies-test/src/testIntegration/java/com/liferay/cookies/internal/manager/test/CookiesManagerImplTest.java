@@ -13,7 +13,9 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -25,6 +27,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -56,268 +59,39 @@ public class CookiesManagerImplTest {
 			).build());
 	}
 
-	@Test
-	public void testCookiePathIsCustomContextWhenUsingCustomContext()
-		throws Exception {
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		String customContextPath =
-			StringPool.SLASH + RandomTestUtil.randomString();
-
-		MockHttpServletRequest customContextMockHttpServletRequest =
-			new MockHttpServletRequest() {
-
-				@Override
-				public String getContextPath() {
-					return customContextPath;
-				}
-
-			};
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
-			customContextMockHttpServletRequest, _mockHttpServletResponse);
-
-		Assert.assertEquals(customContextPath, cookie.getPath());
+	@After
+	public void tearDown() throws Exception {
+		ConfigurationTestUtil.deleteConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName());
 	}
 
 	@Test
-	public void testCookiePathIsCustomContextWhenUsingCustomContextWithCustomModuleWebContextPath()
-		throws Exception {
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		String customContextPath =
-			StringPool.SLASH + RandomTestUtil.randomString();
-
-		MockHttpServletRequest customContextMockHttpServletRequest =
-			new MockHttpServletRequest() {
-
-				@Override
-				public String getContextPath() {
-					return customContextPath;
-				}
-
-			};
-
-		HttpServletRequestWrapper httpServletRequestWrapper =
-			new HttpServletRequestWrapper(customContextMockHttpServletRequest) {
-
-				@Override
-				public String getContextPath() {
-					return PortalUtil.getPathModule() + StringPool.SLASH +
-						RandomTestUtil.randomString();
-				}
-
-			};
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
-			httpServletRequestWrapper, _mockHttpServletResponse);
-
-		Assert.assertEquals(customContextPath, cookie.getPath());
+	public void testAddCookieWhenAddingInternalCookieWithoutConsentType() {
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_FUNCTIONAL,
+			CookiesConstants.NAME_GUEST_LANGUAGE_ID);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_CONSENT_TYPE_NECESSARY);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_COOKIE_SUPPORT);
+		_testAddCookieWhenAddingInternalCookieWithoutConsentType(
+			CookiesConstants.CONSENT_TYPE_NECESSARY,
+			CookiesConstants.NAME_USER_CONSENT_CONFIGURED);
 	}
 
 	@Test
-	public void testCookiePathIsSlashWhenUsingRootContext() throws Exception {
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
-			_mockHttpServletRequest, _mockHttpServletResponse);
-
-		Assert.assertEquals(StringPool.SLASH, cookie.getPath());
-	}
-
-	@Test
-	public void testCookiePathIsSlashWhenUsingRootContextWithCustomModuleWebContextPath()
-		throws Exception {
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		HttpServletRequestWrapper httpServletRequestWrapper =
-			new HttpServletRequestWrapper(_mockHttpServletRequest) {
-
-				@Override
-				public String getContextPath() {
-					return PortalUtil.getPathModule() + StringPool.SLASH +
-						RandomTestUtil.randomString();
-				}
-
-			};
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
-			httpServletRequestWrapper, _mockHttpServletResponse);
-
-		Assert.assertEquals(StringPool.SLASH, cookie.getPath());
-	}
-
-	@Test
-	public void testCookiesConsent() throws Exception {
-		_testCookiesConsentType(CookiesConstants.CONSENT_TYPE_FUNCTIONAL);
-		_testCookiesConsentType(CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testCookiesConsentType(CookiesConstants.CONSENT_TYPE_PERFORMANCE);
-		_testCookiesConsentType(CookiesConstants.CONSENT_TYPE_PERSONALIZATION);
-	}
-
-	@Test
-	public void testCookiesWithoutConsentTypeShouldBeDeleted()
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME, LoggerTestUtil.WARN)) {
-
-			Cookie cookie = new Cookie(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-			CookiesManagerUtil.addCookie(
-				cookie, _mockHttpServletRequest, _mockHttpServletResponse);
-
-			Assert.assertNull(
-				CookiesManagerUtil.getCookieValue(
-					cookie.getName(), _mockHttpServletRequest));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"The following cookie is trying to be added without consent " +
-					"type: " + cookie.getName(),
-				logEntry.getMessage());
-
-			logEntry = logEntries.get(1);
-
-			Assert.assertEquals(
-				"The cookie will be deleted. Use the API with explicitly " +
-					"declared consent type.",
-				logEntry.getMessage());
-		}
-	}
-
-	@Test
-	public void testDeleteRemainingCookieConsentCookiesWhenCookiesPreferenceHandlingIsDisabled()
-		throws Exception {
-
-		ConfigurationTestUtil.saveConfiguration(
-			CookiesPreferenceHandlingConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", false
-			).build());
-
-		_addConsentCookie(false, CookiesConstants.CONSENT_TYPE_FUNCTIONAL);
-		_addConsentCookie(true, CookiesConstants.CONSENT_TYPE_PERSONALIZATION);
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
-			_mockHttpServletRequest, _mockHttpServletResponse);
-
-		Assert.assertNotNull(
-			CookiesManagerUtil.getCookieValue(
-				cookie.getName(), _mockHttpServletRequest));
-
-		Assert.assertNull(
-			CookiesManagerUtil.getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
-				_mockHttpServletRequest));
-		Assert.assertNull(
-			CookiesManagerUtil.getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
-				_mockHttpServletRequest));
-	}
-
-	@Test
-	public void testExplicitCookieConsentMode() throws Exception {
-		ConfigurationTestUtil.saveConfiguration(
-			CookiesPreferenceHandlingConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", true
-			).put(
-				"explicitConsentMode", true
-			).build());
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
-			_mockHttpServletRequest, _mockHttpServletResponse);
-
-		Assert.assertNull(
-			CookiesManagerUtil.getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-				_mockHttpServletRequest));
-		Assert.assertNull(
-			CookiesManagerUtil.getCookieValue(
-				cookie.getName(), _mockHttpServletRequest));
-	}
-
-	@Test
-	public void testImplicitCookieConsentMode() throws Exception {
-		ConfigurationTestUtil.saveConfiguration(
-			CookiesPreferenceHandlingConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", true
-			).put(
-				"explicitConsentMode", false
-			).build());
-
-		Cookie cookie = new Cookie(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		CookiesManagerUtil.addCookie(
-			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
-			_mockHttpServletRequest, _mockHttpServletResponse);
-
-		Assert.assertNull(
-			CookiesManagerUtil.getCookieValue(
-				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-				_mockHttpServletRequest));
-		Assert.assertNotNull(
-			CookiesManagerUtil.getCookieValue(
-				cookie.getName(), _mockHttpServletRequest));
-	}
-
-	@Test
-	public void testInternalCookiesAddedWithoutConsentType() throws Exception {
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_GUEST_LANGUAGE_ID,
-			CookiesConstants.CONSENT_TYPE_FUNCTIONAL);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_CONSENT_TYPE_NECESSARY,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_COOKIE_SUPPORT,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-		_testInternalCookieWithoutConsentType(
-			CookiesConstants.NAME_USER_CONSENT_CONFIGURED,
-			CookiesConstants.CONSENT_TYPE_NECESSARY);
-	}
-
-	@Test
-	public void testKnownCookiesAddedWithPreviouslyKnownConsentType()
-		throws Exception {
-
+	public void testAddCookieWhenAddingKnownCookieWithKnownConsentType() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.WARN)) {
 
@@ -367,9 +141,7 @@ public class CookiesManagerImplTest {
 	}
 
 	@Test
-	public void testSetDifferentConsentTypeToAlreadyKnownCookie()
-		throws Exception {
-
+	public void testAddCookieWhenUpdatingConsentTypeOfKnownCookie() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.WARN)) {
 
@@ -412,7 +184,185 @@ public class CookiesManagerImplTest {
 	}
 
 	@Test
-	public void testSkipConsentTypeCheckWhenCookiesPreferenceHandlingIsDisabled()
+	public void testAddCookieWithConsentType() {
+		_testAddCookieWithConsentType(CookiesConstants.CONSENT_TYPE_FUNCTIONAL);
+		_testAddCookieWithConsentType(CookiesConstants.CONSENT_TYPE_NECESSARY);
+		_testAddCookieWithConsentType(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE);
+		_testAddCookieWithConsentType(
+			CookiesConstants.CONSENT_TYPE_PERSONALIZATION);
+	}
+
+	@Test
+	public void testAddCookieWithCustomContextPath() {
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		String customContextPath =
+			StringPool.SLASH + RandomTestUtil.randomString();
+
+		MockHttpServletRequest customContextMockHttpServletRequest =
+			new MockHttpServletRequest() {
+
+				@Override
+				public String getContextPath() {
+					return customContextPath;
+				}
+
+			};
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
+			customContextMockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertEquals(customContextPath, cookie.getPath());
+
+		cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		HttpServletRequestWrapper httpServletRequestWrapper =
+			new HttpServletRequestWrapper(customContextMockHttpServletRequest) {
+
+				@Override
+				public String getContextPath() {
+					return PortalUtil.getPathModule() + StringPool.SLASH +
+						RandomTestUtil.randomString();
+				}
+
+			};
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
+			httpServletRequestWrapper, _mockHttpServletResponse);
+
+		Assert.assertEquals(customContextPath, cookie.getPath());
+	}
+
+	@Test
+	public void testAddCookieWithExplicitConsentModeDisabled()
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"explicitConsentMode", false
+			).build());
+
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
+			_mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertNull(
+			CookiesManagerUtil.getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
+				_mockHttpServletRequest));
+		Assert.assertNotNull(
+			CookiesManagerUtil.getCookieValue(
+				cookie.getName(), _mockHttpServletRequest));
+	}
+
+	@Test
+	public void testAddCookieWithExplicitConsentModeEnabled() throws Exception {
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"explicitConsentMode", true
+			).build());
+
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
+			_mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertNull(
+			CookiesManagerUtil.getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
+				_mockHttpServletRequest));
+		Assert.assertNull(
+			CookiesManagerUtil.getCookieValue(
+				cookie.getName(), _mockHttpServletRequest));
+	}
+
+	@Test
+	public void testAddCookieWithoutConsentType() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME, LoggerTestUtil.WARN)) {
+
+			Cookie cookie = new Cookie(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+			CookiesManagerUtil.addCookie(
+				cookie, _mockHttpServletRequest, _mockHttpServletResponse);
+
+			Assert.assertNull(
+				CookiesManagerUtil.getCookieValue(
+					cookie.getName(), _mockHttpServletRequest));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"The following cookie is trying to be added without consent " +
+					"type: " + cookie.getName(),
+				logEntry.getMessage());
+
+			logEntry = logEntries.get(1);
+
+			Assert.assertEquals(
+				"The cookie will be deleted. Use the API with explicitly " +
+					"declared consent type.",
+				logEntry.getMessage());
+		}
+	}
+
+	@Test
+	public void testAddCookieWithPreferenceHandlingDisabled1()
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", false
+			).build());
+
+		_addConsentCookie(false, CookiesConstants.CONSENT_TYPE_FUNCTIONAL);
+		_addConsentCookie(true, CookiesConstants.CONSENT_TYPE_PERSONALIZATION);
+
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_PERFORMANCE, cookie,
+			_mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertNotNull(
+			CookiesManagerUtil.getCookieValue(
+				cookie.getName(), _mockHttpServletRequest));
+
+		Assert.assertNull(
+			CookiesManagerUtil.getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_FUNCTIONAL,
+				_mockHttpServletRequest));
+		Assert.assertNull(
+			CookiesManagerUtil.getCookieValue(
+				CookiesConstants.NAME_CONSENT_TYPE_PERSONALIZATION,
+				_mockHttpServletRequest));
+	}
+
+	@Test
+	public void testAddCookieWithPreferenceHandlingDisabled2()
 		throws Exception {
 
 		ConfigurationTestUtil.saveConfiguration(
@@ -437,6 +387,59 @@ public class CookiesManagerImplTest {
 		Assert.assertNotNull(
 			CookiesManagerUtil.getCookieValue(
 				cookie.getName(), _mockHttpServletRequest));
+	}
+
+	@Test
+	public void testAddCookieWithRootContext() {
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
+			_mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertEquals(StringPool.SLASH, cookie.getPath());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_NECESSARY, cookie,
+			new HttpServletRequestWrapper(_mockHttpServletRequest) {
+
+				@Override
+				public String getContextPath() {
+					return PortalUtil.getPathModule() + StringPool.SLASH +
+						RandomTestUtil.randomString();
+				}
+
+			},
+			_mockHttpServletResponse);
+
+		Assert.assertEquals(StringPool.SLASH, cookie.getPath());
+	}
+
+	@Test
+	public void testDeleteCookiesWithHttpsRequest() {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		mockHttpServletRequest.setCookies(cookie);
+
+		mockHttpServletRequest.setScheme(Http.HTTPS);
+		mockHttpServletRequest.setSecure(true);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		CookiesManagerUtil.deleteCookies(
+			RandomTestUtil.randomString(), mockHttpServletRequest,
+			mockHttpServletResponse, cookie.getName());
+
+		cookie = (Cookie)ArrayUtil.getValue(
+			mockHttpServletResponse.getCookies(), 0);
+
+		Assert.assertTrue(cookie.getSecure());
 	}
 
 	private void _addConsentCookie(boolean accepted, int consentType) {
@@ -468,7 +471,38 @@ public class CookiesManagerImplTest {
 				consentCookie.getName(), _mockHttpServletRequest));
 	}
 
-	private void _testCookiesConsentType(int consentType) {
+	private void _testAddCookieWhenAddingInternalCookieWithoutConsentType(
+		int consentType, String name) {
+
+		_addConsentCookie(false, consentType);
+
+		Cookie cookie = new Cookie(name, RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			cookie, _mockHttpServletRequest, _mockHttpServletResponse);
+
+		if (consentType == CookiesConstants.CONSENT_TYPE_NECESSARY) {
+			Assert.assertNotNull(
+				CookiesManagerUtil.getCookieValue(
+					cookie.getName(), _mockHttpServletRequest));
+		}
+		else {
+			Assert.assertNull(
+				CookiesManagerUtil.getCookieValue(
+					cookie.getName(), _mockHttpServletRequest));
+		}
+
+		_addConsentCookie(true, consentType);
+
+		CookiesManagerUtil.addCookie(
+			cookie, _mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertNotNull(
+			CookiesManagerUtil.getCookieValue(
+				cookie.getName(), _mockHttpServletRequest));
+	}
+
+	private void _testAddCookieWithConsentType(int consentType) {
 		_addConsentCookie(false, consentType);
 
 		Cookie cookie = new Cookie(
@@ -494,37 +528,6 @@ public class CookiesManagerImplTest {
 		CookiesManagerUtil.addCookie(
 			consentType, cookie, _mockHttpServletRequest,
 			_mockHttpServletResponse);
-
-		Assert.assertNotNull(
-			CookiesManagerUtil.getCookieValue(
-				cookie.getName(), _mockHttpServletRequest));
-	}
-
-	private void _testInternalCookieWithoutConsentType(
-		String name, int consentType) {
-
-		_addConsentCookie(false, consentType);
-
-		Cookie cookie = new Cookie(name, RandomTestUtil.randomString());
-
-		CookiesManagerUtil.addCookie(
-			cookie, _mockHttpServletRequest, _mockHttpServletResponse);
-
-		if (consentType == CookiesConstants.CONSENT_TYPE_NECESSARY) {
-			Assert.assertNotNull(
-				CookiesManagerUtil.getCookieValue(
-					cookie.getName(), _mockHttpServletRequest));
-		}
-		else {
-			Assert.assertNull(
-				CookiesManagerUtil.getCookieValue(
-					cookie.getName(), _mockHttpServletRequest));
-		}
-
-		_addConsentCookie(true, consentType);
-
-		CookiesManagerUtil.addCookie(
-			cookie, _mockHttpServletRequest, _mockHttpServletResponse);
 
 		Assert.assertNotNull(
 			CookiesManagerUtil.getCookieValue(

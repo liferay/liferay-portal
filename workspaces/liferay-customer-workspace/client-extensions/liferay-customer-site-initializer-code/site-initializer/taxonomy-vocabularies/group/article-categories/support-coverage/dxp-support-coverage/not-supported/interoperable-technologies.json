@@ -1,0 +1,10 @@
+{
+	"name": "Interoperable Technologies",
+	"name_i18n": {
+		"en_US": "Interoperable Technologies",
+		"es-ES": "Tecnologías interoperables",
+		"ja-JP": "相互運用可能な技術",
+		"pt-BR": "Tecnologias Interoperáveis"
+	},
+	"viewableBy": "Anyone"
+}

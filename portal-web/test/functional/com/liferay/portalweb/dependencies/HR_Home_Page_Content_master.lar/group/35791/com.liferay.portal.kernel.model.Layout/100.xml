@@ -1,0 +1,50 @@
+<Layout>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>1</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>0080f74f-f640-35e4-957a-ed420b7cc314</__uuid>
+  <__externalReferenceCode>0080f74f-f640-35e4-957a-ed420b7cc314</__externalReferenceCode>
+  <__plid>100</__plid>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:34:31.464</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 10:34:31.535</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__parentPlid>0</__parentPlid>
+  <__privateLayout>false</__privateLayout>
+  <__layoutId>3</__layoutId>
+  <__parentLayoutId>0</__parentLayoutId>
+  <__classNameId>0</__classNameId>
+  <__classPK>0</__classPK>
+  <__name>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US&quot; default-locale=&quot;en_US&quot;&gt;&lt;Name language-id=&quot;en_US&quot;&gt;500 Error&lt;/Name&gt;&lt;/root&gt;</__name>
+  <__title>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US&quot; default-locale=&quot;en_US&quot;&gt;&lt;Title language-id=&quot;en_US&quot;&gt;500 Error&lt;/Title&gt;&lt;/root&gt;</__title>
+  <__description></__description>
+  <__keywords></__keywords>
+  <__robots></__robots>
+  <__type>utility</__type>
+  <__typeSettings>published=true
+</__typeSettings>
+  <__hidden>true</__hidden>
+  <__system>true</__system>
+  <__friendlyURL>/500-error</__friendlyURL>
+  <__iconImageId>0</__iconImageId>
+  <__themeId></__themeId>
+  <__colorSchemeId></__colorSchemeId>
+  <__styleBookEntryId>0</__styleBookEntryId>
+  <__css></__css>
+  <__priority>2147483647</__priority>
+  <__faviconFileEntryId>0</__faviconFileEntryId>
+  <__masterLayoutPlid>0</__masterLayoutPlid>
+  <__layoutPrototypeUuid></__layoutPrototypeUuid>
+  <__layoutPrototypeLinkEnabled>false</__layoutPrototypeLinkEnabled>
+  <__layoutSetPrototypeLayoutERC></__layoutSetPrototypeLayoutERC>
+  <__publishDate class="sql-timestamp">2025-08-29 10:34:31.367</__publishDate>
+  <__status>2</__status>
+  <__statusByUserId>20132</__statusByUserId>
+  <__statusByUserName>Test Test</__statusByUserName>
+  <__statusDate class="sql-timestamp">2025-08-29 10:34:31.464</__statusDate>
+  <__columnBitmask>0</__columnBitmask>
+</Layout>

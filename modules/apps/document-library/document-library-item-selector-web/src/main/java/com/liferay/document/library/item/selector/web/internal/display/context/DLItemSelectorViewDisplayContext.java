@@ -191,7 +191,7 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		).setParameter(
 			"folderId", getFolderId()
 		).setParameter(
-			"selectedTab", getTitle()
+			"selectedTab", _getSelectedTab()
 		).buildPortletURL();
 	}
 
@@ -580,6 +580,16 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		return _searchContext;
 	}
 
+	private String _getSelectedTab() {
+		if (_selectedTab != null) {
+			return _selectedTab;
+		}
+
+		_selectedTab = ParamUtil.getString(_httpServletRequest, "selectedTab");
+
+		return _selectedTab;
+	}
+
 	private long _getStagingAwareGroupId() {
 		if (_groupId != null) {
 			return _groupId;
@@ -667,6 +677,7 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 	private Repository _repository;
 	private final boolean _search;
 	private SearchContext _searchContext;
+	private String _selectedTab;
 	private Boolean _showDragAndDropZone;
 	private final StagingGroupHelper _stagingGroupHelper;
 	private int[] _startAndEnd;

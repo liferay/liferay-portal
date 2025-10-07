@@ -9,7 +9,7 @@ import React, {useContext} from 'react';
 import {liferayNavigate} from '../../utilities/index';
 import MiniCartContext from './MiniCartContext';
 
-function RequestQuoteButton() {
+function RequestQuoteButton({disabled = false}) {
 	const {actionURLs} = useContext(MiniCartContext);
 
 	const {orderDetailURL} = actionURLs;
@@ -19,6 +19,7 @@ function RequestQuoteButton() {
 			<ClayButton
 				block={true}
 				className="btn-md request-quote"
+				disabled={disabled}
 				displayType="secondary"
 				onClick={() => {
 					return liferayNavigate(orderDetailURL);

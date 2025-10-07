@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../../utils/getRandomInt';
@@ -31,6 +31,11 @@ export class TagsPage {
 		);
 	}
 
+	async goto() {
+		await this.page.goto(PORTLET_URLS.cmsTags);
+		await this.page.getByRole('heading', {name: 'Tags'}).waitFor();
+	}
+
 	async createTag() {
 		await this.goto();
 
@@ -50,9 +55,24 @@ export class TagsPage {
 		return tagName;
 	}
 
-	async goto() {
-		await this.page.goto(PORTLET_URLS.cmsTags);
-		await this.page.getByRole('heading', {name: 'Tags'}).waitFor();
+	async deleteTag(name: string) {
+		await this.execItemAction({
+			action: 'Delete',
+			filter: name,
+		});
+
+		await expect(
+			this.page.getByRole('heading', {name: `Delete Tag`})
+		).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			target: this.page.getByText(
+				`Success:${name} was deleted successfully.`
+			),
+			trigger: this.page.getByRole('button', {name: 'Delete'}),
+		});
+
+		await expect(this.getItem(name)).not.toBeVisible();
 	}
 
 	getItem(filter: string) {

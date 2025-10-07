@@ -8,6 +8,7 @@ package com.liferay.asset.categories.internal.layout.display.page;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.BaseLayoutDisplayPageProvider;
@@ -47,30 +48,6 @@ public class AssetCategoryLayoutDisplayPageProvider
 
 	@Override
 	public LayoutDisplayPageObjectProvider<AssetCategory>
-		getLayoutDisplayPageObjectProvider(
-			InfoItemReference infoItemReference) {
-
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			_getClassPKInfoItemIdentifier(infoItemReference);
-
-		if (classPKInfoItemIdentifier == null) {
-			return null;
-		}
-
-		AssetCategory assetCategory =
-			_assetCategoryLocalService.fetchAssetCategory(
-				classPKInfoItemIdentifier.getClassPK());
-
-		if (assetCategory == null) {
-			return null;
-		}
-
-		return new AssetCategoryLayoutDisplayPageObjectProvider(
-			assetCategory, _portal);
-	}
-
-	@Override
-	public LayoutDisplayPageObjectProvider<AssetCategory>
 		getLayoutDisplayPageObjectProvider(long groupId, String urlTitle) {
 
 		AssetCategory assetCategory =
@@ -90,12 +67,15 @@ public class AssetCategoryLayoutDisplayPageProvider
 		getParentLayoutDisplayPageObjectProvider(
 			InfoItemReference infoItemReference) {
 
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			_getClassPKInfoItemIdentifier(infoItemReference);
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
 
-		if (classPKInfoItemIdentifier == null) {
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
 			return null;
 		}
+
+		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+			(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
 		AssetCategory assetCategory =
 			_assetCategoryLocalService.fetchAssetCategory(
@@ -120,18 +100,46 @@ public class AssetCategoryLayoutDisplayPageProvider
 		return true;
 	}
 
-	private ClassPKInfoItemIdentifier _getClassPKInfoItemIdentifier(
-		InfoItemReference infoItemReference) {
+	@Override
+	protected AssetCategoryLayoutDisplayPageObjectProvider
+		doGetLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
 
 		InfoItemIdentifier infoItemIdentifier =
 			infoItemReference.getInfoItemIdentifier();
 
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
 			return null;
 		}
 
-		return (ClassPKInfoItemIdentifier)
-			infoItemReference.getInfoItemIdentifier();
+		AssetCategory assetCategory = null;
+
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)infoItemIdentifier;
+
+			assetCategory = _assetCategoryLocalService.fetchAssetCategory(
+				classPKInfoItemIdentifier.getClassPK());
+		}
+		else {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
+
+			assetCategory =
+				_assetCategoryLocalService.
+					fetchAssetCategoryByExternalReferenceCode(
+						ercInfoItemIdentifier.getExternalReferenceCode(),
+						groupId);
+		}
+
+		if (assetCategory == null) {
+			return null;
+		}
+
+		return new AssetCategoryLayoutDisplayPageObjectProvider(
+			assetCategory, _portal);
 	}
 
 	@Reference

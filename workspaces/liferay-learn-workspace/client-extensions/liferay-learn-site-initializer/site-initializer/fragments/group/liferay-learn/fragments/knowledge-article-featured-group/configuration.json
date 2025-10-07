@@ -1,0 +1,14 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": false,
+					"label": "Most Recent Article Group",
+					"name": "mostRecentArticleGroup",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}

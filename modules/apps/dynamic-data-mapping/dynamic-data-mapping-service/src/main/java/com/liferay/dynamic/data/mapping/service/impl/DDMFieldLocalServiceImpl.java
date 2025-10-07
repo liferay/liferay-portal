@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributePer
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructurePersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
+import com.liferay.dynamic.data.mapping.util.DDMFormFieldUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -629,6 +630,26 @@ public class DDMFieldLocalServiceImpl extends DDMFieldLocalServiceBaseImpl {
 				continue;
 			}
 
+			String legacyDDMFormFieldName =
+				DDMFormFieldUtil.getLegacyDDMFormFieldName(
+					ddmFieldInfo._fieldName);
+
+			if (!com.liferay.portal.kernel.util.StringUtil.equals(
+					ddmFieldInfo._fieldName, legacyDDMFormFieldName)) {
+
+				key = _getKey(legacyDDMFormFieldName, ddmFieldInfo._instanceId);
+
+				if (ddmFieldsMap.containsKey(key)) {
+					ddmFieldEntries.add(
+						new AbstractMap.SimpleImmutableEntry<>(
+							ddmFieldsMap.get(key), ddmFieldInfo));
+
+					ddmFieldsMap.remove(key);
+
+					continue;
+				}
+			}
+
 			ddmFieldEntries.add(
 				new AbstractMap.SimpleImmutableEntry<>(null, ddmFieldInfo));
 
@@ -812,8 +833,8 @@ public class DDMFieldLocalServiceImpl extends DDMFieldLocalServiceBaseImpl {
 			rootDDMField.getFieldId());
 
 		for (DDMFieldAttributeInfo ddmFieldAttributeInfo :
-				rootDDMFieldInfo._ddmFieldAttributeInfos.get(
-					StringPool.BLANK)) {
+				rootDDMFieldInfo._ddmFieldAttributeInfos.getOrDefault(
+					StringPool.BLANK, Collections.emptyList())) {
 
 			String attributeName = ddmFieldAttributeInfo._attributeName;
 

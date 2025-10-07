@@ -14,11 +14,11 @@ import {fetch, navigate} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	DEFAULT_VISUALIZATION_MODES,
 	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {TVisualizationMode} from '../../utils/types';
@@ -52,12 +52,17 @@ const Settings = ({
 			OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
 		].join(',');
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}?fields=${fields}&nestedFields=${fields}`,
-			{
-				headers: DEFAULT_FETCH_HEADERS,
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			params: {
+				fields,
+				nestedFields: fields,
+			},
+		});
+
+		const response = await fetch(url, {
+			headers: DEFAULT_FETCH_HEADERS,
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -119,14 +124,15 @@ const Settings = ({
 			defaultVisualizationMode,
 		};
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify(body),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -149,6 +155,7 @@ const Settings = ({
 	useEffect(() => {
 		getActiveVisualizationModes();
 
+		// eslint-disable-next-line react-compiler/react-compiler
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

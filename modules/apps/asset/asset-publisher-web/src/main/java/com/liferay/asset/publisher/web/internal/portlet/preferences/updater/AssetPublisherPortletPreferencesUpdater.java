@@ -68,7 +68,7 @@ public class AssetPublisherPortletPreferencesUpdater
 
 		LayoutClassedModelUsage layoutClassedModelUsage =
 			_layoutClassedModelUsageLocalService.fetchLayoutClassedModelUsage(
-				layout.getGroupId(), classNameId, classPK, StringPool.BLANK,
+				layout.getGroupId(), StringPool.BLANK, classNameId, classPK,
 				portletId, _portal.getClassNameId(Portlet.class),
 				layout.getPlid());
 
@@ -77,7 +77,7 @@ public class AssetPublisherPortletPreferencesUpdater
 		}
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			layout.getGroupId(), classNameId, classPK, StringPool.BLANK,
+			layout.getGroupId(), StringPool.BLANK, classNameId, classPK,
 			portletId, _portal.getClassNameId(Portlet.class), layout.getPlid(),
 			ServiceContextThreadLocal.getServiceContext());
 	}

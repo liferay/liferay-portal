@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.constants.SamlProviderConfigurationKeys;
 import com.liferay.saml.runtime.configuration.SamlProviderConfiguration;
 import com.liferay.saml.runtime.configuration.SamlProviderConfigurationHelper;
@@ -24,6 +23,7 @@ import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
@@ -80,19 +80,23 @@ public class SamlProviderConfigurationHelperImpl
 	}
 
 	@Override
+	public boolean isRoleIb() {
+		SamlProviderConfiguration samlProviderConfiguration =
+			getSamlProviderConfiguration();
+
+		return Objects.equals(
+			samlProviderConfiguration.role(),
+			SamlProviderConfigurationKeys.SAML_ROLE_IB);
+	}
+
+	@Override
 	public boolean isRoleIdp() {
 		SamlProviderConfiguration samlProviderConfiguration =
 			getSamlProviderConfiguration();
 
-		String role = samlProviderConfiguration.role();
-
-		if (Validator.isNotNull(role) &&
-			role.equals(SamlProviderConfigurationKeys.SAML_ROLE_IDP)) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			samlProviderConfiguration.role(),
+			SamlProviderConfigurationKeys.SAML_ROLE_IDP);
 	}
 
 	@Override
@@ -100,15 +104,9 @@ public class SamlProviderConfigurationHelperImpl
 		SamlProviderConfiguration samlProviderConfiguration =
 			getSamlProviderConfiguration();
 
-		String role = samlProviderConfiguration.role();
-
-		if (Validator.isNotNull(role) &&
-			role.equals(SamlProviderConfigurationKeys.SAML_ROLE_SP)) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			samlProviderConfiguration.role(),
+			SamlProviderConfigurationKeys.SAML_ROLE_SP);
 	}
 
 	@Override

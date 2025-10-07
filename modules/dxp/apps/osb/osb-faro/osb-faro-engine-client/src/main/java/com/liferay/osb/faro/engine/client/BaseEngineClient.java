@@ -588,6 +588,22 @@ public abstract class BaseEngineClient {
 	}
 
 	protected <T> T patch(
+			FaroProject faroProject, Map<String, String> headers, String path,
+			Map<String, List<String>> queryParameters, Object requestBody,
+			Class<T> responseType, Map<String, Object> uriVariables)
+		throws Exception {
+
+		RestTemplate restTemplate = getRestTemplate(faroProject);
+
+		ResponseEntity<T> responseEntity = restTemplate.exchange(
+			getUriString(faroProject, path, queryParameters), HttpMethod.PATCH,
+			new HttpEntity<>(requestBody, createHttpHeaders(headers)),
+			responseType, uriVariables);
+
+		return responseEntity.getBody();
+	}
+
+	protected <T> T patch(
 		FaroProject faroProject, String type, Object object,
 		Class<T> responseType, Map<String, Object> uriVariables) {
 

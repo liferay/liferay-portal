@@ -4,6 +4,7 @@
  */
 
 type Site = {
+	externalReferenceCode: string;
 	friendlyUrlPath: string;
 	id: string;
 	key: string;

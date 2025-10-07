@@ -12,8 +12,10 @@ import './Table.scss';
 
 type TableProps<T = any> = {
 	Actions?: React.FC<{row: T}>;
+	children?: ReactNode;
 	className?: string;
 	columns: TableColumn<T>[];
+	hasHover?: boolean;
 	hasKebabButton?: boolean;
 	hasPagination?: boolean;
 	kebabClassName?: string;
@@ -51,8 +53,10 @@ type PaginationProps = {
 
 const Table: React.FC<TableProps> = ({
 	Actions,
+	children,
 	className,
 	columns,
+	hasHover = true,
 	hasKebabButton,
 	hasPagination,
 	kebabClassName = '',
@@ -62,7 +66,12 @@ const Table: React.FC<TableProps> = ({
 }) => {
 	return (
 		<>
-			<ClayTable borderless className={className} striped={false}>
+			<ClayTable
+				borderless
+				className={className}
+				hover={hasHover}
+				striped={false}
+			>
 				<ClayTable.Head>
 					<ClayTable.Row className="border-bottom header-row">
 						{columns.map((column, index) => (
@@ -133,6 +142,7 @@ const Table: React.FC<TableProps> = ({
 							)}
 						</ClayTable.Row>
 					))}
+					{children}
 				</ClayTable.Body>
 			</ClayTable>
 

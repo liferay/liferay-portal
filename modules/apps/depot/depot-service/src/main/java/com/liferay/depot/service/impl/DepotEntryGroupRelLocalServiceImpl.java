@@ -5,9 +5,11 @@
 
 package com.liferay.depot.service.impl;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.base.DepotEntryGroupRelLocalServiceBaseImpl;
+import com.liferay.depot.service.persistence.DepotEntryPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -67,6 +69,11 @@ public class DepotEntryGroupRelLocalServiceImpl
 		depotEntryGroupRel.setDepotEntryId(depotEntryId);
 		depotEntryGroupRel.setSearchable(searchable);
 		depotEntryGroupRel.setToGroupId(toGroupId);
+
+		DepotEntry depotEntry = _depotEntryPersistence.findByPrimaryKey(
+			depotEntryId);
+
+		depotEntryGroupRel.setType(depotEntry.getType());
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -161,10 +168,14 @@ public class DepotEntryGroupRelLocalServiceImpl
 
 	@Override
 	public List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		long groupId, int start, int end) {
+		long groupId, int type, int start, int end) {
 
-		return depotEntryGroupRelPersistence.findByToGroupId(
-			groupId, start, end);
+		if (type == DepotConstants.TYPE_ANY) {
+			return depotEntryGroupRelPersistence.findByToGroupId(groupId);
+		}
+
+		return depotEntryGroupRelPersistence.findByTGI_T(
+			groupId, type, start, end);
 	}
 
 	@Override
@@ -174,8 +185,12 @@ public class DepotEntryGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public int getDepotEntryGroupRelsCount(long groupId) {
-		return depotEntryGroupRelPersistence.countByToGroupId(groupId);
+	public int getDepotEntryGroupRelsCount(long groupId, int type) {
+		if (type == DepotConstants.TYPE_ANY) {
+			return depotEntryGroupRelPersistence.countByToGroupId(groupId);
+		}
+
+		return depotEntryGroupRelPersistence.countByTGI_T(groupId, type);
 	}
 
 	@Override
@@ -292,6 +307,9 @@ public class DepotEntryGroupRelLocalServiceImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DepotEntryGroupRelLocalServiceImpl.class);
+
+	@Reference
+	private DepotEntryPersistence _depotEntryPersistence;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

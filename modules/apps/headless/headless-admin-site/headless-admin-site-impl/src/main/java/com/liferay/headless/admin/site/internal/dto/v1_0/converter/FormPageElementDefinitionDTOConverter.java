@@ -69,6 +69,15 @@ public class FormPageElementDefinitionDTOConverter
 	private FormConfig _toFormConfig(
 		FormStyledLayoutStructureItem formStyledLayoutStructureItem) {
 
+		if ((formStyledLayoutStructureItem.getFormConfig() !=
+				FormStyledLayoutStructureItem.
+					FORM_CONFIG_DISPLAY_PAGE_ITEM_TYPE) &&
+			(formStyledLayoutStructureItem.getFormConfig() !=
+				FormStyledLayoutStructureItem.FORM_CONFIG_OTHER_ITEM_TYPE)) {
+
+			return null;
+		}
+
 		return new FormConfig() {
 			{
 				setFormReference(

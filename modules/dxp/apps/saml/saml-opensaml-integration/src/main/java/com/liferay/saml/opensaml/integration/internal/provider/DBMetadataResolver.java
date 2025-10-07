@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.opensaml.integration.internal.util.SamlUtil;
-import com.liferay.saml.persistence.exception.NoSuchIdpSpConnectionException;
-import com.liferay.saml.persistence.exception.NoSuchSpIdpConnectionException;
 import com.liferay.saml.persistence.model.SamlIdpSpConnection;
 import com.liferay.saml.persistence.model.SamlSpIdpConnection;
 import com.liferay.saml.persistence.service.SamlIdpSpConnectionLocalService;
@@ -105,6 +103,44 @@ public class DBMetadataResolver extends AbstractMetadataResolver {
 		}
 	}
 
+	private String _fetchSamlIdpSPMetadataXml(long companyId, String entityId) {
+		try {
+			SamlIdpSpConnection samlIdpSpConnection =
+				_samlIdpSpConnectionLocalService.getSamlIdpSpConnection(
+					companyId, entityId);
+
+			if (samlIdpSpConnection.isEnabled()) {
+				return samlIdpSpConnection.getMetadataXml();
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return null;
+	}
+
+	private String _fetchSamlSpIdpMetadataXml(long companyId, String entityId) {
+		try {
+			SamlSpIdpConnection samlSpIdpConnection =
+				_samlSpIdpConnectionLocalService.getSamlSpIdpConnection(
+					companyId, entityId);
+
+			if (samlSpIdpConnection.isEnabled()) {
+				return samlSpIdpConnection.getMetadataXml();
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return null;
+	}
+
 	private EntityDescriptor _getEntityDescriptor(String entityID)
 		throws Exception {
 
@@ -131,52 +167,24 @@ public class DBMetadataResolver extends AbstractMetadataResolver {
 		return metadataXMLObject;
 	}
 
-	private String _getMetadataXml(String entityId) throws Exception {
+	private String _getMetadataXml(String entityId) {
 		long companyId = CompanyThreadLocal.getCompanyId();
 
-		if (_samlProviderConfigurationHelper.isRoleIdp()) {
-			try {
-				SamlIdpSpConnection samlIdpSpConnection =
-					_samlIdpSpConnectionLocalService.getSamlIdpSpConnection(
-						companyId, entityId);
+		if (_samlProviderConfigurationHelper.isRoleIb()) {
+			String metadataXml = _fetchSamlSpIdpMetadataXml(
+				companyId, entityId);
 
-				if (!samlIdpSpConnection.isEnabled()) {
-					return null;
-				}
-
-				return samlIdpSpConnection.getMetadataXml();
+			if (Validator.isNotNull(metadataXml)) {
+				return metadataXml;
 			}
-			catch (NoSuchIdpSpConnectionException
-						noSuchIdpSpConnectionException) {
 
-				if (_log.isDebugEnabled()) {
-					_log.debug(noSuchIdpSpConnectionException);
-				}
-
-				return null;
-			}
+			return _fetchSamlIdpSPMetadataXml(companyId, entityId);
+		}
+		else if (_samlProviderConfigurationHelper.isRoleIdp()) {
+			return _fetchSamlIdpSPMetadataXml(companyId, entityId);
 		}
 		else if (_samlProviderConfigurationHelper.isRoleSp()) {
-			try {
-				SamlSpIdpConnection samlSpIdpConnection =
-					_samlSpIdpConnectionLocalService.getSamlSpIdpConnection(
-						companyId, entityId);
-
-				if (!samlSpIdpConnection.isEnabled()) {
-					return null;
-				}
-
-				return samlSpIdpConnection.getMetadataXml();
-			}
-			catch (NoSuchSpIdpConnectionException
-						noSuchSpIdpConnectionException) {
-
-				if (_log.isDebugEnabled()) {
-					_log.debug(noSuchSpIdpConnectionException);
-				}
-
-				return null;
-			}
+			return _fetchSamlSpIdpMetadataXml(companyId, entityId);
 		}
 
 		return null;

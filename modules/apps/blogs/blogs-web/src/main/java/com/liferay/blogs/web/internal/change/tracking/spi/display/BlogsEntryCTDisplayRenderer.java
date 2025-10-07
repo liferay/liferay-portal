@@ -5,6 +5,7 @@
 
 package com.liferay.blogs.web.internal.change.tracking.spi.display;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.blogs.constants.BlogsPortletKeys;
@@ -83,6 +84,13 @@ public class BlogsEntryCTDisplayRenderer
 	public String renderPreview(DisplayContext<BlogsEntry> displayContext)
 		throws Exception {
 
+		String preview = renderDisplayPagePreview(
+			_assetDisplayPageFriendlyURLProvider, displayContext);
+
+		if (preview != null) {
+			return preview;
+		}
+
 		BlogsEntry blogsEntry = displayContext.getModel();
 
 		return blogsEntry.getContent();
@@ -119,6 +127,10 @@ public class BlogsEntryCTDisplayRenderer
 			}
 		);
 	}
+
+	@Reference
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;

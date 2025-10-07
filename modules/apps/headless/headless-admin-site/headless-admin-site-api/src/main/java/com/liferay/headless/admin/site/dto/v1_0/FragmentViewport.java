@@ -20,7 +20,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -39,8 +38,7 @@ import java.util.function.Supplier;
 @Generated("")
 @GraphQLName(description = "A fragment viewport.", value = "FragmentViewport")
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A fragment viewport.",
-	requiredProperties = {"fragmentViewportStyle", "id"}
+	description = "A fragment viewport.", requiredProperties = {"id"}
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "FragmentViewport")
@@ -53,6 +51,51 @@ public class FragmentViewport implements Serializable {
 	public static FragmentViewport unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(FragmentViewport.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Custom CSS that is applied to the fragment viewport."
+	)
+	public String getCustomCSS() {
+		if (_customCSSSupplier != null) {
+			customCSS = _customCSSSupplier.get();
+
+			_customCSSSupplier = null;
+		}
+
+		return customCSS;
+	}
+
+	public void setCustomCSS(String customCSS) {
+		this.customCSS = customCSS;
+
+		_customCSSSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCustomCSS(
+		UnsafeSupplier<String, Exception> customCSSUnsafeSupplier) {
+
+		_customCSSSupplier = () -> {
+			try {
+				return customCSSUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Custom CSS that is applied to the fragment viewport."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String customCSS;
+
+	@JsonIgnore
+	private Supplier<String> _customCSSSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The fragment's viewport style."
@@ -96,7 +139,6 @@ public class FragmentViewport implements Serializable {
 
 	@GraphQLField(description = "The fragment's viewport style.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected FragmentViewportStyle fragmentViewportStyle;
 
 	@JsonIgnore
@@ -170,6 +212,22 @@ public class FragmentViewport implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		String customCSS = getCustomCSS();
+
+		if (customCSS != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"customCSS\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(customCSS));
+
+			sb.append("\"");
+		}
 
 		FragmentViewportStyle fragmentViewportStyle =
 			getFragmentViewportStyle();

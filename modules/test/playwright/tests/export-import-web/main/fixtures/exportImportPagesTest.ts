@@ -5,12 +5,18 @@
 
 import {test} from '@playwright/test';
 
+import {ExportImportStagingInstanceSettingsPage} from '../../../staging-configuration-web/main/pages/ExportImportStagingInstanceSettingsPage';
+import {ExportImportStagingSystemSettingsPage} from '../../../staging-configuration-web/main/pages/ExportImportStagingSystemSettingsPage';
 import {ExportImportFramePage} from '../pages/ExportImportFramePage';
 import {ExportImportPage} from '../pages/ExportImportPage';
+import {UploadServletRequestSystemSettingsPage} from '../pages/UploadServletRequestSystemSettingsPage';
 
 const exportImportPagesTest = test.extend<{
 	exportImportFramePage: ExportImportFramePage;
 	exportImportPage: ExportImportPage;
+	exportImportStagingInstanceSettingsPage: ExportImportStagingInstanceSettingsPage;
+	exportImportStagingSystemSettingsPage: ExportImportStagingSystemSettingsPage;
+	uploadServletRequestSystemSettingsPage: UploadServletRequestSystemSettingsPage;
 }>({
 	exportImportFramePage: async ({page}, use) => {
 		await use(new ExportImportFramePage(page));
@@ -18,6 +24,14 @@ const exportImportPagesTest = test.extend<{
 	exportImportPage: async ({page}, use) => {
 		await use(new ExportImportPage(page));
 	},
+	exportImportStagingInstanceSettingsPage: async ({page}, use) => {
+		await use(new ExportImportStagingInstanceSettingsPage(page));
+	},
+	exportImportStagingSystemSettingsPage: async ({page}, use) => {
+		await use(new ExportImportStagingSystemSettingsPage(page));
+	},
+	uploadServletRequestSystemSettingsPage: async ({page}, use) => {
+		await use(new UploadServletRequestSystemSettingsPage(page));
+	},
 });
-
 export {exportImportPagesTest};

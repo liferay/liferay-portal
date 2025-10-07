@@ -1,0 +1,36 @@
+.cp-article-side-panel {
+	.active > .panel-header-link, .active.cp-article-side-panel-item, .cp-article-side-panel-item:hover, .panel-header-link:hover {
+		background-color: var(--color-action-primary-active-lighten, #E6EDFB);
+		color: var(--color-action-primary-active, #004AD7);
+	}
+
+	.cp-article-side-panel-item, .panel-header-link {
+		border-radius: var(--border-radius) !important;
+		color: var(--color-neutral-10);
+		display: block;
+		font-weight: var(--font-weight-semi-bold);
+		line-height: normal;
+		margin-bottom: var(--spacer-1);
+		padding: var(--spacer-2);
+		text-decoration: none;
+	}
+
+	.collapse-icon .collapse-icon-closed, .collapse-icon .collapse-icon-open {
+		position: static;
+	}
+
+	.panel-body {
+		padding: 0 0 0 var(--spacer-4);
+	}
+
+	.panel-header {
+		align-items: center;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.panel-title {
+		font-size: var(--font-size-base);
+		text-transform: none;
+	}
+}

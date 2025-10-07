@@ -1,4 +1,0 @@
-Bundle-Name: Liferay Portal Tools DB Schema Importer Test
-Bundle-SymbolicName: com.liferay.portal.tools.db.schema.importer.test
-Bundle-Version: 1.0.0
--removeheaders: Require-Capability

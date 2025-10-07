@@ -34,10 +34,10 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import java.net.URLDecoder;
 
@@ -1266,6 +1266,11 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			_customFDSSerializer.serializeAdditionalAPIURLParameters(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
+
+		Mockito.when(
+			_customFDSSerializer.serializeAdditionalAPIURLParameters(
+				fdsName, httpServletRequest, true, null)
+		).thenCallRealMethod();
 	}
 
 	private void _mockSerializeAPIURL(String fdsName, String[] fieldNames) {
@@ -1311,6 +1316,11 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializeAPIURL(fdsName, httpServletRequest)
+		).thenCallRealMethod();
+
+		Mockito.when(
+			_customFDSSerializer.serializeAPIURL(
+				fdsName, httpServletRequest, true, null)
 		).thenCallRealMethod();
 	}
 

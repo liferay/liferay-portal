@@ -293,7 +293,7 @@ describe('CurrencySelector', () => {
 			jest.spyOn(CurrencySelectorUtils, 'storeCommerceCurrency');
 
 			const {getByText} = render(
-				<CurrencySelector {...{...BASE_PROPS, commerceOrderId: 123}} />
+				<CurrencySelector {...BASE_PROPS} commerceOrderId={123} />
 			);
 
 			await waitFor(() => {

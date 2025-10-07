@@ -431,12 +431,11 @@ public class ListTypeEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.list.type.model.ListTypeEntry
-			getOrAddIncompleteListTypeEntry(
-				long userId, long listTypeDefinitionId, String key)
+	public com.liferay.list.type.model.ListTypeEntry getOrAddEmptyListTypeEntry(
+			long userId, long listTypeDefinitionId, String key)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _listTypeEntryLocalService.getOrAddIncompleteListTypeEntry(
+		return _listTypeEntryLocalService.getOrAddEmptyListTypeEntry(
 			userId, listTypeDefinitionId, key);
 	}
 

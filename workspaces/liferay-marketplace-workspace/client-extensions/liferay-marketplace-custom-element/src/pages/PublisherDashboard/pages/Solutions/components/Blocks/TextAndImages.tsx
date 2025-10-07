@@ -162,7 +162,7 @@ const TextAndImages: React.FC<BlockTypeProps<TextImageBlock>> = ({
 					status="info"
 				>
 					<ClayModal.Header>
-						{i18n.translate('maximum-number-of-upload-reached')}
+						{i18n.translate('maximum-number-of-uploads-reached')}
 					</ClayModal.Header>
 					<ClayModal.Body className="pb-8">
 						{i18n.sub(

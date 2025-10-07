@@ -10,14 +10,13 @@ import com.liferay.portal.kernel.deploy.auto.AutoDeployDir;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployUtil;
 import com.liferay.portal.kernel.deploy.hot.HotDeployUtil;
 import com.liferay.portal.kernel.events.SimpleAction;
-import com.liferay.portal.kernel.log.Jdk14LogFactoryImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.struts.AuthPublicPathRegistry;
-import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 
 /**
  * @author Brian Wing Shun Chan
@@ -92,19 +91,6 @@ public class GlobalShutdownAction extends SimpleAction {
 	}
 
 	protected void shutdownLevel6() {
-
-		// Reset log to default JDK 1.4 logger. This will allow WARs dependent
-		// on the portal to still log events after the portal WAR has been
-		// destroyed.
-
-		try {
-			LogFactoryUtil.setLogFactory(new Jdk14LogFactoryImpl());
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
 
 		// Thread local registry
 

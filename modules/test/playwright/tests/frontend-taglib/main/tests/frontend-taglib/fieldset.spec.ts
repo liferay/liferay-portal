@@ -6,33 +6,24 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../../../fixtures/loginTest';
 import {samplePageTest} from '../../fixtures/samplePageTest';
+import {TabName} from '../../pages/SamplePage';
 
 export const test = mergeTests(
-	isolatedSiteTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
-	loginTest(),
 	samplePageTest
 );
-
-const linkName = 'Fieldset';
 
 test(
 	'Tooltip should be translated correctly',
 	{
 		tag: '@LPD-43309',
 	},
-	async ({page, samplePage, site}) => {
-		await test.step('Add taglib sample to page', async () => {
-			await samplePage.setupSampleWidget({
-				site,
-			});
-
-			await samplePage.selectLink(linkName);
+	async ({page, samplePage}) => {
+		await test.step(`Select Fieldset tab`, async () => {
+			await samplePage.selectTab(TabName.FIELDSET);
 		});
 
 		await test.step('Check tooltip is translated', async () => {

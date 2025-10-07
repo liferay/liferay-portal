@@ -6,10 +6,14 @@ ${dataFactory.setWebId(defaultCompanyModel.webId)}
 
 ${dataFactory.toInsertSQL(defaultCompanyModel)}
 
-${dataFactory.toInsertSQL(dataFactory.newVirtualHostModel())}
+<#assign defaultVirtualHostModel = dataFactory.newVirtualHostModel() />
+
+${dataFactory.toInsertSQL(defaultVirtualHostModel)}
 
 ${dataFactory.toInsertSQL(dataFactory.newPortalPreferencesModel(defaultCompanyModel.companyId))}
 ${dataFactory.toInsertSQL(dataFactory.newPortalPreferencesModel(0))}
+
+${csvFileWriter.write("company", defaultVirtualHostModel.hostname + "," + defaultCompanyModel.companyId + "\n")}
 
 <#include "roles.ftl">
 

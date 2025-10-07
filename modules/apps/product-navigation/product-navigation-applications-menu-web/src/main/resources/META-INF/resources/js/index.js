@@ -21,6 +21,10 @@ import useKeyboardNavigation from './hooks/useKeyboardNavigation';
 
 import '../css/ApplicationsMenu.scss';
 
+function getImage(filename) {
+	return `${Liferay.ThemeDisplay.getPortalURL()}${Liferay.ThemeDisplay.getPathContext()}/o/site-cms-site-initializer/images/${filename}`;
+}
+
 const getOpenMenuTooltipMarkup = (keyLabel) =>
 	`
 	<div>${Liferay.Language.get('open-applications-menu')}</div>
@@ -208,8 +212,167 @@ const Sites = ({mySites, portletNamespace, recentSites, viewAllURL}) => {
 	);
 };
 
+const Spaces = ({spaces}) => {
+	return (
+		<>
+			{spaces?.length > 0 &&
+				spaces.map(({active, id, logoColor, name, url}) => (
+					<Space
+						current={active}
+						key={id}
+						logoColor={logoColor}
+						name={name}
+						url={url}
+					/>
+				))}
+		</>
+	);
+};
+
+const Space = ({current, logoColor, name, url}) => {
+	return (
+		<li className="c-mt-3">
+			<a
+				aria-current={current}
+				className="applications-menu-nav-link d-inline-flex"
+				href={url}
+			>
+				<ClayLayout.ContentRow
+					containerElement="span"
+					verticalAlign="center"
+				>
+					<ClayLayout.ContentCol
+						className="align-items-center d-flex"
+						containerElement="span"
+					>
+						<ClaySticker displayType={logoColor} size="sm">
+							{name.charAt(0).toUpperCase()}
+						</ClaySticker>
+					</ClayLayout.ContentCol>
+
+					<ClayLayout.ContentCol
+						className="applications-menu-shrink c-ml-2"
+						containerElement="span"
+					>
+						<span className="text-truncate">{name}</span>
+					</ClayLayout.ContentCol>
+
+					{current && (
+						<ClayLayout.ContentCol
+							className="c-ml-2"
+							containerElement="span"
+						>
+							<ClayLabel displayType="info">
+								{Liferay.Language.get('current')}
+							</ClayLabel>
+						</ClayLayout.ContentCol>
+					)}
+				</ClayLayout.ContentRow>
+			</a>
+		</li>
+	);
+};
+
+const SpacesPanel = ({cms}) => {
+	return (
+		<div className="applications-menu-spaces c-p-3 c-px-md-4">
+			<div className="c-mt-2">
+				{cms && (
+					<a
+						className="applications-menu-cms applications-menu-nav-link d-inline-flex"
+						href={cms.url}
+					>
+						<ClayLayout.ContentRow
+							containerElement="span"
+							verticalAlign="center"
+						>
+							<ClayLayout.ContentCol containerElement="span">
+								<ClaySticker>
+									<img
+										alt=""
+										height="32px"
+										src={cms.logoURL}
+									/>
+								</ClaySticker>
+							</ClayLayout.ContentCol>
+
+							<ClayLayout.ContentCol
+								className="applications-menu-shrink c-ml-2"
+								containerElement="span"
+							>
+								<span className="align-items-center d-flex">
+									{Liferay.Language.get('cms')}
+
+									<span className="badge badge-pill badge-primary ml-1">
+										{Liferay.Language.get('new')}
+									</span>
+								</span>
+							</ClayLayout.ContentCol>
+						</ClayLayout.ContentRow>
+					</a>
+				)}
+			</div>
+
+			{cms.firstTimeAccess && (
+				<div className="bg-white d-flex flex-column overflow-hidden p-2 rounded-xl">
+					<div className="create-space-step-one-illustration">
+						<img
+							alt={Liferay.Language.get('cms')}
+							src={getImage(
+								'create_space_step_one_illustration.svg'
+							)}
+						/>
+					</div>
+
+					<p className="pb-2 pt-2 text-2">
+						{Liferay.Language.get(
+							'you-can-now-manage-content-across-multiple-sites'
+						)}
+					</p>
+
+					<a
+						className="btn btn-primary rounded-circle"
+						href="/web/cms/new-space"
+					>
+						{Liferay.Language.get('get-started')}
+					</a>
+				</div>
+			)}
+
+			{!cms.firstTimeAccess && (
+				<>
+					<div className="applications-menu-nav-divider c-my-2"></div>
+
+					<div className="applications-menu-spaces c-my-2">
+						<ul
+							aria-label={Liferay.Language.get('spaces')}
+							className="list-unstyled"
+						>
+							{cms.spaces && <Spaces spaces={cms.spaces} />}
+
+							<li className="c-mt-3">
+								<a
+									className="applications-menu-nav-link d-inline-flex"
+									href={cms.allSpacesURL}
+								>
+									<span className="align-items-center autofit-row autofit-row-center">
+										<ClayIcon symbol="box-container" />
+
+										<span className="applications-menu-shrink autofit-col c-ml-2">{`${Liferay.Language.get('all-spaces')} (${cms.allSpacesCount})`}</span>
+									</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</>
+			)}
+		</div>
+	);
+};
+
 const AppsPanel = ({
 	categories = [],
+	cms = {},
 	handleCloseButtonClick = () => {},
 	liferayLogoURL,
 	liferayName,
@@ -286,7 +449,11 @@ const AppsPanel = ({
 			<div className="applications-menu-bg applications-menu-border-top applications-menu-content">
 				<ClayLayout.ContainerFluid size={false}>
 					<ClayLayout.Row>
-						<ClayLayout.Col className="pr-0" md="9" xl="8">
+						<ClayLayout.Col
+							className="pr-0"
+							md={Liferay.FeatureFlags['LPD-17564'] ? '8' : '9'}
+							xl="8"
+						>
 							<ClayTabs.Content activeIndex={activeTab}>
 								{categories.map(({childCategories}, index) => (
 									<ClayTabs.TabPane
@@ -316,13 +483,23 @@ const AppsPanel = ({
 							</ClayTabs.Content>
 						</ClayLayout.Col>
 
-						<ClayLayout.Col className="px-0" md="3" xl="4">
+						<ClayLayout.Col
+							className="px-0"
+							md={Liferay.FeatureFlags['LPD-17564'] ? '2' : '3'}
+							xl={Liferay.FeatureFlags['LPD-17564'] ? '2' : '4'}
+						>
 							<SitesPanel
 								portletNamespace={portletNamespace}
 								sites={sites}
 								virtualInstance={virtualInstance}
 							/>
 						</ClayLayout.Col>
+
+						{Liferay.FeatureFlags['LPD-17564'] && (
+							<ClayLayout.Col className="px-0" md="2" xl="2">
+								<SpacesPanel cms={cms} />
+							</ClayLayout.Col>
+						)}
 					</ClayLayout.Row>
 				</ClayLayout.ContainerFluid>
 			</div>
@@ -445,9 +622,10 @@ const ApplicationsMenu = ({
 		if (!fetchCategoriesPromiseRef.current) {
 			fetchCategoriesPromiseRef.current = fetch(panelAppsURL)
 				.then((response) => response.json())
-				.then(({items, portletNamespace, sites}) => {
+				.then(({cms, items, portletNamespace, sites}) => {
 					setAppsPanelData({
 						categories: items,
+						cms,
 						portletNamespace,
 						selectedPortletId,
 						sites,

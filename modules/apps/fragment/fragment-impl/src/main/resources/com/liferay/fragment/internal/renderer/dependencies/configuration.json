@@ -22,6 +22,12 @@
 					"label": "hide-language-label",
 					"name": "hideLanguageLabel",
 					"type": "checkbox"
+				},
+				{
+					"description": "management-button-only-shows-for-non-default-languages",
+					"label": "allow-localization-management",
+					"name": "allowLocalizationManagement",
+					"type": "checkbox"
 				}
 			]
 		}

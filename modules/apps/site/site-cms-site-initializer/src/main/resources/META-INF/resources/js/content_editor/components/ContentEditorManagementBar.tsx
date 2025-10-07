@@ -11,17 +11,25 @@ import ClayLink from '@clayui/link';
 import {ManagementToolbar} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
+export const EVENT_VALIDATE_FORM = 'contentEditor:validateForm';
+
 export default function ContentEditorManagementBar({
 	backURL,
+	hasWorkflow,
 	headerTitle,
 }: {
 	backURL: string;
+	hasWorkflow: boolean;
 	headerTitle: string;
 }) {
 	const [formId, setFormId] = useState<string | undefined>();
 
 	useEffect(() => {
-		const form = document.querySelector('.lfr-layout-structure-item-form');
+		let form = document.querySelector('.lfr-main-form-container');
+
+		if (!form) {
+			form = document.querySelector('.lfr-layout-structure-item-form');
+		}
 
 		if (form) {
 			setFormId(form.id);
@@ -56,11 +64,16 @@ export default function ContentEditorManagementBar({
 						displayType="primary"
 						form={formId}
 						name="redirect"
+						onClick={(event) => {
+							Liferay.fire(EVENT_VALIDATE_FORM, {event});
+						}}
 						size="sm"
 						type="submit"
 						value={backURL}
 					>
-						{Liferay.Language.get('publish')}
+						{hasWorkflow
+							? Liferay.Language.get('submit-for-workflow')
+							: Liferay.Language.get('publish')}
 					</ClayButton>
 				</ManagementToolbar.Item>
 			</ManagementToolbar.ItemList>

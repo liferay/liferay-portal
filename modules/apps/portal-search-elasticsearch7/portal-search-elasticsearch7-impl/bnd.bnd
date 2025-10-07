@@ -1,6 +1,7 @@
+Bundle-Activator: com.liferay.portal.search.elasticsearch7.internal.sidecar.activator.SearchElasticsearch7ImplBundleActivator
 Bundle-Name: Liferay Portal Search Elasticsearch 7 Implementation
 Bundle-SymbolicName: com.liferay.portal.search.elasticsearch7.impl
-Bundle-Version: 6.0.133
+Bundle-Version: 6.0.134
 Import-Package:\
 	!com.barchart.udt.*,\
 	\

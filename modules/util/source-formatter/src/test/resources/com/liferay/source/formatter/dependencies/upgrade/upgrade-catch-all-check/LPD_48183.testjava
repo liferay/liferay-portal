@@ -1,0 +1,20 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+/**
+ * @author Regisson Aguiar
+ */
+@Component(
+	immediate = true,
+	property = {
+		"commerce.discount.rule.type.key=" + LPD_48183.RULE_TYPE,
+		"commerce.discount.rule.type.order:Integer=100"
+	},
+	service = CommerceDiscountRuleType.class
+)
+public class LPD_48183 implements CommerceDiscountRuleType {
+}

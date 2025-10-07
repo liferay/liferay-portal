@@ -5,7 +5,7 @@
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import PropTypes from 'prop-types';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 
 function InfiniteScroller({
 	children,
@@ -14,73 +14,54 @@ function InfiniteScroller({
 	onBottomTouched,
 	scrollCompleted,
 }) {
-	const [scrollingAreaRendered, setScrollingAreaRendered] = useState(false);
 	const infiniteLoaderRef = useRef(null);
-	const [infiniteLoaderRendered, setInfiniteLoaderRendered] = useState(false);
+	const observerRef = useRef(null);
 	const scrollingAreaRef = useRef(null);
-
-	const setScrollingArea = useCallback((node) => {
-		scrollingAreaRef.current = node;
-		setScrollingAreaRendered(true);
-	}, []);
-
-	const setInfiniteLoader = useCallback((node) => {
-		infiniteLoaderRef.current = node;
-		setInfiniteLoaderRendered(true);
-	}, []);
-
-	const setObserver = useCallback(() => {
-		if (
-			!scrollingAreaRef.current ||
-			!infiniteLoaderRef.current ||
-			!IntersectionObserver
-		) {
-			return;
-		}
-
-		const options = {
-			root: scrollingAreaRef.current,
-			rootMargin: '0px',
-			threshold: 1.0,
-		};
-
-		const observer = new IntersectionObserver((entries) => {
-			if (entries[0].intersectionRatio === 1) {
-				onBottomTouched();
-			}
-		}, options);
-
-		observer.observe(infiniteLoaderRef.current);
-	}, [onBottomTouched]);
 
 	useEffect(() => {
 		if (
-			scrollingAreaRendered &&
-			infiniteLoaderRendered &&
+			infiniteLoaderRef.current &&
+			scrollingAreaRef.current &&
 			!scrollCompleted
 		) {
-			setObserver();
+			const options = {
+				root: scrollingAreaRef.current,
+				threshold: 1,
+			};
+
+			observerRef.current = new IntersectionObserver((entries) => {
+				if (entries[0].isIntersecting) {
+					onBottomTouched();
+				}
+			}, options);
+
+			observerRef.current.observe(infiniteLoaderRef.current);
 		}
+
+		return () => {
+			observerRef.current?.disconnect();
+		};
 	}, [
-		scrollingAreaRendered,
-		infiniteLoaderRendered,
+		infiniteLoaderRef,
+		observerRef,
+		onBottomTouched,
 		scrollCompleted,
-		setObserver,
+		scrollingAreaRef,
 	]);
 
 	return (
 		<div
 			className="inline-scroller"
-			ref={setScrollingArea}
+			ref={scrollingAreaRef}
 			style={maxHeight ? {maxHeight} : null}
 		>
 			{children}
 
 			{!scrollCompleted &&
 				(CustomLoader ? (
-					<CustomLoader ref={setInfiniteLoader} />
+					<CustomLoader ref={infiniteLoaderRef} />
 				) : (
-					<ClayLoadingIndicator ref={setInfiniteLoader} small />
+					<ClayLoadingIndicator ref={infiniteLoaderRef} small />
 				))}
 		</div>
 	);

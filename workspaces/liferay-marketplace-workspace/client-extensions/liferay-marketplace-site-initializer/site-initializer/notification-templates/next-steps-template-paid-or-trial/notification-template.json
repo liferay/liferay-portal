@@ -13,12 +13,12 @@
 				"en-US": "Liferay Marketplace"
 			},
 			"to": {
-				"en-US": "[%GETAPPINFORMATION_AUTHOR_EMAIL_ADDRESS%]"
+				"en-US": "[%COMMERCEORDER_AUTHOR_EMAIL_ADDRESS%]"
 			}
 		}
 	],
 	"subject": {
-		"en_US": "Next steps on [%GETAPPINFORMATION_PRODUCTNAME%] purchase"
+		"en_US": "Next Steps for Your Purchase"
 	},
 	"type": "email"
 }

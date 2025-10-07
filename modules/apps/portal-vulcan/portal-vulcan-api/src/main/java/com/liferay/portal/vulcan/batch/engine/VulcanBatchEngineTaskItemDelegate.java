@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -83,6 +86,14 @@ public interface VulcanBatchEngineTaskItemDelegate<T> {
 	public void setGroupLocalService(GroupLocalService groupLocalService);
 
 	public void setLanguageId(String languageId);
+
+	public void setResourceActionLocalService(
+		ResourceActionLocalService resourceActionLocalService);
+
+	public void setResourcePermissionLocalService(
+		ResourcePermissionLocalService resourcePermissionLocalService);
+
+	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public void update(
 			Collection<T> items, Map<String, Serializable> parameters)

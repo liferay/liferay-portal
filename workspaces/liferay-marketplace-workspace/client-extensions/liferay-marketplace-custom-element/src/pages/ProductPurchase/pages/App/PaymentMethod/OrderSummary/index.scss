@@ -1,0 +1,35 @@
+.product-purchase-summary {
+	.license-tag {
+		align-items: center;
+		background: #e6ebf5;
+		border-radius: 4px;
+		color: #1c3667;
+		display: flex;
+		font-size: 11px;
+		font-style: normal;
+		font-weight: 400;
+		justify-content: center;
+		line-height: 16px;
+	}
+
+	.section-card {
+		border: 1px solid #c9c9cf;
+		border-radius: 10px;
+
+		&-title {
+			font-size: 16px;
+			font-weight: 600;
+			letter-spacing: 0%;
+			line-height: 24px;
+			vertical-align: middle;
+		}
+
+		&-subtitle {
+			font-size: 13px;
+			font-weight: 400;
+			letter-spacing: 0%;
+			line-height: 16px;
+			vertical-align: middle;
+		}
+	}
+}

@@ -1877,6 +1877,16 @@ public class KaleoProcessPersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2228,6 +2238,15 @@ public class KaleoProcessPersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<KaleoProcess> kaleoProcesses = findByGroupId(groupId);
+
+			kaleoProcesses = InlineSQLHelperUtil.filter(
+				kaleoProcesses, groupId);
+
+			return kaleoProcesses.size();
 		}
 
 		StringBundler sb = new StringBundler(2);

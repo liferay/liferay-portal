@@ -12,8 +12,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.Portlet;
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -37,6 +40,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -66,6 +70,19 @@ public class LayoutSEOLinkManagerPageTitleTest {
 		_layout = _addLayout();
 
 		_group = _addGroup();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				_group.getCompanyId(), "LPD-17564")) {
+
+			_cmsGroup = _groupLocalService.fetchGroup(
+				_group.getCompanyId(), GroupConstants.CMS);
+
+			if (_cmsGroup == null) {
+				_cmsGroup = GroupTestUtil.addGroup(
+					_group.getCompanyId(), TestPropsValues.getUserId(),
+					GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
+			}
+		}
 
 		_layout.setGroupId(_group.getGroupId());
 
@@ -390,6 +407,18 @@ public class LayoutSEOLinkManagerPageTitleTest {
 			_layoutSEOLinkManager.getPageTitleSuffix(_layout, companyName));
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixCompanyNameInCMSGroup() throws Exception {
+		_layout.setGroupId(_cmsGroup.getGroupId());
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_layoutSEOLinkManager.getPageTitleSuffix(
+				_layout, _cmsGroup.getDescriptiveName()));
+	}
+
 	@Test
 	public void testGetPageTitleSuffixGroupNameCompanyName() throws Exception {
 		String companyName = RandomTestUtil.randomString();
@@ -397,6 +426,20 @@ public class LayoutSEOLinkManagerPageTitleTest {
 		Assert.assertEquals(
 			_group.getName() + " - " + companyName,
 			_layoutSEOLinkManager.getPageTitleSuffix(_layout, companyName));
+	}
+
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixGroupNameCompanyNameInCMSGroup()
+		throws Exception {
+
+		_layout.setGroupId(_cmsGroup.getGroupId());
+
+		Assert.assertEquals(
+			_cmsGroup.getDescriptiveName(),
+			_layoutSEOLinkManager.getPageTitleSuffix(
+				_layout, RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -426,6 +469,36 @@ public class LayoutSEOLinkManagerPageTitleTest {
 		}
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixWithIncludeInstanceNameWithIncludeSiteNameInCMSGroup()
+		throws Exception {
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_cmsGroup.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeInstanceName", true
+						).put(
+							"includeSiteName", true
+						).build())) {
+
+			_layout.setGroupId(_cmsGroup.getGroupId());
+
+			Assert.assertEquals(
+				_cmsGroup.getDescriptiveName(),
+				_layoutSEOLinkManager.getPageTitleSuffix(
+					_layout, RandomTestUtil.randomString()));
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_layoutSEOLinkManager.getPageTitleSuffix(
+					_layout, _cmsGroup.getDescriptiveName()));
+		}
+	}
+
 	@Test
 	public void testGetPageTitleSuffixWithIncludeInstanceNameWithoutIncludeSiteName()
 		throws Exception {
@@ -445,6 +518,31 @@ public class LayoutSEOLinkManagerPageTitleTest {
 			Assert.assertEquals(
 				companyName,
 				_layoutSEOLinkManager.getPageTitleSuffix(_layout, companyName));
+		}
+	}
+
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixWithIncludeInstanceNameWithoutIncludeSiteNameInCMSGroup()
+		throws Exception {
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_cmsGroup.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeInstanceName", true
+						).put(
+							"includeSiteName", false
+						).build())) {
+
+			_layout.setGroupId(_cmsGroup.getGroupId());
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_layoutSEOLinkManager.getPageTitleSuffix(
+					_layout, RandomTestUtil.randomString()));
 		}
 	}
 
@@ -469,6 +567,31 @@ public class LayoutSEOLinkManagerPageTitleTest {
 		}
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixWithoutIncludeInstanceNameWithIncludeSiteNameInCMSGroup()
+		throws Exception {
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_cmsGroup.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeInstanceName", false
+						).put(
+							"includeSiteName", true
+						).build())) {
+
+			_layout.setGroupId(_cmsGroup.getGroupId());
+
+			Assert.assertEquals(
+				_cmsGroup.getDescriptiveName(),
+				_layoutSEOLinkManager.getPageTitleSuffix(
+					_layout, RandomTestUtil.randomString()));
+		}
+	}
+
 	@Test
 	public void testGetPageTitleSuffixWithoutIncludeInstanceNameWithoutIncludeSiteName()
 		throws Exception {
@@ -482,6 +605,31 @@ public class LayoutSEOLinkManagerPageTitleTest {
 						).put(
 							"includeSiteName", false
 						).build())) {
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_layoutSEOLinkManager.getPageTitleSuffix(
+					_layout, RandomTestUtil.randomString()));
+		}
+	}
+
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-66633")
+	public void testGetPageTitleSuffixWithoutIncludeInstanceNameWithoutIncludeSiteNameInCMSGroup()
+		throws Exception {
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_cmsGroup.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeInstanceName", false
+						).put(
+							"includeSiteName", false
+						).build())) {
+
+			_layout.setGroupId(_cmsGroup.getGroupId());
 
 			Assert.assertEquals(
 				StringPool.BLANK,
@@ -571,6 +719,8 @@ public class LayoutSEOLinkManagerPageTitleTest {
 	private static final String _PID =
 		"com.liferay.layout.seo.internal.configuration." +
 			"LayoutSEOGeneralGroupConfiguration";
+
+	private Group _cmsGroup;
 
 	@DeleteAfterTestRun
 	private Group _group;

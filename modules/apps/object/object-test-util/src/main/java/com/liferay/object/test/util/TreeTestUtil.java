@@ -6,6 +6,7 @@
 package com.liferay.object.test.util;
 
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
@@ -24,10 +25,13 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
@@ -66,6 +70,59 @@ public class TreeTestUtil {
 		_assertTree(
 			expectedMap, actualTree,
 			node -> _getExternalReferenceCode(node, objectEntryLocalService));
+	}
+
+	public static void assertRootObjectDefinitionIds(
+		Map<ObjectDefinition, ObjectDefinition[]> expectedMap) {
+
+		Map<Long, long[]> actualMap = new LinkedHashMap<>();
+
+		for (ObjectDefinition objectDefinition : expectedMap.keySet()) {
+			actualMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				objectDefinition.getRootObjectDefinitionIds());
+		}
+
+		for (Map.Entry<ObjectDefinition, ObjectDefinition[]> entry :
+				expectedMap.entrySet()) {
+
+			ObjectDefinition objectDefinition = entry.getKey();
+
+			long[] actualRootObjectDefinitionIds = actualMap.get(
+				objectDefinition.getObjectDefinitionId());
+
+			long[] expectedRootObjectDefinitionIds =
+				TransformUtil.transformToLongArray(
+					entry.getValue(), ObjectDefinition::getObjectDefinitionId);
+
+			Assert.assertEquals(
+				Arrays.toString(actualRootObjectDefinitionIds),
+				expectedRootObjectDefinitionIds.length,
+				actualRootObjectDefinitionIds.length);
+
+			if (actualRootObjectDefinitionIds.length == 0) {
+				continue;
+			}
+
+			Assert.assertTrue(
+				ArrayUtil.containsAll(
+					actualRootObjectDefinitionIds,
+					expectedRootObjectDefinitionIds));
+		}
+	}
+
+	public static ObjectRelationship bind(
+			long objectDefinition1Id, long objectDefinition2Id,
+			ObjectRelationshipLocalService objectRelationshipLocalService)
+		throws PortalException {
+
+		return objectRelationshipLocalService.addObjectRelationship(
+			StringUtil.randomId(), TestPropsValues.getUserId(),
+			objectDefinition1Id, objectDefinition2Id, 0,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			StringUtil.randomId(), false,
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 	}
 
 	public static void bind(
@@ -249,7 +306,9 @@ public class TreeTestUtil {
 				objectEntryLocalService.deleteObjectEntry(objectEntry);
 			}
 
-			if (objectDefinition.getRootObjectDefinitionId() != 0) {
+			if (ArrayUtil.isNotEmpty(
+					objectDefinition.getRootObjectDefinitionIds())) {
+
 				unbind(
 					objectDefinition.getObjectDefinitionId(),
 					objectRelationshipLocalService);
@@ -313,13 +372,26 @@ public class TreeTestUtil {
 				objectDefinitionId, true);
 
 		for (ObjectRelationship objectRelationship : objectRelationships) {
+			unbind(objectRelationship, objectRelationshipLocalService);
+		}
+	}
+
+	public static ObjectRelationship unbind(
+			ObjectRelationship objectRelationship,
+			ObjectRelationshipLocalService objectRelationshipLocalService)
+		throws PortalException {
+
+		objectRelationship =
 			objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
 				objectRelationship.getParameterObjectFieldId(),
 				objectRelationship.getDeletionType(), false,
 				objectRelationship.getLabelMap(), null);
-		}
+
+		Assert.assertFalse(objectRelationship.isEdge());
+
+		return objectRelationship;
 	}
 
 	private static void _assertTree(

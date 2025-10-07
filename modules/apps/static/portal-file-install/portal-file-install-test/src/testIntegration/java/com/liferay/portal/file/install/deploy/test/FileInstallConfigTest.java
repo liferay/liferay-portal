@@ -13,13 +13,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 
@@ -88,17 +88,14 @@ public class FileInstallConfigTest {
 		_configuration = _createConfiguration(
 			configurationPid,
 			StringBundler.concat(
-				"configBooleanArray=B[\"True\",\"False\"]\n",
-				"configByteArray=X[\"1\",\"3\"]\n",
-				"configCharacterArray=C[\"A\",\"Z\"]\n",
-				"configDoubleArray=D[\"12.2\",\"12.3\"]\n",
-				"configFloatArray=F[\"12.2\",\"12.3\"]\n",
-				"configIntegerArray=I[\"20\",\"21\"]\n",
-				"configLongArray=L[\"30\",\"31\"]\n",
-				"configShortArray=S[\"2\",\"3\"]\n",
-				"configStringArray=T[\"testString\",\"testString2\"]\n",
-				"configUntypedStringArray=[\"testUntypedString\"",
-				",\"testUntypedString2\"]"));
+				"configBooleanArray=B[\"True\",\"False\"]\nconfigByteArray=X[",
+				"\"1\",\"3\"]\nconfigCharacterArray=C[\"A\",\"Z\"]\n",
+				"configDoubleArray=D[\"12.2\",\"12.3\"]\nconfigFloatArray=F[\"",
+				"12.2\",\"12.3\"]\nconfigIntegerArray=I[\"20\",\"21\"]\n",
+				"configLongArray=L[\"30\",\"31\"]\nconfigShortArray=S[\"2\",\"",
+				"3\"]\nconfigStringArray=T[\"testString\",\"testString2\"]\n",
+				"configUntypedStringArray=[\"testUntypedString\",\"",
+				"testUntypedString2\"]"));
 
 		Dictionary<String, Object> properties = _configuration.getProperties();
 
@@ -218,12 +215,11 @@ public class FileInstallConfigTest {
 		_configuration = _createConfiguration(
 			configurationPid,
 			StringBundler.concat(
-				"configBoolean=B\"True\"\n", "configByte=X\"1\"\n",
-				"configCharacter=C\"A\"\n", "configDouble=D\"12.2\"\n",
-				"configFloat=F\"12.2\"\n", "configInteger=I\"20\"\n",
-				"configLong=L\"30\"\n", "configShort=S\"2\"\n",
-				"configString=T\"testString\"\n",
-				"configUntypedString=\"testUntypedString\""));
+				"configBoolean=B\"True\"\nconfigByte=X\"1\"\nconfigCharacter=C",
+				"\"A\"\nconfigDouble=D\"12.2\"\nconfigFloat=F\"12.2\"\n",
+				"configInteger=I\"20\"\nconfigLong=L\"30\"\nconfigShort=S\"2\"",
+				"\nconfigString=T\"testString\"\nconfigUntypedString=\"",
+				"testUntypedString\""));
 
 		Dictionary<String, Object> properties = _configuration.getProperties();
 

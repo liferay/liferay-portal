@@ -15,6 +15,7 @@
 				<include>modules/pom.xml</include>
 				<include>platform.bndrun</include>
 				<include>settings.gradle</include>
+				<include>source-formatter.properties</include>
 				<include>themes/pom.xml</include>
 			</includes>
 		</fileSet>

@@ -48,6 +48,27 @@ public class OpenAPIResourceTest {
 							"x-test", true
 						)
 					))
+			).put(
+				"paths",
+				JSONUtil.put(
+					"/v1.0/test-entities",
+					JSONUtil.put(
+						"get",
+						JSONUtil.put(
+							"parameters",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"schema",
+									JSONUtil.put(
+										"x-filterable",
+										JSONUtil.putAll(
+											"companyId",
+											"customFields/booleanField",
+											"customFields/integerField",
+											"customFields/stringField",
+											"dateModified", "description", "id",
+											"keywords", "published",
+											"statusCode")))))))
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, "test/v1.0/openapi.json", Http.Method.GET

@@ -266,6 +266,13 @@
 												"pageElements": [
 													{
 														"definition": {
+															"cssClasses": [
+																"align-items-center",
+																"d-flex",
+																"justify-content-end",
+																"position-relative"
+															],
+															"customCSS": ".[$FRAGMENT_CLASS$] {\n.sticker-user-icon {\n\tborder-radius: var(--border-radius);\n}\n}",
 															"indexed": true,
 															"layout": {
 															}
@@ -273,11 +280,190 @@
 														"pageElements": [
 															{
 																"definition": {
+																	"customCSS": ".[$FRAGMENT_CLASS$] {\n  .account-selector-cta-container {\n    padding: .5rem 0;\n  }\n\n  .account-selector-cta-container .account-name,\n  .account-selector-dropdown-panel .dropdown-section.item-list-head {\n    font-weight: 500;\n  }\n \n  .account-selector-cta-container .current-account-thumbnail {\n    border-radius: var(--border-radius);\n  }\n\n  .account-selector-cta-container .order-info {\n    font-size: .75rem;\n  }\n\n  .account-selector-panel-content > div,\n  .account-selector-panel-drop-zone-container > div,\n  .lfr-layout-structure-item-commerce-account-selector-fragments-account-selector-panel,\n  .lfr-layout-structure-item-commerce-account-selector-fragments-account-selector-panel > div {\n    height: 100%;\n  }\n\n  .account-selector-panel-drop-zone-container {\n    padding-bottom: 8px;\n  }\n\n  .account-selector-panel-drop-zone-container > div {\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n  }\n\n  .btn-create-account,\n  .btn-create-order {\n    width: 100%;\n  }\n\n  .dropdown-section {\n    padding: 8px;\n  }\n\n  .fds .c-empty-state {\n    margin: 0 auto;\n  }\n\n  .fds .c-empty-state-image {\n    max-width: 150px;\n  }\n\n  .fds .cell-logoURL {\n    width: 50px !important;\n  }\n\n  .fds .container-fluid {\n    padding: 0 8px;\n  }\n\n  .fds .data-set > .container-fluid {\n    margin-bottom: .5rem;\n    max-height: 280px;\n    overflow-y: auto;\n  }\n\n  .fds .data-set.data-set-fluid .data-set-pagination-wrapper {\n    margin: 0;\n  }\n\n  .fds .data-set-wrapper {\n    border: 0;\n  }\n\n  .fds .navbar-form {\n    padding: 0 !important;\n  }\n\n  .fds .table .sticker-xl {\n    height: 2rem;\n    line-height: 2rem;\n    width: 2rem;\n  }\n\n  .fds .table td,\n  .fds .table th  {\n    height: 38px;\n    padding: 0 .5rem;\n  }\n\n  .fds .table-responsive  {\n    margin-bottom: 0.5rem;\n  }\n\n  .lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-createaccountbuttonfragmentrenderer,\n  .lfr-layout-structure-item-com-liferay-commerce-fragment-internal-renderer-createorderbuttonfragmentrenderer {\n    padding: 0 8px;\n  }\n}",
 																	"fragment": {
-																		"key": "commerce-components-group",
-																		"siteKey": "[$GROUP_KEY$]"
+																		"key": "COMMERCE_ACCOUNT_SELECTOR_FRAGMENTS-account-selector-fragment"
 																	},
 																	"fragmentConfig": {
+																		"defaultPanelKey": "orders",
+																		"dropdownHeight": 500,
+																		"dropdownWidth": 400,
+																		"numberOfPanels": 2,
+																		"panelAnimationDuration": 0.1
+																	},
+																	"fragmentFields": [
+																	],
+																	"indexed": true
+																},
+																"pageElements": [
+																	{
+																		"definition": {
+																			"fragmentDropZoneId": "1"
+																		},
+																		"pageElements": [
+																			{
+																				"definition": {
+																					"fragment": {
+																						"key": "com.liferay.commerce.fragment.internal.renderer.AccountSelectorButtonFragmentRenderer"
+																					},
+																					"fragmentConfig": {
+																						"label": "Select Account & Order",
+																						"showAccountImage": true,
+																						"showAccountInfo": true,
+																						"showButtonIcon": true,
+																						"showOrderInfo": true
+																					},
+																					"fragmentFields": [
+																					],
+																					"indexed": true
+																				},
+																				"type": "Fragment"
+																			}
+																		],
+																		"type": "FragmentDropZone"
+																	},
+																	{
+																		"definition": {
+																			"fragmentDropZoneId": "2"
+																		},
+																		"pageElements": [
+																			{
+																				"definition": {
+																					"fragment": {
+																						"key": "COMMERCE_ACCOUNT_SELECTOR_FRAGMENTS-account-selector-panel"
+																					},
+																					"fragmentConfig": {
+																						"key": "select-account",
+																						"title": "Select Account"
+																					},
+																					"fragmentFields": [
+																					],
+																					"indexed": true
+																				},
+																				"pageElements": [
+																					{
+																						"definition": {
+																							"fragmentDropZoneId": "1"
+																						},
+																						"pageElements": [
+																							{
+																								"definition": {
+																									"fragment": {
+																										"key": "com.liferay.commerce.fragment.internal.renderer.AccountsDataSetFragmentRenderer"
+																									},
+																									"fragmentConfig": {
+																										"displayStyle": "fluid",
+																										"hideActionsColumn": true,
+																										"pageSize": 100,
+																										"showPagination": false,
+																										"showSearch": true
+																									},
+																									"fragmentFields": [
+																									],
+																									"indexed": true
+																								},
+																								"type": "Fragment"
+																							},
+																							{
+																								"definition": {
+																									"fragment": {
+																										"key": "com.liferay.commerce.fragment.internal.renderer.CreateAccountButtonFragmentRenderer"
+																									},
+																									"fragmentConfig": {
+																										"label": "Create New Account"
+																									},
+																									"fragmentFields": [
+																									],
+																									"indexed": true
+																								},
+																								"type": "Fragment"
+																							}
+																						],
+																						"type": "FragmentDropZone"
+																					}
+																				],
+																				"type": "Fragment"
+																			}
+																		],
+																		"type": "FragmentDropZone"
+																	},
+																	{
+																		"definition": {
+																			"fragmentDropZoneId": "3"
+																		},
+																		"pageElements": [
+																			{
+																				"definition": {
+																					"fragment": {
+																						"key": "COMMERCE_ACCOUNT_SELECTOR_FRAGMENTS-account-selector-panel"
+																					},
+																					"fragmentConfig": {
+																						"key": "orders",
+																						"title": "Orders"
+																					},
+																					"fragmentFields": [
+																					],
+																					"indexed": true
+																				},
+																				"pageElements": [
+																					{
+																						"definition": {
+																							"fragmentDropZoneId": "1"
+																						},
+																						"pageElements": [
+																							{
+																								"definition": {
+																									"fragment": {
+																										"key": "com.liferay.commerce.fragment.internal.renderer.PendingAccountOrdersDataSetFragmentRenderer"
+																									},
+																									"fragmentConfig": {
+																										"displayStyle": "fluid",
+																										"hideActionsColumn": true,
+																										"pageSize": 100,
+																										"showPagination": false,
+																										"showSearch": true
+																									},
+																									"fragmentFields": [
+																									],
+																									"indexed": true
+																								},
+																								"type": "Fragment"
+																							},
+																							{
+																								"definition": {
+																									"fragment": {
+																										"key": "com.liferay.commerce.fragment.internal.renderer.CreateOrderButtonFragmentRenderer"
+																									},
+																									"fragmentConfig": {
+																										"label": "Create New Order"
+																									},
+																									"fragmentFields": [
+																									],
+																									"indexed": true
+																								},
+																								"type": "Fragment"
+																							}
+																						],
+																						"type": "FragmentDropZone"
+																					}
+																				],
+																				"type": "Fragment"
+																			}
+																		],
+																		"type": "FragmentDropZone"
+																	}
+																],
+																"type": "Fragment"
+															},
+															{
+																"definition": {
+																	"customCSS": ".[$FRAGMENT_CLASS$] {\n.cart-root .mini-cart {\n\tdisplay: contents;\n\theight: var(--commerce-header-user-height, 0);\n\ttransition:\n\t\theight 0ms ease-out,\n\t\twidth 0ms ease-out,\n\t\ttop 0ms ease-out;\n\ttransition-delay: 200ms !important;\n\twidth: var(--commerce-header-user-height, 0);\n}\n\n.cart-root .mini-cart.is-open {\n\theight: calc(\n\t\t100vh - var(--control-menu-container-height, 0px) - var(--commerce-header-user-height) -\n\t\t12px\n\t);\n}\n\n.cart-root .mini-cart .mini-cart-opener {\n\talign-items: center;\n\tdisplay: flex;\n\theight: 3.25rem;\n\tjustify-content: center;\n\tposition: relative;\n\twidth: 64px;\n}\n\n.cart-root .mini-cart .mini-cart-overlay {\n\theight: 100%;\n\tposition: relative;\n\ttop: 0;\n\ttransition: top 0ms ease-out;\n\ttransition-delay: 200ms;\n\twidth: var(--commerce-header-user-height, 0);\n}\n\n.cart-root .mini-cart.is-open .mini-cart-overlay {\n\theight: calc(100vh - var(--control-menu-container-height, 0px));\n\tposition: fixed;\n\ttop: var(--control-menu-container-height, 0px);\n\ttransform: translate3d(0, 0, 0);\n\ttransition-delay: 0ms;\n\twidth: 100vw;\n}\n\n.cart-root .mini-cart .mini-cart-wrapper {\ndisplay:flex !important;\n\tposition: fixed;\n\ttransform: translate3d(600px, 0, 0);\n}\n\n.cart-root .mini-cart.is-open .mini-cart-wrapper {\n\tbackground-color: var(--white);\n\theight: calc(100vh - var(--control-menu-container-height, 0px));\n\tposition: fixed;\n\ttop: var(--control-menu-container-height, 0px);\n\ttransform: translate3d(0, 0, 0);\n\tz-index: 1000;\n}\n}",
+																	"fragment": {
+																		"key": "COMMERCE_CART_FRAGMENTS-mini-cart"
+																	},
+																	"fragmentConfig": {
+																		"displayTotalItemsQuantity": true,
+																		"iconColor": "var(--gray-600)"
 																	},
 																	"fragmentFields": [
 																	],

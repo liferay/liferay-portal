@@ -24,12 +24,6 @@ const renderComponent = (state?: Partial<State>) => {
 };
 
 describe('PicklistFields', () => {
-	beforeEach(() => {
-		(global as any).Liferay.Language.direction = {
-			en_US: 'rtl',
-		};
-	});
-
 	it('updates the name when name input changes', async () => {
 		renderComponent();
 
@@ -65,7 +59,7 @@ describe('PicklistFields', () => {
 
 		expect(
 			screen.queryByText(
-				'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-structures-that-use-it'
+				'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-content-structures-that-use-it'
 			)
 		).not.toBeInTheDocument();
 	});
@@ -75,7 +69,7 @@ describe('PicklistFields', () => {
 
 		expect(
 			screen.queryByText(
-				'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-structures-that-use-it'
+				'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-content-structures-that-use-it'
 			)
 		).toBeInTheDocument();
 	});

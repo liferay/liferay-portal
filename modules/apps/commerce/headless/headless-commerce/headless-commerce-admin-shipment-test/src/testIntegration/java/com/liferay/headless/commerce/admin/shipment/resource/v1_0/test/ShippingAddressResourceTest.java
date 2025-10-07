@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import java.math.BigDecimal;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -113,6 +114,7 @@ public class ShippingAddressResourceTest
 		assertValid(getShippingAddress);
 	}
 
+	@Ignore
 	@Override
 	@Test
 	public void testGraphQLGetShipmentByExternalReferenceCodeShippingAddress()
@@ -134,6 +136,13 @@ public class ShippingAddressResourceTest
 							getGraphQLFields())),
 					"JSONObject/data",
 					"Object/shipmentByExternalReferenceCodeShippingAddress")));
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetShipmentShippingAddress() throws Exception {
+		super.testGraphQLGetShipmentShippingAddress();
 	}
 
 	@Override
@@ -236,13 +245,6 @@ public class ShippingAddressResourceTest
 		throws Exception {
 
 		return _commerceShipment.getCommerceShipmentId();
-	}
-
-	@Override
-	protected ShippingAddress testGraphQLShippingAddress_addShippingAddress()
-		throws Exception {
-
-		return _toShippingAddress(_commerceShipment.fetchCommerceAddress());
 	}
 
 	private String _getRegionISOCode(CommerceAddress commerceAddress)

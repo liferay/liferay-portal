@@ -5,6 +5,7 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.service.base.PatcherProductVersionLocalServiceBaseImpl;
 import com.liferay.osb.patcher.util.comparator.PatcherProductVersionNameComparator;
@@ -112,7 +113,8 @@ public class PatcherProductVersionLocalServiceImpl
 			throw new PortalException("the-fix-delivery-method-is-invalid");
 		}
 		else if ((fixDeliveryMethod ==
-					_TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE) &&
+					PatcherProductVersionConstants.
+						TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE) &&
 				 Validator.isNull(moduleFolderName)) {
 
 			throw new PortalException(
@@ -138,8 +140,6 @@ public class PatcherProductVersionLocalServiceImpl
 				"the-product-version-name-already-exists");
 		}
 	}
-
-	private static final int _TYPE_FIX_DELIVERY_METHOD_MARKETPLACE_RELEASE = 0;
 
 	@Reference
 	private UserLocalService _userLocalService;

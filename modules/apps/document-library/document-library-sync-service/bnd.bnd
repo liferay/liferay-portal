@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Sync Service
 Bundle-SymbolicName: com.liferay.document.library.sync.service
-Bundle-Version: 4.0.36
+Bundle-Version: 4.0.37
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

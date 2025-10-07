@@ -19,7 +19,7 @@ const ResourceRequirements = () => {
 				boldLabel
 				className="custom-input resource-requirements-content-input"
 				helpMessage={i18n.translate(
-					'enter-the-required-cpus-0-is-a-valid-value'
+					'enter-the-required-cpus-0-is-valid'
 				)}
 				label={i18n.translate('number-of-cpus')}
 				maxLength={2}
@@ -40,7 +40,7 @@ const ResourceRequirements = () => {
 				boldLabel
 				className="custom-input resource-requirements-content-input"
 				helpMessage={i18n.translate(
-					'enter-the-required-ram-0-is-a-valid-value'
+					'enter-the-required-ram-0-is-valid'
 				)}
 				label={i18n.translate('ram-in-gbs')}
 				maxLength={2}

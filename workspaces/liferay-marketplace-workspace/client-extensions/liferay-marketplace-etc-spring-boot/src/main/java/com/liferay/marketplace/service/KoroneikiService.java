@@ -45,6 +45,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class KoroneikiService {
 
+	public AccountResource getAccountResource() throws Exception {
+		return AccountResource.builder(
+		).header(
+			"API_TOKEN", _koroneikiAuthToken
+		).endpoint(
+			new URL(_koroneikiAuthURL)
+		).build();
+	}
+
 	public ContactResource getContactResource() throws Exception {
 		return ContactResource.builder(
 		).header(
@@ -164,7 +173,7 @@ public class KoroneikiService {
 			StringPool.SPACE, StringPool.BLANK
 		).toUpperCase();
 
-		AccountResource accountResource = _getAccountService();
+		AccountResource accountResource = getAccountResource();
 
 		com.liferay.osb.koroneiki.phloem.rest.client.pagination.Page
 			<com.liferay.osb.koroneiki.phloem.rest.client.dto.v1_0.Account>
@@ -238,15 +247,6 @@ public class KoroneikiService {
 
 		return accountResource.postAccount(
 			jwt.getClaim("username"), jwt.getClaim("sub"), koroneikiAccount);
-	}
-
-	private AccountResource _getAccountService() throws Exception {
-		return AccountResource.builder(
-		).header(
-			"API_TOKEN", _koroneikiAuthToken
-		).endpoint(
-			new URL(_koroneikiAuthURL)
-		).build();
 	}
 
 	private static final Log _log = LogFactory.getLog(KoroneikiService.class);

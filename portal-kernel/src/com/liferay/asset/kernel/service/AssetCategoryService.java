@@ -157,7 +157,7 @@ public interface AssetCategoryService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AssetCategory getOrAddIncompleteCategory(
+	public AssetCategory getOrAddEmptyCategory(
 			String externalReferenceCode, long groupId)
 		throws PortalException;
 

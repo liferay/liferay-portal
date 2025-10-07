@@ -10,6 +10,8 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginAnalyticsCloudTest} from '../../../fixtures/loginAnalyticsCloudTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {syncAnalyticsCloud} from '../../analytics-settings-web/main/utils/analytics-settings';
 import {
@@ -35,7 +37,8 @@ export const test = mergeTests(
 		'LPS-178052': {enabled: true},
 	}),
 	loginAnalyticsCloudTest(),
-	loginTest()
+	loginTest(),
+	pageEditorPagesTest
 );
 
 test(
@@ -223,6 +226,309 @@ test(
 
 		await test.step('delete site on DXP side', async () => {
 			await navigateToDXPandDeleteSite({apiHelpers, page, site});
+		});
+	}
+);
+
+test(
+	'Edit Experience with Draft AB Test',
+	{
+		tag: '@LPS-103334',
+	},
+	async ({apiHelpers, page, pageEditorPage}) => {
+		const siteName = getRandomString();
+
+		await apiHelpers.headlessSite.createSite({
+			name: siteName,
+		});
+
+		const pageTitle = 'MyPage-' + getRandomString();
+
+		const layout = await createSitePage({
+			apiHelpers,
+			pageTitle,
+			siteName,
+		});
+
+		const channelName = 'My Property - ' + getRandomString();
+
+		await syncAnalyticsCloud({
+			apiHelpers,
+			channelName,
+			page,
+			siteName,
+		});
+
+		await test.step('Go to site page', async () => {
+			await navigateToSitePage({
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await page.waitForSelector('.segments-experiment-icon');
+		});
+
+		await test.step('Create a new Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.createExperience('Experience 1');
+
+			await pageEditorPage.publishPage();
+		});
+
+		const abTestName = 'AB Test -' + getRandomString();
+
+		await test.step('Create a new AB Test with a variant', async () => {
+			await navigateToSitePage({
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('option', {
+					name: 'Experience 1 Segment: Anyone Inactive',
+				}),
+				trigger: page.getByLabel('Experience Selector'),
+			});
+
+			await openABTesSidebar(page);
+
+			await createABTest({
+				name: abTestName,
+				page,
+			});
+
+			await createVariant({
+				name: 'Variant -' + getRandomString(),
+				page,
+			});
+		});
+
+		await test.step('Able to Edit Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.openExperienceSelector();
+
+			await expect(page.getByLabel('Edit Experience')).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Not able to Edit Experience After Terminated Test',
+	{
+		tag: '@LPS-101341',
+	},
+	async ({apiHelpers, page, pageEditorPage}) => {
+		const siteName = getRandomString();
+
+		await apiHelpers.headlessSite.createSite({
+			name: siteName,
+		});
+
+		const pageTitle = 'MyPage-' + getRandomString();
+
+		const layout = await createSitePage({
+			apiHelpers,
+			pageTitle,
+			siteName,
+		});
+
+		const channelName = 'My Property - ' + getRandomString();
+
+		await syncAnalyticsCloud({
+			apiHelpers,
+			channelName,
+			page,
+			siteName,
+		});
+
+		await test.step('Create a new Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.createExperience('Experience 1');
+
+			await pageEditorPage.publishPage();
+		});
+
+		const abTestName = 'AB Test -' + getRandomString();
+
+		await test.step('Create a new AB Test with a variant', async () => {
+			await navigateToSitePage({
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('option', {
+					name: 'Experience 1 Segment: Anyone Inactive',
+				}),
+				trigger: page.getByLabel('Experience Selector'),
+			});
+
+			await openABTesSidebar(page);
+
+			await createABTest({
+				name: abTestName,
+				page,
+			});
+
+			await createVariant({
+				name: 'Variant -' + getRandomString(),
+				page,
+			});
+		});
+
+		await test.step('Run AB Test', async () => {
+			const reviewButton = await page.getByText('Review and Run Test');
+
+			await reviewButton.click();
+
+			await page.locator('.modal-footer').getByText('Run').click();
+
+			await expect(page.getByText('Test is now running.')).toBeVisible();
+
+			await page.locator('.modal-footer').getByText('Ok').click();
+		});
+
+		await test.step('Terminate test', async () => {
+			await page.getByText('Terminate Test').click();
+
+			await clickOnABTestModalButton({buttonName: 'Terminate', page});
+
+			await assertTerminatedABTest(page);
+		});
+
+		await test.step('Not able to Edit Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.openExperienceSelector();
+
+			await expect(page.getByLabel('Edit Experience')).not.toBeVisible();
+		});
+	}
+);
+
+test(
+	'Not able to Edit Experience During Running Test',
+	{
+		tag: '@LPS-103334',
+	},
+	async ({apiHelpers, page, pageEditorPage}) => {
+		const siteName = getRandomString();
+
+		await apiHelpers.headlessSite.createSite({
+			name: siteName,
+		});
+
+		const pageTitle = 'MyPage-' + getRandomString();
+
+		const layout = await createSitePage({
+			apiHelpers,
+			pageTitle,
+			siteName,
+		});
+
+		const channelName = 'My Property - ' + getRandomString();
+
+		await syncAnalyticsCloud({
+			apiHelpers,
+			channelName,
+			page,
+			siteName,
+		});
+
+		await test.step('Create a new Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.createExperience('Experience 1');
+
+			await pageEditorPage.publishPage();
+		});
+
+		const abTestName = 'AB Test -' + getRandomString();
+
+		await test.step('Create a new AB Test with a variant', async () => {
+			await navigateToSitePage({
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('option', {
+					name: 'Experience 1 Segment: Anyone Inactive',
+				}),
+				trigger: page.getByLabel('Experience Selector'),
+			});
+
+			await openABTesSidebar(page);
+
+			await createABTest({
+				name: abTestName,
+				page,
+			});
+
+			await createVariant({
+				name: 'Variant -' + getRandomString(),
+				page,
+			});
+		});
+
+		await test.step('Run AB Test', async () => {
+			const reviewButton = await page.getByText('Review and Run Test');
+
+			await reviewButton.click();
+
+			await page.locator('.modal-footer').getByText('Run').click();
+
+			await expect(page.getByText('Test is now running.')).toBeVisible();
+
+			await page.locator('.modal-footer').getByText('Ok').click();
+		});
+
+		await test.step('Not able to Edit Experience', async () => {
+			await navigateToSitePage({
+				layout,
+				page,
+				pageName: pageTitle,
+				siteName,
+			});
+
+			await pageEditorPage.openExperienceSelector();
+
+			await expect(page.getByLabel('Edit Experience')).not.toBeVisible();
 		});
 	}
 );

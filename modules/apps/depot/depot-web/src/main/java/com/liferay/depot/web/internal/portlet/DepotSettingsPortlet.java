@@ -5,11 +5,11 @@
 
 package com.liferay.depot.web.internal.portlet;
 
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.depot.web.internal.application.controller.DepotApplicationController;
 import com.liferay.depot.web.internal.constants.DepotAdminWebKeys;
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
 import com.liferay.depot.web.internal.display.context.DepotAdminDLDisplayContext;
 import com.liferay.depot.web.internal.display.context.DepotAdminDetailsDisplayContext;
 import com.liferay.document.library.configuration.DLSizeLimitConfigurationProvider;

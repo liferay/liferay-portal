@@ -17,22 +17,16 @@ import com.liferay.headless.delivery.dto.v1_0.PageElement;
 import com.liferay.headless.delivery.dto.v1_0.PageWidgetInstanceDefinition;
 import com.liferay.headless.delivery.internal.dto.v1_0.mapper.util.StyledLayoutStructureItemUtil;
 import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructureItem;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -52,12 +46,10 @@ public class FragmentLayoutStructureItemMapper
 		InfoItemServiceRegistry infoItemServiceRegistry,
 		JSONFactory jsonFactory, LayoutLocalService layoutLocalService,
 		Portal portal, PortletLocalService portletLocalService,
+		PortletPermissionsExporter portletPermissionsExporter,
 		PortletPreferencesPortletConfigurationExporter
 			portletPreferencesPortletConfigurationExporter,
-		PortletRegistry portletRegistry,
-		ResourceActionLocalService resourceActionLocalService,
-		ResourcePermissionLocalService resourcePermissionLocalService,
-		RoleLocalService roleLocalService, TeamLocalService teamLocalService) {
+		PortletRegistry portletRegistry) {
 
 		super(infoItemServiceRegistry, portal);
 
@@ -65,10 +57,8 @@ public class FragmentLayoutStructureItemMapper
 		_jsonFactory = jsonFactory;
 
 		_widgetInstanceMapper = new WidgetInstanceMapper(
-			layoutLocalService, portal, portletLocalService,
-			portletPreferencesPortletConfigurationExporter,
-			resourceActionLocalService, resourcePermissionLocalService,
-			roleLocalService, teamLocalService);
+			layoutLocalService, portletLocalService, portletPermissionsExporter,
+			portletPreferencesPortletConfigurationExporter);
 
 		_pageFragmentInstanceDefinitionMapper =
 			new PageFragmentInstanceDefinitionMapper(
@@ -95,17 +85,10 @@ public class FragmentLayoutStructureItemMapper
 			return null;
 		}
 
-		JSONObject editableValuesJSONObject = null;
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
-		try {
-			editableValuesJSONObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
-			}
-
+		if (editableValuesJSONObject == null) {
 			return null;
 		}
 
@@ -198,9 +181,6 @@ public class FragmentLayoutStructureItemMapper
 			}
 		};
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentLayoutStructureItemMapper.class);
 
 	private final FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 	private final JSONFactory _jsonFactory;

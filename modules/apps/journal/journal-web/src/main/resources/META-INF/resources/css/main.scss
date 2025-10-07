@@ -48,6 +48,10 @@ $productMenuWidth: 320px;
 	}
 
 	.edit-article-form {
+		.ck.ck-sticky-panel__content.ck-sticky-panel__content_sticky {
+			z-index: $toolbarZIndex - 1;
+		}
+
 		.component-tbar.tbar-article {
 			height: auto;
 			left: 0;

@@ -1,0 +1,10 @@
+{
+	"name": "Customer Portal Help",
+	"name_i18n": {
+		"en_US": "Customer Portal Help",
+		"es-ES": "Ayuda del Portal del cliente",
+		"ja-JP": "カスタマーポータルのヘルプ",
+		"pt-BR": "Ajuda do Portal do Cliente"
+	},
+	"viewableBy": "Anyone"
+}

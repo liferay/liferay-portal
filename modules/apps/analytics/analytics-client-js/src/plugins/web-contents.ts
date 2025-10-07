@@ -40,10 +40,10 @@ function getWebContentPayload({dataset}: AnalyticsType.HTMLElement) {
 		});
 	}
 
-	if (dataset.analyticsAssetExternalReferenceCode) {
+	if (dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:
-				dataset.analyticsAssetExternalReferenceCode.trim(),
+				dataset.analyticsExternalReferenceCode.trim(),
 		});
 	}
 

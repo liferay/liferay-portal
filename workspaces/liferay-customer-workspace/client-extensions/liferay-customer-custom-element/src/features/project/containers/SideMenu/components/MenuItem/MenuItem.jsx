@@ -24,7 +24,8 @@ const MenuItem = ({children, iconKey, setActive, to}) => {
 	const Icon = useMemo(() => {
 		try {
 			if (iconKey) {
-				const [activeIcon, inactiveIcon] = navigationIcons[iconKey];
+				const [activeIcon, inactiveIcon] = navigationIcons[iconKey]
+					|| navigationIcons['liferay'];
 
 				return isActive ? activeIcon : inactiveIcon;
 			}

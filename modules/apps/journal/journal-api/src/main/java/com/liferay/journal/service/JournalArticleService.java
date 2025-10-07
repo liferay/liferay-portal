@@ -1288,6 +1288,10 @@ public interface JournalArticleService extends BaseService {
 	public void restoreArticleFromTrash(long groupId, String articleId)
 		throws PortalException;
 
+	public JournalArticle revertArticle(
+			long groupId, String articleId, double version)
+		throws PortalException;
+
 	public void subscribe(long groupId, long articleId) throws PortalException;
 
 	/**

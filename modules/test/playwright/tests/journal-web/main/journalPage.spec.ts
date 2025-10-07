@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {createCategories} from '../../../helpers/CreateCategories';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 import getDataStructureDefinition from './utils/getDataStructureDefinition';
@@ -210,15 +211,13 @@ test(
 );
 
 test(
-	'Latest version of Web Content should not have delete option',
-	{
-		tag: '@LPD-52126',
-	},
+	'Delete option should not be available when there is only one version available',
+	{tag: '@LPD-65083'},
 	async ({apiHelpers, journalPage, page, site}) => {
 		const basicWebContentStructureId =
 			await getBasicWebContentStructureId(apiHelpers);
 
-		await apiHelpers.jsonWebServicesJournal.addWebContent({
+		const article = await apiHelpers.jsonWebServicesJournal.addWebContent({
 			ddmStructureId: basicWebContentStructureId,
 			groupId: site.id,
 			titleMap: {en_US: 'Basic Web content'},
@@ -236,9 +235,23 @@ test(
 			page.getByRole('menuitem', {name: 'Delete'})
 		).not.toBeVisible();
 
-		await page.locator('.management-bar input[type="checkbox"]').click();
+		await apiHelpers.jsonWebServicesJournal.editWebContent(
+			{title: 'Updated Basic Web content'},
+			site.id,
+			article
+		);
 
-		await expect(page.getByRole('button', {name: 'Delete'})).toBeDisabled();
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await page.getByRole('button', {name: 'Actions'}).click();
+
+		await page.getByRole('menuitem', {name: 'View History'}).click();
+
+		await page.getByRole('button', {name: 'Actions'}).first().click();
+
+		await expect(
+			page.getByRole('menuitem', {name: 'Delete'})
+		).toBeVisible();
 	}
 );
 
@@ -435,5 +448,101 @@ test(
 			.filter({hasText: 'Folder'})
 			.all();
 		expect(foldersList.length).toBe(12);
+	}
+);
+
+test(
+	'Permissions dialog is launched with the roles list visible',
+	{
+		tag: '@LPD-63441',
+	},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		for (let i = 1; i <= 2; i++) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: `Web Content ${i}`},
+			});
+		}
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		const checkboxes = page.locator(
+			'input[type="checkbox"][name="_com_liferay_journal_web_portlet_JournalPortlet_rowIdsJournalArticle"]'
+		);
+
+		const count = await checkboxes.count();
+
+		for (let i = 0; i < count; i++) {
+			await checkboxes.nth(i).check();
+		}
+
+		await page.getByTitle('Actions', {exact: true}).click();
+
+		const permissionsButton = page.locator(
+			'button[data-action="changePermissions"]',
+			{hasText: 'Permissions'}
+		);
+
+		await permissionsButton.click();
+
+		const permissionsFrame = page.frameLocator(
+			'iframe[title*="Permissions"]'
+		);
+
+		const guestTd = permissionsFrame.locator('td.lfr-role-column', {
+			hasText: 'Guest',
+		});
+
+		await guestTd.waitFor({state: 'attached', timeout: 10000});
+
+		await expect(guestTd).toBeVisible();
+	}
+);
+
+test(
+	'Web Content Category Filter shows public categories only',
+	{
+		tag: '@LPP-60943',
+	},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		for (let i = 1; i <= 2; i++) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId: basicWebContentStructureId,
+				groupId: site.id,
+				titleMap: {en_US: `Web Content ${i}`},
+			});
+		}
+
+		const vocabularyName = 'Private Vocabulary 1';
+		const internalCategoryName = 'Internal Category 1';
+
+		await createCategories({
+			apiHelpers,
+			categoryNames: [{name: internalCategoryName}],
+			siteId: site.id,
+			vocabularyName,
+			vocabularyVisibility: true,
+		});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await page.getByLabel('Filter', {exact: true}).click();
+
+		await page.getByRole('menuitem', {name: 'Categories'}).click();
+
+		const categoriesFrame = page.frameLocator(
+			'iframe[title*="Filter by Categories"]'
+		);
+
+		await expect(
+			categoriesFrame.locator('text=' + vocabularyName)
+		).toHaveCount(0);
 	}
 );

@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay REST Builder project by generating an API and implementation module.
 Bundle-Name: Liferay Project Templates REST Builder
 Bundle-SymbolicName: com.liferay.project.templates.rest.builder
-Bundle-Version: 1.0.111
+Bundle-Version: 1.0.113
 Liferay-Versions: [7.1,9999.0)
 -removeheaders:\
 	Import-Package,\

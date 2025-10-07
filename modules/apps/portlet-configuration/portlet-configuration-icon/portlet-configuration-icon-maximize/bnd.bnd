@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portlet Configuration Icon Maximize
 Bundle-SymbolicName: com.liferay.portlet.configuration.icon.maximize
-Bundle-Version: 6.0.16
+Bundle-Version: 6.0.17
 Web-ContextPath: /portlet-configuration-icon-maximize

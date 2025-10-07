@@ -42,13 +42,13 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface OverviewResource {
 
 	public Overview getContentOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public Overview getFileOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

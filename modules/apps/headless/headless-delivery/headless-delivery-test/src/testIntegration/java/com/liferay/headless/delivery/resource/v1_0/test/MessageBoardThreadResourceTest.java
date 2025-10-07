@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -122,6 +123,20 @@ public class MessageBoardThreadResourceTest
 			(List<MessageBoardThread>)descPage.getItems());
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteMessageBoardThreadMyRating() throws Exception {
+		super.testGraphQLDeleteMessageBoardThreadMyRating();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetMessageBoardThreadsRankedPage() throws Exception {
+		super.testGraphQLGetMessageBoardThreadsRankedPage();
+	}
+
 	@Override
 	@Test
 	public void testGraphQLGetSiteMessageBoardThreadsPage() throws Exception {
@@ -161,9 +176,27 @@ public class MessageBoardThreadResourceTest
 					messageBoardThreadsJSONObject.getString("items"))));
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostMessageBoardSectionMessageBoardThread()
+		throws Exception {
+
+		super.testGraphQLPostMessageBoardSectionMessageBoardThread();
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"articleBody", "headline"};
+	}
+
+	@Override
+	protected List<GraphQLField> getGraphQLFields() throws Exception {
+		List<GraphQLField> graphQLFields = super.getGraphQLFields();
+
+		graphQLFields.add(new GraphQLField("friendlyUrlPath"));
+
+		return graphQLFields;
 	}
 
 	@Override

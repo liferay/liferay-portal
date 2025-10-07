@@ -10,5 +10,4 @@ ON
  (tempMainTable.ctCollectionId = 0 OR tempMainTable.ctCollectionId IS NULL)
 WHERE
  tempMainTable.mainTableId IS NULL AND
- (MainTable.ctCollectionId = 0 OR MainTable.ctCollectionId IS NULL) AND
- (tempMainTable.ctCollectionId = 0 OR tempMainTable.ctCollectionId IS NULL)
+ (MainTable.ctCollectionId = 0 OR MainTable.ctCollectionId IS NULL)

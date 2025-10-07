@@ -25,7 +25,7 @@ dependencies {
 	implementation group: "com.liferay", name: "com.liferay.client.extension.util.spring.boot3", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"
 	implementation group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
-	implementation group: "org.apache.commons", name: "commons-lang3", version: "3.12.0"
+	implementation group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	implementation group: "org.json", name: "json", version: "20231013"
 	implementation group: "org.springframework.boot", name: "spring-boot-starter-oauth2-resource-server", version: "2.7.18"
 	implementation group: "org.springframework.boot", name: "spring-boot-starter-web", version: "2.7.18"

@@ -200,7 +200,6 @@ public class EditRolePermissionsNavigationDisplayContext {
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
 			if (objectDefinition.isApproved() &&
-				!objectDefinition.isRootDescendantNode() &&
 				!objectDefinition.isUnmodifiableSystemObject() &&
 				Validator.isNull(objectDefinition.getPanelCategoryKey())) {
 

@@ -667,6 +667,13 @@ public class LayoutLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.Map<Layout, Layout> fetchDraftLayouts(
+		java.util.List<Layout> layouts) {
+
+		return _layoutLocalService.fetchDraftLayouts(layouts);
+	}
+
+	@Override
 	public Layout fetchFirstLayout(
 		long groupId, boolean privateLayout, long parentLayoutId) {
 
@@ -1504,6 +1511,16 @@ public class LayoutLocalServiceWrapper
 	@Override
 	public long getNextLayoutId(long groupId, boolean privateLayout) {
 		return _layoutLocalService.getNextLayoutId(groupId, privateLayout);
+	}
+
+	@Override
+	public Layout getOrAddEmptyLayout(
+			String externalReferenceCode, long userId, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return _layoutLocalService.getOrAddEmptyLayout(
+			externalReferenceCode, userId, groupId, serviceContext);
 	}
 
 	/**

@@ -7,13 +7,7 @@ package com.liferay.sample;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,15 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReadyRestController extends BaseRestController {
 
 	@GetMapping
-	public String get(
-		@AuthenticationPrincipal Jwt jwt, @RequestBody String json) {
-
-		log(jwt, _log, json);
-
+	public String get() {
 		return "READY";
 	}
-
-	private static final Log _log = LogFactory.getLog(
-		ReadyRestController.class);
 
 }

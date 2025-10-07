@@ -10,8 +10,10 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.model.FragmentEntryLinkModel;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.model.CacheModel;
@@ -28,6 +30,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -1171,6 +1175,26 @@ public class FragmentEntryLinkModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	public com.liferay.portal.kernel.json.JSONObject
+		getConfigurationJSONObject() {
+
+		return null;
+	}
+
+	public void setConfigurationJSONObject(
+		com.liferay.portal.kernel.json.JSONObject configurationJSONObject) {
+	}
+
+	public com.liferay.portal.kernel.json.JSONObject
+		getEditableValuesJSONObject() {
+
+		return null;
+	}
+
+	public void setEditableValuesJSONObject(
+		com.liferay.portal.kernel.json.JSONObject editableValuesJSONObject) {
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1602,6 +1626,21 @@ public class FragmentEntryLinkModelImpl
 			fragmentEntryLinkCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		try {
+			fragmentEntryLinkCacheModel.configurationJSONObject =
+				(com.liferay.portal.kernel.json.JSONObject)
+					_configurationJSONObjectMethodHandle.invokeExact(
+						(FragmentEntryLinkImpl)this);
+
+			fragmentEntryLinkCacheModel.editableValuesJSONObject =
+				(com.liferay.portal.kernel.json.JSONObject)
+					_editableValuesJSONObjectMethodHandle.invokeExact(
+						(FragmentEntryLinkImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return fragmentEntryLinkCacheModel;
 	}
 
@@ -1843,6 +1882,66 @@ public class FragmentEntryLinkModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected static final BiConsumer
+		<FragmentEntryLink, com.liferay.portal.kernel.json.JSONObject>
+			configurationJSONObjectUpdateEntityCacheBiConsumer =
+				(fragmentEntryLink, configurationJSONObject) -> {
+					FragmentEntryLinkCacheModel fragmentEntryLinkCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							FragmentEntryLinkImpl.class,
+							fragmentEntryLink.getPrimaryKey(),
+							FragmentEntryLinkCacheModel.class);
+
+					if ((fragmentEntryLinkCacheModel != null) &&
+						(fragmentEntryLinkCacheModel.getMvccVersion() ==
+							fragmentEntryLink.getMvccVersion())) {
+
+						fragmentEntryLinkCacheModel.configurationJSONObject =
+							configurationJSONObject;
+					}
+				};
+
+	private static final MethodHandle _configurationJSONObjectMethodHandle;
+
+	protected static final BiConsumer
+		<FragmentEntryLink, com.liferay.portal.kernel.json.JSONObject>
+			editableValuesJSONObjectUpdateEntityCacheBiConsumer =
+				(fragmentEntryLink, editableValuesJSONObject) -> {
+					FragmentEntryLinkCacheModel fragmentEntryLinkCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							FragmentEntryLinkImpl.class,
+							fragmentEntryLink.getPrimaryKey(),
+							FragmentEntryLinkCacheModel.class);
+
+					if ((fragmentEntryLinkCacheModel != null) &&
+						(fragmentEntryLinkCacheModel.getMvccVersion() ==
+							fragmentEntryLink.getMvccVersion())) {
+
+						fragmentEntryLinkCacheModel.editableValuesJSONObject =
+							editableValuesJSONObject;
+					}
+				};
+
+	private static final MethodHandle _editableValuesJSONObjectMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_configurationJSONObjectMethodHandle = lookup.findGetter(
+				FragmentEntryLinkImpl.class, "_configurationJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+
+			_editableValuesJSONObjectMethodHandle = lookup.findGetter(
+				FragmentEntryLinkImpl.class, "_editableValuesJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private FragmentEntryLink _escapedModel;
 
 }

@@ -231,153 +231,9 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8138 | Test Summary: Delete a static segment"
-	@priority = 5
-	test CanDeleteStaticSegment {
-		property test.run.type = "single";
-
-		var propertyName = ACDXPSettings.connectDXPtoAnalyticsCloud(siteName = "Site Name");
-
-		JSONUser.addUser(
-			userEmailAddress = "ac@liferay.com",
-			userFirstName = "ac",
-			userLastName = "ac",
-			userScreenName = "ac");
-
-		ACDXPSettings.syncNewContactData();
-
-		ACUtils.navigateToSitePageWithUser(
-			actionType = "View WC",
-			documentTitleList = "1,2,3,4",
-			emailList = "ac@liferay.com",
-			pageName = "AC Page",
-			siteName = "Site Name");
-
-		ACUtils.closeAllSessionsAndWait();
-
-		ACUtils.launchAC();
-
-		ACProperties.switchProperty(propertyName = ${propertyName});
-
-		ACNavigation.goToSegments();
-
-		ACSegments.createStaticSegment();
-
-		ACUtils.setItemName(itemName = "Static Segment Test");
-
-		ACSegments.addStaticMember(tableMember = "ac ac");
-
-		ACSegments.saveSegment();
-
-		AssertTextEquals(
-			locator1 = "ACSegments#SEGMENT_LABEL",
-			value1 = "STATIC SEGMENT");
-
-		ACNavigation.goToSegments();
-
-		ACSegments.viewSegmentName(searchTerm = "Static Segment Test");
-
-		ACSegments.deleteSegment(searchTerm = "Static Segment Test");
-
-		ACSegments.viewDeletedSegmentName(searchTerm = "Static Segment Test");
-	}
-
-	@description = "Bug: LRAC-10247 | Automation ID: LRAC-10247 | Test Summary: Deleting a static segment does not remove user in known individuals"
-	@priority = 5
-	test CheckIfKnownIndividualsDontDisappearAfterDeleteStaticSegment {
-		property test.run.type = "single";
-
-		task ("Connect the DXP to AC") {
-			ACDXPSettings.connectDXPtoAnalyticsCloud(siteName = "Site Name");
-		}
-
-		task ("Add a new user") {
-			JSONUser.addUser(
-				userEmailAddress = "ac@liferay.com",
-				userFirstName = "ac",
-				userLastName = "ac",
-				userScreenName = "ac");
-		}
-
-		task ("Sync the Contact Data") {
-			ACDXPSettings.syncNewContactData();
-		}
-
-		task ("Sign in as new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "ac@liferay.com",
-				userLoginFullName = "ac ac");
-		}
-
-		task ("View the site page") {
-			ACUtils.navigateToSitePage(
-				actionType = "View WC",
-				documentTitleList = "1,2,3,4",
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Close sessions") {
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		task ("Go to Segments and add a new segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-
-			ACUtils.setItemName(itemName = "Static Segment Test");
-
-			ACSegments.addStaticMember(tableMember = "ac ac");
-
-			ACSegments.saveSegment();
-		}
-
-		task ("Delete the segment via Segment List") {
-			ACNavigation.goToSegments();
-
-			ACSegments.viewSegmentName(searchTerm = "Static Segment Test");
-
-			ACSegments.deleteSegment(searchTerm = "Static Segment Test");
-
-			ACSegments.viewDeletedSegmentName(searchTerm = "Static Segment Test");
-		}
-
-		task ("Go to Individual > Known Individuals") {
-			ACNavigation.goToIndividuals();
-
-			ACIndividualsDashboard.goToKnownIndividualsTab();
-		}
-
-		task ("Search for user") {
-			ACUtils.searchBar(searchItem = "ac ac");
-
-			ACIndividualsDashboard.assertIndividualAttribute(key_individualAttribute = "ac ac");
-		}
-
-		task ("Go to Segments and add a new segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-
-			ACUtils.setItemName(itemName = "Static Segment Test");
-
-			ACSegments.addStaticMember(tableMember = "ac ac");
-
-			ACSegments.saveSegment();
-		}
-	}
-
 	@description = "Bug: LRAC-8239 | Automation ID: LRAC-11536 | Test Summary: Delete a segment in edit mode"
 	@priority = 2
 	test DeleteSegmentInEditMode {
-		var staticSegmentName = "New Static Segment";
 		var dynamicSegmentName = "New Dynamic Segment";
 
 		task ("Create a blog and add to a page and then connect AC and DXP") {
@@ -400,33 +256,9 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
-		task ("Go to segments and create a static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-
-			ACUtils.setItemName(itemName = ${staticSegmentName});
-
-			ACSegments.addStaticMember(tableMember = "Test Test");
-
-			ACSegments.saveSegment();
-		}
-
-		task ("Edit the static segment, don't save the changes and then delete it, assert that the segment is not in the list") {
-			ACNavigation.goToSegments();
-
-			ACSegments.editSegment(segmentName = ${staticSegmentName});
-
-			ACSegments.removeStaticMember(tableMember = "Test Test");
-
-			ACUtils.clickAnyButton(button = "Delete Segment");
-
-			ACUtils.clickAnyButton(button = "Delete");
-
-			ACSegments.viewDeletedSegmentName(searchTerm = ${staticSegmentName});
-		}
-
 		task ("Create a dynamic segment") {
+			ACNavigation.goToSegments();
+
 			ACSegments.createDynamicSegment();
 
 			ACUtils.setItemName(itemName = ${dynamicSegmentName});

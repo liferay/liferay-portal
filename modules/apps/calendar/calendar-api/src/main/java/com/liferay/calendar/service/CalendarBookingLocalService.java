@@ -279,6 +279,10 @@ public interface CalendarBookingLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CalendarBooking fetchCalendarBooking(String uuid, long groupId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CalendarBooking fetchCalendarBookingByExternalReferenceCode(
+		String externalReferenceCode, long groupId);
+
 	/**
 	 * Returns the calendar booking matching the UUID and group.
 	 *
@@ -307,6 +311,11 @@ public interface CalendarBookingLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CalendarBooking getCalendarBooking(
 			long calendarId, long parentCalendarBookingId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CalendarBooking getCalendarBookingByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
 		throws PortalException;
 
 	/**

@@ -16,7 +16,7 @@
 			<plugin>
 				<groupId>com.liferay</groupId>
 				<artifactId>com.liferay.lang.builder</artifactId>
-				<version>1.0.57</version>
+				<version>1.0.58</version>
 				<configuration>
 					<langDirName>.</langDirName>
 					<translateClientId>${microsoft.translator.client.id}</translateClientId>

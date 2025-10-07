@@ -276,6 +276,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SHOW_HIDEABLE_TOGGLE_SWITCH</td>
+	<td>//input[contains(@id,'showHideable')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TEMPLATE_OPTION</td>
 	<td>//div[label[contains(.,'Template')]]/select</td>
 	<td></td>

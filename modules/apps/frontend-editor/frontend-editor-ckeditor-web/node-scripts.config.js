@@ -4,6 +4,10 @@
  */
 
 module.exports = {
+	alias: {
+		'@ckeditor/ckeditor5-icons/dist/index.js':
+			'./src/main/resources/META-INF/resources/js/ckeditor5/icons.ts',
+	},
 	exports: [
 		'@ckeditor/ckeditor5-react',
 		'ckeditor5',
@@ -17,12 +21,14 @@ module.exports = {
 			'BlockQuote',
 			'BlockToolbar',
 			'Bold',
+			'Bookmark',
 			'ButtonView',
 			'ClassicEditor',
 			'Command',
 			'EditorConfig',
 			'Essentials',
 			'Font',
+			'Fullscreen',
 			'GeneralHtmlSupport',
 			'Heading',
 			'HorizontalLine',
@@ -40,6 +46,7 @@ module.exports = {
 			'List',
 			'MediaEmbed',
 			'Paragraph',
+			'PasteFromOffice',
 			'Plugin',
 			'RemoveFormat',
 			'SourceEditing',
@@ -50,7 +57,6 @@ module.exports = {
 			'TableProperties',
 			'TableToolbar',
 			'Underline',
-			'icons',
 		],
 	},
 };

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+/* eslint-env jest */
+
+jest.mock('ckeditor5', () => ({
+	Plugin: () => {},
+}));
+
 window.themeDisplay = {
 	...window.themeDisplay,
 	getDefaultLanguageId: () => 'en_US',

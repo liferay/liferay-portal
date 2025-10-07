@@ -413,6 +413,26 @@ export class HeadlessAdminUserApiHelper {
 		);
 	}
 
+	async getUserGroupByName(name: string) {
+		const response = await this.getUserGroups(name);
+
+		const userGroups = response.items || [];
+
+		for (const userGroup of userGroups as TRole[]) {
+			if (userGroup.name.toLowerCase() === name.toLowerCase()) {
+				return userGroup;
+			}
+		}
+
+		return null;
+	}
+
+	async getUserGroups(search: string) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/user-groups?search=${search}`
+		);
+	}
+
 	async patchUserAccount(
 		userAccount?: TUserAccount,
 		patchedUserAccount?: DataObject

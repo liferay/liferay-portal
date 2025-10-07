@@ -1,0 +1,50 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "label",
+					"localizable": true,
+					"name": "label",
+					"type": "text"
+				},
+				{
+					"defaultValue": true,
+					"label": "show-account-image",
+					"name": "showAccountImage",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				},
+				{
+					"defaultValue": true,
+					"label": "show-account-info",
+					"name": "showAccountInfo",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				},
+				{
+					"defaultValue": true,
+					"label": "show-button-icon",
+					"name": "showButtonIcon",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				},
+				{
+					"defaultValue": true,
+					"label": "show-order-info",
+					"name": "showOrderInfo",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				}
+			]
+		}
+	]
+}

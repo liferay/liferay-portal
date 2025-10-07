@@ -1,0 +1,2744 @@
+{
+	"availableLanguageIds": [
+		"ar_SA",
+		"ca_ES",
+		"de_DE",
+		"en_US",
+		"es_ES",
+		"fi_FI",
+		"fr_FR",
+		"hu_HU",
+		"ja_JP",
+		"nl_NL",
+		"pt_BR",
+		"sv_SE",
+		"zh_CN"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "logotipoFieldSet",
+				"rows": [
+					{
+						"columns": [
+							{
+								"fields": [
+									"logotipo"
+								],
+								"size": 12
+							}
+						]
+					},
+					{
+						"columns": [
+							{
+								"fields": [
+									"imagen"
+								],
+								"size": 12
+							}
+						]
+					},
+					{
+						"columns": [
+							{
+								"fields": [
+									"enlace_logotipoFieldSet"
+								],
+								"size": 12
+							}
+						]
+					}
+				],
+				"upgradedStructure": false
+			},
+			"defaultValue": {
+			},
+			"fieldType": "fieldset",
+			"indexable": false,
+			"label": {
+				"es_ES": ""
+			},
+			"localizable": false,
+			"name": "logotipoFieldSet",
+			"nestedDataDefinitionFields": [
+				{
+					"customProperties": {
+						"dataType": "",
+						"fieldNamespace": "",
+						"fieldReference": "logotipo",
+						"style": {
+						}
+					},
+					"defaultValue": {
+						"es_ES": ""
+					},
+					"fieldType": "separator",
+					"indexType": "keyword",
+					"indexable": true,
+					"label": {
+						"es_ES": "logotipo"
+					},
+					"localizable": true,
+					"name": "logotipo",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"es_ES": ""
+					}
+				},
+				{
+					"customProperties": {
+						"dataType": "image",
+						"fieldNamespace": "",
+						"fieldReference": "imagen",
+						"visibilityExpression": ""
+					},
+					"defaultValue": {
+						"es_ES": ""
+					},
+					"fieldType": "image",
+					"indexType": "text",
+					"indexable": true,
+					"label": {
+						"es_ES": "imagen"
+					},
+					"localizable": true,
+					"name": "imagen",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"es_ES": ""
+					}
+				},
+				{
+					"customProperties": {
+						"collapsible": false,
+						"ddmStructureId": "",
+						"ddmStructureLayoutId": "",
+						"fieldReference": "enlace_logotipoFieldSet",
+						"rows": [
+							{
+								"columns": [
+									{
+										"fields": [
+											"enlace_logotipo"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"enlace_exterior"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"enlace_interior"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"target_logotipo"
+										],
+										"size": 12
+									}
+								]
+							}
+						],
+						"upgradedStructure": false
+					},
+					"defaultValue": {
+					},
+					"fieldType": "fieldset",
+					"indexable": false,
+					"label": {
+						"es_ES": ""
+					},
+					"localizable": false,
+					"name": "enlace_logotipoFieldSet",
+					"nestedDataDefinitionFields": [
+						{
+							"customProperties": {
+								"dataType": "",
+								"fieldNamespace": "",
+								"fieldReference": "enlace_logotipo",
+								"style": {
+								}
+							},
+							"defaultValue": {
+								"es_ES": ""
+							},
+							"fieldType": "separator",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "enlace_logotipo"
+							},
+							"localizable": true,
+							"name": "enlace_logotipo",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						},
+						{
+							"customProperties": {
+								"autocomplete": false,
+								"dataSourceType": "manual",
+								"dataType": "string",
+								"ddmDataProviderInstanceId": [
+								],
+								"ddmDataProviderInstanceOutput": [
+								],
+								"displayStyle": "singleline",
+								"fieldNamespace": "",
+								"fieldReference": "enlace_exterior",
+								"options": {
+									"es_ES": [
+										{
+											"label": "Option",
+											"reference": "",
+											"value": "Option"
+										}
+									]
+								},
+								"placeholder": {
+									"es_ES": ""
+								},
+								"tooltip": {
+									"es_ES": ""
+								},
+								"visibilityExpression": ""
+							},
+							"defaultValue": {
+								"es_ES": ""
+							},
+							"fieldType": "text",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "enlace_exterior"
+							},
+							"localizable": true,
+							"name": "enlace_exterior",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						},
+						{
+							"customProperties": {
+								"autocomplete": false,
+								"dataSourceType": "manual",
+								"dataType": "string",
+								"ddmDataProviderInstanceId": [
+								],
+								"ddmDataProviderInstanceOutput": [
+								],
+								"displayStyle": "singleline",
+								"fieldNamespace": "",
+								"fieldReference": "enlace_interior",
+								"options": {
+									"es_ES": [
+										{
+											"label": "Option",
+											"reference": "",
+											"value": "Option"
+										}
+									]
+								},
+								"placeholder": {
+									"es_ES": ""
+								},
+								"tooltip": {
+									"es_ES": ""
+								},
+								"visibilityExpression": ""
+							},
+							"defaultValue": {
+								"es_ES": ""
+							},
+							"fieldType": "text",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "enlace_interior"
+							},
+							"localizable": true,
+							"name": "enlace_interior",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						},
+						{
+							"customProperties": {
+								"dataSourceType": [
+									"manual"
+								],
+								"dataType": "string",
+								"ddmDataProviderInstanceId": [
+								],
+								"ddmDataProviderInstanceOutput": [
+								],
+								"fieldNamespace": "",
+								"fieldReference": "target_logotipo",
+								"multiple": false,
+								"options": {
+									"es_ES": [
+										{
+											"label": "_self",
+											"reference": "_self",
+											"value": "_self"
+										},
+										{
+											"label": "_blank",
+											"reference": "_blank",
+											"value": "_blank"
+										},
+										{
+											"label": "_lightbox",
+											"reference": "_lightbox",
+											"value": "_lightbox"
+										}
+									]
+								},
+								"visibilityExpression": ""
+							},
+							"defaultValue": {
+								"es_ES": [
+									""
+								]
+							},
+							"fieldType": "select",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "target_logotipo"
+							},
+							"localizable": true,
+							"name": "target_logotipo",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						}
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": false,
+					"tip": {
+					}
+				}
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": false,
+			"tip": {
+			}
+		},
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "menuFieldSet",
+				"rows": [
+					{
+						"columns": [
+							{
+								"fields": [
+									"menu"
+								],
+								"size": 12
+							}
+						]
+					},
+					{
+						"columns": [
+							{
+								"fields": [
+									"opcionFieldSet"
+								],
+								"size": 12
+							}
+						]
+					}
+				],
+				"upgradedStructure": false
+			},
+			"defaultValue": {
+			},
+			"fieldType": "fieldset",
+			"indexable": false,
+			"label": {
+				"es_ES": ""
+			},
+			"localizable": false,
+			"name": "menuFieldSet",
+			"nestedDataDefinitionFields": [
+				{
+					"customProperties": {
+						"dataType": "",
+						"fieldNamespace": "",
+						"fieldReference": "menu",
+						"style": {
+						}
+					},
+					"defaultValue": {
+						"es_ES": ""
+					},
+					"fieldType": "separator",
+					"indexType": "keyword",
+					"indexable": true,
+					"label": {
+						"es_ES": "menu"
+					},
+					"localizable": true,
+					"name": "menu",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"es_ES": ""
+					}
+				},
+				{
+					"customProperties": {
+						"collapsible": false,
+						"ddmStructureId": "",
+						"ddmStructureLayoutId": "",
+						"fieldReference": "opcionFieldSet",
+						"rows": [
+							{
+								"columns": [
+									{
+										"fields": [
+											"opcion"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"simple_dropdown"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"texto_opcionFieldSet"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"liga_opcionFieldSet"
+										],
+										"size": 12
+									}
+								]
+							},
+							{
+								"columns": [
+									{
+										"fields": [
+											"subopcionFieldSet"
+										],
+										"size": 12
+									}
+								]
+							}
+						],
+						"upgradedStructure": false
+					},
+					"defaultValue": {
+					},
+					"fieldType": "fieldset",
+					"indexable": false,
+					"label": {
+						"es_ES": ""
+					},
+					"localizable": false,
+					"name": "opcionFieldSet",
+					"nestedDataDefinitionFields": [
+						{
+							"customProperties": {
+								"dataType": "",
+								"fieldNamespace": "",
+								"fieldReference": "opcion",
+								"style": {
+								}
+							},
+							"defaultValue": {
+								"es_ES": ""
+							},
+							"fieldType": "separator",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "opcion"
+							},
+							"localizable": true,
+							"name": "opcion",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						},
+						{
+							"customProperties": {
+								"dataType": "boolean",
+								"fieldReference": "simple_dropdown"
+							},
+							"defaultValue": {
+								"es_ES": "false"
+							},
+							"fieldType": "checkbox",
+							"indexType": "keyword",
+							"indexable": true,
+							"label": {
+								"es_ES": "simple_dropdown"
+							},
+							"localizable": true,
+							"name": "simple_dropdown",
+							"nestedDataDefinitionFields": [
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": true,
+							"tip": {
+								"es_ES": ""
+							}
+						},
+						{
+							"customProperties": {
+								"collapsible": false,
+								"ddmStructureId": "",
+								"ddmStructureLayoutId": "",
+								"fieldReference": "texto_opcionFieldSet",
+								"rows": [
+									{
+										"columns": [
+											{
+												"fields": [
+													"texto_opcion"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"class"
+												],
+												"size": 12
+											}
+										]
+									}
+								],
+								"upgradedStructure": false
+							},
+							"defaultValue": {
+							},
+							"fieldType": "fieldset",
+							"indexable": false,
+							"label": {
+								"es_ES": ""
+							},
+							"localizable": false,
+							"name": "texto_opcionFieldSet",
+							"nestedDataDefinitionFields": [
+								{
+									"customProperties": {
+										"autocomplete": false,
+										"dataSourceType": "manual",
+										"dataType": "string",
+										"ddmDataProviderInstanceId": [
+										],
+										"ddmDataProviderInstanceOutput": [
+										],
+										"displayStyle": "singleline",
+										"fieldNamespace": "",
+										"fieldReference": "texto_opcion",
+										"options": {
+											"es_ES": [
+												{
+													"label": "Option",
+													"reference": "",
+													"value": "Option"
+												}
+											]
+										},
+										"placeholder": {
+											"es_ES": ""
+										},
+										"tooltip": {
+											"es_ES": ""
+										},
+										"visibilityExpression": ""
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "text",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "texto_opcion"
+									},
+									"localizable": true,
+									"name": "texto_opcion",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"autocomplete": false,
+										"dataSourceType": "manual",
+										"dataType": "string",
+										"ddmDataProviderInstanceId": [
+										],
+										"ddmDataProviderInstanceOutput": [
+										],
+										"displayStyle": "singleline",
+										"fieldNamespace": "",
+										"fieldReference": "class",
+										"options": {
+											"es_ES": [
+												{
+													"label": "Option",
+													"reference": "",
+													"value": "Option"
+												}
+											]
+										},
+										"placeholder": {
+											"es_ES": ""
+										},
+										"tooltip": {
+											"es_ES": ""
+										},
+										"visibilityExpression": ""
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "text",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "class"
+									},
+									"localizable": true,
+									"name": "class",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								}
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": false,
+							"tip": {
+							}
+						},
+						{
+							"customProperties": {
+								"collapsible": false,
+								"ddmStructureId": "",
+								"ddmStructureLayoutId": "",
+								"fieldReference": "liga_opcionFieldSet",
+								"rows": [
+									{
+										"columns": [
+											{
+												"fields": [
+													"liga_opcion"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"externa"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"interna"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"target_opcion"
+												],
+												"size": 12
+											}
+										]
+									}
+								],
+								"upgradedStructure": false
+							},
+							"defaultValue": {
+							},
+							"fieldType": "fieldset",
+							"indexable": false,
+							"label": {
+								"es_ES": ""
+							},
+							"localizable": false,
+							"name": "liga_opcionFieldSet",
+							"nestedDataDefinitionFields": [
+								{
+									"customProperties": {
+										"dataType": "",
+										"fieldNamespace": "",
+										"fieldReference": "liga_opcion",
+										"style": {
+										}
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "separator",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "liga_opcion"
+									},
+									"localizable": true,
+									"name": "liga_opcion",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"autocomplete": false,
+										"dataSourceType": "manual",
+										"dataType": "string",
+										"ddmDataProviderInstanceId": [
+										],
+										"ddmDataProviderInstanceOutput": [
+										],
+										"displayStyle": "singleline",
+										"fieldNamespace": "",
+										"fieldReference": "externa",
+										"options": {
+											"es_ES": [
+												{
+													"label": "Option",
+													"reference": "",
+													"value": "Option"
+												}
+											]
+										},
+										"placeholder": {
+											"es_ES": ""
+										},
+										"tooltip": {
+											"es_ES": ""
+										},
+										"visibilityExpression": ""
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "text",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "externa"
+									},
+									"localizable": true,
+									"name": "externa",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"dataType": "link-to-page",
+										"fieldNamespace": "",
+										"fieldReference": "interna"
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "link_to_layout",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "interna"
+									},
+									"localizable": true,
+									"name": "interna",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"dataSourceType": [
+											"manual"
+										],
+										"dataType": "string",
+										"ddmDataProviderInstanceId": [
+										],
+										"ddmDataProviderInstanceOutput": [
+										],
+										"fieldNamespace": "",
+										"fieldReference": "target_opcion",
+										"multiple": false,
+										"options": {
+											"es_ES": [
+												{
+													"label": "_self",
+													"reference": "_self",
+													"value": "_self"
+												},
+												{
+													"label": "_blank",
+													"reference": "_blank",
+													"value": "_blank"
+												},
+												{
+													"label": "_lightbox",
+													"reference": "_lightbox",
+													"value": "_lightbox"
+												}
+											]
+										},
+										"visibilityExpression": ""
+									},
+									"defaultValue": {
+										"es_ES": [
+											""
+										]
+									},
+									"fieldType": "select",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "target_opcion"
+									},
+									"localizable": true,
+									"name": "target_opcion",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								}
+							],
+							"readOnly": false,
+							"repeatable": false,
+							"required": false,
+							"showLabel": false,
+							"tip": {
+							}
+						},
+						{
+							"customProperties": {
+								"collapsible": false,
+								"ddmStructureId": "",
+								"ddmStructureLayoutId": "",
+								"fieldReference": "subopcionFieldSet",
+								"rows": [
+									{
+										"columns": [
+											{
+												"fields": [
+													"subopcion"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"texto_subopcion"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"liga_subopcionFieldSet"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"conjunto_subsubopcionFieldSet"
+												],
+												"size": 12
+											}
+										]
+									},
+									{
+										"columns": [
+											{
+												"fields": [
+													"menu_descripcionFieldSet"
+												],
+												"size": 12
+											}
+										]
+									}
+								],
+								"upgradedStructure": false
+							},
+							"defaultValue": {
+							},
+							"fieldType": "fieldset",
+							"indexable": false,
+							"label": {
+								"es_ES": ""
+							},
+							"localizable": false,
+							"name": "subopcionFieldSet",
+							"nestedDataDefinitionFields": [
+								{
+									"customProperties": {
+										"dataType": "",
+										"fieldNamespace": "",
+										"fieldReference": "subopcion",
+										"style": {
+										}
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "separator",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "subopcion"
+									},
+									"localizable": true,
+									"name": "subopcion",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"autocomplete": false,
+										"dataSourceType": "manual",
+										"dataType": "string",
+										"ddmDataProviderInstanceId": [
+										],
+										"ddmDataProviderInstanceOutput": [
+										],
+										"displayStyle": "singleline",
+										"fieldNamespace": "",
+										"fieldReference": "texto_subopcion",
+										"options": {
+											"es_ES": [
+												{
+													"label": "Option",
+													"reference": "",
+													"value": "Option"
+												}
+											]
+										},
+										"placeholder": {
+											"es_ES": ""
+										},
+										"tooltip": {
+											"es_ES": ""
+										},
+										"visibilityExpression": ""
+									},
+									"defaultValue": {
+										"es_ES": ""
+									},
+									"fieldType": "text",
+									"indexType": "keyword",
+									"indexable": true,
+									"label": {
+										"es_ES": "texto_subopcion"
+									},
+									"localizable": true,
+									"name": "texto_subopcion",
+									"nestedDataDefinitionFields": [
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": true,
+									"tip": {
+										"es_ES": ""
+									}
+								},
+								{
+									"customProperties": {
+										"collapsible": false,
+										"ddmStructureId": "",
+										"ddmStructureLayoutId": "",
+										"fieldReference": "liga_subopcionFieldSet",
+										"rows": [
+											{
+												"columns": [
+													{
+														"fields": [
+															"liga_subopcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"externa_subopcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"interna_subopcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"target_subopcion"
+														],
+														"size": 12
+													}
+												]
+											}
+										],
+										"upgradedStructure": false
+									},
+									"defaultValue": {
+									},
+									"fieldType": "fieldset",
+									"indexable": false,
+									"label": {
+										"es_ES": ""
+									},
+									"localizable": false,
+									"name": "liga_subopcionFieldSet",
+									"nestedDataDefinitionFields": [
+										{
+											"customProperties": {
+												"dataType": "",
+												"fieldNamespace": "",
+												"fieldReference": "liga_subopcion",
+												"style": {
+												}
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "separator",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "liga_subopcion"
+											},
+											"localizable": true,
+											"name": "liga_subopcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"autocomplete": false,
+												"dataSourceType": "manual",
+												"dataType": "string",
+												"ddmDataProviderInstanceId": [
+												],
+												"ddmDataProviderInstanceOutput": [
+												],
+												"displayStyle": "singleline",
+												"fieldNamespace": "",
+												"fieldReference": "externa_subopcion",
+												"options": {
+													"es_ES": [
+														{
+															"label": "Option",
+															"reference": "",
+															"value": "Option"
+														}
+													]
+												},
+												"placeholder": {
+													"es_ES": ""
+												},
+												"tooltip": {
+													"es_ES": ""
+												},
+												"visibilityExpression": ""
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "text",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "externa_subopcion"
+											},
+											"localizable": true,
+											"name": "externa_subopcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"dataType": "link-to-page",
+												"fieldNamespace": "",
+												"fieldReference": "interna_subopcion"
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "link_to_layout",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "interna_subopcion"
+											},
+											"localizable": true,
+											"name": "interna_subopcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"dataSourceType": [
+													"manual"
+												],
+												"dataType": "string",
+												"ddmDataProviderInstanceId": [
+												],
+												"ddmDataProviderInstanceOutput": [
+												],
+												"fieldNamespace": "",
+												"fieldReference": "target_subopcion",
+												"multiple": false,
+												"options": {
+													"es_ES": [
+														{
+															"label": "_self",
+															"reference": "_self",
+															"value": "_self"
+														},
+														{
+															"label": "_blank",
+															"reference": "_blank",
+															"value": "_blank"
+														},
+														{
+															"label": "_lightbox",
+															"reference": "_lightbox",
+															"value": "_lightbox"
+														}
+													]
+												},
+												"visibilityExpression": ""
+											},
+											"defaultValue": {
+												"es_ES": [
+													""
+												]
+											},
+											"fieldType": "select",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "target_subopcion"
+											},
+											"localizable": true,
+											"name": "target_subopcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										}
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": false,
+									"tip": {
+									}
+								},
+								{
+									"customProperties": {
+										"collapsible": false,
+										"ddmStructureId": "",
+										"ddmStructureLayoutId": "",
+										"fieldReference": "conjunto_subsubopcionFieldSet",
+										"rows": [
+											{
+												"columns": [
+													{
+														"fields": [
+															"conjunto_subsubopcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"titulo_subsubopcionFieldSet"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"subsubopcionFieldSet"
+														],
+														"size": 12
+													}
+												]
+											}
+										],
+										"upgradedStructure": false
+									},
+									"defaultValue": {
+									},
+									"fieldType": "fieldset",
+									"indexable": false,
+									"label": {
+										"es_ES": ""
+									},
+									"localizable": false,
+									"name": "conjunto_subsubopcionFieldSet",
+									"nestedDataDefinitionFields": [
+										{
+											"customProperties": {
+												"dataType": "",
+												"fieldNamespace": "",
+												"fieldReference": "conjunto_subsubopcion",
+												"style": {
+												}
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "separator",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "conjunto_subsubopcion"
+											},
+											"localizable": true,
+											"name": "conjunto_subsubopcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"collapsible": false,
+												"ddmStructureId": "",
+												"ddmStructureLayoutId": "",
+												"fieldReference": "titulo_subsubopcionFieldSet",
+												"rows": [
+													{
+														"columns": [
+															{
+																"fields": [
+																	"titulo_subsubopcion"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"titulo_liga_interna"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"titulo_liga_externa"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"target_titulo"
+																],
+																"size": 12
+															}
+														]
+													}
+												],
+												"upgradedStructure": false
+											},
+											"defaultValue": {
+											},
+											"fieldType": "fieldset",
+											"indexable": false,
+											"label": {
+												"es_ES": ""
+											},
+											"localizable": false,
+											"name": "titulo_subsubopcionFieldSet",
+											"nestedDataDefinitionFields": [
+												{
+													"customProperties": {
+														"autocomplete": false,
+														"dataSourceType": "manual",
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"displayStyle": "singleline",
+														"fieldNamespace": "",
+														"fieldReference": "titulo_subsubopcion",
+														"options": {
+															"es_ES": [
+																{
+																	"label": "Option",
+																	"reference": "",
+																	"value": "Option"
+																}
+															]
+														},
+														"placeholder": {
+															"es_ES": ""
+														},
+														"tooltip": {
+															"es_ES": ""
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "text",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "titulo_subsubopcion"
+													},
+													"localizable": true,
+													"name": "titulo_subsubopcion",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"dataType": "link-to-page",
+														"fieldNamespace": "",
+														"fieldReference": "titulo_liga_interna"
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "link_to_layout",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "titulo_liga_interna"
+													},
+													"localizable": true,
+													"name": "titulo_liga_interna",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"autocomplete": false,
+														"dataSourceType": "manual",
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"displayStyle": "singleline",
+														"fieldNamespace": "",
+														"fieldReference": "titulo_liga_externa",
+														"options": {
+															"es_ES": [
+																{
+																	"label": "Option",
+																	"reference": "",
+																	"value": "Option"
+																}
+															]
+														},
+														"placeholder": {
+															"es_ES": ""
+														},
+														"tooltip": {
+															"es_ES": ""
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "text",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "titulo_liga_externa"
+													},
+													"localizable": true,
+													"name": "titulo_liga_externa",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"dataSourceType": [
+															"manual"
+														],
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"fieldNamespace": "",
+														"fieldReference": "target_titulo",
+														"multiple": false,
+														"options": {
+															"es_ES": [
+																{
+																	"label": "_self",
+																	"reference": "_self",
+																	"value": "_self"
+																},
+																{
+																	"label": "_blank",
+																	"reference": "_blank",
+																	"value": "_blank"
+																},
+																{
+																	"label": "_lightbox",
+																	"reference": "_lightbox",
+																	"value": "_lightbox"
+																}
+															]
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": [
+															""
+														]
+													},
+													"fieldType": "select",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "target_titulo"
+													},
+													"localizable": true,
+													"name": "target_titulo",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												}
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": false,
+											"tip": {
+											}
+										},
+										{
+											"customProperties": {
+												"collapsible": false,
+												"ddmStructureId": "",
+												"ddmStructureLayoutId": "",
+												"fieldReference": "subsubopcionFieldSet",
+												"rows": [
+													{
+														"columns": [
+															{
+																"fields": [
+																	"subsubopcion"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"nuevo"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"texto_subsubopcion"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"liga_subsubopcionFieldSet"
+																],
+																"size": 12
+															}
+														]
+													}
+												],
+												"upgradedStructure": false
+											},
+											"defaultValue": {
+											},
+											"fieldType": "fieldset",
+											"indexable": false,
+											"label": {
+												"es_ES": ""
+											},
+											"localizable": false,
+											"name": "subsubopcionFieldSet",
+											"nestedDataDefinitionFields": [
+												{
+													"customProperties": {
+														"dataType": "",
+														"fieldNamespace": "",
+														"fieldReference": "subsubopcion",
+														"style": {
+														}
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "separator",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "subsubopcion"
+													},
+													"localizable": true,
+													"name": "subsubopcion",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"dataType": "boolean",
+														"fieldReference": "nuevo"
+													},
+													"defaultValue": {
+														"es_ES": "false"
+													},
+													"fieldType": "checkbox",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "nuevo"
+													},
+													"localizable": true,
+													"name": "nuevo",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"autocomplete": false,
+														"dataSourceType": "manual",
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"displayStyle": "singleline",
+														"fieldNamespace": "",
+														"fieldReference": "texto_subsubopcion",
+														"options": {
+															"es_ES": [
+																{
+																	"label": "Option",
+																	"reference": "",
+																	"value": "Option"
+																}
+															]
+														},
+														"placeholder": {
+															"es_ES": ""
+														},
+														"tooltip": {
+															"es_ES": ""
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "text",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "texto_subsubopcion"
+													},
+													"localizable": true,
+													"name": "texto_subsubopcion",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"collapsible": false,
+														"ddmStructureId": "",
+														"ddmStructureLayoutId": "",
+														"fieldReference": "liga_subsubopcionFieldSet",
+														"rows": [
+															{
+																"columns": [
+																	{
+																		"fields": [
+																			"liga_subsubopcion"
+																		],
+																		"size": 12
+																	}
+																]
+															},
+															{
+																"columns": [
+																	{
+																		"fields": [
+																			"externa_subsubopcion"
+																		],
+																		"size": 12
+																	}
+																]
+															},
+															{
+																"columns": [
+																	{
+																		"fields": [
+																			"interna_subsubopcion"
+																		],
+																		"size": 12
+																	}
+																]
+															},
+															{
+																"columns": [
+																	{
+																		"fields": [
+																			"target_subsubopcion"
+																		],
+																		"size": 12
+																	}
+																]
+															}
+														],
+														"upgradedStructure": false
+													},
+													"defaultValue": {
+													},
+													"fieldType": "fieldset",
+													"indexable": false,
+													"label": {
+														"es_ES": ""
+													},
+													"localizable": false,
+													"name": "liga_subsubopcionFieldSet",
+													"nestedDataDefinitionFields": [
+														{
+															"customProperties": {
+																"dataType": "",
+																"fieldNamespace": "",
+																"fieldReference": "liga_subsubopcion",
+																"style": {
+																}
+															},
+															"defaultValue": {
+																"es_ES": ""
+															},
+															"fieldType": "separator",
+															"indexType": "keyword",
+															"indexable": true,
+															"label": {
+																"es_ES": "liga_subsubopcion"
+															},
+															"localizable": true,
+															"name": "liga_subsubopcion",
+															"nestedDataDefinitionFields": [
+															],
+															"readOnly": false,
+															"repeatable": false,
+															"required": false,
+															"showLabel": true,
+															"tip": {
+																"es_ES": ""
+															}
+														},
+														{
+															"customProperties": {
+																"autocomplete": false,
+																"dataSourceType": "manual",
+																"dataType": "string",
+																"ddmDataProviderInstanceId": [
+																],
+																"ddmDataProviderInstanceOutput": [
+																],
+																"displayStyle": "singleline",
+																"fieldNamespace": "",
+																"fieldReference": "externa_subsubopcion",
+																"options": {
+																	"es_ES": [
+																		{
+																			"label": "Option",
+																			"reference": "",
+																			"value": "Option"
+																		}
+																	]
+																},
+																"placeholder": {
+																	"es_ES": ""
+																},
+																"tooltip": {
+																	"es_ES": ""
+																},
+																"visibilityExpression": ""
+															},
+															"defaultValue": {
+																"es_ES": ""
+															},
+															"fieldType": "text",
+															"indexType": "keyword",
+															"indexable": true,
+															"label": {
+																"es_ES": "externa_subsubopcion"
+															},
+															"localizable": true,
+															"name": "externa_subsubopcion",
+															"nestedDataDefinitionFields": [
+															],
+															"readOnly": false,
+															"repeatable": false,
+															"required": false,
+															"showLabel": true,
+															"tip": {
+																"es_ES": ""
+															}
+														},
+														{
+															"customProperties": {
+																"dataType": "link-to-page",
+																"fieldNamespace": "",
+																"fieldReference": "interna_subsubopcion"
+															},
+															"defaultValue": {
+																"es_ES": ""
+															},
+															"fieldType": "link_to_layout",
+															"indexType": "keyword",
+															"indexable": true,
+															"label": {
+																"es_ES": "interna_subsubopcion"
+															},
+															"localizable": true,
+															"name": "interna_subsubopcion",
+															"nestedDataDefinitionFields": [
+															],
+															"readOnly": false,
+															"repeatable": false,
+															"required": false,
+															"showLabel": true,
+															"tip": {
+																"es_ES": ""
+															}
+														},
+														{
+															"customProperties": {
+																"dataSourceType": [
+																	"manual"
+																],
+																"dataType": "string",
+																"ddmDataProviderInstanceId": [
+																],
+																"ddmDataProviderInstanceOutput": [
+																],
+																"fieldNamespace": "",
+																"fieldReference": "target_subsubopcion",
+																"multiple": false,
+																"options": {
+																	"es_ES": [
+																		{
+																			"label": "_self",
+																			"reference": "_self",
+																			"value": "_self"
+																		},
+																		{
+																			"label": "_blank",
+																			"reference": "_blank",
+																			"value": "_blank"
+																		},
+																		{
+																			"label": "_lightbox",
+																			"reference": "_lightbox",
+																			"value": "_lightbox"
+																		}
+																	]
+																},
+																"visibilityExpression": ""
+															},
+															"defaultValue": {
+																"es_ES": [
+																	""
+																]
+															},
+															"fieldType": "select",
+															"indexType": "keyword",
+															"indexable": true,
+															"label": {
+																"es_ES": "target_subsubopcion"
+															},
+															"localizable": true,
+															"name": "target_subsubopcion",
+															"nestedDataDefinitionFields": [
+															],
+															"readOnly": false,
+															"repeatable": false,
+															"required": false,
+															"showLabel": true,
+															"tip": {
+																"es_ES": ""
+															}
+														}
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": false,
+													"tip": {
+													}
+												}
+											],
+											"readOnly": false,
+											"repeatable": true,
+											"required": false,
+											"showLabel": false,
+											"tip": {
+											}
+										}
+									],
+									"readOnly": false,
+									"repeatable": true,
+									"required": false,
+									"showLabel": false,
+									"tip": {
+									}
+								},
+								{
+									"customProperties": {
+										"collapsible": false,
+										"ddmStructureId": "",
+										"ddmStructureLayoutId": "",
+										"fieldReference": "menu_descripcionFieldSet",
+										"rows": [
+											{
+												"columns": [
+													{
+														"fields": [
+															"menu_descripcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"si"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"titulo_descripcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"imagen_descripcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"descripcion"
+														],
+														"size": 12
+													}
+												]
+											},
+											{
+												"columns": [
+													{
+														"fields": [
+															"botonFieldSet"
+														],
+														"size": 12
+													}
+												]
+											}
+										],
+										"upgradedStructure": false
+									},
+									"defaultValue": {
+									},
+									"fieldType": "fieldset",
+									"indexable": false,
+									"label": {
+										"es_ES": ""
+									},
+									"localizable": false,
+									"name": "menu_descripcionFieldSet",
+									"nestedDataDefinitionFields": [
+										{
+											"customProperties": {
+												"dataType": "",
+												"fieldNamespace": "",
+												"fieldReference": "menu_descripcion",
+												"style": {
+												}
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "separator",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "menu_descripcion"
+											},
+											"localizable": true,
+											"name": "menu_descripcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"dataType": "boolean",
+												"fieldReference": "si"
+											},
+											"defaultValue": {
+												"es_ES": "false"
+											},
+											"fieldType": "checkbox",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "si"
+											},
+											"localizable": true,
+											"name": "si",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"autocomplete": false,
+												"dataSourceType": "manual",
+												"dataType": "string",
+												"ddmDataProviderInstanceId": [
+												],
+												"ddmDataProviderInstanceOutput": [
+												],
+												"displayStyle": "singleline",
+												"fieldNamespace": "",
+												"fieldReference": "titulo_descripcion",
+												"options": {
+													"es_ES": [
+														{
+															"label": "Option",
+															"reference": "",
+															"value": "Option"
+														}
+													]
+												},
+												"placeholder": {
+													"es_ES": ""
+												},
+												"tooltip": {
+													"es_ES": ""
+												},
+												"visibilityExpression": ""
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "text",
+											"indexType": "keyword",
+											"indexable": true,
+											"label": {
+												"es_ES": "titulo_descripcion"
+											},
+											"localizable": true,
+											"name": "titulo_descripcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"dataType": "image",
+												"fieldNamespace": "",
+												"fieldReference": "imagen_descripcion",
+												"visibilityExpression": ""
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "image",
+											"indexType": "text",
+											"indexable": true,
+											"label": {
+												"es_ES": "imagen_descripcion"
+											},
+											"localizable": true,
+											"name": "imagen_descripcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"dataType": "string",
+												"fieldNamespace": "",
+												"fieldReference": "descripcion",
+												"visibilityExpression": ""
+											},
+											"defaultValue": {
+												"es_ES": ""
+											},
+											"fieldType": "rich_text",
+											"indexType": "text",
+											"indexable": true,
+											"label": {
+												"es_ES": "descripcion"
+											},
+											"localizable": true,
+											"name": "descripcion",
+											"nestedDataDefinitionFields": [
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": true,
+											"tip": {
+												"es_ES": ""
+											}
+										},
+										{
+											"customProperties": {
+												"collapsible": false,
+												"ddmStructureId": "",
+												"ddmStructureLayoutId": "",
+												"fieldReference": "botonFieldSet",
+												"rows": [
+													{
+														"columns": [
+															{
+																"fields": [
+																	"boton"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"liga_boton_externa"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"liga_boton_externa1"
+																],
+																"size": 12
+															}
+														]
+													},
+													{
+														"columns": [
+															{
+																"fields": [
+																	"target_boton"
+																],
+																"size": 12
+															}
+														]
+													}
+												],
+												"upgradedStructure": false
+											},
+											"defaultValue": {
+											},
+											"fieldType": "fieldset",
+											"indexable": false,
+											"label": {
+												"es_ES": ""
+											},
+											"localizable": false,
+											"name": "botonFieldSet",
+											"nestedDataDefinitionFields": [
+												{
+													"customProperties": {
+														"autocomplete": false,
+														"dataSourceType": "manual",
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"displayStyle": "singleline",
+														"fieldNamespace": "",
+														"fieldReference": "boton",
+														"options": {
+															"es_ES": [
+																{
+																	"label": "Option",
+																	"reference": "",
+																	"value": "Option"
+																}
+															]
+														},
+														"placeholder": {
+															"es_ES": ""
+														},
+														"tooltip": {
+															"es_ES": ""
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "text",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "boton"
+													},
+													"localizable": true,
+													"name": "boton",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"autocomplete": false,
+														"dataSourceType": "manual",
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"displayStyle": "singleline",
+														"fieldNamespace": "",
+														"fieldReference": "liga_boton_externa",
+														"options": {
+															"es_ES": [
+																{
+																	"label": "Option",
+																	"reference": "",
+																	"value": "Option"
+																}
+															]
+														},
+														"placeholder": {
+															"es_ES": ""
+														},
+														"tooltip": {
+															"es_ES": ""
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "text",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "liga_boton_externa"
+													},
+													"localizable": true,
+													"name": "liga_boton_externa",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"dataType": "link-to-page",
+														"fieldNamespace": "",
+														"fieldReference": "liga_boton_externa1"
+													},
+													"defaultValue": {
+														"es_ES": ""
+													},
+													"fieldType": "link_to_layout",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "liga_boton_externa"
+													},
+													"localizable": true,
+													"name": "liga_boton_externa1",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												},
+												{
+													"customProperties": {
+														"dataSourceType": [
+															"manual"
+														],
+														"dataType": "string",
+														"ddmDataProviderInstanceId": [
+														],
+														"ddmDataProviderInstanceOutput": [
+														],
+														"fieldNamespace": "",
+														"fieldReference": "target_boton",
+														"multiple": false,
+														"options": {
+															"es_ES": [
+																{
+																	"label": "_self",
+																	"reference": "_self",
+																	"value": "_self"
+																},
+																{
+																	"label": "_blank",
+																	"reference": "_blank",
+																	"value": "_blank"
+																},
+																{
+																	"label": "_lightbox",
+																	"reference": "_lightbox",
+																	"value": "_lightbox"
+																}
+															]
+														},
+														"visibilityExpression": ""
+													},
+													"defaultValue": {
+														"es_ES": [
+															""
+														]
+													},
+													"fieldType": "select",
+													"indexType": "keyword",
+													"indexable": true,
+													"label": {
+														"es_ES": "target_boton"
+													},
+													"localizable": true,
+													"name": "target_boton",
+													"nestedDataDefinitionFields": [
+													],
+													"readOnly": false,
+													"repeatable": false,
+													"required": false,
+													"showLabel": true,
+													"tip": {
+														"es_ES": ""
+													}
+												}
+											],
+											"readOnly": false,
+											"repeatable": false,
+											"required": false,
+											"showLabel": false,
+											"tip": {
+											}
+										}
+									],
+									"readOnly": false,
+									"repeatable": false,
+									"required": false,
+									"showLabel": false,
+									"tip": {
+									}
+								}
+							],
+							"readOnly": false,
+							"repeatable": true,
+							"required": false,
+							"showLabel": false,
+							"tip": {
+							}
+						}
+					],
+					"readOnly": false,
+					"repeatable": true,
+					"required": false,
+					"showLabel": false,
+					"tip": {
+					}
+				}
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": false,
+			"tip": {
+			}
+		},
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "repeatableFieldSet",
+				"labelAtStructureLevel": true,
+				"rows": [
+					{
+						"columns": [
+							{
+								"fields": [
+									"repeatableImage"
+								],
+								"size": 12
+							}
+						]
+					}
+				],
+				"upgradedStructure": false
+			},
+			"defaultValue": {
+			},
+			"fieldType": "fieldset",
+			"indexable": false,
+			"label": {
+				"es_ES": "Fields Group"
+			},
+			"localizable": false,
+			"name": "repeatableFieldSet",
+			"nestedDataDefinitionFields": [
+				{
+					"customProperties": {
+						"dataType": "image",
+						"fieldNamespace": "",
+						"fieldReference": "repeatableImage",
+						"objectFieldName": "",
+						"requiredDescription": true,
+						"requiredErrorMessage": {
+							"en_US": ""
+						},
+						"visibilityExpression": ""
+					},
+					"defaultValue": {
+						"en_US": {
+						}
+					},
+					"fieldType": "image",
+					"indexType": "text",
+					"indexable": true,
+					"label": {
+						"en_US": "Image"
+					},
+					"localizable": true,
+					"name": "repeatableImage",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": true,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					}
+				}
+			],
+			"readOnly": false,
+			"repeatable": true,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+			}
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"logotipoFieldSet"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"menuFieldSet"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"repeatableFieldSet"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"es_ES": "Descripción"
+				},
+				"title": {
+					"es_ES": "Página"
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "es_ES",
+	"description": {
+	},
+	"name": {
+		"en_US": "TMX_Main_Menu",
+		"es_ES": "TMX_Main_Menu"
+	},
+	"storageType": "default"
+}

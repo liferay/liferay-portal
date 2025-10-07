@@ -95,10 +95,9 @@ public class HypersonicDBTest extends BaseDBTestCase {
 	public void testRewordAlterColumnTypeWithDefault() throws Exception {
 		Assert.assertEquals(
 			StringBundler.concat(
-				"alter table DLFolder alter column userName varchar(75);",
-				"alter table DLFolder alter column userName set default 'test ",
-				"test';alter table DLFolder alter column userName set not ",
-				"null;\n"),
+				"alter table DLFolder alter column userName varchar(75);alter ",
+				"table DLFolder alter column userName set default 'test test';",
+				"alter table DLFolder alter column userName set not null;\n"),
 			buildSQL(
 				"alter_column_type DLFolder userName VARCHAR(75) default " +
 					"'test test' not null;"));

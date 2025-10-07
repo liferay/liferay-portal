@@ -11,7 +11,9 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchRequest;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchResponse;
 import com.liferay.portal.search.engine.adapter.search.SuggestSearchResult;
+import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.opensearch2.internal.connection.OpenSearchConnectionManager;
+import com.liferay.portal.search.opensearch2.internal.suggest.OpenSearchSuggesterTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.ConversionUtil;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
 
@@ -35,6 +37,7 @@ import org.opensearch.client.opensearch.core.search.Suggester.Builder;
 import org.opensearch.client.opensearch.core.search.TermSuggest;
 import org.opensearch.client.opensearch.core.search.TermSuggestOption;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -71,6 +74,12 @@ public class SuggestSearchRequestExecutorImpl
 		}
 
 		return suggestSearchResponse;
+	}
+
+	@Activate
+	protected void activate() {
+		_suggesterTranslator = new OpenSearchSuggesterTranslator(
+			_indexNameBuilder);
 	}
 
 	protected SearchResponse<JsonData> getSearchResponse(
@@ -203,9 +212,11 @@ public class SuggestSearchRequestExecutorImpl
 	}
 
 	@Reference
+	private IndexNameBuilder _indexNameBuilder;
+
+	@Reference
 	private OpenSearchConnectionManager _openSearchConnectionManager;
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
 	private SuggesterTranslator<FieldSuggester> _suggesterTranslator;
 
 }

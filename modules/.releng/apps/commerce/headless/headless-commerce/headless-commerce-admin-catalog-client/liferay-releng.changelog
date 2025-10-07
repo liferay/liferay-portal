@@ -327,3 +327,13 @@ dd80a21430ad3d679c9d3f95cdd9bb9ce9cfb44c^..d321038781e8d85e91536d66a17d1a41474de
 # Bundle Version 4.0.72
 #
 d321038781e8d85e91536d66a17d1a41474de45e^..aa8d522312fd5ada133ceba161cc6bfcdafe928d=LPD-50964 LPD-56284
+
+#
+# Bundle Version 4.0.73
+#
+aa8d522312fd5ada133ceba161cc6bfcdafe928d^..2fd14cc96afde4a5391d87c8bb75ccc99cde0a83=LPD-51865 LPD-52310
+
+#
+# Bundle Version 4.0.74
+#
+2fd14cc96afde4a5391d87c8bb75ccc99cde0a83^..e87e14c4172363d0f355cbbf3d45a889be85db55=LPD-64892

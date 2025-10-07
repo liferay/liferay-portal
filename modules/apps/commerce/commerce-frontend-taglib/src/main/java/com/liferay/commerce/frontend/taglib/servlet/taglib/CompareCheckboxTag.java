@@ -157,7 +157,7 @@ public class CompareCheckboxTag extends IncludeTag {
 			ServletContextUtil.getCPCompareHelper();
 
 		return cpCompareHelper.getCPDefinitionIds(
-			groupId, commerceAccountId, cpDefinitionIdsCookieValue);
+			groupId, commerceAccountId, cpDefinitionIdsCookieValue, false);
 	}
 
 	private String _getCPDefinitionIdsCookieKey(long commerceChannelGroupId) {

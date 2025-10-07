@@ -35,6 +35,9 @@ import java.util.Objects;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Collector;
+import org.jsoup.select.Elements;
+import org.jsoup.select.Evaluator;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -58,8 +61,7 @@ public class EditableDocumentFragmentEntryProcessor
 			FragmentEntryProcessorContext fragmentEntryProcessorContext)
 		throws PortalException {
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
 
 		if (jsonObject.length() == 0) {
 			jsonObject.put(
@@ -79,9 +81,24 @@ public class EditableDocumentFragmentEntryProcessor
 		Map<InfoItemReference, InfoItemFieldValues> infoDisplaysFieldValues =
 			new HashMap<>();
 
-		for (Element element :
-				document.select("lfr-editable,*[data-lfr-editable-id]")) {
+		Elements elements = Collector.collect(
+			new Evaluator() {
 
+				@Override
+				public boolean matches(Element root, Element element) {
+					if (element.hasAttr("data-lfr-editable-id") ||
+						Objects.equals(element.normalName(), "lfr-editable")) {
+
+						return true;
+					}
+
+					return false;
+				}
+
+			},
+			document.body());
+
+		for (Element element : elements) {
 			EditableElementParser editableElementParser =
 				_getEditableElementParser(element);
 

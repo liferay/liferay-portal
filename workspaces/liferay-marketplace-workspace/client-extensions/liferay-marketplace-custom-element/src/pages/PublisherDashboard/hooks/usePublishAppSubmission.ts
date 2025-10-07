@@ -4,66 +4,76 @@
  */
 
 import {Dispatch} from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 import {
 	AppActions,
 	NewAppInitialState,
 	NewAppTypes,
 } from '../../../context/NewAppContext';
+import {ProductWorkflowStatusCode} from '../../../enums/Product';
 import i18n from '../../../i18n';
 import {Liferay} from '../../../liferay/liferay';
 import AppPublish from '../../../services/actions/AppPublish';
 
 type ProductConfig = {
 	isDraft: boolean;
+	isEdit?: boolean;
 };
 
 const usePublishAppSubmission = (
 	context: NewAppInitialState,
 	dispatch: Dispatch<AppActions>
 ) => {
-	const {productId} = useParams();
-	const location = useLocation();
 	const navigate = useNavigate();
 
 	const _onSave = async (config: ProductConfig) => {
-		dispatch({payload: true, type: NewAppTypes.SET_LOADING});
+		try {
+			dispatch({payload: true, type: NewAppTypes.SET_LOADING});
 
-		const appPublish = new AppPublish(context);
+			const appPublish = new AppPublish(context);
 
-		const product = await appPublish.sync(config);
+			const product = await appPublish.sync(config);
 
-		dispatch({payload: product, type: NewAppTypes.SET_PRODUCT});
+			dispatch({payload: product, type: NewAppTypes.SET_PRODUCT});
 
-		dispatch({payload: false, type: NewAppTypes.SET_LOADING});
+			dispatch({payload: false, type: NewAppTypes.SET_LOADING});
 
-		return product;
+			return product;
+		}
+		catch (error) {
+			dispatch({payload: false, type: NewAppTypes.SET_LOADING});
+
+			Liferay.Util.openToast({
+				message: i18n.translate('an-unexpected-error-occurred'),
+				type: 'danger',
+			});
+
+			throw error;
+		}
 	};
 
 	const onSaveAsDraft = async () => {
-		const product = await _onSave({isDraft: true});
+		await _onSave({isDraft: true});
 
 		Liferay.Util.openToast({
 			message: i18n.sub('x-saved-as-a-draft-successfully', [
 				context.profile.name,
 			]),
-			title: '',
 			type: 'info',
 		});
 
-		if (!productId) {
-			navigate(
-				location.pathname.replace(
-					'/publisher/',
-					`/${product.productId}/publisher/`
-				)
-			);
-		}
+		navigate('/');
 	};
 
 	const onSave = async () => {
-		await _onSave({isDraft: false});
+		await _onSave({
+			isDraft: false,
+			isEdit:
+				!!context._product &&
+				context._product.productStatus !==
+					ProductWorkflowStatusCode.DRAFT,
+		});
 
 		Liferay.Util.openToast({
 			message: i18n.sub('app-x-submitted', [context.profile.name]),

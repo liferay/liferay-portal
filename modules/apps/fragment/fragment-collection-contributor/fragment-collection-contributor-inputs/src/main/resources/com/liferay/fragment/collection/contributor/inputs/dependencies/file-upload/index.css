@@ -1,9 +1,4 @@
 .file-upload-input {
-	border: none;
-	height: 1px;
 	left: 50%;
-	outline: none;
-	position: absolute;
 	top: 100%;
-	width: 1px;
 }

@@ -3,9 +3,9 @@ assemble:
         into: batch
 clarity-solution-batch:
     name: Clarity Solution Batch
-    oAuthApplicationHeadlessServer: clarity-solution-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: clarity-solution-batch-oahs
     type: batch
-clarity-solution-batch-oauth-application-headless-server:
+clarity-solution-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Clarity Solution OAuth Application Headless Server

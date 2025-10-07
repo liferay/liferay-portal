@@ -37,7 +37,7 @@ definition {
 		task ("And the tier list are changed") {
 			CommercePriceLists.openPriceListsAdmin();
 
-			MouseOver(locator1 = "Icon#PLUS");
+			MouseOver(locator1 = "CommerceEntry#ADD_BUTTON");
 
 			VerifyElementPresent(
 				key_text = "Create New Price List",
@@ -60,7 +60,7 @@ definition {
 		task ("And given a promotion price entry for U-Joint is set lower than price list") {
 			CommercePromotions.openPromotionsAdmin();
 
-			MouseOver(locator1 = "Icon#PLUS");
+			MouseOver(locator1 = "CommerceEntry#ADD_BUTTON");
 
 			VerifyElementPresent(
 				key_text = "Create New Promotion",

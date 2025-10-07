@@ -1,0 +1,61 @@
+{
+	"active": true,
+	"defaultLanguageId": "en_US",
+	"enableIndexSearch": false,
+	"label": {
+		"en_US": "Testray Case Detail"
+	},
+	"modifiable": true,
+	"name": "CaseDetail",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Due Status"
+			},
+			"listTypeDefinitionExternalReferenceCode": "TR-CASERESULT-STATUSES",
+			"listTypeDefinitionId": "[$LIST_TYPE_DEFINITION_ID:Case Result Statuses$]",
+			"localized": false,
+			"name": "dueStatus",
+			"readOnly": "false",
+			"required": false,
+			"state": false,
+			"system": false,
+			"type": "String",
+			"unique": false
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Name"
+			},
+			"localized": false,
+			"name": "name",
+			"readOnly": "false",
+			"required": false,
+			"state": false,
+			"system": false,
+			"type": "String",
+			"unique": false
+		}
+	],
+	"objectFolderExternalReferenceCode": "TESTRAY",
+	"panelCategoryKey": "control_panel.object",
+	"parameterRequired": false,
+	"pluralLabel": {
+		"en_US": "Testray Case Details"
+	},
+	"portlet": true,
+	"restContextPath": "/o/c/casedetails",
+	"scope": "company",
+	"system": false,
+	"titleObjectFieldName": "name"
+}

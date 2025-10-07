@@ -926,28 +926,6 @@ this task.
 		</replace-multilines>
 
 		<replace
-			file="${app.server.jboss.bin.dir}/standalone.conf"
-		>
-			<replacetoken><![CDATA[JAVA_OPTS="-Xms1303m -Xmx1303m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m ]]></replacetoken>
-			<replacevalue><![CDATA[JAVA_OPTS="]]></replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.jboss.instance.dir}/configuration/standalone.xml"
-		>
-			<replacetoken><![CDATA[<subsystem xmlns="urn:jboss:domain:security:2.0">
-            <security-domains>]]></replacetoken>
-			<replacevalue><![CDATA[<subsystem xmlns="urn:jboss:domain:security:2.0">
-            <security-domains>
-				<security-domain name="PortalRealm">
-					<authentication>
-						<login-module code="com.liferay.portal.security.jaas.PortalLoginModule" flag="required" />
-					</authentication>
-				</security-domain>]]>
-			</replacevalue>
-		</replace>
-
-		<replace
 			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
 		>
 			<replacetoken><![CDATA[<location name="/" handler="welcome-content"/>]]></replacetoken>
@@ -961,28 +939,12 @@ this task.
 			<replacevalue><![CDATA[<!--<file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>-->]]></replacevalue>
 		</replace>
 
-		<replace
-			file="${app.server.jboss.dir}/standalone/configuration/standalone.xml"
-		>
-			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
-			<replacevalue>
-				<![CDATA[<jsp-config development="true" source-vm="1.8" target-vm="1.8" />]]>
-			</replacevalue>
-		</replace>
-
 		<echo append="true" file="${app.server.jboss.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.jboss.jvm.args} ${app.server.jboss.jvm.mem}"
 
 JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} ${app.server.jboss.jdk.java.options}"
 export JDK_JAVA_OPTIONS]]>
 		</echo>
-
-		<replace
-			file="${app.server.jboss.bin.dir}/standalone.conf.bat"
-		>
-			<replacetoken><![CDATA[set "JAVA_OPTS=-Xms1G -Xmx1G -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m"]]></replacetoken>
-			<replacevalue></replacevalue>
-		</replace>
 
 		<replace
 			file="${app.server.jboss.bin.dir}/standalone.conf.bat"
@@ -1072,20 +1034,6 @@ org.apache.catalina.startup.ClassLoaderFactory.level=SEVERE
 org.apache.catalina.startup.VersionLoggerListener.level=WARNING
 org.apache.level=WARNING]]>
 		</echo>
-
-		<replace
-			file="${app.server.tomcat.dir}/conf/server.xml"
-		>
-			<replacetoken><![CDATA[redirectPort="8443" />]]></replacetoken>
-			<replacevalue><![CDATA[redirectPort="8443" URIEncoding="UTF-8" />]]></replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.tomcat.dir}/conf/server.xml"
-		>
-			<replacetoken><![CDATA[<Connector port="8009" protocol="AJP/1.3" redirectPort="8443" URIEncoding="UTF-8" />]]></replacetoken>
-			<replacevalue><![CDATA[<!-- <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" URIEncoding="UTF-8" /> -->]]></replacevalue>
-		</replace>
 
 		<replace
 			file="${app.server.tomcat.dir}/conf/server.xml"
@@ -1944,13 +1892,6 @@ this task.
 			</replace-elements>
 		</replace-multilines>
 
-		<replace
-			file="${app.server.wildfly.bin.dir}/standalone.conf"
-		>
-			<replacetoken><![CDATA[JAVA_OPTS="-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m ]]></replacetoken>
-			<replacevalue><![CDATA[JAVA_OPTS="]]></replacevalue>
-		</replace>
-
 		<echo append="true" file="${app.server.wildfly.bin.dir}/standalone.conf">
 			<![CDATA[${line.separator}JAVA_OPTS="$JAVA_OPTS ${app.server.wildfly.jvm.args} ${app.server.wildfly.jvm.mem}"
 
@@ -1961,27 +1902,11 @@ export JDK_JAVA_OPTIONS]]>
 		<replace
 			file="${app.server.wildfly.bin.dir}/standalone.conf.bat"
 		>
-			<replacetoken><![CDATA[set "JAVA_OPTS=-Xms64M ]]></replacetoken>
-			<replacevalue><![CDATA[rem set "JAVA_OPTS=-Xms64M ]]></replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.wildfly.bin.dir}/standalone.conf.bat"
-		>
 			<replacetoken><![CDATA[:JAVA_OPTS_SET]]></replacetoken>
 			<replacevalue expandProperties="true">
 				<![CDATA[set "JAVA_OPTS=%JAVA_OPTS% ${app.server.wildfly.jvm.args} ${app.server.wildfly.jvm.mem}"
 
 set "JDK_JAVA_OPTIONS=%JDK_JAVA_OPTIONS% ${app.server.wildfly.jdk.java.options}":JAVA_OPTS_SET]]>
-			</replacevalue>
-		</replace>
-
-		<replace
-			file="${app.server.wildfly.instance.dir}/configuration/standalone.xml"
-		>
-			<replacetoken><![CDATA[<jsp-config />]]></replacetoken>
-			<replacevalue>
-				<![CDATA[<jsp-config development="true" source-vm="1.8" target-vm="1.8" />]]>
 			</replacevalue>
 		</replace>
 
@@ -2019,6 +1944,65 @@ plugins.includes=</echo>
 				</actions>
 			</call>
 		</xmltask>
+	</target>
+
+	<target name="update-tomcat-version">
+		<fail message="Please set the property ${new.version}." unless="new.version" />
+
+		<if>
+			<not>
+				<isset property="old.version" />
+			</not>
+			<then>
+				<property name="old.version" value="${app.server.tomcat.version}" />
+			</then>
+		</if>
+
+		<propertyregex
+			input="${new.version}"
+			property="new.major.version"
+			regexp="(\d+)\.."
+			select="\1"
+		/>
+		<propertyregex
+			input="${old.version}"
+			property="old.major.version"
+			regexp="(\d+)\.."
+			select="\1"
+		/>
+
+		<echo>Updating Tomcat version ${old.version} to ${new.version}</echo>
+
+		<replace
+			dir="${project.dir}"
+			summary="yes"
+		>
+			<exclude name="**/*.class" />
+			<exclude name="**/*.classpath" />
+			<exclude name="**/*.jar" />
+			<exclude name="**/*.war" />
+			<exclude name="**/.github/" />
+			<exclude name="**/.gradle/" />
+			<exclude name="**/.idea" />
+			<exclude name="**/.m2/" />
+			<exclude name="**/.m2-tmp/" />
+			<exclude name="**/.releng/" />
+			<exclude name="**/CHANGELOG.*" />
+			<exclude name="**/node_modules/" />
+			<exclude name="**/node_modules_cache/" />
+			<exclude name="lib/versions.html" />
+			<exclude name="lib/versions-complete.xml" />
+			<replacefilter
+				token="${old.version}"
+				value="${new.version}"
+			/>
+			<replacefilter
+				token="tomcat-${old.major.version}"
+				value="tomcat-${new.major.version}"
+			/>
+		</replace>
+
+		<ant dir="portal-impl" inheritAll="false" target="build-lib-versions" />
 	</target>
 
 	<target name="zip-executable">

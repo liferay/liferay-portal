@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
 import com.liferay.account.constants.AccountActionKeys;
+import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.exception.DuplicateAccountGroupRelException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
@@ -14,6 +15,7 @@ import com.liferay.account.service.AccountGroupRelService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountBrief;
 import com.liferay.headless.admin.user.dto.v1_0.AccountGroup;
@@ -55,6 +57,7 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -66,9 +69,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account-group.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = AccountGroupResource.class
 )
-public class AccountGroupResourceImpl extends BaseAccountGroupResourceImpl {
+public class AccountGroupResourceImpl
+	extends BaseAccountGroupResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<AccountGroup> {
 
 	@Override
 	public void deleteAccountGroup(Long accountGroupId) throws Exception {
@@ -197,6 +203,33 @@ public class AccountGroupResourceImpl extends BaseAccountGroupResourceImpl {
 	}
 
 	@Override
+	public ExportImportDescriptor getExportImportDescriptor() {
+		return new ExportImportDescriptor() {
+
+			@Override
+			public String getItemClassName() {
+				return com.liferay.account.model.AccountGroup.class.getName();
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("accountBriefs", "creator");
+			}
+
+			@Override
+			public String getPortletId() {
+				return AccountPortletKeys.ACCOUNT_GROUPS_ADMIN;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+		};
+	}
+
+	@Override
 	public AccountGroup patchAccountGroup(
 			Long accountGroupId, AccountGroup accountGroup)
 		throws Exception {
@@ -306,7 +339,7 @@ public class AccountGroupResourceImpl extends BaseAccountGroupResourceImpl {
 
 		try {
 			AccountEntry accountEntry =
-				_accountEntryService.getOrAddIncompleteAccountEntry(
+				_accountEntryService.getOrAddEmptyAccountEntry(
 					externalReferenceCode, accountBrief.getName(), type);
 
 			_accountGroupRelService.addAccountGroupRel(
@@ -460,7 +493,7 @@ public class AccountGroupResourceImpl extends BaseAccountGroupResourceImpl {
 			com.liferay.account.model.AccountGroup serviceBuilderAccountGroup)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return serviceBuilderAccountGroup;
 		}
 

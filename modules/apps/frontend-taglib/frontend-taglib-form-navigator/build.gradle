@@ -12,6 +12,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":core:petra:petra-concurrent")
 	testImplementation project(":core:petra:petra-lang")
 	testImplementation project(":core:petra:petra-memory")

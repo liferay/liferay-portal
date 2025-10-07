@@ -12,7 +12,6 @@ import React, {useEffect, useState} from 'react';
 
 import {visit} from '../../components/AddDataSourceFieldsModalContent';
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
@@ -38,6 +37,7 @@ import FilterList from './components/FilterList';
 import SelectionFilterFormContent from './components/selection_filter/SelectionFilter';
 
 import '../../../css/Filters.scss';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import sortItems from '../../utils/sortItems';
 
 const FILTER_MODE = {
@@ -53,10 +53,7 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 		displayType: () => Liferay.Language.get('client-extension-filter'),
 		fdsViewRelationship:
 			OBJECT_RELATIONSHIP.DATA_SET_CLIENT_EXTENSION_FILTERS,
-		fdsViewRelationshipId:
-			OBJECT_RELATIONSHIP.DATA_SET_CLIENT_EXTENSION_FILTERS_ID,
 		label: Liferay.Language.get('client-extension'),
-		url: API_URL.CLIENT_EXTENSION_FILTERS,
 	},
 	[EFilterType.DATE_RANGE]: {
 		Component: DateRangeFilterFormContent,
@@ -66,9 +63,7 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 			item.filterable,
 		displayType: () => Liferay.Language.get('date-filter'),
 		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS,
-		fdsViewRelationshipId: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS_ID,
 		label: Liferay.Language.get('date-range'),
-		url: API_URL.DATE_FILTERS,
 	},
 	[EFilterType.SELECTION]: {
 		Component: SelectionFilterFormContent,
@@ -83,10 +78,7 @@ const FILTER_TYPES: Record<EFilterType, IFilterTypeProps> = {
 			return Liferay.Language.get('selection-filter');
 		},
 		fdsViewRelationship: OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTERS,
-		fdsViewRelationshipId:
-			OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTERS_ID,
 		label: Liferay.Language.get('selection'),
-		url: API_URL.SELECTION_FILTERS,
 	},
 };
 
@@ -119,21 +111,31 @@ function FilterFormComponent({
 	resolvedRESTSchemas,
 	restApplications,
 }: IPropsFilterFormComponent) {
-	const {Component, displayType, fdsViewRelationshipId} =
-		FILTER_TYPES[filterType as EFilterType];
+	const {Component, displayType} = FILTER_TYPES[filterType as EFilterType];
 
 	const saveFDSFilter = async (formData: any) => {
-		formData = {
-			...formData,
-			[fdsViewRelationshipId]: dataSet.id,
-		};
+		const relationship =
+			FILTER_TYPES[filterType as EFilterType].fdsViewRelationship;
 
-		let url = FILTER_TYPES[filterType as EFilterType].url;
-		let method = 'POST';
+		let method;
+		let url;
 
 		if (filter) {
-			method = 'PUT';
-			url = `${url}/${filter.id}`;
+			method = 'PATCH';
+
+			url = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relatedResourceERC: filter.externalReferenceCode,
+				relationship,
+			});
+		}
+		else {
+			method = 'POST';
+
+			url = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relationship,
+			});
 		}
 
 		const response = await fetch(url, {
@@ -204,16 +206,18 @@ function Filters({
 
 	useEffect(() => {
 		const getFilters = async () => {
-			const response = await fetch(
-				`${API_URL.DATA_SETS}/${
-					dataSet.id
-				}?nestedFields=${Object.values(FILTER_TYPES)
-					.map((filter) => filter.fdsViewRelationship)
-					.join(',')}`,
-				{
-					headers: DEFAULT_FETCH_HEADERS,
-				}
-			);
+			const url = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				params: {
+					nestedFields: Object.values(FILTER_TYPES)
+						.map((filter) => filter.fdsViewRelationship)
+						.join(','),
+				},
+			});
+
+			const response = await fetch(url, {
+				headers: DEFAULT_FETCH_HEADERS,
+			});
 
 			const responseJSON = await response.json();
 
@@ -271,16 +275,17 @@ function Filters({
 	}: {
 		filtersOrder: string;
 	}) => {
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify({
-					filtersOrder,
-				}),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify({
+				filtersOrder,
+			}),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -401,9 +406,15 @@ function Filters({
 					onClick: ({processClose}: {processClose: Function}) => {
 						processClose();
 
-						const url = `${
-							FILTER_TYPES[item.filterType as EFilterType].url
-						}/${item.id}`;
+						const url = getDataSetResourceURL({
+							dataSetERC: dataSet.externalReferenceCode,
+							relatedResourceERC: String(
+								item.externalReferenceCode
+							),
+							relationship:
+								FILTER_TYPES[item.filterType as EFilterType]
+									.fdsViewRelationship,
+						});
 
 						fetch(url, {
 							headers: DEFAULT_FETCH_HEADERS,
@@ -448,19 +459,19 @@ function Filters({
 	const updateActive = async (item: IFilter) => {
 		setToogleActiveDisabled(true);
 
-		const type: any =
-			item.filterType === 'DATE_RANGE'
-				? 'DATE_FILTERS'
-				: `${item.filterType}_FILTERS`;
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			relatedResourceERC: item.externalReferenceCode,
+			relationship:
+				FILTER_TYPES[item.filterType as EFilterType]
+					.fdsViewRelationship,
+		});
 
-		const response = await fetch(
-			`${API_URL[type]}/by-external-reference-code/${item.externalReferenceCode}`,
-			{
-				body: JSON.stringify({active: !item.active}),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const response = await fetch(url, {
+			body: JSON.stringify({active: !item.active}),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();

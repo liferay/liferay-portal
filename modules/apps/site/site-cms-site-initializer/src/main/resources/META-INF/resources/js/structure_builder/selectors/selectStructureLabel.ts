@@ -6,5 +6,5 @@
 import {State} from '../contexts/StateContext';
 
 export default function selectStructureLabel(state: State) {
-	return state.label;
+	return state.structure.label;
 }

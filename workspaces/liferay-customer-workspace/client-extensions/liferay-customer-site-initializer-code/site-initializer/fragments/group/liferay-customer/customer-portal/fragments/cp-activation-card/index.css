@@ -1,0 +1,14 @@
+.cp-activation-card-anchor {
+	height: 100%;
+
+	.card.card-flat {
+		background-color: var(--color-brand-primary-lighten-5);
+		color: #3F404B;
+		text-align: center;
+	}
+
+	.cp-activation-card-thumbnail {
+		height: 48px;
+		width: 48px;
+	}
+}

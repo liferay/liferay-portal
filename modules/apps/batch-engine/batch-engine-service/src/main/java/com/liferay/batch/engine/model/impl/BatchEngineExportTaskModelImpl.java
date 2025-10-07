@@ -73,8 +73,8 @@ public class BatchEngineExportTaskModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"callbackURL", Types.VARCHAR},
 		{"className", Types.VARCHAR}, {"content", Types.BLOB},
 		{"contentType", Types.VARCHAR}, {"endTime", Types.TIMESTAMP},
-		{"errorMessage", Types.CLOB}, {"fieldNames", Types.VARCHAR},
-		{"executeStatus", Types.VARCHAR}, {"parameters", Types.CLOB},
+		{"errorMessage", Types.CLOB}, {"executeStatus", Types.VARCHAR},
+		{"fieldNames", Types.VARCHAR}, {"parameters", Types.CLOB},
 		{"processedItemsCount", Types.INTEGER}, {"startTime", Types.TIMESTAMP},
 		{"taskItemDelegateName", Types.VARCHAR},
 		{"totalItemsCount", Types.INTEGER}
@@ -98,8 +98,8 @@ public class BatchEngineExportTaskModelImpl
 		TABLE_COLUMNS_MAP.put("contentType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("endTime", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("errorMessage", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("fieldNames", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("executeStatus", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("fieldNames", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("parameters", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("processedItemsCount", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("startTime", Types.TIMESTAMP);
@@ -108,7 +108,7 @@ public class BatchEngineExportTaskModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table BatchEngineExportTask (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,batchEngineExportTaskId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,callbackURL VARCHAR(255) null,className VARCHAR(255) null,content BLOB,contentType VARCHAR(75) null,endTime DATE null,errorMessage TEXT null,fieldNames STRING null,executeStatus VARCHAR(75) null,parameters TEXT null,processedItemsCount INTEGER,startTime DATE null,taskItemDelegateName VARCHAR(75) null,totalItemsCount INTEGER)";
+		"create table BatchEngineExportTask (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,batchEngineExportTaskId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,callbackURL VARCHAR(255) null,className VARCHAR(255) null,content BLOB,contentType VARCHAR(75) null,endTime DATE null,errorMessage TEXT null,executeStatus VARCHAR(75) null,fieldNames STRING null,parameters TEXT null,processedItemsCount INTEGER,startTime DATE null,taskItemDelegateName VARCHAR(75) null,totalItemsCount INTEGER)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table BatchEngineExportTask";
@@ -299,9 +299,9 @@ public class BatchEngineExportTaskModelImpl
 			attributeGetterFunctions.put(
 				"errorMessage", BatchEngineExportTask::getErrorMessage);
 			attributeGetterFunctions.put(
-				"fieldNames", BatchEngineExportTask::getFieldNames);
-			attributeGetterFunctions.put(
 				"executeStatus", BatchEngineExportTask::getExecuteStatus);
+			attributeGetterFunctions.put(
+				"fieldNames", BatchEngineExportTask::getFieldNames);
 			attributeGetterFunctions.put(
 				"parameters", BatchEngineExportTask::getParameters);
 			attributeGetterFunctions.put(
@@ -390,13 +390,13 @@ public class BatchEngineExportTaskModelImpl
 				(BiConsumer<BatchEngineExportTask, String>)
 					BatchEngineExportTask::setErrorMessage);
 			attributeSetterBiConsumers.put(
-				"fieldNames",
-				(BiConsumer<BatchEngineExportTask, String>)
-					BatchEngineExportTask::setFieldNames);
-			attributeSetterBiConsumers.put(
 				"executeStatus",
 				(BiConsumer<BatchEngineExportTask, String>)
 					BatchEngineExportTask::setExecuteStatus);
+			attributeSetterBiConsumers.put(
+				"fieldNames",
+				(BiConsumer<BatchEngineExportTask, String>)
+					BatchEngineExportTask::setFieldNames);
 			attributeSetterBiConsumers.put(
 				"parameters",
 				(BiConsumer<BatchEngineExportTask, Map<String, Serializable>>)
@@ -738,26 +738,6 @@ public class BatchEngineExportTaskModelImpl
 
 	@JSON
 	@Override
-	public String getFieldNames() {
-		if (_fieldNames == null) {
-			return "";
-		}
-		else {
-			return _fieldNames;
-		}
-	}
-
-	@Override
-	public void setFieldNames(String fieldNames) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_fieldNames = fieldNames;
-	}
-
-	@JSON
-	@Override
 	public String getExecuteStatus() {
 		if (_executeStatus == null) {
 			return "";
@@ -783,6 +763,26 @@ public class BatchEngineExportTaskModelImpl
 	@Deprecated
 	public String getOriginalExecuteStatus() {
 		return getColumnOriginalValue("executeStatus");
+	}
+
+	@JSON
+	@Override
+	public String getFieldNames() {
+		if (_fieldNames == null) {
+			return "";
+		}
+		else {
+			return _fieldNames;
+		}
+	}
+
+	@Override
+	public void setFieldNames(String fieldNames) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_fieldNames = fieldNames;
 	}
 
 	@JSON
@@ -944,8 +944,8 @@ public class BatchEngineExportTaskModelImpl
 		batchEngineExportTaskImpl.setContentType(getContentType());
 		batchEngineExportTaskImpl.setEndTime(getEndTime());
 		batchEngineExportTaskImpl.setErrorMessage(getErrorMessage());
-		batchEngineExportTaskImpl.setFieldNames(getFieldNames());
 		batchEngineExportTaskImpl.setExecuteStatus(getExecuteStatus());
+		batchEngineExportTaskImpl.setFieldNames(getFieldNames());
 		batchEngineExportTaskImpl.setParameters(getParameters());
 		batchEngineExportTaskImpl.setProcessedItemsCount(
 			getProcessedItemsCount());
@@ -990,10 +990,10 @@ public class BatchEngineExportTaskModelImpl
 			this.<Date>getColumnOriginalValue("endTime"));
 		batchEngineExportTaskImpl.setErrorMessage(
 			this.<String>getColumnOriginalValue("errorMessage"));
-		batchEngineExportTaskImpl.setFieldNames(
-			this.<String>getColumnOriginalValue("fieldNames"));
 		batchEngineExportTaskImpl.setExecuteStatus(
 			this.<String>getColumnOriginalValue("executeStatus"));
+		batchEngineExportTaskImpl.setFieldNames(
+			this.<String>getColumnOriginalValue("fieldNames"));
 		batchEngineExportTaskImpl.setParameters(
 			this.<Map>getColumnOriginalValue("parameters"));
 		batchEngineExportTaskImpl.setProcessedItemsCount(
@@ -1174,20 +1174,20 @@ public class BatchEngineExportTaskModelImpl
 			batchEngineExportTaskCacheModel.errorMessage = null;
 		}
 
-		batchEngineExportTaskCacheModel.fieldNames = getFieldNames();
-
-		String fieldNames = batchEngineExportTaskCacheModel.fieldNames;
-
-		if ((fieldNames != null) && (fieldNames.length() == 0)) {
-			batchEngineExportTaskCacheModel.fieldNames = null;
-		}
-
 		batchEngineExportTaskCacheModel.executeStatus = getExecuteStatus();
 
 		String executeStatus = batchEngineExportTaskCacheModel.executeStatus;
 
 		if ((executeStatus != null) && (executeStatus.length() == 0)) {
 			batchEngineExportTaskCacheModel.executeStatus = null;
+		}
+
+		batchEngineExportTaskCacheModel.fieldNames = getFieldNames();
+
+		String fieldNames = batchEngineExportTaskCacheModel.fieldNames;
+
+		if ((fieldNames != null) && (fieldNames.length() == 0)) {
+			batchEngineExportTaskCacheModel.fieldNames = null;
 		}
 
 		batchEngineExportTaskCacheModel.parameters = getParameters();
@@ -1277,13 +1277,13 @@ public class BatchEngineExportTaskModelImpl
 
 		sb.append("\"" + getErrorMessage() + "\"");
 
-		sb.append(", \"fieldNames\": ");
-
-		sb.append("\"" + getFieldNames() + "\"");
-
 		sb.append(", \"executeStatus\": ");
 
 		sb.append("\"" + getExecuteStatus() + "\"");
+
+		sb.append(", \"fieldNames\": ");
+
+		sb.append("\"" + getFieldNames() + "\"");
 
 		sb.append(", \"parameters\": ");
 
@@ -1330,12 +1330,12 @@ public class BatchEngineExportTaskModelImpl
 	private boolean _setModifiedDate;
 	private String _callbackURL;
 	private String _className;
-	private BatchEngineExportTaskContentBlobModel _contentBlobModel;
+	private transient BatchEngineExportTaskContentBlobModel _contentBlobModel;
 	private String _contentType;
 	private Date _endTime;
 	private String _errorMessage;
-	private String _fieldNames;
 	private String _executeStatus;
+	private String _fieldNames;
 	private Map<String, Serializable> _parameters;
 	private int _processedItemsCount;
 	private Date _startTime;
@@ -1387,8 +1387,8 @@ public class BatchEngineExportTaskModelImpl
 		_columnOriginalValues.put("contentType", _contentType);
 		_columnOriginalValues.put("endTime", _endTime);
 		_columnOriginalValues.put("errorMessage", _errorMessage);
-		_columnOriginalValues.put("fieldNames", _fieldNames);
 		_columnOriginalValues.put("executeStatus", _executeStatus);
+		_columnOriginalValues.put("fieldNames", _fieldNames);
 		_columnOriginalValues.put("parameters", _parameters);
 		_columnOriginalValues.put("processedItemsCount", _processedItemsCount);
 		_columnOriginalValues.put("startTime", _startTime);
@@ -1446,9 +1446,9 @@ public class BatchEngineExportTaskModelImpl
 
 		columnBitmasks.put("errorMessage", 8192L);
 
-		columnBitmasks.put("fieldNames", 16384L);
+		columnBitmasks.put("executeStatus", 16384L);
 
-		columnBitmasks.put("executeStatus", 32768L);
+		columnBitmasks.put("fieldNames", 32768L);
 
 		columnBitmasks.put("parameters", 65536L);
 

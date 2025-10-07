@@ -161,8 +161,14 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 					</div>
 
 					<div class="col-lg-6">
-						<aui:input checked="<%= commerceChannelDisplayContext.isGuestCheckoutEnabled() %>" helpMessage="configures-whether-a-guest-may-checkout-by-providing-an-email-address-or-if-they-must-sign-in" label="guest-checkout" labelOff="disabled" labelOn="enabled" name="settings--guestCheckoutEnabled--" type="toggle-switch" />
+						<aui:input checked="<%= commerceChannelDisplayContext.isGuestCheckoutEnabled() %>" helpMessage="configures-whether-a-guest-may-check-out-by-providing-an-email-address-or-if-they-must-sign-in" label="guest-checkout" labelOff="disabled" labelOn="enabled" name="settings--guestCheckoutEnabled--" type="toggle-switch" />
 					</div>
+
+					<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-58472") %>'>
+						<div class="col-lg-6">
+							<aui:input checked="<%= commerceChannelDisplayContext.isOrderSelectionDisabled() %>" helpMessage="configures-whether-the-list-of-open-orders-can-be-hidden-from-the-account-selector" label="hide-orders-list-view-in-the-account-selector" labelOff="disabled" labelOn="enabled" name="settings--orderSelectionDisabled--" type="toggle-switch" />
+						</div>
+					</c:if>
 
 					<div class="col-lg-6">
 						<aui:input checked="<%= commerceChannelDisplayContext.isRequestQuoteEnabled() %>" helpMessage="allow-buyers-to-request-a-quote-when-no-product-in-the-cart-is-priced-as-price-on-application" label="allow-request-a-quote-on-a-fully-priced-cart" labelOff="disabled" labelOn="enabled" name="orderSettings--requestQuoteEnabled--" type="toggle-switch" />
@@ -173,6 +179,14 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 							<aui:input checked="<%= commerceChannelDisplayContext.isQuickCheckoutEnabled() %>" helpMessage="allow-customers-to-complete-purchases-with-a-single-click-if-all-required-information-is-provided-in-the-order-streamlining-the-checkout-process" label="quick-checkout" labelOff="disabled" labelOn="enabled" name="settings--quickCheckoutEnabled--" type="toggle-switch" />
 						</div>
 					</c:if>
+
+					<div class="col-lg-6">
+						<aui:input checked="<%= commerceChannelDisplayContext.isSlowConnectionOrderFlowEnabled() %>" helpMessage="allow-an-overlay-to-be-displayed-when-adding-items-to-the-cart,-helping-manage-slow-connections" label="slow-connection-order-flow-enabled" labelOff="disabled" labelOn="enabled" name="settings--slowConnectionOrderFlowEnabled--" type="toggle-switch" />
+					</div>
+
+					<div class="col-lg-6">
+						<aui:input checked="<%= commerceChannelDisplayContext.isUndoCartItemDeletionDisabled() %>" helpMessage="configures-whether-a-buyer-can-undo-the-deletion-of-an-item-from-the-mini-cart" label="undo-cart-item-deletion-disabled" labelOff="disabled" labelOn="enabled" name="settings--undoCartItemDeletionDisabled--" type="toggle-switch" />
+					</div>
 				</div>
 
 				<div class="row">
@@ -258,7 +272,7 @@ Map<String, String> contextParams = HashMapBuilder.<String, String>put(
 	title='<%= LanguageUtil.get(request, "payment-methods") %>'
 >
 	<div>
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35941") && commerceChannelDisplayContext.hasAddPaymentMethodsPermission() %>'>
+		<c:if test="<%= commerceChannelDisplayContext.hasAddPaymentMethodsPermission() %>">
 			<div>
 				<react:component
 					module="{CommerceChannelAddPaymentMethod} from commerce-channel-web"

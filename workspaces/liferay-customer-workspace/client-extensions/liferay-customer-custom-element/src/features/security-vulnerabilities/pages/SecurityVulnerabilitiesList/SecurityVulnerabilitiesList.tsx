@@ -175,12 +175,6 @@ const SecurityVulnerabilitiesList = () => {
 							/>
 
 							<SVPanel
-								link="https://help.liferay.com/hc/articles/360018875952"
-								linkText="visit-our-help-center"
-								text="for-information-on-previously-addressed-cves-fixed-in-dxp-2024-q1-1-or-earlier-please-x"
-							/>
-
-							<SVPanel
 								link="https://www.subscribepage.com/liferay"
 								linkText="subscribe-here"
 								text="for-the-latest-support-announcements-on-critical-security-vulnerabilities-x"

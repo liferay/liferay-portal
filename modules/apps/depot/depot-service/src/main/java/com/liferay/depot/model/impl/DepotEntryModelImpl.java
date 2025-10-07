@@ -68,7 +68,8 @@ public class DepotEntryModelImpl
 		{"uuid_", Types.VARCHAR}, {"depotEntryId", Types.BIGINT},
 		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
-		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP}
+		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"type_", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -85,10 +86,11 @@ public class DepotEntryModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DepotEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,depotEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,primary key (depotEntryId, ctCollectionId))";
+		"create table DepotEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,depotEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,type_ INTEGER,primary key (depotEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table DepotEntry";
 
@@ -120,14 +122,20 @@ public class DepotEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 4L;
+	public static final long TYPE_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long UUID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long DEPOTENTRYID_COLUMN_BITMASK = 8L;
+	public static final long DEPOTENTRYID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -251,6 +259,7 @@ public class DepotEntryModelImpl
 				"createDate", DepotEntry::getCreateDate);
 			attributeGetterFunctions.put(
 				"modifiedDate", DepotEntry::getModifiedDate);
+			attributeGetterFunctions.put("type", DepotEntry::getType);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -295,6 +304,8 @@ public class DepotEntryModelImpl
 			attributeSetterBiConsumers.put(
 				"modifiedDate",
 				(BiConsumer<DepotEntry, Date>)DepotEntry::setModifiedDate);
+			attributeSetterBiConsumers.put(
+				"type", (BiConsumer<DepotEntry, Integer>)DepotEntry::setType);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -512,6 +523,31 @@ public class DepotEntryModelImpl
 		_modifiedDate = modifiedDate;
 	}
 
+	@JSON
+	@Override
+	public int getType() {
+		return _type;
+	}
+
+	@Override
+	public void setType(int type) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_type = type;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public int getOriginalType() {
+		return GetterUtil.getInteger(
+			this.<Integer>getColumnOriginalValue("type_"));
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -584,6 +620,7 @@ public class DepotEntryModelImpl
 		depotEntryImpl.setUserName(getUserName());
 		depotEntryImpl.setCreateDate(getCreateDate());
 		depotEntryImpl.setModifiedDate(getModifiedDate());
+		depotEntryImpl.setType(getType());
 
 		depotEntryImpl.resetOriginalValues();
 
@@ -611,6 +648,7 @@ public class DepotEntryModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		depotEntryImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		depotEntryImpl.setType(this.<Integer>getColumnOriginalValue("type_"));
 
 		return depotEntryImpl;
 	}
@@ -734,6 +772,8 @@ public class DepotEntryModelImpl
 			depotEntryCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		depotEntryCacheModel.type = getType();
+
 		return depotEntryCacheModel;
 	}
 
@@ -806,6 +846,7 @@ public class DepotEntryModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private int _type;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -847,6 +888,7 @@ public class DepotEntryModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("type_", _type);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -855,6 +897,7 @@ public class DepotEntryModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("uuid_", "uuid");
+		attributeNames.put("type_", "type");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -889,6 +932,8 @@ public class DepotEntryModelImpl
 		columnBitmasks.put("createDate", 256L);
 
 		columnBitmasks.put("modifiedDate", 512L);
+
+		columnBitmasks.put("type_", 1024L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

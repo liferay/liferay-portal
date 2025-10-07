@@ -127,7 +127,7 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	public static final long IMAGEID_COLUMN_BITMASK = 2L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.Image"));
 
 	public ImageModelImpl() {

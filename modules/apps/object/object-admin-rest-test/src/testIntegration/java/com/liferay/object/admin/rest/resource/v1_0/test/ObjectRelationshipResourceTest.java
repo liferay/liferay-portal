@@ -282,11 +282,36 @@ public class ObjectRelationshipResourceTest
 
 	@Override
 	protected ObjectRelationship
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectRelationshipsPageObjectDefinitionObjectRelationship_addObjectRelationship(
+				String externalReferenceCode,
+				ObjectRelationship objectRelationship)
+		throws Exception {
+
+		return testPostObjectDefinitionObjectRelationship_addObjectRelationship(
+			randomObjectRelationship());
+	}
+
+	@Override
+	protected ObjectRelationship
 			testGraphQLObjectRelationship_addObjectRelationship()
 		throws Exception {
 
 		return testPostObjectDefinitionObjectRelationship_addObjectRelationship(
 			randomObjectRelationship());
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectRelationship_getObjectDefinitionId() {
+
+		return _objectDefinition1.getObjectDefinitionId();
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionObjectRelationship_getObjectDefinitionId() {
+
+		return _objectDefinition1.getObjectDefinitionId();
 	}
 
 	@Override

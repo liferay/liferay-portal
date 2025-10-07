@@ -1,19 +1,19 @@
 {
 	"dependencies": {
-		"@clayui/badge": "3.128.0",
-		"@clayui/button": "3.136.0",
-		"@clayui/card": "3.139.1",
-		"@clayui/drop-down": "3.139.1",
-		"@clayui/empty-state": "3.128.0",
-		"@clayui/form": "3.139.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/label": "3.128.0",
-		"@clayui/layout": "3.128.0",
-		"@clayui/list": "3.139.1",
-		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/pagination": "3.139.1",
-		"@clayui/pagination-bar": "3.139.1",
-		"@clayui/table": "3.111.0",
+		"@clayui/badge": "3.144.1",
+		"@clayui/button": "3.144.1",
+		"@clayui/card": "3.149.0",
+		"@clayui/drop-down": "3.149.0",
+		"@clayui/empty-state": "3.144.1",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
+		"@clayui/label": "3.144.1",
+		"@clayui/layout": "3.144.1",
+		"@clayui/list": "3.149.0",
+		"@clayui/loading-indicator": "3.144.1",
+		"@clayui/pagination": "3.149.0",
+		"@clayui/pagination-bar": "3.149.0",
+		"@clayui/table": "3.144.1",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"formik": "2.1.4",
@@ -44,5 +44,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.84"
+	"version": "1.0.91"
 }

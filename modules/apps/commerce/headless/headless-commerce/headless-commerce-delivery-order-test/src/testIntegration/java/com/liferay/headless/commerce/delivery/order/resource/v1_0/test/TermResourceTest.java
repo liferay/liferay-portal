@@ -191,30 +191,10 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetPlacedOrderByExternalReferenceCodeDeliveryTermNotFound()
-		throws Exception {
-
-		super.
-			testGraphQLGetPlacedOrderByExternalReferenceCodeDeliveryTermNotFound();
-	}
-
-	@Ignore
-	@Override
-	@Test
 	public void testGraphQLGetPlacedOrderByExternalReferenceCodePaymentTerm()
 		throws Exception {
 
 		super.testGraphQLGetPlacedOrderByExternalReferenceCodePaymentTerm();
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetPlacedOrderByExternalReferenceCodePaymentTermNotFound()
-		throws Exception {
-
-		super.
-			testGraphQLGetPlacedOrderByExternalReferenceCodePaymentTermNotFound();
 	}
 
 	@Ignore
@@ -227,26 +207,8 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetPlacedOrderDeliveryTermNotFound()
-		throws Exception {
-
-		super.testGraphQLGetPlacedOrderDeliveryTermNotFound();
-	}
-
-	@Ignore
-	@Override
-	@Test
 	public void testGraphQLGetPlacedOrderPaymentTerm() throws Exception {
 		super.testGraphQLGetPlacedOrderPaymentTerm();
-	}
-
-	@Ignore
-	@Override
-	@Test
-	public void testGraphQLGetPlacedOrderPaymentTermNotFound()
-		throws Exception {
-
-		super.testGraphQLGetPlacedOrderPaymentTermNotFound();
 	}
 
 	@Override

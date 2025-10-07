@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Repository External API
 Bundle-SymbolicName: com.liferay.document.library.repository.external.api
-Bundle-Version: 11.0.3
+Bundle-Version: 11.1.1
 Export-Package:\
 	com.liferay.document.library.repository.external,\
 	com.liferay.document.library.repository.external.cache,\

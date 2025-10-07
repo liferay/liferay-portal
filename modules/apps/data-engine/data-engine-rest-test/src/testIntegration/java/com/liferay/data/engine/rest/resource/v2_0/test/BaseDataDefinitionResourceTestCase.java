@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -56,7 +57,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -287,7 +287,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 							put("dataDefinitionId", dataDefinition1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -327,7 +327,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 									dataDefinition2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -415,6 +415,132 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		DataDefinition dataDefinition1 =
+			testGraphQLDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteSiteDataDefinitionByContentTypeByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteKey",
+									"\"" + dataDefinition1.getSiteId() + "\"");
+								put(
+									"contentType",
+									"\"" + dataDefinition1.getContentType() +
+										"\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										dataDefinition1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteSiteDataDefinitionByContentTypeByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"dataDefinitionByContentTypeByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"siteKey",
+								"\"" + dataDefinition1.getSiteId() + "\"");
+							put(
+								"contentType",
+								"\"" + dataDefinition1.getContentType() + "\"");
+							put(
+								"externalReferenceCode",
+								"\"" +
+									dataDefinition1.getExternalReferenceCode() +
+										"\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace dataEngine_v2_0
+
+		DataDefinition dataDefinition2 =
+			testGraphQLDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"dataEngine_v2_0",
+						new GraphQLField(
+							"deleteSiteDataDefinitionByContentTypeByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteKey",
+										"\"" + dataDefinition2.getSiteId() +
+											"\"");
+									put(
+										"contentType",
+										"\"" +
+											dataDefinition2.getContentType() +
+												"\"");
+									put(
+										"externalReferenceCode",
+										"\"" +
+											dataDefinition2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/dataEngine_v2_0",
+				"Object/deleteSiteDataDefinitionByContentTypeByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"dataEngine_v2_0",
+					new GraphQLField(
+						"dataDefinitionByContentTypeByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteKey",
+									"\"" + dataDefinition2.getSiteId() + "\"");
+								put(
+									"contentType",
+									"\"" + dataDefinition2.getContentType() +
+										"\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										dataDefinition2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected DataDefinition
+			testGraphQLDeleteSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
+		throws Exception {
+
+		return testGraphQLSiteDataDefinition_addDataDefinition();
 	}
 
 	@Test
@@ -1294,7 +1420,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGraphQLGetSiteDataDefinitionByContentTypeByDataDefinitionKey_addDataDefinition()
 		throws Exception {
 
-		return testGraphQLDataDefinition_addDataDefinition();
+		return testGraphQLSiteDataDefinition_addDataDefinition();
 	}
 
 	@Test
@@ -1464,7 +1590,7 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			testGraphQLGetSiteDataDefinitionByContentTypeByExternalReferenceCode_addDataDefinition()
 		throws Exception {
 
-		return testGraphQLDataDefinition_addDataDefinition();
+		return testGraphQLSiteDataDefinition_addDataDefinition();
 	}
 
 	@Test
@@ -2162,6 +2288,13 @@ public abstract class BaseDataDefinitionResourceTestCase {
 			"This method needs to be implemented");
 	}
 
+	protected DataDefinition testGraphQLSiteDataDefinition_addDataDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected void assertContains(
 		DataDefinition dataDefinition, List<DataDefinition> dataDefinitions) {
 
@@ -2421,6 +2554,10 @@ public abstract class BaseDataDefinitionResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 

@@ -428,10 +428,10 @@ public interface OrganizationLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Organization getOrAddIncompleteOrganization(
+	public Organization getOrAddEmptyOrganization(
 			String externalReferenceCode, long companyId, long userId,
 			String name)
-		throws Exception;
+		throws PortalException;
 
 	/**
 	 * Returns the organization with the primary key.
@@ -601,6 +601,9 @@ public interface OrganizationLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getOrganizationsAndUsersCount(
 		long companyId, long parentOrganizationId, int status);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Organization> getOrganizationsByLogoId(long logoId);
 
 	/**
 	 * Returns the number of organizations.

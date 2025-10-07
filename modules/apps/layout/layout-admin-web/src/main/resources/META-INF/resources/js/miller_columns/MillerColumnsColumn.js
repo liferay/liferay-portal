@@ -64,17 +64,17 @@ const MillerColumnsColumn = ({
 	onItemDrop,
 	getItemChildren,
 	index,
-	parent,
 	rtl,
 }) => {
 	const ref = useRef();
+	const lastColumnItem = columnItems[columnItems.length - 1];
 
 	const [{canDrop}, drop] = useDrop({
 		accept: ACCEPTING_TYPES.ITEM,
 		canDrop(source, monitor) {
 			return (
 				monitor.isOver({shallow: true}) &&
-				isValidTarget(source.items, parent)
+				isValidTarget(source.items, lastColumnItem)
 			);
 		},
 		collect: (monitor) => ({
@@ -82,7 +82,7 @@ const MillerColumnsColumn = ({
 		}),
 		drop(source) {
 			if (canDrop) {
-				onItemDrop(source.items, parent, columnItems.length);
+				onItemDrop(source.items, lastColumnItem);
 			}
 		},
 		hover(source, monitor) {

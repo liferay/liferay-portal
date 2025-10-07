@@ -29,8 +29,8 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 			getCastClobTextFunction(), getCastDecimalFunction(),
 			getCastLongFunction(), getCastTextFunction(), getConcatFunction(),
 			getDropTableIfExistsTextFunction(), getIntegerDivisionFunction(),
-			getNullDateFunction(), _getCaseWhenThenFunction(),
-			_getLikeFunction(), _getSelectFunction()
+			getNullDateFunction(), getTruncateTableFunction(),
+			_getCaseWhenThenFunction(), _getLikeFunction(), _getSelectFunction()
 		};
 
 		if (!db.isSupportsStringCaseSensitiveQuery()) {
@@ -56,11 +56,14 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	@Override
 	protected String replaceDropTableIfExistsText(Matcher matcher) {
-		String dropTableIfExists = StringBundler.concat(
-			"BEGIN\n", "DECLARE CONTINUE HANDLER FOR SQLSTATE '42704'\n",
-			"BEGIN END;\n", "EXECUTE IMMEDIATE 'DROP TABLE $1';\n", "END");
+		return matcher.replaceAll(
+			"BEGIN\nDECLARE CONTINUE HANDLER FOR SQLSTATE '42704'\nBEGIN " +
+				"END;\nEXECUTE IMMEDIATE 'DROP TABLE $1';\nEND");
+	}
 
-		return matcher.replaceAll(dropTableIfExists);
+	@Override
+	protected String replaceTruncateTable(Matcher matcher) {
+		return matcher.replaceAll("TRUNCATE TABLE $1 IMMEDIATE");
 	}
 
 	private Function<String, String> _getCaseWhenThenFunction() {
@@ -96,24 +99,14 @@ public class DB2SQLTransformerLogic extends BaseSQLTransformerLogic {
 
 			sb.append(
 				StringUtil.replace(
-					matcher.group(),
+					matcher.group(), new String[] {" ?,", " ? "},
 					new String[] {
-						StringBundler.concat(
-							StringPool.SPACE, StringPool.QUESTION,
-							StringPool.COMMA),
-						StringBundler.concat(
-							StringPool.SPACE, StringPool.QUESTION,
-							StringPool.SPACE)
-					},
-					new String[] {
-						StringBundler.concat(
-							StringPool.SPACE,
-							_QUESTION_PARAMETER_MARKER_REPLACEMENT,
-							StringPool.COMMA),
-						StringBundler.concat(
-							StringPool.SPACE,
-							_QUESTION_PARAMETER_MARKER_REPLACEMENT,
-							StringPool.SPACE)
+						StringPool.SPACE +
+							_QUESTION_PARAMETER_MARKER_REPLACEMENT +
+								StringPool.COMMA,
+						StringPool.SPACE +
+							_QUESTION_PARAMETER_MARKER_REPLACEMENT +
+								StringPool.SPACE
 					}));
 
 			index = matcher.end();

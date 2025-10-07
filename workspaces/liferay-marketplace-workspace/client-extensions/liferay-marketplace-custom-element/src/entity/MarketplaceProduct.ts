@@ -62,27 +62,24 @@ export class MarketplaceProduct extends MarketplaceDeliveryProduct {
 			.map((sku) => sku.id);
 
 		for (const priceList of priceLists) {
-			const priceListEntries =
+			const {items: priceEntries} =
 				await HeadlessCommerceAdminPricing.getPriceListEntries(
 					priceList.id,
 					new URLSearchParams({
+						filter: SearchBuilder.in('skuId', productSkus),
 						nestedFields: 'priceEntry',
 					})
 				);
 
-			const filteredPriceEntries = priceListEntries.items.filter(
-				(priceEntry) => productSkus.includes(priceEntry.skuId)
-			);
-
 			const tierPricesItems = await Promise.all(
-				filteredPriceEntries.map((priceEntry) =>
+				priceEntries.map((priceEntry) =>
 					HeadlessCommerceAdminPricing.getTierPricesByPriceEntryId(
 						priceEntry.priceEntryId
 					).then(({items}) => items)
 				)
 			);
 
-			for (const [index, priceEntry] of filteredPriceEntries.entries()) {
+			for (const [index, priceEntry] of priceEntries.entries()) {
 				const tierPrices = tierPricesItems[index];
 
 				const sku = product!.skus.find(

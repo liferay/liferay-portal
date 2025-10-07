@@ -5,12 +5,14 @@
 
 package com.liferay.portal.search.internal.background.task;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.background.task.ReindexBackgroundTaskConstants;
 import com.liferay.portal.kernel.search.background.task.ReindexStatusMessageSender;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.search.spi.reindexer.IndexReindexerRegistry;
@@ -73,32 +75,37 @@ public class ReindexIndexReindexerBackgroundTaskExecutor
 		throws Exception {
 
 		for (long companyId : companyIds) {
-			if (startPhase != null) {
-				_reindexStatusMessageSender.sendStatusMessage(
-					startPhase, companyId, companyIds);
-			}
+			try (SafeCloseable safeCloseable =
+					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+						companyId)) {
 
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"Start reindexing company ", companyId,
-						" for class name ", className, " with execution mode ",
-						executionMode));
-			}
+				if (startPhase != null) {
+					_reindexStatusMessageSender.sendStatusMessage(
+						startPhase, companyId, companyIds);
+				}
 
-			indexReindexer.reindex(companyId, executionMode);
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Start reindexing company ", companyId,
+							" for class name ", className,
+							" with execution mode ", executionMode));
+				}
 
-			if (endPhase != null) {
-				_reindexStatusMessageSender.sendStatusMessage(
-					endPhase, companyId, companyIds);
-			}
+				indexReindexer.reindex(companyId, executionMode);
 
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					StringBundler.concat(
-						"Finished reindexing company ", companyId,
-						" for class name ", className, " with execution mode ",
-						executionMode));
+				if (endPhase != null) {
+					_reindexStatusMessageSender.sendStatusMessage(
+						endPhase, companyId, companyIds);
+				}
+
+				if (_log.isInfoEnabled()) {
+					_log.info(
+						StringBundler.concat(
+							"Finished reindexing company ", companyId,
+							" for class name ", className,
+							" with execution mode ", executionMode));
+				}
 			}
 		}
 	}

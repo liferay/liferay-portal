@@ -27,6 +27,7 @@ export default async function bundleJavaScriptMain(
 	globalImports,
 	languageJSON,
 	overridenPackageSymbols,
+	projectAlias,
 	projectDescription,
 	projectEntryPoints,
 	projectWebContextPath
@@ -38,6 +39,7 @@ export default async function bundleJavaScriptMain(
 	}
 
 	const esbuildConfig = {
+		alias: projectAlias,
 		bundle: true,
 		entryPoints: [
 			...Object.keys(submodules).map((submoduleName) => ({

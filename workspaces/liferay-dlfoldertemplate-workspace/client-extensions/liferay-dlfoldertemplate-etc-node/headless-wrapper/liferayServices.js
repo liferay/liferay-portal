@@ -14,7 +14,7 @@ const lxcDXPServerProtocol = lxcConfig.dxpProtocol();
 
 const oauth2JWKSURI = `${lxcDXPServerProtocol}://${lxcDXPMainDomain}`;
 
-const folderTemplateNodesEndPoint = lookupConfig(
+const folderTemplateNodesEndpoint = lookupConfig(
 	'folder.template.nodes.end.point'
 );
 
@@ -33,7 +33,7 @@ export async function getFolderTemplateNodesPage(templateID) {
 		};
 
 		fetch(
-			`${oauth2JWKSURI}${folderTemplateNodesEndPoint}?filter=templateId eq ${templateID}&page=0`,
+			`${oauth2JWKSURI}${folderTemplateNodesEndpoint}?filter=templateId eq ${templateID}&page=0`,
 			requestOptions
 		)
 			.then((response) => response.json())

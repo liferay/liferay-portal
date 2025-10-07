@@ -97,6 +97,12 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLDeleteSXPElement() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetSXPElement() throws Exception {
 	}
 
@@ -118,6 +124,36 @@ public class SXPElementResourceTest extends BaseSXPElementResourceTestCase {
 	@Override
 	@Test
 	public void testGraphQLGetSXPElementNotFound() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetSXPElementsPage() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostSXPElement() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostSXPElementCopy() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostSXPElementPreview() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostSXPElementValidate() throws Exception {
 	}
 
 	@Override

@@ -278,6 +278,21 @@ public class LayoutTestUtil {
 		return LayoutLocalServiceUtil.updateLayout(layout);
 	}
 
+	public static Layout addTypeEmptyLayout(Group group) throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId());
+
+		serviceContext.setAttribute(
+			"layout.instanceable.allowed", Boolean.TRUE);
+
+		return LayoutLocalServiceUtil.addLayout(
+			null, TestPropsValues.getUserId(), group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), StringPool.BLANK, StringPool.BLANK,
+			LayoutConstants.TYPE_EMPTY, true, StringPool.BLANK, serviceContext);
+	}
+
 	public static Layout addTypeFullPageApplicationLayout(long groupId)
 		throws Exception {
 

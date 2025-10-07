@@ -560,13 +560,13 @@ definition {
 			locator1 = "SiteSettingsDisplaySettings#LANGUAGES_RADIO");
 
 		if (isSet(currentSiteLanguages)) {
-			while (IsElementPresent(index = 1, key_position = "right", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
+			while (IsElementPresent(index = 1, key_position = "left", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
 				Click(
 					index = 1,
-					key_position = "right",
+					key_position = "left",
 					locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
 
-				Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_RIGHT_TO_LEFT");
+				Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_LEFT_TO_RIGHT");
 			}
 
 			var defaultSiteLanguage = ${defaultSiteLanguage};
@@ -575,24 +575,24 @@ definition {
 				locator1 = "SiteSettingsDisplaySettings#DEFAULT_LANGUAGE_SELECT_FIELD",
 				value1 = ${defaultSiteLanguage});
 
-			while (IsElementPresent(index = 2, key_position = "left", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
-				var currentSiteLanguage = selenium.getText("//div[contains(@class,'listbox-left')]//select/option");
+			while (IsElementPresent(index = 2, key_position = "right", locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION")) {
+				var currentSiteLanguage = selenium.getText("//div[contains(@class,'listbox-right')]//select/option");
 
 				if (${currentSiteLanguage} == ${defaultSiteLanguage}) {
 					Click(
 						index = 2,
-						key_position = "left",
+						key_position = "right",
 						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
 
-					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_LEFT_TO_RIGHT");
+					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_RIGHT_TO_LEFT");
 				}
 				else {
 					Click(
 						index = 1,
-						key_position = "left",
+						key_position = "right",
 						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_OPTION");
 
-					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_LEFT_TO_RIGHT");
+					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_RIGHT_TO_LEFT");
 				}
 			}
 
@@ -600,13 +600,13 @@ definition {
 				if (${currentSiteLanguage} != ${defaultSiteLanguage}) {
 					DoubleClick(
 						key_optionValue = ${currentSiteLanguage},
-						key_position = "right",
+						key_position = "left",
 						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_SPECIFIC_OPTION");
 
-					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_RIGHT_TO_LEFT");
+					Click(locator1 = "SiteSettingsDisplaySettings#TRANSFER_ITEM_LEFT_TO_RIGHT");
 
 					AssertTextEquals.assertPartialText(
-						key_position = "left",
+						key_position = "right",
 						locator1 = "SiteSettingsDisplaySettings#LANGUAGES_SELECT_FIELD",
 						value1 = ${currentSiteLanguage});
 				}
@@ -1146,13 +1146,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro searchCP(siteName = null) {
-		Search.searchCP(searchTerm = ${siteName});
-
-		Site.viewSearchResultsCP(siteName = ${siteName});
-	}
-
-	@summary = "Default summary"
 	macro searchMemberCP(userLastNameSearchValue = null, userScreenNameSearchValue = null, userEmailAddressSearchValue = null, userLastName = null, userScreenName = null, userFirstNameSearchValue = null, userFirstName = null) {
 		var searchTerm = ${userEmailAddressSearchValue};
 
@@ -1212,38 +1205,6 @@ definition {
 		}
 
 		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
-	macro selectParentSite(parentSiteName = null, chooseButtonAvailable = null) {
-		Click(
-			key_itemName = "Site Configuration",
-			locator1 = "ListGroupItem#ITEM_TEXT");
-
-		Click(
-			key_fieldLabel = "Parent Site",
-			key_text = "Change",
-			locator1 = "Button#ANY_WITH_LABEL");
-
-		var key_parentSiteName = ${parentSiteName};
-
-		SelectFrame(locator1 = "SitesSelectSite#SELECT_SITE_IFRAME");
-
-		Search.searchCP(searchTerm = ${parentSiteName});
-
-		if (${chooseButtonAvailable} == "false") {
-			AssertElementNotPresent(
-				key_parentSiteName = ${parentSiteName},
-				locator1 = "SitesSelectSite#SITES_TABLE_NAME");
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "Message#EMPTY_INFO",
-				value1 = "No sites were found.");
-		}
-
-		Close(locator1 = "null");
-
-		SelectFrame(value1 = "relative=top");
 	}
 
 	@summary = "Default summary"
@@ -1358,19 +1319,6 @@ definition {
 		}
 
 		SelectFrameTop();
-	}
-
-	@summary = "Default summary"
-	macro viewChildCP(siteName = null, childSiteName = null) {
-		Site.viewCP(siteName = ${siteName});
-
-		LexiconTable.clickEllipsisItem(
-			item = "View Child Sites",
-			tableEntry = ${siteName});
-
-		Breadcrumb.viewActiveEntry(breadcrumbName = ${siteName});
-
-		Site.viewCP(siteName = ${childSiteName});
 	}
 
 	@summary = "Default summary"
@@ -1617,26 +1565,6 @@ definition {
 			key_menuItem = "Delete",
 			locator1 = "MenuItem#ANY_MENU_ITEM",
 			value1 = "Delete");
-	}
-
-	@summary = "Default summary"
-	macro viewSiteClonedFromSiteTemplateCP(clonedFromTemplate = null, siteTemplateName = null) {
-		Click(
-			key_itemName = "Other",
-			locator1 = "ListGroupItem#ITEM_TEXT");
-
-		Navigator.gotoNavTab(navTab = "Site Template");
-
-		if (${clonedFromTemplate} == "true") {
-			AssertTextEquals.assertPartialText(
-				locator1 = "SiteSettingsSiteTemplate#CONTENT_CONTAINER",
-				value1 = "These pages are linked to site template ${siteTemplateName} without propagation of changes.");
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				locator1 = "SiteSettingsSiteTemplate#CONTENT_CONTAINER",
-				value1 = "This site is not related to a site template.");
-		}
 	}
 
 	@summary = "Default summary"

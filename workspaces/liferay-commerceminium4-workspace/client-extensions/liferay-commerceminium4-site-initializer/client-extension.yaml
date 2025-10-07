@@ -1,10 +1,10 @@
 liferay-commerceminium4-site-initializer:
     name: Liferay Commerce Minium 4 Site Initializer
-    oAuthApplicationHeadlessServer: liferay-commerceminium4-site-initializer-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-commerceminium4-site-initializer-oahs
     siteExternalReferenceCode: LIFERAY_COMMERCE_MINIUM_4
     siteName: Liferay Commerce Minium 4
     type: siteInitializer
-liferay-commerceminium4-site-initializer-oauth-application-headless-server:
+liferay-commerceminium4-site-initializer-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Commerce Minium 4 Site Initializer OAuth Application Headless Server

@@ -1492,6 +1492,13 @@ public class JournalArticleServiceUtil {
 		getService().restoreArticleFromTrash(groupId, articleId);
 	}
 
+	public static JournalArticle revertArticle(
+			long groupId, String articleId, double version)
+		throws PortalException {
+
+		return getService().revertArticle(groupId, articleId, version);
+	}
+
 	public static void subscribe(long groupId, long articleId)
 		throws PortalException {
 

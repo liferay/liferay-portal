@@ -6,9 +6,8 @@
 	background: inherit;
 	border: none;
 	border-radius: var(--border-radius-sm);
-	transition-duration: 0.2s, 0.2s, 0.2s;
-	transition-property: background-color, color, opacity;
-	transition-timing-function: ease, ease, ease;
+	height: 40px;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .account .account-info .user-icon {
@@ -42,18 +41,19 @@
 
 .account .account-info[aria-expanded='true'] .account-dropdown-icon svg {
 	opacity: 0.7;
-	transform: rotate(180deg);
-	transition: transform 0.5s;
+	transform: rotateX(180deg);
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .account .account-info[aria-expanded='false'] .account-dropdown-icon svg {
 	opacity: 0.7;
-	transform: rotate(360deg);
-	transition: transform 0.5s;
+	transform: rotateX(360deg);
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .account .account-info:hover {
 	background-color: #edf3fe !important;
+	border-radius: 8px;
 }
 
 .account .account-info:hover .user-icon,
@@ -73,7 +73,7 @@
 }
 
 .account .account-dropdown {
-	left: -170px !important;
+	left: -117px !important;
 }
 
 .account .account-dropdown .account-configurables {
@@ -109,4 +109,8 @@
 
 .account .account-dropdown .dropdown-option-text {
 	font-size: 16px;
+}
+
+.account .dropdown-menu {
+	min-width: 180px !important;
 }

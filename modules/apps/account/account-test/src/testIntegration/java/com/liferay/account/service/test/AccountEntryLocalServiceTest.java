@@ -735,12 +735,12 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteAccountEntry() throws Exception {
+	public void testGetOrAddEmptyAccountEntry() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_accountEntryLocalService.getOrAddIncompleteAccountEntry(
+			_accountEntryLocalService.getOrAddEmptyAccountEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
@@ -757,14 +757,14 @@ public class AccountEntryLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getOrAddIncompleteAccountEntry(
+				_accountEntryLocalService.getOrAddEmptyAccountEntry(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 
 			_assertStatus(
-				accountEntry, WorkflowConstants.STATUS_INCOMPLETE,
+				accountEntry, WorkflowConstants.STATUS_EMPTY,
 				TestPropsValues.getUser());
 			Assert.assertFalse(_hasWorkflowInstance(accountEntry));
 		}
@@ -777,14 +777,14 @@ public class AccountEntryLocalServiceTest {
 			_enableWorkflow();
 
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getOrAddIncompleteAccountEntry(
+				_accountEntryLocalService.getOrAddEmptyAccountEntry(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 
 			_assertStatus(
-				accountEntry, WorkflowConstants.STATUS_INCOMPLETE,
+				accountEntry, WorkflowConstants.STATUS_EMPTY,
 				TestPropsValues.getUser());
 			Assert.assertFalse(_hasWorkflowInstance(accountEntry));
 		}
@@ -1366,14 +1366,14 @@ public class AccountEntryLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getOrAddIncompleteAccountEntry(
+				_accountEntryLocalService.getOrAddEmptyAccountEntry(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 
 			_assertStatus(
-				accountEntry, WorkflowConstants.STATUS_INCOMPLETE,
+				accountEntry, WorkflowConstants.STATUS_EMPTY,
 				TestPropsValues.getUser());
 			Assert.assertFalse(_hasWorkflowInstance(accountEntry));
 
@@ -1399,14 +1399,14 @@ public class AccountEntryLocalServiceTest {
 			_enableWorkflow();
 
 			AccountEntry accountEntry =
-				_accountEntryLocalService.getOrAddIncompleteAccountEntry(
+				_accountEntryLocalService.getOrAddEmptyAccountEntry(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 
 			_assertStatus(
-				accountEntry, WorkflowConstants.STATUS_INCOMPLETE,
+				accountEntry, WorkflowConstants.STATUS_EMPTY,
 				TestPropsValues.getUser());
 			Assert.assertFalse(_hasWorkflowInstance(accountEntry));
 

@@ -48,7 +48,8 @@ public class ViewVocabulariesDisplayContext {
 	}
 
 	public String getAPIURL() {
-		return "/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies";
+		return "/o/headless-admin-taxonomy/v1.0/sites/" +
+			_themeDisplay.getScopeGroupId() + "/taxonomy-vocabularies";
 	}
 
 	public List<AssetRendererFactory<?>> getAvailableAssetRendererFactories() {
@@ -94,7 +95,7 @@ public class ViewVocabulariesDisplayContext {
 					PortalUtil.getLayoutFullURL(
 						LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/new_vocabulary"),
+							"/categorization/new-vocabulary"),
 						_themeDisplay));
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "new-vocabulary"));
@@ -122,7 +123,7 @@ public class ViewVocabulariesDisplayContext {
 		String fullLayoutURL = PortalUtil.getLayoutFullURL(
 			LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 				_themeDisplay.getScopeGroupId(), false,
-				"/categorization/edit_vocabulary"),
+				"/categorization/edit-vocabulary"),
 			_themeDisplay);
 
 		return ListUtil.fromArray(
@@ -139,7 +140,7 @@ public class ViewVocabulariesDisplayContext {
 					PortalUtil.getLayoutFullURL(
 						LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/view_categories"),
+							"/categorization/view-categories"),
 						_themeDisplay),
 					"vocabularyId", "{id}"),
 				null, "view-categories",
@@ -165,14 +166,14 @@ public class ViewVocabulariesDisplayContext {
 			PortalUtil.getLayoutFullURL(
 				LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 					_themeDisplay.getScopeGroupId(), false,
-					"/categorization/view_tags"),
+					"/categorization/view-tags"),
 				_themeDisplay)
 		).put(
 			"vocabulariesURL",
 			PortalUtil.getLayoutFullURL(
 				LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 					_themeDisplay.getScopeGroupId(), false,
-					"/categorization/view_vocabularies"),
+					"/categorization/view-vocabularies"),
 				_themeDisplay)
 		).build();
 	}

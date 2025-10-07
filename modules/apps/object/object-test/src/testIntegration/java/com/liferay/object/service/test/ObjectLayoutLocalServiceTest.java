@@ -15,6 +15,7 @@ import com.liferay.object.exception.DefaultObjectLayoutException;
 import com.liferay.object.exception.ObjectDefinitionModifiableException;
 import com.liferay.object.exception.ObjectLayoutBoxCategorizationTypeException;
 import com.liferay.object.exception.ObjectLayoutColumnSizeException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -24,14 +25,18 @@ import com.liferay.object.model.ObjectLayoutBox;
 import com.liferay.object.model.ObjectLayoutColumn;
 import com.liferay.object.model.ObjectLayoutRow;
 import com.liferay.object.model.ObjectLayoutTab;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.persistence.ObjectLayoutBoxPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutColumnPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutRowPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutTabPersistence;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -40,6 +45,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
@@ -51,6 +57,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,6 +66,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Gabriel Albuquerque
  */
+@FeatureFlag("LPD-34594")
 @RunWith(Arquillian.class)
 public class ObjectLayoutLocalServiceTest {
 
@@ -69,6 +77,22 @@ public class ObjectLayoutLocalServiceTest {
 			new LiferayIntegrationTestRule(),
 			new TransactionalTestRule(
 				Propagation.REQUIRED, "com.liferay.object.service"));
+
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_objectDefinitionA =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+		_objectDefinitionAA =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		_objectRelationshipA_AA =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinitionA,
+				_objectDefinitionAA);
+
+		TreeTestUtil.bind(
+			_objectRelationshipLocalService, List.of(_objectRelationshipA_AA));
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -86,7 +110,8 @@ public class ObjectLayoutLocalServiceTest {
 				TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(), true,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				Arrays.asList(_addObjectLayoutTab(), _addObjectLayoutTab())));
+				Arrays.asList(
+					_createObjectLayoutTab(), _createObjectLayoutTab())));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition.getObjectDefinitionId());
@@ -112,7 +137,7 @@ public class ObjectLayoutLocalServiceTest {
 				TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(), false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				Collections.singletonList(_addObjectLayoutTab())));
+				Collections.singletonList(_createObjectLayoutTab())));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_objectDefinition.getObjectDefinitionId());
@@ -138,8 +163,8 @@ public class ObjectLayoutLocalServiceTest {
 				objectLayoutTab.setPriority(0);
 				objectLayoutTab.setObjectLayoutBoxes(
 					Arrays.asList(
-						_addObjectLayoutBox(),
-						_addObjectLayoutBox(
+						_createObjectLayoutBox(),
+						_createObjectLayoutBox(
 							ObjectLayoutBoxConstants.TYPE_CATEGORIZATION)));
 
 				_objectLayoutLocalService.addObjectLayout(
@@ -173,8 +198,8 @@ public class ObjectLayoutLocalServiceTest {
 				objectLayoutTab.setPriority(0);
 				objectLayoutTab.setObjectLayoutBoxes(
 					Arrays.asList(
-						_addObjectLayoutBox(),
-						_addObjectLayoutBox(
+						_createObjectLayoutBox(),
+						_createObjectLayoutBox(
 							ObjectLayoutBoxConstants.TYPE_CATEGORIZATION)));
 
 				_objectLayoutLocalService.addObjectLayout(
@@ -203,14 +228,14 @@ public class ObjectLayoutLocalServiceTest {
 						RandomTestUtil.randomString()));
 				objectLayoutTab.setPriority(0);
 
-				ObjectLayoutBox objectLayoutBox = _addObjectLayoutBox(
+				ObjectLayoutBox objectLayoutBox = _createObjectLayoutBox(
 					ObjectLayoutBoxConstants.TYPE_CATEGORIZATION);
 
 				objectLayoutBox.setObjectLayoutRows(
-					Collections.singletonList(_addObjectLayoutRow()));
+					Collections.singletonList(_createObjectLayoutRow()));
 
 				objectLayoutTab.setObjectLayoutBoxes(
-					Arrays.asList(_addObjectLayoutBox(), objectLayoutBox));
+					Arrays.asList(_createObjectLayoutBox(), objectLayoutBox));
 
 				_objectLayoutLocalService.addObjectLayout(
 					TestPropsValues.getUserId(),
@@ -218,6 +243,53 @@ public class ObjectLayoutLocalServiceTest {
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					Collections.singletonList(objectLayoutTab));
+			});
+
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationships cannot be associated with object " +
+				"layout tabs",
+			() -> {
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
+
+				objectLayoutTab.setObjectRelationshipId(
+					_objectRelationshipA_AA.getObjectRelationshipId());
+
+				_objectLayoutLocalService.addObjectLayout(
+					TestPropsValues.getUserId(),
+					_objectDefinitionA.getObjectDefinitionId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationship object fields cannot be associated " +
+				"with object layouts",
+			() -> {
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
+
+				ObjectLayoutBox objectLayoutBox = _createObjectLayoutBox();
+
+				ObjectLayoutRow objectLayoutRow = _createObjectLayoutRow();
+
+				ObjectLayoutColumn objectLayoutColumn =
+					_createObjectLayoutColumn(false);
+
+				objectLayoutColumn.setObjectFieldId(
+					_objectRelationshipA_AA.getObjectFieldId2());
+
+				objectLayoutRow.setObjectLayoutColumns(
+					List.of(objectLayoutColumn));
+
+				objectLayoutBox.setObjectLayoutRows(List.of(objectLayoutRow));
+
+				objectLayoutTab.setObjectLayoutBoxes(List.of(objectLayoutBox));
+
+				_objectLayoutLocalService.addObjectLayout(
+					TestPropsValues.getUserId(),
+					_objectDefinitionAA.getObjectDefinitionId(), true,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
 			});
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
@@ -239,7 +311,8 @@ public class ObjectLayoutLocalServiceTest {
 				objectLayoutTab.setPriority(0);
 				objectLayoutTab.setObjectLayoutBoxes(
 					Arrays.asList(
-						_addObjectLayoutBox(), _addObjectLayoutBox(null)));
+						_createObjectLayoutBox(),
+						_createObjectLayoutBox(null)));
 
 				_objectLayoutLocalService.addObjectLayout(
 					TestPropsValues.getUserId(),
@@ -253,7 +326,7 @@ public class ObjectLayoutLocalServiceTest {
 			ObjectLayoutColumnSizeException.class,
 			"Object layout column size must be more than 0 and less than 12",
 			() -> {
-				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
 
 				List<ObjectLayoutBox> objectLayoutBoxes =
 					objectLayoutTab.getObjectLayoutBoxes();
@@ -300,8 +373,8 @@ public class ObjectLayoutLocalServiceTest {
 				objectLayoutTab1.setPriority(0);
 				objectLayoutTab1.setObjectLayoutBoxes(
 					Arrays.asList(
-						_addObjectLayoutBox(),
-						_addObjectLayoutBox(
+						_createObjectLayoutBox(),
+						_createObjectLayoutBox(
 							ObjectLayoutBoxConstants.TYPE_CATEGORIZATION)));
 
 				ObjectLayoutTab objectLayoutTab2 =
@@ -312,8 +385,8 @@ public class ObjectLayoutLocalServiceTest {
 						RandomTestUtil.randomString()));
 				objectLayoutTab2.setObjectLayoutBoxes(
 					Arrays.asList(
-						_addObjectLayoutBox(),
-						_addObjectLayoutBox(
+						_createObjectLayoutBox(),
+						_createObjectLayoutBox(
 							ObjectLayoutBoxConstants.TYPE_CATEGORIZATION)));
 
 				_objectLayoutLocalService.addObjectLayout(
@@ -330,7 +403,7 @@ public class ObjectLayoutLocalServiceTest {
 			DefaultObjectLayoutException.class,
 			"There can only be one default object layout",
 			() -> {
-				ObjectLayoutTab objectLayoutTab = _addObjectLayoutTab();
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
 
 				_objectLayoutLocalService.addObjectLayout(
 					TestPropsValues.getUserId(),
@@ -446,6 +519,71 @@ public class ObjectLayoutLocalServiceTest {
 
 	@Test
 	public void testUpdateObjectLayout() throws Exception {
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationships cannot be associated with object " +
+				"layout tabs",
+			() -> {
+				ObjectLayout objectLayout = _addObjectLayout();
+
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
+
+				objectLayoutTab.setObjectRelationshipId(
+					_objectRelationshipA_AA.getObjectRelationshipId());
+
+				_objectLayoutLocalService.updateObjectLayout(
+					objectLayout.getObjectLayoutId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+		AssertUtils.assertFailure(
+			ObjectRelationshipEdgeException.class,
+			"Edge object relationship object fields cannot be associated " +
+				"with object layouts",
+			() -> {
+				ObjectLayoutTab objectLayoutTab = _createObjectLayoutTab();
+
+				ObjectLayoutBox objectLayoutBox = _createObjectLayoutBox();
+
+				ObjectLayoutRow objectLayoutRow = _createObjectLayoutRow();
+
+				ObjectLayoutColumn objectLayoutColumn =
+					_createObjectLayoutColumn(false);
+
+				ObjectField objectField =
+					_objectFieldLocalService.getObjectField(
+						_objectDefinitionAA.getObjectDefinitionId(),
+						"externalReferenceCode");
+
+				objectLayoutColumn.setObjectFieldId(
+					objectField.getObjectFieldId());
+
+				objectLayoutRow.setObjectLayoutColumns(
+					List.of(objectLayoutColumn));
+
+				objectLayoutBox.setObjectLayoutRows(List.of(objectLayoutRow));
+
+				objectLayoutTab.setObjectLayoutBoxes(List.of(objectLayoutBox));
+
+				ObjectLayout objectLayout =
+					_objectLayoutLocalService.addObjectLayout(
+						TestPropsValues.getUserId(),
+						_objectDefinitionAA.getObjectDefinitionId(), false,
+						RandomTestUtil.randomLocaleStringMap(),
+						Collections.singletonList(objectLayoutTab));
+
+				objectLayoutColumn.setObjectFieldId(
+					_objectRelationshipA_AA.getObjectFieldId2());
+
+				_objectLayoutLocalService.updateObjectLayout(
+					objectLayout.getObjectLayoutId(), false,
+					RandomTestUtil.randomLocaleStringMap(),
+					List.of(objectLayoutTab));
+			});
+
+		_objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
 		List<ScreenNavigationCategory> screenNavigationCategories =
 			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
 				_objectDefinition.getClassName(), TestPropsValues.getUser(),
@@ -453,7 +591,7 @@ public class ObjectLayoutLocalServiceTest {
 
 		Assert.assertTrue(screenNavigationCategories.isEmpty());
 
-		ObjectLayoutTab objectLayoutTab1 = _addObjectLayoutTab();
+		ObjectLayoutTab objectLayoutTab1 = _createObjectLayoutTab();
 
 		ObjectLayout objectLayout = _objectLayoutLocalService.addObjectLayout(
 			TestPropsValues.getUserId(),
@@ -532,65 +670,7 @@ public class ObjectLayoutLocalServiceTest {
 			TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			Collections.singletonList(_addObjectLayoutTab()));
-	}
-
-	private ObjectLayoutBox _addObjectLayoutBox() throws Exception {
-		return _addObjectLayoutBox(ObjectLayoutBoxConstants.TYPE_REGULAR);
-	}
-
-	private ObjectLayoutBox _addObjectLayoutBox(String type) throws Exception {
-		ObjectLayoutBox objectLayoutBox = _objectLayoutBoxPersistence.create(0);
-
-		objectLayoutBox.setCollapsable(false);
-		objectLayoutBox.setNameMap(
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()));
-		objectLayoutBox.setPriority(0);
-		objectLayoutBox.setType(type);
-
-		if (StringUtil.equals(type, ObjectLayoutBoxConstants.TYPE_REGULAR)) {
-			objectLayoutBox.setObjectLayoutRows(
-				Arrays.asList(
-					_addObjectLayoutRow(), _addObjectLayoutRow(),
-					_addObjectLayoutRow()));
-		}
-
-		return objectLayoutBox;
-	}
-
-	private ObjectLayoutColumn _addObjectLayoutColumn(boolean system)
-		throws Exception {
-
-		ObjectLayoutColumn objectLayoutColumn =
-			_objectLayoutColumnPersistence.create(0);
-
-		objectLayoutColumn.setObjectFieldId(_addObjectField(system));
-		objectLayoutColumn.setPriority(0);
-
-		return objectLayoutColumn;
-	}
-
-	private ObjectLayoutRow _addObjectLayoutRow() throws Exception {
-		ObjectLayoutRow objectLayoutRow = _objectLayoutRowPersistence.create(0);
-
-		objectLayoutRow.setPriority(0);
-		objectLayoutRow.setObjectLayoutColumns(
-			Arrays.asList(
-				_addObjectLayoutColumn(false), _addObjectLayoutColumn(false),
-				_addObjectLayoutColumn(true), _addObjectLayoutColumn(true)));
-
-		return objectLayoutRow;
-	}
-
-	private ObjectLayoutTab _addObjectLayoutTab() throws Exception {
-		ObjectLayoutTab objectLayoutTab = _objectLayoutTabPersistence.create(0);
-
-		objectLayoutTab.setNameMap(
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()));
-		objectLayoutTab.setObjectLayoutBoxes(
-			Arrays.asList(_addObjectLayoutBox(), _addObjectLayoutBox()));
-
-		return objectLayoutTab;
+			Collections.singletonList(_createObjectLayoutTab()));
 	}
 
 	private void _assertObjectLayout(ObjectLayout objectLayout) {
@@ -625,6 +705,79 @@ public class ObjectLayoutLocalServiceTest {
 			objectLayoutColumns.toString(), 4, objectLayoutColumns.size());
 	}
 
+	private ObjectLayoutBox _createObjectLayoutBox() throws Exception {
+		return _createObjectLayoutBox(ObjectLayoutBoxConstants.TYPE_REGULAR);
+	}
+
+	private ObjectLayoutBox _createObjectLayoutBox(String type)
+		throws Exception {
+
+		ObjectLayoutBox objectLayoutBox = _objectLayoutBoxPersistence.create(0);
+
+		objectLayoutBox.setCollapsable(false);
+		objectLayoutBox.setNameMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()));
+		objectLayoutBox.setPriority(0);
+		objectLayoutBox.setType(type);
+
+		if (StringUtil.equals(type, ObjectLayoutBoxConstants.TYPE_REGULAR)) {
+			objectLayoutBox.setObjectLayoutRows(
+				Arrays.asList(
+					_createObjectLayoutRow(), _createObjectLayoutRow(),
+					_createObjectLayoutRow()));
+		}
+
+		return objectLayoutBox;
+	}
+
+	private ObjectLayoutColumn _createObjectLayoutColumn(boolean system)
+		throws Exception {
+
+		ObjectLayoutColumn objectLayoutColumn =
+			_objectLayoutColumnPersistence.create(0);
+
+		objectLayoutColumn.setObjectFieldId(_addObjectField(system));
+		objectLayoutColumn.setPriority(0);
+
+		return objectLayoutColumn;
+	}
+
+	private ObjectLayoutColumn _createObjectLayoutColumn(long objectFieldId)
+		throws Exception {
+
+		ObjectLayoutColumn objectLayoutColumn =
+			_objectLayoutColumnPersistence.create(0);
+
+		objectLayoutColumn.setObjectFieldId(objectFieldId);
+		objectLayoutColumn.setPriority(0);
+
+		return objectLayoutColumn;
+	}
+
+	private ObjectLayoutRow _createObjectLayoutRow() throws Exception {
+		ObjectLayoutRow objectLayoutRow = _objectLayoutRowPersistence.create(0);
+
+		objectLayoutRow.setPriority(0);
+		objectLayoutRow.setObjectLayoutColumns(
+			Arrays.asList(
+				_createObjectLayoutColumn(false),
+				_createObjectLayoutColumn(false),
+				_createObjectLayoutColumn(true),
+				_createObjectLayoutColumn(true)));
+
+		return objectLayoutRow;
+	}
+
+	private ObjectLayoutTab _createObjectLayoutTab() throws Exception {
+		ObjectLayoutTab objectLayoutTab = _objectLayoutTabPersistence.create(0);
+
+		objectLayoutTab.setNameMap(RandomTestUtil.randomLocaleStringMap());
+		objectLayoutTab.setObjectLayoutBoxes(
+			Arrays.asList(_createObjectLayoutBox(), _createObjectLayoutBox()));
+
+		return objectLayoutTab;
+	}
+
 	private void _deleteObjectFields() throws Exception {
 		List<ObjectField> objectFields =
 			_objectFieldLocalService.getObjectFields(
@@ -634,6 +787,14 @@ public class ObjectLayoutLocalServiceTest {
 			_objectFieldLocalService.deleteObjectField(objectField);
 		}
 	}
+
+	private static ObjectDefinition _objectDefinitionA;
+	private static ObjectDefinition _objectDefinitionAA;
+	private static ObjectRelationship _objectRelationshipA_AA;
+
+	@Inject
+	private static ObjectRelationshipLocalService
+		_objectRelationshipLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;

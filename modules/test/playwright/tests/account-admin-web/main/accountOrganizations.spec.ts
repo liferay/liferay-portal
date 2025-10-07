@@ -9,6 +9,7 @@ import {accountsPagesTest} from '../../../fixtures/accountsPagesTest';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {serverAdministrationPageTest} from '../../../fixtures/serverAdministrationPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
@@ -21,6 +22,9 @@ export const test = mergeTests(
 	apiHelpersTest,
 	applicationsMenuPageTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-35914': {enabled: true},
+	}),
 	loginTest(),
 	usersAndOrganizationsPagesTest,
 	serverAdministrationPageTest
@@ -47,6 +51,10 @@ test('LPD-47225 Can add and remove an organizations to an account', async ({
 	await accountsPage.organizationsTab.click();
 	await accountOrganizationsPage.organizationsTable.newButton.click();
 
+	await expect(
+		accountOrganizationSelectorPage.organizationsTable.cell('Approved')
+	).toBeVisible();
+
 	await accountOrganizationSelectorPage.assignOrganizations([
 		organization1.name,
 	]);
@@ -62,6 +70,10 @@ test('LPD-47225 Can add and remove an organizations to an account', async ({
 	).toBeVisible();
 	await expect(
 		accountOrganizationsPage.organizationsTable.cell(organization2.name)
+	).toBeVisible();
+
+	await expect(
+		accountOrganizationsPage.organizationsTable.cell('Approved')
 	).toBeVisible();
 
 	await (

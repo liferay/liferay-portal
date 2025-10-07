@@ -11,7 +11,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
-import isSPAEnabled from './utils/isSPAEnabled';
+import isSPAEnabled from '../../../utils/isSPAEnabled';
 
 export const testStyles = mergeTests(
 	apiHelpersTest,

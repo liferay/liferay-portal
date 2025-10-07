@@ -50,3 +50,20 @@ export function getPageEditorDateFormat(date: Date) {
 
 	return `${formatDate} 12:00 AM`;
 }
+
+export function getUTCOffsetFormatted(date: Date) {
+	const offset = date.getTimezoneOffset() / 60;
+
+	if (offset === 0) {
+		return 'UTC';
+	}
+
+	const sign = offset > 0 ? '-' : '+';
+
+	const absoluteHours = String(Math.floor(Math.abs(offset))).padStart(2, '0');
+	const absoluteMinutes = String(
+		Math.round((Math.abs(offset) % 1) * 60)
+	).padStart(2, '0');
+
+	return `(UTC ${sign}${absoluteHours}:${absoluteMinutes})`;
+}

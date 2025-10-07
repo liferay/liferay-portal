@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal JSON Web Service Client
 Bundle-SymbolicName: com.liferay.portal.json.web.service.client
-Bundle-Version: 1.0.17
+Bundle-Version: 1.0.18
 Export-Package: com.liferay.portal.json.web.service.client

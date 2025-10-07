@@ -88,7 +88,8 @@ export default function getActivationStatusCardLayout(
 					customDropDownButton={
 						<ButtonWithIcon
 							aria-label={i18n.translate('set-to-active')}
-							displayType="null"
+							className="text-secondary"
+    						displayType="unstyled"
 							small
 							spritemap={Liferay.Icons.spritemap}
 							symbol="caret-bottom"

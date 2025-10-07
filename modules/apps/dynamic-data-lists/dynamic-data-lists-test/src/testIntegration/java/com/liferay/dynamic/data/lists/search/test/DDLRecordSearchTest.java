@@ -26,8 +26,6 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.search.SearchEngine;
-import com.liferay.portal.kernel.search.SearchEngineHelperUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -50,7 +48,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -275,8 +272,6 @@ public class DDLRecordSearchTest {
 
 	@Test
 	public void testQuestionMarksVersusStopwords2() throws Exception {
-		Assume.assumeTrue(isExactPhraseQueryImplementedForSearchEngine());
-
 		addRecord(RandomTestUtil.randomString());
 		addRecord("how with create the coupon");
 
@@ -287,8 +282,6 @@ public class DDLRecordSearchTest {
 
 	@Test
 	public void testQuestionMarksVersusStopwords3() throws Exception {
-		Assume.assumeTrue(isExactPhraseQueryImplementedForSearchEngine());
-
 		addRecord(RandomTestUtil.randomString());
 		addRecord("how to create a coupon");
 
@@ -317,8 +310,6 @@ public class DDLRecordSearchTest {
 
 	@Test
 	public void testStopwordsInExactPhrase() throws Exception {
-		Assume.assumeTrue(isExactPhraseQueryImplementedForSearchEngine());
-
 		addRecord("how to create a coupon");
 		addRecord("Joe Of Bloggs");
 		addRecord("Joe Bloggs");
@@ -473,18 +464,6 @@ public class DDLRecordSearchTest {
 
 		return DDMFormValuesTestUtil.createDDMFormFieldValue(
 			name, localizedValue);
-	}
-
-	protected boolean isExactPhraseQueryImplementedForSearchEngine() {
-		SearchEngine searchEngine = SearchEngineHelperUtil.getSearchEngine();
-
-		String vendor = searchEngine.getVendor();
-
-		if (vendor.equals("Elasticsearch") || vendor.equals("Solr")) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@DeleteAfterTestRun

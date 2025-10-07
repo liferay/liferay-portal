@@ -1,6 +1,6 @@
 assemble:
     -   fromTask: bootJar
-liferay-streamhub-etc-spring-boot-oauth-application-user-agent:
+liferay-streamhub-etc-spring-boot-oaua:
     .serviceAddress: localhost:3000
     .serviceScheme: http
     name: Liferay Stream Hub Etc Spring Boot OAuth Application User Agent

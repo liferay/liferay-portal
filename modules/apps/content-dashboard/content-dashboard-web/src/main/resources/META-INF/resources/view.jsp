@@ -312,8 +312,6 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 									"selectedItemFetchURL", contentDashboardAdminDisplayContext.getSelectedItemFetchURL(contentDashboardItem)
 								).put(
 									"selectedItemRowId", contentDashboardAdminDisplayContext.getSelectedItemRowId()
-								).put(
-									"singlePageApplicationEnabled", contentDashboardAdminDisplayContext.getSinglePageApplicationEnabled()
 								).build()
 							%>'
 							aria-label='<%= LanguageUtil.get(request, "show-actions") %>'

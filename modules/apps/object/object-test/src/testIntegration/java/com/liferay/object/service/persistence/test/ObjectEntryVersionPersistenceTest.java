@@ -253,11 +253,27 @@ public class ObjectEntryVersionPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_CD() throws Exception {
+		_persistence.countByC_CD(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextDate());
+
+		_persistence.countByC_CD(0L, RandomTestUtil.nextDate());
+	}
+
+	@Test
 	public void testCountByOEI_V() throws Exception {
 		_persistence.countByOEI_V(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
 
 		_persistence.countByOEI_V(0L, 0);
+	}
+
+	@Test
+	public void testCountByOEI_S() throws Exception {
+		_persistence.countByOEI_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByOEI_S(0L, 0);
 	}
 
 	@Test

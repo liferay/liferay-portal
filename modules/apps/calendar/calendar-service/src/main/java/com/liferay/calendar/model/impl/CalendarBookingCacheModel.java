@@ -69,7 +69,7 @@ public class CalendarBookingCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(63);
+		StringBundler sb = new StringBundler(65);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -77,6 +77,8 @@ public class CalendarBookingCacheModel
 		sb.append(ctCollectionId);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", calendarBookingId=");
 		sb.append(calendarBookingId);
 		sb.append(", groupId=");
@@ -150,6 +152,13 @@ public class CalendarBookingCacheModel
 		}
 		else {
 			calendarBookingImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			calendarBookingImpl.setExternalReferenceCode("");
+		}
+		else {
+			calendarBookingImpl.setExternalReferenceCode(externalReferenceCode);
 		}
 
 		calendarBookingImpl.setCalendarBookingId(calendarBookingId);
@@ -278,6 +287,7 @@ public class CalendarBookingCacheModel
 
 		ctCollectionId = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		calendarBookingId = objectInput.readLong();
 
@@ -334,6 +344,13 @@ public class CalendarBookingCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(calendarBookingId);
@@ -440,6 +457,7 @@ public class CalendarBookingCacheModel
 	public long mvccVersion;
 	public long ctCollectionId;
 	public String uuid;
+	public String externalReferenceCode;
 	public long calendarBookingId;
 	public long groupId;
 	public long companyId;

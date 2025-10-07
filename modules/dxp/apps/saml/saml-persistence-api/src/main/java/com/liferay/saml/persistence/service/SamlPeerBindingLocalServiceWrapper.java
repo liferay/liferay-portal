@@ -32,16 +32,15 @@ public class SamlPeerBindingLocalServiceWrapper
 	@Override
 	public com.liferay.saml.persistence.model.SamlPeerBinding
 			addSamlPeerBinding(
-				long userId, String samlNameIdFormat,
+				long userId, String samlPeerEntityId, String samlNameIdFormat,
 				String samlNameIdNameQualifier,
 				String samlNameIdSpNameQualifier, String samlNameIdSpProvidedId,
-				String samlNameIdValue, String samlPeerEntityId)
+				String samlNameIdValue)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _samlPeerBindingLocalService.addSamlPeerBinding(
-			userId, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdSpNameQualifier, samlNameIdSpProvidedId, samlNameIdValue,
-			samlPeerEntityId);
+			userId, samlPeerEntityId, samlNameIdFormat, samlNameIdNameQualifier,
+			samlNameIdSpNameQualifier, samlNameIdSpProvidedId, samlNameIdValue);
 	}
 
 	/**
@@ -254,13 +253,13 @@ public class SamlPeerBindingLocalServiceWrapper
 	@Override
 	public com.liferay.saml.persistence.model.SamlPeerBinding
 		fetchSamlPeerBinding(
-			long companyId, boolean deleted, String samlNameIdFormat,
-			String samlNameIdNameQualifier, String samlNameIdValue,
-			String samlPeerEntityId) {
+			long companyId, String samlPeerEntityId, boolean deleted,
+			String samlNameIdFormat, String samlNameIdNameQualifier,
+			String samlNameIdValue) {
 
 		return _samlPeerBindingLocalService.fetchSamlPeerBinding(
-			companyId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdValue, samlPeerEntityId);
+			companyId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier, samlNameIdValue);
 	}
 
 	@Override
@@ -336,13 +335,13 @@ public class SamlPeerBindingLocalServiceWrapper
 	@Override
 	public java.util.List<com.liferay.saml.persistence.model.SamlPeerBinding>
 		getSamlPeerBindings(
-			long companyId, boolean deleted, String samlNameIdFormat,
-			String samlNameIdNameQualifier, String samlNameIdValue,
-			String samlPeerEntityId) {
+			long companyId, String samlPeerEntityId, boolean deleted,
+			String samlNameIdFormat, String samlNameIdNameQualifier,
+			String samlNameIdValue) {
 
 		return _samlPeerBindingLocalService.getSamlPeerBindings(
-			companyId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdValue, samlPeerEntityId);
+			companyId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier, samlNameIdValue);
 	}
 
 	/**
@@ -358,13 +357,13 @@ public class SamlPeerBindingLocalServiceWrapper
 	@Override
 	public java.util.List<com.liferay.saml.persistence.model.SamlPeerBinding>
 			getUserSamlPeerBindings(
-				long userId, boolean deleted, String samlNameIdFormat,
-				String samlNameIdNameQualifier, String samlPeerEntityId)
+				long userId, String samlPeerEntityId, boolean deleted,
+				String samlNameIdFormat, String samlNameIdNameQualifier)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _samlPeerBindingLocalService.getUserSamlPeerBindings(
-			userId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlPeerEntityId);
+			userId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier);
 	}
 
 	/**

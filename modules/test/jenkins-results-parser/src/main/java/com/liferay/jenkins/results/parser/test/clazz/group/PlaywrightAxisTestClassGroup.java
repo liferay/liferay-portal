@@ -5,9 +5,14 @@
 
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
+import com.liferay.jenkins.results.parser.TestReport;
 import com.liferay.jenkins.results.parser.test.clazz.PlaywrightJUnitTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.PlaywrightTestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
+import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -16,6 +21,31 @@ import org.json.JSONObject;
  * @author Kenji Heigel
  */
 public class PlaywrightAxisTestClassGroup extends AxisTestClassGroup {
+
+	@Override
+	public List<DownstreamBuildReport> getCachedDownstreamBuildReports() {
+		if (!isBuildCachingEnabled() || !isResultsCached()) {
+			return null;
+		}
+
+		List<DownstreamBuildReport> cachedDownstreamBuildReports =
+			new ArrayList<>();
+
+		for (PlaywrightTestClassMethod playwrightTestClassMethod :
+				getPlaywrightTestClassMethods()) {
+
+			DownstreamBuildReport downstreamBuildReport =
+				playwrightTestClassMethod.getCachedDownstreamBuildReport();
+
+			if (cachedDownstreamBuildReports.contains(downstreamBuildReport)) {
+				continue;
+			}
+
+			cachedDownstreamBuildReports.add(downstreamBuildReport);
+		}
+
+		return cachedDownstreamBuildReports;
+	}
 
 	@Override
 	public Integer getMinimumSlaveRAM() {
@@ -43,6 +73,26 @@ public class PlaywrightAxisTestClassGroup extends AxisTestClassGroup {
 		return minimumSlaveRAM;
 	}
 
+	public List<PlaywrightTestClassMethod> getPlaywrightTestClassMethods() {
+		List<PlaywrightTestClassMethod> playwrightTestClassMethods =
+			new ArrayList<>();
+
+		for (TestClass testClass : getTestClasses()) {
+			for (TestClassMethod testClassMethod :
+					testClass.getTestClassMethods()) {
+
+				if (!(testClassMethod instanceof PlaywrightTestClassMethod)) {
+					continue;
+				}
+
+				playwrightTestClassMethods.add(
+					(PlaywrightTestClassMethod)testClassMethod);
+			}
+		}
+
+		return playwrightTestClassMethods;
+	}
+
 	@Override
 	public String getSlaveLabel() {
 		List<TestClass> testClasses = getTestClasses();
@@ -67,6 +117,45 @@ public class PlaywrightAxisTestClassGroup extends AxisTestClassGroup {
 		}
 
 		return slaveLabel;
+	}
+
+	public Boolean isAnalyticsCloudEnabled() {
+		List<TestClass> testClasses = getTestClasses();
+
+		if (testClasses.isEmpty()) {
+			return false;
+		}
+
+		for (TestClass testClass : testClasses) {
+			PlaywrightJUnitTestClass playwrightJUnitTestClass =
+				(PlaywrightJUnitTestClass)testClass;
+
+			if (playwrightJUnitTestClass.isAnalyticsCloudEnabled()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean isResultsCached() {
+		if (!isBuildCachingEnabled()) {
+			return false;
+		}
+
+		for (PlaywrightTestClassMethod playwrightTestClassMethod :
+				getPlaywrightTestClassMethods()) {
+
+			TestReport cachedTestReport =
+				playwrightTestClassMethod.getCachedTestReport();
+
+			if (cachedTestReport == null) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected PlaywrightAxisTestClassGroup(

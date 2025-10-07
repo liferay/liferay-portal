@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 /**
  * @author Eduardo Lundgren
@@ -63,7 +63,7 @@ public class AssetCategoryPermission {
 
 		if (actionId.equals(ActionKeys.VIEW) &&
 			(category.getVocabularyId() !=
-				AssetVocabularyConstants.INCOMPLETE_VOCABULARY_ID) &&
+				AssetVocabularyConstants.EMPTY_VOCABULARY_ID) &&
 			!AssetVocabularyPermission.contains(
 				permissionChecker, category.getVocabularyId(),
 				ActionKeys.VIEW)) {
@@ -84,7 +84,7 @@ public class AssetCategoryPermission {
 				if ((parentCategoryId ==
 						AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) ||
 					(parentCategoryId ==
-						AssetCategoryConstants.INCOMPLETE_PARENT_CATEGORY_ID)) {
+						AssetCategoryConstants.EMPTY_PARENT_CATEGORY_ID)) {
 
 					break;
 				}
@@ -94,7 +94,7 @@ public class AssetCategoryPermission {
 			}
 
 			if (category.getVocabularyId() !=
-					AssetVocabularyConstants.INCOMPLETE_VOCABULARY_ID) {
+					AssetVocabularyConstants.EMPTY_VOCABULARY_ID) {
 
 				return AssetVocabularyPermission.contains(
 					permissionChecker, category.getVocabularyId(), actionId);
@@ -110,8 +110,7 @@ public class AssetCategoryPermission {
 		throws PortalException {
 
 		if ((categoryId == AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID) ||
-			(categoryId ==
-				AssetCategoryConstants.INCOMPLETE_PARENT_CATEGORY_ID)) {
+			(categoryId == AssetCategoryConstants.EMPTY_PARENT_CATEGORY_ID)) {
 
 			return AssetCategoriesPermission.contains(
 				permissionChecker, groupId, actionId);

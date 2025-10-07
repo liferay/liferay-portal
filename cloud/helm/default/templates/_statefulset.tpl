@@ -234,7 +234,11 @@ spec:
         {{- end }}
     {{- with .statefulset.ingress.tls }}
     tls:
-        {{- toYaml . | nindent 8 }}
+        {{- range $tls := . }}
+        -   hosts:
+            {{- toYaml $tls.hosts | nindent 12 }}
+            secretName: {{ $tls.secretName }}
+        {{- end }}
     {{- end }}
 {{- end }}
 {{- end -}}

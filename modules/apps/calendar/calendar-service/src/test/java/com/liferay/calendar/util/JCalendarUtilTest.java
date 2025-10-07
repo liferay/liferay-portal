@@ -29,6 +29,31 @@ public class JCalendarUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testGetDaysBetween() {
+		Assert.assertEquals(
+			1,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 30, 0, 0, TimeZoneUtil.GMT)));
+		Assert.assertEquals(
+			1,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 2, 0, 0, 0, 0, TimeZoneUtil.GMT)));
+		Assert.assertEquals(
+			2,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 2, 0, 1, 0, 0, TimeZoneUtil.GMT)));
+	}
+
+	@Test
 	public void testGetDSTShiftAtLosAngelesDuringDST() {
 		Calendar jCalendar1 = JCalendarUtil.getJCalendar(
 			2012, Calendar.MAY, 1, 12, 0, 0, 0, TimeZoneUtil.GMT);
@@ -94,6 +119,18 @@ public class JCalendarUtilTest {
 		Assert.assertEquals(
 			losAngelesJCalendar.getTimeInMillis(),
 			madridJCalendar.getTimeInMillis());
+	}
+
+	@Test
+	public void testIsMidnight() {
+		Assert.assertTrue(
+			JCalendarUtil.isMidnight(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 0, 0, 0, 0, TimeZoneUtil.GMT)));
+		Assert.assertFalse(
+			JCalendarUtil.isMidnight(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT)));
 	}
 
 	@Test

@@ -27,7 +27,6 @@ import java.net.URI;
 import java.net.URL;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -166,8 +165,8 @@ public class ServletPathsTest {
 
 		Assert.assertNull(servletPaths.getContent());
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				ServletPaths.class.getName(), Level.SEVERE)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ServletPaths.class.getName(), LoggerTestUtil.ERROR)) {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 

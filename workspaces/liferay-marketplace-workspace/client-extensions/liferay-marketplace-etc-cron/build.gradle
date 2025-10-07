@@ -22,6 +22,7 @@ apply plugin: "org.springframework.boot"
 dependencies {
 	implementation group: "com.liferay", name: "com.liferay.client.extension.util.spring.boot3", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.headless.admin.user.client", version: "4.0.76"
+	implementation group: "com.liferay", name: "com.liferay.petra.function", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"
 	implementation group: "com.liferay.commerce", name: "com.liferay.headless.commerce.admin.order.client", version: "4.0.34"
 	implementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "latest.release"

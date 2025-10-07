@@ -582,6 +582,15 @@ public class NotificationQueueEntryPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -945,6 +954,16 @@ public class NotificationQueueEntryPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<NotificationQueueEntry> notificationQueueEntries =
+				findByCompanyId(companyId);
+
+			notificationQueueEntries = InlineSQLHelperUtil.filter(
+				notificationQueueEntries);
+
+			return notificationQueueEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1494,6 +1513,15 @@ public class NotificationQueueEntryPersistenceImpl
 				notificationTemplateId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByNotificationTemplateId(
+					notificationTemplateId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1866,6 +1894,16 @@ public class NotificationQueueEntryPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByNotificationTemplateId(notificationTemplateId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<NotificationQueueEntry> notificationQueueEntries =
+				findByNotificationTemplateId(notificationTemplateId);
+
+			notificationQueueEntries = InlineSQLHelperUtil.filter(
+				notificationQueueEntries);
+
+			return notificationQueueEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -2415,6 +2453,15 @@ public class NotificationQueueEntryPersistenceImpl
 			return findByLtSentDate(sentDate, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtSentDate(
+					sentDate, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2811,6 +2858,16 @@ public class NotificationQueueEntryPersistenceImpl
 	public int filterCountByLtSentDate(Date sentDate) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtSentDate(sentDate);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<NotificationQueueEntry> notificationQueueEntries =
+				findByLtSentDate(sentDate);
+
+			notificationQueueEntries = InlineSQLHelperUtil.filter(
+				notificationQueueEntries);
+
+			return notificationQueueEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3414,6 +3471,15 @@ public class NotificationQueueEntryPersistenceImpl
 			return findByT_S(type, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByT_S(
+					type, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		type = Objects.toString(type, "");
 
 		StringBundler sb = null;
@@ -3832,6 +3898,16 @@ public class NotificationQueueEntryPersistenceImpl
 	public int filterCountByT_S(String type, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByT_S(type, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<NotificationQueueEntry> notificationQueueEntries = findByT_S(
+				type, status);
+
+			notificationQueueEntries = InlineSQLHelperUtil.filter(
+				notificationQueueEntries);
+
+			return notificationQueueEntries.size();
 		}
 
 		type = Objects.toString(type, "");

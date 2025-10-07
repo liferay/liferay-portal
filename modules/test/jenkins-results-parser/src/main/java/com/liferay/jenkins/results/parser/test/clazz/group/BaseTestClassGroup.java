@@ -15,6 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Peter Yoo
@@ -23,14 +25,14 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 
 	@Override
 	public List<TestClass> getTestClasses() {
-		return testClasses;
+		return new ArrayList<>(_testClasses);
 	}
 
 	@Override
 	public List<File> getTestClassFiles() {
 		List<File> testClassFiles = new ArrayList<>();
 
-		for (TestClass testClass : testClasses) {
+		for (TestClass testClass : _testClasses) {
 			testClassFiles.add(testClass.getTestClassFile());
 		}
 
@@ -49,15 +51,17 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 	}
 
 	protected void addTestClass(TestClass testClass) {
-		if (!testClasses.contains(testClass)) {
-			testClasses.add(testClass);
-		}
+		_testClasses.add(testClass);
 	}
 
 	protected void addTestClasses(List<TestClass> testClasses) {
 		for (TestClass testClass : testClasses) {
 			addTestClass(testClass);
 		}
+	}
+
+	protected boolean containsTestClasses() {
+		return !_testClasses.isEmpty();
 	}
 
 	protected String getBuildStartProperty(String propertyName) {
@@ -74,10 +78,14 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 		return null;
 	}
 
-	protected void removeTestClass(TestClass testClass) {
-		testClasses.remove(testClass);
+	protected int getTestClassCount() {
+		return _testClasses.size();
 	}
 
-	protected final List<TestClass> testClasses = new ArrayList<>();
+	protected void removeTestClass(TestClass testClass) {
+		_testClasses.remove(testClass);
+	}
+
+	private final Set<TestClass> _testClasses = new TreeSet<>();
 
 }

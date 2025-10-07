@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Browser Web
 Bundle-SymbolicName: com.liferay.asset.browser.web
-Bundle-Version: 5.0.57
+Bundle-Version: 5.0.58
 Web-ContextPath: /asset-browser-web

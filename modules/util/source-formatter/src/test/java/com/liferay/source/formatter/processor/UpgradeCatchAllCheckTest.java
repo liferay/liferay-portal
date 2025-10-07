@@ -46,7 +46,7 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 	public static Iterable<Object[]> data() throws Exception {
 		List<Object[]> objectsArray = new ArrayList<>();
 
-		Map<String, Set<String>> issueKeyFileTypesMap = new HashMap<>();
+		Map<String, JSONObject> issueKeyFileTypesMap = new HashMap<>();
 
 		String[] issueKeys = StringUtil.split(
 			System.getProperty("issue.key", null), StringPool.COMMA);
@@ -73,35 +73,52 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 				continue;
 			}
 
-			String[] fileTypes = _getValidExtensions(jsonObject);
+			String[] validExtensions = _getValidExtensions(jsonObject);
 
-			for (String fileType : fileTypes) {
+			for (String fileType : validExtensions) {
 				issueKeyFileTypesMap.compute(
 					issueKey,
 					(key, value) -> {
 						if (value == null) {
-							value = new HashSet<>();
+							value = JSONUtil.put("fileTypes", new HashSet<>());
 						}
 
-						value.add(fileType);
+						Set<String> fileTypes = (Set<String>)value.get(
+							"fileTypes");
+
+						fileTypes.add(fileType);
+
+						value.put("fileTypes", fileTypes);
+
+						value.put(
+							"hasMessage", jsonObject.getBoolean("hasMessage"));
 
 						return value;
 					});
 			}
 		}
 
-		for (Map.Entry<String, Set<String>> entry :
+		for (Map.Entry<String, JSONObject> entry :
 				issueKeyFileTypesMap.entrySet()) {
 
-			for (String fileType : entry.getValue()) {
-				objectsArray.add(new Object[] {entry.getKey(), fileType});
+			JSONObject jsonObject = entry.getValue();
+
+			for (String fileType : (Set<String>)jsonObject.get("fileTypes")) {
+				objectsArray.add(
+					new Object[] {
+						jsonObject.getBoolean("hasMessage"), entry.getKey(),
+						fileType
+					});
 			}
 		}
 
 		return objectsArray;
 	}
 
-	public UpgradeCatchAllCheckTest(String issueKey, String fileType) {
+	public UpgradeCatchAllCheckTest(
+		boolean hasMessage, String issueKey, String fileType) {
+
+		_hasMessage = hasMessage;
 		_issueKey = issueKey;
 		_fileType = fileType;
 	}
@@ -135,9 +152,16 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 			"src/test/resources/com/liferay/source/formatter/dependencies" +
 				"/expected/upgrade/upgrade-catch-all-check/" + fileName);
 
-		Assert.assertTrue(
-			"Missing unit test in " + expectedFilePath,
-			Files.exists(expectedFilePath));
+		if (_hasMessage) {
+			Assert.assertFalse(
+				"Unexpected unit test in " + expectedFilePath,
+				Files.exists(expectedFilePath));
+		}
+		else {
+			Assert.assertTrue(
+				"Missing unit test in " + expectedFilePath,
+				Files.exists(expectedFilePath));
+		}
 
 		_testUpgradeCatchAllCheck(
 			"upgrade/upgrade-catch-all-check/" + fileName);
@@ -170,12 +194,7 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 	}
 
 	private void _testUpgradeCatchAllCheck(String fileName) throws Exception {
-		if (fileName.endsWith(".testjava")) {
-			test(fileName, UpgradeCatchAllCheck.getExpectedMessages());
-		}
-		else {
-			test(fileName);
-		}
+		test(fileName, UpgradeCatchAllCheck.getExpectedMessages(fileName));
 	}
 
 	private static final String _UPGRADE_TO_LIFERAY_VERSION = "7.4.13.u27";
@@ -183,6 +202,7 @@ public class UpgradeCatchAllCheckTest extends BaseSourceProcessorTestCase {
 	private static final String _UPGRADE_TO_RELEASE_VERSION = "2024.q1.1";
 
 	private final String _fileType;
+	private final boolean _hasMessage;
 	private final String _issueKey;
 
 }

@@ -223,6 +223,21 @@ public interface OAuthClientEntryModel
 	public void setClientId(String clientId);
 
 	/**
+	 * Returns the custom claims json of this o auth client entry.
+	 *
+	 * @return the custom claims json of this o auth client entry
+	 */
+	@AutoEscape
+	public String getCustomClaimsJSON();
+
+	/**
+	 * Sets the custom claims json of this o auth client entry.
+	 *
+	 * @param customClaimsJSON the custom claims json of this o auth client entry
+	 */
+	public void setCustomClaimsJSON(String customClaimsJSON);
+
+	/**
 	 * Returns the info json of this o auth client entry.
 	 *
 	 * @return the info json of this o auth client entry

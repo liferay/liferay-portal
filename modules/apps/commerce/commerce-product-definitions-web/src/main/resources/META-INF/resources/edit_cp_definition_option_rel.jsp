@@ -198,6 +198,9 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 			var availableFieldTypeSelectOptions = availableTypeNames.split(
 				'<%= StringPool.COMMA %>'
 			);
+			var defineExternallyInput = document.getElementById(
+				'<portlet:namespace />definedExternally'
+			);
 			var multipleValuesTypeNames =
 				'<%= StringUtil.merge(CPConstants.PRODUCT_OPTION_MULTIPLE_VALUES_FIELD_TYPES, StringPool.COMMA) %>';
 			var multipleValuesFieldTypeSelectOptions = multipleValuesTypeNames.split(
@@ -272,10 +275,12 @@ String defaultLanguageId = cpDefinitionOptionRelDisplayContext.getCatalogDefault
 						allowedPriceContributorFieldTypeSelectOptions
 					)
 				) {
+					enable(defineExternallyInput);
 					enable(priceTypeSelect);
 				}
 				else {
 					if (priceTypeSelect.value == '') {
+						disable(defineExternallyInput);
 						disable(priceTypeSelect);
 					}
 					else {

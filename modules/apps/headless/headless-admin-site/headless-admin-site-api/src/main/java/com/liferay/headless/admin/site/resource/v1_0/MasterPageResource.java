@@ -25,6 +25,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -46,7 +47,12 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface MasterPageResource {
 
-	public void deleteSiteSiteByExternalReferenceCodeMasterPage(
+	public void deleteSiteMasterPage(
+			String siteExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public MasterPage getSiteMasterPage(
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode)
 		throws Exception;
@@ -57,12 +63,7 @@ public interface MasterPageResource {
 				String masterPageExternalReferenceCode, String roleNames)
 		throws Exception;
 
-	public MasterPage getSiteSiteByExternalReferenceCodeMasterPage(
-			String siteExternalReferenceCode,
-			String masterPageExternalReferenceCode)
-		throws Exception;
-
-	public Page<MasterPage> getSiteSiteByExternalReferenceCodeMasterPagesPage(
+	public Page<MasterPage> getSiteMasterPagesPage(
 			String siteExternalReferenceCode, String search,
 			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -70,20 +71,35 @@ public interface MasterPageResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
-	public MasterPage patchSiteSiteByExternalReferenceCodeMasterPage(
+	public MasterPage patchSiteMasterPage(
 			String siteExternalReferenceCode,
 			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
-	public MasterPage postSiteSiteByExternalReferenceCodeMasterPage(
+	public MasterPage postSiteMasterPage(
 			String siteExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
-	public ContentPageSpecification
-			postSiteSiteByExternalReferenceCodeMasterPagePageSpecification(
-				String siteExternalReferenceCode,
-				String masterPageExternalReferenceCode,
-				ContentPageSpecification contentPageSpecification)
+	public Response postSiteMasterPageBatch(
+			String siteExternalReferenceCode, String callbackURL, Object object)
+		throws Exception;
+
+	public ContentPageSpecification postSiteMasterPagePageSpecification(
+			String siteExternalReferenceCode,
+			String masterPageExternalReferenceCode,
+			ContentPageSpecification contentPageSpecification)
+		throws Exception;
+
+	public Response postSiteMasterPagesPageExportBatch(
+			String siteExternalReferenceCode, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public MasterPage putSiteMasterPage(
+			String siteExternalReferenceCode,
+			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
 	public Page<com.liferay.portal.vulcan.permission.Permission>
@@ -91,11 +107,6 @@ public interface MasterPageResource {
 				String siteExternalReferenceCode,
 				String masterPageExternalReferenceCode,
 				com.liferay.portal.vulcan.permission.Permission[] permissions)
-		throws Exception;
-
-	public MasterPage putSiteSiteByExternalReferenceCodeMasterPage(
-			String siteExternalReferenceCode,
-			String masterPageExternalReferenceCode, MasterPage masterPage)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

@@ -12,6 +12,8 @@ export class EditAccountContactInformationPage {
 	readonly facebookInput: Locator;
 	readonly jabberInput: Locator;
 	readonly page: Page;
+	readonly phoneExtensionHeader: Locator;
+	readonly phoneNumberHeader: Locator;
 	readonly saveButton: Locator;
 	readonly skypeInput: Locator;
 	readonly smsInput: Locator;
@@ -24,6 +26,14 @@ export class EditAccountContactInformationPage {
 		this.facebookInput = page.getByLabel('Facebook');
 		this.jabberInput = page.getByLabel('Jabber');
 		this.page = page;
+		this.phoneExtensionHeader = page.getByRole('cell', {
+			exact: true,
+			name: 'Phone Extension',
+		});
+		this.phoneNumberHeader = page.getByRole('cell', {
+			exact: true,
+			name: 'Phone Number',
+		});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.skypeInput = page.getByLabel('Skype');
 		this.smsInput = page.getByLabel('SMS');

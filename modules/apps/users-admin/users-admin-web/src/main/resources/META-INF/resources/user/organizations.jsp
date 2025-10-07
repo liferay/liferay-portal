@@ -98,6 +98,18 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 			value="<%= HtmlUtil.escape(UsersAdminUtil.getUserColumnText(locale, userGroupRoles, UsersAdminUtil.USER_GROUP_ROLE_TITLE_ACCESSOR, userGroupRolesCount)) %>"
 		/>
 
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+			<liferay-ui:search-container-column-text
+				cssClass="table-cell-expand-small table-cell-minw-150"
+				name="status"
+			>
+				<clay:label
+					displayType="<%= WorkflowConstants.getStatusStyle(organization.getStatus()) %>"
+					label="<%= WorkflowConstants.getStatusLabel(organization.getStatus()) %>"
+				/>
+			</liferay-ui:search-container-column-text>
+		</c:if>
+
 		<c:if test="<%= !portletName.equals(myAccountPortletId) && ((selUser == null) || !OrganizationMembershipPolicyUtil.isMembershipProtected(permissionChecker, selUser.getUserId(), organization.getOrganizationId())) %>">
 			<liferay-ui:search-container-column-text>
 				<clay:button

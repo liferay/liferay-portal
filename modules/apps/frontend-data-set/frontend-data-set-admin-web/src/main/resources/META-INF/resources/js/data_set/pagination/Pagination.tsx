@@ -11,7 +11,8 @@ import {fetch, navigate} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
 
 import RequiredMark from '../../components/RequiredMark';
-import {API_URL, DEFAULT_FETCH_HEADERS} from '../../utils/constants';
+import {DEFAULT_FETCH_HEADERS} from '../../utils/constants';
+import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../utils/openDefaultSuccessToast';
 import {IDataSetSectionProps} from '../DataSet';
@@ -104,14 +105,15 @@ function Pagination({
 			listOfItemsPerPage: itemsPerPage,
 		};
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify(body),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();

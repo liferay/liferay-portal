@@ -7,12 +7,16 @@ package com.liferay.layout.admin.web.internal.frontend.taglib.clay.servlet.tagli
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.NavigationCard;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -43,23 +47,7 @@ public class SelectBasicTemplatesNavigationCard implements NavigationCard {
 	@Override
 	public Map<String, String> getDynamicAttributes() {
 		return HashMapBuilder.put(
-			"data-add-layout-url",
-			PortletURLBuilder.createRenderURL(
-				_renderResponse
-			).setMVCRenderCommandName(
-				"/layout_admin/add_layout"
-			).setBackURL(
-				ParamUtil.getString(_httpServletRequest, "redirect")
-			).setParameter(
-				"privateLayout",
-				ParamUtil.getBoolean(_httpServletRequest, "privateLayout")
-			).setParameter(
-				"selPlid", ParamUtil.getLong(_httpServletRequest, "selPlid")
-			).setParameter(
-				"type", _type
-			).setWindowState(
-				LiferayWindowState.POP_UP
-			).buildString()
+			"data-add-layout-url", _getAddLayoutURL()
 		).put(
 			"role", "button"
 		).put(
@@ -80,6 +68,43 @@ public class SelectBasicTemplatesNavigationCard implements NavigationCard {
 	@Override
 	public Boolean isSmall() {
 		return true;
+	}
+
+	private String _getAddLayoutURL() {
+		long selPlid = ParamUtil.getLong(_httpServletRequest, "selPlid");
+
+		PortletURL addLayoutURL = PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/layout_admin/add_layout"
+		).setBackURL(
+			ParamUtil.getString(_httpServletRequest, "redirect")
+		).setParameter(
+			"privateLayout",
+			ParamUtil.getBoolean(_httpServletRequest, "privateLayout")
+		).setParameter(
+			"selPlid", selPlid
+		).setParameter(
+			"type", _type
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildPortletURL();
+
+		if (selPlid != LayoutConstants.DEFAULT_PLID) {
+			Layout layout = LayoutLocalServiceUtil.fetchLayout(selPlid);
+
+			if ((layout != null) && layout.isTypeEmpty()) {
+				addLayoutURL.setParameter(
+					"emptyLayout",
+					String.valueOf(
+						ParamUtil.getBoolean(
+							_httpServletRequest, "emptyLayout")));
+				addLayoutURL.setParameter(
+					"externalReferenceCode", layout.getExternalReferenceCode());
+			}
+		}
+
+		return addLayoutURL.toString();
 	}
 
 	private final HttpServletRequest _httpServletRequest;

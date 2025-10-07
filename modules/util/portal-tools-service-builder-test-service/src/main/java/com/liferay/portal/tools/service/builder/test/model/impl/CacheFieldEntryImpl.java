@@ -18,7 +18,7 @@ public class CacheFieldEntryImpl extends CacheFieldEntryBaseImpl {
 			_nickname = "Nickname_" + getName();
 		}
 
-		nicknameUpdateEntityCacheConsumer.accept(_nickname);
+		nicknameUpdateEntityCacheBiConsumer.accept(this, _nickname);
 
 		return _nickname;
 	}

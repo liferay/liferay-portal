@@ -317,7 +317,7 @@ public class JenkinsConsoleTextLoader {
 		"\\<a[^>]*\\>(?<text>[^<]*)\\</a\\>");
 	private static final Pattern _buildURLPattern = Pattern.compile(
 		"https?://(?<masterHostname>[^/\\.]+)(.liferay.com)?/+job/+" +
-			"(?<jobName>[^/]+)/+(?<buildNumber>\\d+)/?");
+			"(?<jobName>[^/]+)/(AXIS_VARIABLE=[^/]+/)?+(?<buildNumber>\\d+)/?");
 	private static final Map<String, JenkinsConsoleTextLoader>
 		_jenkinsConsoleTextLoaders = new HashMap<>();
 

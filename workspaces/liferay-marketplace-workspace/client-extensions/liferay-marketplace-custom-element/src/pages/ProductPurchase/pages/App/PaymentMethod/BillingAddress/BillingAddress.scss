@@ -1,6 +1,10 @@
 .billing-address-section {
 	line-height: 20px;
 
+	.label {
+		max-width: none !important;
+	}
+
 	&-card-addresses {
 		.radio-card-container {
 			margin-bottom: 17px;

@@ -1,0 +1,10 @@
+{
+	"name": "Before Opening",
+	"name_i18n": {
+		"en_US": "Before Opening",
+		"es-ES": "Antes de abrir",
+		"ja-JP": "チケットの作成前に",
+		"pt-BR": "Antes de Abrir"
+	},
+	"viewableBy": "Anyone"
+}

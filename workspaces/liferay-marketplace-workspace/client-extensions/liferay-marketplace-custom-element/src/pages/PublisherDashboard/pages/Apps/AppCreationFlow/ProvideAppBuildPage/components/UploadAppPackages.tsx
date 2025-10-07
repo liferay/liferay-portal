@@ -120,7 +120,7 @@ export function UploadAppPackagesComponent({
 									'only-jar-war-files-are-allowed-max-file-size-is-500mb'
 								)
 							: i18n.translate(
-									'only-zip-files-are-allowed-max-file-size-is-500-mb'
+									'only-zip-files-are-allowed-max-file-size-is-500mb'
 								)
 					}
 					maxFiles={1}

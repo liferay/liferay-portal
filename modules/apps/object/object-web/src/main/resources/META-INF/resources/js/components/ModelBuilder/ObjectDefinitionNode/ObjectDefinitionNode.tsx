@@ -34,8 +34,8 @@ export function ObjectDefinitionNode({
 		label,
 		linkedObjectDefinition,
 		name,
+		objectDefinitionSettings,
 		objectFields,
-		rootObjectDefinitionExternalReferenceCode,
 		selected,
 		showAllObjectFields,
 		status,
@@ -82,10 +82,17 @@ export function ObjectDefinitionNode({
 		}
 	};
 
-	const isTreeStructure = !!rootObjectDefinitionExternalReferenceCode;
+	const rootObjectDefinitionExternalReferenceCodes =
+		objectDefinitionSettings?.find(
+			(setting) =>
+				setting.name === 'rootObjectDefinitionExternalReferenceCodes'
+		)?.value;
 
-	const isRootNode =
-		externalReferenceCode === rootObjectDefinitionExternalReferenceCode;
+	const isRootNode = !!rootObjectDefinitionExternalReferenceCodes
+		?.split(',')
+		.includes(externalReferenceCode);
+
+	const isTreeStructure = !!rootObjectDefinitionExternalReferenceCodes;
 
 	const isRootDescendantNode = isTreeStructure && !isRootNode;
 
@@ -135,7 +142,7 @@ export function ObjectDefinitionNode({
 						objectDefinitionId: id,
 						objectDefinitionName: name,
 						objectDefinitionPermissionsURL,
-						objectFoldersLenght: objectFolders.length,
+						objectFoldersLength: objectFolders.length,
 						status,
 					})}
 					handleSelectObjectDefinitionNode={

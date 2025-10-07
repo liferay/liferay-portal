@@ -24,8 +24,11 @@ export {InlineEditor} from './ckeditor4/InlineEditor';
 export {default as CKEditor5BalloonEditor} from './ckeditor5/BalloonEditor';
 export {default as CKEditor5ClassicEditor} from './ckeditor5/ClassicEditor';
 
+export {default as getIcon} from './ckeditor5/utils/getIcon';
 export {
 	EEditorConfigPreset,
 	LiferayEditorConfig,
 	TEditor,
 } from './ckeditor5/utils/types';
+
+export {default as InputLocalized} from './input_localized/InputLocalized';

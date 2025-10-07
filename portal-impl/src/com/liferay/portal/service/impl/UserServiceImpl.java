@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Phone;
 import com.liferay.portal.kernel.model.Role;
@@ -65,6 +66,7 @@ import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.comparator.UserIdComparator;
@@ -76,7 +78,6 @@ import com.liferay.portal.security.membershippolicy.UserGroupMembershipPolicyUti
 import com.liferay.portal.service.base.UserServiceBaseImpl;
 import com.liferay.portal.service.permission.PasswordPolicyPermissionUtil;
 import com.liferay.portal.service.permission.UserGroupPermissionUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.admin.util.OmniadminUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
@@ -247,7 +248,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 			if (addresses != null) {
 				UsersAdminUtil.updateAddresses(
-					Contact.class.getName(), user.getContactId(), addresses);
+					Contact.class.getName(), user.getContactId(), addresses,
+					ListTypeConstants.CONTACT_ADDRESS);
 			}
 
 			if (emailAddresses != null) {
@@ -866,7 +868,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				serviceContext);
 
 			UsersAdminUtil.updateAddresses(
-				Contact.class.getName(), user.getContactId(), addresses);
+				Contact.class.getName(), user.getContactId(), addresses,
+				ListTypeConstants.CONTACT_ADDRESS);
 
 			UsersAdminUtil.updateEmailAddresses(
 				Contact.class.getName(), user.getContactId(), emailAddresses);
@@ -1087,7 +1090,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 				serviceContext);
 
 			UsersAdminUtil.updateAddresses(
-				Contact.class.getName(), user.getContactId(), addresses);
+				Contact.class.getName(), user.getContactId(), addresses,
+				ListTypeConstants.CONTACT_ADDRESS);
 
 			UsersAdminUtil.updateEmailAddresses(
 				Contact.class.getName(), user.getContactId(), emailAddresses);
@@ -2573,7 +2577,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 		if (addresses != null) {
 			UsersAdminUtil.updateAddresses(
-				Contact.class.getName(), user.getContactId(), addresses);
+				Contact.class.getName(), user.getContactId(), addresses,
+				ListTypeConstants.CONTACT_ADDRESS);
 		}
 
 		if (emailAddresses != null) {
@@ -2941,7 +2946,8 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 		if (addresses != null) {
 			UsersAdminUtil.updateAddresses(
-				Contact.class.getName(), user.getContactId(), addresses);
+				Contact.class.getName(), user.getContactId(), addresses,
+				ListTypeConstants.CONTACT_ADDRESS);
 		}
 
 		if (emailAddresses != null) {

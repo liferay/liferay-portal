@@ -13,8 +13,10 @@ import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.layout.display.page.BaseLayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -35,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = LayoutDisplayPageProvider.class)
 public class CPDefinitionLayoutDisplayPageProvider
-	implements LayoutDisplayPageProvider<CPDefinition> {
+	extends BaseLayoutDisplayPageProvider<CPDefinition> {
 
 	@Override
 	public String getClassName() {
@@ -47,44 +49,6 @@ public class CPDefinitionLayoutDisplayPageProvider
 		getLayoutDisplayPageObjectProvider(CPDefinition cpDefinition) {
 
 		if (cpDefinition.getStatus() == WorkflowConstants.STATUS_IN_TRASH) {
-			return null;
-		}
-
-		long groupId = cpDefinition.getGroupId();
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		if (serviceContext != null) {
-			groupId = serviceContext.getScopeGroupId();
-		}
-
-		return new CPDefinitionLayoutDisplayPageObjectProvider(
-			cpDefinition, groupId);
-	}
-
-	@Override
-	public LayoutDisplayPageObjectProvider<CPDefinition>
-		getLayoutDisplayPageObjectProvider(
-			InfoItemReference infoItemReference) {
-
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
-			return null;
-		}
-
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)
-				infoItemReference.getInfoItemIdentifier();
-
-		CPDefinition cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
-			classPKInfoItemIdentifier.getClassPK());
-
-		if ((cpDefinition == null) ||
-			(cpDefinition.getStatus() == WorkflowConstants.STATUS_IN_TRASH)) {
-
 			return null;
 		}
 
@@ -139,6 +103,62 @@ public class CPDefinitionLayoutDisplayPageProvider
 	public String getURLSeparator() {
 		return _cpFriendlyURL.getProductURLSeparator(
 			CompanyThreadLocal.getCompanyId());
+	}
+
+	@Override
+	protected LayoutDisplayPageObjectProvider<CPDefinition>
+		doGetLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
+
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
+			return null;
+		}
+
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)
+					infoItemReference.getInfoItemIdentifier();
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinition(
+					classPKInfoItemIdentifier.getClassPK());
+
+			if ((cpDefinition == null) ||
+				(cpDefinition.getStatus() ==
+					WorkflowConstants.STATUS_IN_TRASH)) {
+
+				return null;
+			}
+
+			return new CPDefinitionLayoutDisplayPageObjectProvider(
+				cpDefinition, groupId);
+		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(),
+					serviceContext.getCompanyId());
+
+		if ((cpDefinition == null) ||
+			(cpDefinition.getStatus() == WorkflowConstants.STATUS_IN_TRASH)) {
+
+			return null;
+		}
+
+		return new CPDefinitionLayoutDisplayPageObjectProvider(
+			cpDefinition, cpDefinition.getGroupId());
 	}
 
 	@Reference

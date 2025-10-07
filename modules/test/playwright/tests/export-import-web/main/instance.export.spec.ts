@@ -28,7 +28,7 @@ export const test = mergeTests(
 	companyExportImportPageTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: true, system: true},
+		'LPD-35914': {enabled: true},
 	}),
 	loginTest(),
 	productMenuPageTest,
@@ -82,7 +82,7 @@ test('can export custom object entries at instance level with date filter', asyn
 	);
 
 	const exportFilePath1 = await companyExportImportPage.export(
-		'Tests',
+		['Tests 1 Items'],
 		false
 	);
 
@@ -101,7 +101,7 @@ test('can export custom object entries at instance level with date filter', asyn
 	startDate.setDate(startDate.getDate() - 2);
 
 	const exportFilePath2 = await companyExportImportPage.export(
-		'Tests',
+		['Tests 1 Items'],
 		false,
 		{
 			endDate: toDateRangeDate(endDate),
@@ -118,7 +118,7 @@ test('can export custom object entries at instance level with date filter', asyn
 	expect(json2.length).toBe(0);
 
 	const exportFilePath3 = await companyExportImportPage.export(
-		'Tests',
+		['Tests 1 Items'],
 		false,
 		{
 			rangeLast: '12 Hours',
@@ -146,7 +146,14 @@ test('can export new default and custom task name', async ({
 
 	apiHelpers.data.push({id: objectDefinition.id, type: 'objectDefinition'});
 
-	const defaultExportFilePath = await companyExportImportPage.export('Tests');
+	await apiHelpers.objectEntry.postObjectEntry(
+		{externalReferenceCode: '', name: 'test'},
+		'c/tests'
+	);
+
+	const defaultExportFilePath = await companyExportImportPage.export([
+		'Tests 1 Items',
+	]);
 
 	expect(defaultExportFilePath).toMatch(
 		new RegExp(`^${getTempDir()}Export-`)
@@ -155,7 +162,7 @@ test('can export new default and custom task name', async ({
 	const taskName = 'CustomTaskName';
 
 	const customExportFilePath = await companyExportImportPage.export(
-		'Tests',
+		['Tests 1 Items'],
 		false,
 		undefined,
 		taskName
@@ -185,7 +192,10 @@ test('can export custom object entries at instance level with permissions', asyn
 		'c/tests'
 	);
 
-	const exportFilePath = await companyExportImportPage.export('Tests', true);
+	const exportFilePath = await companyExportImportPage.export(
+		['Tests 1 Items'],
+		true
+	);
 
 	const content = await readFileFromZip('C_Test.json', exportFilePath);
 
@@ -228,7 +238,7 @@ test('can see corresponding elements at instance level', async ({
 
 	await expect(
 		companyExportImportPage.page.getByRole('link', {name: 'Refresh Counts'})
-	).not.toBeVisible();
+	).toBeVisible();
 });
 
 test(

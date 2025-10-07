@@ -26,10 +26,15 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -66,12 +71,16 @@ public class CategoryFacetPortletUpgradeProcessTest {
 			TestPropsValues.getUserId(), _group.getGroupId(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		_assetVocabulary3 = _assetVocabularyLocalService.addVocabulary(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		String defaultPreferences = StringBundler.concat(
 			"<portlet-preferences><preference><name>vocabularyIds",
-			"</name><value>",
-			_assetVocabulary1.getVocabularyId() + "," +
-				_assetVocabulary2.getVocabularyId(),
+			"</name><value>", _assetVocabulary1.getVocabularyId(), ",",
+			_assetVocabulary2.getVocabularyId(), ",",
+			_assetVocabulary3.getVocabularyId(),
 			"</value></preference></portlet-preferences>");
 
 		_portletPreferences =
@@ -83,12 +92,35 @@ public class CategoryFacetPortletUpgradeProcessTest {
 					_group.getCompanyId(), portletId),
 				defaultPreferences);
 
+		long deletedVocabularyId = _assetVocabulary3.getVocabularyId();
+
+		_assetVocabularyLocalService.deleteAssetVocabulary(_assetVocabulary3);
+
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
 			"com.liferay.portal.search.web.internal.upgrade.v2_1_0." +
 				"CategoryFacetPortletUpgradeProcess");
 
-		upgradeProcess.upgrade();
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_UPGRADE_CLASS_NAME, LoggerTestUtil.ERROR)) {
+
+			upgradeProcess.upgrade();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String logEntryMessage = logEntry.getMessage();
+
+			Assert.assertTrue(
+				logEntryMessage.contains(
+					StringBundler.concat(
+						"Removing vocabulary ", deletedVocabularyId,
+						" from portlet preferences for portlet ",
+						"com_liferay_portal_search_web_category_facet_portlet_",
+						"CategoryFacetPortlet because vocabulary ",
+						deletedVocabularyId, " does not exist")));
+		}
 
 		_multiVMPool.clear();
 
@@ -109,6 +141,10 @@ public class CategoryFacetPortletUpgradeProcessTest {
 		Assert.assertNull(jxPortletPreferences.getValue("vocabularyIds", null));
 	}
 
+	private static final String _UPGRADE_CLASS_NAME =
+		"com.liferay.portal.search.web.internal.upgrade.v2_1_0." +
+			"CategoryFacetPortletUpgradeProcess";
+
 	@Inject
 	private static PortletLocalService _portletLocalService;
 
@@ -117,6 +153,9 @@ public class CategoryFacetPortletUpgradeProcessTest {
 
 	@DeleteAfterTestRun
 	private AssetVocabulary _assetVocabulary2;
+
+	@DeleteAfterTestRun
+	private AssetVocabulary _assetVocabulary3;
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;

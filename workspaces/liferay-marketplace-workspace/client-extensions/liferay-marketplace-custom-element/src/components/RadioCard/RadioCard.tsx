@@ -8,19 +8,21 @@ import classNames from 'classnames';
 
 import radioChecked from '../../assets/icons/radio_button_checked_2_icon.svg';
 import radioUnchecked from '../../assets/icons/radio_button_unchecked_icon.svg';
-import paypal from '../../assets/images/paypal.png';
 
 import './RadioCard.scss';
 
 import ClayIcon from '@clayui/icon';
+import {ReactElement} from 'react';
 
 import {Tooltip} from '../Tooltip/Tooltip';
 
 interface RadioCardProps {
 	className?: string;
+	content?: ReactElement | string;
 	description?: string;
 	disabled?: boolean;
 	icon?: string;
+	image?: ReactElement;
 	onChange: (value?: boolean) => void;
 	position?: string;
 	selected: boolean;
@@ -32,9 +34,11 @@ interface RadioCardProps {
 
 export function RadioCard({
 	className = '',
+	content,
 	description,
 	disabled = false,
 	icon,
+	image,
 	onChange,
 	position = 'left',
 	selected,
@@ -88,7 +92,7 @@ export function RadioCard({
 											? 'Radio Checked'
 											: 'Radio unchecked'
 									}
-									className="radio-card-button-icon"
+									className="mb-0 radio-card-button-icon"
 									src={
 										selected ? radioChecked : radioUnchecked
 									}
@@ -98,13 +102,19 @@ export function RadioCard({
 
 					{small ? (
 						<div className="radio-card-main-info-small">
-							<div className="radio-card-main-info-small-background">
-								<img alt="paypal" src={paypal} />
-							</div>
+							{image && (
+								<div className="radio-card-main-info-small-background">
+									{image}
+								</div>
+							)}
 
-							<span className="radio-card-main-info-small-text-small">
-								{title}
-							</span>
+							{title && (
+								<span className="radio-card-main-info-small-text-small">
+									{title}
+								</span>
+							)}
+
+							{content && <span className="">{content}</span>}
 						</div>
 					) : (
 						title && (

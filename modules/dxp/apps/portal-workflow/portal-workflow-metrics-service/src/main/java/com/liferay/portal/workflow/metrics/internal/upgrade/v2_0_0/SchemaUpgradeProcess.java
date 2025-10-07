@@ -165,6 +165,7 @@ public class SchemaUpgradeProcess extends UpgradeProcess {
 				}
 
 				preparedStatement2.executeBatch();
+
 				preparedStatement3.executeBatch();
 			}
 		}

@@ -6,6 +6,8 @@
 package com.liferay.journal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.test.util.DataDefinitionTestUtil;
@@ -20,8 +22,10 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -34,6 +38,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -43,6 +48,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +70,9 @@ public class DDMStructureModelListenerTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -129,6 +137,38 @@ public class DDMStructureModelListenerTest {
 		_assertDDMFormFieldValuesMap(
 			_expectedUpdatedFieldValuesMap,
 			updatedJournalArticle.getDDMFormValues());
+	}
+
+	@Test
+	public void testUpdateDataDefinitionInPublication() throws Exception {
+		JournalArticle journalArticle = _addJournalArticle();
+
+		CTCollection ctCollection = _ctCollectionService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_updateDataDefinition(
+				_dataDefinition.getDataDefinitionKey(),
+				"dependencies/updated_data_definition.json");
+
+			JournalArticle updatedJournalArticle =
+				_journalArticleLocalService.getJournalArticle(
+					journalArticle.getId());
+
+			_assertDDMFormFieldValuesMap(
+				_expectedUpdatedFieldValuesMap,
+				updatedJournalArticle.getDDMFormValues());
+		}
+
+		journalArticle = _journalArticleLocalService.getJournalArticle(
+			journalArticle.getId());
+
+		_assertDDMFormFieldValuesMap(
+			_expectedFieldValuesMap, journalArticle.getDDMFormValues());
 	}
 
 	@Test
@@ -405,6 +445,9 @@ public class DDMStructureModelListenerTest {
 		return dataDefinitionResource.putDataDefinition(
 			_dataDefinition.getId(), _dataDefinition);
 	}
+
+	@Inject
+	private static CTCollectionService _ctCollectionService;
 
 	private static final Map<String, List<String>> _expectedFieldValuesMap =
 		HashMapBuilder.<String, List<String>>put(

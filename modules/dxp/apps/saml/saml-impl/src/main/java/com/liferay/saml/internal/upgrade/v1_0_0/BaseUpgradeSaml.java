@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.saml.internal.constants.LegacySamlPropsKeys;
 
 import java.util.Map;
@@ -25,17 +25,17 @@ public abstract class BaseUpgradeSaml extends UpgradeProcess {
 		return _defaultValues.get(key);
 	}
 
-	protected String getPropsValue(Props props, String key, Filter filter) {
+	protected String getPropsValue(String key, Filter filter) {
 		String value = null;
 
 		if ((filter != null) &&
 			ArrayUtil.contains(LegacySamlPropsKeys.SAML_KEYS_FILTERED, key)) {
 
-			value = props.get(key, filter);
+			value = PropsUtil.get(key, filter);
 		}
 
 		if (value == null) {
-			value = props.get(key);
+			value = PropsUtil.get(key);
 		}
 
 		return value;

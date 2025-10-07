@@ -45,6 +45,8 @@ import com.liferay.headless.admin.user.resource.v1_0.WebUrlResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
@@ -4740,6 +4742,10 @@ public class Query {
 		accountResource.setContextUriInfo(_uriInfo);
 		accountResource.setContextUser(_user);
 		accountResource.setGroupLocalService(_groupLocalService);
+		accountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4755,6 +4761,10 @@ public class Query {
 		accountGroupResource.setContextUriInfo(_uriInfo);
 		accountGroupResource.setContextUser(_user);
 		accountGroupResource.setGroupLocalService(_groupLocalService);
+		accountGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4769,6 +4779,10 @@ public class Query {
 		accountRoleResource.setContextUriInfo(_uriInfo);
 		accountRoleResource.setContextUser(_user);
 		accountRoleResource.setGroupLocalService(_groupLocalService);
+		accountRoleResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountRoleResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountRoleResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4784,6 +4798,10 @@ public class Query {
 		emailAddressResource.setContextUriInfo(_uriInfo);
 		emailAddressResource.setContextUser(_user);
 		emailAddressResource.setGroupLocalService(_groupLocalService);
+		emailAddressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		emailAddressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		emailAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4799,6 +4817,10 @@ public class Query {
 		organizationResource.setContextUriInfo(_uriInfo);
 		organizationResource.setContextUser(_user);
 		organizationResource.setGroupLocalService(_groupLocalService);
+		organizationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		organizationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		organizationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4812,6 +4834,10 @@ public class Query {
 		phoneResource.setContextUriInfo(_uriInfo);
 		phoneResource.setContextUser(_user);
 		phoneResource.setGroupLocalService(_groupLocalService);
+		phoneResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		phoneResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		phoneResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4827,6 +4853,10 @@ public class Query {
 		postalAddressResource.setContextUriInfo(_uriInfo);
 		postalAddressResource.setContextUser(_user);
 		postalAddressResource.setGroupLocalService(_groupLocalService);
+		postalAddressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		postalAddressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		postalAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4840,6 +4870,9 @@ public class Query {
 		roleResource.setContextUriInfo(_uriInfo);
 		roleResource.setContextUser(_user);
 		roleResource.setGroupLocalService(_groupLocalService);
+		roleResource.setResourceActionLocalService(_resourceActionLocalService);
+		roleResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		roleResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4853,6 +4886,10 @@ public class Query {
 		segmentResource.setContextUriInfo(_uriInfo);
 		segmentResource.setContextUser(_user);
 		segmentResource.setGroupLocalService(_groupLocalService);
+		segmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		segmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		segmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4867,6 +4904,10 @@ public class Query {
 		segmentUserResource.setContextUriInfo(_uriInfo);
 		segmentUserResource.setContextUser(_user);
 		segmentUserResource.setGroupLocalService(_groupLocalService);
+		segmentUserResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		segmentUserResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		segmentUserResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4881,6 +4922,10 @@ public class Query {
 		sharedAssetResource.setContextUriInfo(_uriInfo);
 		sharedAssetResource.setContextUser(_user);
 		sharedAssetResource.setGroupLocalService(_groupLocalService);
+		sharedAssetResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		sharedAssetResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		sharedAssetResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4894,6 +4939,9 @@ public class Query {
 		siteResource.setContextUriInfo(_uriInfo);
 		siteResource.setContextUser(_user);
 		siteResource.setGroupLocalService(_groupLocalService);
+		siteResource.setResourceActionLocalService(_resourceActionLocalService);
+		siteResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		siteResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4909,6 +4957,10 @@ public class Query {
 		subscriptionResource.setContextUriInfo(_uriInfo);
 		subscriptionResource.setContextUser(_user);
 		subscriptionResource.setGroupLocalService(_groupLocalService);
+		subscriptionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		subscriptionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		subscriptionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4922,6 +4974,10 @@ public class Query {
 		ticketResource.setContextUriInfo(_uriInfo);
 		ticketResource.setContextUser(_user);
 		ticketResource.setGroupLocalService(_groupLocalService);
+		ticketResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		ticketResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		ticketResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4936,6 +4992,10 @@ public class Query {
 		userAccountResource.setContextUriInfo(_uriInfo);
 		userAccountResource.setContextUser(_user);
 		userAccountResource.setGroupLocalService(_groupLocalService);
+		userAccountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		userAccountResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		userAccountResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4955,6 +5015,10 @@ public class Query {
 		userAccountFullNameDefinitionResource.setContextUser(_user);
 		userAccountFullNameDefinitionResource.setGroupLocalService(
 			_groupLocalService);
+		userAccountFullNameDefinitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		userAccountFullNameDefinitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		userAccountFullNameDefinitionResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -4969,6 +5033,10 @@ public class Query {
 		userGroupResource.setContextUriInfo(_uriInfo);
 		userGroupResource.setContextUser(_user);
 		userGroupResource.setGroupLocalService(_groupLocalService);
+		userGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		userGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		userGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -4982,6 +5050,10 @@ public class Query {
 		webUrlResource.setContextUriInfo(_uriInfo);
 		webUrlResource.setContextUser(_user);
 		webUrlResource.setGroupLocalService(_groupLocalService);
+		webUrlResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		webUrlResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		webUrlResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5033,6 +5105,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

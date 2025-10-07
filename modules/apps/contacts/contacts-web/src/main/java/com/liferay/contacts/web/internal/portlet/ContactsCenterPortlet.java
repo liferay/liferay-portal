@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -1169,7 +1170,8 @@ public class ContactsCenterPortlet extends MVCPortlet {
 
 		UsersAdminUtil.updateAddresses(
 			Contact.class.getName(), user.getContactId(),
-			UsersAdminUtil.getAddresses(actionRequest));
+			UsersAdminUtil.getAddresses(actionRequest),
+			ListTypeConstants.CONTACT_ADDRESS);
 	}
 
 	private void _updateArchived(long userId, long userNotificationEventId)

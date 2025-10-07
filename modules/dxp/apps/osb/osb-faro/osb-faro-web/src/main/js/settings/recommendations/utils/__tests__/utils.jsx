@@ -3,7 +3,7 @@ import * as utils from '../utils';
 describe('utils', () => {
 	describe('getPropertiesFromItems', () => {
 		it('should convert Filter to JobProperty', () => {
-			const filter = 'url ~ .*custom-assets';
+			const filter = 'url ~ .*documents';
 
 			expect(
 				utils.getPropertiesFromItems([
@@ -14,10 +14,10 @@ describe('utils', () => {
 	});
 
 	describe('getFilterValueBreakdown', () => {
-		expect(utils.getFilterValueBreakdown('url ~ .*custom-assets')).toEqual({
+		expect(utils.getFilterValueBreakdown('url ~ .*documentss')).toEqual({
 			exactMatchSign: '~',
 			metadataTag: 'url',
-			rule: '.*custom-assets'
+			rule: '.*documentss'
 		});
 	});
 });

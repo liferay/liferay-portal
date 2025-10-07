@@ -46,13 +46,11 @@ test.describe('Object Unique Composite Key Validation', () => {
 	test.beforeEach(async ({apiHelpers}) => {
 		const newObjectDefinition1 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 
 		const newObjectDefinition2 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 
@@ -695,9 +693,13 @@ test(
 				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
 			);
 
-			await page.getByLabel('objectFieldLabelDouble').fill('7.1');
+			await page
+				.getByRole('spinbutton', {name: 'objectFieldLabelDouble'})
+				.fill('7.1');
 
-			await page.getByLabel('objectFieldLabelInt').fill('4');
+			await page
+				.getByRole('spinbutton', {name: 'objectFieldLabelInt'})
+				.fill('4');
 
 			await page.getByText('Submit').click();
 
@@ -705,7 +707,9 @@ test(
 				page.getByText(objectValidationErrorLabelDouble)
 			).toBeVisible();
 
-			await page.getByLabel('objectFieldLabelDouble').fill('5.2');
+			await page
+				.getByRole('spinbutton', {name: 'objectFieldLabelDouble'})
+				.fill('5.2');
 
 			await page.getByText('Submit').click();
 
@@ -713,7 +717,9 @@ test(
 				page.getByText(objectValidationErrorLabelInt)
 			).toBeVisible();
 
-			await page.getByLabel('objectFieldLabelInt').fill('6');
+			await page
+				.getByRole('spinbutton', {name: 'objectFieldLabelInt'})
+				.fill('6');
 
 			await page.getByText('Submit').click();
 

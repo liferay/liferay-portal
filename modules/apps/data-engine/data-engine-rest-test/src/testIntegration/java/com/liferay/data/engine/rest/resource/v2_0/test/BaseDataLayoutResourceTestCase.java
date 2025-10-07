@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -53,7 +56,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -252,6 +255,69 @@ public abstract class BaseDataLayoutResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteDataDefinitionDataLayout() throws Exception {
+
+		// No namespace
+
+		DataLayout dataLayout1 =
+			testGraphQLDeleteDataDefinitionDataLayout_addDataLayout();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteDataDefinitionDataLayout",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"dataDefinitionId",
+									testGraphQLDeleteDataDefinitionDataLayout_getDataDefinitionId(
+										dataLayout1));
+							}
+						})),
+				"JSONObject/data", "Object/deleteDataDefinitionDataLayout"));
+
+		// Using the namespace dataEngine_v2_0
+
+		DataLayout dataLayout2 =
+			testGraphQLDeleteDataDefinitionDataLayout_addDataLayout();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"dataEngine_v2_0",
+						new GraphQLField(
+							"deleteDataDefinitionDataLayout",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"dataDefinitionId",
+										testGraphQLDeleteDataDefinitionDataLayout_getDataDefinitionId(
+											dataLayout2));
+								}
+							}))),
+				"JSONObject/data", "JSONObject/dataEngine_v2_0",
+				"Object/deleteDataDefinitionDataLayout"));
+	}
+
+	protected Long
+			testGraphQLDeleteDataDefinitionDataLayout_getDataDefinitionId(
+				DataLayout dataLayout)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected DataLayout
+			testGraphQLDeleteDataDefinitionDataLayout_addDataLayout()
+		throws Exception {
+
+		return testGraphQLDataDefinitionDataLayout_addDataLayout();
+	}
+
+	@Test
 	public void testDeleteDataLayout() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DataLayout dataLayout = testDeleteDataLayout_addDataLayout();
@@ -301,7 +367,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 							put("dataLayoutId", dataLayout1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -336,7 +402,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 								put("dataLayoutId", dataLayout2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -725,6 +791,85 @@ public abstract class BaseDataLayoutResourceTestCase {
 		throws Exception {
 
 		return null;
+	}
+
+	@Test
+	public void testGraphQLGetDataDefinitionDataLayoutsPage() throws Exception {
+		Long dataDefinitionId =
+			testGetDataDefinitionDataLayoutsPage_getDataDefinitionId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"dataDefinitionDataLayouts",
+			new HashMap<String, Object>() {
+				{
+					put("dataDefinitionId", dataDefinitionId);
+					put("keywords", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject dataDefinitionDataLayoutsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/dataDefinitionDataLayouts");
+
+		long totalCount = dataDefinitionDataLayoutsJSONObject.getLong(
+			"totalCount");
+
+		DataLayout dataLayout1 =
+			testGraphQLDataDefinitionDataLayout_addDataLayout(
+				dataDefinitionId, randomDataLayout());
+
+		DataLayout dataLayout2 =
+			testGraphQLDataDefinitionDataLayout_addDataLayout(
+				dataDefinitionId, randomDataLayout());
+
+		dataDefinitionDataLayoutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/dataDefinitionDataLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			dataDefinitionDataLayoutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			dataLayout1,
+			Arrays.asList(
+				DataLayoutSerDes.toDTOs(
+					dataDefinitionDataLayoutsJSONObject.getString("items"))));
+		assertContains(
+			dataLayout2,
+			Arrays.asList(
+				DataLayoutSerDes.toDTOs(
+					dataDefinitionDataLayoutsJSONObject.getString("items"))));
+
+		// Using the namespace dataEngine_v2_0
+
+		dataDefinitionDataLayoutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("dataEngine_v2_0", graphQLField)),
+			"JSONObject/data", "JSONObject/dataEngine_v2_0",
+			"JSONObject/dataDefinitionDataLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			dataDefinitionDataLayoutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			dataLayout1,
+			Arrays.asList(
+				DataLayoutSerDes.toDTOs(
+					dataDefinitionDataLayoutsJSONObject.getString("items"))));
+		assertContains(
+			dataLayout2,
+			Arrays.asList(
+				DataLayoutSerDes.toDTOs(
+					dataDefinitionDataLayoutsJSONObject.getString("items"))));
 	}
 
 	@Test
@@ -1183,7 +1328,7 @@ public abstract class BaseDataLayoutResourceTestCase {
 			testGraphQLGetSiteDataLayoutByContentTypeByDataLayoutKey_addDataLayout()
 		throws Exception {
 
-		return testGraphQLDataLayout_addDataLayout();
+		return testGraphQLSiteDataLayout_addDataLayout();
 	}
 
 	@Test
@@ -1204,6 +1349,27 @@ public abstract class BaseDataLayoutResourceTestCase {
 		return dataLayoutResource.postDataDefinitionDataLayout(
 			testGetDataDefinitionDataLayoutsPage_getDataDefinitionId(),
 			dataLayout);
+	}
+
+	@Test
+	public void testGraphQLPostDataDefinitionDataLayout() throws Exception {
+		DataLayout randomDataLayout = randomDataLayout();
+
+		DataLayout dataLayout =
+			testGraphQLDataDefinitionDataLayout_addDataLayout(
+				testGraphQLPostDataDefinitionDataLayout_getDataDefinitionId(
+					randomDataLayout),
+				randomDataLayout);
+
+		Assert.assertTrue(equals(randomDataLayout, dataLayout));
+	}
+
+	protected Long testGraphQLPostDataDefinitionDataLayout_getDataDefinitionId(
+			DataLayout dataLayout)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1289,11 +1455,143 @@ public abstract class BaseDataLayoutResourceTestCase {
 		}
 	}
 
+	protected DataLayout testGraphQLDataDefinitionDataLayout_addDataLayout()
+		throws Exception {
+
+		return testGraphQLDataDefinitionDataLayout_addDataLayout(
+			testGraphQLDataDefinitionDataLayout_getDataDefinitionId(),
+			randomDataLayout());
+	}
+
+	protected Long testGraphQLDataDefinitionDataLayout_getDataDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected DataLayout testGraphQLDataDefinitionDataLayout_addDataLayout(
+			Long dataDefinitionId, DataLayout dataLayout)
+		throws Exception {
+
+		JSONDeserializer<DataLayout> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(DataLayout.class)) {
+
+			if (getGraphQLValue(field.get(dataLayout)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(dataLayout)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createDataDefinitionDataLayout",
+						new HashMap<String, Object>() {
+							{
+								put("dataDefinitionId", dataDefinitionId);
+								put("dataLayout", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createDataDefinitionDataLayout"),
+			DataLayout.class);
+	}
+
 	protected DataLayout testGraphQLDataLayout_addDataLayout()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected DataLayout testGraphQLSiteDataLayout_addDataLayout()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1522,6 +1820,8 @@ public abstract class BaseDataLayoutResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 

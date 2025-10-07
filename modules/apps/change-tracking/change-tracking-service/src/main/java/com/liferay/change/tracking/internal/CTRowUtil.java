@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -183,6 +184,48 @@ public class CTRowUtil {
 			}
 
 			sb.append(primaryKey);
+			sb.append(", ");
+
+			i++;
+		}
+
+		sb.setStringAt(")", sb.index() - 1);
+
+		sb.append(")");
+
+		return sb.toString();
+	}
+
+	public static String getUpdateMVCCVersionSQL(
+		long ctCollectionId, List<Serializable> primaryKeys,
+		String primaryKeyName, String tableName) {
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("select ");
+		sb.append(primaryKeyName);
+		sb.append(", mvccVersion from ");
+		sb.append(tableName);
+		sb.append(" where ctCollectionId = ");
+		sb.append(ctCollectionId);
+		sb.append(" and (");
+		sb.append(primaryKeyName);
+		sb.append(" in (");
+
+		int i = 0;
+
+		for (Serializable serializable : primaryKeys) {
+			if (i == _BATCH_SIZE) {
+				sb.setStringAt(")", sb.index() - 1);
+
+				sb.append(" or ");
+				sb.append(primaryKeyName);
+				sb.append(" in (");
+
+				i = 0;
+			}
+
+			sb.append(serializable);
 			sb.append(", ");
 
 			i++;

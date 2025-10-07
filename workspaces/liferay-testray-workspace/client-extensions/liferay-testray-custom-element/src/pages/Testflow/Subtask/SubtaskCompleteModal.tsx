@@ -24,6 +24,7 @@ import {
 	TestrayCaseResult,
 	TestraySubtask,
 	liferayMessageBoardImpl,
+	testrayCaseImpl,
 	testraySubtaskImpl,
 } from '../../../services/rest';
 import {CaseResultStatuses} from '../../../util/statuses';
@@ -172,6 +173,30 @@ const SubtaskCompleteModal: React.FC<SubtaskCompleteModalProps> = ({
 				subtask?.id,
 				subtask.r_userToSubtasks_userId
 			);
+
+			const testrayCaseNames = await testrayCaseImpl.getAll({
+				fields: 'name',
+				filter: SearchBuilder.eq(
+					`caseToCaseResult/r_subtaskToCaseResults_c_subtaskId`,
+					subtask.id
+				),
+				pageSize: -1,
+			});
+
+			if (testrayCaseNames?.items) {
+				_issues.map((issue) => {
+					Liferay.OAuth2Client.FromUserAgentApplication(
+						'liferay-testray-etc-spring-boot-oaua'
+					).fetch(`/jira/issues/${issue}`, {
+						body: JSON.stringify({
+							testrayCaseNames: testrayCaseNames.items.map(
+								({name}) => name
+							),
+						}),
+						method: 'PUT',
+					});
+				});
+			}
 
 			revalidateSubtask();
 

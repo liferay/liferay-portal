@@ -50,8 +50,16 @@ const LAYOUT_DATA_ITEM_TYPE_ICONS = {
 	[LAYOUT_DATA_ITEM_TYPES.row]: 'table',
 };
 
-function getCollectionAncestor(layoutData, itemId) {
+export function getCollectionAncestor(layoutData, itemId) {
 	const item = layoutData.items[itemId];
+
+	if (!item) {
+		if (process.env.NODE_ENV === 'development') {
+			console.error(
+				`Item with id ${itemId} does not exist in layout data.`
+			);
+		}
+	}
 
 	const parent = layoutData.items[item.parentId];
 
@@ -211,6 +219,14 @@ export default function getTreeNodes(
 		const fragmentEntryLink =
 			fragmentEntryLinks[item.config.fragmentEntryLinkId];
 
+		if (!fragmentEntryLink) {
+			if (process.env.NODE_ENV === 'development') {
+				console.error(
+					`No fragment entry link with id ${item.config.fragmentEntryLinkId} found for fragment id ${item.itemId}.`
+				);
+			}
+		}
+
 		icon = fragmentEntryLink.icon || icon;
 
 		const documentFragment = getDocumentFragment(fragmentEntryLink.content);
@@ -283,8 +299,26 @@ export default function getTreeNodes(
 			else {
 				const {dropZoneId, mainItemId} = element;
 
+				if (!mainItemId) {
+					if (process.env.NODE_ENV === 'development') {
+						console.error(
+							`Dropzone belonging to ${item.itemId} does not have a uuid.`
+						);
+					}
+				}
+
+				const mainItem = items[mainItemId];
+
+				if (!mainItem) {
+					if (process.env.NODE_ENV === 'development') {
+						console.error(
+							`Dropzone with uuid ${mainItemId} was not found in the layout data.`
+						);
+					}
+				}
+
 				children.push({
-					...getTreeNodes(items[mainItemId], items, {
+					...getTreeNodes(mainItem, items, {
 						canUpdateEditables,
 						canUpdateItemConfiguration,
 						editingNodeId,
@@ -320,13 +354,30 @@ export default function getTreeNodes(
 			}
 
 			const childItem = items[childId];
+			if (!childItem) {
+				if (process.env.NODE_ENV === 'development') {
+					console.error(
+						`Child item with id ${childId} was not found in the layout data.`
+					);
+				}
+			}
 
 			if (
 				!isMasterPage &&
 				childItem.type === LAYOUT_DATA_ITEM_TYPES.dropZone
 			) {
+				const mainItem = layoutData.items[layoutData.rootItems.main];
+
+				if (!mainItem) {
+					if (process.env.NODE_ENV === 'development') {
+						console.error(
+							`Root with id ${layoutData.rootItems.main} was not found in the layout data.`
+						);
+					}
+				}
+
 				const dropZoneChildren = getTreeNodes(
-					layoutData.items[layoutData.rootItems.main],
+					mainItem,
 					layoutData.items,
 					{
 						canUpdateEditables,

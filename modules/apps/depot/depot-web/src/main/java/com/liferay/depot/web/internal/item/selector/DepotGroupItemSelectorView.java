@@ -5,12 +5,13 @@
 
 package com.liferay.depot.web.internal.item.selector;
 
-import com.liferay.depot.web.internal.util.DepotAdminGroupSearchProvider;
+import com.liferay.depot.web.internal.util.DepotEntryAdminSearchProvider;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
 import com.liferay.item.selector.ItemSelectorViewDescriptorRenderer;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
+import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletResponse;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.ServletException;
@@ -52,13 +54,11 @@ import org.osgi.service.component.annotations.Reference;
 	service = ItemSelectorView.class
 )
 public class DepotGroupItemSelectorView
-	implements ItemSelectorView<DepotGroupItemSelectorCriterion> {
+	implements ItemSelectorView<GroupItemSelectorCriterion> {
 
 	@Override
-	public Class<DepotGroupItemSelectorCriterion>
-		getItemSelectorCriterionClass() {
-
-		return DepotGroupItemSelectorCriterion.class;
+	public Class<GroupItemSelectorCriterion> getItemSelectorCriterionClass() {
+		return GroupItemSelectorCriterion.class;
 	}
 
 	@Override
@@ -77,16 +77,16 @@ public class DepotGroupItemSelectorView
 	@Override
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
-			DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion,
+			GroupItemSelectorCriterion groupItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 
 		_itemSelectorViewDescriptorRenderer.renderHTML(
-			servletRequest, servletResponse, depotGroupItemSelectorCriterion,
+			servletRequest, servletResponse, groupItemSelectorCriterion,
 			portletURL, itemSelectedEventName, search,
 			new DepotGroupSelectorViewDescriptor(
-				depotGroupItemSelectorCriterion,
-				(HttpServletRequest)servletRequest, portletURL));
+				groupItemSelectorCriterion, (HttpServletRequest)servletRequest,
+				portletURL));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -97,10 +97,10 @@ public class DepotGroupItemSelectorView
 			new GroupItemSelectorReturnType());
 
 	@Reference
-	private DepotAdminGroupSearchProvider _depotAdminGroupSearchProvider;
+	private DepotEntryAdminSearchProvider _depotEntryAdminSearchProvider;
 
 	@Reference
-	private ItemSelectorViewDescriptorRenderer<DepotGroupItemSelectorCriterion>
+	private ItemSelectorViewDescriptorRenderer<GroupItemSelectorCriterion>
 		_itemSelectorViewDescriptorRenderer;
 
 	@Reference
@@ -205,10 +205,10 @@ public class DepotGroupItemSelectorView
 		implements ItemSelectorViewDescriptor<Group> {
 
 		public DepotGroupSelectorViewDescriptor(
-			DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion,
+			GroupItemSelectorCriterion groupItemSelectorCriterion,
 			HttpServletRequest httpServletRequest, PortletURL portletURL) {
 
-			_depotGroupItemSelectorCriterion = depotGroupItemSelectorCriterion;
+			_groupItemSelectorCriterion = groupItemSelectorCriterion;
 			_httpServletRequest = httpServletRequest;
 			_portletURL = portletURL;
 		}
@@ -235,9 +235,13 @@ public class DepotGroupItemSelectorView
 					(PortletRequest)_httpServletRequest.getAttribute(
 						JavaConstants.JAKARTA_PORTLET_REQUEST);
 
-				return _depotAdminGroupSearchProvider.getGroupSearch(
-					_depotGroupItemSelectorCriterion, portletRequest,
-					_portletURL);
+				PortletResponse portletResponse =
+					(PortletResponse)_httpServletRequest.getAttribute(
+						JavaConstants.JAKARTA_PORTLET_RESPONSE);
+
+				return _depotEntryAdminSearchProvider.getGroupSearch(
+					_groupItemSelectorCriterion, portletRequest,
+					portletResponse, _portletURL);
 			}
 			catch (PortalException portalException) {
 				return ReflectionUtil.throwException(portalException);
@@ -254,8 +258,7 @@ public class DepotGroupItemSelectorView
 			return true;
 		}
 
-		private final DepotGroupItemSelectorCriterion
-			_depotGroupItemSelectorCriterion;
+		private final GroupItemSelectorCriterion _groupItemSelectorCriterion;
 		private HttpServletRequest _httpServletRequest;
 		private final PortletURL _portletURL;
 

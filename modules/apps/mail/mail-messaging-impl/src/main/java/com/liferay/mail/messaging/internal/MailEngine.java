@@ -9,7 +9,7 @@ import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.model.FileAttachment;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.model.SMTPAccount;
-import com.liferay.mail.kernel.service.MailServiceUtil;
+import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -71,12 +71,13 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MailEngine {
 
 	public static void send(
-			InternetAddress from, InternetAddress[] to, InternetAddress[] cc,
-			InternetAddress[] bcc, InternetAddress[] bulkAddresses,
-			String subject, String body, boolean htmlFormat,
-			InternetAddress[] replyTo, String messageId, String inReplyTo,
-			List<FileAttachment> fileAttachments, SMTPAccount smtpAccount,
-			InternetHeaders internetHeaders)
+			MailService mailService, InternetAddress from, InternetAddress[] to,
+			InternetAddress[] cc, InternetAddress[] bcc,
+			InternetAddress[] bulkAddresses, String subject, String body,
+			boolean htmlFormat, InternetAddress[] replyTo, String messageId,
+			String inReplyTo, List<FileAttachment> fileAttachments,
+			SMTPAccount smtpAccount, InternetHeaders internetHeaders,
+			String batchSize, boolean throwsExceptionOnFailure)
 		throws PortalException {
 
 		long startTime = System.currentTimeMillis();
@@ -140,10 +141,10 @@ public class MailEngine {
 			Session session = null;
 
 			if (smtpAccount == null) {
-				session = MailServiceUtil.getSession();
+				session = mailService.getSession();
 			}
 			else {
-				session = MailServiceUtil.getSession(smtpAccount);
+				session = mailService.getSession(smtpAccount);
 			}
 
 			Message message = new LiferayMimeMessage(session);
@@ -265,15 +266,15 @@ public class MailEngine {
 				}
 			}
 
-			int batchSize = GetterUtil.getInteger(
-				PropsUtil.get(PropsKeys.MAIL_BATCH_SIZE), _BATCH_SIZE);
-
-			_send(session, message, bulkAddresses, batchSize);
+			_send(
+				session, message, bulkAddresses,
+				GetterUtil.getInteger(batchSize, _BATCH_SIZE),
+				throwsExceptionOnFailure);
 		}
 		catch (SendFailedException sendFailedException) {
 			_log.error(sendFailedException);
 
-			if (_isThrowsExceptionOnFailure()) {
+			if (throwsExceptionOnFailure) {
 				throw new PortalException(sendFailedException);
 			}
 		}
@@ -293,15 +294,20 @@ public class MailEngine {
 		}
 	}
 
-	public static void send(MailMessage mailMessage) throws PortalException {
+	public static void send(
+			MailService mailService, MailMessage mailMessage, String batchSize,
+			boolean throwsExceptionOnFailure)
+		throws PortalException {
+
 		send(
-			mailMessage.getFrom(), mailMessage.getTo(), mailMessage.getCC(),
-			mailMessage.getBCC(), mailMessage.getBulkAddresses(),
-			mailMessage.getSubject(), mailMessage.getBody(),
-			mailMessage.isHTMLFormat(), mailMessage.getReplyTo(),
-			mailMessage.getMessageId(), mailMessage.getInReplyTo(),
-			mailMessage.getFileAttachments(), mailMessage.getSMTPAccount(),
-			mailMessage.getInternetHeaders());
+			mailService, mailMessage.getFrom(), mailMessage.getTo(),
+			mailMessage.getCC(), mailMessage.getBCC(),
+			mailMessage.getBulkAddresses(), mailMessage.getSubject(),
+			mailMessage.getBody(), mailMessage.isHTMLFormat(),
+			mailMessage.getReplyTo(), mailMessage.getMessageId(),
+			mailMessage.getInReplyTo(), mailMessage.getFileAttachments(),
+			mailMessage.getSMTPAccount(), mailMessage.getInternetHeaders(),
+			batchSize, throwsExceptionOnFailure);
 	}
 
 	private static Address[] _getBatchAddresses(
@@ -340,11 +346,6 @@ public class MailEngine {
 		return session.getProperty("mail.smtp." + suffix);
 	}
 
-	private static boolean _isThrowsExceptionOnFailure() {
-		return GetterUtil.getBoolean(
-			PropsUtil.get(PropsKeys.MAIL_THROWS_EXCEPTION_ON_FAILURE));
-	}
-
 	private static String _sanitizeCRLF(String text) {
 		return StringUtil.replace(
 			text, new char[] {CharPool.NEW_LINE, CharPool.RETURN},
@@ -353,7 +354,7 @@ public class MailEngine {
 
 	private static void _send(
 			Session session, Message message, InternetAddress[] bulkAddresses,
-			int batchSize)
+			int batchSize, boolean throwsExceptionOnFailure)
 		throws PortalException {
 
 		if ((_DATA_LIMIT_MAIL_MESSAGE_MAX_PERIOD > 0) &&
@@ -461,7 +462,7 @@ public class MailEngine {
 						messagingException.getMessage());
 			}
 
-			if (_isThrowsExceptionOnFailure()) {
+			if (throwsExceptionOnFailure) {
 				throw new PortalException(messagingException);
 			}
 		}

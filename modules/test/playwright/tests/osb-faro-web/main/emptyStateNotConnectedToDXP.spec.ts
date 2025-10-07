@@ -72,12 +72,12 @@ test(
 			});
 
 			await expect(page).toHaveTitle(
-				'Connecting Liferay DXP to Analytics Cloud -  Liferay Official Documentation - Liferay Learn'
+				'Managing Data Sources - Liferay Official Documentation - Liferay Learn'
 			);
 			await expect(
 				page
-					.locator('a#connecting-liferay-dxp-to-analytics-cloud')
-					.getByText('Connecting Liferay DXP to Analytics Cloud')
+					.locator('a#managing-data-sources')
+					.getByText('Managing Data Sources')
 			).toBeVisible();
 		});
 

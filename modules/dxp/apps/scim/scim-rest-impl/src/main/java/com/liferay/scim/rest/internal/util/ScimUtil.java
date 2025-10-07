@@ -5,23 +5,45 @@
 
 package com.liferay.scim.rest.internal.util;
 
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.model.ExpandoTableConstants;
+import com.liferay.expando.kernel.model.ExpandoValue;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoValueLocalServiceUtil;
 import com.liferay.petra.concurrent.DCLSingleton;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ContactConstants;
+import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.EmailAddress;
+import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.model.Website;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
+import com.liferay.portal.kernel.service.EmailAddressLocalServiceUtil;
+import com.liferay.portal.kernel.service.ListTypeLocalServiceUtil;
+import com.liferay.portal.kernel.service.PhoneLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.WebsiteLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -32,6 +54,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.scim.rest.dto.v1_0.Operation;
 import com.liferay.scim.rest.dto.v1_0.PatchOp;
@@ -48,9 +72,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -58,12 +86,14 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import org.wso2.charon3.core.attributes.Attribute;
 import org.wso2.charon3.core.attributes.ComplexAttribute;
 import org.wso2.charon3.core.attributes.DefaultAttributeFactory;
+import org.wso2.charon3.core.attributes.MultiValuedAttribute;
 import org.wso2.charon3.core.attributes.SimpleAttribute;
 import org.wso2.charon3.core.config.SCIMUserSchemaExtensionBuilder;
 import org.wso2.charon3.core.exceptions.NotFoundException;
 import org.wso2.charon3.core.objects.Group;
 import org.wso2.charon3.core.objects.User;
 import org.wso2.charon3.core.objects.plainobjects.MultiValuedComplexType;
+import org.wso2.charon3.core.objects.plainobjects.ScimAddress;
 import org.wso2.charon3.core.objects.plainobjects.ScimName;
 import org.wso2.charon3.core.protocol.SCIMResponse;
 import org.wso2.charon3.core.protocol.endpoints.AbstractResourceManager;
@@ -188,13 +218,19 @@ public class ScimUtil {
 		ScimUser scimUser = new ScimUser();
 
 		scimUser.setActive(_isActive(user));
+		scimUser.setAddresses(user.getAddresses());
 		scimUser.setAutoScreenName(
 			PrefsPropsUtil.getBoolean(
 				companyId, PropsKeys.USERS_SCREEN_NAME_ALWAYS_AUTOGENERATE));
 		scimUser.setAutoPassword(user.getPassword() == null);
 		scimUser.setBirthday(_getBirthday(user));
 		scimUser.setCompanyId(companyId);
-		scimUser.setEmailAddress(_getEmailAddress(user));
+		scimUser.setDisplayName(user.getDisplayName());
+		scimUser.setEmailAddresses(
+			_getEmailAddresses(
+				user.getEmails(), MultiValuedComplexType::getValue,
+				MultiValuedComplexType::isPrimary));
+		scimUser.setEntitlements(_getEntitlements(user));
 		scimUser.setExternalReferenceCode(user.getExternalId());
 
 		ScimName scimName = user.getName();
@@ -202,13 +238,44 @@ public class ScimUtil {
 		scimUser.setFirstName(scimName.getGivenName());
 
 		scimUser.setId(user.getId());
+		scimUser.setIMs(_getIMs(user.getInstantMessagingAddresses()));
 		scimUser.setJobTitle(user.getTitle());
 		scimUser.setLastName(scimName.getFamilyName());
 		scimUser.setLocale(locale);
 		scimUser.setMale(_isMale(user));
 		scimUser.setMiddleName(scimName.getMiddleName());
+		scimUser.setNickName(user.getNickName());
 		scimUser.setPassword(user.getPassword());
+		scimUser.setPhoneNumberMultiValuedComplexTypes(user.getPhoneNumbers());
+		scimUser.setPhotos(_getScimValues(user.getPhotos()));
+		scimUser.setPreferredLanguage(user.getPreferredLanguage());
+		scimUser.setPrefix(
+			_getListTypeId(
+				scimUser.getCompanyId(), scimName.getHonorificPrefix(),
+				Contact.class.getName() + ".prefix"));
+		scimUser.setProfileUrl(user.getProfileUrl());
+		scimUser.setRoleIds(
+			TransformUtil.transformToLongArray(
+				user.getRoles(),
+				multiValuedComplexType -> {
+					Role portalRole = RoleLocalServiceUtil.fetchRole(
+						companyId, multiValuedComplexType.getValue());
+
+					if (portalRole == null) {
+						return null;
+					}
+
+					return portalRole.getRoleId();
+				}));
 		scimUser.setScreenName(user.getUserName());
+		scimUser.setSuffix(
+			_getListTypeId(
+				scimUser.getCompanyId(), scimName.getHonorificSuffix(),
+				Contact.class.getName() + ".suffix"));
+		scimUser.setTimeZoneId(_getTimeZoneId(user.getTimezone()));
+		scimUser.setUserType(user.getUserType());
+		scimUser.setX509Certificates(
+			_getScimValues(user.getX509Certificates()));
 
 		_validate(scimUser);
 
@@ -216,40 +283,85 @@ public class ScimUtil {
 	}
 
 	public static ScimUser toScimUser(
-		com.liferay.portal.kernel.model.User portalUser) {
+			com.liferay.portal.kernel.model.User portalUser)
+		throws Exception {
 
-		try {
-			ScimUser scimUser = new ScimUser();
+		ScimUser scimUser = new ScimUser();
 
-			scimUser.setActive(portalUser.isActive());
-			scimUser.setBirthday(portalUser.getBirthday());
-			scimUser.setCompanyId(portalUser.getCompanyId());
-			scimUser.setCreateDate(_truncateDate(portalUser.getCreateDate()));
-			scimUser.setFirstName(portalUser.getFirstName());
-			scimUser.setEmailAddress(portalUser.getEmailAddress());
-			scimUser.setExternalReferenceCode(
-				portalUser.getExternalReferenceCode());
-			scimUser.setId(String.valueOf(portalUser.getUserId()));
-			scimUser.setJobTitle(portalUser.getJobTitle());
-			scimUser.setLastName(portalUser.getLastName());
-			scimUser.setLocale(portalUser.getLocale());
-			scimUser.setMale(portalUser.isMale());
-			scimUser.setMiddleName(portalUser.getMiddleName());
-			scimUser.setModifiedDate(
-				_truncateDate(portalUser.getModifiedDate()));
-			scimUser.setScreenName(portalUser.getScreenName());
+		scimUser.setActive(portalUser.isActive());
+		scimUser.setAddresses(_getScimAddresses(portalUser));
+		scimUser.setBirthday(portalUser.getBirthday());
+		scimUser.setCompanyId(portalUser.getCompanyId());
+		scimUser.setCreateDate(_truncateDate(portalUser.getCreateDate()));
 
-			return scimUser;
+		if (FeatureFlagManagerUtil.isEnabled("LPD-56434")) {
+			scimUser.setEmailAddresses(
+				_getEmailAddresses(
+					EmailAddressLocalServiceUtil.getEmailAddresses(
+						portalUser.getCompanyId(), Contact.class.getName(),
+						portalUser.getContactId()),
+					EmailAddress::getAddress, EmailAddress::isPrimary));
 		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to convert portal user to a SCIM user",
-					portalException);
-			}
-
-			return ReflectionUtil.throwException(portalException);
+		else {
+			scimUser.setEmailAddresses(
+				new String[] {portalUser.getEmailAddress()});
 		}
+
+		scimUser.setExternalReferenceCode(
+			portalUser.getExternalReferenceCode());
+		scimUser.setFirstName(portalUser.getFirstName());
+		scimUser.setId(String.valueOf(portalUser.getUserId()));
+
+		Map<String, String> ims = new HashMap<>();
+
+		Contact contact = portalUser.getContact();
+
+		if (contact.getJabberSn() != null) {
+			ims.put("Jabber", contact.getJabberSn());
+		}
+
+		if (contact.getSkypeSn() != null) {
+			ims.put("Skype", contact.getSkypeSn());
+		}
+
+		scimUser.setIMs(ims);
+
+		scimUser.setJobTitle(portalUser.getJobTitle());
+		scimUser.setLastName(portalUser.getLastName());
+		scimUser.setLocale(portalUser.getLocale());
+		scimUser.setMale(portalUser.isMale());
+		scimUser.setMiddleName(portalUser.getMiddleName());
+		scimUser.setModifiedDate(_truncateDate(portalUser.getModifiedDate()));
+		scimUser.setPhoneNumberMultiValuedComplexTypes(
+			TransformUtil.transform(
+				PhoneLocalServiceUtil.getPhones(
+					contact.getCompanyId(), Contact.class.getName(),
+					contact.getContactId()),
+				phone -> {
+					MultiValuedComplexType multiValuedComplexType =
+						new MultiValuedComplexType();
+
+					multiValuedComplexType.setPrimary(phone.isPrimary());
+
+					ListType listType = ListTypeLocalServiceUtil.fetchListType(
+						phone.getListTypeId());
+
+					multiValuedComplexType.setType(listType.getName());
+
+					multiValuedComplexType.setValue(phone.getNumber());
+
+					return multiValuedComplexType;
+				}));
+		scimUser.setPrefix(contact.getPrefixListTypeId());
+		scimUser.setProfileUrl(_getProfileURL(contact));
+		scimUser.setRoleIds(portalUser.getRoleIds());
+		scimUser.setScreenName(portalUser.getScreenName());
+		scimUser.setSuffix(contact.getSuffixListTypeId());
+		scimUser.setTimeZoneId(portalUser.getTimeZoneId());
+
+		_setExpandoValues(scimUser);
+
+		return scimUser;
 	}
 
 	public static User toUser(List<Group> groups, ScimUser scimUser)
@@ -261,7 +373,8 @@ public class ScimUtil {
 		user.replaceEmails(
 			Collections.singletonList(
 				new MultiValuedComplexType(
-					"work", true, null, scimUser.getEmailAddress(), null)));
+					"work", true, null, scimUser.getEmailAddresses()[0],
+					null)));
 
 		ScimName scimName = new ScimName();
 
@@ -328,7 +441,7 @@ public class ScimUtil {
 
 				Object value = operation.getValue();
 
-				if (!(value instanceof ArrayList)) {
+				if (!(value instanceof List)) {
 					operationJSONObject.put(
 						SCIMConstants.OperationalConstants.VALUE,
 						JSONUtil.put(
@@ -398,10 +511,16 @@ public class ScimUtil {
 
 				Object value = operation.getValue();
 
-				if (value instanceof ArrayList) {
+				if (value instanceof List) {
 					operationJSONObject.put(
 						SCIMConstants.OperationalConstants.VALUE,
 						JSONFactoryUtil.createJSONArray((ArrayList)value));
+				}
+				else if (value instanceof Map valueMap) {
+					valueMap.remove(SCIMConstants.CommonSchemaConstants.ID);
+
+					operationJSONObject.put(
+						SCIMConstants.OperationalConstants.VALUE, valueMap);
 				}
 				else {
 					operationJSONObject.put(
@@ -599,25 +718,192 @@ public class ScimUtil {
 		}
 	}
 
-	private static String _getEmailAddress(User user) {
-		List<MultiValuedComplexType> multiValuedComplexTypes = user.getEmails();
+	private static <T> String[] _getEmailAddresses(
+		List<T> emailAddresses, Function<T, String> function,
+		Predicate<T> predicate) {
 
-		if (ListUtil.isEmpty(multiValuedComplexTypes)) {
+		if (ListUtil.isEmpty(emailAddresses)) {
+			return new String[0];
+		}
+
+		List<String> list = new ArrayList<>(emailAddresses.size());
+
+		for (T emailAddress : emailAddresses) {
+			if (predicate.test(emailAddress)) {
+				list.add(0, function.apply(emailAddress));
+			}
+			else {
+				list.add(function.apply(emailAddress));
+			}
+		}
+
+		return list.toArray(new String[0]);
+	}
+
+	private static String[] _getEntitlements(User user) {
+		try {
+			List<String> values = new ArrayList<>();
+
+			MultiValuedAttribute entitlements =
+				(MultiValuedAttribute)user.getAttribute("entitlements");
+
+			for (Attribute attribute : entitlements.getAttributeValues()) {
+				SimpleAttribute simpleAttribute =
+					(SimpleAttribute)attribute.getSubAttribute("value");
+
+				values.add(simpleAttribute.getStringValue());
+			}
+
+			return ArrayUtil.toStringArray(values);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to get entitlements", exception);
+			}
+
 			return null;
 		}
+	}
+
+	private static String _getExpandoValue(
+			long expandoTableId, String name, String userIdString)
+		throws Exception {
+
+		ExpandoColumn expandoColumn = ExpandoColumnLocalServiceUtil.fetchColumn(
+			expandoTableId, name);
+
+		if (expandoColumn == null) {
+			return null;
+		}
+
+		ExpandoValue expandoValue = ExpandoValueLocalServiceUtil.getValue(
+			expandoTableId, expandoColumn.getColumnId(),
+			GetterUtil.getLong(userIdString));
+
+		if (expandoValue != null) {
+			return expandoValue.getString();
+		}
+
+		return null;
+	}
+
+	private static Map<String, String> _getIMs(
+		List<MultiValuedComplexType> multiValuedComplexTypes) {
+
+		if (multiValuedComplexTypes == null) {
+			return null;
+		}
+
+		Map<String, String> ims = new HashMap<>();
 
 		for (MultiValuedComplexType multiValuedComplexType :
 				multiValuedComplexTypes) {
 
-			if (multiValuedComplexType.isPrimary()) {
-				return multiValuedComplexType.getValue();
+			ims.put(
+				multiValuedComplexType.getType(),
+				multiValuedComplexType.getValue());
+		}
+
+		return ims;
+	}
+
+	private static long _getListTypeId(
+		long companyId, String name, String type) {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-56434")) {
+			return 0;
+		}
+
+		ListType listType = ListTypeLocalServiceUtil.getListType(
+			companyId, StringUtil.toLowerCase(name), type);
+
+		if (listType == null) {
+			return 0;
+		}
+
+		return listType.getListTypeId();
+	}
+
+	private static String _getProfileURL(Contact contact) {
+		long listTypeId = ListTypeLocalServiceUtil.getListTypeId(
+			contact.getCompanyId(), "personal",
+			Contact.class.getName() + ".website");
+
+		for (Website website :
+				WebsiteLocalServiceUtil.getWebsites(
+					contact.getCompanyId(), Contact.class.getName(),
+					contact.getContactId())) {
+
+			if (website.isPrimary() &&
+				(website.getListTypeId() == listTypeId)) {
+
+				return website.getUrl();
 			}
 		}
 
-		MultiValuedComplexType multiValuedComplexType =
-			multiValuedComplexTypes.get(0);
+		return null;
+	}
 
-		return multiValuedComplexType.getValue();
+	private static List<ScimAddress> _getScimAddresses(
+		com.liferay.portal.kernel.model.User portalUser) {
+
+		List<ScimAddress> scimAddresses = new ArrayList<>();
+
+		for (Address address : portalUser.getAddresses()) {
+			StringBundler streetAddressSB = new StringBundler(6);
+
+			streetAddressSB.append(address.getStreet1());
+			streetAddressSB.append("\n");
+
+			if (Validator.isNotNull(address.getStreet2())) {
+				streetAddressSB.append(address.getStreet2());
+				streetAddressSB.append("\n");
+			}
+
+			if (Validator.isNotNull(address.getStreet3())) {
+				streetAddressSB.append(address.getStreet3());
+				streetAddressSB.append("\n");
+			}
+
+			Country country = address.getCountry();
+			ListType listType = address.getListType();
+			Region region = address.getRegion();
+
+			scimAddresses.add(
+				new ScimAddress(
+					StringBundler.concat(
+						streetAddressSB, address.getCity(),
+						StringPool.COMMA_AND_SPACE, region, StringPool.SPACE,
+						address.getZip(), "\n", country),
+					listType.getName(), streetAddressSB.toString(),
+					address.getCity(), region.getName(), address.getZip(),
+					country.getA2(), address.isPrimary()));
+		}
+
+		return scimAddresses;
+	}
+
+	private static String[] _getScimValues(
+		List<MultiValuedComplexType> multiValuedComplexTypes) {
+
+		if (multiValuedComplexTypes == null) {
+			return null;
+		}
+
+		return TransformUtil.transformToArray(
+			multiValuedComplexTypes,
+			multiValuedComplexType -> multiValuedComplexType.getValue(),
+			String.class);
+	}
+
+	private static String _getTimeZoneId(String timeZoneId) {
+		if (timeZoneId == null) {
+			return null;
+		}
+
+		TimeZone timeZone = TimeZoneUtil.getTimeZone(timeZoneId);
+
+		return timeZone.getID();
 	}
 
 	private static boolean _isActive(User user) {
@@ -659,6 +945,54 @@ public class ScimUtil {
 		}
 	}
 
+	private static void _setExpandoValues(ScimUser scimUser) throws Exception {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-56434")) {
+			return;
+		}
+
+		ExpandoTable expandoTable = ExpandoTableLocalServiceUtil.fetchTable(
+			scimUser.getCompanyId(),
+			ClassNameLocalServiceUtil.getClassNameId(
+				com.liferay.portal.kernel.model.User.class.getName()),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME);
+
+		if (expandoTable == null) {
+			return;
+		}
+
+		scimUser.setDisplayName(
+			_getExpandoValue(
+				expandoTable.getTableId(), "scimDisplayName",
+				scimUser.getId()));
+		scimUser.setEntitlements(
+			StringUtil.split(
+				_getExpandoValue(
+					expandoTable.getTableId(), "scimEntitlements",
+					scimUser.getId()),
+				StringPool.NEW_LINE));
+		scimUser.setNickName(
+			_getExpandoValue(
+				expandoTable.getTableId(), "scimNickName", scimUser.getId()));
+		scimUser.setPhotos(
+			StringUtil.split(
+				_getExpandoValue(
+					expandoTable.getTableId(), "scimPhotos", scimUser.getId()),
+				StringPool.NEW_LINE));
+		scimUser.setPreferredLanguage(
+			_getExpandoValue(
+				expandoTable.getTableId(), "scimPreferredLanguage",
+				scimUser.getId()));
+		scimUser.setUserType(
+			_getExpandoValue(
+				expandoTable.getTableId(), "scimUserType", scimUser.getId()));
+		scimUser.setX509Certificates(
+			StringUtil.split(
+				_getExpandoValue(
+					expandoTable.getTableId(), "scimX509Certificates",
+					scimUser.getId()),
+				StringPool.NEW_LINE));
+	}
+
 	private static Date _truncateDate(Date date) {
 		if (date == null) {
 			return null;
@@ -682,7 +1016,7 @@ public class ScimUtil {
 					scimUser.getLastName()));
 		}
 
-		if (Validator.isNull(scimUser.getEmailAddress()) &&
+		if (Validator.isNull(scimUser.getEmailAddresses()[0]) &&
 			PrefsPropsUtil.getBoolean(
 				scimUser.getCompanyId(),
 				PropsKeys.USERS_EMAIL_ADDRESS_REQUIRED)) {

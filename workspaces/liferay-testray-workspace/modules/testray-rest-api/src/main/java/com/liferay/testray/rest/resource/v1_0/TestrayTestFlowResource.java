@@ -42,18 +42,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TestrayTestFlowResource {
 
-	public TestrayTestFlow putTestrayTestFlowByTestraySubtaskIdTestraySubtask(
-			Long testraySubtaskId, TestrayTestFlow testrayTestFlow)
-		throws Exception;
-
 	public Page<TestraySubtask> getTestrayTestFlowTestraySubtaskPage(
 			String error, String issues, String name, Boolean noIssues,
 			String status, String testrayComponentIds, Long testrayTaskId,
 			String testrayTeamIds, String userId, Pagination pagination)
-		throws Exception;
-
-	public Page<TestraySubtask> putTestrayTestFlowTestraySubtaskMergePage(
-			TestraySubtask[] testraySubtasks)
 		throws Exception;
 
 	public TestrayTestFlow postTestrayTestFlow(Long testrayTaskId)
@@ -61,6 +53,14 @@ public interface TestrayTestFlowResource {
 
 	public Response postTestrayTestFlowBatch(
 			Long testrayTaskId, String callbackURL, Object object)
+		throws Exception;
+
+	public TestrayTestFlow putTestrayTestFlowByTestraySubtaskIdTestraySubtask(
+			Long testraySubtaskId, TestrayTestFlow testrayTestFlow)
+		throws Exception;
+
+	public Page<TestraySubtask> putTestrayTestFlowTestraySubtaskMergePage(
+			TestraySubtask[] testraySubtasks)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

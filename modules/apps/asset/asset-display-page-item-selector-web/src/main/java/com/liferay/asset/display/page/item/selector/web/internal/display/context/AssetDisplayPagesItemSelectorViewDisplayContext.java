@@ -5,7 +5,7 @@
 
 package com.liferay.asset.display.page.item.selector.web.internal.display.context;
 
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
@@ -37,11 +37,13 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 
 	public AssetDisplayPagesItemSelectorViewDisplayContext(
 		HttpServletRequest httpServletRequest,
-		AssetDisplayPageSelectorCriterion assetDisplayPageSelectorCriterion,
+		AssetDisplayPageItemSelectorCriterion
+			assetDisplayPageItemSelectorCriterion,
 		PortletURL portletURL) {
 
 		_httpServletRequest = httpServletRequest;
-		_assetDisplayPageSelectorCriterion = assetDisplayPageSelectorCriterion;
+		_assetDisplayPageItemSelectorCriterion =
+			assetDisplayPageItemSelectorCriterion;
 		_portletURL = portletURL;
 
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
@@ -77,8 +79,10 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 					LayoutPageTemplateEntryServiceUtil.
 						getLayoutPageTemplateEntries(
 							_getGroupId(),
-							_assetDisplayPageSelectorCriterion.getClassNameId(),
-							_assetDisplayPageSelectorCriterion.getClassTypeId(),
+							_assetDisplayPageItemSelectorCriterion.
+								getClassNameId(),
+							_assetDisplayPageItemSelectorCriterion.
+								getClassTypeId(),
 							_getKeywords(),
 							LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 							WorkflowConstants.STATUS_APPROVED,
@@ -89,8 +93,8 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
 						_getGroupId(),
-						_assetDisplayPageSelectorCriterion.getClassNameId(),
-						_assetDisplayPageSelectorCriterion.getClassTypeId(),
+						_assetDisplayPageItemSelectorCriterion.getClassNameId(),
+						_assetDisplayPageItemSelectorCriterion.getClassTypeId(),
 						_getKeywords(),
 						LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 						WorkflowConstants.STATUS_APPROVED));
@@ -101,8 +105,10 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 					LayoutPageTemplateEntryServiceUtil.
 						getLayoutPageTemplateEntries(
 							_getGroupId(),
-							_assetDisplayPageSelectorCriterion.getClassNameId(),
-							_assetDisplayPageSelectorCriterion.getClassTypeId(),
+							_assetDisplayPageItemSelectorCriterion.
+								getClassNameId(),
+							_assetDisplayPageItemSelectorCriterion.
+								getClassTypeId(),
 							LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 							WorkflowConstants.STATUS_APPROVED,
 							assetDisplayPageSearchContainer.getStart(),
@@ -112,8 +118,8 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageTemplateEntriesCount(
 						_getGroupId(),
-						_assetDisplayPageSelectorCriterion.getClassNameId(),
-						_assetDisplayPageSelectorCriterion.getClassTypeId(),
+						_assetDisplayPageItemSelectorCriterion.getClassNameId(),
+						_assetDisplayPageItemSelectorCriterion.getClassTypeId(),
 						LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 						WorkflowConstants.STATUS_APPROVED));
 		}
@@ -203,10 +209,10 @@ public class AssetDisplayPagesItemSelectorViewDisplayContext {
 		).buildPortletURL();
 	}
 
+	private final AssetDisplayPageItemSelectorCriterion
+		_assetDisplayPageItemSelectorCriterion;
 	private SearchContainer<LayoutPageTemplateEntry>
 		_assetDisplayPageSearchContainer;
-	private final AssetDisplayPageSelectorCriterion
-		_assetDisplayPageSelectorCriterion;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;

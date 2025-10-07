@@ -251,31 +251,31 @@ Import-Package: !*
 Liferay-Service: true
 Provide-Capability:\
 	osgi.contract;\
-		osgi.contract="JakartaAnnotations";\
+		osgi.contract=JakartaAnnotations;\
 		uses:="jakarta.annotation,jakarta.annotation.sql,jakarta.annotation.security";\
 		version:Version="2.1.0",\
 	osgi.contract;\
-		osgi.contract="JakartaCDI";\
+		osgi.contract=JakartaCDI;\
 		uses:="jakarta.decorator,jakarta.enterprise.context,jakarta.enterprise.context.spi,jakarta.enterprise.context.control,jakarta.enterprise.util,jakarta.enterprise.inject,jakarta.enterprise.inject.se,jakarta.enterprise.inject.literal,jakarta.enterprise.inject.spi,jakarta.enterprise.inject.spi.configurator,jakarta.enterprise.event";\
 		version:Version="4.0.0",\
 	osgi.contract;\
-		osgi.contract="JakartaExpressionLanguage";\
+		osgi.contract=JakartaExpressionLanguage;\
 		uses:="jakarta.el";\
 		version:List<Version>="5.0.0",\
 	osgi.contract;\
-		osgi.contract="JakartaInject";\
+		osgi.contract=JakartaInject;\
 		uses:="jakarta.inject";\
 		version:Version="2.0.0",\
 	osgi.contract;\
-		osgi.contract="JakartaInterceptors";\
+		osgi.contract=JakartaInterceptors;\
 		uses:="jakarta.interceptor";\
 		version:Version="2.1.0",\
 	osgi.contract;\
-		osgi.contract="JakartaJSONProcessing";\
+		osgi.contract=JakartaJSONProcessing;\
 		uses:="jakarta.json,jakarta.json.stream,jakarta.json.spi";\
 		version:Version="2.1.0",\
 	osgi.contract;\
-		osgi.contract="JakartaServerPages";\
+		osgi.contract=JakartaServerPages;\
 		uses:="jakarta.servlet.jsp,jakarta.servlet.jsp.el,jakarta.servlet.jsp.tagext";\
 		version:List<Version>="3.1.0",\
 	osgi.contract;\
@@ -290,6 +290,7 @@ Provide-Capability:\
 		osgi.extender="jsp.taglib";\
 		uri="http://java.sun.com/JSP/Page";\
 		version:Version="${Bundle-Version}"
+-fixupmessages: Classes found in the wrong directory: ...;is:=ignore
 -includeresource:\
 	-@lib/com.liferay.portal.app.license.api.jar,\
 	@../../../lib/development/activation.jar,\

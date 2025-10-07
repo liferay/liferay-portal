@@ -27,11 +27,12 @@ const statuses = {
 	[Statuses.FAILED]: {
 		bodyMessage: (
 			<span>
-				Sorry, was not possible to install your app, you can try again.
-				If the problem persist, contact a{' '}
-				<a href={`mailto:${MARKETPLACE_ADMIN_EMAIL}`}>
+				We could not install your app. Please try again. If the problem
+				continues, contact
+				<a className="my-3" href={`mailto:${MARKETPLACE_ADMIN_EMAIL}`}>
 					{MARKETPLACE_ADMIN_EMAIL}
 				</a>
+				for assistance.
 			</span>
 		),
 		icon: (
@@ -41,7 +42,7 @@ const statuses = {
 	},
 	[Statuses.LOADING]: {
 		bodyMessage: i18n.translate(
-			'the-installation-process-is-ongoing-and-may-take-some-time'
+			'the-installation-process-is-ongoing-and-may-take-some-time-navigating-to-other-sections-will-not-cancel-the-process'
 		),
 		icon: <Loading displayType="primary" shape="squares" size="lg" />,
 		title: i18n.translate('installation-in-progress'),

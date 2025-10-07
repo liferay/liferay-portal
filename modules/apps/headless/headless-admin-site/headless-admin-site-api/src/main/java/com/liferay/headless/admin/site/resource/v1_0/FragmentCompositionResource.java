@@ -24,6 +24,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -45,43 +46,50 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface FragmentCompositionResource {
 
-	public void deleteSiteSiteByExternalReferenceCodeFragmentComposition(
+	public void deleteSiteFragmentComposition(
 			String siteExternalReferenceCode,
 			String fragmentCompositionExternalReferenceCode)
 		throws Exception;
 
-	public FragmentComposition
-			getSiteSiteByExternalReferenceCodeFragmentComposition(
-				String siteExternalReferenceCode,
-				String fragmentCompositionExternalReferenceCode)
+	public FragmentComposition getSiteFragmentComposition(
+			String siteExternalReferenceCode,
+			String fragmentCompositionExternalReferenceCode)
 		throws Exception;
 
-	public Page<FragmentComposition>
-			getSiteSiteByExternalReferenceCodeFragmentCompositionsPage(
-				String siteExternalReferenceCode, String search,
-				com.liferay.portal.kernel.search.filter.Filter filter,
-				Pagination pagination,
-				com.liferay.portal.kernel.search.Sort[] sorts)
+	public Page<FragmentComposition> getSiteFragmentCompositionsPage(
+			String siteExternalReferenceCode, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
-	public FragmentComposition
-			patchSiteSiteByExternalReferenceCodeFragmentComposition(
-				String siteExternalReferenceCode,
-				String fragmentCompositionExternalReferenceCode,
-				FragmentComposition fragmentComposition)
+	public FragmentComposition patchSiteFragmentComposition(
+			String siteExternalReferenceCode,
+			String fragmentCompositionExternalReferenceCode,
+			FragmentComposition fragmentComposition)
 		throws Exception;
 
-	public FragmentComposition
-			postSiteSiteByExternalReferenceCodeFragmentComposition(
-				String siteExternalReferenceCode, Boolean saveInlineContent,
-				Boolean saveMapping, FragmentComposition fragmentComposition)
+	public FragmentComposition postSiteFragmentComposition(
+			String siteExternalReferenceCode, Boolean saveInlineContent,
+			Boolean saveMapping, FragmentComposition fragmentComposition)
 		throws Exception;
 
-	public FragmentComposition
-			putSiteSiteByExternalReferenceCodeFragmentComposition(
-				String siteExternalReferenceCode,
-				String fragmentCompositionExternalReferenceCode,
-				FragmentComposition fragmentComposition)
+	public Response postSiteFragmentCompositionBatch(
+			String siteExternalReferenceCode, Boolean saveInlineContent,
+			Boolean saveMapping, String callbackURL, Object object)
+		throws Exception;
+
+	public Response postSiteFragmentCompositionsPageExportBatch(
+			String siteExternalReferenceCode, String search,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public FragmentComposition putSiteFragmentComposition(
+			String siteExternalReferenceCode,
+			String fragmentCompositionExternalReferenceCode,
+			FragmentComposition fragmentComposition)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

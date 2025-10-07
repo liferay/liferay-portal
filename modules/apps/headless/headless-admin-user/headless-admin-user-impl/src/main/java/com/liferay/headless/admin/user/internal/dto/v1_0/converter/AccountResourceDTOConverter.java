@@ -275,6 +275,24 @@ public class AccountResourceDTOConverter
 							accountEntry.getAccountEntryId(),
 							AccountEntry.class.getName(), _permissionService,
 							_resourceActionLocalService)));
+				setPostalAddresses(
+					() -> NestedFieldsSupplier.supply(
+						"postalAddresses",
+						nestedFieldNames -> TransformUtil.transformToArray(
+							accountEntry.getListTypeAddresses(
+								PostalAddressUtil.
+									getAccountEntryAddressListTypeIds(
+										accountEntry.getCompanyId(),
+										_listTypeLocalService)),
+							address -> _postalAddressDTOConverter.toDTO(
+								new DefaultDTOConverterContext(
+									dtoConverterContext.isAcceptAllLanguages(),
+									null, _dtoConverterRegistry,
+									address.getAddressId(),
+									dtoConverterContext.getLocale(),
+									dtoConverterContext.getUriInfo(),
+									dtoConverterContext.getUser())),
+							PostalAddress.class)));
 				setStatus(accountEntry::getStatus);
 				setTaxId(accountEntry::getTaxIdNumber);
 				setTaxonomyCategoryBriefs(

@@ -12,6 +12,8 @@ import com.liferay.change.tracking.web.internal.display.context.PublicationsConf
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -53,7 +55,8 @@ public class ViewSettingsMVCRenderCommand implements MVCRenderCommand {
 				new PublicationsConfigurationDisplayContext(
 					_ctSettingsConfigurationHelper,
 					_portal.getHttpServletRequest(renderRequest),
-					renderResponse);
+					renderResponse, _resourcePermissionLocalService,
+					_roleLocalService);
 
 		renderRequest.setAttribute(
 			CTWebKeys.PUBLICATIONS_CONFIGURATION_DISPLAY_CONTEXT,
@@ -67,5 +70,11 @@ public class ViewSettingsMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }

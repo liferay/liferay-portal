@@ -123,18 +123,20 @@ public class DLFileShortcutCTDisplayRenderer
 				return folder.getName();
 			}
 		).display(
-			"download", _getDownloadLink(displayBuilder, dlFileShortcut), false
+			"download",
+			() -> {
+				FileVersion fileVersion = dlFileShortcut.getFileVersion();
+
+				DLFileVersion dlFileVersion =
+					(DLFileVersion)fileVersion.getModel();
+
+				return getDownloadLink(
+					displayBuilder.getDisplayContext(),
+					dlFileVersion.getVersion(), dlFileVersion.getSize(),
+					dlFileVersion.getFileName());
+			},
+			false
 		);
-	}
-
-	private String _getDownloadLink(
-			DisplayBuilder<?> displayBuilder, DLFileShortcut dlFileShortcut)
-		throws PortalException {
-
-		FileVersion fileVersion = dlFileShortcut.getFileVersion();
-
-		return DLFileVersionCTDisplayRenderer.getDownloadLink(
-			displayBuilder, (DLFileVersion)fileVersion.getModel());
 	}
 
 	@Reference

@@ -2,71 +2,71 @@
 	"general": {
 		"ar_SA": {
 			"message": "لمعرفة المزيد.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"ca_ES": {
 			"message": "Aprèn més.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"de_DE": {
 			"message": "Mehr erfahren.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"es_ES": {
 			"message": "Aprender más.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"eu": {
 			"message": "Ikasi gehiago.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"fi_FI": {
 			"message": "Lisää.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"fr_CA": {
 			"message": "Pour en savoir plus.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"fr_FR": {
 			"message": "Pour en savoir plus.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"gl_ES": {
 			"message": "Ler máis.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"hu_HU": {
 			"message": "További információk.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"ja_JP": {
 			"message": "詳細ヘルプ。",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"nl_NL": {
 			"message": "Meer weten.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"pt_BR": {
 			"message": "Aprender mais.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"sv_SE": {
 			"message": "Läs mer.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"zh_CN": {
 			"message": "了解更多。",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		},
 		"zh_TW": {
 			"message": "學習更多。",
-			"url": "https://learn.liferay.com/w/dxp/site-building/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
+			"url": "https://learn.liferay.com/w/dxp/sites/creating-pages/page-fragments-and-widgets/using-widgets/configuring-widgets/communication-between-widgets"
 		}
 	}
 }

@@ -107,6 +107,9 @@
 		"orderCreatorEmailAddress": {
 			"type": "keyword"
 		},
+		"orderCreatorUserId": {
+			"type": "keyword"
+		},
 		"orderOrganizationId": {
 			"type": "keyword"
 		},
@@ -115,6 +118,9 @@
 		},
 		"orderTypeId": {
 			"type": "keyword"
+		},
+		"paymentStatus": {
+			"type": "integer"
 		},
 		"productTypeName": {
 			"type": "keyword"

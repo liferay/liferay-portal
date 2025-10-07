@@ -1002,6 +1002,8 @@ public class GraphQLServletExtender {
 			Map<Class<?>, Set<Class<?>>> classesMap =
 				processingElementsContainer.getExtensionsTypeRegistry();
 
+			_registerCustomTypes(processingElementsContainer);
+
 			List<ServletData> servletDatas = new ArrayList<>();
 
 			for (ServletData servletData : _servletDataServiceTrackerList) {
@@ -1055,7 +1057,6 @@ public class GraphQLServletExtender {
 			GraphQLSchema.Builder graphQLSchemaBuilder =
 				GraphQLSchema.newSchema();
 
-			_registerCustomTypes(processingElementsContainer);
 			_registerGraphQLDTOContributors(
 				companyId, graphQLSchemaBuilder, processingElementsContainer,
 				mutationGraphQLObjectTypeBuilder,

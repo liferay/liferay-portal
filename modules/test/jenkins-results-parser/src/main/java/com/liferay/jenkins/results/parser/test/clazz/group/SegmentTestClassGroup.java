@@ -147,7 +147,7 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 	public String getTestCasePropertiesContent() {
 		StringBuilder sb = new StringBuilder();
 
-		if (testAnalyticsCloud()) {
+		if (isTestAnalyticsCloud()) {
 			sb.append("TEST_ANALYTICS_CLOUD=true\n");
 		}
 
@@ -183,7 +183,7 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 		return testClasses;
 	}
 
-	public boolean testAnalyticsCloud() {
+	public boolean isTestAnalyticsCloud() {
 		return false;
 	}
 
@@ -219,6 +219,13 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 
 			_batchTestClassGroup.addAxisTestClassGroup(axisTestClassGroup);
 		}
+	}
+
+	@Override
+	protected void addTestClass(TestClass testClass) {
+		super.addTestClass(testClass);
+
+		testClass.setSegmentTestClassGroup(this);
 	}
 
 	private String _getSlaveLabel() {

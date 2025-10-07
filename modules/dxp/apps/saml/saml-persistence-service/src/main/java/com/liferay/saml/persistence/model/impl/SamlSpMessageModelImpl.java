@@ -58,8 +58,8 @@ public class SamlSpMessageModelImpl
 	public static final Object[][] TABLE_COLUMNS = {
 		{"samlSpMessageId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"createDate", Types.TIMESTAMP}, {"samlIdpEntityId", Types.VARCHAR},
-		{"samlIdpResponseKey", Types.VARCHAR},
-		{"expirationDate", Types.TIMESTAMP}
+		{"expirationDate", Types.TIMESTAMP},
+		{"samlIdpResponseKey", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -70,12 +70,12 @@ public class SamlSpMessageModelImpl
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("samlIdpEntityId", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("samlIdpResponseKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("expirationDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("samlIdpResponseKey", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table SamlSpMessage (samlSpMessageId LONG not null primary key,companyId LONG,createDate DATE null,samlIdpEntityId VARCHAR(1024) null,samlIdpResponseKey VARCHAR(75) null,expirationDate DATE null)";
+		"create table SamlSpMessage (samlSpMessageId LONG not null primary key,companyId LONG,createDate DATE null,samlIdpEntityId VARCHAR(1024) null,expirationDate DATE null,samlIdpResponseKey VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table SamlSpMessage";
 
@@ -235,9 +235,9 @@ public class SamlSpMessageModelImpl
 			attributeGetterFunctions.put(
 				"samlIdpEntityId", SamlSpMessage::getSamlIdpEntityId);
 			attributeGetterFunctions.put(
-				"samlIdpResponseKey", SamlSpMessage::getSamlIdpResponseKey);
-			attributeGetterFunctions.put(
 				"expirationDate", SamlSpMessage::getExpirationDate);
+			attributeGetterFunctions.put(
+				"samlIdpResponseKey", SamlSpMessage::getSamlIdpResponseKey);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -270,13 +270,13 @@ public class SamlSpMessageModelImpl
 				(BiConsumer<SamlSpMessage, String>)
 					SamlSpMessage::setSamlIdpEntityId);
 			attributeSetterBiConsumers.put(
-				"samlIdpResponseKey",
-				(BiConsumer<SamlSpMessage, String>)
-					SamlSpMessage::setSamlIdpResponseKey);
-			attributeSetterBiConsumers.put(
 				"expirationDate",
 				(BiConsumer<SamlSpMessage, Date>)
 					SamlSpMessage::setExpirationDate);
+			attributeSetterBiConsumers.put(
+				"samlIdpResponseKey",
+				(BiConsumer<SamlSpMessage, String>)
+					SamlSpMessage::setSamlIdpResponseKey);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -355,6 +355,29 @@ public class SamlSpMessageModelImpl
 	}
 
 	@Override
+	public Date getExpirationDate() {
+		return _expirationDate;
+	}
+
+	@Override
+	public void setExpirationDate(Date expirationDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_expirationDate = expirationDate;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalExpirationDate() {
+		return getColumnOriginalValue("expirationDate");
+	}
+
+	@Override
 	public String getSamlIdpResponseKey() {
 		if (_samlIdpResponseKey == null) {
 			return "";
@@ -380,29 +403,6 @@ public class SamlSpMessageModelImpl
 	@Deprecated
 	public String getOriginalSamlIdpResponseKey() {
 		return getColumnOriginalValue("samlIdpResponseKey");
-	}
-
-	@Override
-	public Date getExpirationDate() {
-		return _expirationDate;
-	}
-
-	@Override
-	public void setExpirationDate(Date expirationDate) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_expirationDate = expirationDate;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public Date getOriginalExpirationDate() {
-		return getColumnOriginalValue("expirationDate");
 	}
 
 	public long getColumnBitmask() {
@@ -465,8 +465,8 @@ public class SamlSpMessageModelImpl
 		samlSpMessageImpl.setCompanyId(getCompanyId());
 		samlSpMessageImpl.setCreateDate(getCreateDate());
 		samlSpMessageImpl.setSamlIdpEntityId(getSamlIdpEntityId());
-		samlSpMessageImpl.setSamlIdpResponseKey(getSamlIdpResponseKey());
 		samlSpMessageImpl.setExpirationDate(getExpirationDate());
+		samlSpMessageImpl.setSamlIdpResponseKey(getSamlIdpResponseKey());
 
 		samlSpMessageImpl.resetOriginalValues();
 
@@ -485,10 +485,10 @@ public class SamlSpMessageModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		samlSpMessageImpl.setSamlIdpEntityId(
 			this.<String>getColumnOriginalValue("samlIdpEntityId"));
-		samlSpMessageImpl.setSamlIdpResponseKey(
-			this.<String>getColumnOriginalValue("samlIdpResponseKey"));
 		samlSpMessageImpl.setExpirationDate(
 			this.<Date>getColumnOriginalValue("expirationDate"));
+		samlSpMessageImpl.setSamlIdpResponseKey(
+			this.<String>getColumnOriginalValue("samlIdpResponseKey"));
 
 		return samlSpMessageImpl;
 	}
@@ -586,6 +586,15 @@ public class SamlSpMessageModelImpl
 			samlSpMessageCacheModel.samlIdpEntityId = null;
 		}
 
+		Date expirationDate = getExpirationDate();
+
+		if (expirationDate != null) {
+			samlSpMessageCacheModel.expirationDate = expirationDate.getTime();
+		}
+		else {
+			samlSpMessageCacheModel.expirationDate = Long.MIN_VALUE;
+		}
+
 		samlSpMessageCacheModel.samlIdpResponseKey = getSamlIdpResponseKey();
 
 		String samlIdpResponseKey = samlSpMessageCacheModel.samlIdpResponseKey;
@@ -594,15 +603,6 @@ public class SamlSpMessageModelImpl
 			(samlIdpResponseKey.length() == 0)) {
 
 			samlSpMessageCacheModel.samlIdpResponseKey = null;
-		}
-
-		Date expirationDate = getExpirationDate();
-
-		if (expirationDate != null) {
-			samlSpMessageCacheModel.expirationDate = expirationDate.getTime();
-		}
-		else {
-			samlSpMessageCacheModel.expirationDate = Long.MIN_VALUE;
 		}
 
 		return samlSpMessageCacheModel;
@@ -670,8 +670,8 @@ public class SamlSpMessageModelImpl
 	private long _companyId;
 	private Date _createDate;
 	private String _samlIdpEntityId;
-	private String _samlIdpResponseKey;
 	private Date _expirationDate;
+	private String _samlIdpResponseKey;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<SamlSpMessage, Object> function =
@@ -705,8 +705,8 @@ public class SamlSpMessageModelImpl
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("samlIdpEntityId", _samlIdpEntityId);
-		_columnOriginalValues.put("samlIdpResponseKey", _samlIdpResponseKey);
 		_columnOriginalValues.put("expirationDate", _expirationDate);
+		_columnOriginalValues.put("samlIdpResponseKey", _samlIdpResponseKey);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -728,9 +728,9 @@ public class SamlSpMessageModelImpl
 
 		columnBitmasks.put("samlIdpEntityId", 8L);
 
-		columnBitmasks.put("samlIdpResponseKey", 16L);
+		columnBitmasks.put("expirationDate", 16L);
 
-		columnBitmasks.put("expirationDate", 32L);
+		columnBitmasks.put("samlIdpResponseKey", 32L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

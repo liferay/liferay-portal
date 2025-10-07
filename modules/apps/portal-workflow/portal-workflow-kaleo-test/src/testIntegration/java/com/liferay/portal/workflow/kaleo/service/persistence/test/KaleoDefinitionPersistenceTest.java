@@ -152,6 +152,8 @@ public class KaleoDefinitionPersistenceTest {
 
 		newKaleoDefinition.setActive(RandomTestUtil.randomBoolean());
 
+		newKaleoDefinition.setStatus(RandomTestUtil.nextInt());
+
 		_kaleoDefinitions.add(_persistence.update(newKaleoDefinition));
 
 		KaleoDefinition existingKaleoDefinition = _persistence.findByPrimaryKey(
@@ -206,6 +208,9 @@ public class KaleoDefinitionPersistenceTest {
 			newKaleoDefinition.getVersion());
 		Assert.assertEquals(
 			existingKaleoDefinition.isActive(), newKaleoDefinition.isActive());
+		Assert.assertEquals(
+			existingKaleoDefinition.getStatus(),
+			newKaleoDefinition.getStatus());
 	}
 
 	@Test(
@@ -368,7 +373,7 @@ public class KaleoDefinitionPersistenceTest {
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true, "name",
 			true, "title", true, "description", true, "scope", true, "version",
-			true, "active", true);
+			true, "active", true, "status", true);
 	}
 
 	@Test
@@ -742,6 +747,8 @@ public class KaleoDefinitionPersistenceTest {
 		kaleoDefinition.setVersion(RandomTestUtil.nextInt());
 
 		kaleoDefinition.setActive(RandomTestUtil.randomBoolean());
+
+		kaleoDefinition.setStatus(RandomTestUtil.nextInt());
 
 		_kaleoDefinitions.add(_persistence.update(kaleoDefinition));
 

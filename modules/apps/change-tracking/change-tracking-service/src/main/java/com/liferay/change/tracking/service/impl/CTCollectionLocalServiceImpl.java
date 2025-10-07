@@ -60,6 +60,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -163,6 +164,14 @@ public class CTCollectionLocalServiceImpl
 
 		ctCollection = ctCollectionPersistence.update(ctCollection);
 
+		CTScore ctScore = _ctScorePersistence.create(
+			counterLocalService.increment(CTScore.class.getName()));
+
+		ctScore.setCompanyId(companyId);
+		ctScore.setCtCollectionId(ctCollectionId);
+
+		_ctScorePersistence.update(ctScore);
+
 		_resourceLocalService.addResources(
 			ctCollection.getCompanyId(), 0, ctCollection.getUserId(),
 			CTCollection.class.getName(), ctCollection.getCtCollectionId(),
@@ -210,7 +219,7 @@ public class CTCollectionLocalServiceImpl
 			String toCTCollectionName)
 		throws PortalException {
 
-		Map<Long, List<ConflictInfo>> conflictInfoMap = new HashMap<>();
+		Map<Long, List<ConflictInfo>> conflictInfosMap = new HashMap<>();
 
 		Map<Long, CTConflictChecker<?>> ctConflictCheckers = new HashMap<>();
 		CTSettingsConfiguration ctSettingsConfiguration =
@@ -260,13 +269,13 @@ public class CTCollectionLocalServiceImpl
 				List<ConflictInfo> conflictInfos = ctConflictChecker.check();
 
 				if (!conflictInfos.isEmpty()) {
-					conflictInfoMap.put(entry.getKey(), conflictInfos);
+					conflictInfosMap.put(entry.getKey(), conflictInfos);
 				}
 			}
 		}
 
 		if (toCTCollectionId != CTConstants.CT_COLLECTION_ID_PRODUCTION) {
-			return conflictInfoMap;
+			return conflictInfosMap;
 		}
 
 		// Exclude created CTAutoResolutionInfos
@@ -276,7 +285,7 @@ public class CTCollectionLocalServiceImpl
 				fromCTCollectionId);
 
 		for (Map.Entry<Long, List<ConflictInfo>> entry :
-				conflictInfoMap.entrySet()) {
+				conflictInfosMap.entrySet()) {
 
 			for (ConflictInfo conflictInfo : entry.getValue()) {
 				if (!conflictInfo.isResolved()) {
@@ -331,7 +340,7 @@ public class CTCollectionLocalServiceImpl
 		for (CTAutoResolutionInfo ctAutoResolutionInfo :
 				ctAutoResolutionInfos) {
 
-			List<ConflictInfo> conflictInfos = conflictInfoMap.computeIfAbsent(
+			List<ConflictInfo> conflictInfos = conflictInfosMap.computeIfAbsent(
 				ctAutoResolutionInfo.getModelClassNameId(),
 				key -> new ArrayList<>());
 
@@ -378,7 +387,7 @@ public class CTCollectionLocalServiceImpl
 			}
 		}
 
-		return conflictInfoMap;
+		return conflictInfosMap;
 	}
 
 	@Override
@@ -488,46 +497,30 @@ public class CTCollectionLocalServiceImpl
 
 					String primaryKeyName = iterator.next();
 
-					StringBundler sb = new StringBundler();
+					StringBundler sb = new StringBundler(7);
 
 					sb.append("delete from ");
 					sb.append(ctPersistence.getTableName());
 					sb.append(" where ctCollectionId = ");
 					sb.append(ctCollection.getCtCollectionId());
-					sb.append(" and (");
+					sb.append(" and ");
 					sb.append(primaryKeyName);
-					sb.append(" in (");
-
-					int i = 0;
-
-					for (long modelClassPK : entry.getValue()) {
-						if (i == _BATCH_SIZE) {
-							sb.setStringAt(")", sb.index() - 1);
-
-							sb.append(" or ");
-							sb.append(primaryKeyName);
-							sb.append(" in (");
-
-							i = 0;
-						}
-
-						sb.append(modelClassPK);
-						sb.append(", ");
-
-						i++;
-					}
-
-					sb.setStringAt(")", sb.index() - 1);
-
-					sb.append(")");
+					sb.append(" = ?");
 
 					Connection connection = _currentConnection.getConnection(
 						ctPersistence.getDataSource());
 
 					try (PreparedStatement preparedStatement =
-							connection.prepareStatement(sb.toString())) {
+							AutoBatchPreparedStatementUtil.autoBatch(
+								connection, sb.toString())) {
 
-						return preparedStatement.executeUpdate();
+						for (long modelClassPK : entry.getValue()) {
+							preparedStatement.setLong(1, modelClassPK);
+
+							preparedStatement.addBatch();
+						}
+
+						return preparedStatement.executeBatch();
 					}
 					catch (Exception exception) {
 						throw new SystemException(exception);
@@ -569,8 +562,8 @@ public class CTCollectionLocalServiceImpl
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			ctCollection.getCtCollectionId());
 
-		int count = ctCollectionPersistence.countBySchemaVersionId(
-			ctCollection.getSchemaVersionId());
+		int count = ctCollectionPersistence.countByC_SVI(
+			ctCollection.getCompanyId(), ctCollection.getSchemaVersionId());
 
 		if (count == 1) {
 			CTSchemaVersion ctSchemaVersion =
@@ -952,12 +945,12 @@ public class CTCollectionLocalServiceImpl
 			relatedCTEntries.addAll(value);
 		}
 
-		Map<Long, List<ConflictInfo>> conflictInfoMap = checkConflicts(
+		Map<Long, List<ConflictInfo>> conflictInfosMap = checkConflicts(
 			fromCTCollection.getCompanyId(), relatedCTEntries,
 			fromCTCollectionId, fromCTCollection.getName(), toCTCollectionId,
 			toCTCollection.getName());
 
-		if (!conflictInfoMap.isEmpty()) {
+		if (!conflictInfosMap.isEmpty()) {
 			throw new CTPublishConflictException("Conflict detected");
 		}
 
@@ -969,7 +962,7 @@ public class CTCollectionLocalServiceImpl
 				toCTCollectionId, entry.getKey(), entry.getValue());
 		}
 
-		conflictInfoMap = checkConflicts(
+		conflictInfosMap = checkConflicts(
 			toCTCollection.getCompanyId(),
 			getRelatedCTEntries(
 				toCTCollection.getCtCollectionId(),
@@ -979,7 +972,7 @@ public class CTCollectionLocalServiceImpl
 			CTConstants.CT_COLLECTION_ID_PRODUCTION, "Production");
 
 		for (Map.Entry<Long, List<ConflictInfo>> entry :
-				conflictInfoMap.entrySet()) {
+				conflictInfosMap.entrySet()) {
 
 			List<ConflictInfo> conflictInfos = entry.getValue();
 
@@ -1540,46 +1533,30 @@ public class CTCollectionLocalServiceImpl
 		long ctCollectionId, List<CTEntry> ctEntries,
 		CTPersistence<?> ctPersistence, String primaryKeyName) {
 
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(7);
 
 		sb.append("delete from ");
 		sb.append(ctPersistence.getTableName());
 		sb.append(" where ctCollectionId = ");
 		sb.append(ctCollectionId);
-		sb.append(" and (");
+		sb.append(" and ");
 		sb.append(primaryKeyName);
-		sb.append(" in (");
-
-		int i = 0;
-
-		for (CTEntry ctEntry : ctEntries) {
-			if (i == _BATCH_SIZE) {
-				sb.setStringAt(")", sb.index() - 1);
-
-				sb.append(" or ");
-				sb.append(primaryKeyName);
-				sb.append(" in (");
-
-				i = 0;
-			}
-
-			sb.append(ctEntry.getModelClassPK());
-			sb.append(", ");
-
-			i++;
-		}
-
-		sb.setStringAt(")", sb.index() - 1);
-
-		sb.append(")");
+		sb.append(" = ?");
 
 		Connection connection = _currentConnection.getConnection(
 			ctPersistence.getDataSource());
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				sb.toString())) {
+		try (PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection, sb.toString())) {
 
-			preparedStatement.executeUpdate();
+			for (CTEntry ctEntry : ctEntries) {
+				preparedStatement.setLong(1, ctEntry.getModelClassPK());
+
+				preparedStatement.addBatch();
+			}
+
+			preparedStatement.executeBatch();
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
@@ -1589,9 +1566,16 @@ public class CTCollectionLocalServiceImpl
 			sb.setStringAt(mappingTableName, 1);
 
 			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(sb.toString())) {
+					AutoBatchPreparedStatementUtil.autoBatch(
+						connection, sb.toString())) {
 
-				preparedStatement.executeUpdate();
+				for (CTEntry ctEntry : ctEntries) {
+					preparedStatement.setLong(1, ctEntry.getModelClassPK());
+
+					preparedStatement.addBatch();
+				}
+
+				preparedStatement.executeBatch();
 			}
 			catch (Exception exception) {
 				throw new SystemException(exception);
@@ -1603,7 +1587,7 @@ public class CTCollectionLocalServiceImpl
 		long fromCTCollectionId, long toCTCollectionId, List<CTEntry> ctEntries,
 		CTPersistence<?> ctPersistence, String primaryKeyName) {
 
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(9);
 
 		sb.append("update ");
 		sb.append(ctPersistence.getTableName());
@@ -1611,40 +1595,24 @@ public class CTCollectionLocalServiceImpl
 		sb.append(toCTCollectionId);
 		sb.append(" where ctCollectionId = ");
 		sb.append(fromCTCollectionId);
-		sb.append(" and (");
+		sb.append(" and ");
 		sb.append(primaryKeyName);
-		sb.append(" in (");
-
-		int i = 0;
-
-		for (CTEntry ctEntry : ctEntries) {
-			if (i == _BATCH_SIZE) {
-				sb.setStringAt(")", sb.index() - 1);
-
-				sb.append(" or ");
-				sb.append(primaryKeyName);
-				sb.append(" in (");
-
-				i = 0;
-			}
-
-			sb.append(ctEntry.getModelClassPK());
-			sb.append(", ");
-
-			i++;
-		}
-
-		sb.setStringAt(")", sb.index() - 1);
-
-		sb.append(")");
+		sb.append(" = ?");
 
 		Connection connection = _currentConnection.getConnection(
 			ctPersistence.getDataSource());
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				sb.toString())) {
+		try (PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection, sb.toString())) {
 
-			preparedStatement.executeUpdate();
+			for (CTEntry ctEntry : ctEntries) {
+				preparedStatement.setLong(1, ctEntry.getModelClassPK());
+
+				preparedStatement.addBatch();
+			}
+
+			preparedStatement.executeBatch();
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
@@ -1654,9 +1622,16 @@ public class CTCollectionLocalServiceImpl
 			sb.setStringAt(mappingTableName, 1);
 
 			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(sb.toString())) {
+					AutoBatchPreparedStatementUtil.autoBatch(
+						connection, sb.toString())) {
 
-				preparedStatement.executeUpdate();
+				for (CTEntry ctEntry : ctEntries) {
+					preparedStatement.setLong(1, ctEntry.getModelClassPK());
+
+					preparedStatement.addBatch();
+				}
+
+				preparedStatement.executeBatch();
 			}
 			catch (Exception exception) {
 				throw new SystemException(exception);

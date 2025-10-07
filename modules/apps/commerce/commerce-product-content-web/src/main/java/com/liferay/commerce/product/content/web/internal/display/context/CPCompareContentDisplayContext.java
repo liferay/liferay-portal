@@ -158,7 +158,7 @@ public class CPCompareContentDisplayContext {
 				_cpDefinitionHelper.getCPCatalogEntry(
 					CommerceUtil.getCommerceAccountId(commerceContext),
 					commerceContext.getCommerceChannelGroupId(), cpDefinitionId,
-					_cpRequestHelper.getLocale()));
+					_cpRequestHelper.getLocale(), false));
 		}
 
 		if (cpCatalogEntries.size() > getProductsLimit()) {

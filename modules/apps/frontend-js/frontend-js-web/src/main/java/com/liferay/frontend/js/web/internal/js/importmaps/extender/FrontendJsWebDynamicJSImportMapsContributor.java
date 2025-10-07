@@ -6,8 +6,8 @@
 package com.liferay.frontend.js.web.internal.js.importmaps.extender;
 
 import com.liferay.frontend.js.importmaps.extender.DynamicJSImportMapsContributor;
-import com.liferay.frontend.js.web.internal.hashed.files.HashedFilesRegistry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,28 +32,23 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 
 		writer.write("\"@liferay/language/\": \"/o/js/language/\"");
 
-		HashedFilesRegistry hashedFilesRegistry =
-			HashedFilesRegistry.getHashedFilesRegistry();
+		_hashedFilesRegistry.forEach(
+			(unhashedFileURI, hashedFileURI) -> {
+				if (!unhashedFileURI.endsWith(".js")) {
+					return;
+				}
 
-		if (hashedFilesRegistry != null) {
-			hashedFilesRegistry.forEach(
-				(unhashedFileURI, hashedFileURI) -> {
-					if (!unhashedFileURI.endsWith(".js")) {
-						return;
-					}
-
-					try {
-						writer.write(", \"");
-						writer.write(unhashedFileURI);
-						writer.write("\": \"");
-						writer.write(hashedFileURI);
-						writer.write(StringPool.QUOTE);
-					}
-					catch (IOException ioException) {
-						throw new RuntimeException(ioException);
-					}
-				});
-		}
+				try {
+					writer.write(", \"");
+					writer.write(unhashedFileURI);
+					writer.write("\": \"");
+					writer.write(hashedFileURI);
+					writer.write(StringPool.QUOTE);
+				}
+				catch (IOException ioException) {
+					throw new RuntimeException(ioException);
+				}
+			});
 	}
 
 	@Override
@@ -61,6 +56,9 @@ public class FrontendJsWebDynamicJSImportMapsContributor
 			HttpServletRequest httpServletRequest, Writer writer)
 		throws IOException {
 	}
+
+	@Reference
+	private HashedFilesRegistry _hashedFilesRegistry;
 
 	@Reference
 	private Portal _portal;

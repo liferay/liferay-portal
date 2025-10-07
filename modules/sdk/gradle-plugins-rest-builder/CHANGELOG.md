@@ -1,5 +1,374 @@
 # Liferay Gradle Plugins REST Builder Change Log
 
+## 1.1.297 - 2025-07-16
+
+### Dependencies
+- [LPD-57032] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.419.
+
+## 1.1.296 - 2025-06-17
+
+### Dependencies
+- [LPD-46121] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.418.
+
+## 1.1.295 - 2025-05-29
+
+### Dependencies
+- [LPD-56642] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.417.
+
+## 1.1.294 - 2025-05-27
+
+### Commits
+- [LPD-53852] Wordsmith (2b98d904bb)
+- [LPD-53852] This is how it should work globally (aa5173f8b2)
+
+### Dependencies
+- [LPD-53852] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.416.
+
+## 1.1.293 - 2025-05-12
+
+### Dependencies
+- [LPD-54467] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.415.
+
+## 1.1.292 - 2025-05-09
+
+### Dependencies
+- [LPD-54466] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.414.
+
+## 1.1.291 - 2025-05-08
+
+### Dependencies
+- [LPD-54468] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.413.
+
+## 1.1.290 - 2025-05-07
+
+### Dependencies
+- [LPD-54466] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.412.
+
+## 1.1.289 - 2025-05-06
+
+### Dependencies
+- [LPD-49422] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.411.
+
+## 1.1.288 - 2025-04-29
+
+### Dependencies
+- [LPD-53848] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.410.
+
+## 1.1.287 - 2025-04-29
+
+### Dependencies
+- [LPD-53848] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.409.
+
+## 1.1.286 - 2025-04-29
+
+### Commits
+- [LPD-52887] Rename (1e3d0e1ddc)
+
+### Dependencies
+- [LPD-54264] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.408.
+
+## 1.1.285 - 2025-04-16
+
+### Dependencies
+- [LPD-49868] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.407.
+
+## 1.1.284 - 2025-04-16
+
+### Dependencies
+- [LPD-49868] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.406.
+
+## 1.1.283 - 2025-04-15
+
+### Dependencies
+- [LPD-45650] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.405.
+
+## 1.1.282 - 2025-04-11
+
+### Dependencies
+- [LPD-51599] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.404.
+
+## 1.1.281 - 2025-04-03
+
+### Dependencies
+- [LPD-45735] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.403.
+
+## 1.1.280 - 2025-04-01
+
+### Dependencies
+- [LPD-45735] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.402.
+
+## 1.1.279 - 2025-03-30
+
+### Dependencies
+- [LPD-47152] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.401.
+
+## 1.1.278 - 2025-03-20
+
+### Dependencies
+- [LPD-48867] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.400.
+
+## 1.1.277 - 2025-03-20
+
+### Dependencies
+- [LPD-49536] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.399.
+
+## 1.1.276 - 2025-03-17
+
+### Dependencies
+- [LPD-51258] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.398.
+
+## 1.1.275 - 2025-03-17
+
+### Dependencies
+- [LPD-51326] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.397.
+
+## 1.1.274 - 2025-03-16
+
+### Dependencies
+- [LPD-45573] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.396.
+- [LPD-45574] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.395.
+
+## 1.1.273 - 2025-03-12
+
+### Dependencies
+- [LPD-51230] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.394.
+
+## 1.1.272 - 2025-03-07
+
+### Dependencies
+- [LPD-48182] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.393.
+
+## 1.1.271 - 2025-03-07
+
+### Dependencies
+- [LPD-48182] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.392.
+
+## 1.1.270 - 2025-03-07
+
+### Dependencies
+- [LPD-48182] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.391.
+
+## 1.1.269 - 2025-03-05
+
+### Dependencies
+- [LPD-48305] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.390.
+
+## 1.1.268 - 2025-03-04
+
+### Dependencies
+- [LPD-48305] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.389.
+
+## 1.1.267 - 2025-03-03
+
+### Dependencies
+- [LPD-48305] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.388.
+
+## 1.1.266 - 2025-03-03
+
+### Dependencies
+- [LPD-45575] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.387.
+
+## 1.1.265 - 2025-02-25
+
+### Dependencies
+- [LPD-45572] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.386.
+
+## 1.1.264 - 2025-02-25
+
+### Dependencies
+- [LPD-46937] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.385.
+
+## 1.1.263 - 2025-02-21
+
+### Dependencies
+- [LPD-48988] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.384.
+
+## 1.1.262 - 2025-02-20
+
+### Dependencies
+- [LPD-47691] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.383.
+
+## 1.1.261 - 2025-02-20
+
+### Dependencies
+- [LPD-45806] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.382.
+
+## 1.1.260 - 2025-02-14
+
+### Dependencies
+- [LPD-48936] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.381.
+
+## 1.1.259 - 2025-02-09
+
+### Dependencies
+- [LPD-47903] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.380.
+
+## 1.1.258 - 2025-02-05
+
+### Dependencies
+- [LPD-47508] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.379.
+
+## 1.1.257 - 2025-02-02
+
+### Dependencies
+- [LPD-45420] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.378.
+
+## 1.1.256 - 2025-01-27
+
+### Dependencies
+- [LPD-47114] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.377.
+
+## 1.1.255 - 2025-01-16
+
+### Dependencies
+- [LPD-45812] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.376.
+
+## 1.1.254 - 2024-12-14
+
+### Dependencies
+- [LPD-43570] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.375.
+
+## 1.1.253 - 2024-12-10
+
+### Dependencies
+- [LPD-43780] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.374.
+
+## 1.1.252 - 2024-11-25
+
+### Dependencies
+- [LPD-42652] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.373.
+
+## 1.1.251 - 2024-11-07
+
+### Dependencies
+- [LPD-38638] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.372.
+
+## 1.1.250 - 2024-11-05
+
+### Dependencies
+- [LPD-40537] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.371.
+
+## 1.1.249 - 2024-10-30
+
+### Dependencies
+- [LRCI-4023] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.370.
+
+## 1.1.248 - 2024-10-28
+
+### Dependencies
+- [LPD-37815] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.369.
+
+## 1.1.247 - 2024-10-24
+
+### Dependencies
+- [LPD-39562] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.368.
+
+## 1.1.246 - 2024-10-04
+
+### Dependencies
+- [LPD-15350] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.367.
+
+## 1.1.244 - 2024-09-18
+
+### Dependencies
+- [LPD-32158] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.366.
+
+## 1.1.243 - 2024-09-06
+
+### Dependencies
+- [LPD-29652] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.365.
+
+## 1.1.242 - 2024-09-03
+
+### Dependencies
+- [LPD-28845] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.364.
+
+## 1.1.241 - 2024-08-31
+
+### Dependencies
+- [LPD-34772] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.363.
+
+## 1.1.240 - 2024-08-27
+
+### Dependencies
+- [LPD-31166] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.362.
+
+## 1.1.239 - 2024-08-27
+
+### Dependencies
+- [LPD-31166] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.361.
+
+## 1.1.238 - 2024-08-26
+
+### Dependencies
+- [LPD-33598] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.360.
+
+## 1.1.237 - 2024-08-26
+
+### Dependencies
+- [LPD-31827] Update the com.liferay.portal.tools.rest.builder dependency to
+version 1.0.359.
+
 ## 1.1.236 - 2024-08-25
 
 ### Dependencies
@@ -2287,6 +2656,7 @@ version 1.0.1.
 [LPD-1517]: https://issues.liferay.com/browse/LPD-1517
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
 [LPD-15311]: https://issues.liferay.com/browse/LPD-15311
+[LPD-15350]: https://issues.liferay.com/browse/LPD-15350
 [LPD-15360]: https://issues.liferay.com/browse/LPD-15360
 [LPD-15637]: https://issues.liferay.com/browse/LPD-15637
 [LPD-17027]: https://issues.liferay.com/browse/LPD-17027
@@ -2304,8 +2674,59 @@ version 1.0.1.
 [LPD-25627]: https://issues.liferay.com/browse/LPD-25627
 [LPD-26187]: https://issues.liferay.com/browse/LPD-26187
 [LPD-28316]: https://issues.liferay.com/browse/LPD-28316
+[LPD-28845]: https://issues.liferay.com/browse/LPD-28845
+[LPD-29652]: https://issues.liferay.com/browse/LPD-29652
 [LPD-30217]: https://issues.liferay.com/browse/LPD-30217
+[LPD-31166]: https://issues.liferay.com/browse/LPD-31166
 [LPD-31794]: https://issues.liferay.com/browse/LPD-31794
+[LPD-31827]: https://issues.liferay.com/browse/LPD-31827
+[LPD-32158]: https://issues.liferay.com/browse/LPD-32158
+[LPD-33598]: https://issues.liferay.com/browse/LPD-33598
+[LPD-34772]: https://issues.liferay.com/browse/LPD-34772
+[LPD-37815]: https://issues.liferay.com/browse/LPD-37815
+[LPD-38638]: https://issues.liferay.com/browse/LPD-38638
+[LPD-39562]: https://issues.liferay.com/browse/LPD-39562
+[LPD-40537]: https://issues.liferay.com/browse/LPD-40537
+[LPD-42652]: https://issues.liferay.com/browse/LPD-42652
+[LPD-43570]: https://issues.liferay.com/browse/LPD-43570
+[LPD-43780]: https://issues.liferay.com/browse/LPD-43780
+[LPD-45420]: https://issues.liferay.com/browse/LPD-45420
+[LPD-45572]: https://issues.liferay.com/browse/LPD-45572
+[LPD-45573]: https://issues.liferay.com/browse/LPD-45573
+[LPD-45574]: https://issues.liferay.com/browse/LPD-45574
+[LPD-45575]: https://issues.liferay.com/browse/LPD-45575
+[LPD-45650]: https://issues.liferay.com/browse/LPD-45650
+[LPD-45735]: https://issues.liferay.com/browse/LPD-45735
+[LPD-45806]: https://issues.liferay.com/browse/LPD-45806
+[LPD-45812]: https://issues.liferay.com/browse/LPD-45812
+[LPD-46121]: https://issues.liferay.com/browse/LPD-46121
+[LPD-46937]: https://issues.liferay.com/browse/LPD-46937
+[LPD-47114]: https://issues.liferay.com/browse/LPD-47114
+[LPD-47152]: https://issues.liferay.com/browse/LPD-47152
+[LPD-47508]: https://issues.liferay.com/browse/LPD-47508
+[LPD-47691]: https://issues.liferay.com/browse/LPD-47691
+[LPD-47903]: https://issues.liferay.com/browse/LPD-47903
+[LPD-48182]: https://issues.liferay.com/browse/LPD-48182
+[LPD-48305]: https://issues.liferay.com/browse/LPD-48305
+[LPD-48867]: https://issues.liferay.com/browse/LPD-48867
+[LPD-48936]: https://issues.liferay.com/browse/LPD-48936
+[LPD-48988]: https://issues.liferay.com/browse/LPD-48988
+[LPD-49422]: https://issues.liferay.com/browse/LPD-49422
+[LPD-49536]: https://issues.liferay.com/browse/LPD-49536
+[LPD-49868]: https://issues.liferay.com/browse/LPD-49868
+[LPD-51230]: https://issues.liferay.com/browse/LPD-51230
+[LPD-51258]: https://issues.liferay.com/browse/LPD-51258
+[LPD-51326]: https://issues.liferay.com/browse/LPD-51326
+[LPD-51599]: https://issues.liferay.com/browse/LPD-51599
+[LPD-52887]: https://issues.liferay.com/browse/LPD-52887
+[LPD-53848]: https://issues.liferay.com/browse/LPD-53848
+[LPD-53852]: https://issues.liferay.com/browse/LPD-53852
+[LPD-54264]: https://issues.liferay.com/browse/LPD-54264
+[LPD-54466]: https://issues.liferay.com/browse/LPD-54466
+[LPD-54467]: https://issues.liferay.com/browse/LPD-54467
+[LPD-54468]: https://issues.liferay.com/browse/LPD-54468
+[LPD-56642]: https://issues.liferay.com/browse/LPD-56642
+[LPD-57032]: https://issues.liferay.com/browse/LPD-57032
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-82091]: https://issues.liferay.com/browse/LPS-82091
 [LPS-84119]: https://issues.liferay.com/browse/LPS-84119
@@ -2580,4 +3001,5 @@ version 1.0.1.
 [LPS-203868]: https://issues.liferay.com/browse/LPS-203868
 [LPS-204572]: https://issues.liferay.com/browse/LPS-204572
 [LRCI-2670]: https://issues.liferay.com/browse/LRCI-2670
+[LRCI-4023]: https://issues.liferay.com/browse/LRCI-4023
 [LRDOCS-6650]: https://issues.liferay.com/browse/LRDOCS-6650

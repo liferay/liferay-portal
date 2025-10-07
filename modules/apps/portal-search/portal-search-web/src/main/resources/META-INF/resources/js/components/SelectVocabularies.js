@@ -7,9 +7,7 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import {TreeView} from '@clayui/core';
 import {ClayCheckbox, ClayRadio, ClayRadioGroup} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import getCN from 'classnames';
 import {LearnMessage, LearnResourcesContext} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useMemo, useState} from 'react';
@@ -36,78 +34,6 @@ const SELECT_OPTIONS = {
  */
 const transformCommaStringToArray = (commaString) =>
 	commaString.split(',').filter((item) => item !== '');
-
-function SiteRow({name, onSelect, vocabularies}) {
-	const _handleSelect =
-		(select = true) =>
-		(event) => {
-			event.preventDefault();
-
-			onSelect(vocabularies, select);
-		};
-
-	return (
-		<div
-			className="autofit-row"
-			style={{marginLeft: vocabularies.length ? '0' : '-24px'}}
-		>
-			<div className="autofit-col">
-				<ClayButton
-					className="component-expander"
-					data-toggle="collapse"
-					displayType="unstyled"
-					monospaced
-					tabIndex="-1"
-				>
-					<span className="c-inner" tabIndex="-2">
-						<ClayIcon symbol="angle-down" />
-
-						<ClayIcon
-							className="component-expanded-d-none"
-							symbol="angle-right"
-						/>
-					</span>
-				</ClayButton>
-			</div>
-
-			<div className={getCN('autofit-col')}>{name}</div>
-
-			<div className="autofit-col autofit-col-expand" />
-
-			{!!vocabularies.length && (
-				<div className="autofit-col">
-					<span className="autofit-row">
-						<span className="autofit-col c-mr-1">
-							<ClayButton
-								className="quick-action-item"
-								displayType="secondary"
-								onClick={_handleSelect()}
-								small
-							>
-								<span className="c-inner" tabIndex="-2">
-									{Liferay.Language.get('select-all')}
-								</span>
-							</ClayButton>
-						</span>
-
-						<span className="autofit-col">
-							<ClayButton
-								className="quick-action-item"
-								displayType="secondary"
-								onClick={_handleSelect(false)}
-								small
-							>
-								<span className="c-inner" tabIndex="-2">
-									{Liferay.Language.get('deselect-all')}
-								</span>
-							</ClayButton>
-						</span>
-					</span>
-				</div>
-			)}
-		</div>
-	);
-}
 
 function VocabularyTree({
 	loading,
@@ -149,18 +75,67 @@ function VocabularyTree({
 			showExpanderOnHover={false}
 		>
 			{(item) => (
-				<TreeView.Item key={item.externalReferenceCode}>
-					<div className="treeview-link-site-row">
-						<SiteRow
-							name={
-								item.descriptiveName_i18n?.[
-									Liferay.ThemeDisplay.getLanguageId()
-								] || item.descriptiveName
-							}
-							onSelect={_handleSelect}
-							vocabularies={item.children}
-						/>
-					</div>
+				<TreeView.Item
+					actions={
+						<div className="d-flex">
+							<ClayButton
+								aria-label={Liferay.Language.get('select-all')}
+								className="c-mr-1 quick-action-item"
+								displayType="secondary"
+								onClick={(event) => {
+									event.preventDefault();
+
+									_handleSelect(item.children, true);
+								}}
+								onKeyDown={(event) => {
+									if (
+										event.key === 'Enter' ||
+										event.key === ' '
+									) {
+										event.preventDefault();
+
+										_handleSelect(item.children, true);
+									}
+								}}
+								size="xs"
+								type="submit"
+							>
+								{Liferay.Language.get('select-all')}
+							</ClayButton>
+
+							<ClayButton
+								aria-label={Liferay.Language.get(
+									'deselect-all'
+								)}
+								displayType="secondary quick-action-item"
+								onClick={(event) => {
+									event.preventDefault();
+
+									_handleSelect(item.children, false);
+								}}
+								onKeyDown={(event) => {
+									if (
+										event.key === 'Enter' ||
+										event.key === ' '
+									) {
+										event.preventDefault();
+
+										_handleSelect(item.children, false);
+									}
+								}}
+								size="xs"
+							>
+								{Liferay.Language.get('deselect-all')}
+							</ClayButton>
+						</div>
+					}
+					key={item.externalReferenceCode}
+				>
+					<TreeView.ItemStack>
+						{item.descriptiveName_i18n?.[
+							Liferay.ThemeDisplay.getLanguageId()
+						] || item.descriptiveName}
+					</TreeView.ItemStack>
 
 					{item.children?.length ? (
 						<TreeView.Group items={item.children}>

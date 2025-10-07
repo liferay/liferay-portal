@@ -111,7 +111,6 @@ export default function Connect({
 				}
 				footer={
 					<ClayButton
-						borderless
 						displayType="secondary"
 						onClick={onDisconnect}
 						outline

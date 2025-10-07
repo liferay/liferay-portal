@@ -1,0 +1,16 @@
+{
+	"name": "Cloud Activation",
+	"name_i18n": {
+		"en_US": "Cloud Activation",
+		"es-ES": "Activación de Cloud",
+		"ja-JP": "クラウドアクティベーション",
+		"pt-BR": "Ativação de Cloud"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "visible",
+			"value": "false"
+		}
+	],
+	"viewableBy": "Anyone"
+}

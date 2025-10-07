@@ -62,8 +62,11 @@ export async function editSegmentsEntry(
 	await saveSegmentsEntry(page);
 }
 
-export async function goToSegmentsAdmin(page) {
-	await page.goto(`/group/guest${PORTLET_URLS.segments}`);
+export async function goToSegmentsAdmin(
+	page,
+	siteUrl?: Site['friendlyUrlPath']
+) {
+	await page.goto(`/group${siteUrl || '/guest'}${PORTLET_URLS.segments}`);
 }
 
 export async function saveSegmentsEntry(page) {
@@ -73,11 +76,11 @@ export async function saveSegmentsEntry(page) {
 }
 
 export async function switchSegmentsLanguage(language: string, page) {
-	await page.getByRole('button', {name: 'en-US'}).click();
+	await page.getByTitle('en-US').click();
 
 	await page
-		.getByRole('menuitem', {
-			name: `${language} Untranslated`,
+		.getByRole('option', {
+			name: `${language} language: Untranslated`,
 		})
 		.click();
 }

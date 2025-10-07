@@ -7,6 +7,7 @@ package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity;
 import com.liferay.portal.tools.rest.builder.test.internal.entity.v1_0.TestEntityEntityModel;
@@ -64,18 +65,19 @@ public class TestEntityResourceImpl extends BaseTestEntityResourceImpl {
 	}
 
 	@Override
-	public Page<TestEntity> getTestEntitiesPage() {
+	public Page<TestEntity> getTestEntitiesPage(Filter filter) {
 		return Page.of(_testEntities);
 	}
 
 	@Override
 	public TestEntity getTestEntity(Long testEntityId) throws Exception {
-		try {
-			return _testEntities.get(Math.toIntExact(testEntityId));
+		for (TestEntity testEntity : _testEntities) {
+			if (Objects.equals(testEntity.getId(), testEntityId)) {
+				return testEntity;
+			}
 		}
-		catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-			throw new NoSuchModelException(indexOutOfBoundsException);
-		}
+
+		throw new NoSuchModelException();
 	}
 
 	@Override
@@ -92,11 +94,11 @@ public class TestEntityResourceImpl extends BaseTestEntityResourceImpl {
 
 	@Override
 	public TestEntity postTestEntity(TestEntity testEntity) {
-		_testEntities.add(testEntity);
-
 		testEntity.setDateCreated(new Date());
 		testEntity.setDateModified(new Date());
-		testEntity.setId(_testEntities.size() - 1L);
+		testEntity.setId((long)_testEntities.size());
+
+		_testEntities.add(testEntity);
 
 		return testEntity;
 	}

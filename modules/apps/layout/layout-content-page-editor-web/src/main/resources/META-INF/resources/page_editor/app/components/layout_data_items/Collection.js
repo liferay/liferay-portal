@@ -170,58 +170,52 @@ const Grid = ({
 		config.maxNumberOfItemsInEditMode
 	);
 
-	const numberOfRows = Math.ceil(
-		numberOfItemsToDisplay / collectionConfig.numberOfColumns
-	);
-
 	return (
 		<>
-			{Array.from({length: numberOfRows}).map((_, i) => (
-				<ClayLayout.Row
-					className={classNames(
-						`align-items-${collectionConfig.verticalAlignment}`,
-						{
-							'no-gutters': !collectionConfig.gutters,
-						}
-					)}
-					key={`row-${i}`}
-				>
-					{Array.from({length: collectionConfig.numberOfColumns}).map(
-						(_, j) => {
-							const key = `col-${i}-${j}`;
-							const index =
-								i * collectionConfig.numberOfColumns + j;
+			<ClayLayout.Row
+				className={classNames(
+					`align-items-${collectionConfig.verticalAlignment}`,
+					{
+						'no-gutters': !collectionConfig.gutters,
+					}
+				)}
+			>
+				{Array.from({length: numberOfItemsToDisplay}).map(
+					(_, index) => {
+						const key = `col-${index}`;
 
-							return (
-								<ClayLayout.Col
-									key={key}
-									size={
-										COLUMN_SIZE_MODULE_PER_ROW_SIZES[
-											collectionConfig.numberOfColumns
-										][collectionConfig.numberOfColumns][j]
-									}
-								>
-									{index < numberOfItemsToDisplay && (
-										<ItemContext
-											collectionConfig={collectionConfig}
-											collectionId={collectionId}
-											collectionItem={
-												collection.items[index] ?? {}
-											}
-											customCollectionSelectorURL={
-												customCollectionSelectorURL
-											}
-											index={index}
-										>
-											{child}
-										</ItemContext>
-									)}
-								</ClayLayout.Col>
-							);
-						}
-					)}
-				</ClayLayout.Row>
-			))}
+						return (
+							<ClayLayout.Col
+								key={key}
+								size={
+									COLUMN_SIZE_MODULE_PER_ROW_SIZES[
+										collectionConfig.numberOfColumns
+									][collectionConfig.numberOfColumns][
+										index % collectionConfig.numberOfColumns
+									]
+								}
+							>
+								{index < numberOfItemsToDisplay && (
+									<ItemContext
+										collectionConfig={collectionConfig}
+										collectionId={collectionId}
+										collectionItem={
+											collection.items[index] ?? {}
+										}
+										customCollectionSelectorURL={
+											customCollectionSelectorURL
+										}
+										index={index}
+									>
+										{child}
+									</ItemContext>
+								)}
+							</ClayLayout.Col>
+						);
+					}
+				)}
+			</ClayLayout.Row>
+
 			{maxNumberOfItems > config.maxNumberOfItemsInEditMode && (
 				<EditModeMaxItemsAlert />
 			)}

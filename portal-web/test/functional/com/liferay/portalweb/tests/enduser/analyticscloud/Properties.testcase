@@ -75,15 +75,6 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-9108 | Test Summary: [AC][Portal] Creating a property at the same time (concurrency scenario)"
-	@ignore = "true"
-	@priority = 3
-	test CanCreatePropertiesAtTheSameTime {
-
-		// TODO LRAC-9108 CanCreatePropertiesAtTheSameTime pending implementation
-
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-9101 | Test Summary: [AC] It is possible create Properties when no data source is created yet"
 	@ignore = "true"
 	@priority = 3

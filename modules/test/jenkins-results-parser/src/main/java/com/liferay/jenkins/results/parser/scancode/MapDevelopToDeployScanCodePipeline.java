@@ -36,7 +36,7 @@ public class MapDevelopToDeployScanCodePipeline extends BaseScanCodePipeline {
 
 		downloadResultFiles();
 
-		sendSlackNotification(getS3URL());
+		sendSlackNotification(getCloudBucketURL());
 	}
 
 	public JSONObject getJSONObject() throws IOException {

@@ -40,15 +40,17 @@ public class JavaCompanyScopedIdsCheck extends BaseJavaTermCheck {
 
 		String content = javaTerm.getContent();
 
-		if (absolutePath.contains("-test/")) {
+		if (!absolutePath.contains("/upgrade/") ||
+			absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/") ||
+			!isUpgradeProcess(absolutePath, fileContent)) {
+
 			return content;
 		}
 
 		JavaClass javaClass = (JavaClass)javaTerm;
 
-		if (!javaClass.hasAnnotation("Component") && !javaClass.isStatic() &&
-			!isUpgradeProcess(absolutePath, fileContent)) {
-
+		if (!javaClass.hasAnnotation("Component") && !javaClass.isStatic()) {
 			return content;
 		}
 

@@ -112,20 +112,6 @@ public abstract class BaseTestResult implements TestResult {
 	public boolean isFailing() {
 		String status = getStatus();
 
-		Build build = getBuild();
-
-		if (status.equals("PASSED") && build.isFailing()) {
-			JSONObject testReportJSONObject = build.getTestReportJSONObject(
-				false);
-
-			int failCount = testReportJSONObject.optInt("failCount");
-			int passCount = testReportJSONObject.optInt("passCount");
-
-			if ((failCount == 0) && (passCount == 1)) {
-				return true;
-			}
-		}
-
 		if (status.equals("FIXED") || status.equals("PASSED") ||
 			status.equals("SKIPPED")) {
 

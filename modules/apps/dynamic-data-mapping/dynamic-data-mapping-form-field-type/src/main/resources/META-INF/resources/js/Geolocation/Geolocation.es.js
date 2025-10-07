@@ -5,6 +5,7 @@
 
 import 'leaflet/dist/leaflet.css';
 import ClayIcon from '@clayui/icon';
+import {useFormState} from 'data-engine-js-components-web';
 import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/api';
 import React, {useCallback, useState} from 'react';
 
@@ -35,6 +36,7 @@ const Geolocation = ({
 	...otherProps
 }) => {
 	const [address, setAddress] = useState();
+	const {editingLanguageId} = useFormState();
 
 	const handleChange = useCallback(
 		({newVal: {address, location}}) => {
@@ -46,6 +48,7 @@ const Geolocation = ({
 
 	useGeolocation({
 		disabled,
+		editingLanguageId,
 		googleMapsAPIKey,
 		instanceId,
 		mapProviderKey,
@@ -107,7 +110,12 @@ const Main = ({
 	viewMode,
 	...otherProps
 }) => (
-	<FieldBase name={name} readOnly={readOnly} {...otherProps}>
+	<FieldBase
+		instanceId={instanceId}
+		name={name}
+		readOnly={readOnly}
+		{...otherProps}
+	>
 		<Geolocation
 			disabled={readOnly}
 			googleMapsAPIKey={googleMapsAPIKey}

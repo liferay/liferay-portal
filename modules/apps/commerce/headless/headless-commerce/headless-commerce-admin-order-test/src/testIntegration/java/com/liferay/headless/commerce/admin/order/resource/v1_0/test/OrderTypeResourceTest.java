@@ -225,10 +225,9 @@ public class OrderTypeResourceTest extends BaseOrderTypeResourceTestCase {
 				displayDateConfig.getMinute(),
 				GetterUtil.getInteger(orderType.getDisplayOrder()),
 				expirationDateConfig.getMonth(), expirationDateConfig.getDay(),
-				expirationDateConfig.getYear(), expirationDateConfig.getHour(),
-				expirationDateConfig.getMinute(),
-				GetterUtil.getBoolean(orderType.getNeverExpire(), true),
-				_serviceContext);
+				expirationDateConfig.getYear() + 1,
+				expirationDateConfig.getHour(),
+				expirationDateConfig.getMinute(), false, _serviceContext);
 
 		_commerceTermEntryRel =
 			_commerceTermEntryRelLocalService.addCommerceTermEntryRel(

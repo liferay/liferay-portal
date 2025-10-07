@@ -43,7 +43,7 @@ public class ProjectTemplatesPortletToolbarContributorTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -99,24 +99,24 @@ public class ProjectTemplatesPortletToolbarContributorTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		if (VersionUtil.getMinorVersion(_liferayVersion) < 3) {
-			testContains(
-				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
-		}
-		else {
-			testContains(
-				gradleProjectDir, "build.gradle",
-				DEPENDENCY_RELEASE_PORTAL_API);
-		}
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+
+		String portletToolbarContributorFilePath =
+			"src/main/java/blade/test/portlet/toolbar/contributor" +
+				"/ToolbartestPortletToolbarContributor.java";
 
 		testContains(
-			gradleProjectDir,
-			"src/main/java/blade/test/portlet/toolbar/contributor" +
-				"/ToolbartestPortletToolbarContributor.java",
+			gradleProjectDir, portletToolbarContributorFilePath,
+			getJavaxOrJakartaPackagePrefix(_liferayVersion) + ".portlet.name=",
 			"public class ToolbartestPortletToolbarContributor",
 			"implements PortletToolbarContributor");
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(
+				gradleProjectDir, portletToolbarContributorFilePath);
+		}
 
 		File mavenWorkspaceDir = buildWorkspace(
 			temporaryFolder, "maven", "mavenWS", _liferayVersion,

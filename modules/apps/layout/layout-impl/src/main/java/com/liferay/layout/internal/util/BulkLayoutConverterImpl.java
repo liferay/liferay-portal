@@ -240,8 +240,9 @@ public class BulkLayoutConverterImpl implements BulkLayoutConverter {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				layout.getGroupId(), layout.getPlid(),
-				defaultSegmentsExperienceId, layoutDataJSONObject.toString());
+				serviceContext.getUserId(), layout.getGroupId(),
+				layout.getPlid(), defaultSegmentsExperienceId,
+				layoutDataJSONObject.toString());
 	}
 
 	private Layout _convertLayout(long plid) throws PortalException {

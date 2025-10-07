@@ -53,10 +53,9 @@ public interface SamlPeerBindingLocalService
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.saml.persistence.service.impl.SamlPeerBindingLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the saml peer binding local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link SamlPeerBindingLocalServiceUtil} if injection and service tracking are not available.
 	 */
 	public SamlPeerBinding addSamlPeerBinding(
-			long userId, String samlNameIdFormat,
+			long userId, String samlPeerEntityId, String samlNameIdFormat,
 			String samlNameIdNameQualifier, String samlNameIdSpNameQualifier,
-			String samlNameIdSpProvidedId, String samlNameIdValue,
-			String samlPeerEntityId)
+			String samlNameIdSpProvidedId, String samlNameIdValue)
 		throws PortalException;
 
 	/**
@@ -200,9 +199,9 @@ public interface SamlPeerBindingLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SamlPeerBinding fetchSamlPeerBinding(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId);
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
@@ -252,9 +251,9 @@ public interface SamlPeerBindingLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SamlPeerBinding> getSamlPeerBindings(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId);
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue);
 
 	/**
 	 * Returns the number of saml peer bindings.
@@ -266,8 +265,8 @@ public interface SamlPeerBindingLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SamlPeerBinding> getUserSamlPeerBindings(
-			long userId, boolean deleted, String samlNameIdFormat,
-			String samlNameIdNameQualifier, String samlPeerEntityId)
+			long userId, String samlPeerEntityId, boolean deleted,
+			String samlNameIdFormat, String samlNameIdNameQualifier)
 		throws PortalException;
 
 	/**

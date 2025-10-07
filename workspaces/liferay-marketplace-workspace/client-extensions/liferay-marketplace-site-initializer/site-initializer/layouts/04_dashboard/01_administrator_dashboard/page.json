@@ -17,14 +17,15 @@
 		},
 		{
 			"actionIds": [
+				"VIEW"
 			],
-			"roleName": "Guest",
-			"scope": 4
+			"roleName": "Dashboard Viewer",
+			"scope": 1
 		},
 		{
 			"actionIds": [
 			],
-			"roleName": "Site Member",
+			"roleName": "Guest",
 			"scope": 4
 		}
 	],

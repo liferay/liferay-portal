@@ -4,6 +4,29 @@
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" dependency-injector="ds" package-path="com.liferay.saml.persistence">
 	<author>Mika Koivisto</author>
 	<namespace>Saml</namespace>
+	<entity local-service="true" name="SamlIbSloMessage" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="samlIbSloMessageId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="samlIdpEntityId" type="String" />
+		<column name="logoutRequestXml" type="String" />
+		<column name="samlIdpSessionIndex" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="SamlIdpSessionIndex" return-type="SamlIbSloMessage">
+			<finder-column name="samlIdpSessionIndex" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="SamlIdpSpConnection" remote-service="false">
 
 		<!-- PK fields -->
@@ -20,19 +43,19 @@
 
 		<!-- Other fields -->
 
+		<column name="samlSpEntityId" type="String" />
 		<column name="assertionLifetime" type="int" />
 		<column name="attributeNames" type="String" />
 		<column name="attributesEnabled" type="boolean" />
 		<column name="attributesNamespaceEnabled" type="boolean" />
 		<column name="enabled" type="boolean" />
 		<column name="encryptionForced" type="boolean" />
+		<column name="metadataUpdatedDate" type="Date" />
 		<column name="metadataUrl" type="String" />
 		<column name="metadataXml" type="String" />
-		<column name="metadataUpdatedDate" type="Date" />
 		<column name="name" type="String" />
 		<column name="nameIdAttribute" type="String" />
 		<column name="nameIdFormat" type="String" />
-		<column name="samlSpEntityId" type="String" />
 
 		<!-- Finder methods -->
 
@@ -92,6 +115,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="UserId" return-type="SamlIdpSsoSession">
+			<finder-column name="userId" />
+		</finder>
 		<finder name="LtCreateDate" return-type="Collection">
 			<finder-column comparator="&lt;" name="createDate" />
 		</finder>
@@ -108,19 +134,19 @@
 		<!-- Audit fields -->
 
 		<column name="companyId" type="long" />
-		<column name="createDate" type="Date" />
 		<column name="userId" type="long" />
 		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
 
 		<!-- Other fields -->
 
+		<column name="samlPeerEntityId" type="String" />
 		<column name="deleted" type="boolean" />
 		<column name="samlNameIdFormat" type="String" />
 		<column name="samlNameIdNameQualifier" type="String" />
 		<column name="samlNameIdSpNameQualifier" type="String" />
 		<column name="samlNameIdSpProvidedId" type="String" />
 		<column name="samlNameIdValue" type="String" />
-		<column name="samlPeerEntityId" type="String" />
 
 		<!-- Finder methods -->
 
@@ -129,11 +155,11 @@
 			<finder-column name="deleted" />
 			<finder-column name="samlNameIdValue" />
 		</finder>
-		<finder name="C_U_D_SPEI" return-type="Collection">
+		<finder name="C_U_SPEI_D" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="userId" />
-			<finder-column name="deleted" />
 			<finder-column name="samlPeerEntityId" />
+			<finder-column name="deleted" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="SamlSpAuthRequest" remote-service="false">
@@ -179,6 +205,7 @@
 
 		<!-- Other fields -->
 
+		<column name="samlIdpEntityId" type="String" />
 		<column name="assertionSignatureRequired" type="boolean" />
 		<column name="clockSkew" type="long" />
 		<column name="enabled" type="boolean" />
@@ -189,7 +216,6 @@
 		<column name="metadataXml" type="String" />
 		<column name="name" type="String" />
 		<column name="nameIdFormat" type="String" />
-		<column name="samlIdpEntityId" type="String" />
 		<column name="signAuthnRequest" type="boolean" />
 		<column name="unknownUsersAreStrangers" type="boolean" />
 		<column name="userAttributeMappings" type="String" />
@@ -216,8 +242,8 @@
 		<!-- Other fields -->
 
 		<column name="samlIdpEntityId" type="String" />
-		<column name="samlIdpResponseKey" type="String" />
 		<column name="expirationDate" type="Date" />
+		<column name="samlIdpResponseKey" type="String" />
 
 		<!-- Finder methods -->
 

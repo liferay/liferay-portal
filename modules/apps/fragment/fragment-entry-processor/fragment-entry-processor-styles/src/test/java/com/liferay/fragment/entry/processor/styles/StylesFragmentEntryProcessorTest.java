@@ -81,6 +81,12 @@ public class StylesFragmentEntryProcessorTest {
 
 		String html = "<div data-lfr-styles><span>Test</span>Fragment</div>";
 
+		Mockito.when(
+			fragmentEntryLink.getHtml()
+		).thenReturn(
+			html
+		);
+
 		Document document = _getDocument(html);
 
 		_stylesDocumentFragmentEntryProcessor.processFragmentEntryLinkHTML(

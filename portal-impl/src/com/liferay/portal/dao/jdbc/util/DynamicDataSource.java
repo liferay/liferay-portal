@@ -10,8 +10,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.spring.hibernate.SpringHibernateThreadLocalUtil;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.http.HttpSession;
 

@@ -16,7 +16,7 @@ $chartSeaGreen: #50D2A0;
 $criteriaSidebarWidth: 320px;
 $propertyGroupsColors: (
 	'account': $chartOrange,
-	'disabled': $white,
+	'disabled': $cadmin-white,
 	'event': $chartSeaGreen,
 	'individual': $chartBlue,
 	'interest': $chartRed,
@@ -37,8 +37,8 @@ $fieldGreen: #96DC7A;
  * Layout
  */
 $gridGap: 24px;
-$gridMaxPageWidth: map-get($grid-breakpoints, xl);
-$gridMaxPageWidthLg: map-get($grid-breakpoints, lg);
+$gridMaxPageWidth: map-get($cadmin-grid-breakpoints, xl);
+$gridMaxPageWidthLg: map-get($cadmin-grid-breakpoints, lg);
 $maxGridItems: 4;
 $maxGridItemsMd: 3;
 $maxGridItemsSm: 2;

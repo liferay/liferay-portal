@@ -173,6 +173,10 @@ public class EditAssetCategoryCPDisplayLayoutMVCActionCommand
 			}
 		}
 
+		if (classPKs.isEmpty()) {
+			throw new CPDisplayLayoutEntryException();
+		}
+
 		String layoutPageTemplateEntryUuid = ParamUtil.getString(
 			actionRequest, "layoutPageTemplateEntryUuid");
 		String layoutUuid = ParamUtil.getString(actionRequest, "layoutUuid");
@@ -183,10 +187,6 @@ public class EditAssetCategoryCPDisplayLayoutMVCActionCommand
 				layoutUuid);
 		}
 		else {
-			if (classPKs.isEmpty()) {
-				throw new CPDisplayLayoutEntryException();
-			}
-
 			long commerceChannelId = ParamUtil.getLong(
 				actionRequest, "commerceChannelId");
 

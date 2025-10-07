@@ -107,20 +107,12 @@ public class TestrayUtil {
 			));
 	}
 
-	public static String interpolateParams(List<Object> params, String values) {
+	public static String interpolateParams(
+		List<Object> params, Object[] values) {
+
 		StringBundler sb = new StringBundler();
 
-		Object[] valuesObjectArray = null;
-
-		if (Validator.isNotNull(StringUtil.extractDigits(values))) {
-			valuesObjectArray = ArrayUtil.toLongArray(
-				StringUtil.split(values, ",", 0L));
-		}
-		else {
-			valuesObjectArray = StringUtil.split(values);
-		}
-
-		for (Object value : valuesObjectArray) {
+		for (Object value : values) {
 			sb.append("? ");
 			sb.append(", ");
 
@@ -139,6 +131,20 @@ public class TestrayUtil {
 		sb.setIndex(sb.index() - 1);
 
 		return sb.toString();
+	}
+
+	public static String interpolateParams(List<Object> params, String values) {
+		Object[] valuesObjectArray = null;
+
+		if (Validator.isNotNull(StringUtil.extractDigits(values))) {
+			valuesObjectArray = ArrayUtil.toLongArray(
+				StringUtil.split(values, ",", 0L));
+		}
+		else {
+			valuesObjectArray = StringUtil.split(values);
+		}
+
+		return interpolateParams(params, valuesObjectArray);
 	}
 
 }

@@ -132,11 +132,11 @@ public class AccountEntryServiceUtil {
 			externalReferenceCode, companyId);
 	}
 
-	public static AccountEntry getOrAddIncompleteAccountEntry(
+	public static AccountEntry getOrAddEmptyAccountEntry(
 			String externalReferenceCode, String name, String type)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteAccountEntry(
+		return getService().getOrAddEmptyAccountEntry(
 			externalReferenceCode, name, type);
 	}
 

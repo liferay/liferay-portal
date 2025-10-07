@@ -159,11 +159,13 @@ public class SharingEntryServiceWrapper
 	public java.util.List<com.liferay.sharing.model.SharingEntry>
 			getSharingEntries(
 				long classNameId, long classPK, long groupId, int start,
-				int end)
+				int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.sharing.model.SharingEntry> orderByComparator)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _sharingEntryService.getSharingEntries(
-			classNameId, classPK, groupId, start, end);
+			classNameId, classPK, groupId, start, end, orderByComparator);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
+import {waitForAlert} from '../../utils/waitForAlert';
 
 export type TVocabularyCategory = {
 	categoryNames: string[];
@@ -55,6 +56,13 @@ export class DocumentLibraryPage {
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.documentLibrary}`
+		);
+	}
+
+	async waitForSuccessAlert() {
+		await waitForAlert(
+			this.page,
+			'Success:Your request completed successfully.'
 		);
 	}
 
@@ -114,6 +122,19 @@ export class DocumentLibraryPage {
 		await this.page.getByRole('button', {name: 'Delete'}).click();
 	}
 
+	async clickFileEntryAction(actionName: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: actionName,
+			}),
+			trigger: this.page.getByRole('button', {
+				name: 'Show Actions',
+			}),
+		});
+	}
+
 	async deleteDocumentType(name: string) {
 		await this.goto();
 		await this.changeTab('Document Types');
@@ -158,6 +179,21 @@ export class DocumentLibraryPage {
 			target: this.page.getByRole('menuitem', {
 				exact: true,
 				name: 'View History',
+			}),
+			trigger: this.page.getByRole('button', {name: 'Show Actions'}),
+		});
+	}
+
+	async goToShareFileEntry(entryTitle: string) {
+		await this.page
+			.getByRole('link', {exact: true, name: entryTitle})
+			.click();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: 'Share',
 			}),
 			trigger: this.page.getByRole('button', {name: 'Show Actions'}),
 		});

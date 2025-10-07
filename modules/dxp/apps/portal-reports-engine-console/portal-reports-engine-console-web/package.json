@@ -1,7 +1,16 @@
 {
 	"dependencies": {
 		"frontend-js-components-web": "*",
-		"frontend-js-web": "*"
+		"frontend-js-web": "*",
+		"react": "18.2.0"
+	},
+	"jest": {
+		"setupFiles": [
+			"<rootDir>/jest-setup.config.js"
+		],
+		"testMatch": [
+			"<rootDir>/src/main/resources/META-INF/resources/tests/**/*.spec.*"
+		]
 	},
 	"main": "js/index.js",
 	"name": "portal-reports-engine-console-web",
@@ -9,7 +18,8 @@
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
-		"format": "node-scripts format"
+		"format": "node-scripts format",
+		"test": "node-scripts test"
 	},
-	"version": "5.0.68"
+	"version": "5.0.69"
 }

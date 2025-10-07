@@ -14,7 +14,6 @@
 	"items": [
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#Z7P5",
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
@@ -22,6 +21,7 @@
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": true,
 			"enableObjectEntryVersioning": true,
 			"externalReferenceCode": "L_BASIC_DOCUMENT",
 			"label": {
@@ -49,12 +49,11 @@
 					"label": {
 						"en_US": "File"
 					},
-					"localized": false,
 					"name": "file",
 					"objectFieldSettings": [
 						{
 							"name": "acceptedFileExtensions",
-							"value": "jpeg, jpg, pdf, png"
+							"value": "*"
 						},
 						{
 							"name": "maximumFileSize",
@@ -73,7 +72,7 @@
 					"readOnlyConditionExpression": "",
 					"required": true,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "Long",
 					"unique": false
 				},
@@ -96,7 +95,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -117,7 +116,6 @@
 		},
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#H4T4",
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
@@ -125,6 +123,7 @@
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": true,
 			"enableObjectEntryVersioning": true,
 			"externalReferenceCode": "L_BASIC_WEB_CONTENT",
 			"label": {
@@ -177,7 +176,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -198,7 +197,6 @@
 		},
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#Y8H4",
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
@@ -206,6 +204,7 @@
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": true,
 			"enableObjectEntryVersioning": true,
 			"externalReferenceCode": "L_BLOG",
 			"label": {
@@ -252,7 +251,6 @@
 					"label": {
 						"en_US": "Cover Image"
 					},
-					"localized": false,
 					"name": "coverImage",
 					"objectFieldSettings": [
 						{
@@ -274,7 +272,6 @@
 					],
 					"readOnly": "false",
 					"readOnlyConditionExpression": "",
-					"required": true,
 					"state": false,
 					"system": false,
 					"type": "Long",
@@ -318,7 +315,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				}
@@ -338,8 +335,477 @@
 			"titleObjectFieldName": "title"
 		},
 		{
+			"className": "com.liferay.object.model.ObjectDefinition#P4T1",
+			"enableCategorization": true,
+			"externalReferenceCode": "L_BULK_ACTION_TASK",
+			"label": {
+				"en_US": "Bulk Action Task"
+			},
+			"modifiable": true,
+			"name": "BulkActionTask",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "ACTION_NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Action Name"
+					},
+					"name": "actionName",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "DateTime",
+					"businessType": "DateTime",
+					"externalReferenceCode": "COMPLETION_DATE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Completion Date"
+					},
+					"name": "completionDate",
+					"objectFieldSettings": [
+						{
+							"name": "timeStorage",
+							"value": "convertToUTC"
+						}
+					],
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "DateTime"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "initial",
+					"externalReferenceCode": "EXECUTION_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Execution Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
+					"name": "executionStatus",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Aggregation",
+					"externalReferenceCode": "NUMBER_OF_ITEMS",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Number of Items"
+					},
+					"name": "numberOfItems",
+					"objectFieldSettings": [
+						{
+							"name": "objectRelationshipName",
+							"value": "bulkActionTaskToBulkActionTaskItems"
+						},
+						{
+							"name": "function",
+							"value": "COUNT"
+						}
+					],
+					"readOnly": "true",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "NUMBER_OF_FAILED_ITEMS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Number of Failed Items"
+					},
+					"name": "numberOfFailedItems",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer"
+				},
+				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "NUMBER_OF_SUCCESSFUL_ITEMS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Number of Successful Items"
+					},
+					"name": "numberOfSuccessfulItems",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Integer"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "TYPE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Type"
+					},
+					"name": "type",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "prevent",
+					"edge": false,
+					"externalReferenceCode": "L_BULK_ACTION_TASK_TO_L_BULK_ACTION_TASK_ITEMS",
+					"label": {
+						"en_US": "Bulk Action Task to Bulk Action Task Items"
+					},
+					"name": "bulkActionTaskToBulkActionTaskItems",
+					"objectDefinitionExternalReferenceCode1": "L_BULK_ACTION_TASK",
+					"objectDefinitionExternalReferenceCode2": "L_BULK_ACTION_TASK_ITEM",
+					"objectDefinitionModifiable2": true,
+					"objectDefinitionName2": "BulkActionTaskItem",
+					"objectDefinitionScope2": "company",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"DBType": "Long",
+						"businessType": "Relationship",
+						"externalReferenceCode": "BULK_ACTION_TASK_TO_BULK_ACTION_TASK_ITEMS",
+						"indexed": true,
+						"indexedAsKeyword": false,
+						"label": {
+							"en_US": "Bulk Action Task to Bulk Action Task Items"
+						},
+						"name": "r_bulkActionTaskToBulkActionTaskItems_c_bulkActionTaskId",
+						"objectFieldSettings": [
+							{
+								"name": "objectDefinition1ShortName",
+								"value": "BulkActionTask"
+							},
+							{
+								"name": "objectRelationshipERCObjectFieldName",
+								"value": "r_bulkActionTaskToBulkActionTaskItems_c_bulkActionTaskERC"
+							}
+						],
+						"relationshipType": "oneToMany",
+						"required": false,
+						"state": false,
+						"system": true,
+						"type": "Long"
+					},
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
+					"system": true,
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Bulk Action Tasks"
+			},
+			"portlet": true,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "id"
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#S8R3",
+			"enableCategorization": true,
+			"externalReferenceCode": "L_BULK_ACTION_TASK_ITEM",
+			"label": {
+				"en_US": "Bulk Action Task Item"
+			},
+			"modifiable": true,
+			"name": "BulkActionTaskItem",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "CLASS_EXTERNAL_REFERENCE_CODE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Class External Reference Code"
+					},
+					"name": "classExternalReferenceCode",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "CLASS_PK",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Class PK"
+					},
+					"name": "classPK",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"name": "description",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Clob"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "initial",
+					"externalReferenceCode": "EXECUTION_STATUS",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Execution Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_BULK_ACTION_EXECUTION_STATUSES",
+					"name": "executionStatus",
+					"required": true,
+					"state": true,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"externalReferenceCode": "IMPORT_TASK_ID",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Import Task ID"
+					},
+					"name": "importTaskId",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"name": "name",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "TYPE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Type"
+					},
+					"name": "type",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				}
+			],
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Bulk Action Task Items"
+			},
+			"portlet": true,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true,
+			"titleObjectFieldName": "id"
+		},
+		{
+			"className": "com.liferay.object.model.ObjectDefinition#S5M4",
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": false,
+			"enableLocalization": true,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "L_CMS_DEFAULT_PERMISSION",
+			"label": {
+				"en_US": "CMS Default Permission"
+			},
+			"modifiable": true,
+			"name": "CMSDefaultPermission",
+			"objectActions": [
+			],
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"externalReferenceCode": "CLASS_EXTERNAL_REFERENCE_CODE",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Class External Reference Code"
+					},
+					"name": "classExternalReferenceCode",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"externalReferenceCode": "CLASS_NAME",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Class Name"
+					},
+					"name": "className",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"defaultValue": "null",
+					"externalReferenceCode": "DEFAULT_PERMISSIONS",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Default Permissions"
+					},
+					"name": "defaultPermissions",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "Clob",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "LongInteger",
+					"defaultValue": "null",
+					"externalReferenceCode": "DEPOT_GROUP_ID",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Depot Group ID"
+					},
+					"localized": false,
+					"name": "depotGroupId",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"externalReferenceCode": "TREE_PATH",
+					"indexed": false,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Tree Path"
+					},
+					"localized": false,
+					"name": "treePath",
+					"readOnly": "false",
+					"readOnlyConditionExpression": "",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"objectFolderExternalReferenceCode": "L_CMS_CONTENT_SETTINGS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "CMS Default Permissions"
+			},
+			"portlet": false,
+			"scope": "company",
+			"status": {
+				"code": 0
+			},
+			"system": true
+		},
+		{
 			"className": "com.liferay.object.model.ObjectDefinition#S1T1",
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableFriendlyURLCustomization": true,
@@ -347,6 +813,7 @@
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
 			"enableObjectEntryHistory": true,
+			"enableObjectEntrySchedule": true,
 			"enableObjectEntryVersioning": true,
 			"externalReferenceCode": "L_EXTERNAL_VIDEO",
 			"label": {
@@ -378,7 +845,7 @@
 					"readOnlyConditionExpression": "",
 					"required": false,
 					"state": false,
-					"system": false,
+					"system": true,
 					"type": "String",
 					"unique": false
 				},
@@ -409,87 +876,6 @@
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "External Videos"
-			},
-			"portlet": false,
-			"scope": "depot",
-			"status": {
-				"code": 0
-			},
-			"system": true,
-			"titleObjectFieldName": "title"
-		},
-		{
-			"className": "com.liferay.object.model.ObjectDefinition#H6H2",
-			"defaultLanguageId": "en_US",
-			"enableCategorization": true,
-			"enableComments": true,
-			"enableFriendlyURLCustomization": true,
-			"enableIndexSearch": true,
-			"enableLocalization": true,
-			"enableObjectEntryDraft": true,
-			"enableObjectEntryHistory": true,
-			"enableObjectEntryVersioning": true,
-			"externalReferenceCode": "L_KNOWLEDGE_BASE",
-			"label": {
-				"en_US": "Knowledge Base"
-			},
-			"modifiable": true,
-			"name": "KnowledgeBase",
-			"objectDefinitionSettings": [
-				{
-					"name": "acceptAllGroups",
-					"value": "true"
-				}
-			],
-			"objectFields": [
-				{
-					"DBType": "Clob",
-					"businessType": "RichText",
-					"defaultValue": "null",
-					"externalReferenceCode": "Content",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Content"
-					},
-					"localized": true,
-					"name": "content",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "Clob",
-					"unique": false
-				},
-				{
-					"DBType": "String",
-					"businessType": "Text",
-					"defaultValue": "null",
-					"externalReferenceCode": "TITLE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
-					"label": {
-						"en_US": "Title"
-					},
-					"localized": true,
-					"name": "title",
-					"readOnly": "false",
-					"readOnlyConditionExpression": "",
-					"required": false,
-					"state": false,
-					"system": false,
-					"type": "String",
-					"unique": false
-				}
-			],
-			"objectFolderExternalReferenceCode": "L_CMS_CONTENT_STRUCTURES",
-			"panelCategoryKey": "",
-			"parameterRequired": false,
-			"pluralLabel": {
-				"en_US": "Knowledge Bases"
 			},
 			"portlet": false,
 			"scope": "depot",

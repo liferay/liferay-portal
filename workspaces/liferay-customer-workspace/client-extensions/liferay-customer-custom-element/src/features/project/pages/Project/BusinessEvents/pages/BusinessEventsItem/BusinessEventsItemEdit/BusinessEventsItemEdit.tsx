@@ -58,7 +58,7 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 	setFieldValue,
 	values,
 }) => {
-	const {client} = useAppPropertiesContext();
+	const {client, featureFlags} = useAppPropertiesContext();
 
 	const [{project, subscriptionGroups}] = useAppContext();
 
@@ -99,6 +99,7 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 	const {isSaasOnly} = useIsSaasOnly(subscriptionGroups);
 
 	const {loading: loadingTickets, tickets} = useAccountsTickets(
+		originalBusinessEvent,
 		project?.accountKey || ''
 	);
 
@@ -253,8 +254,10 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 
 	useEffect(() => {
 		if (hasImpactingEvents === 'yes') {
-			const selectedTickets = selectedTicketOptions.map(
-				(ticket) => ticket.ticketId
+			const selectedTickets = selectedTicketOptions.map((ticket) =>
+				featureFlags.includes('LRSD-8280')
+					? `"${ticket.ticketId}"`
+					: ticket.ticketId
 			);
 
 			setFieldValue(
@@ -265,7 +268,12 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 		else {
 			setFieldValue('businessEvent.associatedTickets', '[]');
 		}
-	}, [hasImpactingEvents, selectedTicketOptions, setFieldValue]);
+	}, [
+		featureFlags,
+		hasImpactingEvents,
+		selectedTicketOptions,
+		setFieldValue,
+	]);
 
 	useEffect(() => {
 		setFieldValue(
@@ -382,10 +390,10 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 			setTicketOptions([
 				...tickets
 					?.filter((ticket) => {
-						return (
-							ticket.status !== 'closed' &&
-							ticket.status !== 'solved'
-						);
+						return featureFlags.includes('LRSD-8280')
+							? true
+							: ticket.status !== 'closed' &&
+									ticket.status !== 'solved';
 					})
 					.map((ticket) =>
 						associatedTickets.includes(ticket.ticketId)
@@ -404,7 +412,7 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 				handleRadioChange('yes');
 			}
 		}
-	}, [originalBusinessEvent, tickets]);
+	}, [featureFlags, originalBusinessEvent, tickets]);
 
 	useEffect(() => {
 		const hasCurrentLiferayVersion =
@@ -535,6 +543,7 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 						<BusinessEventsConfirmationPage
 							handleSubmit={handleSubmit}
 							headerTitle={businessEvent.name!}
+							isLoadingSubmitButton={isLoadingSubmitButton}
 							message={i18n.translate(
 								'we-understand-that-plans-change-please-let-us-know-why-the-target-go-live-date-for-this-event-is-being-updated'
 							)}
@@ -583,7 +592,7 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 											className="mx-3"
 											groupStyle="pb-1"
 											label={i18n.translate('event-type')}
-											link="https://help.liferay.com/hc/articles/36002102323597"
+											link="https://support.liferay.com/w/business-events"
 											name="businessEvent.eventType.key"
 											onChange={(value: string) =>
 												handleOptionChange(
@@ -839,7 +848,10 @@ const BusinessEventsItemEditPage: React.FC<IProps> = ({
 				dangerouslySetInnerHTML={{
 					__html: i18n.sub(
 						'we-apologize-for-the-inconvenience-but-we-ve-detected-a-system-error-with-this-project',
-						['<a href="https://help.liferay.com">', '</a>']
+						[
+							'<a href="https://liferay.atlassian.net/servicedesk/customer/portals">',
+							'</a>',
+						]
 					),
 				}}
 			/>

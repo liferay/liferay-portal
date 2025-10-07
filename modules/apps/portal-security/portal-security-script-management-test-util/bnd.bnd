@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Script Management Test Utilities
 Bundle-SymbolicName: com.liferay.portal.security.script.management.test.util
-Bundle-Version: 2.0.3
+Bundle-Version: 2.0.4
 Export-Package:\
 	com.liferay.portal.security.script.management.test.rule,\
 	com.liferay.portal.security.script.management.test.util

@@ -56,6 +56,7 @@ public class ObjectDefinitionWrapper
 		attributes.put("dbTableName", getDBTableName());
 		attributes.put("enableCategorization", isEnableCategorization());
 		attributes.put("enableComments", isEnableComments());
+		attributes.put("enableFormContainer", isEnableFormContainer());
 		attributes.put(
 			"enableFriendlyURLCustomization",
 			isEnableFriendlyURLCustomization());
@@ -64,6 +65,10 @@ public class ObjectDefinitionWrapper
 		attributes.put("enableObjectEntryDraft", isEnableObjectEntryDraft());
 		attributes.put(
 			"enableObjectEntryHistory", isEnableObjectEntryHistory());
+		attributes.put(
+			"enableObjectEntrySchedule", isEnableObjectEntrySchedule());
+		attributes.put(
+			"enableObjectEntrySubscription", isEnableObjectEntrySubscription());
 		attributes.put(
 			"enableObjectEntryVersioning", isEnableObjectEntryVersioning());
 		attributes.put("friendlyURLSeparator", getFriendlyURLSeparator());
@@ -208,6 +213,13 @@ public class ObjectDefinitionWrapper
 			setEnableComments(enableComments);
 		}
 
+		Boolean enableFormContainer = (Boolean)attributes.get(
+			"enableFormContainer");
+
+		if (enableFormContainer != null) {
+			setEnableFormContainer(enableFormContainer);
+		}
+
 		Boolean enableFriendlyURLCustomization = (Boolean)attributes.get(
 			"enableFriendlyURLCustomization");
 
@@ -241,6 +253,20 @@ public class ObjectDefinitionWrapper
 
 		if (enableObjectEntryHistory != null) {
 			setEnableObjectEntryHistory(enableObjectEntryHistory);
+		}
+
+		Boolean enableObjectEntrySchedule = (Boolean)attributes.get(
+			"enableObjectEntrySchedule");
+
+		if (enableObjectEntrySchedule != null) {
+			setEnableObjectEntrySchedule(enableObjectEntrySchedule);
+		}
+
+		Boolean enableObjectEntrySubscription = (Boolean)attributes.get(
+			"enableObjectEntrySubscription");
+
+		if (enableObjectEntrySubscription != null) {
+			setEnableObjectEntrySubscription(enableObjectEntrySubscription);
 		}
 
 		Boolean enableObjectEntryVersioning = (Boolean)attributes.get(
@@ -469,6 +495,16 @@ public class ObjectDefinitionWrapper
 	}
 
 	/**
+	 * Returns the enable form container of this object definition.
+	 *
+	 * @return the enable form container of this object definition
+	 */
+	@Override
+	public boolean getEnableFormContainer() {
+		return model.getEnableFormContainer();
+	}
+
+	/**
 	 * Returns the enable friendly url customization of this object definition.
 	 *
 	 * @return the enable friendly url customization of this object definition
@@ -516,6 +552,26 @@ public class ObjectDefinitionWrapper
 	@Override
 	public boolean getEnableObjectEntryHistory() {
 		return model.getEnableObjectEntryHistory();
+	}
+
+	/**
+	 * Returns the enable object entry schedule of this object definition.
+	 *
+	 * @return the enable object entry schedule of this object definition
+	 */
+	@Override
+	public boolean getEnableObjectEntrySchedule() {
+		return model.getEnableObjectEntrySchedule();
+	}
+
+	/**
+	 * Returns the enable object entry subscription of this object definition.
+	 *
+	 * @return the enable object entry subscription of this object definition
+	 */
+	@Override
+	public boolean getEnableObjectEntrySubscription() {
+		return model.getEnableObjectEntrySubscription();
 	}
 
 	/**
@@ -847,11 +903,6 @@ public class ObjectDefinitionWrapper
 		return model.getPortletId();
 	}
 
-	@Override
-	public String getPreviousRESTContextPath() {
-		return model.getPreviousRESTContextPath();
-	}
-
 	/**
 	 * Returns the primary key of this object definition.
 	 *
@@ -880,6 +931,11 @@ public class ObjectDefinitionWrapper
 	@Override
 	public long getRootObjectDefinitionId() {
 		return model.getRootObjectDefinitionId();
+	}
+
+	@Override
+	public long[] getRootObjectDefinitionIds() {
+		return model.getRootObjectDefinitionIds();
 	}
 
 	/**
@@ -1038,6 +1094,16 @@ public class ObjectDefinitionWrapper
 	}
 
 	/**
+	 * Returns <code>true</code> if this object definition is enable form container.
+	 *
+	 * @return <code>true</code> if this object definition is enable form container; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isEnableFormContainer() {
+		return model.isEnableFormContainer();
+	}
+
+	/**
 	 * Returns <code>true</code> if this object definition is enable friendly url customization.
 	 *
 	 * @return <code>true</code> if this object definition is enable friendly url customization; <code>false</code> otherwise
@@ -1088,6 +1154,26 @@ public class ObjectDefinitionWrapper
 	}
 
 	/**
+	 * Returns <code>true</code> if this object definition is enable object entry schedule.
+	 *
+	 * @return <code>true</code> if this object definition is enable object entry schedule; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isEnableObjectEntrySchedule() {
+		return model.isEnableObjectEntrySchedule();
+	}
+
+	/**
+	 * Returns <code>true</code> if this object definition is enable object entry subscription.
+	 *
+	 * @return <code>true</code> if this object definition is enable object entry subscription; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isEnableObjectEntrySubscription() {
+		return model.isEnableObjectEntrySubscription();
+	}
+
+	/**
 	 * Returns <code>true</code> if this object definition is enable object entry versioning.
 	 *
 	 * @return <code>true</code> if this object definition is enable object entry versioning; <code>false</code> otherwise
@@ -1117,11 +1203,6 @@ public class ObjectDefinitionWrapper
 		return model.isModifiableAndSystem();
 	}
 
-	@Override
-	public boolean isNodeCandidate() {
-		return model.isNodeCandidate();
-	}
-
 	/**
 	 * Returns <code>true</code> if this object definition is portlet.
 	 *
@@ -1135,6 +1216,11 @@ public class ObjectDefinitionWrapper
 	@Override
 	public boolean isRootDescendantNode() {
 		return model.isRootDescendantNode();
+	}
+
+	@Override
+	public boolean isRootDescendantNode(long rootObjectDefinitionId) {
+		return model.isRootDescendantNode(rootObjectDefinitionId);
 	}
 
 	@Override
@@ -1281,6 +1367,16 @@ public class ObjectDefinitionWrapper
 	}
 
 	/**
+	 * Sets whether this object definition is enable form container.
+	 *
+	 * @param enableFormContainer the enable form container of this object definition
+	 */
+	@Override
+	public void setEnableFormContainer(boolean enableFormContainer) {
+		model.setEnableFormContainer(enableFormContainer);
+	}
+
+	/**
 	 * Sets whether this object definition is enable friendly url customization.
 	 *
 	 * @param enableFriendlyURLCustomization the enable friendly url customization of this object definition
@@ -1330,6 +1426,30 @@ public class ObjectDefinitionWrapper
 	@Override
 	public void setEnableObjectEntryHistory(boolean enableObjectEntryHistory) {
 		model.setEnableObjectEntryHistory(enableObjectEntryHistory);
+	}
+
+	/**
+	 * Sets whether this object definition is enable object entry schedule.
+	 *
+	 * @param enableObjectEntrySchedule the enable object entry schedule of this object definition
+	 */
+	@Override
+	public void setEnableObjectEntrySchedule(
+		boolean enableObjectEntrySchedule) {
+
+		model.setEnableObjectEntrySchedule(enableObjectEntrySchedule);
+	}
+
+	/**
+	 * Sets whether this object definition is enable object entry subscription.
+	 *
+	 * @param enableObjectEntrySubscription the enable object entry subscription of this object definition
+	 */
+	@Override
+	public void setEnableObjectEntrySubscription(
+		boolean enableObjectEntrySubscription) {
+
+		model.setEnableObjectEntrySubscription(enableObjectEntrySubscription);
 	}
 
 	/**
@@ -1612,11 +1732,6 @@ public class ObjectDefinitionWrapper
 		model.setPortlet(portlet);
 	}
 
-	@Override
-	public void setPreviousRESTContextPath(String previousRESTContextPath) {
-		model.setPreviousRESTContextPath(previousRESTContextPath);
-	}
-
 	/**
 	 * Sets the primary key of this object definition.
 	 *
@@ -1625,11 +1740,6 @@ public class ObjectDefinitionWrapper
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		model.setPrimaryKey(primaryKey);
-	}
-
-	@Override
-	public void setRootObjectDefinitionId(long rootObjectDefinitionId) {
-		model.setRootObjectDefinitionId(rootObjectDefinitionId);
 	}
 
 	/**

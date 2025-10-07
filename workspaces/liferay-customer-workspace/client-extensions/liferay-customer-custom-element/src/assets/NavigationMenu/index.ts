@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export * from './ActivationIconGray';
 export * from './AnalyticsIcon';
 export * from './AnalyticsIconGray';
 export * from '../AttachmentsIcon';
@@ -26,6 +27,5 @@ export * from './PortalIcon';
 export * from './PortalIconGray';
 export * from './ProjectUsageIcon';
 export * from './ProjectUsageIconGray';
-export * from './ProductActivationIconGray';
 export * from './TeamMembersIcon';
 export * from './TeamMembersIconGray';

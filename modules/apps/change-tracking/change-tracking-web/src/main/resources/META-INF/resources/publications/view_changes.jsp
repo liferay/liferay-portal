@@ -15,7 +15,6 @@ if (!user.isOnDemandUser()) {
 	portletDisplay.setShowBackIcon(true);
 }
 else {
-	portletDisplay.setBeta(true);
 	portletDisplay.setShowBackIcon(false);
 }
 
@@ -54,6 +53,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "review-changes"));
 			id="<%= PublicationsFDSNames.PUBLICATIONS_CHANGES %>"
 			selectedItemsKey="id"
 			selectionType="multiple"
+			style="fluid"
 		/>
 	</aui:form>
 </div>

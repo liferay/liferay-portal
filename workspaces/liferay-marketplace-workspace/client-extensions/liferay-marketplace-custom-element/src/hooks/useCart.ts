@@ -41,12 +41,14 @@ const useCart = ({
 			dispatch({payload: payload as any, type: 'SET_CART_ITEMS'}),
 		[dispatch]
 	);
+	const currencyCode = Liferay.CommerceContext.currency.currencyCode;
 
 	const addCart = async (productId: number, skuId: number) => {
 		if (!cartId) {
 			const response = await createCart({
 				accountId,
 				channelId,
+				currencyCode,
 				orderTypeExternalReferenceCode:
 					orderType?.externalReferenceCode as string,
 			});

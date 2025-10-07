@@ -1421,6 +1421,11 @@ public class UserWrapper
 		return model.isGuestUser();
 	}
 
+	@Override
+	public boolean isLayoutsUpdated() {
+		return model.isLayoutsUpdated();
+	}
+
 	/**
 	 * Returns <code>true</code> if this user is lockout.
 	 *
@@ -1736,6 +1741,11 @@ public class UserWrapper
 	@Override
 	public void setLastName(String lastName) {
 		model.setLastName(lastName);
+	}
+
+	@Override
+	public void setLayoutsUpdated(boolean layoutsUpdated) {
+		model.setLayoutsUpdated(layoutsUpdated);
 	}
 
 	/**

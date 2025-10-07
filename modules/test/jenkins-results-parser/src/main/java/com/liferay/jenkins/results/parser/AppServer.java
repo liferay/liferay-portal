@@ -154,16 +154,10 @@ public class AppServer {
 	}
 
 	private String _getReadLiferayLogCommand() {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(2);
 
-		sb.append("#!/bin/bash\n");
-
-		sb.append("while [ ! -f logs/liferay.*.log ]\n");
-		sb.append("do\n");
-		sb.append("sleep 1;\n");
-		sb.append("done\n");
-
-		sb.append("tail -f logs/liferay.*.log;");
+		sb.append("#!/bin/bash\nwhile [ ! -f logs/liferay.*.log ]\ndo\nsleep ");
+		sb.append("1;\ndone\ntail -f logs/liferay.*.log;");
 
 		File file = new File(_getAppServerParentDir(), "read_liferay_log.sh");
 

@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"ckeditor5": "44.3.0",
+		"ckeditor5": "46.0.2",
 		"frontend-editor-ckeditor-web": "*",
 		"react": "18.2.0"
 	},

@@ -25,6 +25,7 @@
 			Analytics.send('VOTE', 'Ratings', {
 				className: event.className,
 				classPK: event.classPK,
+				externalReferenceCode: event.externalReferenceCode,
 				ratingType: event.ratingType,
 				score: event.score,
 				title,

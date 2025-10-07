@@ -8,11 +8,11 @@ package com.liferay.configuration.admin.web.internal.display.context;
 import com.liferay.configuration.admin.menu.ConfigurationMenuItem;
 import com.liferay.configuration.admin.web.internal.constants.ConfigurationAdminWebKeys;
 import com.liferay.configuration.admin.web.internal.model.ConfigurationModel;
+import com.liferay.configuration.admin.web.internal.util.ConfigurationPIDUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -54,8 +54,26 @@ public class EditConfigurationDisplayContext {
 			dropdownItem -> {
 				dropdownItem.putData("action", "delete");
 
-				PortletURL currentURL = PortletURLUtil.getCurrent(
-					_renderRequest, _renderResponse);
+				PortletURL portletURL = PortletURLBuilder.createRenderURL(
+					_renderResponse
+				).setParameter(
+					"factoryPid", _configurationModel.getFactoryPid()
+				).buildPortletURL();
+
+				if (_configurationModel.isFactory()) {
+					portletURL.setParameter(
+						"mvcRenderCommandName",
+						"/configuration_admin/view_factory_instances");
+				}
+				else {
+					portletURL.setParameter(
+						"mvcRenderCommandName",
+						"/configuration_admin/edit_configuration");
+					portletURL.setParameter(
+						"pid",
+						ConfigurationPIDUtil.getUnscopedPid(
+							_configurationModel.getID()));
+				}
 
 				dropdownItem.putData(
 					"deleteConfigActionURL",
@@ -64,7 +82,7 @@ public class EditConfigurationDisplayContext {
 					).setActionName(
 						"/configuration_admin/delete_configuration"
 					).setRedirect(
-						currentURL
+						portletURL
 					).setParameter(
 						"factoryPid", _configurationModel.getFactoryPid()
 					).setParameter(

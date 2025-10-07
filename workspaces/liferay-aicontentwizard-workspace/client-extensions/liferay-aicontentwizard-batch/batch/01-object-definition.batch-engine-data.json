@@ -13,7 +13,6 @@
 		{
 			"accountEntryRestricted": false,
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableObjectEntryHistory": true,

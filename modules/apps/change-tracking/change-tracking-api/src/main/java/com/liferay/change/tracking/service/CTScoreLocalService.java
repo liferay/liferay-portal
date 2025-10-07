@@ -98,8 +98,7 @@ public interface CTScoreLocalService
 			)
 		}
 	)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public CTScore decrementScore(long ctCollectionId, long modelClassNameId);
+	public CTScore decrementScore(long ctCollectionId, int score);
 
 	/**
 	 * Deletes the ct score from the database. Also notifies the appropriate model listeners.
@@ -276,8 +275,7 @@ public interface CTScoreLocalService
 			)
 		}
 	)
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public CTScore incrementScore(long ctCollectionId, long modelClassNameId);
+	public CTScore incrementScore(long ctCollectionId, int score);
 
 	/**
 	 * Updates the ct score in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.

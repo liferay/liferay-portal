@@ -6,4 +6,5 @@
 export const config = {
 	name: 'layout-admin-web.main',
 	testDir: 'tests/layout-admin-web/main',
+	timeout: 90 * 1000,
 };

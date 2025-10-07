@@ -17,6 +17,7 @@ export class ContentSecurityPolicyPage {
 	readonly enabled: Locator;
 	readonly newExcludedPaths: Locator;
 	readonly page: Page;
+	readonly reportOnly: Locator;
 	readonly resetDefaultValues: Locator;
 	readonly saveButton: Locator;
 	readonly updateButton: Locator;
@@ -31,6 +32,7 @@ export class ContentSecurityPolicyPage {
 		this.enabled = page.getByLabel('Enabled');
 		this.newExcludedPaths = page.locator('textarea:empty');
 		this.page = page;
+		this.reportOnly = page.getByLabel('Report Only');
 		this.resetDefaultValues = page.getByText('Reset Default Values');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.updateButton = page.getByRole('button', {name: 'Update'});
@@ -74,10 +76,17 @@ export class ContentSecurityPolicyPage {
 		await this.enabled.waitFor();
 	}
 
-	async gotoAndConfigurePolicy(policy: string) {
+	async gotoAndConfigurePolicy(
+		policy: string,
+		isReportOnly: boolean = false
+	) {
 		await this.goto();
 
 		await this.setPolicy(policy);
+
+		if (!isReportOnly) {
+			await this.reportOnly.uncheck();
+		}
 
 		await this.enableCSP();
 	}

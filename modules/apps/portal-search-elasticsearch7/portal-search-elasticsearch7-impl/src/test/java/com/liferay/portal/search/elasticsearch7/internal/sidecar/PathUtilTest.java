@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.util.Objects;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,9 +48,10 @@ public class PathUtilTest {
 	public void testCopyDirectory() throws Exception {
 		Path fromPath = _getResourcePath("root");
 
-		Path excludedPaths = _getResourcePath("root/excluded");
-
-		PathUtil.copyDirectory(fromPath, _toPath, excludedPaths);
+		PathUtil.copyDirectory(
+			fromPath, _toPath,
+			dir -> Objects.equals(
+				String.valueOf(dir.getFileName()), "excluded"));
 
 		_assertExists(_toPath, "directory1/file1.txt");
 		_assertExists(_toPath, "directory2/file2.txt");

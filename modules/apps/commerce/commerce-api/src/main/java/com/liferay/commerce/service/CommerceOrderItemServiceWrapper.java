@@ -223,6 +223,30 @@ public class CommerceOrderItemServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.commerce.model.CommerceOrderItem>
+			getParentCommerceOrderItems(
+				long commerceOrderId, long parentCommerceOrderItemId, int start,
+				int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.commerce.model.CommerceOrderItem>
+						orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderItemService.getParentCommerceOrderItems(
+			commerceOrderId, parentCommerceOrderItemId, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public int getParentCommerceOrderItemsCount(
+			long commerceOrderId, long parentCommerceOrderItemId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderItemService.getParentCommerceOrderItemsCount(
+			commerceOrderId, parentCommerceOrderItemId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.commerce.model.CommerceOrderItem>
 			getSupplierCommerceOrderItems(
 				long customerCommerceOrderItemId, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {

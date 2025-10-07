@@ -55,17 +55,9 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"advancedStylingConfig\": ");
 
-			if (widgetLookAndFeelConfig.getAdvancedStylingConfig() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)widgetLookAndFeelConfig.getAdvancedStylingConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getAdvancedStylingConfig());
-			}
+			sb.append(
+				String.valueOf(
+					widgetLookAndFeelConfig.getAdvancedStylingConfig()));
 		}
 
 		if (widgetLookAndFeelConfig.getBackgroundStylesConfig() != null) {
@@ -75,18 +67,9 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"backgroundStylesConfig\": ");
 
-			if (widgetLookAndFeelConfig.getBackgroundStylesConfig() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)
-						widgetLookAndFeelConfig.getBackgroundStylesConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getBackgroundStylesConfig());
-			}
+			sb.append(
+				String.valueOf(
+					widgetLookAndFeelConfig.getBackgroundStylesConfig()));
 		}
 
 		if (widgetLookAndFeelConfig.getBorderStylesConfig() != null) {
@@ -96,17 +79,9 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"borderStylesConfig\": ");
 
-			if (widgetLookAndFeelConfig.getBorderStylesConfig() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)widgetLookAndFeelConfig.getBorderStylesConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getBorderStylesConfig());
-			}
+			sb.append(
+				String.valueOf(
+					widgetLookAndFeelConfig.getBorderStylesConfig()));
 		}
 
 		if (widgetLookAndFeelConfig.getGeneralConfig() != null) {
@@ -116,14 +91,8 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"generalConfig\": ");
 
-			if (widgetLookAndFeelConfig.getGeneralConfig() instanceof String) {
-				sb.append("\"");
-				sb.append((String)widgetLookAndFeelConfig.getGeneralConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getGeneralConfig());
-			}
+			sb.append(
+				String.valueOf(widgetLookAndFeelConfig.getGeneralConfig()));
 		}
 
 		if (widgetLookAndFeelConfig.getMarginAndPaddingConfig() != null) {
@@ -133,18 +102,9 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"marginAndPaddingConfig\": ");
 
-			if (widgetLookAndFeelConfig.getMarginAndPaddingConfig() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)
-						widgetLookAndFeelConfig.getMarginAndPaddingConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getMarginAndPaddingConfig());
-			}
+			sb.append(
+				String.valueOf(
+					widgetLookAndFeelConfig.getMarginAndPaddingConfig()));
 		}
 
 		if (widgetLookAndFeelConfig.getTextStylesConfig() != null) {
@@ -154,17 +114,8 @@ public class WidgetLookAndFeelConfigSerDes {
 
 			sb.append("\"textStylesConfig\": ");
 
-			if (widgetLookAndFeelConfig.getTextStylesConfig() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)widgetLookAndFeelConfig.getTextStylesConfig());
-				sb.append("\"");
-			}
-			else {
-				sb.append(widgetLookAndFeelConfig.getTextStylesConfig());
-			}
+			sb.append(
+				String.valueOf(widgetLookAndFeelConfig.getTextStylesConfig()));
 		}
 
 		sb.append("}");
@@ -300,7 +251,8 @@ public class WidgetLookAndFeelConfigSerDes {
 			if (Objects.equals(jsonParserFieldName, "advancedStylingConfig")) {
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setAdvancedStylingConfig(
-						(Object)jsonParserFieldValue);
+						AdvancedStylingConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(
@@ -308,7 +260,8 @@ public class WidgetLookAndFeelConfigSerDes {
 
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setBackgroundStylesConfig(
-						(Object)jsonParserFieldValue);
+						BackgroundStylesConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(
@@ -316,13 +269,15 @@ public class WidgetLookAndFeelConfigSerDes {
 
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setBorderStylesConfig(
-						(Object)jsonParserFieldValue);
+						BorderStylesConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "generalConfig")) {
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setGeneralConfig(
-						(Object)jsonParserFieldValue);
+						GeneralConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(
@@ -330,13 +285,15 @@ public class WidgetLookAndFeelConfigSerDes {
 
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setMarginAndPaddingConfig(
-						(Object)jsonParserFieldValue);
+						MarginAndPaddingConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "textStylesConfig")) {
 				if (jsonParserFieldValue != null) {
 					widgetLookAndFeelConfig.setTextStylesConfig(
-						(Object)jsonParserFieldValue);
+						TextStylesConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}

@@ -33,23 +33,34 @@ import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.headless.commerce.admin.order.client.custom.field.CustomField;
+import com.liferay.headless.commerce.admin.order.client.custom.field.CustomValue;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.OrderItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
+
+import java.text.DateFormat;
 
 import java.util.List;
 
@@ -169,27 +180,20 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 		super.testGraphQLDeleteOrderItem();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteOrderItemByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLDeleteOrderItemByExternalReferenceCode();
+	}
+
 	@Override
 	@Test
 	public void testPatchOrderItem() throws Exception {
-		OrderItem postOrderItem = orderItemResource.postOrderIdOrderItem(
-			_commerceOrder.getCommerceOrderId(), randomPatchOrderItem());
-
-		OrderItem randomPatchOrderItem = randomPatchOrderItem();
-
-		orderItemResource.patchOrderItem(
-			postOrderItem.getId(), randomPatchOrderItem);
-
-		OrderItem expectedPatchOrderItem = postOrderItem.clone();
-
-		BaseOrderResourceTestCase.BeanTestUtil.copyProperties(
-			randomPatchOrderItem, expectedPatchOrderItem);
-
-		OrderItem getOrderItem = orderItemResource.getOrderItem(
-			postOrderItem.getId());
-
-		assertEquals(expectedPatchOrderItem, getOrderItem);
-		assertValid(getOrderItem);
+		_testPatchOrderItemById();
+		_testPatchOrderItemWithCustomDateField();
 	}
 
 	@Ignore
@@ -448,10 +452,72 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 		};
 	}
 
+	private void _testPatchOrderItemById() throws Exception {
+		OrderItem postOrderItem = orderItemResource.postOrderIdOrderItem(
+			_commerceOrder.getCommerceOrderId(), randomPatchOrderItem());
+
+		OrderItem randomPatchOrderItem = randomPatchOrderItem();
+
+		orderItemResource.patchOrderItem(
+			postOrderItem.getId(), randomPatchOrderItem);
+
+		OrderItem expectedPatchOrderItem = postOrderItem.clone();
+
+		BaseOrderResourceTestCase.BeanTestUtil.copyProperties(
+			randomPatchOrderItem, expectedPatchOrderItem);
+
+		OrderItem getOrderItem = orderItemResource.getOrderItem(
+			postOrderItem.getId());
+
+		assertEquals(expectedPatchOrderItem, getOrderItem);
+		assertValid(getOrderItem);
+	}
+
+	private void _testPatchOrderItemWithCustomDateField() throws Exception {
+		OrderItem orderItem = orderItemResource.postOrderIdOrderItem(
+			_commerceOrder.getCommerceOrderId(), randomPatchOrderItem());
+
+		ExpandoTable expandoTable = _expandoTableLocalService.addTable(
+			testGroup.getCompanyId(),
+			_classNameLocalService.getClassNameId(CommerceOrderItem.class),
+			"CUSTOM_FIELDS");
+
+		ExpandoColumn expandoColumn = _expandoColumnLocalService.addColumn(
+			expandoTable.getTableId(), RandomTestUtil.randomString(),
+			ExpandoColumnConstants.DATE);
+
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		orderItem.setCustomFields(
+			() -> new CustomField[] {
+				new CustomField() {
+					{
+						customValue = new CustomValue() {
+							{
+								data = dateFormat.format(
+									RandomTestUtil.nextDate());
+							}
+						};
+						dataType = "";
+						name = expandoColumn.getName();
+					}
+				}
+			});
+
+		OrderItem patchOrderItem = orderItemResource.patchOrderItem(
+			orderItem.getId(), orderItem);
+
+		Assert.assertNotNull(patchOrderItem.getCustomFields());
+	}
+
 	private AccountEntry _accountEntry;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
 
 	private CommerceCatalog _commerceCatalog;
 	private CommerceChannel _commerceChannel;
@@ -482,6 +548,12 @@ public class OrderItemResourceTest extends BaseOrderItemResourceTestCase {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private ExpandoColumnLocalService _expandoColumnLocalService;
+
+	@Inject
+	private ExpandoTableLocalService _expandoTableLocalService;
 
 	@Inject
 	private Portal _portal;

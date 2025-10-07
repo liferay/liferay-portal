@@ -150,6 +150,11 @@ export class ProductMenuPage {
 		await this.importButton.click();
 	}
 
+	async goToPublishingStaging() {
+		await this.publishingButton.click();
+		await this.stagingMenuItem.click();
+	}
+
 	async goToSegments() {
 		await this.peopleButton.click();
 		await this.segmentsButton.click();

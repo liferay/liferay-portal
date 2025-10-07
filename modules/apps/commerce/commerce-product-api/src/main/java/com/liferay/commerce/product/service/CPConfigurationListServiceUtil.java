@@ -38,7 +38,8 @@ public class CPConfigurationListServiceUtil {
 			int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire)
+			boolean neverExpire,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCPConfigurationList(
@@ -46,7 +47,8 @@ public class CPConfigurationListServiceUtil {
 			masterCPConfigurationList, name, priority, displayDateMonth,
 			displayDateDay, displayDateYear, displayDateHour, displayDateMinute,
 			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire);
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 	}
 
 	public static CPConfigurationList addOrUpdateCPConfigurationList(
@@ -57,7 +59,8 @@ public class CPConfigurationListServiceUtil {
 			int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire)
+			boolean neverExpire,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addOrUpdateCPConfigurationList(
@@ -66,7 +69,7 @@ public class CPConfigurationListServiceUtil {
 			priority, displayDateMonth, displayDateDay, displayDateYear,
 			displayDateHour, displayDateMinute, expirationDateMonth,
 			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire);
+			expirationDateMinute, neverExpire, serviceContext);
 	}
 
 	public static CPConfigurationList deleteCPConfigurationList(
@@ -138,7 +141,8 @@ public class CPConfigurationListServiceUtil {
 			int displayDateHour, int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire)
+			boolean neverExpire,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCPConfigurationList(
@@ -147,7 +151,7 @@ public class CPConfigurationListServiceUtil {
 			priority, displayDateMonth, displayDateDay, displayDateYear,
 			displayDateHour, displayDateMinute, expirationDateMonth,
 			expirationDateDay, expirationDateYear, expirationDateHour,
-			expirationDateMinute, neverExpire);
+			expirationDateMinute, neverExpire, serviceContext);
 	}
 
 	public static CPConfigurationListService getService() {

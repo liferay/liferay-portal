@@ -23,6 +23,7 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -38,9 +39,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -48,7 +51,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -81,6 +83,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -497,6 +500,77 @@ public abstract class BaseFormRecordResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetFormFormRecordsPage() throws Exception {
+		Long formId = testGetFormFormRecordsPage_getFormId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"formFormRecords",
+			new HashMap<String, Object>() {
+				{
+					put("formId", formId);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject formFormRecordsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/formFormRecords");
+
+		long totalCount = formFormRecordsJSONObject.getLong("totalCount");
+
+		FormRecord formRecord1 = testGraphQLFormFormRecord_addFormRecord(
+			formId, randomFormRecord());
+
+		FormRecord formRecord2 = testGraphQLFormFormRecord_addFormRecord(
+			formId, randomFormRecord());
+
+		formFormRecordsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/formFormRecords");
+
+		Assert.assertEquals(
+			totalCount + 2, formFormRecordsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			formRecord1,
+			Arrays.asList(
+				FormRecordSerDes.toDTOs(
+					formFormRecordsJSONObject.getString("items"))));
+		assertContains(
+			formRecord2,
+			Arrays.asList(
+				FormRecordSerDes.toDTOs(
+					formFormRecordsJSONObject.getString("items"))));
+
+		// Using the namespace headlessForm_v1_0
+
+		formFormRecordsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("headlessForm_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/headlessForm_v1_0",
+			"JSONObject/formFormRecords");
+
+		Assert.assertEquals(
+			totalCount + 2, formFormRecordsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			formRecord1,
+			Arrays.asList(
+				FormRecordSerDes.toDTOs(
+					formFormRecordsJSONObject.getString("items"))));
+		assertContains(
+			formRecord2,
+			Arrays.asList(
+				FormRecordSerDes.toDTOs(
+					formFormRecordsJSONObject.getString("items"))));
+	}
+
+	@Test
 	public void testGetFormRecord() throws Exception {
 		FormRecord postFormRecord = testGetFormRecord_addFormRecord();
 
@@ -812,6 +886,25 @@ public abstract class BaseFormRecordResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostFormFormRecord() throws Exception {
+		FormRecord randomFormRecord = randomFormRecord();
+
+		FormRecord formRecord = testGraphQLFormFormRecord_addFormRecord(
+			testGraphQLPostFormFormRecord_getFormId(randomFormRecord),
+			randomFormRecord);
+
+		Assert.assertTrue(equals(randomFormRecord, formRecord));
+	}
+
+	protected Long testGraphQLPostFormFormRecord_getFormId(
+			FormRecord formRecord)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPutFormRecord() throws Exception {
 		FormRecord postFormRecord = testPutFormRecord_addFormRecord();
 
@@ -845,6 +938,128 @@ public abstract class BaseFormRecordResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected FormRecord testGraphQLFormFormRecord_addFormRecord()
+		throws Exception {
+
+		return testGraphQLFormFormRecord_addFormRecord(
+			testGraphQLFormFormRecord_getFormId(), randomFormRecord());
+	}
+
+	protected Long testGraphQLFormFormRecord_getFormId() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected FormRecord testGraphQLFormFormRecord_addFormRecord(
+			Long formId, FormRecord formRecord)
+		throws Exception {
+
+		JSONDeserializer<FormRecord> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(FormRecord.class)) {
+
+			if (getGraphQLValue(field.get(formRecord)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(formRecord)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createFormFormRecord",
+						new HashMap<String, Object>() {
+							{
+								put("formId", formId);
+								put("formRecord", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createFormFormRecord"),
+			FormRecord.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1029,6 +1244,8 @@ public abstract class BaseFormRecordResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

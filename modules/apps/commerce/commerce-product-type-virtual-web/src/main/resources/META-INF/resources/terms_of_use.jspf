@@ -55,79 +55,38 @@
 				<div class="h4 text-default"><liferay-ui:message key="or" /></div>
 
 				<div class="entry-content form-group">
-					<liferay-ui:input-localized
-						cssClass="form-control"
-						disabled="<%= useTermsOfUseJournal %>"
-						name="termsOfUseContent"
-						type="editor"
-						xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
-					/>
+					<c:choose>
+						<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+							<liferay-ui:input-localized
+								cssClass="form-control"
+								disabled="<%= useTermsOfUseJournal %>"
+								name="termsOfUseContent"
+								type="editor"
+								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+							/>
+						</c:when>
+						<c:otherwise>
+							<liferay-editor:input-localized
+								defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
+								name="termsOfUseContent"
+								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+							/>
+						</c:otherwise>
+					</c:choose>
 				</div>
 			</aui:field-wrapper>
 		</aui:fieldset>
 	</div>
 </div>
 
-<aui:script sandbox="<%= true %>">
-	Liferay.Util.toggleBoxes(
-		'<portlet:namespace />termsOfUseRequired',
-		'<portlet:namespace />termsOfUseSettings'
-	);
-
-	const journalArticleNameInput = document.getElementById(
-		'<portlet:namespace />journalArticleNameInput'
-	);
-
-	const journalArticleRemove = document.getElementById(
-		'<portlet:namespace />journalArticleRemove'
-	);
-
-	const selectArticle = document.getElementById(
-		'<portlet:namespace />selectArticle'
-	);
-
-	if (journalArticleNameInput && journalArticleRemove && selectArticle) {
-		selectArticle.addEventListener('click', (event) => {
-			event.preventDefault();
-
-			Liferay.Util.openSelectionModal({
-				onSelect: (selectedItem) => {
-					const termsOfUseJournalArticleResourcePrimKey =
-						document.getElementById(
-							'<portlet:namespace />termsOfUseJournalArticleResourcePrimKey'
-						);
-
-					const itemValue = JSON.parse(selectedItem.value);
-
-					if (termsOfUseJournalArticleResourcePrimKey) {
-						termsOfUseJournalArticleResourcePrimKey.value =
-							itemValue.classPK;
-					}
-
-					journalArticleRemove.classList.remove('hide');
-
-					journalArticleNameInput.innerText = itemValue.title;
-				},
-				selectEventName: 'selectJournalArticle',
-				title: '<liferay-ui:message key="select-web-content" />',
-				url: '<%= cpDefinitionVirtualSettingDisplayContext.getTermsOfUseJournalArticleBrowserURL() %>',
-			});
-		});
-
-		journalArticleRemove.addEventListener('click', (event) => {
-			event.preventDefault();
-
-			const termsOfUseJournalArticleResourcePrimKey = document.getElementById(
-				'<portlet:namespace />termsOfUseJournalArticleResourcePrimKey'
-			);
-
-			if (termsOfUseJournalArticleResourcePrimKey) {
-				termsOfUseJournalArticleResourcePrimKey.value = 0;
-			}
-
-			journalArticleNameInput.innerText = '<liferay-ui:message key="none" />';
-
-			journalArticleRemove.classList.add('hide');
-		});
-	}
-</aui:script>
+<liferay-frontend:component
+	componentId="termsOfUseInputUtil"
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"portletNamespace", portletDisplay.getNamespace()
+		).put(
+			"termsOfUseJournalArticleBrowserURL", cpDefinitionVirtualSettingDisplayContext.getTermsOfUseJournalArticleBrowserURL()
+		).build()
+	%>'
+	module="{TermsOfUseInputUtil} from commerce-product-type-virtual-web"
+/>

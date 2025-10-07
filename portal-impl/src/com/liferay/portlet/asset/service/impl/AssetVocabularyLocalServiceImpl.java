@@ -12,7 +12,7 @@ import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManagerUtil;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -47,10 +47,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.service.base.AssetVocabularyLocalServiceBaseImpl;
 
 import java.util.ArrayList;
@@ -206,8 +206,8 @@ public class AssetVocabularyLocalServiceImpl
 		vocabulary.setSettings(settings);
 		vocabulary.setVisibilityType(visibilityType);
 
-		if (IncompleteModelManagerUtil.isIncompleteModel()) {
-			vocabulary.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+		if (EmptyModelManagerUtil.isEmptyModel()) {
+			vocabulary.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
 		else {
 			vocabulary.setStatus(WorkflowConstants.STATUS_APPROVED);
@@ -399,22 +399,22 @@ public class AssetVocabularyLocalServiceImpl
 		return assetVocabularyPersistence.findByG_N(groupId, name);
 	}
 
-	@Override
-	public AssetVocabulary getOrAddIncompleteVocabulary(
+	public AssetVocabulary getOrAddEmptyVocabulary(
 			String externalReferenceCode, long userId, long groupId)
 		throws PortalException {
 
-		return IncompleteModelManagerUtil.getOrAddIncompleteModel(
-			AssetVocabulary.class, externalReferenceCode,
-			this::fetchAssetVocabularyByExternalReferenceCode,
-			this::getAssetVocabularyByExternalReferenceCode, groupId,
+		return EmptyModelManagerUtil.getOrAddEmptyModel(
+			AssetVocabulary.class,
 			() -> assetVocabularyLocalService.addVocabulary(
 				externalReferenceCode, userId, groupId, externalReferenceCode,
 				externalReferenceCode,
 				Collections.singletonMap(
 					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				null, null, AssetVocabularyConstants.VISIBILITY_TYPE_INCOMPLETE,
-				new ServiceContext()));
+				null, null, AssetVocabularyConstants.VISIBILITY_TYPE_EMPTY,
+				new ServiceContext()),
+			externalReferenceCode,
+			this::fetchAssetVocabularyByExternalReferenceCode,
+			this::getAssetVocabularyByExternalReferenceCode, groupId);
 	}
 
 	@Override
@@ -509,7 +509,7 @@ public class AssetVocabularyLocalServiceImpl
 		vocabulary.setSettings(settings);
 		vocabulary.setVisibilityType(visibilityType);
 
-		if (vocabulary.getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+		if (vocabulary.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			vocabulary.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 
@@ -536,7 +536,7 @@ public class AssetVocabularyLocalServiceImpl
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
 
-		if (vocabulary.getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+		if (vocabulary.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			vocabulary.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 

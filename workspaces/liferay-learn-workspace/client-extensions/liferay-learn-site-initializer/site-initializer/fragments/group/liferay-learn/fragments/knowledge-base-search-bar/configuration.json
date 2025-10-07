@@ -1,0 +1,15 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "",
+					"label": "Custom Parameter",
+					"name": "customParameter",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

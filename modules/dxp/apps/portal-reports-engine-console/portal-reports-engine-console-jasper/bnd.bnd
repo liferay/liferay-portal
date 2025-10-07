@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Reports Engine Console Jasper
 Bundle-SymbolicName: com.liferay.portal.reports.engine.console.jasper
-Bundle-Version: 4.0.37
+Bundle-Version: 4.0.38
 DynamicImport-Package: *
 Import-Package:\
 	!antlr.*,\
@@ -136,3 +136,4 @@ Import-Package:\
 	\
 	*
 Liferay-Releng-Module-Group-Title: Liferay JasperReports
+-fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=ignore

@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.BuildReport;
 import com.liferay.jenkins.results.parser.ControllerBuildReport;
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
@@ -22,6 +23,7 @@ import com.liferay.jenkins.results.parser.PortalWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.PullRequest;
 import com.liferay.jenkins.results.parser.QAWebsitesGitRepositoryJob;
 import com.liferay.jenkins.results.parser.QAWebsitesWorkspaceGitRepository;
+import com.liferay.jenkins.results.parser.TestSuiteJob;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.Workspace;
 import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
@@ -33,8 +35,8 @@ import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.ModulesAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.SemVerModulesAxisTestClassGroup;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -921,6 +924,17 @@ public class TestrayImporter {
 		List<Callable<Void>> callables = new ArrayList<>();
 
 		for (Job job : _jobs) {
+			if (job instanceof TestSuiteJob) {
+				TestSuiteJob testSuiteJob = (TestSuiteJob)job;
+
+				if (!Objects.equals(
+						_topLevelBuildReport.getTestSuiteName(),
+						testSuiteJob.getTestSuiteName())) {
+
+					continue;
+				}
+			}
+
 			axisTestClassGroups.addAll(job.getAxisTestClassGroups());
 			axisTestClassGroups.addAll(job.getDependentAxisTestClassGroups());
 
@@ -935,11 +949,43 @@ public class TestrayImporter {
 				testBaseDir = axisTestClassGroup.getTestBaseDir();
 			}
 
-			TopLevelBuildTestrayCaseResult topLevelBuildTestrayCaseResult =
-				TestrayFactory.newTopLevelBuildTestrayCaseResult(
-					getTestrayBuild(testBaseDir), _topLevelBuildReport);
+			TestrayBuild testrayBuild = getTestrayBuild(testBaseDir);
 
-			topLevelBuildTestrayCaseResult.recordTestrayCaseResult(job);
+			TopLevelStandaloneBuildTestrayCaseResult
+				topLevelStandaloneBuildTestrayCaseResult =
+					TestrayFactory.newTopLevelStandaloneBuildTestrayCaseResult(
+						testrayBuild, _topLevelBuildReport);
+
+			topLevelStandaloneBuildTestrayCaseResult.recordTestrayCaseResult(
+				job);
+
+			AppServerBundleStandaloneBuildTestrayCaseResult
+				portalAppServerBundleStandaloneBuildTestrayCaseResult =
+					new AppServerBundleStandaloneBuildTestrayCaseResult(
+						testrayBuild, _topLevelBuildReport, "portal");
+
+			BuildReport portalAppServerBundleBuildReport =
+				portalAppServerBundleStandaloneBuildTestrayCaseResult.
+					getBuildReport();
+
+			if (portalAppServerBundleBuildReport != null) {
+				portalAppServerBundleStandaloneBuildTestrayCaseResult.
+					recordTestrayCaseResult(job);
+			}
+
+			AppServerBundleStandaloneBuildTestrayCaseResult
+				analyticsCloudAppServerBundleStandaloneBuildTestrayCaseResult =
+					new AppServerBundleStandaloneBuildTestrayCaseResult(
+						testrayBuild, _topLevelBuildReport, "analytics.cloud");
+
+			BuildReport analyticsCloudAppServerBundleBuildReport =
+				analyticsCloudAppServerBundleStandaloneBuildTestrayCaseResult.
+					getBuildReport();
+
+			if (analyticsCloudAppServerBundleBuildReport != null) {
+				analyticsCloudAppServerBundleStandaloneBuildTestrayCaseResult.
+					recordTestrayCaseResult(job);
+			}
 
 			for (final AxisTestClassGroup axisTestClassGroup :
 					axisTestClassGroups) {
@@ -962,7 +1008,7 @@ public class TestrayImporter {
 			callables, _executorService, "recordTestrayCaseResults");
 
 		try {
-			parallelExecutor.execute(60L * 180L);
+			parallelExecutor.execute(60L * 300L);
 		}
 		catch (TimeoutException timeoutException) {
 			throw new RuntimeException(timeoutException);
@@ -983,6 +1029,44 @@ public class TestrayImporter {
 		}
 
 		_sendPullRequestNotification();
+	}
+
+	private void _addDetailsElements(
+		Element propertiesElement,
+		JUnitBatchBuildTestrayCaseResult testrayCaseResult) {
+
+		Element detailsElement = propertiesElement.addElement("details");
+
+		for (String methodName : testrayCaseResult.getMethodNames()) {
+			if (JenkinsResultsParserUtil.isNullOrEmpty(
+					testrayCaseResult.getMethodIssues(methodName))) {
+
+				continue;
+			}
+
+			Element detailElement = detailsElement.addElement("detail");
+
+			Element issuesPropertyElement = detailElement.addElement(
+				"property");
+
+			issuesPropertyElement.addAttribute("name", "testray.jira.issues");
+			issuesPropertyElement.addAttribute(
+				"value", testrayCaseResult.getMethodIssues(methodName));
+
+			Element namePropertyElement = detailElement.addElement("property");
+
+			namePropertyElement.addAttribute(
+				"name", "testray.testcase.detail.name");
+			namePropertyElement.addAttribute("value", methodName);
+
+			Element statusPropertyElement = detailElement.addElement(
+				"property");
+
+			statusPropertyElement.addAttribute(
+				"name", "testray.testcase.detail.status");
+			statusPropertyElement.addAttribute(
+				"value", testrayCaseResult.getMethodStatus(methodName));
+		}
 	}
 
 	private void _addPropertyElements(
@@ -1336,11 +1420,14 @@ public class TestrayImporter {
 		_addPropertyElements(
 			rootElement.addElement("properties"), propertiesMap);
 
+		String[] warnings = null;
+
 		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
 
 		if (axisTestClassGroup instanceof FunctionalAxisTestClassGroup ||
+			axisTestClassGroup instanceof JSUnitAxisTestClassGroup ||
 			axisTestClassGroup instanceof JUnitAxisTestClassGroup ||
-			axisTestClassGroup instanceof SemVerModulesAxisTestClassGroup) {
+			axisTestClassGroup instanceof ModulesAxisTestClassGroup) {
 
 			PortalLogBatchBuildTestrayCaseResult
 				portalLogBatchBuildTestrayCaseResult =
@@ -1360,9 +1447,7 @@ public class TestrayImporter {
 						testClass));
 			}
 		}
-		else if (axisTestClassGroup instanceof JSUnitAxisTestClassGroup ||
-				 axisTestClassGroup instanceof PlaywrightAxisTestClassGroup) {
-
+		else if (axisTestClassGroup instanceof PlaywrightAxisTestClassGroup) {
 			for (TestClass testClass : axisTestClassGroup.getTestClasses()) {
 				for (TestClassMethod testClassMethod :
 						testClass.getTestClassMethods()) {
@@ -1377,8 +1462,7 @@ public class TestrayImporter {
 		else {
 			testrayCaseResults.add(
 				TestrayFactory.newBuildTestrayCaseResult(
-					testrayBuild, _topLevelBuildReport, axisTestClassGroup,
-					null));
+					testrayBuild, _topLevelBuildReport, axisTestClassGroup));
 		}
 
 		for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
@@ -1421,9 +1505,27 @@ public class TestrayImporter {
 			Element propertiesElement = testcaseElement.addElement(
 				"properties");
 
+			String testSuiteName = _topLevelBuildReport.getTestSuiteName();
+
+			if (testSuiteName.equals("upstream-dxp")) {
+				if (testrayCaseResult instanceof
+						JUnitBatchBuildTestrayCaseResult) {
+
+					_addDetailsElements(
+						propertiesElement,
+						(JUnitBatchBuildTestrayCaseResult)testrayCaseResult);
+				}
+				else {
+					testcasePropertiesMap.put(
+						"testray.jira.issues", testrayCaseResult.getIssues());
+				}
+			}
+
 			_addPropertyElements(propertiesElement, testcasePropertiesMap);
 
-			String[] warnings = testrayCaseResult.getWarnings();
+			if (warnings == null) {
+				warnings = testrayCaseResult.getWarnings();
+			}
 
 			if ((warnings != null) && (warnings.length > 0)) {
 				Element warningsPropertyElement = propertiesElement.addElement(

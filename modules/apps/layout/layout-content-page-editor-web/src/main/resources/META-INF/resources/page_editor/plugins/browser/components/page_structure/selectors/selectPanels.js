@@ -29,6 +29,7 @@ import EditableLinkPanel from '../components/item_configuration_panels/EditableL
 import FormAdvancedPanel from '../components/item_configuration_panels/FormAdvancedPanel';
 import {FormGeneralPanel} from '../components/item_configuration_panels/FormGeneralPanel';
 import {FormInputGeneralPanel} from '../components/item_configuration_panels/FormInputGeneralPanel';
+import {FormRelationshipGeneralPanel} from '../components/item_configuration_panels/FormRelationshipGeneralPanel';
 import FormStepContainerAdvancedPanel from '../components/item_configuration_panels/FormStepContainerAdvancedPanel';
 import {FormStepContainerGeneralPanel} from '../components/item_configuration_panels/FormStepContainerGeneralPanel';
 import {FormStepContainerStylesPanel} from '../components/item_configuration_panels/FormStepContainerStylesPanel';
@@ -66,9 +67,10 @@ export const PANEL_IDS = {
 	formAdvancedPanel: 'formAdvancedPanel',
 	formGeneral: 'formGeneral',
 	formInputGeneral: 'formInputGeneral',
+	formRelationshipGeneral: 'formRelationshipGeneral',
 	formStepContainerAdvanced: 'formStepContainerAdvanced',
 	formStepContainerGeneral: 'formStepContainerGeneral',
-	formStepContainerStyles: 'formStepContainer',
+	formStepContainerStyles: 'formStepContainerStyles',
 	fragmentAdvanced: 'fragmentAdvanced',
 	fragmentGeneral: 'fragmentGeneral',
 	fragmentStyles: 'fragmentStyles',
@@ -164,6 +166,11 @@ export const PANELS = {
 		label: Liferay.Language.get('styles'),
 		priority: 1,
 		type: PANEL_TYPES.styles,
+	},
+	[PANEL_IDS.formRelationshipGeneral]: {
+		component: FormRelationshipGeneralPanel,
+		label: Liferay.Language.get('general'),
+		priority: 2,
 	},
 	[PANEL_IDS.formStepContainerAdvanced]: {
 		component: FormStepContainerAdvancedPanel,
@@ -372,6 +379,16 @@ export function selectPanels(activeItemId, activeItemType, state) {
 				(canUpdateItemAdvancedConfiguration &&
 					state.selectedViewportSize === VIEWPORT_SIZES.desktop) ||
 				canUpdateCSSAdvancedOptions,
+		};
+	}
+	else if (activeItem.type === LAYOUT_DATA_ITEM_TYPES.formRelationship) {
+		panelsIds = {
+			[PANEL_IDS.containerStyles]: haveAtLeastLimitedPermission,
+			[PANEL_IDS.formAdvancedPanel]:
+				(canUpdateItemAdvancedConfiguration &&
+					state.selectedViewportSize === VIEWPORT_SIZES.desktop) ||
+				canUpdateCSSAdvancedOptions,
+			[PANEL_IDS.formRelationshipGeneral]: true,
 		};
 	}
 

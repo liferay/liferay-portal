@@ -12,6 +12,7 @@ import com.liferay.fragment.processor.DocumentFragmentEntryValidator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -40,7 +41,8 @@ public class EditableFragmentEntryValidator
 
 	@Override
 	public void validateFragmentEntryHTML(
-			Document document, String configuration, Locale locale)
+			Document document, JSONObject configurationJSONObject,
+			Locale locale)
 		throws PortalException {
 
 		Set<String> ids = new HashSet<>();

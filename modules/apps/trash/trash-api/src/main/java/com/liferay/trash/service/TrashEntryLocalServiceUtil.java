@@ -151,6 +151,10 @@ public class TrashEntryLocalServiceUtil {
 		return getService().deletePersistedModel(persistedModel);
 	}
 
+	public static void deleteTrashEntries(long companyId, String className) {
+		getService().deleteTrashEntries(companyId, className);
+	}
+
 	/**
 	 * Deletes the trash entry with the primary key from the database. Also notifies the appropriate model listeners.
 	 *

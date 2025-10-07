@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Payment Method Mercanet
 Bundle-SymbolicName: com.liferay.commerce.payment.method.mercanet
-Bundle-Version: 4.0.44
+Bundle-Version: 4.0.45
 Web-ContextPath: /commerce-payment-method-mercanet
 -fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=warning

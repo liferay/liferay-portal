@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
+import {waitForEditor} from '../../../../../utils/waitFor';
 import {ckeditorSamplePageTest} from '../../fixtures/ckeditorSamplePageTest';
 import {balloonPageTest} from './fixtures/balloonPageTest';
 
@@ -24,18 +25,13 @@ export const test = mergeTests(
 	loginTest()
 );
 
-test.beforeEach(async ({ckeditorSamplePage, site}) => {
+test.beforeEach(async ({ckeditorSamplePage, page, site}) => {
 	await ckeditorSamplePage.createAndGotoSitePage({site});
-
-	const productMenuToggle =
-		ckeditorSamplePage.page.getByLabel('Close Product Menu');
-
-	if (await productMenuToggle.isVisible()) {
-		await productMenuToggle.click();
-	}
 
 	await ckeditorSamplePage.selectTab('CKEditor 5');
 	await ckeditorSamplePage.selectTab('Balloon');
+
+	await waitForEditor({page});
 });
 
 test(
@@ -51,6 +47,7 @@ test(
 		await expect(balloonPage.toolbar).toBeVisible();
 
 		const advancedPresetControls = [
+			'Accessibility help',
 			'Undo',
 			'Redo',
 			'Styles',
@@ -73,6 +70,7 @@ test(
 			'Video',
 			'Horizontal line',
 			'Text alignment',
+			'AI Creator',
 		];
 
 		const controls = await balloonPage.toolbar

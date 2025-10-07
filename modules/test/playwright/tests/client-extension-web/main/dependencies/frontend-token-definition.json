@@ -18,6 +18,18 @@
 							"type": "String"
 						},
 						{
+							"defaultValue": "0.25",
+							"label": "font-size",
+							"mappings": [
+								{
+									"type": "cssVariable",
+									"value": "primary"
+								}
+							],
+							"name": "fontSize",
+							"type": "Number"
+						},
+						{
 							"defaultValue": "sans-serif",
 							"label": "font-family",
 							"mappings": [

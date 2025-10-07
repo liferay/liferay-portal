@@ -166,7 +166,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "Guest"
 													},
 													"fragmentConfig": {

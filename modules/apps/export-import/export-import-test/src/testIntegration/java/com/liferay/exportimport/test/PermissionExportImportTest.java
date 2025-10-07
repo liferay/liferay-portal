@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -141,51 +142,44 @@ public class PermissionExportImportTest {
 	}
 
 	@Test
-	public void testPortletGuestPermissionsExportImport() throws Exception {
-
-		// Export
+	public void testPortletGuestPermissionsExportImportToGroup()
+		throws Exception {
 
 		LayoutSetPrototype exportLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+		Group importGroup = GroupTestUtil.addGroup();
 
-		Group exportGroup = exportLayoutSetPrototype.getGroup();
+		try {
+			_testPortletGuestPermissionsExportImport(
+				exportLayoutSetPrototype.getGroup(), importGroup);
+		}
+		finally {
+			LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+				exportLayoutSetPrototype);
+			GroupTestUtil.deleteGroup(importGroup);
+		}
+	}
 
-		Layout exportLayout = LayoutTestUtil.addTypePortletLayout(
-			exportGroup, true);
+	@Test
+	public void testPortletGuestPermissionsExportImportToLayoutSetPrototype()
+		throws Exception {
 
-		String exportResourcePrimKey = PortletPermissionUtil.getPrimaryKey(
-			exportLayout.getPlid(), _PORTLET_ID);
-
-		Role role = RoleLocalServiceUtil.getRole(
-			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
-
-		addPortletPermissions(exportGroup, role, exportResourcePrimKey);
-
-		Element portletElement = exportPortletPermissions(
-			exportGroup, exportLayout);
-
-		// Import
-
+		LayoutSetPrototype exportLayoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 		LayoutSetPrototype importLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
 
-		Group importGroup = importLayoutSetPrototype.getGroup();
-
-		Layout importLayout = LayoutTestUtil.addTypePortletLayout(
-			importGroup, true);
-
-		String importResourcePrimKey = PortletPermissionUtil.getPrimaryKey(
-			importLayout.getPlid(), _PORTLET_ID);
-
-		importPortletPermissions(importGroup, importLayout, portletElement);
-
-		validateImportedPortletPermissions(
-			importGroup, role, importResourcePrimKey);
-
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
-			exportLayoutSetPrototype);
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
-			importLayoutSetPrototype);
+		try {
+			_testPortletGuestPermissionsExportImport(
+				exportLayoutSetPrototype.getGroup(),
+				importLayoutSetPrototype.getGroup());
+		}
+		finally {
+			LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+				exportLayoutSetPrototype);
+			LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+				importLayoutSetPrototype);
+		}
 	}
 
 	protected void addPortletPermissions(
@@ -316,6 +310,40 @@ public class PermissionExportImportTest {
 
 			Assert.assertTrue("Unable to import permissions", foundActionId);
 		}
+	}
+
+	private void _testPortletGuestPermissionsExportImport(
+			Group exportGroup, Group importGroup)
+		throws Exception {
+
+		// Export
+
+		Layout exportLayout = LayoutTestUtil.addTypePortletLayout(
+			exportGroup, true);
+
+		String exportResourcePrimKey = PortletPermissionUtil.getPrimaryKey(
+			exportLayout.getPlid(), _PORTLET_ID);
+
+		Role role = RoleLocalServiceUtil.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		addPortletPermissions(exportGroup, role, exportResourcePrimKey);
+
+		Element portletElement = exportPortletPermissions(
+			exportGroup, exportLayout);
+
+		// Import
+
+		Layout importLayout = LayoutTestUtil.addTypePortletLayout(
+			importGroup, true);
+
+		String importResourcePrimKey = PortletPermissionUtil.getPrimaryKey(
+			importLayout.getPlid(), _PORTLET_ID);
+
+		importPortletPermissions(importGroup, importLayout, portletElement);
+
+		validateImportedPortletPermissions(
+			importGroup, role, importResourcePrimKey);
 	}
 
 	private static final String[] _ACTION_IDS = {

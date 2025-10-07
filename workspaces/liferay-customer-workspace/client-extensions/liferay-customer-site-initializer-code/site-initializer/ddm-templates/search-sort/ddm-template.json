@@ -1,0 +1,6 @@
+{
+	"className": "com.liferay.portal.search.web.internal.sort.display.context.SortDisplayContext",
+	"ddmTemplateKey": "SEARCH-SORT",
+	"name": "Search Sort",
+	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
+}

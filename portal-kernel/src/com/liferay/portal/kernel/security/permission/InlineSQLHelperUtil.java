@@ -9,13 +9,25 @@ import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
+
+import java.util.List;
 
 /**
  * @author Raymond Augé
  * @see    InlineSQLHelper
  */
 public class InlineSQLHelperUtil {
+
+	public static <T extends BaseModel<T>> List<T> filter(
+		List<T> list, long... groupIds) {
+
+		InlineSQLHelper inlineSQLPermission =
+			_inlineSQLPermissionSnapshot.get();
+
+		return inlineSQLPermission.filter(list, groupIds);
+	}
 
 	public static <T extends Table<T>> Predicate getPermissionWherePredicate(
 		Class<?> modelClass, Column<T, Long> classPKColumn, long... groupIds) {
@@ -87,17 +99,6 @@ public class InlineSQLHelperUtil {
 	}
 
 	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, long groupId,
-		String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, groupId, bridgeJoin);
-	}
-
-	public static String replacePermissionCheck(
 		String sql, String className, String classPKField, long[] groupIds) {
 
 		InlineSQLHelper inlineSQLPermission =
@@ -105,94 +106,6 @@ public class InlineSQLHelperUtil {
 
 		return inlineSQLPermission.replacePermissionCheck(
 			sql, className, classPKField, groupIds);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, long[] groupIds,
-		String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, groupIds, bridgeJoin);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long groupId) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupId);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long groupId, String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupId, bridgeJoin);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long[] groupIds) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupIds);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long[] groupIds, String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupIds, bridgeJoin);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, bridgeJoin);
-	}
-
-	public static String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		String groupIdField, long[] groupIds, String bridgeJoin) {
-
-		InlineSQLHelper inlineSQLPermission =
-			_inlineSQLPermissionSnapshot.get();
-
-		return inlineSQLPermission.replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupIdField, groupIds,
-			bridgeJoin);
 	}
 
 	private static final Snapshot<InlineSQLHelper>

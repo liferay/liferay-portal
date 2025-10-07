@@ -23,10 +23,10 @@ page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.HttpComponentsUtil" %><%@
 page import="com.liferay.portal.kernel.util.MethodParameter" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
+page import="com.liferay.portal.kernel.util.PropsValues" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.remote.json.web.service.JSONWebServiceActionMapping" %><%@
-page import="com.liferay.portal.remote.json.web.service.web.internal.helper.JSONWebServiceActionsManagerUtil" %><%@
-page import="com.liferay.portal.util.PropsValues" %>
+page import="com.liferay.portal.remote.json.web.service.web.internal.helper.JSONWebServiceActionsManagerUtil" %>
 
 <%@ page import="java.io.File" %>
 

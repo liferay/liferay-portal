@@ -1,0 +1,93 @@
+{
+	"pageElement": {
+		"id": "244ef522-40ca-6b35-d007-c9e3a98951d6",
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentStyle": {
+						"hidden": true
+					},
+					"widgetInstance": {
+						"widgetConfig": {
+							"allowEmptySearches": "true",
+							"basicFacetSelection": "false",
+							"federatedSearchKey": "",
+							"retainFacetSelections": "false"
+						},
+						"widgetName": "com_liferay_portal_search_web_search_options_portlet_SearchOptionsPortlet"
+					}
+				},
+				"id": "6b3d2ae3-a552-87d1-91b8-263a99d546c3",
+				"type": "Widget"
+			},
+			{
+				"definition": {
+					"widgetInstance": {
+						"widgetConfig": {
+							"destination": "/search",
+							"displayStyle": "ddmTemplate_CATEGORY-HEADER-SEARCH-BAR",
+							"displayStyleGroupId": "[$GROUP_ID$]",
+							"displayStyleGroupKey": "68390129561053",
+							"federatedSearchKey": "",
+							"invisible": "false",
+							"keywordsParameterName": "q",
+							"scopeParameterName": "scope",
+							"searchScope": "this-site",
+							"showStagedResults": "false",
+							"suggestionsContributorConfigurations": "{\"contributorName\": \"basic\", \"displayGroupName\": \"suggestions\", \"size\": 5}",
+							"suggestionsDisplayThreshold": "2",
+							"suggestionsEnabled": "false",
+							"useAdvancedSearchSyntax": "false"
+						},
+						"widgetName": "com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet"
+					}
+				},
+				"id": "841eb85e-5031-d004-dc82-64cc8ffd830e",
+				"type": "Widget"
+			},
+			{
+				"definition": {
+					"fragmentStyle": {
+						"maxWidth": "var(--container-max-xl)",
+						"paddingBottom": "3",
+						"paddingLeft": "3",
+						"paddingRight": "3"
+					},
+					"indexed": true,
+					"layout": {
+						"paddingBottom": 1,
+						"paddingLeft": 1,
+						"paddingRight": 1,
+						"widthType": "Fixed"
+					}
+				},
+				"id": "39514fa4-f01a-90d5-533b-ef19a746ee64",
+				"pageElements": [
+					{
+						"definition": {
+							"fragment": {
+								"key": "cp-category-cards",
+								"siteKey": "Customer Portal"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"indexed": true
+						},
+						"id": "61308a85-cec3-808c-672e-67df77562469",
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "home"
+		}
+	},
+	"version": 1.1
+}

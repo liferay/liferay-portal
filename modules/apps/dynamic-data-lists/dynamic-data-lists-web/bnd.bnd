@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Dynamic Data Lists Web
 Bundle-SymbolicName: com.liferay.dynamic.data.lists.web
-Bundle-Version: 6.0.109
+Bundle-Version: 6.0.110
 Web-ContextPath: /dynamic-data-lists-web
 -dsannotations-options: inherit

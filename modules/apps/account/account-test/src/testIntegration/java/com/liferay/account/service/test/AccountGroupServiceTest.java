@@ -136,7 +136,7 @@ public class AccountGroupServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteAccountGroup() throws Exception {
+	public void testGetOrAddEmptyAccountGroup() throws Exception {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
@@ -152,7 +152,7 @@ public class AccountGroupServiceTest {
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
 				AccountGroup accountGroup =
-					_accountGroupService.getOrAddIncompleteAccountGroup(
+					_accountGroupService.getOrAddEmptyAccountGroup(
 						RandomTestUtil.randomString(),
 						RandomTestUtil.randomString());
 
@@ -166,7 +166,7 @@ public class AccountGroupServiceTest {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
-				_accountGroupService.getOrAddIncompleteAccountGroup(
+				_accountGroupService.getOrAddEmptyAccountGroup(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString());
 

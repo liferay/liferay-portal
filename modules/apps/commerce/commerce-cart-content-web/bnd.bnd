@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Cart Content Web
 Bundle-SymbolicName: com.liferay.commerce.cart.content.web
-Bundle-Version: 4.0.75
+Bundle-Version: 4.0.76
 Web-ContextPath: /commerce-cart-content-web

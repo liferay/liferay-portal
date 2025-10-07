@@ -10,13 +10,10 @@ import com.liferay.dispatch.model.DispatchTrigger;
 import com.liferay.dispatch.service.DispatchTriggerLocalService;
 import com.liferay.dispatch.test.util.DispatchTriggerTestUtil;
 import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
-import com.liferay.dynamic.data.mapping.model.DDMFieldAttribute;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateVersion;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateVersionLocalService;
-import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributePersistence;
-import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributeUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
@@ -49,7 +46,6 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -65,9 +61,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -228,46 +221,35 @@ public class UpgradeJakartaTest {
 	@Test
 	@TestInfo("LPD-52638")
 	public void testUpgradeDDMFieldAttribute() throws Throwable {
-		TransactionInvokerUtil.invoke(
-			TransactionConfig.Factory.create(
-				Propagation.REQUIRED, new Class<?>[] {Exception.class}),
-			() -> {
-				DDMFieldAttributePersistence ddmFieldAttributePersistence =
-					DDMFieldAttributeUtil.getPersistence();
+		DB db = DBManagerUtil.getDB();
 
-				DDMFieldAttribute ddmFieldAttribute =
-					ddmFieldAttributePersistence.create(
-						RandomTestUtil.nextLong());
+		try {
+			db.runSQL(
+				StringBundler.concat(
+					"insert into DDMFieldAttribute (fieldAttributeId, ",
+					"largeAttributeValue) values (10000,'", _JAVAX_IMPORT,
+					"')"));
 
-				ddmFieldAttribute.setLargeAttributeValue(_JAVAX_IMPORT);
+			_upgradeProcess.upgrade();
 
-				ddmFieldAttribute = ddmFieldAttributePersistence.update(
-					ddmFieldAttribute);
+			try (Connection connection = DataAccess.getConnection();
+				PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select largeAttributeValue from ",
+							"DDMFieldAttribute where fieldAttributeId = ",
+							"10000"));
+				ResultSet resultSet = preparedStatement.executeQuery()) {
 
-				Session session =
-					ddmFieldAttributePersistence.getCurrentSession();
+				Assert.assertTrue(resultSet.next());
 
-				session.evict(ddmFieldAttribute);
-
-				_upgradeProcess.upgrade();
-
-				_entityCache.clearCache();
-				_finderCache.clearCache();
-
-				DDMFieldAttribute updatedDDMFieldAttribute =
-					ddmFieldAttributePersistence.findByPrimaryKey(
-						ddmFieldAttribute.getPrimaryKey());
-
-				Assert.assertNotNull(updatedDDMFieldAttribute);
-
-				Assert.assertEquals(
-					_JAKARTA_IMPORT,
-					updatedDDMFieldAttribute.getLargeAttributeValue());
-
-				ddmFieldAttributePersistence.remove(ddmFieldAttribute);
-
-				return null;
-			});
+				Assert.assertEquals(_JAKARTA_IMPORT, resultSet.getString(1));
+			}
+		}
+		finally {
+			db.runSQL(
+				"delete from DDMFieldAttribute where fieldAttributeId = 10000");
+		}
 	}
 
 	@Test

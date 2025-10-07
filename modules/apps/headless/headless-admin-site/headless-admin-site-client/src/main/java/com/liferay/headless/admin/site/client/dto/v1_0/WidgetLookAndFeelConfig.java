@@ -25,16 +25,19 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		return WidgetLookAndFeelConfigSerDes.toDTO(json);
 	}
 
-	public Object getAdvancedStylingConfig() {
+	public AdvancedStylingConfig getAdvancedStylingConfig() {
 		return advancedStylingConfig;
 	}
 
-	public void setAdvancedStylingConfig(Object advancedStylingConfig) {
+	public void setAdvancedStylingConfig(
+		AdvancedStylingConfig advancedStylingConfig) {
+
 		this.advancedStylingConfig = advancedStylingConfig;
 	}
 
 	public void setAdvancedStylingConfig(
-		UnsafeSupplier<Object, Exception> advancedStylingConfigUnsafeSupplier) {
+		UnsafeSupplier<AdvancedStylingConfig, Exception>
+			advancedStylingConfigUnsafeSupplier) {
 
 		try {
 			advancedStylingConfig = advancedStylingConfigUnsafeSupplier.get();
@@ -44,18 +47,20 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object advancedStylingConfig;
+	protected AdvancedStylingConfig advancedStylingConfig;
 
-	public Object getBackgroundStylesConfig() {
+	public BackgroundStylesConfig getBackgroundStylesConfig() {
 		return backgroundStylesConfig;
 	}
 
-	public void setBackgroundStylesConfig(Object backgroundStylesConfig) {
+	public void setBackgroundStylesConfig(
+		BackgroundStylesConfig backgroundStylesConfig) {
+
 		this.backgroundStylesConfig = backgroundStylesConfig;
 	}
 
 	public void setBackgroundStylesConfig(
-		UnsafeSupplier<Object, Exception>
+		UnsafeSupplier<BackgroundStylesConfig, Exception>
 			backgroundStylesConfigUnsafeSupplier) {
 
 		try {
@@ -66,18 +71,19 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object backgroundStylesConfig;
+	protected BackgroundStylesConfig backgroundStylesConfig;
 
-	public Object getBorderStylesConfig() {
+	public BorderStylesConfig getBorderStylesConfig() {
 		return borderStylesConfig;
 	}
 
-	public void setBorderStylesConfig(Object borderStylesConfig) {
+	public void setBorderStylesConfig(BorderStylesConfig borderStylesConfig) {
 		this.borderStylesConfig = borderStylesConfig;
 	}
 
 	public void setBorderStylesConfig(
-		UnsafeSupplier<Object, Exception> borderStylesConfigUnsafeSupplier) {
+		UnsafeSupplier<BorderStylesConfig, Exception>
+			borderStylesConfigUnsafeSupplier) {
 
 		try {
 			borderStylesConfig = borderStylesConfigUnsafeSupplier.get();
@@ -87,18 +93,18 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object borderStylesConfig;
+	protected BorderStylesConfig borderStylesConfig;
 
-	public Object getGeneralConfig() {
+	public GeneralConfig getGeneralConfig() {
 		return generalConfig;
 	}
 
-	public void setGeneralConfig(Object generalConfig) {
+	public void setGeneralConfig(GeneralConfig generalConfig) {
 		this.generalConfig = generalConfig;
 	}
 
 	public void setGeneralConfig(
-		UnsafeSupplier<Object, Exception> generalConfigUnsafeSupplier) {
+		UnsafeSupplier<GeneralConfig, Exception> generalConfigUnsafeSupplier) {
 
 		try {
 			generalConfig = generalConfigUnsafeSupplier.get();
@@ -108,18 +114,20 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object generalConfig;
+	protected GeneralConfig generalConfig;
 
-	public Object getMarginAndPaddingConfig() {
+	public MarginAndPaddingConfig getMarginAndPaddingConfig() {
 		return marginAndPaddingConfig;
 	}
 
-	public void setMarginAndPaddingConfig(Object marginAndPaddingConfig) {
+	public void setMarginAndPaddingConfig(
+		MarginAndPaddingConfig marginAndPaddingConfig) {
+
 		this.marginAndPaddingConfig = marginAndPaddingConfig;
 	}
 
 	public void setMarginAndPaddingConfig(
-		UnsafeSupplier<Object, Exception>
+		UnsafeSupplier<MarginAndPaddingConfig, Exception>
 			marginAndPaddingConfigUnsafeSupplier) {
 
 		try {
@@ -130,18 +138,19 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object marginAndPaddingConfig;
+	protected MarginAndPaddingConfig marginAndPaddingConfig;
 
-	public Object getTextStylesConfig() {
+	public TextStylesConfig getTextStylesConfig() {
 		return textStylesConfig;
 	}
 
-	public void setTextStylesConfig(Object textStylesConfig) {
+	public void setTextStylesConfig(TextStylesConfig textStylesConfig) {
 		this.textStylesConfig = textStylesConfig;
 	}
 
 	public void setTextStylesConfig(
-		UnsafeSupplier<Object, Exception> textStylesConfigUnsafeSupplier) {
+		UnsafeSupplier<TextStylesConfig, Exception>
+			textStylesConfigUnsafeSupplier) {
 
 		try {
 			textStylesConfig = textStylesConfigUnsafeSupplier.get();
@@ -151,7 +160,7 @@ public class WidgetLookAndFeelConfig implements Cloneable, Serializable {
 		}
 	}
 
-	protected Object textStylesConfig;
+	protected TextStylesConfig textStylesConfig;
 
 	@Override
 	public WidgetLookAndFeelConfig clone() throws CloneNotSupportedException {

@@ -76,6 +76,29 @@ public class BaseJakartaUpgradeProcessTest extends BaseJakartaUpgradeProcess {
 	}
 
 	@Test
+	public void testUpgradeMissingPrimaryKey() throws Exception {
+		String tableName = "";
+
+		try (Connection connection = DataAccess.getConnection()) {
+			DBInspector dbInspector = new DBInspector(connection);
+
+			tableName = dbInspector.normalizeName(_TABLE_NAME);
+
+			_db.removePrimaryKey(connection, _TABLE_NAME);
+
+			upgrade();
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			String message = exception.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Table " + tableName + " has no primary key"));
+		}
+	}
+
+	@Test
 	public void testUpgradeMissingTableAndColumn() throws Exception {
 		_testUpgradeMissingTableAndColumn(
 			RandomTestUtil.randomString(), false,

@@ -985,9 +985,7 @@ public class GitWorkingDirectory {
 	}
 
 	public Set<File> findFiles(String fileName, String fileContentSnippet) {
-		if (JenkinsResultsParserUtil.isNullOrEmpty(fileName) ||
-			JenkinsResultsParserUtil.isNullOrEmpty(fileContentSnippet)) {
-
+		if (JenkinsResultsParserUtil.isNullOrEmpty(fileContentSnippet)) {
 			return null;
 		}
 
@@ -995,28 +993,38 @@ public class GitWorkingDirectory {
 
 		sb.append("git grep ");
 		sb.append(fileContentSnippet);
-		sb.append(" | grep ");
-		sb.append(fileName);
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(fileName)) {
+			sb.append(" | grep ");
+			sb.append(fileName);
+		}
 
 		GitUtil.ExecutionResult result = executeBashCommands(
-			5, 1000, 30 * 1000, sb.toString());
+			5, 1000, 60 * 1000, sb.toString());
 
 		if (result.getExitValue() != 0) {
 			throw new GitWorkingDirectoryRuntimeException(
 				this, "Unable to run: git grep");
 		}
 
-		Pattern pattern = Pattern.compile(
-			JenkinsResultsParserUtil.combine(
-				"(?<filePath>.+/", fileName, ")\\:.+"));
+		String regex = JenkinsResultsParserUtil.combine(
+			"(?<filePath>[^\\:]+)\\:.+");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(fileName)) {
+			regex = JenkinsResultsParserUtil.combine(
+				"(?<filePath>[^\\:]+/", fileName, ")\\:.+");
+		}
+
+		Pattern pattern = Pattern.compile(regex);
 
 		Matcher matcher = pattern.matcher(result.getStandardOut());
 
 		Set<File> files = new HashSet<>();
 
 		while (matcher.find()) {
-			files.add(
-				new File(getWorkingDirectory(), matcher.group("filePath")));
+			String filePath = matcher.group("filePath");
+
+			files.add(new File(getWorkingDirectory(), filePath.trim()));
 		}
 
 		return files;
@@ -1264,22 +1272,6 @@ public class GitWorkingDirectory {
 		}
 
 		return configProperty;
-	}
-
-	public Boolean getGitConfigPropertyBoolean(
-		String gitConfigPropertyName, Boolean defaultValue) {
-
-		String gitConfigProperty = getGitConfigProperty(gitConfigPropertyName);
-
-		if (gitConfigProperty == null) {
-			if (defaultValue != null) {
-				return defaultValue;
-			}
-
-			return null;
-		}
-
-		return Boolean.parseBoolean(gitConfigProperty);
 	}
 
 	public File getGitDirectory() {
@@ -2517,6 +2509,22 @@ public class GitWorkingDirectory {
 		return executionResult;
 	}
 
+	protected Boolean getGitConfigPropertyBoolean(
+		String gitConfigPropertyName, Boolean defaultValue) {
+
+		String gitConfigProperty = getGitConfigProperty(gitConfigPropertyName);
+
+		if (gitConfigProperty == null) {
+			if (defaultValue != null) {
+				return defaultValue;
+			}
+
+			return null;
+		}
+
+		return Boolean.parseBoolean(gitConfigProperty);
+	}
+
 	protected Map<String, String> getLocalGitBranchesShaMap() {
 		String command = JenkinsResultsParserUtil.combine(
 			"git ls-remote -h ",
@@ -2835,8 +2843,8 @@ public class GitWorkingDirectory {
 		commands.add(sb.toString());
 
 		GitUtil.ExecutionResult executionResult = executeBashCommands(
-			GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
-			GitUtil.MILLIS_TIMEOUT, commands.toArray(new String[0]));
+			GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY, 240 * 1000,
+			commands.toArray(new String[0]));
 
 		if (executionResult.getExitValue() != 0) {
 			throw new GitWorkingDirectoryRuntimeException(

@@ -1,0 +1,67 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task deployJar(type: Copy)
+task jarManifest
+task jarPatched(type: Zip)
+task patch(type: PatchTask)
+
+dependencies {
+	api group: "org.springframework", name: "spring-tx", version: "5.3.39"
+}
+
+deploy {
+	finalizedBy deployJar
+}
+
+deployJar {
+	ext {
+		autoClean = false
+	}
+
+	from jar
+	into "../../../lib/portal"
+
+	rename {
+		"spring-tx.jar"
+	}
+}
+
+jar {
+	dependsOn jarPatched
+	setActions([])
+}
+
+jarManifest {
+	doLast {
+		ant.jar(destfile: jar.archivePath, update: true)
+	}
+}
+
+jarPatched {
+	archiveFileName = jar.archiveFileName
+	destinationDirectory = jar.destinationDirectory
+	duplicatesStrategy = "exclude"
+	from copyPatchOriginalLibClasses
+	mustRunAfter compileJava
+	mustRunAfter generatePomFileForMavenPublication
+	mustRunAfter processResources
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+javadoc {
+	enabled = false
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/springframework/transaction/support/TransactionSynchronizationManager.java"
+	originalLibModuleName = "spring-tx"
+}

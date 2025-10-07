@@ -76,6 +76,11 @@ public class FileEntryLayoutDisplayPageObjectProvider
 	}
 
 	@Override
+	public String getExternalReferenceCode() {
+		return _fileEntry.getExternalReferenceCode();
+	}
+
+	@Override
 	public long getGroupId() {
 		return _fileEntry.getGroupId();
 	}

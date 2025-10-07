@@ -13,6 +13,8 @@ import com.liferay.dynamic.data.mapping.util.FieldsToDDMFormValuesConverter;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -90,13 +92,20 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 			};
 		}
 		else {
-			performActionMethod = (JournalArticle journalArticle) ->
-				_ddmFieldLocalService.updateDDMFormValues(
-					ddmStructure.getStructureId(), journalArticle.getId(),
-					_fieldsToDDMFormValuesConverter.convert(
-						ddmStructure,
-						_journalConverter.getDDMFields(
-							ddmStructure, journalArticle.getContent())));
+			performActionMethod = (JournalArticle journalArticle) -> {
+				try (SafeCloseable safeCloseable =
+						CTCollectionThreadLocal.
+							setCTCollectionIdWithSafeCloseable(
+								ddmStructure.getCtCollectionId())) {
+
+					_ddmFieldLocalService.updateDDMFormValues(
+						ddmStructure.getStructureId(), journalArticle.getId(),
+						_fieldsToDDMFormValuesConverter.convert(
+							ddmStructure,
+							_journalConverter.getDDMFields(
+								ddmStructure, journalArticle.getContent())));
+				}
+			};
 		}
 
 		actionableDynamicQuery.setParallel(true);

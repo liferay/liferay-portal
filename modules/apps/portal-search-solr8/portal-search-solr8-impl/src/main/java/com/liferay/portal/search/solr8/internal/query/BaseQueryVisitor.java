@@ -7,7 +7,6 @@ package com.liferay.portal.search.solr8.internal.query;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.QueryTerm;
@@ -89,11 +88,8 @@ public abstract class BaseQueryVisitor implements QueryVisitor<Query> {
 				booleanQueryBuilder.build(), BooleanClause.Occur.MUST);
 		}
 
-		FilterTranslator<Query> filterTranslator =
-			_filterTranslatorSnapshot.get();
-
 		wrapperBooleanQueryBuilder.add(
-			filterTranslator.translate(booleanFilter),
+			booleanFilter.accept(new FilterTranslator()),
 			BooleanClause.Occur.MUST);
 
 		return _addBoost(booleanQuery, wrapperBooleanQueryBuilder.build());
@@ -506,10 +502,5 @@ public abstract class BaseQueryVisitor implements QueryVisitor<Query> {
 
 		return value;
 	}
-
-	private static final Snapshot<FilterTranslator<Query>>
-		_filterTranslatorSnapshot = new Snapshot<>(
-			BaseQueryVisitor.class, Snapshot.cast(FilterTranslator.class),
-			"(search.engine.impl=Solr)", true);
 
 }

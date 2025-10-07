@@ -37,7 +37,7 @@ liferay {
 }
 
 updateFileVersions {
-	match(/<artifactId>com\.liferay\.javadoc\.formatter<\/artifactId>\s+<version>(.+)<\/version>/, "../../etl/talend/pom.xml")
+	match(/<artifactId>com\.liferay\.javadoc\.formatter<\/artifactId>\s+<version>(.+)<\/version>/, "../../integrations/talend/pom.xml")
 	match(/\t\t<dependency name="com.liferay.javadoc.formatter" org="com.liferay" rev="(\d.+)" \/>/, "../../../tools/sdk/dependencies/com.liferay.javadoc.formatter/ivy.xml")
 	match(/\t\t\t\t<version>(\d.+)<\/version>/, "samples/pom.xml")
 	match(/com\.liferay\.javadoc\.formatter=(\d.+)/, "../../sdk/gradle-plugins/src/main/resources/com/liferay/gradle/plugins/dependencies/portal-tools.properties")

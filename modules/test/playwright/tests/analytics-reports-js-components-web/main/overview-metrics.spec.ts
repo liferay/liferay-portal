@@ -106,7 +106,10 @@ test.beforeEach(async ({apiHelpers, page, site}) => {
 	});
 });
 
-test('Overview Metrics - User is able to filter Overview Metric by individuals', async ({
+// This test is failing because the createBlogsDaily event
+// is taking too long to ingest events and display them in the UI.
+
+test.skip('Overview Metrics - User is able to filter Overview Metric by individuals', async ({
 	apiHelpers,
 	contentDashboardPage,
 	page,

@@ -42,7 +42,7 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -96,21 +96,22 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		if (VersionUtil.getMinorVersion(_liferayVersion) < 3) {
-			testContains(
-				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
-		}
-		else {
-			testContains(
-				gradleProjectDir, "build.gradle",
-				DEPENDENCY_RELEASE_PORTAL_API);
-		}
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
 
-		if (!_liferayVersion.startsWith("7.0")) {
+		if (!_liferayVersion.startsWith("7.0") &&
+			!VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+
 			testContains(
 				gradleProjectDir, "build.gradle",
 				"compileOnly group: \"org.osgi\", name: " +
 					"\"org.osgi.service.jaxrs");
+		}
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testContains(
+				gradleProjectDir, "build.gradle",
+				"group: \"com.liferay\", name: \"org.osgi.service.jaxrs\", " +
+					"version: \"1.0.0.JAKARTA-LIFERAY-PATCHED-1\"");
 		}
 
 		if (_liferayVersion.startsWith("7.0")) {
@@ -143,10 +144,16 @@ public class ProjectTemplatesRestTest implements BaseProjectTemplatesTestCase {
 			testNotExists(gradleProjectDir, "src/main/resources/configuration");
 		}
 
+		String applicationFilePath =
+			"src/main/java/my/rest/application/MyRestApplication.java";
+
 		testContains(
-			gradleProjectDir,
-			"src/main/java/my/rest/application/MyRestApplication.java",
+			gradleProjectDir, applicationFilePath,
 			"public class MyRestApplication extends Application");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(gradleProjectDir, applicationFilePath);
+		}
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 

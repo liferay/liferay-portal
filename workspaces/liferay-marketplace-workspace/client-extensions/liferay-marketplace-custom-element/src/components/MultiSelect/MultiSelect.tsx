@@ -54,12 +54,12 @@ const MultiSelect: React.FC<MultiSelectProps<any>> = ({
 			tooltip={tooltip}
 		>
 			<ClayMultiSelect
-				{...{placeholder}}
 				inputName={inputName}
 				items={selectedItems}
 				key={multiselectKey}
 				onChange={onChange}
 				onItemsChange={onItemsChange}
+				placeholder={placeholder}
 				sourceItems={sourceItems}
 				spritemap={getIconSpriteMap()}
 				value={value}

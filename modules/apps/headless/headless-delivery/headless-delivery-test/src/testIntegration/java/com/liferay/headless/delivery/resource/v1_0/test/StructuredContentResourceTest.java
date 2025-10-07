@@ -19,8 +19,10 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.test.util.DLTestUtil;
+import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
@@ -78,6 +80,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -102,13 +105,15 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.InputStream;
 
@@ -127,6 +132,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -461,6 +467,7 @@ public class StructuredContentResourceTest
 		_testGetStructuredContentWithDifferentFolder();
 		_testGetStructuredContentWithDifferentLocale();
 		_testGetStructuredContentWithDifferentTimeZone();
+		_testGetStructuredContentWithImageContentURL();
 		_testGetStructuredContentWithInvalidImage();
 		_testGetStructuredContentWithRadioField();
 		_testGetStructuredContentWithRoleAdministrator();
@@ -494,13 +501,28 @@ public class StructuredContentResourceTest
 					structuredContent.getId(), _ddmTemplate.getTemplateKey()));
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteStructuredContentMyRating() throws Exception {
+		super.testGraphQLDeleteStructuredContentMyRating();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostStructuredContentFolderStructuredContent()
+		throws Exception {
+
+		super.testGraphQLPostStructuredContentFolderStructuredContent();
+	}
+
 	@Override
 	@Test
 	public void testPatchStructuredContent() throws Exception {
 		super.testPatchStructuredContent();
 
 		_testPatchStructuredContentWithDateExpired();
-		_testPatchStructuredContentWithDateExpiredNeverExpired();
 		_testPatchStructuredContentWithRandomTitle();
 	}
 
@@ -647,28 +669,8 @@ public class StructuredContentResourceTest
 
 		super.testPostStructuredContentFolderStructuredContent();
 
-		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-			testGroup.getGroupId(),
-			_portal.getClassNameId(JournalArticle.class.getName()),
-			_localizedDDMStructure.getStructureId(), true,
-			WorkflowConstants.STATUS_APPROVED);
-
-		Locale locale = LocaleUtil.getDefault();
-
-		StructuredContent randomStructuredContent = _randomStructuredContent(
-			locale);
-
-		StructuredContentResource structuredContentResource =
-			_buildStructureContentResource(locale);
-
-		StructuredContent postStructuredContent =
-			structuredContentResource.
-				postStructuredContentFolderStructuredContent(
-					_journalFolder.getFolderId(), randomStructuredContent);
-
-		Assert.assertTrue(
-			postStructuredContent.getRenderedContents()[0].
-				getMarkedAsDefault());
+		_testPostStructuredContentFolderStructuredContentWithDisplayPageTemplate();
+		_testPostStructuredContentFolderStructuredContentWithImageContentField();
 	}
 
 	@Override
@@ -758,6 +760,16 @@ public class StructuredContentResourceTest
 	}
 
 	@Override
+	protected List<GraphQLField> getGraphQLFields() throws Exception {
+		List<GraphQLField> graphQLFields = super.getGraphQLFields();
+
+		graphQLFields.add(new GraphQLField("key"));
+		graphQLFields.add(new GraphQLField("uuid"));
+
+		return graphQLFields;
+	}
+
+	@Override
 	protected String[] getIgnoredEntityFieldNames() {
 		return new String[] {
 			"assetLibraryId", "contentStructureId", "creatorId", "siteId"
@@ -793,14 +805,6 @@ public class StructuredContentResourceTest
 
 		return structuredContentResource.postAssetLibraryStructuredContent(
 			testDepotEntry.getDepotEntryId(), structuredContent);
-	}
-
-	@Override
-	protected Long
-			testDeleteAssetLibraryStructuredContentByExternalReferenceCode_getAssetLibraryId()
-		throws Exception {
-
-		return testDepotEntry.getDepotEntryId();
 	}
 
 	@Override
@@ -893,6 +897,19 @@ public class StructuredContentResourceTest
 		testGetStructuredContentFolderStructuredContentsPage_getStructuredContentFolderId() {
 
 		return _journalFolder.getFolderId();
+	}
+
+	@Override
+	protected StructuredContent
+			testGraphQLAssetLibraryStructuredContent_addStructuredContent(
+				Long assetLibraryId, StructuredContent structuredContent)
+		throws Exception {
+
+		structuredContent.setContentStructureId(
+			_depotDDMStructure.getStructureId());
+
+		return structuredContentResource.postAssetLibraryStructuredContent(
+			assetLibraryId, structuredContent);
 	}
 
 	@Override
@@ -1217,6 +1234,16 @@ public class StructuredContentResourceTest
 		return null;
 	}
 
+	private Date _getDate(int year) {
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		calendar.add(Calendar.YEAR, year);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return calendar.getTime();
+	}
+
 	private String _randomColor() {
 		return String.format(
 			"#%02d%02d%02d", RandomTestUtil.randomInt(0, 100),
@@ -1256,7 +1283,7 @@ public class StructuredContentResourceTest
 				testCompany.getCompanyId(), testGroup.getGroupId(),
 				TestPropsValues.getUserId()));
 
-		StructuredContent structuredContent = super.randomStructuredContent();
+		StructuredContent structuredContent = randomStructuredContent();
 
 		structuredContent.setContentFields(
 			_randomContentFields(dlFileEntryId, journalArticle, localizable));
@@ -1493,16 +1520,6 @@ public class StructuredContentResourceTest
 		return simpleDateFormat.format(new Date());
 	}
 
-	private Date _randomDatePlusAYear() {
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
-
-		calendar.add(Calendar.YEAR, 1);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-
-		return calendar.getTime();
-	}
-
 	private String _randomGrid() {
 		return StringBundler.concat(
 			"{", _COMPLETE_STRUCTURED_CONTENT_OPTIONS[0], ":",
@@ -1520,7 +1537,7 @@ public class StructuredContentResourceTest
 	private StructuredContent _randomStructuredContent(Locale locale)
 		throws Exception {
 
-		StructuredContent structuredContent = super.randomStructuredContent();
+		StructuredContent structuredContent = randomStructuredContent();
 
 		String w3cLanguageId = LocaleUtil.toW3cLanguageId(locale);
 
@@ -1623,6 +1640,8 @@ public class StructuredContentResourceTest
 			_useDepotDDMStructureStructureId ?
 				_depotDDMStructure.getStructureId() :
 					_ddmStructure.getStructureId());
+		structuredContent.setDateExpired(() -> null);
+		structuredContent.setNeverExpire(true);
 		structuredContent.setRelatedContents(
 			new RelatedContent[] {
 				new RelatedContent() {
@@ -2144,7 +2163,7 @@ public class StructuredContentResourceTest
 	private void _testGetStructuredContentWithDateExpired() throws Exception {
 		StructuredContent structuredContent = randomStructuredContent();
 
-		Date dateExpired = _randomDatePlusAYear();
+		Date dateExpired = _getDate(1);
 
 		structuredContent.setDateExpired(dateExpired);
 
@@ -2167,7 +2186,7 @@ public class StructuredContentResourceTest
 
 		StructuredContent structuredContent = randomStructuredContent();
 
-		structuredContent.setDateExpired(_randomDatePlusAYear());
+		structuredContent.setDateExpired(_getDate(1));
 
 		structuredContent.setNeverExpire(true);
 
@@ -2285,6 +2304,41 @@ public class StructuredContentResourceTest
 		finally {
 			_userLocalService.deleteUser(user);
 		}
+	}
+
+	private void _testGetStructuredContentWithImageContentURL()
+		throws Exception {
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(testGroup.getGroupId());
+
+		DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
+			dlFolder.getFolderId());
+
+		FileEntry fileEntry = _dlAppLocalService.getFileEntry(
+			dlFileEntry.getFileEntryId());
+
+		String previewURL = _dlURLHelper.getPreviewURL(
+			fileEntry, fileEntry.getFileVersion(), null, "", true, false);
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.
+				postStructuredContentFolderStructuredContent(
+					_journalFolder.getFolderId(),
+					_randomCompleteStructuredContent(
+						dlFileEntry.getFileEntryId(), true));
+
+		StructuredContent getStructuredContent =
+			structuredContentResource.getStructuredContent(
+				postStructuredContent.getId());
+
+		ContentField[] contentFields = getStructuredContent.getContentFields();
+
+		ContentFieldValue contentFieldValue =
+			contentFields[8].getContentFieldValue();
+
+		ContentDocument contentDocument = contentFieldValue.getImage();
+
+		Assert.assertEquals(contentDocument.getContentUrl(), previewURL);
 	}
 
 	private void _testGetStructuredContentWithInvalidImage() throws Exception {
@@ -2506,30 +2560,13 @@ public class StructuredContentResourceTest
 	}
 
 	private void _testPatchStructuredContentWithDateExpired() throws Exception {
-		StructuredContent structuredContent = randomStructuredContent();
-
-		StructuredContent postStructuredContent =
-			structuredContentResource.postSiteStructuredContent(
-				testGroup.getGroupId(), structuredContent);
-
-		Date randomDate = _randomDatePlusAYear();
-
-		StructuredContent patchStructuredContent =
-			structuredContentResource.patchStructuredContent(
-				postStructuredContent.getId(),
-				new StructuredContent() {
-					{
-						dateExpired = randomDate;
-						neverExpire = false;
-					}
-				});
-
-		Assert.assertFalse(patchStructuredContent.getNeverExpire());
-		Assert.assertEquals(
-			randomDate, patchStructuredContent.getDateExpired());
+		_testPatchStructuredContentWithDateExpiredExpire1();
+		_testPatchStructuredContentWithDateExpiredExpire2();
+		_testPatchStructuredContentWithDateExpiredExpireBadRequest();
+		_testPatchStructuredContentWithDateExpiredNeverExpire();
 	}
 
-	private void _testPatchStructuredContentWithDateExpiredNeverExpired()
+	private void _testPatchStructuredContentWithDateExpiredExpire1()
 		throws Exception {
 
 		StructuredContent structuredContent = randomStructuredContent();
@@ -2538,14 +2575,105 @@ public class StructuredContentResourceTest
 			structuredContentResource.postSiteStructuredContent(
 				testGroup.getGroupId(), structuredContent);
 
-		Date randomDate = _randomDatePlusAYear();
+		Date date = _getDate(1);
 
 		StructuredContent patchStructuredContent =
 			structuredContentResource.patchStructuredContent(
 				postStructuredContent.getId(),
 				new StructuredContent() {
 					{
-						dateExpired = randomDate;
+						dateExpired = date;
+						neverExpire = false;
+					}
+				});
+
+		Assert.assertFalse(patchStructuredContent.getNeverExpire());
+		Assert.assertEquals(date, patchStructuredContent.getDateExpired());
+	}
+
+	private void _testPatchStructuredContentWithDateExpiredExpire2()
+		throws Exception {
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGroup.getGroupId(), structuredContent);
+
+		StructuredContent patchStructuredContent =
+			structuredContentResource.patchStructuredContent(
+				postStructuredContent.getId(),
+				new StructuredContent() {
+					{
+						neverExpire = false;
+					}
+				});
+
+		Assert.assertFalse(patchStructuredContent.getNeverExpire());
+
+		Date patchDate = patchStructuredContent.getDateExpired();
+
+		Date date = _getDate(1);
+
+		Assert.assertEquals(date.getYear(), patchDate.getYear());
+		Assert.assertEquals(date.getMonth(), patchDate.getMonth());
+		Assert.assertEquals(date.getDay(), patchDate.getDay());
+		Assert.assertEquals(date.getHours(), patchDate.getHours());
+	}
+
+	private void _testPatchStructuredContentWithDateExpiredExpireBadRequest()
+		throws Exception {
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGroup.getGroupId(), structuredContent);
+
+		Date date = _getDate(-1);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.OFF)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				structuredContentResource.patchStructuredContentHttpResponse(
+					postStructuredContent.getId(),
+					new StructuredContent() {
+						{
+							dateExpired = date;
+							neverExpire = false;
+						}
+					}));
+		}
+
+		StructuredContent getStructuredContent =
+			structuredContentResource.getStructuredContent(
+				postStructuredContent.getId());
+
+		Assert.assertTrue(getStructuredContent.getNeverExpire());
+		Assert.assertNull(getStructuredContent.getDateExpired());
+	}
+
+	private void _testPatchStructuredContentWithDateExpiredNeverExpire()
+		throws Exception {
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.postSiteStructuredContent(
+				testGroup.getGroupId(), structuredContent);
+
+		Date date = _getDate(1);
+
+		StructuredContent patchStructuredContent =
+			structuredContentResource.patchStructuredContent(
+				postStructuredContent.getId(),
+				new StructuredContent() {
+					{
+						dateExpired = date;
 						neverExpire = true;
 					}
 				});
@@ -2611,6 +2739,88 @@ public class StructuredContentResourceTest
 
 		Assert.assertEquals(1, jsonObject.getLong("processedItemsCount"));
 		Assert.assertEquals(1, jsonObject.getLong("totalItemsCount"));
+	}
+
+	private void _testPostStructuredContentFolderStructuredContentWithDisplayPageTemplate()
+		throws Exception {
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			testGroup.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			_localizedDDMStructure.getStructureId(), true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Locale locale = LocaleUtil.getDefault();
+
+		StructuredContent randomStructuredContent = _randomStructuredContent(
+			locale);
+
+		StructuredContentResource structuredContentResource =
+			_buildStructureContentResource(locale);
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.
+				postStructuredContentFolderStructuredContent(
+					_journalFolder.getFolderId(), randomStructuredContent);
+
+		Assert.assertTrue(
+			postStructuredContent.getRenderedContents()[0].
+				getMarkedAsDefault());
+	}
+
+	private void _testPostStructuredContentFolderStructuredContentWithImageContentField()
+		throws Exception {
+
+		StructuredContent structuredContent = randomStructuredContent();
+
+		structuredContent.setContentFields(
+			new ContentField[] {
+				new ContentField() {
+					{
+						contentFieldValue = new ContentFieldValue() {
+							{
+								image = new ContentDocument() {
+									{
+										description =
+											RandomTestUtil.randomString();
+										id = _dlFileEntry.getFileEntryId();
+									}
+								};
+							}
+						};
+						name = "image";
+					}
+				}
+			});
+
+		DDMStructure imageDDMStructure = _addDDMStructure(
+			testGroup, "test-ddm-structure-image.json");
+
+		structuredContent.setContentStructureId(
+			imageDDMStructure.getStructureId());
+
+		StructuredContent postStructuredContent =
+			structuredContentResource.
+				postStructuredContentFolderStructuredContent(
+					_journalFolder.getFolderId(), structuredContent);
+
+		assertValid(postStructuredContent);
+
+		StructuredContent getStructuredContent =
+			structuredContentResource.getStructuredContent(
+				postStructuredContent.getId());
+
+		ContentField contentField = getStructuredContent.getContentFields()[0];
+
+		ContentFieldValue contentFieldValue =
+			contentField.getContentFieldValue();
+
+		ContentDocument contentDocument = contentFieldValue.getImage();
+
+		Assert.assertEquals(
+			_dlFileEntry.getFileEntryId(), (long)contentDocument.getId());
+
+		Assert.assertEquals("image", contentField.getName());
 	}
 
 	private void _testPutSiteStructuredContentByExternalReferenceCodeWithCustomField()
@@ -2839,7 +3049,14 @@ public class StructuredContentResourceTest
 	private DDMStructure _ddmStructure;
 	private DDMTemplate _ddmTemplate;
 	private DDMStructure _depotDDMStructure;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
 	private DLFileEntry _dlFileEntry;
+
+	@Inject
+	private DLURLHelper _dlURLHelper;
 
 	@Inject
 	private ExpandoColumnLocalService _expandoColumnLocalService;

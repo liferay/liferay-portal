@@ -1,5 +1,11 @@
 # Liferay Gradle Plugins Theme Builder Change Log
 
+## 2.0.28 - 2025-01-16
+
+### Dependencies
+- [LPD-45812] Update the com.liferay.gradle.plugins.css.builder dependency to
+version 5.0.16.
+
 ## 2.0.27 - 2024-05-24
 
 ### Commits
@@ -316,6 +322,7 @@ aren't mixed in with source files (fb7f330f69)
 
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
 [LPD-24865]: https://issues.liferay.com/browse/LPD-24865
+[LPD-45812]: https://issues.liferay.com/browse/LPD-45812
 [LPS-66396]: https://issues.liferay.com/browse/LPS-66396
 [LPS-66709]: https://issues.liferay.com/browse/LPS-66709
 [LPS-67573]: https://issues.liferay.com/browse/LPS-67573

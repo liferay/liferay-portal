@@ -18,37 +18,6 @@ const CheckboxMultipleWithProvider = (props) => (
 	</PageProvider>
 );
 
-describe('Smoke test', () => {
-	test('field Checkbox Multiple renders the expected structure with default props', () => {
-		const {container} = render(
-			<CheckboxMultipleWithProvider
-				accessibleProps={{'aria-required': false}}
-				disabled={false}
-				inline={false}
-				isSwitcher={false}
-				localizedValueEdited={false}
-				name="namePropertyValue"
-				options={[
-					{
-						label: 'Option1',
-						reference: 'Option1Reference',
-						value: 'Option1Value',
-					},
-					{
-						label: 'Option2',
-						reference: 'Option2Reference',
-						value: 'Option2Value',
-					},
-				]}
-				predefinedValue={[]}
-				value={[]}
-			/>
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-});
-
 describe('Field Checkbox Multiple', () => {
 
 	// eslint-disable-next-line no-console
@@ -65,6 +34,11 @@ describe('Field Checkbox Multiple', () => {
 		};
 	});
 
+	beforeEach(() => {
+		jest.useFakeTimers();
+		fetch.mockResponseOnce(JSON.stringify({}));
+	});
+
 	afterAll(() => {
 
 		// eslint-disable-next-line no-console
@@ -72,36 +46,6 @@ describe('Field Checkbox Multiple', () => {
 	});
 
 	afterEach(cleanup);
-
-	beforeEach(() => {
-		jest.useFakeTimers();
-		fetch.mockResponseOnce(JSON.stringify({}));
-	});
-
-	it('is not editable', () => {
-		render(
-			<CheckboxMultipleWithProvider
-				options={[
-					{
-						label: 'readOnlyOption',
-						value: 'readOnlyOption',
-					},
-				]}
-				readOnly={true}
-			/>
-		);
-
-		expect(screen.getByLabelText('readOnlyOption')).toBeDisabled();
-	});
-
-	it('has a helptext', () => {
-		render(<CheckboxMultipleWithProvider tip="Help Text Content" />);
-
-		const helpTextElements = screen.getAllByText('Help Text Content');
-
-		expect(helpTextElements[0]).toBeVisible();
-		expect(helpTextElements[1]).toHaveClass('sr-only');
-	});
 
 	it('appends id to field-feedback element id', () => {
 		const {container} = render(
@@ -132,6 +76,131 @@ describe('Field Checkbox Multiple', () => {
 
 		expect(screen.getByLabelText('Option1')).not.toBeChecked();
 		expect(screen.getByLabelText('Option2')).toBeChecked();
+	});
+
+	it('call the onChange callback on the field change', () => {
+		const handleFieldEdited = jest.fn();
+
+		const {container} = render(
+			<CheckboxMultipleWithProvider onChange={handleFieldEdited} />
+		);
+
+		userEvent.click(container.querySelector('input'));
+
+		expect(handleFieldEdited).toHaveBeenCalled();
+	});
+
+	it('checks the predefinedValue if there is no value', () => {
+		const {getByLabelText} = render(
+			<CheckboxMultipleWithProvider
+				options={[
+					{
+						label: 'Option 1',
+						value: 'option1',
+					},
+					{
+						label: 'Option 2',
+						value: 'option2',
+					},
+					{
+						label: 'Option 3',
+						value: 'option3',
+					},
+				]}
+				predefinedValue={['option1', 'option2']}
+				value={[]}
+			/>
+		);
+
+		expect(getByLabelText('Option 1')).toBeChecked();
+		expect(getByLabelText('Option 2')).toBeChecked();
+		expect(getByLabelText('Option 3')).not.toBeChecked();
+	});
+
+	it('does not have aria-invalid attribute on first render when it is required', () => {
+		const {container} = render(<CheckboxMultipleWithProvider required />);
+
+		const input = container.querySelector('input[aria-required="true"]');
+
+		expect(input.hasAttribute('aria-invalid')).toBe(false);
+	});
+
+	it('does not have aria-invalid attribute when it is required and has a value', () => {
+		const {container} = render(
+			<CheckboxMultipleWithProvider
+				options={[
+					{
+						label: 'Option 1',
+						value: 'option1',
+					},
+					{
+						label: 'Option 2',
+						value: 'option2',
+					},
+					{
+						label: 'Option 3',
+						value: 'option3',
+					},
+				]}
+				required={true}
+				value={['option1', 'option2']}
+			/>
+		);
+
+		const input = container.querySelector('input[aria-required="true"]');
+
+		expect(input.hasAttribute('aria-invalid')).toBe(false);
+	});
+
+	it('does not render field label if showLabel is false', () => {
+		render(
+			<CheckboxMultipleWithProvider
+				label="CheckboxMultipleLabel"
+				showLabel={false}
+			/>
+		);
+
+		const labelElements = screen.getAllByText('CheckboxMultipleLabel');
+
+		expect(labelElements.length).toBe(1);
+		expect(labelElements[0]).toHaveClass('sr-only');
+	});
+
+	it('has a helptext', () => {
+		render(<CheckboxMultipleWithProvider tip="Help Text Content" />);
+
+		const helpTextElements = screen.getAllByText('Help Text Content');
+
+		expect(helpTextElements[0]).toBeVisible();
+		expect(helpTextElements[1]).toHaveClass('sr-only');
+	});
+
+	it('has a value', () => {
+		const {container} = render(
+			<CheckboxMultipleWithProvider value={['Option1Value']} />
+		);
+
+		const hiddenInputElement = container.querySelector(
+			'input[type="hidden"]'
+		);
+
+		expect(hiddenInputElement).toHaveAttribute('value', 'Option1Value');
+	});
+
+	it('is not editable', () => {
+		render(
+			<CheckboxMultipleWithProvider
+				options={[
+					{
+						label: 'readOnlyOption',
+						value: 'readOnlyOption',
+					},
+				]}
+				readOnly={true}
+			/>
+		);
+
+		expect(screen.getByLabelText('readOnlyOption')).toBeDisabled();
 	});
 
 	it('is not required', () => {
@@ -166,117 +235,6 @@ describe('Field Checkbox Multiple', () => {
 
 		expect(checkboxElement).toBeVisible();
 		expect(checkboxElement).not.toHaveAttribute('role', 'switch');
-	});
-
-	it('renders field label if showLabel is true', () => {
-		render(
-			<CheckboxMultipleWithProvider
-				label="CheckboxMultipleLabel"
-				showLabel
-			/>
-		);
-
-		const labelElements = screen.getAllByText('CheckboxMultipleLabel');
-
-		expect(labelElements.length).toBe(2);
-		expect(labelElements[0]).toBeVisible();
-		expect(labelElements[1]).toHaveClass('sr-only');
-	});
-
-	it('does not render field label if showLabel is false', () => {
-		render(
-			<CheckboxMultipleWithProvider
-				label="CheckboxMultipleLabel"
-				showLabel={false}
-			/>
-		);
-
-		const labelElements = screen.getAllByText('CheckboxMultipleLabel');
-
-		expect(labelElements.length).toBe(1);
-		expect(labelElements[0]).toHaveClass('sr-only');
-	});
-
-	it('has a value', () => {
-		const {container} = render(
-			<CheckboxMultipleWithProvider value={['Option1Value']} />
-		);
-
-		const hiddenInputElement = container.querySelector(
-			'input[type="hidden"]'
-		);
-
-		expect(hiddenInputElement).toHaveAttribute('value', 'Option1Value');
-	});
-
-	it('call the onChange callback on the field change', () => {
-		const handleFieldEdited = jest.fn();
-
-		const {container} = render(
-			<CheckboxMultipleWithProvider onChange={handleFieldEdited} />
-		);
-
-		userEvent.click(container.querySelector('input'));
-
-		expect(handleFieldEdited).toHaveBeenCalled();
-	});
-
-	it('uses value over predefinedValue if there is a value', () => {
-		const {container, getByLabelText} = render(
-			<CheckboxMultipleWithProvider
-				options={[
-					{
-						label: 'Option 1',
-						value: 'option1',
-					},
-					{
-						label: 'Option 2',
-						value: 'option2',
-					},
-					{
-						label: 'Option 3',
-						value: 'option3',
-					},
-				]}
-				predefinedValue={['option1', 'option2']}
-				value={['option3']}
-			/>
-		);
-
-		expect(getByLabelText('Option 1')).not.toBeChecked();
-		expect(getByLabelText('Option 2')).not.toBeChecked();
-		expect(getByLabelText('Option 3')).toBeChecked();
-
-		const hiddenInput = container.querySelector('input[type="hidden"]');
-
-		expect(hiddenInput).toHaveAttribute('value', 'option3');
-	});
-
-	it('checks the predefinedValue if there is no value', () => {
-		const {getByLabelText} = render(
-			<CheckboxMultipleWithProvider
-				options={[
-					{
-						label: 'Option 1',
-						value: 'option1',
-					},
-					{
-						label: 'Option 2',
-						value: 'option2',
-					},
-					{
-						label: 'Option 3',
-						value: 'option3',
-					},
-				]}
-				predefinedValue={['option1', 'option2']}
-				value={[]}
-			/>
-		);
-
-		expect(getByLabelText('Option 1')).toBeChecked();
-		expect(getByLabelText('Option 2')).toBeChecked();
-		expect(getByLabelText('Option 3')).not.toBeChecked();
 	});
 
 	it('renders data-option-reference attribute regardless of the element being a switcher', () => {
@@ -320,6 +278,21 @@ describe('Field Checkbox Multiple', () => {
 		});
 	});
 
+	it('renders field label if showLabel is true', () => {
+		render(
+			<CheckboxMultipleWithProvider
+				label="CheckboxMultipleLabel"
+				showLabel
+			/>
+		);
+
+		const labelElements = screen.getAllByText('CheckboxMultipleLabel');
+
+		expect(labelElements.length).toBe(2);
+		expect(labelElements[0]).toBeVisible();
+		expect(labelElements[1]).toHaveClass('sr-only');
+	});
+
 	it('uncheck all values if the user has edited the field to clear the predefinedValue', () => {
 		const {getByLabelText} = render(
 			<CheckboxMultipleWithProvider
@@ -346,5 +319,67 @@ describe('Field Checkbox Multiple', () => {
 		expect(getByLabelText('Option 1')).not.toBeChecked();
 		expect(getByLabelText('Option 2')).not.toBeChecked();
 		expect(getByLabelText('Option 3')).not.toBeChecked();
+	});
+
+	it('uses value over predefinedValue if there is a value', () => {
+		const {container, getByLabelText} = render(
+			<CheckboxMultipleWithProvider
+				options={[
+					{
+						label: 'Option 1',
+						value: 'option1',
+					},
+					{
+						label: 'Option 2',
+						value: 'option2',
+					},
+					{
+						label: 'Option 3',
+						value: 'option3',
+					},
+				]}
+				predefinedValue={['option1', 'option2']}
+				value={['option3']}
+			/>
+		);
+
+		expect(getByLabelText('Option 1')).not.toBeChecked();
+		expect(getByLabelText('Option 2')).not.toBeChecked();
+		expect(getByLabelText('Option 3')).toBeChecked();
+
+		const hiddenInput = container.querySelector('input[type="hidden"]');
+
+		expect(hiddenInput).toHaveAttribute('value', 'option3');
+	});
+});
+
+describe('Smoke test', () => {
+	test('field Checkbox Multiple renders the expected structure with default props', () => {
+		const {container} = render(
+			<CheckboxMultipleWithProvider
+				accessibleProps={{'aria-required': false}}
+				disabled={false}
+				inline={false}
+				isSwitcher={false}
+				localizedValueEdited={false}
+				name="namePropertyValue"
+				options={[
+					{
+						label: 'Option1',
+						reference: 'Option1Reference',
+						value: 'Option1Value',
+					},
+					{
+						label: 'Option2',
+						reference: 'Option2Reference',
+						value: 'Option2Value',
+					},
+				]}
+				predefinedValue={[]}
+				value={[]}
+			/>
+		);
+
+		expect(container).toMatchSnapshot();
 	});
 });

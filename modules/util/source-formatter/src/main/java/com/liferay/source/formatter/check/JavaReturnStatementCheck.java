@@ -7,6 +7,7 @@ package com.liferay.source.formatter.check;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.ToolsUtil;
 import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaSignature;
@@ -31,6 +32,43 @@ public class JavaReturnStatementCheck extends BaseJavaTermCheck {
 	@Override
 	protected String[] getCheckableJavaTermNames() {
 		return new String[] {JAVA_CONSTRUCTOR, JAVA_METHOD};
+	}
+
+	private String _formatReturnAssignStatement(
+		Matcher matcher, String returnStatement) {
+
+		String returnFollowingCode = matcher.group(2);
+
+		int index = returnFollowingCode.indexOf(" =");
+
+		if ((index == -1) || ((index + 2) >= returnFollowingCode.length())) {
+			return returnStatement;
+		}
+
+		char c = returnFollowingCode.charAt(index + 2);
+
+		if (!Character.isWhitespace(c)) {
+			return returnStatement;
+		}
+
+		String s = returnFollowingCode.substring(0, index);
+
+		if (!s.matches("\\w+")) {
+			return returnStatement;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append("\n");
+		sb.append(matcher.group(1));
+		sb.append(returnFollowingCode);
+		sb.append(";\n\n");
+		sb.append(matcher.group(1));
+		sb.append("return ");
+		sb.append(s);
+		sb.append(";\n");
+
+		return sb.toString();
 	}
 
 	private String _formatReturnStatement(
@@ -60,11 +98,15 @@ public class JavaReturnStatementCheck extends BaseJavaTermCheck {
 	}
 
 	private String _formatReturnStatements(JavaTerm javaTerm) {
-		String javaTermContent = javaTerm.getContent();
-
 		JavaSignature signature = javaTerm.getSignature();
 
 		String returnType = signature.getReturnType();
+
+		if (Validator.isBlank(returnType)) {
+			return javaTerm.getContent();
+		}
+
+		String javaTermContent = javaTerm.getContent();
 
 		Matcher matcher1 = _returnPattern.matcher(javaTermContent);
 
@@ -90,7 +132,16 @@ public class JavaReturnStatementCheck extends BaseJavaTermCheck {
 					ifCondition, trueValue, falseValue);
 			}
 
-			if ((returnType == null) || !returnType.equals("boolean")) {
+			String newReturnStatement = _formatReturnAssignStatement(
+				matcher1, returnStatement);
+
+			if (!newReturnStatement.equals(returnStatement)) {
+				return StringUtil.replaceFirst(
+					javaTermContent, returnStatement, newReturnStatement,
+					matcher1.start());
+			}
+
+			if (!returnType.equals("boolean")) {
 				continue;
 			}
 

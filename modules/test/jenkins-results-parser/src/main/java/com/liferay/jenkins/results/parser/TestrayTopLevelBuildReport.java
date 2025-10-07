@@ -6,63 +6,41 @@
 package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.net.URL;
+import org.json.JSONObject;
 
 /**
  * @author Michael Hashimoto
  */
-public class TestrayTopLevelBuildReport extends URLTopLevelBuildReport {
-
-	protected TestrayTopLevelBuildReport(TestrayBuild testrayBuild) {
-		super(testrayBuild.getTopLevelBuildURL());
-
-		_startYearMonth = testrayBuild.getStartYearMonth();
-	}
+public class TestrayTopLevelBuildReport extends BaseTopLevelBuildReport {
 
 	@Override
-	protected File getJenkinsConsoleLocalFile() {
-		if (_jenkinsConsoleLocalFile != null) {
-			return _jenkinsConsoleLocalFile;
+	public JSONObject getBuildReportJSONObject() {
+		return _buildReportJSONObject;
+	}
+
+	protected TestrayTopLevelBuildReport(TestrayBuild testrayBuild) {
+		super(String.valueOf(testrayBuild.getTopLevelBuildURL()));
+
+		_startYearMonth = testrayBuild.getStartYearMonth();
+
+		TestrayCloudObject buildReportTestrayCloudObject =
+			getBuildReportTestrayCloudObject();
+
+		if (buildReportTestrayCloudObject == null) {
+			throw new RuntimeException("Unable to find build-report.json.gz");
 		}
 
-		JobReport jobReport = getJobReport();
+		String value = buildReportTestrayCloudObject.getValue();
 
-		JenkinsMaster jenkinsMaster = jobReport.getJenkinsMaster();
-
-		try {
-			URL jenkinsConsoleURL = new URL(
-				JenkinsResultsParserUtil.combine(
-					"https://storage.cloud.google.com/testray-results/",
-					getStartYearMonth(), "/", jenkinsMaster.getName(), "/",
-					jobReport.getJobName(), "/",
-					String.valueOf(getBuildNumber()),
-					"/jenkins-console.txt.gz"));
-
-			File jenkinsConsoleLocalGzipFile = new File(
-				System.getenv("WORKSPACE"),
-				JenkinsResultsParserUtil.getDistinctTimeStamp() + ".gz");
-
-			JenkinsResultsParserUtil.toFile(
-				jenkinsConsoleURL, jenkinsConsoleLocalGzipFile);
-
-			File jenkinsConsoleLocalFile = new File(
-				System.getenv("WORKSPACE"),
-				JenkinsResultsParserUtil.getDistinctTimeStamp());
-
-			JenkinsResultsParserUtil.unGzip(
-				jenkinsConsoleLocalGzipFile, jenkinsConsoleLocalFile);
-
-			_jenkinsConsoleLocalFile = jenkinsConsoleLocalFile;
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
+		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+			throw new RuntimeException("Invalid build-report.json.gz");
 		}
 
-		return _jenkinsConsoleLocalFile;
+		_buildReportJSONObject = new JSONObject(value);
+
+		initialize(_buildReportJSONObject);
 	}
 
 	@Override
@@ -70,7 +48,7 @@ public class TestrayTopLevelBuildReport extends URLTopLevelBuildReport {
 		return _startYearMonth;
 	}
 
-	private File _jenkinsConsoleLocalFile;
+	private final JSONObject _buildReportJSONObject;
 	private final String _startYearMonth;
 
 }

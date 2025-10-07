@@ -6,7 +6,6 @@
 import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import classNames from 'classnames';
 import {useState} from 'react';
 
 import {RadioCard} from '../../../../../components/RadioCard/RadioCard';
@@ -35,11 +34,14 @@ type ProductTypeOption = {
 const BuildContent = () => {
 	const [
 		{
+			_product,
 			build: {appType, liferayPackages},
 			loading,
 		},
 		dispatch,
 	] = useNewAppContext();
+
+	const isDraft = _product?.productStatus === ProductWorkflowStatusCode.DRAFT;
 
 	const [visibleSelectVersionModal, setVisibleSelectVersionModal] =
 		useState(false);
@@ -79,7 +81,7 @@ const BuildContent = () => {
 			<Section
 				description={i18n.translate(
 					appType === ProductType.DXP
-						? 'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-compatibility-range'
+						? 'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-the-compatibility-range'
 						: 'select-a-local-file-to-upload'
 				)}
 				label={i18n.translate(
@@ -106,26 +108,42 @@ const BuildContent = () => {
 							<span>
 								{i18n.translate('package')} {index + 1}
 							</span>
-							<ClayButton
-								displayType="unstyled"
-								onClick={() => {
-									const updatedLiferayPackages =
-										liferayPackages.filter(
-											(_, itemIndex) =>
-												itemIndex !== index
-										);
+							{(!liferayPackage.uploaded || isDraft) && (
+								<ClayButton
+									displayType="unstyled"
+									onClick={() => {
+										const updatedLiferayPackages =
+											liferayPackages.filter(
+												(_, itemIndex) =>
+													itemIndex !== index
+											);
 
-									dispatch({
-										payload: {
-											liferayPackages:
-												updatedLiferayPackages,
-										},
-										type: NewAppTypes.SET_BUILD,
-									});
-								}}
-							>
-								{i18n.translate('remove')}
-							</ClayButton>
+										if (isDraft) {
+											const liferayPackagesToRemove =
+												liferayPackages.filter(
+													(_, itemIndex) =>
+														itemIndex === index
+												);
+
+											dispatch({
+												payload:
+													liferayPackagesToRemove[0],
+												type: NewAppTypes.SET_DELETE_BUILD,
+											});
+										}
+
+										dispatch({
+											payload: {
+												liferayPackages:
+													updatedLiferayPackages,
+											},
+											type: NewAppTypes.SET_BUILD,
+										});
+									}}
+								>
+									{i18n.translate('remove')}
+								</ClayButton>
+							)}
 						</div>
 
 						<NewAppUploadAppPackagesComponent
@@ -207,12 +225,7 @@ const Build = () => {
 	};
 
 	return (
-		<div
-			className={classNames('new-app-form-build', {
-				'section-disabled':
-					_product?.productStatus === ProductWorkflowStatusCode.DRAFT,
-			})}
-		>
+		<div className="new-app-form-build">
 			<Section
 				label={i18n.translate('app-type')}
 				required
@@ -220,7 +233,12 @@ const Build = () => {
 			>
 				<div className="provide-app-build-page-cloud-compatible-container">
 					<ClayDropDown
-						active={active}
+						active={
+							active &&
+							(!_product?.id ||
+								_product?.productStatus ===
+									ProductWorkflowStatusCode.DRAFT)
+						}
 						alignmentPosition={Align.BottomLeft}
 						className="app-type-dropdown"
 						onActiveChange={setActive}

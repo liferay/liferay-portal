@@ -37,6 +37,12 @@ export default function ({
 			name: {[defaultLanguageId]: name},
 		};
 
+		if (defaultLanguageId !== Liferay.ThemeDisplay.getDefaultLanguageId()) {
+			commerceInventoryWarehouseData.name[
+				Liferay.ThemeDisplay.getDefaultLanguageId()
+			] = name;
+		}
+
 		return CommerceInventoryWarehouseResource.addWarehouse(
 			commerceInventoryWarehouseData
 		)

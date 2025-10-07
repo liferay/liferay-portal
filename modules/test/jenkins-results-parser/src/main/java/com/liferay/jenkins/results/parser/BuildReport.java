@@ -31,8 +31,6 @@ public interface BuildReport {
 
 	public String getJobName();
 
-	public JobReport getJobReport();
-
 	public String getResult();
 
 	public Date getStartDate();

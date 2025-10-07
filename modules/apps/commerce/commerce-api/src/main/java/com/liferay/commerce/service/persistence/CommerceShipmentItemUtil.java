@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
+import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1338,6 +1340,230 @@ public class CommerceShipmentItemUtil {
 		return getPersistence().countByC_C_C(
 			commerceShipmentId, commerceOrderItemId,
 			commerceInventoryWarehouseId);
+	}
+
+	/**
+	 * Returns all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @return the matching commerce shipment items
+	 */
+	public static List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		return getPersistence().findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity);
+	}
+
+	/**
+	 * Returns a range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @return the range of matching commerce shipment items
+	 */
+	public static List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end) {
+
+		return getPersistence().findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce shipment items
+	 */
+	public static List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		return getPersistence().findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching commerce shipment items
+	 */
+	public static List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end,
+		OrderByComparator<CommerceShipmentItem> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce shipment item
+	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
+	 */
+	public static CommerceShipmentItem findByC_NotC_GteQ_First(
+			long commerceShipmentId, long commerceInventoryWarehouseId,
+			BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws com.liferay.commerce.exception.NoSuchShipmentItemException {
+
+		return getPersistence().findByC_NotC_GteQ_First(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
+	 */
+	public static CommerceShipmentItem fetchByC_NotC_GteQ_First(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		return getPersistence().fetchByC_NotC_GteQ_First(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the last commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce shipment item
+	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
+	 */
+	public static CommerceShipmentItem findByC_NotC_GteQ_Last(
+			long commerceShipmentId, long commerceInventoryWarehouseId,
+			BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws com.liferay.commerce.exception.NoSuchShipmentItemException {
+
+		return getPersistence().findByC_NotC_GteQ_Last(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the last commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
+	 */
+	public static CommerceShipmentItem fetchByC_NotC_GteQ_Last(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		return getPersistence().fetchByC_NotC_GteQ_Last(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the commerce shipment items before and after the current commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentItemId the primary key of the current commerce shipment item
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next commerce shipment item
+	 * @throws NoSuchShipmentItemException if a commerce shipment item with the primary key could not be found
+	 */
+	public static CommerceShipmentItem[] findByC_NotC_GteQ_PrevAndNext(
+			long commerceShipmentItemId, long commerceShipmentId,
+			long commerceInventoryWarehouseId, BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws com.liferay.commerce.exception.NoSuchShipmentItemException {
+
+		return getPersistence().findByC_NotC_GteQ_PrevAndNext(
+			commerceShipmentItemId, commerceShipmentId,
+			commerceInventoryWarehouseId, quantity, orderByComparator);
+	}
+
+	/**
+	 * Removes all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63; from the database.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 */
+	public static void removeByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		getPersistence().removeByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity);
+	}
+
+	/**
+	 * Returns the number of commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @return the number of matching commerce shipment items
+	 */
+	public static int countByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		return getPersistence().countByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity);
 	}
 
 	/**

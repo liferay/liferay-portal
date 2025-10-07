@@ -73,7 +73,7 @@ public class LayoutWrapper
 		attributes.put(
 			"layoutPrototypeLinkEnabled", isLayoutPrototypeLinkEnabled());
 		attributes.put(
-			"sourcePrototypeLayoutUuid", getSourcePrototypeLayoutUuid());
+			"layoutSetPrototypeLayoutERC", getLayoutSetPrototypeLayoutERC());
 		attributes.put("publishDate", getPublishDate());
 		attributes.put("lastPublishDate", getLastPublishDate());
 		attributes.put("status", getStatus());
@@ -311,11 +311,11 @@ public class LayoutWrapper
 			setLayoutPrototypeLinkEnabled(layoutPrototypeLinkEnabled);
 		}
 
-		String sourcePrototypeLayoutUuid = (String)attributes.get(
-			"sourcePrototypeLayoutUuid");
+		String layoutSetPrototypeLayoutERC = (String)attributes.get(
+			"layoutSetPrototypeLayoutERC");
 
-		if (sourcePrototypeLayoutUuid != null) {
-			setSourcePrototypeLayoutUuid(sourcePrototypeLayoutUuid);
+		if (layoutSetPrototypeLayoutERC != null) {
+			setLayoutSetPrototypeLayoutERC(layoutSetPrototypeLayoutERC);
 		}
 
 		Date publishDate = (Date)attributes.get("publishDate");
@@ -952,6 +952,16 @@ public class LayoutWrapper
 	}
 
 	/**
+	 * Returns the layout set prototype layout erc of this layout.
+	 *
+	 * @return the layout set prototype layout erc of this layout
+	 */
+	@Override
+	public String getLayoutSetPrototypeLayoutERC() {
+		return model.getLayoutSetPrototypeLayoutERC();
+	}
+
+	/**
 	 * Returns the current layout's {@link LayoutType}.
 	 *
 	 * @return the current layout's layout type
@@ -1253,16 +1263,6 @@ public class LayoutWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getScopeGroup();
-	}
-
-	/**
-	 * Returns the source prototype layout uuid of this layout.
-	 *
-	 * @return the source prototype layout uuid of this layout
-	 */
-	@Override
-	public String getSourcePrototypeLayoutUuid() {
-		return model.getSourcePrototypeLayoutUuid();
 	}
 
 	/**
@@ -1886,6 +1886,11 @@ public class LayoutWrapper
 	}
 
 	@Override
+	public boolean isTypeEmpty() {
+		return model.isTypeEmpty();
+	}
+
+	@Override
 	public boolean isTypeLinkToLayout() {
 		return model.isTypeLinkToLayout();
 	}
@@ -2258,6 +2263,18 @@ public class LayoutWrapper
 	}
 
 	/**
+	 * Sets the layout set prototype layout erc of this layout.
+	 *
+	 * @param layoutSetPrototypeLayoutERC the layout set prototype layout erc of this layout
+	 */
+	@Override
+	public void setLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC) {
+
+		model.setLayoutSetPrototypeLayoutERC(layoutSetPrototypeLayoutERC);
+	}
+
+	/**
 	 * Sets the master layout plid of this layout.
 	 *
 	 * @param masterLayoutPlid the master layout plid of this layout
@@ -2483,16 +2500,6 @@ public class LayoutWrapper
 		java.util.Locale defaultLocale) {
 
 		model.setRobotsMap(robotsMap, defaultLocale);
-	}
-
-	/**
-	 * Sets the source prototype layout uuid of this layout.
-	 *
-	 * @param sourcePrototypeLayoutUuid the source prototype layout uuid of this layout
-	 */
-	@Override
-	public void setSourcePrototypeLayoutUuid(String sourcePrototypeLayoutUuid) {
-		model.setSourcePrototypeLayoutUuid(sourcePrototypeLayoutUuid);
 	}
 
 	/**

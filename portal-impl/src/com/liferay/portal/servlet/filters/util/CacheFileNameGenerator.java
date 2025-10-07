@@ -13,7 +13,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.key.CacheKeyGenerator;
 import com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -58,7 +57,7 @@ public class CacheFileNameGenerator {
 
 		cacheKeyGenerator.append(
 			DigesterUtil.digestBase64(
-				Digester.SHA_256, queryStringSB.toString()));
+				DigesterUtil.SHA_256, queryStringSB.toString()));
 
 		return _sterilizeFileName(String.valueOf(cacheKeyGenerator.finish()));
 	}

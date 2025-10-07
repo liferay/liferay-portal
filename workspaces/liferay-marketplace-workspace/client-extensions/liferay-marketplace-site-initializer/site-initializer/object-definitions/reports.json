@@ -1,0 +1,38 @@
+{
+	"externalReferenceCode": "REPORTS",
+	"label": {
+		"en_US": "Report"
+	},
+	"name": "Report",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Name"
+			},
+			"name": "name",
+			"required": false,
+			"type": "String"
+		},
+		{
+			"DBType": "Clob",
+			"businessType": "LongText",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Value"
+			},
+			"name": "value",
+			"required": false,
+			"type": "Clob"
+		}
+	],
+	"objectFolderExternalReferenceCode": "MARKETPLACE",
+	"pluralLabel": {
+		"en_US": "Reports"
+	},
+	"scope": "company"
+}

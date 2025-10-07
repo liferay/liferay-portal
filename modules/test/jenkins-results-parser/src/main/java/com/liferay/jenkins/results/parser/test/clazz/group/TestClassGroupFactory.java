@@ -54,6 +54,11 @@ public class TestClassGroupFactory {
 				(JUnitBatchTestClassGroup)batchTestClassGroup);
 		}
 
+		if (batchTestClassGroup instanceof ModulesBatchTestClassGroup) {
+			return new ModulesAxisTestClassGroup(
+				(ModulesBatchTestClassGroup)batchTestClassGroup);
+		}
+
 		if (batchTestClassGroup instanceof PlaywrightBatchTestClassGroup) {
 			return new PlaywrightAxisTestClassGroup(batchTestClassGroup);
 		}
@@ -61,11 +66,6 @@ public class TestClassGroupFactory {
 		if (batchTestClassGroup instanceof PluginsGulpBatchTestClassGroup) {
 			return new PluginsGulpAxisTestClassGroup(
 				(PluginsGulpBatchTestClassGroup)batchTestClassGroup);
-		}
-
-		if (batchTestClassGroup instanceof SemVerModulesBatchTestClassGroup) {
-			return new SemVerModulesAxisTestClassGroup(
-				(SemVerModulesBatchTestClassGroup)batchTestClassGroup);
 		}
 
 		return new AxisTestClassGroup(batchTestClassGroup);
@@ -92,6 +92,11 @@ public class TestClassGroupFactory {
 				jsonObject, segmentTestClassGroup);
 		}
 
+		if (batchTestClassGroup instanceof ModulesBatchTestClassGroup) {
+			return new ModulesAxisTestClassGroup(
+				jsonObject, segmentTestClassGroup);
+		}
+
 		if (batchTestClassGroup instanceof PlaywrightBatchTestClassGroup) {
 			return new PlaywrightAxisTestClassGroup(
 				jsonObject, segmentTestClassGroup);
@@ -99,11 +104,6 @@ public class TestClassGroupFactory {
 
 		if (batchTestClassGroup instanceof PluginsGulpBatchTestClassGroup) {
 			return new PluginsGulpAxisTestClassGroup(
-				jsonObject, segmentTestClassGroup);
-		}
-
-		if (batchTestClassGroup instanceof SemVerModulesBatchTestClassGroup) {
-			return new SemVerModulesAxisTestClassGroup(
 				jsonObject, segmentTestClassGroup);
 		}
 
@@ -190,6 +190,18 @@ public class TestClassGroupFactory {
 			return new JUnitSegmentTestClassGroup(batchTestClassGroup);
 		}
 		else if (batchTestClassGroup instanceof ModulesBatchTestClassGroup) {
+			if (batchTestClassGroup instanceof
+					JSUnitModulesBatchTestClassGroup) {
+
+				if (jsonObject != null) {
+					return new JSUnitModulesSegmentTestClassGroup(
+						batchTestClassGroup, jsonObject);
+				}
+
+				return new JSUnitModulesSegmentTestClassGroup(
+					batchTestClassGroup);
+			}
+
 			if (batchTestClassGroup instanceof
 					SemVerModulesBatchTestClassGroup) {
 
@@ -541,6 +553,18 @@ public class TestClassGroupFactory {
 				else {
 					batchTestClassGroup = new TCKJunitBatchTestClassGroup(
 						batchName, portalTestClassJob);
+				}
+			}
+			else if (batchName.startsWith("workspaces-compile")) {
+				if (jsonObject != null) {
+					batchTestClassGroup =
+						new WorkspacesCompileBatchTestClassGroup(
+							jsonObject, portalTestClassJob);
+				}
+				else {
+					batchTestClassGroup =
+						new WorkspacesCompileBatchTestClassGroup(
+							batchName, portalTestClassJob);
 				}
 			}
 			else {

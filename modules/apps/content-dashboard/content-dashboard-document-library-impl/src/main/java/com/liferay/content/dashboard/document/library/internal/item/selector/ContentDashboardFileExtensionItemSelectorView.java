@@ -83,7 +83,7 @@ public class ContentDashboardFileExtensionItemSelectorView
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			locale, getClass());
 
-		return ResourceBundleUtil.getString(resourceBundle, "extension");
+		return ResourceBundleUtil.getString(resourceBundle, "extension[file]");
 	}
 
 	@Override

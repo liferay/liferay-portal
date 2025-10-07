@@ -13,7 +13,6 @@ import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import java.io.File;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -122,11 +121,8 @@ public class PluginsGulpBatchTestClassGroup extends BatchTestClassGroup {
 
 	private void _setTestClasses() {
 		for (File testBaseDirName : getTestBaseDirNames()) {
-			testClasses.add(
-				TestClassFactory.newTestClass(this, testBaseDirName));
+			addTestClass(TestClassFactory.newTestClass(this, testBaseDirName));
 		}
-
-		Collections.sort(testClasses);
 	}
 
 	private final List<File> _modifiedFilesList;

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,18 @@ public class DDMFormFieldUtil {
 		}
 
 		return StringUtil.removeChar(ddmFormFieldName, CharPool.SPACE);
+	}
+
+	public static String getLegacyDDMFormFieldName(String ddmFormFieldName) {
+		int index = ddmFormFieldName.length() - 8;
+
+		if ((index >= 0) &&
+			Validator.isNumber(ddmFormFieldName.substring(index))) {
+
+			return ddmFormFieldName.substring(0, index);
+		}
+
+		return ddmFormFieldName;
 	}
 
 	public static void sortNestedDDMFormFields(List<DDMFormField> ddmFormFields)
@@ -88,6 +101,10 @@ public class DDMFormFieldUtil {
 
 						DDMFormField nestedDDMFormField =
 							nestedDDMFormFieldsMap.get(fieldName);
+
+						if (nestedDDMFormField == null) {
+							continue;
+						}
 
 						if (StringUtil.equals(
 								nestedDDMFormField.getType(),

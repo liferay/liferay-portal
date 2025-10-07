@@ -121,6 +121,15 @@ public class OrderNoteResourceTest extends BaseOrderNoteResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLDeleteOrderNoteByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLDeleteOrderNoteByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testPatchOrderNote() throws Exception {
 		super.testPatchOrderNote();
 	}

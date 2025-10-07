@@ -1,3 +1,13 @@
+#if (${jakartaCompatible.equals("true")})
+String springVersion = "6.2.8"
+String springSecurityVersion = "6.2.8"
+#elseif (${framework.equals("portletmvc4spring")})
+String springVersion = "5.3.27"
+String springSecurityVersion = "5.5.1"
+#elseif (${framework.equals("springportletmvc")})
+String springVersion = "4.1.9.RELEASE"
+#end
+
 buildscript {
 	repositories {
 		maven {
@@ -40,100 +50,100 @@ dependencies {
 #if (${framework.equals("portletmvc4spring")})
 	implementation (group: "org.springframework", name: "spring-aop") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-beans") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-context") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-core") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-expression") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-jcl") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-web") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-webmvc") {
 		version {
-			strictly "5.3.27"
+			strictly springVersion
 		}
 	}
 #elseif (${framework.equals("springportletmvc")})
 	implementation (group: "org.springframework", name: "spring-aop") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-beans") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-context") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-core") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-expression") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-web") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-webmvc") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 	implementation (group: "org.springframework", name: "spring-webmvc-portlet") {
 		version {
-			strictly "4.1.9.RELEASE"
+			strictly springVersion
 		}
 	}
 #end
 #if (${framework.equals("portletmvc4spring")})
 	implementation (group: "org.springframework.security", name: "spring-security-config") {
 		version {
-			strictly "5.5.1"
+			strictly springSecurityVersion
 		}
 	}
 	implementation (group: "org.springframework.security", name: "spring-security-core") {
 		version {
-			strictly "5.5.1"
+			strictly springSecurityVersion
 		}
 	}
 	implementation (group: "org.springframework.security", name: "spring-security-web") {
 		version {
-			strictly "5.5.1"
+			strictly springSecurityVersion
 		}
 	}
 #end

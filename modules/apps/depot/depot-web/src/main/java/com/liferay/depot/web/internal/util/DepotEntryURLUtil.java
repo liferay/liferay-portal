@@ -5,8 +5,8 @@
 
 package com.liferay.depot.web.internal.util;
 
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -59,8 +59,8 @@ public class DepotEntryURLUtil {
 		Group group = depotEntry.getGroup();
 
 		return PermissionsURLTag.doTag(
-			StringPool.BLANK, DepotEntry.class.getName(), group.getName(), null,
-			String.valueOf(depotEntry.getDepotEntryId()),
+			StringPool.BLANK, DepotEntry.class.getName(), group.getName(),
+			group.getGroupId(), String.valueOf(depotEntry.getDepotEntryId()),
 			LiferayWindowState.POP_UP.toString(), null,
 			liferayPortletRequest.getHttpServletRequest());
 	}

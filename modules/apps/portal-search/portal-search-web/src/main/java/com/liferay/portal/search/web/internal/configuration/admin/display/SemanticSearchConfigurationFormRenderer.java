@@ -8,9 +8,12 @@ package com.liferay.portal.search.web.internal.configuration.admin.display;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.configuration.admin.display.ConfigurationFormRenderer;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CamelCaseUtil;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.configuration.SemanticSearchConfiguration;
 import com.liferay.portal.search.configuration.SemanticSearchConfigurationProvider;
 import com.liferay.portal.search.engine.SearchEngineInformation;
@@ -170,39 +174,58 @@ public class SemanticSearchConfigurationFormRenderer
 	private Map<String, String> _getAvailableModelClassNames(
 		HttpServletRequest httpServletRequest) {
 
-		return _sortByValue(
-			HashMapBuilder.put(
-				"com.liferay.blogs.model.BlogsEntry",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.blogs.model.BlogsEntry")
-			).put(
-				"com.liferay.document.library.kernel.model.DLFileEntry",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.document.library.kernel." +
-						"model.DLFileEntry")
-			).put(
-				"com.liferay.journal.model.JournalArticle",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.journal.model.JournalArticle")
-			).put(
-				"com.liferay.knowledge.base.model.KBArticle",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.knowledge.base.model.KBArticle")
-			).put(
-				"com.liferay.message.boards.model.MBMessage",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.message.boards.model.MBMessage")
-			).put(
-				"com.liferay.wiki.model.WikiPage",
-				_language.get(
-					httpServletRequest,
-					"model.resource.com.liferay.wiki.model.WikiPage")
-			).build());
+		Map<String, String> availableModelClassNames = HashMapBuilder.put(
+			"com.liferay.blogs.model.BlogsEntry",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.blogs.model.BlogsEntry")
+		).put(
+			"com.liferay.document.library.kernel.model.DLFileEntry",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.document.library.kernel.model." +
+					"DLFileEntry")
+		).put(
+			"com.liferay.journal.model.JournalArticle",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.journal.model.JournalArticle")
+		).put(
+			"com.liferay.knowledge.base.model.KBArticle",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.knowledge.base.model.KBArticle")
+		).put(
+			"com.liferay.message.boards.model.MBMessage",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.message.boards.model.MBMessage")
+		).put(
+			"com.liferay.wiki.model.WikiPage",
+			_language.get(
+				httpServletRequest,
+				"model.resource.com.liferay.wiki.model.WikiPage")
+		).build();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		for (ObjectDefinition objectDefinition :
+				_objectDefinitionLocalService.getObjectDefinitions(
+					CompanyThreadLocal.getCompanyId(), true,
+					WorkflowConstants.STATUS_APPROVED)) {
+
+			if (!objectDefinition.isEnableIndexSearch()) {
+				continue;
+			}
+
+			availableModelClassNames.putIfAbsent(
+				objectDefinition.getClassName(),
+				objectDefinition.getLabel(themeDisplay.getLocale(), true));
+		}
+
+		return _sortByValue(availableModelClassNames);
 	}
 
 	private Map<String, String> _getAvailableTextEmbeddingProviders(
@@ -265,6 +288,9 @@ public class SemanticSearchConfigurationFormRenderer
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private Portal _portal;

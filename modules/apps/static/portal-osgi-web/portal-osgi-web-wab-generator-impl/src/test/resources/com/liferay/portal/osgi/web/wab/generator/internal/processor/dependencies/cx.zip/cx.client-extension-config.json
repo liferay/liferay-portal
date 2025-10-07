@@ -1,0 +1,20 @@
+{
+	"com.liferay.client.extension.type.configuration.CETConfiguration~cx": {
+		":configurator:policy": "force",
+		"baseURL": "${portalURL}/o/cx",
+		"description": "",
+		"dxp.lxc.liferay.com.virtualInstanceId": "default",
+		"name": "CX",
+		"projectId": "cx",
+		"projectName": "cx",
+		"properties": [
+		],
+		"sourceCodeURL": "",
+		"type": "globalCSS",
+		"typeSettings": [
+			"url=global.b5d59573c187989c3bf28db9f07841b318eea91.css",
+			"scope=company"
+		],
+		"webContextPath": "/cx"
+	}
+}

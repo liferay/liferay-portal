@@ -8,11 +8,8 @@ package com.liferay.headless.delivery.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.delivery.client.dto.v1_0.Language;
 import com.liferay.headless.delivery.client.pagination.Page;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LanguageIds;
 
@@ -94,26 +91,6 @@ public class LanguageResourceTest extends BaseLanguageResourceTestCase {
 			).getMarkedAsDefault());
 		Assert.assertEquals(1, page.getTotalCount());
 		assertValid(page);
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetSiteLanguagesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"languages",
-			HashMapBuilder.<String, Object>put(
-				"siteKey", "\"" + testGetSiteLanguagesPage_getSiteId() + "\""
-			).build(),
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		JSONObject languagesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/languages");
-
-		Assert.assertEquals(
-			_getAvailableLocalesSize(testGetSiteLanguagesPage_getSiteId()),
-			languagesJSONObject.get("totalCount"));
 	}
 
 	@Override

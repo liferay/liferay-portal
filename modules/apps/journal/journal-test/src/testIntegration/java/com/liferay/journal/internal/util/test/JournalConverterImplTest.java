@@ -373,8 +373,6 @@ public class JournalConverterImplTest {
 			_ddmStructure.getStructureId(), null, expectedFields, "text",
 			HashMapBuilder.<Locale, List<Serializable>>put(
 				_enLocale, Collections.singletonList("one")
-			).put(
-				_ptLocale, Collections.singletonList("one")
 			).build());
 
 		expectedFields.put(

@@ -60,6 +60,8 @@ public class RowPageElementDefinitionDTOConverter
 					rowStyledLayoutStructureItem::getNumberOfColumns);
 				setReverseOrder(rowStyledLayoutStructureItem::isReverseOrder);
 				setType(PageElementDefinition.Type.ROW);
+				setVerticalAlignment(
+					rowStyledLayoutStructureItem::getVerticalAlignment);
 			}
 		};
 	}

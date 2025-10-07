@@ -111,6 +111,13 @@ test('ThemeCSS client extension supports frontend token definition JSON file upl
 	await editThemeCSSClientExtensionsPage.goto();
 
 	await uploadAndValidateFile(
+		'frontend-token-definition-invalid-schema.json',
+		'The format is invalid. Please upload a valid Frontend Token Definition JSON file.',
+		page,
+		editThemeCSSClientExtensionsPage
+	);
+
+	await uploadAndValidateFile(
 		'empty-json-file.json',
 		'The frontend token definition JSON file was uploaded and contributed 0 token categories, 0 token sets, and 0 tokens.',
 		page,
@@ -119,7 +126,7 @@ test('ThemeCSS client extension supports frontend token definition JSON file upl
 
 	await uploadAndValidateFile(
 		'frontend-token-definition.json',
-		'The frontend token definition JSON file was uploaded and contributed 1 token categories, 1 token sets, and 2 tokens.',
+		'The frontend token definition JSON file was uploaded and contributed 1 token categories, 1 token sets, and 3 tokens.',
 		page,
 		editThemeCSSClientExtensionsPage
 	);
@@ -127,13 +134,6 @@ test('ThemeCSS client extension supports frontend token definition JSON file upl
 	await uploadAndValidateFile(
 		'frontend-token-definition-empty-object.json',
 		'The frontend token definition JSON file was uploaded and contributed 0 token categories, 0 token sets, and 0 tokens.',
-		page,
-		editThemeCSSClientExtensionsPage
-	);
-
-	await uploadAndValidateFile(
-		'frontend-token-definition-invalid-schema.json',
-		'The format is invalid. Please upload a valid Frontend Token Definition JSON file.',
 		page,
 		editThemeCSSClientExtensionsPage
 	);
@@ -157,7 +157,7 @@ test('ThemeCSS client extension frontend token definition tokens appears stylebo
 
 		await uploadAndValidateFile(
 			'frontend-token-definition.json',
-			'The frontend token definition JSON file was uploaded and contributed 1 token categories, 1 token sets, and 2 tokens.',
+			'The frontend token definition JSON file was uploaded and contributed 1 token categories, 1 token sets, and 3 tokens.',
 			page,
 			editThemeCSSClientExtensionsPage
 		);

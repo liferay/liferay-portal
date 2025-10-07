@@ -17,6 +17,7 @@ export class CommerceAdminProductConfigurationListPage {
 	readonly commerceAvailabilityEstimateIdInput: Locator;
 	readonly CPDefinitionInventoryEngineInput: Locator;
 	readonly CPTaxCategoryIdInput: Locator;
+	readonly customFieldInput: (name: string) => Locator;
 	readonly depthInput: Locator;
 	readonly detailsMenuItem: Locator;
 	readonly displayAvailabilityInput: Locator;
@@ -43,7 +44,6 @@ export class CommerceAdminProductConfigurationListPage {
 	readonly shippableInput: Locator;
 	readonly shipSeparatelyInput: Locator;
 	readonly taxExemptInput: Locator;
-	readonly visibleInput: Locator;
 	readonly weightInput: Locator;
 	readonly widthInput: Locator;
 
@@ -65,6 +65,8 @@ export class CommerceAdminProductConfigurationListPage {
 			'CPDefinitionInventoryEngineInput'
 		);
 		this.CPTaxCategoryIdInput = page.getByTestId('CPTaxCategoryIdInput');
+		this.customFieldInput = (name) =>
+			page.locator(`.field[name*="${name}"]`);
 		this.depthInput = page.getByTestId('depthInput');
 		this.detailsMenuItem = page.getByRole('link', {name: 'Details'});
 		this.displayAvailabilityInput = page.getByTestId(
@@ -109,7 +111,6 @@ export class CommerceAdminProductConfigurationListPage {
 		this.shippableInput = page.getByTestId('shippableInput');
 		this.shipSeparatelyInput = page.getByTestId('shipSeparatelyInput');
 		this.taxExemptInput = page.getByTestId('taxExemptInput');
-		this.visibleInput = page.getByTestId('visibleInput');
 		this.weightInput = page.getByTestId('weightInput');
 		this.widthInput = page.getByTestId('widthInput');
 	}

@@ -7,12 +7,16 @@ package com.liferay.layout.internal.provider;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -49,15 +53,26 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 				return null;
 			}
 
+			JSONObject dataJSONObject = null;
+
 			LayoutPageTemplateStructure layoutPageTemplateStructure =
 				_layoutPageTemplateStructureLocalService.
 					fetchLayoutPageTemplateStructure(
 						layout.getGroupId(), layout.getPlid());
 
-			String data = layoutPageTemplateStructure.getData(
-				segmentsExperienceId);
+			LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
+				_layoutPageTemplateStructureRelLocalService.
+					fetchLayoutPageTemplateStructureRel(
+						layoutPageTemplateStructure.
+							getLayoutPageTemplateStructureId(),
+						segmentsExperienceId);
 
-			if (Validator.isNull(data)) {
+			if (layoutPageTemplateStructureRel != null) {
+				dataJSONObject =
+					layoutPageTemplateStructureRel.getDataJSONObject();
+			}
+
+			if (JSONUtil.isEmpty(dataJSONObject)) {
 				return null;
 			}
 
@@ -65,10 +80,10 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 				layout.getMasterLayoutPlid());
 
 			if (Validator.isNull(masterLayoutData)) {
-				return LayoutStructure.of(data);
+				return LayoutStructure.of(dataJSONObject);
 			}
 
-			return _mergeLayoutStructure(data, masterLayoutData);
+			return _mergeLayoutStructure(dataJSONObject, masterLayoutData);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get layout structure", exception);
@@ -113,12 +128,12 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 	}
 
 	private LayoutStructure _mergeLayoutStructure(
-		String data, String masterLayoutData) {
+		JSONObject dataJSONObject, String masterLayoutData) {
 
 		LayoutStructure masterLayoutStructure = LayoutStructure.of(
 			masterLayoutData);
 
-		LayoutStructure layoutStructure = LayoutStructure.of(data);
+		LayoutStructure layoutStructure = LayoutStructure.of(dataJSONObject);
 
 		for (LayoutStructureItem layoutStructureItem :
 				layoutStructure.getLayoutStructureItems()) {
@@ -156,5 +171,9 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 	@Reference
 	private LayoutPageTemplateStructureLocalService
 		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelLocalService
+		_layoutPageTemplateStructureRelLocalService;
 
 }

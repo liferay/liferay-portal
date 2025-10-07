@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Product Asset Categories Web
 Bundle-SymbolicName: com.liferay.commerce.product.asset.categories.web
-Bundle-Version: 4.0.70
+Bundle-Version: 4.0.73
 Web-ContextPath: /commerce-product-asset-categories-web
 -dsannotations-options: inherit

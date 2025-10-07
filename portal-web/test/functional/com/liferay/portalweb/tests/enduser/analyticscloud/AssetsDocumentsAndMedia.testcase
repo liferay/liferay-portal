@@ -247,11 +247,12 @@ definition {
 
 			ACNavigation.goToSegments();
 
-			ACSegments.createStaticSegment();
+			ACSegments.createDynamicSegmentAndFillFields(
+				criterion = "Individual Attributes",
+				segmentField = "email",
+				segments = "Dynamic Segment Test");
 
-			ACUtils.setItemName(itemName = "Static Segment Test");
-
-			ACSegments.addStaticMember(tableMember = "ac ac");
+			ACSegments.editTextCriterion(textInput = "ac@liferay.com");
 
 			ACSegments.saveSegment();
 		}
@@ -273,7 +274,7 @@ definition {
 				index = 2,
 				percentageList = "66.67%,33.33%");
 
-			ACUtils.assertViewerSegmentsCard(segmentNameList = "Static Segment Test");
+			ACUtils.assertViewerSegmentsCard(segmentNameList = "Dynamic Segment Test");
 		}
 	}
 

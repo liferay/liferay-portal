@@ -5,21 +5,28 @@
  */
 --%>
 
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
-taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %>
+taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.portal.kernel.json.JSONArray" %><%@
 page import="com.liferay.portal.kernel.json.JSONObject" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.search.web.internal.low.level.search.options.portlet.action.ConfigurationDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.low.level.search.options.portlet.preferences.LowLevelSearchOptionsPortletPreferences" %><%@
 page import="com.liferay.portal.search.web.internal.low.level.search.options.portlet.preferences.LowLevelSearchOptionsPortletPreferencesImpl" %><%@
 page import="com.liferay.portal.search.web.internal.util.PortletPreferencesJspUtil" %>
+
+<%@ page import="java.util.List" %>
 
 <portlet:defineObjects />
 
@@ -44,10 +51,24 @@ LowLevelSearchOptionsPortletPreferences lowLevelSearchOptionsPortletPreferences 
 
 	<liferay-frontend:edit-form-body>
 		<aui:fieldset>
+
+			<%
+			List<String> connectionIds = configurationDisplayContext.getConnectionIds();
+			%>
+
+			<c:if test="<%= Validator.isNotNull(lowLevelSearchOptionsPortletPreferences.getConnectionId()) && !connectionIds.contains(lowLevelSearchOptionsPortletPreferences.getConnectionId()) %>">
+				<clay:alert
+					displayType="warning"
+				>
+					<liferay-ui:message arguments="<%= lowLevelSearchOptionsPortletPreferences.getConnectionId() %>" key="the-previously-selected-connection-id-x-is-no-longer-available" translateArguments="<%= false %>" />
+				</clay:alert>
+			</c:if>
+
 			<aui:select helpMessage="connection-id-help[web]" label="connection-id" name="<%= PortletPreferencesJspUtil.getInputName(LowLevelSearchOptionsPortletPreferences.PREFERENCE_KEY_CONNECTION_ID) %>">
+				<aui:option value="" />
 
 				<%
-				for (String connectionId : configurationDisplayContext.getConnectionIds()) {
+				for (String connectionId : connectionIds) {
 				%>
 
 					<aui:option label="<%= HtmlUtil.escape(connectionId) %>" selected="<%= connectionId.equals(lowLevelSearchOptionsPortletPreferences.getConnectionId()) %>" value="<%= connectionId %>" />

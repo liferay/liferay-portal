@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.filter.QueryFilter;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -69,10 +68,6 @@ public class ExpressionConvertImplTest {
 
 	@Before
 	public void setUp() {
-		PropsTestUtil.setProps(
-			Collections.singletonMap(
-				PropsKeys.INDEX_DATE_FORMAT_PATTERN, "yyyyMMddHHmmss"));
-
 		FastDateFormatFactoryUtil fastDateFormatFactoryUtil =
 			new FastDateFormatFactoryUtil();
 

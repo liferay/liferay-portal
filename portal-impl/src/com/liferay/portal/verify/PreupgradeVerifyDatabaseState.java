@@ -8,28 +8,46 @@ package com.liferay.portal.verify;
 import com.liferay.portal.db.DBResourceUtil;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.db.DBInspector;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ReleaseConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
+
+import java.sql.Connection;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Jorge Avalos
  */
 public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
-	@Override
-	protected void doVerify() throws Exception {
-		if (StartupHelperUtil.isDBNew() ||
-			PortalUpgradeProcess.isInLatestSchemaVersion(connection) ||
-			(PortalUpgradeProcess.getCurrentState(connection) !=
-				ReleaseConstants.STATE_GOOD)) {
+	public void verify() throws VerifyException {
+		try {
+			try (Connection connection = getConnection()) {
+				if (StartupHelperUtil.isDBNew() ||
+					PortalUpgradeProcess.isInLatestSchemaVersion(connection) ||
+					(PortalUpgradeProcess.getCurrentState(connection) !=
+						ReleaseConstants.STATE_GOOD)) {
 
-			return;
+					return;
+				}
+			}
+		}
+		catch (Exception exception) {
+			throw new VerifyException(exception);
 		}
 
+		super.verify();
+	}
+
+	@Override
+	protected void doVerify() throws Exception {
 		Set<String> serviceComponentPortalTableNames =
 			DBResourceUtil.getServiceComponentPortalTableNames(connection);
 
@@ -44,40 +62,98 @@ public class PreupgradeVerifyDatabaseState extends PreupgradeVerifyProcess {
 
 		DBInspector dbInspector = new DBInspector(connection);
 
-		Set<String> databaseTables = new HashSet<>(
+		Set<String> databaseTableNames = new HashSet<>(
 			dbInspector.getTableNames(null));
 
-		if (!databaseTables.containsAll(serviceComponentTableNames)) {
-			Set<String> missingTables = new HashSet<>(
-				serviceComponentTableNames);
+		if (!databaseTableNames.containsAll(serviceComponentTableNames)) {
+			Set<String> missingTableNames = ConcurrentHashMap.newKeySet();
 
-			missingTables.removeAll(databaseTables);
+			missingTableNames.addAll(serviceComponentTableNames);
 
-			throw new VerifyException(
-				"Missing tables detected: " + new TreeSet<>(missingTables));
+			missingTableNames.removeAll(databaseTableNames);
+
+			Set<String> viewNames = _removeViewNames(
+				dbInspector, missingTableNames);
+
+			if (!missingTableNames.isEmpty()) {
+				throw new VerifyException(
+					"Missing tables detected: " +
+						new TreeSet<>(missingTableNames));
+			}
+
+			viewNames.removeIf(
+				viewName -> {
+					try {
+						return dbInspector.hasView(viewName);
+					}
+					catch (Exception exception) {
+						throw new SystemException(exception);
+					}
+				});
+
+			if (!viewNames.isEmpty()) {
+				throw new VerifyException(
+					StringBundler.concat(
+						"Missing views detected: ",
+						new TreeSet<>(
+							viewNames
+						).toString(),
+						" in company ",
+						String.valueOf(
+							CompanyThreadLocal.getNonsystemCompanyId())));
+			}
+
+			if (!missingTableNames.isEmpty()) {
+				throw new VerifyException(
+					"Missing tables detected: " +
+						new TreeSet<>(missingTableNames));
+			}
 		}
 
 		if (serviceComponentPortalTableNames.isEmpty()) {
 			return;
 		}
 
-		Set<String> targetVersionNewTables = DBResourceUtil.getModuleTableNames(
-			connection);
+		Set<String> targetVersionNewTableNames =
+			DBResourceUtil.getModuleTableNames(connection);
 
-		targetVersionNewTables.addAll(
+		targetVersionNewTableNames.addAll(
 			DBResourceUtil.getPortalTableNames(connection));
 
-		targetVersionNewTables.removeAll(serviceComponentTableNames);
+		targetVersionNewTableNames.removeAll(serviceComponentTableNames);
 
-		Set<String> previousUpgradeStaleTables = new HashSet<>(databaseTables);
+		Set<String> previousUpgradeStaleTableNames = new HashSet<>(
+			databaseTableNames);
 
-		previousUpgradeStaleTables.retainAll(targetVersionNewTables);
+		previousUpgradeStaleTableNames.retainAll(targetVersionNewTableNames);
 
-		if (!previousUpgradeStaleTables.isEmpty()) {
+		if (!previousUpgradeStaleTableNames.isEmpty()) {
 			throw new VerifyException(
 				"Stale tables from a previous upgrade detected: " +
-					new TreeSet<>(previousUpgradeStaleTables));
+					new TreeSet<>(previousUpgradeStaleTableNames));
 		}
+	}
+
+	private Set<String> _removeViewNames(
+			DBInspector dbInspector, Set<String> missingTableNames)
+		throws Exception {
+
+		Set<String> viewNames = new HashSet<>();
+
+		if (CompanyThreadLocal.getNonsystemCompanyId() ==
+				PortalInstancePool.getDefaultCompanyId()) {
+
+			return viewNames;
+		}
+
+		for (String missingTableName : missingTableNames) {
+			if (dbInspector.isControlTable(missingTableName)) {
+				missingTableNames.remove(missingTableName);
+				viewNames.add(missingTableName);
+			}
+		}
+
+		return viewNames;
 	}
 
 }

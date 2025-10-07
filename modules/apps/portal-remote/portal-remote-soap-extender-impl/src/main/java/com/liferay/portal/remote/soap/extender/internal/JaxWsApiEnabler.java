@@ -55,9 +55,8 @@ public class JaxWsApiEnabler {
 		_serviceTracker = ServiceTrackerFactory.open(
 			bundleContext,
 			StringBundler.concat(
-				"(&(objectClass=org.apache.cxf.Bus)(",
-				HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH, "=",
-				_contextPath, "))"),
+				"(&(", HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
+				"=", _contextPath, ")(objectClass=org.apache.cxf.Bus))"),
 			new CXFBusServiceTrackerCustomizer());
 	}
 

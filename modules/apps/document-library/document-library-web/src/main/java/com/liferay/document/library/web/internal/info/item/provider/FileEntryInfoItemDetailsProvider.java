@@ -5,9 +5,11 @@
 
 package com.liferay.document.library.web.internal.info.item.provider;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.GroupUrlTitleInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 
@@ -16,9 +18,12 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Jorge Ferrer
  */
-@Component(service = InfoItemDetailsProvider.class)
+@Component(
+	property = "item.class.name=com.liferay.portal.kernel.repository.model.FileEntry",
+	service = InfoItemDetailsProvider.class
+)
 public class FileEntryInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<FileEntry> {
+	extends BaseInfoItemDetailsProvider<FileEntry> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -26,11 +31,38 @@ public class FileEntryInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(FileEntry fileEntry) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				FileEntry.class.getName(), fileEntry.getFileEntryId()));
+	protected InfoItemIdentifierFactory<FileEntry>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				FileEntry fileEntry) {
+
+				return new ClassPKInfoItemIdentifier(
+					fileEntry.getFileEntryId());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+			@Override
+			public GroupUrlTitleInfoItemIdentifier
+				createGroupUrlTitleInfoItemIdentifier(
+					long groupId, FileEntry fileEntry) {
+
+				return new GroupUrlTitleInfoItemIdentifier(
+					groupId, String.valueOf(fileEntry.getFileEntryId()));
+			}
+
+		};
 	}
 
 }

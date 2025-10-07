@@ -930,6 +930,7 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 	</macrodef>
 
 	<macrodef name="get-browser-property">
+		<attribute default="" name="browser.version" />
 		<attribute name="property.name" />
 
 		<sequential>
@@ -942,7 +943,14 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 			<beanshell>
 				<![CDATA[
+					String browserVersion = "@{browser.version}";
 					String propertyName = project.getProperty("property.name");
+
+					if (!browserVersion.isEmpty() && propertyName.equals("browser.version")) {
+						project.setProperty(propertyName, browserVersion);
+
+						return;
+					}
 
 					StringBuilder sb = new StringBuilder();
 
@@ -950,6 +958,12 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 					sb.append(project.getProperty("browser.type"));
 					sb.append(".");
 					sb.append(propertyName.substring(8));
+
+					if (!browserVersion.isEmpty()) {
+						sb.append("[");
+						sb.append(browserVersion);
+						sb.append("]");
+					}
 
 					propertyValue = project.getProperty(sb.toString());
 
@@ -1580,7 +1594,7 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 					<propertyregex
 						input="@{patch.file.url}"
 						property="patch.name"
-						regexp=".*liferay-dxp-\d{4}.q\d.\d+-(hotfix-\d+).zip"
+						regexp=".*liferay-dxp-\d{4}.q\d.\d+(?:-lts)?-(hotfix-\d+).zip"
 						replace="\1"
 					/>
 				</then>
@@ -1668,6 +1682,8 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 						<beanshell>
 							<![CDATA[
+								import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
 								import java.io.File;
 
 								import org.json.JSONObject;
@@ -2668,7 +2684,10 @@ war.path=${app.server.portal.dir}/</echo>
 
 			<if>
 				<and>
-					<isset property="browser.docker.image" />
+					<or>
+						<isset property="browser.docker.image" />
+						<isset property="playwright.docker.image" />
+					</or>
 					<isset property="env.JENKINS_HOME" />
 					<or>
 						<equals arg1="${app.server.type}" arg2="jboss" />
@@ -2748,9 +2767,9 @@ httpLoggingEnabled=&quot;false&quot;</echo>
 
 	<macrodef name="prepare-captcha-configuration">
 		<sequential>
-			<echo file="${liferay.home}/osgi/configs/com.liferay.captcha.configuration.CaptchaConfiguration.config">createAccountCaptchaEnabled=&quot;false&quot;
-maxChallenges=&quot;-1&quot;
-sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
+			<echo file="${liferay.home}/osgi/configs/com.liferay.captcha.configuration.CaptchaConfiguration.config">createAccountCaptchaEnabled=&quot;true&quot;
+maxChallenges=&quot;1&quot;
+sendPasswordCaptchaEnabled=&quot;true&quot;</echo>
 		</sequential>
 	</macrodef>
 
@@ -3228,8 +3247,22 @@ tenantId=&quot;${ms.exchange.tenant.id}&quot;</echo>
 			<local name="patching.tool.version" />
 			<local name="patching.tool.version.url" />
 
+			<var name="quarterly.release.product.version" unset="true" />
+
+			<propertyregex
+				input="@{test.build.fix.pack.zip.url}"
+				property="quarterly.release.product.version"
+				regexp=".*/hotfix/(\d{4}.q\d.\d+(?:-lts)?)/.*.zip"
+				replace="\1"
+			/>
+
 			<if>
-				<matches pattern="https?://" string="@{test.build.fix.pack.zip.url}" />
+				<and>
+					<matches pattern="https?://" string="@{test.build.fix.pack.zip.url}" />
+					<not>
+						<isset property="quarterly.release.product.version" />
+					</not>
+				</and>
 				<then>
 					<get-patch-requirements patch.file.zip.url="@{test.build.fix.pack.zip.url}" />
 				</then>
@@ -5931,17 +5964,26 @@ ${custom.upgrade.properties}</echo>
 	</macrodef>
 
 	<macrodef name="rebuild-database">
+		<attribute default="false" name="skip.delete.liferay.home" />
+
 		<sequential>
 			<if>
 				<not>
 					<isset property="skip.rebuild.database" />
 				</not>
 				<then>
-					<get-testcase-property property.name="database.hypersonic.embedded" />
+					<if>
+						<not>
+							<equals arg1="@{skip.delete.liferay.home}" arg2="true" />
+						</not>
+						<then>
+							<get-testcase-property property.name="database.hypersonic.embedded" />
 
-					<antcall target="delete-liferay-home">
-						<param name="keep.hypersonicdb" value="${database.hypersonic.embedded}" />
-					</antcall>
+							<antcall target="delete-liferay-home">
+								<param name="keep.hypersonicdb" value="${database.hypersonic.embedded}" />
+							</antcall>
+						</then>
+					</if>
 
 					<get-database-property property.name="database.docker.image" />
 
@@ -7131,7 +7173,7 @@ log.sanitizer.enabled=false</echo>
 					</then>
 				</elseif>
 				<else>
-					<var name="app.server.tomcat.version" value="10.1.40" />
+					<var name="app.server.tomcat.version" value="10.1.43" />
 				</else>
 			</if>
 
@@ -7685,10 +7727,12 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 
 	<macrodef name="start-docker-browser">
 		<sequential>
+			<get-testcase-property property.name="browser.chrome.version" />
 			<get-browser-property property.name="browser.docker.browser.options" />
-			<get-browser-property property.name="browser.docker.image" />
 			<get-browser-property property.name="browser.docker.run.options" />
 			<get-browser-property property.name="browser.host" />
+
+			<get-browser-property browser.version="${browser.chrome.version}" property.name="browser.docker.image" />
 
 			<propertyregex
 				input="${portal.dir}"
@@ -9604,13 +9648,16 @@ war.path=${app.server.portal.dir}/</echo>
 					<then>
 						<var name="database.index" value="1" />
 
-						<echo file="create.sql">drop database if exists lportal;
+						<echo file="create.sql">
+drop database if exists lportal;
+
 create database lportal character set utf8;</echo>
 
 						<antelope:repeat count="${databases.size}">
 							<echo append="true" file="create.sql">
 
 drop database if exists lportal${database.index};
+
 create database lportal${database.index} character set utf8;</echo>
 
 							<math
@@ -9632,11 +9679,13 @@ create database lportal${database.index} character set utf8;</echo>
 						<then>
 							<echo file="create.sql">
 drop database if exists lportal;
+
 create database lportal encoding = 'UNICODE';</echo>
 
 							<echo append="true" file="create.sql">
 
 drop database if exists lportal${databases.size};
+
 create database lportal${databases.size} encoding = 'UNICODE';</echo>
 						</then>
 					</elseif>
@@ -9693,12 +9742,12 @@ create database lportal${databases.size} encoding = 'UNICODE';</echo>
 					<isset property="configure.read.write.database" />
 					<then>
 						<echo append="true" file="create.sql">
-							<![CDATA[
-								create user 'read_only_user'@'%' identified BY 'password';
-								grant select ON *.* TO 'read_only_user'@'%';
-								flush privileges;
-							]]>
-						</echo>
+
+create user 'read_only_user'@'%' identified BY 'password';
+
+grant select ON *.* TO 'read_only_user'@'%';
+
+flush privileges;</echo>
 					</then>
 				</if>
 
@@ -9721,7 +9770,9 @@ create database lportal${databases.size} encoding = 'UNICODE';</echo>
 						>
 							<replacetoken>connect to lportal;</replacetoken>
 							<replacevalue>update db cfg for lportal using logprimary 2;
+
 update db cfg for lportal using logsecond 254;
+
 connect to lportal;</replacevalue>
 						</replace>
 						<replace
@@ -9737,8 +9788,11 @@ connect to lportal;</replacevalue>
 								<echo append="true" file="create.sql">
 
 disconnect lportal;
+
 create database lportal${databases.size} pagesize 32768 temporary tablespace managed by automatic storage;
+
 update db cfg for lportal${databases.size} using logprimary 2;
+
 update db cfg for lportal${databases.size} using logsecond 254;</echo>
 							</then>
 						</if>
@@ -9773,9 +9827,13 @@ update db cfg for lportal${databases.size} using logsecond 254;</echo>
 
 									<echo append="true" file="create.sql">
 	drop user lportal1 cascade;
+
 	create user lportal1 identified by lportal1;
+
 	grant connect,resource to lportal1;
+
 	grant unlimited tablespace to lportal1;
+
 	quit</echo>
 								</then>
 							</if>
@@ -9796,9 +9854,11 @@ go</replacetoken>
 go
 
 alter database lportal set allow_snapshot_isolation on;
+
 go
 
 alter database lportal set read_committed_snapshot on;
+
 go]]></replacevalue>
 								</replacefilter>
 							</replace>
@@ -9808,12 +9868,254 @@ go]]></replacevalue>
 								<then>
 									<echo append="true" file="create.sql">
 create database lportal${databases.size};
+
 go
 
 alter database lportal${databases.size} set allow_snapshot_isolation on;
+
 go
 
 alter database lportal${databases.size} set read_committed_snapshot on;
+
+go</echo>
+								</then>
+							</if>
+						</then>
+					</elseif>
+				</if>
+
+				<get-database-property property.name="database.schema" />
+
+				<if>
+					<not>
+						<equals arg1="${database.schema}" arg2="lportal" />
+					</not>
+					<then>
+						<replaceregexp
+							file="create.sql"
+							flags="g"
+							match="lportal"
+							replace="${database.schema}"
+						/>
+					</then>
+				</if>
+			</then>
+		</if>
+	</target>
+
+	<target name="build-sql-file-playwright">
+		<if>
+			<not>
+				<equals arg1="${database.type}" arg2="hypersonic" />
+			</not>
+			<then>
+				<if>
+					<and>
+						<isset property="databases.size" />
+						<or>
+							<equals arg1="${database.type}" arg2="mysql" />
+							<equals arg1="${database.type}" arg2="mariadb" />
+						</or>
+					</and>
+					<then>
+						<var name="database.index" value="1" />
+
+						<antelope:repeat count="${databases.size}">
+							<echo append="true" file="create.sql">
+
+drop database if exists lportal${database.index};
+
+create database lportal${database.index} character set utf8;</echo>
+
+							<math
+								datatype="int"
+								operand1="${database.index}"
+								operand2="1"
+								operation="+"
+								result="database.index"
+							/>
+						</antelope:repeat>
+
+						<var name="database.index" unset="true" />
+					</then>
+					<elseif>
+						<and>
+							<isset property="databases.size" />
+							<equals arg1="${database.type}" arg2="postgresql" />
+						</and>
+						<then>
+							<echo append="true" file="create.sql">
+
+drop database if exists lportal${databases.size};
+
+create database lportal${databases.size} encoding = 'UNICODE';</echo>
+						</then>
+					</elseif>
+					<else>
+						<if>
+							<or>
+								<not>
+									<isset property="sql.dir" />
+								</not>
+								<not>
+									<isset property="sql.file" />
+								</not>
+							</or>
+							<then>
+								<property name="sql.dir" value="sql\create${database.create.suffix}\" />
+
+								<if>
+									<equals arg1="${database.type}" arg2="mariadb" />
+									<then>
+										<property name="sql.file" value="create${database.create.suffix}-mysql.sql" />
+									</then>
+									<elseif>
+										<equals arg1="${database.type}" arg2="sqlserver" />
+										<then>
+											<property name="sql.file" value="create${database.create.suffix}-sql-server.sql" />
+										</then>
+									</elseif>
+									<else>
+										<property name="sql.file" value="create${database.create.suffix}-${database.type}.sql" />
+									</else>
+								</if>
+							</then>
+						</if>
+
+						<copy
+							file="${sql.dir}${sql.file}"
+							tofile="create.sql"
+						/>
+					</else>
+				</if>
+
+				<get-database-property property.name="database.device.name" />
+
+				<if>
+					<equals arg1="${database.type}" arg2="db2" />
+					<then>
+						<get-database-property property.name="database.password" />
+						<get-database-property property.name="database.username" />
+
+						<replace
+							file="create.sql"
+						>
+							<replacetoken>drop database lportal;</replacetoken>
+							<replacevalue></replacevalue>
+						</replace>
+						<replace
+							file="create.sql"
+						>
+							<replacetoken>connect to lportal;</replacetoken>
+							<replacevalue>update db cfg for lportal using logprimary 2;
+
+update db cfg for lportal using logsecond 254;
+
+connect to lportal;</replacevalue>
+						</replace>
+						<replace
+							file="create.sql"
+						>
+							<replacetoken>create database lportal pagesize 8192;</replacetoken>
+							<replacevalue>create database lportal pagesize 32768 temporary tablespace managed by automatic storage;</replacevalue>
+						</replace>
+
+						<if>
+							<isset property="databases.size" />
+							<then>
+								<echo append="true" file="create.sql">
+
+disconnect lportal;
+
+create database lportal${databases.size} pagesize 32768 temporary tablespace managed by automatic storage;
+
+update db cfg for lportal${databases.size} using logprimary 2;
+
+update db cfg for lportal${databases.size} using logsecond 254;</echo>
+							</then>
+						</if>
+					</then>
+					<elseif>
+						<equals arg1="${database.type}" arg2="oracle" />
+						<then>
+							<replace
+								file="create.sql"
+							>
+								<replacetoken>grant connect,resource to &amp;1;</replacetoken>
+								<replacevalue>grant connect,resource to &amp;1;
+grant unlimited tablespace to &amp;1;</replacevalue>
+							</replace>
+
+							<if>
+								<isset property="databases.size" />
+								<then>
+									<replace
+										file="create.sql"
+									>
+										<replacetoken>grant connect,resource to &amp;1;
+grant unlimited tablespace to &amp;1;</replacetoken>
+										<replacevalue>grant all privileges to &amp;1;</replacevalue>
+									</replace>
+									<replace
+										file="create.sql"
+									>
+										<replacetoken>quit</replacetoken>
+										<replacevalue></replacevalue>
+									</replace>
+
+									<echo append="true" file="create.sql">
+
+drop user lportal1 cascade;
+
+create user lportal1 identified by lportal1;
+
+grant connect,resource to lportal1;
+
+grant unlimited tablespace to lportal1;
+
+quit</echo>
+								</then>
+							</if>
+						</then>
+					</elseif>
+					<elseif>
+						<equals arg1="${database.type}" arg2="sqlserver" />
+						<then>
+							<replace
+								file="create.sql"
+							>
+								<replacefilter>
+									<replacetoken>create database lportal;
+
+go</replacetoken>
+									<replacevalue><![CDATA[create database lportal;
+
+go
+
+alter database lportal set allow_snapshot_isolation on;
+
+go
+
+alter database lportal set read_committed_snapshot on;
+
+go]]></replacevalue>
+								</replacefilter>
+							</replace>
+
+							<if>
+								<isset property="databases.size" />
+								<then>
+									<echo append="true" file="create.sql">
+create database lportal${databases.size};
+
+go
+
+alter database lportal${databases.size} set allow_snapshot_isolation on;
+
+go
+
+alter database lportal${databases.size} set read_committed_snapshot on;
+
 go</echo>
 								</then>
 							</if>
@@ -12223,9 +12525,7 @@ ${update.properties}</echo>
 		<get-testcase-property property.name="captcha.enabled" />
 
 		<if>
-			<not>
-				<equals arg1="${captcha.enabled}" arg2="true" />
-			</not>
+			<equals arg1="${captcha.enabled}" arg2="true" />
 			<then>
 				<prepare-captcha-configuration />
 			</then>
@@ -12303,6 +12603,8 @@ ${update.properties}</echo>
 
 liferay.home=${liferay.home}
 
+upgrade.database.dl.storage.check.disabled=true
+
 jdbc.default.jndi.name=
 jdbc.default.driverClassName=${database.driver}
 jdbc.default.url=${database.url}
@@ -12324,8 +12626,6 @@ default.admin.password=${test.portal.default.admin.password}
 browser.launcher.url=
 setup.wizard.enabled=false
 initial.system.check.enabled=true
-mail.send.blacklist=
-mail.session.jndi.name=
 memory.scheduler.org.quartz.threadPool.threadCount=1
 persisted.scheduler.org.quartz.threadPool.threadCount=1
 virtual.hosts.default.site.name=
@@ -12334,7 +12634,20 @@ com.liferay.portal.servlet.filters.strip.StripFilter=true
 web.server.http.port=8080
 admin.email.from.address=test@liferay.com
 announcements.email.to.address=noreply@liferay.com
-login.secure.forgot.password=false</echo>
+login.secure.forgot.password=false
+captcha.enforce.disabled=true
+		</echo>
+
+		<mkdir dir="${liferay.home}/osgi/configs" />
+
+		<echo file="${liferay.home}/osgi/configs/com.liferay.captcha.configuration.CaptchaConfiguration.config"><![CDATA[createAccountCaptchaEnabled="false"
+maxChallenges="-1"
+sendPasswordCaptchaEnabled="false"]]></echo>
+
+		<echo file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config"><![CDATA[
+sendBlacklist=[]
+jndiName=""
+]]></echo>
 
 		<if>
 			<equals arg1="${database.type}" arg2="oracle" />
@@ -12627,19 +12940,21 @@ jdbc.test.password=${database.password}</echo>
 			<equals arg1="${ms.exchange.enabled}" arg2="true" />
 
 			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-mail.session.mail=true
-mail.session.mail.pop3.host=outlook.office365.com
-mail.session.mail.pop3.port=995
-mail.session.mail.pop3.user=qa-exchange-pop-test@liferay0.onmicrosoft.com
-mail.session.mail.smtp.host=smtp.office365.com
-mail.session.mail.smtp.port=587
-mail.session.mail.smtp.user=qa-exchange-pop-test@liferay0.onmicrosoft.com
-mail.session.mail.store.protocol=pop3s
-
-pop.server.subdomain=
-pop.server.notifications.enabled=true
+				<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration.config"><![CDATA[
+enablePOPServerNotifications=b"true"
+incomingPOPPort="995"
+incomingPOPServer="outlook.office365.com"
+outgoingSMTPPort="587"
+outgoingSMTPServer="smtp.office365.com"
+popUserName="qa-exchange-pop-test@liferay0.onmicrosoft.com"
+smtpUserName="qa-exchange-pop-test@liferay0.onmicrosoft.com"
+storeProtocol="pop3s"
+]]>
 				</echo>
+
+				<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config"><![CDATA[
+popServerSubdomain=""
+]]></echo>
 			</then>
 		</if>
 
@@ -12907,9 +13222,9 @@ include-and-override=${liferay.home}/portal-setup-wizard.properties</echo>
 		<if>
 			<isset property="test.smtp.server.enabled" />
 			<then>
-				<echo append="true" file="portal-impl/src/portal-ext.properties">
-
-mail.session.mail.smtp.port=25000</echo>
+				<echo append="true" file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration.config"><![CDATA[
+outgoingSMTPPort="25000"
+]]></echo>
 			</then>
 		</if>
 
@@ -12926,9 +13241,7 @@ feature.flag.LPD-11342=true</echo>
 		</if>
 
 		<echo append="true" file="portal-impl/src/portal-ext.properties">
-analytics.cloud.domain.allowed=*
-
-captcha.enforce.disabled=true</echo>
+analytics.cloud.domain.allowed=*</echo>
 
 		<apply-portal-ext-properties />
 	</target>
@@ -14230,8 +14543,7 @@ captcha.enforce.disabled=true</echo>
 	</target>
 
 	<target name="prepare-system-ext-properties">
-		<echo file="${app.server.classes.portal.dir}/system-ext.properties">jdbc.data.source.anti.time.drift=true
-log.sanitizer.enabled=false</echo>
+		<echo file="${app.server.classes.portal.dir}/system-ext.properties">log.sanitizer.enabled=false</echo>
 
 		<get-testcase-property property.name="custom.system.properties" />
 
@@ -14944,7 +15256,43 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 			<try>
 				<retry retrycount="2">
 					<sequential>
-						<rebuild-database />
+						<if>
+							<equals arg1="${skip.delete.liferay.home}" arg2="true" />
+							<then>
+								<rebuild-database skip.delete.liferay.home="true" />
+							</then>
+							<else>
+								<rebuild-database />
+							</else>
+						</if>
+					</sequential>
+				</retry>
+			</try>
+			<catch>
+				<echo>Failed to rebuild the database</echo>
+
+				<fail>${rebuild.database.error}</fail>
+			</catch>
+			<finally>
+				<delete file="create.sql" />
+			</finally>
+		</trycatch>
+	</target>
+
+	<target depends="build-sql-file-playwright" name="rebuild-database-playwright">
+		<trycatch property="rebuild.database.error">
+			<try>
+				<retry retrycount="2">
+					<sequential>
+						<if>
+							<equals arg1="${skip.delete.liferay.home}" arg2="true" />
+							<then>
+								<rebuild-database skip.delete.liferay.home="true" />
+							</then>
+							<else>
+								<rebuild-database />
+							</else>
+						</if>
 					</sequential>
 				</retry>
 			</try>
@@ -15803,6 +16151,10 @@ if (ppstate.equals("normal")) {
 		<record-test-csv-report test.type="junit" />
 	</target>
 
+	<target name="record-test-playwright-csv-report">
+		<record-test-csv-report test.type="playwright-js" />
+	</target>
+
 	<target name="record-test-plugin-names">
 		<condition else="plugins-compile" property="test.batch.name" value="${test.batch.name}">
 			<isset property="test.batch.name" />
@@ -16075,9 +16427,11 @@ jdbc.default.password=${database.mysql.password}</echo>
 
 				<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties">
 
-module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.profile.names}
+module.framework.properties.blacklist.portal.profile.names=${blacklist.portal.profile.names}</echo>
 
-mail.send.blacklist=</echo>
+				<echo file="${liferay.home}/osgi/configs/com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config"><![CDATA[
+sendBlacklist=[]
+]]></echo>
 
 				<delete failonerror="false" file="${app.server.classes.portal.dir}/system-ext.properties" />
 			</then>
@@ -17101,17 +17455,6 @@ CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.managemen
 				<stop-docker-os />
 
 				<start-docker-os />
-			</then>
-		</if>
-
-		<get-browser-property property.name="browser.docker.image" />
-
-		<if>
-			<isset property="browser.docker.image" />
-			<then>
-				<stop-docker-browser />
-
-				<start-docker-browser />
 			</then>
 		</if>
 

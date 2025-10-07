@@ -62,6 +62,7 @@ import jakarta.portlet.ReadOnlyException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -406,6 +407,33 @@ public class DLExportImportPortletPreferencesProcessor
 						readOnlyException);
 				}
 			}
+		}
+
+		try {
+			long sourceGroupId = portletDataContext.getSourceGroupId();
+
+			if (sourceGroupId != 0) {
+				Group group = _groupLocalService.getGroup(sourceGroupId);
+
+				if (Objects.equals(
+						group.getExternalReferenceCode(),
+						portletPreferences.getValue(
+							_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
+							null))) {
+
+					Group selectedGroup = _groupLocalService.getGroup(
+						portletDataContext.getGroupId());
+
+					portletPreferences.setValue(
+						_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
+						selectedGroup.getExternalReferenceCode());
+				}
+			}
+		}
+		catch (Exception exception) {
+			throw new PortletDataException(
+				"Unable to update portlet preferences during import",
+				exception);
 		}
 
 		// Root folder external reference code is not set, need to import

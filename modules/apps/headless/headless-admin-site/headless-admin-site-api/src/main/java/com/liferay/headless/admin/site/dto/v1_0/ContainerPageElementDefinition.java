@@ -5,9 +5,12 @@
 
 package com.liferay.headless.admin.site.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -55,58 +58,11 @@ public class ContainerPageElementDefinition
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The background fragment image of the container page element."
-	)
-	@Valid
-	public FragmentImage getBackgroundFragmentImage() {
-		if (_backgroundFragmentImageSupplier != null) {
-			backgroundFragmentImage = _backgroundFragmentImageSupplier.get();
-
-			_backgroundFragmentImageSupplier = null;
-		}
-
-		return backgroundFragmentImage;
-	}
-
-	public void setBackgroundFragmentImage(
-		FragmentImage backgroundFragmentImage) {
-
-		this.backgroundFragmentImage = backgroundFragmentImage;
-
-		_backgroundFragmentImageSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setBackgroundFragmentImage(
-		UnsafeSupplier<FragmentImage, Exception>
-			backgroundFragmentImageUnsafeSupplier) {
-
-		_backgroundFragmentImageSupplier = () -> {
-			try {
-				return backgroundFragmentImageUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The background fragment image of the container page element."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected FragmentImage backgroundFragmentImage;
-
-	@JsonIgnore
-	private Supplier<FragmentImage> _backgroundFragmentImageSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The content visibility of the container."
 	)
-	public String getContentVisibility() {
+	@JsonGetter("contentVisibility")
+	@Valid
+	public ContentVisibility getContentVisibility() {
 		if (_contentVisibilitySupplier != null) {
 			contentVisibility = _contentVisibilitySupplier.get();
 
@@ -116,7 +72,18 @@ public class ContainerPageElementDefinition
 		return contentVisibility;
 	}
 
-	public void setContentVisibility(String contentVisibility) {
+	@JsonIgnore
+	public String getContentVisibilityAsString() {
+		ContentVisibility contentVisibility = getContentVisibility();
+
+		if (contentVisibility == null) {
+			return null;
+		}
+
+		return contentVisibility.toString();
+	}
+
+	public void setContentVisibility(ContentVisibility contentVisibility) {
 		this.contentVisibility = contentVisibility;
 
 		_contentVisibilitySupplier = null;
@@ -124,7 +91,8 @@ public class ContainerPageElementDefinition
 
 	@JsonIgnore
 	public void setContentVisibility(
-		UnsafeSupplier<String, Exception> contentVisibilityUnsafeSupplier) {
+		UnsafeSupplier<ContentVisibility, Exception>
+			contentVisibilityUnsafeSupplier) {
 
 		_contentVisibilitySupplier = () -> {
 			try {
@@ -141,13 +109,13 @@ public class ContainerPageElementDefinition
 
 	@GraphQLField(description = "The content visibility of the container.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String contentVisibility;
+	protected ContentVisibility contentVisibility;
 
 	@JsonIgnore
-	private Supplier<String> _contentVisibilitySupplier;
+	private Supplier<ContentVisibility> _contentVisibilitySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "A list of CSS Classes that are applied to the element."
+		description = "A list of CSS Classes that are applied to all viewports."
 	)
 	public String[] getCssClasses() {
 		if (_cssClassesSupplier != null) {
@@ -183,7 +151,7 @@ public class ContainerPageElementDefinition
 	}
 
 	@GraphQLField(
-		description = "A list of CSS Classes that are applied to the element."
+		description = "A list of CSS Classes that are applied to all viewports."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String[] cssClasses;
@@ -235,53 +203,6 @@ public class ContainerPageElementDefinition
 
 	@JsonIgnore
 	private Supplier<String> _customCSSSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The custom CSS viewports of the container page element."
-	)
-	@Valid
-	public CustomCSSViewport[] getCustomCSSViewports() {
-		if (_customCSSViewportsSupplier != null) {
-			customCSSViewports = _customCSSViewportsSupplier.get();
-
-			_customCSSViewportsSupplier = null;
-		}
-
-		return customCSSViewports;
-	}
-
-	public void setCustomCSSViewports(CustomCSSViewport[] customCSSViewports) {
-		this.customCSSViewports = customCSSViewports;
-
-		_customCSSViewportsSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setCustomCSSViewports(
-		UnsafeSupplier<CustomCSSViewport[], Exception>
-			customCSSViewportsUnsafeSupplier) {
-
-		_customCSSViewportsSupplier = () -> {
-			try {
-				return customCSSViewportsUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The custom CSS viewports of the container page element."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected CustomCSSViewport[] customCSSViewports;
-
-	@JsonIgnore
-	private Supplier<CustomCSSViewport[]> _customCSSViewportsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The fragment link of the container page element."
@@ -624,19 +545,7 @@ public class ContainerPageElementDefinition
 
 		sb.append("{");
 
-		FragmentImage backgroundFragmentImage = getBackgroundFragmentImage();
-
-		if (backgroundFragmentImage != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"backgroundFragmentImage\": ");
-
-			sb.append(String.valueOf(backgroundFragmentImage));
-		}
-
-		String contentVisibility = getContentVisibility();
+		ContentVisibility contentVisibility = getContentVisibility();
 
 		if (contentVisibility != null) {
 			if (sb.length() > 1) {
@@ -647,7 +556,7 @@ public class ContainerPageElementDefinition
 
 			sb.append("\"");
 
-			sb.append(_escape(contentVisibility));
+			sb.append(contentVisibility);
 
 			sb.append("\"");
 		}
@@ -692,28 +601,6 @@ public class ContainerPageElementDefinition
 			sb.append(_escape(customCSS));
 
 			sb.append("\"");
-		}
-
-		CustomCSSViewport[] customCSSViewports = getCustomCSSViewports();
-
-		if (customCSSViewports != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"customCSSViewports\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < customCSSViewports.length; i++) {
-				sb.append(String.valueOf(customCSSViewports[i]));
-
-				if ((i + 1) < customCSSViewports.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
 		}
 
 		FragmentLink fragmentLink = getFragmentLink();
@@ -841,6 +728,44 @@ public class ContainerPageElementDefinition
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("ContentVisibility")
+	public static enum ContentVisibility {
+
+		AUTO("Auto");
+
+		@JsonCreator
+		public static ContentVisibility create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (ContentVisibility contentVisibility : values()) {
+				if (Objects.equals(contentVisibility.getValue(), value)) {
+					return contentVisibility;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private ContentVisibility(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(

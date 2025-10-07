@@ -24,6 +24,21 @@ public class PatcherBuildRelLocalServiceImpl
 	extends PatcherBuildRelLocalServiceBaseImpl {
 
 	@Override
+	public PatcherBuildRel addPatcherBuildRel(
+		long childPatcherBuildId, long parentPatcherBuildId) {
+
+		long patcherBuildRelId = counterLocalService.increment();
+
+		PatcherBuildRel patcherBuildRel = patcherBuildRelPersistence.create(
+			patcherBuildRelId);
+
+		patcherBuildRel.setChildPatcherBuildId(childPatcherBuildId);
+		patcherBuildRel.setParentPatcherBuildId(parentPatcherBuildId);
+
+		return patcherBuildRel;
+	}
+
+	@Override
 	public List<PatcherBuildRel> getPatcherBuildRelsByChildPatcherBuildId(
 		long childPatcherBuildId) {
 

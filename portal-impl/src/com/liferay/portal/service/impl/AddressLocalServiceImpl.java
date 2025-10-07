@@ -5,7 +5,7 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManagerUtil;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.account.configuration.manager.AccountEntryAddressSubtypeConfigurationManagerUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
@@ -83,7 +83,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		User user = _userPersistence.findByPrimaryKey(userId);
 		long classNameId = _classNameLocalService.getClassNameId(className);
 
-		if (!IncompleteModelManagerUtil.isIncompleteModel()) {
+		if (!EmptyModelManagerUtil.isEmptyModel()) {
 			validate(
 				0, city, classNameId, classPK, user.getCompanyId(), countryId,
 				listTypeId, mailing, primary, regionId, street1, subtype, zip);
@@ -114,8 +114,8 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		address.setSubtype(subtype);
 		address.setZip(zip);
 
-		if (IncompleteModelManagerUtil.isIncompleteModel()) {
-			address.setStatus(WorkflowConstants.STATUS_INCOMPLETE);
+		if (EmptyModelManagerUtil.isEmptyModel()) {
+			address.setStatus(WorkflowConstants.STATUS_EMPTY);
 		}
 		else {
 			address.setStatus(WorkflowConstants.STATUS_APPROVED);
@@ -261,13 +261,12 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 			classPK, listTypeIds, start, end, orderByComparator);
 	}
 
-	@Override
-	public Address getOrAddIncompleteAddress(
+	public Address getOrAddEmptyAddress(
 			String externalReferenceCode, long companyId, long userId,
 			String className, long classPK)
-		throws Exception {
+		throws PortalException {
 
-		return IncompleteModelManagerUtil.getOrAddIncompleteModel(
+		return EmptyModelManagerUtil.getOrAddEmptyModel(
 			Address.class, companyId, externalReferenceCode,
 			this::fetchAddressByExternalReferenceCode,
 			this::getAddressByExternalReferenceCode,
@@ -321,7 +320,7 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		address.setSubtype(subtype);
 		address.setZip(zip);
 
-		if (address.getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+		if (address.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			address.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 

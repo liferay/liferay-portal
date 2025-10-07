@@ -45,6 +45,15 @@
 			"VIEW"
 		],
 		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_PORTLET_ID:J3Y7Ticket$]",
+		"roleName": "M2H8 Ticket Solvers",
+		"scope": "1"
+	},
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
 		"resourceName": "com.liferay.document.library",
 		"roleName": "M2H8 Petitionaries",
 		"scope": "1"
@@ -185,15 +194,6 @@
 		],
 		"primKey": "0",
 		"resourceName": "com.liferay.portal.kernel.model.User",
-		"roleName": "M2H8 Ticket Solvers",
-		"scope": "1"
-	},
-	{
-		"actionIds": [
-			"VIEW"
-		],
-		"primKey": "0",
-		"resourceName": "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet_[$OBJECT_DEFINITION_ID:J3Y7Ticket$]",
 		"roleName": "M2H8 Ticket Solvers",
 		"scope": "1"
 	},

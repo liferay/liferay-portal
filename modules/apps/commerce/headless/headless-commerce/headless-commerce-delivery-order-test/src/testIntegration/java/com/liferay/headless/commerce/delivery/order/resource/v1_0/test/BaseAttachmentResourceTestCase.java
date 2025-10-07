@@ -34,12 +34,12 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -209,6 +209,69 @@ public abstract class BaseAttachmentResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeletePlacedOrderAttachment() throws Exception {
+
+		// No namespace
+
+		Attachment attachment1 =
+			testGraphQLDeletePlacedOrderAttachment_addAttachment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePlacedOrderAttachment",
+						new HashMap<String, Object>() {
+							{
+								put("attachmentId", attachment1.getId());
+
+								put(
+									"placedOrderId",
+									testGraphQLDeletePlacedOrderAttachment_getPlacedOrderId());
+							}
+						})),
+				"JSONObject/data", "Object/deletePlacedOrderAttachment"));
+
+		// Using the namespace headlessCommerceDeliveryOrder_v1_0
+
+		Attachment attachment2 =
+			testGraphQLDeletePlacedOrderAttachment_addAttachment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceDeliveryOrder_v1_0",
+						new GraphQLField(
+							"deletePlacedOrderAttachment",
+							new HashMap<String, Object>() {
+								{
+									put("attachmentId", attachment2.getId());
+
+									put(
+										"placedOrderId",
+										testGraphQLDeletePlacedOrderAttachment_getPlacedOrderId());
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceDeliveryOrder_v1_0",
+				"Object/deletePlacedOrderAttachment"));
+	}
+
+	protected Long testGraphQLDeletePlacedOrderAttachment_getPlacedOrderId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Attachment testGraphQLDeletePlacedOrderAttachment_addAttachment()
+		throws Exception {
+
+		return testGraphQLAttachment_addAttachment();
+	}
+
+	@Test
 	public void testDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode()
 		throws Exception {
 
@@ -240,6 +303,87 @@ public abstract class BaseAttachmentResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		Attachment attachment1 =
+			testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_addAttachment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"attachmentExternalReferenceCode",
+									"\"" +
+										attachment1.getExternalReferenceCode() +
+											"\"");
+
+								put(
+									"externalReferenceCode",
+									"\"" +
+										testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
+											attachment1) + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode"));
+
+		// Using the namespace headlessCommerceDeliveryOrder_v1_0
+
+		Attachment attachment2 =
+			testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_addAttachment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceDeliveryOrder_v1_0",
+						new GraphQLField(
+							"deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"attachmentExternalReferenceCode",
+										"\"" +
+											attachment2.
+												getExternalReferenceCode() +
+													"\"");
+
+									put(
+										"externalReferenceCode",
+										"\"" +
+											testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
+												attachment2) + "\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceDeliveryOrder_v1_0",
+				"Object/deletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode"));
+	}
+
+	protected String
+			testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
+				Attachment attachment)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Attachment
+			testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_addAttachment()
+		throws Exception {
+
+		return testGraphQLAttachment_addAttachment();
 	}
 
 	@Test
@@ -659,6 +803,13 @@ public abstract class BaseAttachmentResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
+	protected Attachment testGraphQLAttachment_addAttachment()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected void assertContains(
 		Attachment attachment, List<Attachment> attachments) {
 
@@ -827,6 +978,10 @@ public abstract class BaseAttachmentResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

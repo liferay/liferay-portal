@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-learn-batch:
     name: Liferay Learn Batch
-    oAuthApplicationHeadlessServer: liferay-learn-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-learn-batch-oahs
     type: batch
-liferay-learn-batch-oauth-application-headless-server:
+liferay-learn-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Learn Batch OAuth Application Headless Server

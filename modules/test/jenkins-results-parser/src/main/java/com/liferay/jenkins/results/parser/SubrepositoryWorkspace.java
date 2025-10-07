@@ -73,7 +73,7 @@ public class SubrepositoryWorkspace extends PortalWorkspace {
 		String repositoryName = primaryWorkspaceGitRepository.getName();
 
 		if (repositoryName.equals("com-liferay-osb-asah-private")) {
-			copyOSBAsahRepositoryToModule();
+			copyLiferayOSBAsahRepositoryToModule();
 		}
 	}
 

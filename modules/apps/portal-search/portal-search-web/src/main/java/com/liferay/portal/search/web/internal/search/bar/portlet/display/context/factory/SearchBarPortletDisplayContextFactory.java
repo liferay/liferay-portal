@@ -150,7 +150,8 @@ public class SearchBarPortletDisplayContextFactory {
 
 		searchBarPortletDisplayContext.setInputPlaceholder(
 			LanguageUtil.get(
-				getHttpServletRequest(_renderRequest), "search-..."));
+				getHttpServletRequest(_renderRequest),
+				searchBarPortletPreferences.getInputPlaceholder()));
 
 		String keywordsParameterName = _getKeywordsParameterName(
 			portletPreferencesLookup,

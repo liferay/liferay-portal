@@ -315,6 +315,7 @@ public class CommerceShippingMethodLocalServiceImpl
 
 		if (imageFile != null) {
 			_imageLocalService.updateImage(
+				commerceShippingMethod.getCompanyId(),
 				commerceShippingMethod.getImageId(), imageFile);
 		}
 

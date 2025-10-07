@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -50,7 +51,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -635,75 +635,6 @@ public abstract class BaseFormResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetSiteFormsPage() throws Exception {
-		Long siteId = testGetSiteFormsPage_getSiteId();
-
-		GraphQLField graphQLField = new GraphQLField(
-			"forms",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-
-					put("siteKey", "\"" + siteId + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject formsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/forms");
-
-		long totalCount = formsJSONObject.getLong("totalCount");
-
-		Form form1 = testGraphQLGetSiteFormsPage_addForm();
-		Form form2 = testGraphQLGetSiteFormsPage_addForm();
-
-		formsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/forms");
-
-		Assert.assertEquals(
-			totalCount + 2, formsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			form1,
-			Arrays.asList(
-				FormSerDes.toDTOs(formsJSONObject.getString("items"))));
-		assertContains(
-			form2,
-			Arrays.asList(
-				FormSerDes.toDTOs(formsJSONObject.getString("items"))));
-
-		// Using the namespace headlessForm_v1_0
-
-		formsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField("headlessForm_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/headlessForm_v1_0",
-			"JSONObject/forms");
-
-		Assert.assertEquals(
-			totalCount + 2, formsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			form1,
-			Arrays.asList(
-				FormSerDes.toDTOs(formsJSONObject.getString("items"))));
-		assertContains(
-			form2,
-			Arrays.asList(
-				FormSerDes.toDTOs(formsJSONObject.getString("items"))));
-	}
-
-	protected Form testGraphQLGetSiteFormsPage_addForm() throws Exception {
-		return testGraphQLForm_addForm();
-	}
-
-	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
@@ -1115,6 +1046,8 @@ public abstract class BaseFormResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 

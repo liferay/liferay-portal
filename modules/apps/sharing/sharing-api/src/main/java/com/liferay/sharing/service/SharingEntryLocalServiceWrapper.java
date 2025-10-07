@@ -586,10 +586,13 @@ public class SharingEntryLocalServiceWrapper
 	 */
 	@Override
 	public java.util.List<com.liferay.sharing.model.SharingEntry>
-		getSharingEntries(long classNameId, long classPK, int start, int end) {
+		getSharingEntries(
+			long classNameId, long classPK, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.sharing.model.SharingEntry> orderByComparator) {
 
 		return _sharingEntryLocalService.getSharingEntries(
-			classNameId, classPK, start, end);
+			classNameId, classPK, start, end, orderByComparator);
 	}
 
 	/**

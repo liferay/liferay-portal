@@ -9,6 +9,9 @@ const sidebarId = `${fragmentEntryLinkNamespace}sidebar`;
 const sidebarOpenKey = `${fragmentEntryLinkNamespace}sidebarOpen`;
 
 const sidebar = fragmentElement.querySelector('.sidebar-container');
+const sidebarCloseButton = fragmentElement.querySelector(
+	'.sidebar-close-button'
+);
 const sidebarContainer = fragmentElement.querySelector('.sidebar-layout');
 const sidebarTrigger = fragmentElement.querySelector('.sidebar-toggle');
 
@@ -17,6 +20,10 @@ if (sidebarTrigger) {
 	sidebarTrigger.setAttribute('aria-controls', sidebarId);
 
 	addSidebarToggleClickEventListener(sidebarTrigger);
+}
+
+if (sidebarCloseButton) {
+	addSidebarToggleClickEventListener(sidebarCloseButton);
 }
 
 const sidebarOpenString = Liferay.Util.LocalStorage.getItem(

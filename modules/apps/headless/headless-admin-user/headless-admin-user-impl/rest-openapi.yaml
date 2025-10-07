@@ -382,6 +382,12 @@ components:
                         The type of the content.
                     readOnly: true
                     type: string
+                externalReferenceCode:
+                    description:
+                        The user's external reference code.
+                    example: AB-34098-789-N
+                    readOnly: true
+                    type: string
                 familyName:
                     description:
                         The user's surname (last name).
@@ -433,7 +439,6 @@ components:
                     description:
                         The email address's ID.
                     format: int64
-                    readOnly: true
                     type: integer
                 # @review
                 primary:
@@ -445,10 +450,33 @@ components:
                         The email address's type.
                     type: string
             type: object
+        FileEntry:
+            properties:
+                externalReferenceCode:
+                    type: string
+                id:
+                    format: int64
+                    type: integer
+                link:
+                    $ref: "#/components/schemas/Link"
+                    readOnly: true
+                name:
+                    type: string
+                thumbnailURL:
+                    readOnly: true
+                    type: string
+            type: object
         Image:
             properties:
                 image:
                     format: binary
+                    type: string
+            type: object
+        Link:
+            properties:
+                href:
+                    type: string
+                label:
                     type: string
             type: object
         Organization:
@@ -787,7 +815,6 @@ components:
                     description:
                         The address's ID.
                     format: int64
-                    readOnly: true
                     type: integer
                 name:
                     description:
@@ -1091,6 +1118,11 @@ components:
                         The shared asset external reference code.
                     readOnly: true
                     type: string
+                file:
+                    $ref: "#/components/schemas/FileEntry"
+                    description:
+                        Optional field with the embedded file, can be embedded with nestedFields
+                    readOnly: true
                 fileTypeIcon:
                     description:
                         The shared asset file type icon.
@@ -1722,7 +1754,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.user.client', and version '4.0.77'."
+        'com.liferay.headless.admin.user.client', and version '4.0.79'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -4132,6 +4164,10 @@ paths:
                     schema:
                         type: string
                 -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
                     name: page
                     schema:
                         type: integer
@@ -4173,6 +4209,10 @@ paths:
                         type: array
                 -   in: query
                     name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
                     schema:
                         type: string
                 -   in: query
@@ -7005,6 +7045,17 @@ paths:
             description:
                 Creates a new user account
             operationId: postUserAccount
+            parameters:
+                -   in: query
+                    name: captchaAnswer
+                    required: false
+                    schema:
+                        type: string
+                -   in: query
+                    name: captchaToken
+                    required: false
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:

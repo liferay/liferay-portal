@@ -14,7 +14,7 @@ export default function getSortedTicketAttachments(
 	if (ticketAttachments) {
 		if (sortConfig.columnName === 'fileSize') {
 			sortedTicketAttachments = sortSizes(ticketAttachments);
-		} else if (sortConfig.columnName === 'zendeskTicketId') {
+		} else if (sortConfig.columnName === 'ticketId') {
 			sortedTicketAttachments = sortTicketId(ticketAttachments);
 		} else {
 			sortedTicketAttachments = ticketAttachments.sort((a, b) => {
@@ -32,13 +32,10 @@ export default function getSortedTicketAttachments(
 
 	function sortTicketId(ticketAttachments) {
 		ticketAttachments.sort((x, y) => {
-			const x_ticketId = Number(x.zendeskTicketId);
-			const y_ticketId = Number(y.zendeskTicketId);
-
-			if (x_ticketId < y_ticketId) {
+			if (x.ticketId < y.ticketId) {
 				return sortConfig.direction === 'ascending' ? -1 : 1;
 			}
-			if (x_ticketId > y_ticketId) {
+			else if (x.ticketId > y.ticketId) {
 				return sortConfig.direction === 'ascending' ? 1 : -1;
 			}
 

@@ -161,6 +161,21 @@ public class ExpandoValueConversionTest {
 	}
 
 	@Test
+	public void testDate3() {
+		Date convertedDate = _converter.convertType(
+			ExpandoColumnConstants.DATE, "2021-05-09");
+
+		Assert.assertEquals(
+			"Sun May 09 00:00:00 GMT 2021", convertedDate.toString());
+
+		convertedDate = _converter.convertType(
+			ExpandoColumnConstants.DATE, "2021-5-9");
+
+		Assert.assertEquals(
+			"Sun May 09 00:00:00 GMT 2021", convertedDate.toString());
+	}
+
+	@Test
 	public void testDateArray1() {
 		long time1 = System.currentTimeMillis();
 		long time2 = System.currentTimeMillis();
@@ -264,6 +279,20 @@ public class ExpandoValueConversionTest {
 		_converter.convertType(
 			ExpandoColumnConstants.DATE_ARRAY,
 			new int[] {1376510136, 1376510136});
+	}
+
+	@Test
+	public void testDateArray11() {
+		Date[] convertedDates = _converter.convertType(
+			ExpandoColumnConstants.DATE_ARRAY,
+			new String[] {"2021-05-09", "2021-5-9"});
+
+		Assert.assertEquals(
+			Arrays.toString(convertedDates), 2, convertedDates.length);
+		Assert.assertEquals(
+			"Sun May 09 00:00:00 GMT 2021", convertedDates[0].toString());
+		Assert.assertEquals(
+			"Sun May 09 00:00:00 GMT 2021", convertedDates[1].toString());
 	}
 
 	@Test

@@ -56,9 +56,9 @@ public class MVCCommandCache<T extends MVCCommand> {
 		_packagePrefix = packagePrefix;
 
 		if (portletId.equals(portletName)) {
-			_filterString = StringBundler.concat(
-				"(&(jakarta.portlet.name=", portletId,
-				")(mvc.command.name=*))");
+			_filterString =
+				"(&(jakarta.portlet.name=" + portletId +
+					")(mvc.command.name=*))";
 		}
 		else {
 			_filterString = StringBundler.concat(

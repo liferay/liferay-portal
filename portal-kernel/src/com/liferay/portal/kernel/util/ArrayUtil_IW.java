@@ -273,6 +273,11 @@ public class ArrayUtil_IW {
 		return ArrayUtil.distinct(array, comparator);
 	}
 
+	public boolean equalsIgnoreCase(java.lang.String[] array1,
+		java.lang.String[] array2) {
+		return ArrayUtil.equalsIgnoreCase(array1, array2);
+	}
+
 	public <T> boolean exists(T[] array,
 		java.util.function.Predicate<T> predicate) {
 		return ArrayUtil.exists(array, predicate);
@@ -660,7 +665,7 @@ public class ArrayUtil_IW {
 	}
 
 	public short[] toShortArray(
-		java.util.Collection<java.lang.Short> collection) {
+		java.util.Collection<java.lang.Number> collection) {
 		return ArrayUtil.toShortArray(collection);
 	}
 

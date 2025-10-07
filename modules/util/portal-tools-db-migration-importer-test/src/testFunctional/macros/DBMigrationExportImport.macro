@@ -1,0 +1,88 @@
+definition {
+
+	@summary = "Extracts an integrated DB Partition into a standalone partition"
+	macro dbSchemaDefinitionExport() {
+		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+
+		OSGiConfig.deployOSGiConfigFile(
+			osgiConfigFileName = "com.liferay.portal.db.migration.schema.exporter.internal.configuration.DBMigrationSchemaExportConfiguration.config",
+			osgiConfigs = "exportFilesPath=\"${liferayHome}\"");
+
+		OSGiConfig.waitForOSGiConfigDeleted(osgiConfigFileName = "com.liferay.portal.db.migration.schema.exporter.internal.configuration.DBMigrationSchemaExportConfiguration.config");
+	}
+
+	@summary = "Switch JDBC to use PostgreSQL"
+	macro executeDatabaseImport() {
+		var databaseType = PropsUtil.get("database.type");
+		var liferayHome = PropsUtil.get("liferay.home.dir.name");
+		var sourceJdbcURL = PropsUtil.get("database.${databaseType}.url");
+		var sourcePassword = PropsUtil.get("database.${databaseType}.password");
+		var sourceUser = PropsUtil.get("database.${databaseType}.username");
+		var targetJdbcURL = PropsUtil.get("database.postgresql.url");
+		var targetPassword = PropsUtil.get("database.postgresql.password");
+		var targetUser = PropsUtil.get("database.postgresql.username");
+
+		AntCommands.runCommand("modules/util/portal-tools-db-migration-importer-test/src/testFunctional/ant/build-test-db-migration-importer.xml", "import-database -Dpath=${liferayHome} -Dsource.jdbc.url=${sourceJdbcURL} -Dsource.password=${sourcePassword} -Dsource.user=${sourceUser} -Dtarget.jdbc.url=${targetJdbcURL} -Dtarget.password=${targetPassword} -Dtarget.user=${targetUser}");
+	}
+
+	@summary = "Sets up the resources for db schema import/export tests (mainly PostgreSQL database)"
+	macro startPostgreSQLDB() {
+		AntCommands.runCommand("build-test.xml", "start-docker-database -Ddatabase.type=postgresql");
+
+		AntCommands.runCommand("build-test.xml", "rebuild-database -Ddatabase.type=postgresql -Dskip.delete.liferay.home=true -Dsql.dir=sql/create-bare/ -Dsql.file=create-bare-postgresql.sql");
+	}
+
+	@summary = "Switch JDBC to use PostgreSQL"
+	macro switchToPostgreSQLDB() {
+		var databaseType = PropsUtil.get("database.type");
+
+		var originalDatabaseDriver = PropsUtil.get("database.${databaseType}.driver");
+		var originalDatabasePassword = PropsUtil.get("database.${databaseType}.password");
+		var originalDatabaseURL = PropsUtil.get("database.${databaseType}.url");
+		var originalDatabaseUsername = PropsUtil.get("database.${databaseType}.username");
+		var postgresqlDatabaseDriver = PropsUtil.get("database.postgresql.driver");
+		var postgresqlDatabasePassword = PropsUtil.get("database.postgresql.password");
+		var postgresqlDatabaseURL = PropsUtil.get("database.postgresql.url");
+		var postgresqlDatabaseUsername = PropsUtil.get("database.postgresql.username");
+
+		TestCase.updatePortalProperties(
+			newProperty = "jdbc.default.driverClassName=${postgresqlDatabaseDriver}",
+			oldProperty = "jdbc.default.driverClassName=${originalDatabaseDriver}");
+
+		TestCase.updatePortalProperties(
+			newProperty = "jdbc.default.password=${postgresqlDatabasePassword}",
+			oldProperty = "jdbc.default.password=${originalDatabasePassword}");
+
+		TestCase.updatePortalProperties(
+			newProperty = "jdbc.default.url=${postgresqlDatabaseURL}",
+			oldProperty = "jdbc.default.url=${originalDatabaseURL}");
+
+		TestCase.updatePortalProperties(
+			newProperty = "jdbc.default.username=${postgresqlDatabaseUsername}",
+			oldProperty = "jdbc.default.username=${originalDatabaseUsername}");
+
+		if (${databaseType} == "db2") {
+			TestCase.updatePortalProperties(
+				newProperty = "#hibernate.dialect=",
+				oldProperty = "hibernate.dialect=");
+
+			TestCase.updatePortalProperties(
+				newProperty = "#custom.sql.function.isnull=",
+				oldProperty = "custom.sql.function.isnull=");
+
+			TestCase.updatePortalProperties(
+				newProperty = "#custom.sql.function.isnotnull=",
+				oldProperty = "custom.sql.function.isnotnull=");
+		}
+	}
+
+	@summary = "Tears down all resources set up for the db schema import/export tests"
+	macro tearDown() {
+		Portlet.shutdownServer();
+
+		AntCommands.runCommand("build-test.xml", "stop-docker-database -Ddatabase.type=postgresql");
+
+		AntCommands.runCommand("modules/util/portal-tools-db-migration-importer-test/src/testFunctional/ant/build-test-db-migration-importer.xml", "clean-db-migration-importer-tool");
+	}
+
+}

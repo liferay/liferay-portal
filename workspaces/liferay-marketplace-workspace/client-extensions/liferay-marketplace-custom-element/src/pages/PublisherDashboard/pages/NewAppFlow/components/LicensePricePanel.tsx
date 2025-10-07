@@ -18,6 +18,7 @@ import {
 	ProductLicenseTier,
 	ProductTypeLicenseOptions,
 } from '../../../../../enums/Product';
+import i18n from '../../../../../i18n';
 import {currenciesCode} from '../../../../../utils/currencies';
 import {CurrencyFlag} from '../pages/Licensing/components/CurrencyModal';
 import IconButton from './IconButton';
@@ -34,7 +35,7 @@ const licensePrices = [
 	{
 		description:
 			'Developer licenses are limited to 5 unique addresses and should not be used for full scale production deployments.',
-		label: 'Developer License Prices',
+		label: i18n.translate('developer-license-prices'),
 		required: false,
 		type: ProductLicenseTier.DEVELOPER,
 	},
@@ -142,7 +143,7 @@ const LicensePricePanel: React.FC<LicensePricePanelProps> = ({
 						index
 					) => {
 						const showSection =
-							ProductTypeLicenseOptions[appType].includes(
+							ProductTypeLicenseOptions[appType]?.includes(
 								licenseType
 							);
 
@@ -177,7 +178,7 @@ const LicensePricePanel: React.FC<LicensePricePanelProps> = ({
 												currency,
 												index,
 												licenseType,
-												price
+												price as LicensePrice
 											)
 										}
 										onDelete={(key, currency) =>

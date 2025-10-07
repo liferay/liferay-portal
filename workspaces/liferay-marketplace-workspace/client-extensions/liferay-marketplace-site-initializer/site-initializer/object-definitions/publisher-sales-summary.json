@@ -1,0 +1,63 @@
+{
+	"externalReferenceCode": "PUBLISHER-SALES-SUMMARY",
+	"label": {
+		"en_US": "Publisher Sales Summary"
+	},
+	"name": "PublisherSalesSummary",
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Publisher Name"
+			},
+			"name": "publisherName",
+			"required": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Quarter"
+			},
+			"name": "quarter",
+			"required": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Paid By"
+			},
+			"name": "paidBy",
+			"required": false,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Paid Date"
+			},
+			"name": "paidDate",
+			"required": false,
+			"type": "String"
+		}
+	],
+	"objectFolderExternalReferenceCode": "MARKETPLACE",
+	"panelCategoryKey": "control_panel.object",
+	"pluralLabel": {
+		"en_US": "Publisher Sales Summaries"
+	},
+	"scope": "company"
+}

@@ -276,7 +276,9 @@ public class SXPBlueprintDTOConverter
 			}
 		}
 		catch (Exception exception) {
-			_log.error(exception);
+			if (_log.isInfoEnabled()) {
+				_log.info(exception);
+			}
 		}
 
 		return StringPool.BLANK;
@@ -310,7 +312,9 @@ public class SXPBlueprintDTOConverter
 			return ResourceActionsUtil.getModelResource(locale, className);
 		}
 		catch (Exception exception) {
-			_log.error(exception);
+			if (_log.isInfoEnabled()) {
+				_log.info(exception);
+			}
 		}
 
 		return StringPool.BLANK;

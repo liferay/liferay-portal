@@ -1,0 +1,20 @@
+{
+	"name": "Search Compatibility",
+	"name_i18n": {
+		"en_US": "Search Compatibility",
+		"es-ES": "Compatibilidad de búsqueda",
+		"ja-JP": "検索互換性",
+		"pt-BR": "Compatibilidade de Pesquisa"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "search-engine-compatibility-by-product-and-version"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/search_compatibility.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

@@ -1,0 +1,13 @@
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} {
+	.share-modal-content {
+		.modal-body.inline-scroller {
+			max-height: 368px;
+		}
+
+		.permissions-picker {
+			height: 24px;
+		}
+	}
+}

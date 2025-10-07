@@ -28,7 +28,11 @@
 #else
 		<spring.scope>provided</spring.scope>
 #end
-#if (${framework.equals("portletmvc4spring")})
+
+#if (${jakartaCompatible.equals("true")})
+		<spring.security.version>6.2.8</spring.security.version>
+		<spring.version>6.2.8</spring.version>
+#elseif (${framework.equals("portletmvc4spring")})
 		<spring.security.version>5.5.1</spring.security.version>
 		<spring.version>5.3.27</spring.version>
 #elseif (${framework.equals("springportletmvc")})

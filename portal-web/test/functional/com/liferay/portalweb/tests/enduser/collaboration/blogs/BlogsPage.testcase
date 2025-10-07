@@ -59,6 +59,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test AbstractDescriptionPersistsWhenTypingInContentField {
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -87,6 +88,7 @@ definition {
 	@priority = 3
 	test CanAddCommentToBlogEntryWhenEntryIsDisplayedWithDPT {
 		property custom.properties = "virtual.hosts.default.site.name=Guest";
+		property portal.acceptance = "false";
 
 		var portalURL = PropsUtil.get("portal.url");
 
@@ -169,6 +171,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanDisplayViewCountForEntry {
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -485,6 +488,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanSubscribeToComment {
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -960,6 +964,8 @@ definition {
 	@description = "This test checks that the javascript in the user name will not be executed when viewing an entry on page."
 	@priority = 3
 	test XSSIsNotExecutedWhenViewingUsernameInBlog {
+		property portal.acceptance = "false";
+
 		Navigator.openURL();
 
 		UserBar.gotoDropdownItem(dropdownItem = "Account Settings");

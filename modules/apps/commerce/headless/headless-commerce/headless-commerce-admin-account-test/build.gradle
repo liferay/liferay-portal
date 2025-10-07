@@ -16,6 +16,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-payment-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-price-list-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-shipping-engine-fixed-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-term-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-account-api")

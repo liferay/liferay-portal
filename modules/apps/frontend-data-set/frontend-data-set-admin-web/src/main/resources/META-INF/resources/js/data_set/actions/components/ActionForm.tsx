@@ -18,10 +18,10 @@ import RequiredMark from '../../../components/RequiredMark';
 import Search from '../../../components/Search';
 import ValidationFeedback from '../../../components/ValidationFeedback';
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	OBJECT_RELATIONSHIP,
 } from '../../../utils/constants';
+import getDataSetResourceURL from '../../../utils/getDataSetResourceURL';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
 import {IDataSet} from '../../../utils/types';
@@ -225,7 +225,6 @@ const ActionForm = ({
 			method,
 			modalSize,
 			permissionKey,
-			[OBJECT_RELATIONSHIP.DATA_SET_ACTIONS_ID]: dataSet.id,
 			requestBody,
 			target,
 			title_i18n: titleTranslations,
@@ -249,12 +248,25 @@ const ActionForm = ({
 			body.method = method;
 		}
 
-		let apiURL = API_URL.ACTIONS;
-		let fetchMethod = 'POST';
+		let apiURL;
+		let fetchMethod;
 
 		if (editing) {
-			apiURL = `${apiURL}/${initialValues?.id}`;
-			fetchMethod = 'PUT';
+			apiURL = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relatedResourceERC: initialValues?.externalReferenceCode,
+				relationship: OBJECT_RELATIONSHIP.DATA_SET_ACTIONS,
+			});
+
+			fetchMethod = 'PATCH';
+		}
+		else {
+			apiURL = getDataSetResourceURL({
+				dataSetERC: dataSet.externalReferenceCode,
+				relationship: OBJECT_RELATIONSHIP.DATA_SET_ACTIONS,
+			});
+
+			fetchMethod = 'POST';
 		}
 
 		const response = await fetch(apiURL, {

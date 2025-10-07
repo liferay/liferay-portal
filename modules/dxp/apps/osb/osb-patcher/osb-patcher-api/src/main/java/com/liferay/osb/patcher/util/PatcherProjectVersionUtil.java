@@ -17,15 +17,16 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -159,16 +160,15 @@ public class PatcherProjectVersionUtil {
 		return patcherProjectVersion.getPatcherProductVersionId();
 	}
 
-	public static Map<Long, List<PatcherProjectVersion>>
-			getPatcherProductVersionIdPatcherProjectVersions()
+	public static JSONObject getPatcherProjectVersionsJSONObject(long companyId)
 		throws Exception {
 
-		Map<Long, List<PatcherProjectVersion>> patcherProjectVersionsMap =
-			new HashMap<>();
+		JSONObject patcherProjectVersionsJSONObject =
+			JSONFactoryUtil.createJSONObject();
 
 		PatcherConfiguration patcherConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+				PatcherConfiguration.class, companyId);
 
 		List<PatcherProductVersion> patcherProductVersions =
 			PatcherProductVersionLocalServiceUtil.getPatcherProductVersions(
@@ -177,12 +177,12 @@ public class PatcherProjectVersionUtil {
 		for (PatcherProductVersion patcherProductVersion :
 				patcherProductVersions) {
 
-			long patcherProductVersionId =
-				patcherProductVersion.getPatcherProductVersionId();
+			JSONArray patcherProjectVersionsJSONArray =
+				JSONFactoryUtil.createJSONArray();
 
 			List<PatcherProjectVersion> patcherProjectVersions =
 				PatcherProjectVersionLocalServiceUtil.getPatcherProjectVersions(
-					patcherProductVersionId,
+					patcherProductVersion.getPatcherProductVersionId(),
 					patcherConfiguration.patcherLiferayPortalRepository(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					PatcherProjectVersionNameComparator.getInstance(true));
@@ -190,14 +190,22 @@ public class PatcherProjectVersionUtil {
 			for (PatcherProjectVersion patcherProjectVersion :
 					patcherProjectVersions) {
 
-				patcherProjectVersion.setFixedIssues(null);
+				patcherProjectVersionsJSONArray.put(
+					JSONUtil.put(
+						"name", patcherProjectVersion.getName()
+					).put(
+						"patcherProjectVersionId",
+						patcherProjectVersion.getPatcherProjectVersionId()
+					));
 			}
 
-			patcherProjectVersionsMap.put(
-				patcherProductVersionId, patcherProjectVersions);
+			patcherProjectVersionsJSONObject.put(
+				String.valueOf(
+					patcherProductVersion.getPatcherProductVersionId()),
+				patcherProjectVersionsJSONArray);
 		}
 
-		return patcherProjectVersionsMap;
+		return patcherProjectVersionsJSONObject;
 	}
 
 	public static long getRootPatcherProjectVersionId(

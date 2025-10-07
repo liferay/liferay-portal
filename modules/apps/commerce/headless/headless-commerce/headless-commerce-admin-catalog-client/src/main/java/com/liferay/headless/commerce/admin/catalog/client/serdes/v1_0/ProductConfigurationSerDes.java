@@ -336,16 +336,6 @@ public class ProductConfigurationSerDes {
 			sb.append(productConfiguration.getPurchasable());
 		}
 
-		if (productConfiguration.getVisible() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"visible\": ");
-
-			sb.append(productConfiguration.getVisible());
-		}
-
 		sb.append("}");
 
 		return sb.toString();
@@ -578,14 +568,6 @@ public class ProductConfigurationSerDes {
 				String.valueOf(productConfiguration.getPurchasable()));
 		}
 
-		if (productConfiguration.getVisible() == null) {
-			map.put("visible", null);
-		}
-		else {
-			map.put(
-				"visible", String.valueOf(productConfiguration.getVisible()));
-		}
-
 		return map;
 	}
 
@@ -691,9 +673,6 @@ public class ProductConfigurationSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "purchasable")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "visible")) {
 				return false;
 			}
 
@@ -863,12 +842,6 @@ public class ProductConfigurationSerDes {
 			else if (Objects.equals(jsonParserFieldName, "purchasable")) {
 				if (jsonParserFieldValue != null) {
 					productConfiguration.setPurchasable(
-						(Boolean)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "visible")) {
-				if (jsonParserFieldValue != null) {
-					productConfiguration.setVisible(
 						(Boolean)jsonParserFieldValue);
 				}
 			}

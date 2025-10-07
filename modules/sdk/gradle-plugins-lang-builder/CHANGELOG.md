@@ -1,5 +1,50 @@
 # Liferay Gradle Plugins Lang Builder Change Log
 
+## 3.0.43 - 2025-07-09
+
+### Dependencies
+- [LPD-59723] Update the com.liferay.lang.builder dependency to version 1.0.58.
+
+## 3.0.42 - 2025-05-05
+
+### Commits
+- [LPD-52887] Rename (1e3d0e1ddc)
+
+### Dependencies
+- [LPD-53918] Update the com.liferay.lang.builder dependency to version 1.0.57.
+
+## 3.0.41 - 2025-04-10
+
+### Dependencies
+- [LPD-52742] Update the com.liferay.lang.builder dependency to version 1.0.56.
+
+## 3.0.40 - 2024-12-19
+
+### Dependencies
+- [LPD-42921] Update the com.liferay.lang.builder dependency to version 1.0.55.
+
+## 3.0.39 - 2024-12-17
+
+### Dependencies
+- [LPD-42839] Update the com.liferay.lang.builder dependency to version 1.0.54.
+
+## 3.0.38 - 2024-12-09
+
+### Dependencies
+- [LPD-42921] Update the com.liferay.lang.builder dependency to version 1.0.53.
+
+## 3.0.37 - 2024-11-20
+
+### Commits
+- [LPD-15162] Pin version (f636f23295)
+- [LPD-15162] Move tests (f23b048eff)
+- [LPD-15162] Update README.markdown (5e6c766cd3)
+- [LPD-15162] Update plugins Gradle version (7757c65773)
+
+### Dependencies
+- [LPD-41655] Update the com.liferay.lang.builder dependency to version 1.0.52.
+- [LPD-15162] Update the com.liferay.gradle.util dependency to version 1.0.49.
+
 ## 3.0.36 - 2023-12-01
 
 ### Dependencies
@@ -571,6 +616,14 @@ version 2.4.
 - [LPS-51081] Update the org.gradle.gradle-core dependency to version 2.4.
 - [LPS-51081] Update the groovy-all dependency to version 2.3.10.
 
+[LPD-15162]: https://issues.liferay.com/browse/LPD-15162
+[LPD-41655]: https://issues.liferay.com/browse/LPD-41655
+[LPD-42839]: https://issues.liferay.com/browse/LPD-42839
+[LPD-42921]: https://issues.liferay.com/browse/LPD-42921
+[LPD-52742]: https://issues.liferay.com/browse/LPD-52742
+[LPD-52887]: https://issues.liferay.com/browse/LPD-52887
+[LPD-53918]: https://issues.liferay.com/browse/LPD-53918
+[LPD-59723]: https://issues.liferay.com/browse/LPD-59723
 [LPS-10661]: https://issues.liferay.com/browse/LPS-10661
 [LPS-48290]: https://issues.liferay.com/browse/LPS-48290
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081

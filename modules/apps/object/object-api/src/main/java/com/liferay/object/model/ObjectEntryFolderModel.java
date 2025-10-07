@@ -395,6 +395,20 @@ public interface ObjectEntryFolderModel
 	public void setTreePath(String treePath);
 
 	/**
+	 * Returns the status of this object entry folder.
+	 *
+	 * @return the status of this object entry folder
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this object entry folder.
+	 *
+	 * @param status the status of this object entry folder
+	 */
+	public void setStatus(int status);
+
+	/**
 	 * Returns the container model ID of this object entry folder.
 	 *
 	 * @return the container model ID of this object entry folder

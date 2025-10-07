@@ -201,6 +201,9 @@ public interface SamlIdpSsoSessionLocalService
 	public SamlIdpSsoSession fetchSamlIdpSso(String samlIdpSsoSessionKey);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public SamlIdpSsoSession fetchSamlIdpSsoByUserId(long userId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public SamlIdpSsoSession fetchSamlIdpSsoSession(long samlIdpSsoSessionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)

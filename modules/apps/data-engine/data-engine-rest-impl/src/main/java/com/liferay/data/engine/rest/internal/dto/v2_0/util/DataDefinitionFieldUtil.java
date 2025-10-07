@@ -26,6 +26,7 @@ import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.editor.configuration.EditorConfiguration;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -96,7 +97,9 @@ public class DataDefinitionFieldUtil {
 
 		EditorConfiguration editorConfiguration =
 			EditorConfigurationFactoryUtil.getEditorConfiguration(
-				StringPool.BLANK, ddmFormFieldType, "ckeditor_classic",
+				StringPool.BLANK, ddmFormFieldType,
+				FeatureFlagManagerUtil.isEnabled("LPD-11235") ?
+					"ckeditor5_classic" : "ckeditor_classic",
 				new HashMap<>(), themeDisplay,
 				RequestBackedPortletURLFactoryUtil.create(httpServletRequest));
 

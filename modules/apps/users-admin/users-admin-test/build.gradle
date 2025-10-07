@@ -1,6 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
+	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-spi")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
@@ -10,6 +11,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-spi")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
+	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-api")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

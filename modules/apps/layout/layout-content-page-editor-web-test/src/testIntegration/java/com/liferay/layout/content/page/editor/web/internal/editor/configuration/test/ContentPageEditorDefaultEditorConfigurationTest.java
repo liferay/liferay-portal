@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -102,11 +101,9 @@ public class ContentPageEditorDefaultEditorConfigurationTest {
 	private void _assertItemSelectorURL(String eventName, String url) {
 		Assert.assertTrue(
 			url,
-			StringUtil.contains(
-				url,
+			url.contains(
 				"_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_" +
-					"itemSelectedEventName=_EDITOR_NAME_" + eventName,
-				StringPool.BLANK));
+					"itemSelectedEventName=_EDITOR_NAME_" + eventName));
 	}
 
 	private void _assertTextEditorConfigJSONObject(
@@ -265,7 +262,8 @@ public class ContentPageEditorDefaultEditorConfigurationTest {
 		"b code em h1 h2 h3 h4 h5 h6 hr i p pre strong u [*](*){*}; a[*](*); ",
 		"div[*](*){text-align}; img[*](*){*}; p[*](*); li ol ul ",
 		"[*](*){*};table[border, cellpadding, cellspacing] {width}; tbody td ",
-		"th[scope]; thead tr[scope]; span[*](*){*}; ");
+		"th[scope, colspan, rowspan]; td[colspan, rowspan]; thead tr[scope]; ",
+		"span[*](*){*}; ");
 
 	private static final String _EXTRA_PLUGINS = StringBundler.concat(
 		"autolink,ae_dragresize,ae_addimages,ae_imagealignment,",

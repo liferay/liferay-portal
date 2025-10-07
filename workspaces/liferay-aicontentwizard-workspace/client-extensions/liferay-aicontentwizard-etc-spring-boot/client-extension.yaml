@@ -1,6 +1,6 @@
 assemble:
     -   fromTask: bootJar
-liferay-aicontentwizard-etc-spring-boot-oauth-application-user-agent:
+liferay-aicontentwizard-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay AI Content Wizard Etc Spring Boot OAuth Application User Agent

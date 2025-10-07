@@ -193,7 +193,7 @@ public abstract class PortalAcceptanceTestSuiteJob
 	protected Set<String> getRawBatchNames() {
 		Set<String> rawBatchNames = super.getRawBatchNames();
 
-		if (!testRelevantChanges()) {
+		if (!isTestRelevantChanges()) {
 			return rawBatchNames;
 		}
 

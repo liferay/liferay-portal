@@ -37,8 +37,6 @@ public class DDMFormInstanceUpgradeProcessTest extends BaseDDMTestCase {
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		setUpPropsUtil();
-
 		_setUpDDMFormInstanceUpgradeProcess();
 	}
 

@@ -2810,6 +2810,15 @@ public class JournalArticleLocalServiceWrapper
 	}
 
 	@Override
+	public JournalArticle revertArticle(
+			long userId, long groupId, String articleId, double version)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _journalArticleLocalService.revertArticle(
+			userId, groupId, articleId, version);
+	}
+
+	@Override
 	public void setTreePaths(long folderId, String treePath, boolean reindex)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

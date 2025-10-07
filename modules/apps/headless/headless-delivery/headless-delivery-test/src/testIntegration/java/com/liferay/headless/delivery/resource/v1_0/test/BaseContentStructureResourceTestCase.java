@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.delivery.client.dto.v1_0.ContentStructure;
@@ -50,6 +51,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -58,7 +60,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -134,7 +135,7 @@ public abstract class BaseContentStructureResourceTestCase {
 		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -145,7 +146,7 @@ public abstract class BaseContentStructureResourceTestCase {
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -1512,84 +1513,6 @@ public abstract class BaseContentStructureResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetSiteContentStructuresPage() throws Exception {
-		Long siteId = testGetSiteContentStructuresPage_getSiteId();
-
-		GraphQLField graphQLField = new GraphQLField(
-			"contentStructures",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-
-					put("siteKey", "\"" + siteId + "\"");
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject contentStructuresJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/contentStructures");
-
-		long totalCount = contentStructuresJSONObject.getLong("totalCount");
-
-		ContentStructure contentStructure1 =
-			testGraphQLGetSiteContentStructuresPage_addContentStructure();
-		ContentStructure contentStructure2 =
-			testGraphQLGetSiteContentStructuresPage_addContentStructure();
-
-		contentStructuresJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/contentStructures");
-
-		Assert.assertEquals(
-			totalCount + 2, contentStructuresJSONObject.getLong("totalCount"));
-
-		assertContains(
-			contentStructure1,
-			Arrays.asList(
-				ContentStructureSerDes.toDTOs(
-					contentStructuresJSONObject.getString("items"))));
-		assertContains(
-			contentStructure2,
-			Arrays.asList(
-				ContentStructureSerDes.toDTOs(
-					contentStructuresJSONObject.getString("items"))));
-
-		// Using the namespace headlessDelivery_v1_0
-
-		contentStructuresJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField("headlessDelivery_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
-			"JSONObject/contentStructures");
-
-		Assert.assertEquals(
-			totalCount + 2, contentStructuresJSONObject.getLong("totalCount"));
-
-		assertContains(
-			contentStructure1,
-			Arrays.asList(
-				ContentStructureSerDes.toDTOs(
-					contentStructuresJSONObject.getString("items"))));
-		assertContains(
-			contentStructure2,
-			Arrays.asList(
-				ContentStructureSerDes.toDTOs(
-					contentStructuresJSONObject.getString("items"))));
-	}
-
-	protected ContentStructure
-			testGraphQLGetSiteContentStructuresPage_addContentStructure()
-		throws Exception {
-
-		return testGraphQLContentStructure_addContentStructure();
-	}
-
-	@Test
 	public void testPutAssetLibraryContentStructurePermissionsPage()
 		throws Exception {
 
@@ -1699,7 +1622,7 @@ public abstract class BaseContentStructureResourceTestCase {
 			200,
 			contentStructureResource.
 				putSiteContentStructurePermissionsPageHttpResponse(
-					contentStructure.getSiteId(),
+					testGroup.getGroupId(),
 					new Permission[] {
 						new Permission() {
 							{
@@ -1713,7 +1636,7 @@ public abstract class BaseContentStructureResourceTestCase {
 			404,
 			contentStructureResource.
 				putSiteContentStructurePermissionsPageHttpResponse(
-					contentStructure.getSiteId(),
+					testGroup.getGroupId(),
 					new Permission[] {
 						new Permission() {
 							{
@@ -1977,6 +1900,8 @@ public abstract class BaseContentStructureResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 
@@ -2539,8 +2464,8 @@ public abstract class BaseContentStructureResourceTestCase {
 	protected ContentStructure randomContentStructure() throws Exception {
 		return new ContentStructure() {
 			{
-				assetLibraryKey = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				assetLibraryKey = String.valueOf(
+					testDepotEntry.getDepotEntryId());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				description = StringUtil.toLowerCase(
@@ -2557,6 +2482,9 @@ public abstract class BaseContentStructureResourceTestCase {
 
 		ContentStructure randomIrrelevantContentStructure =
 			randomContentStructure();
+
+		randomIrrelevantContentStructure.setAssetLibraryKey(
+			String.valueOf(irrelevantDepotEntry.getDepotEntryId()));
 
 		randomIrrelevantContentStructure.setSiteId(
 			irrelevantGroup.getGroupId());

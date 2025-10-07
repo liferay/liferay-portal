@@ -1,0 +1,6 @@
+{
+	"className": "com.liferay.portal.search.web.internal.category.facet.portlet.CategoryFacetPortlet",
+	"ddmTemplateKey": "LEARN-ANNOUNCEMENT-CATEGORY-FACET",
+	"name": "Learn Announcement Category Facet",
+	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
+}

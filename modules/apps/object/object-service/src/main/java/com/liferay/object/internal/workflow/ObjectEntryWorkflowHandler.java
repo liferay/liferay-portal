@@ -29,6 +29,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.workflow.BaseWorkflowHandler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -46,11 +48,13 @@ public class ObjectEntryWorkflowHandler
 	extends BaseWorkflowHandler<ObjectEntry> {
 
 	public ObjectEntryWorkflowHandler(
+		KaleoDefinitionLocalService kaleoDefinitionLocalService,
 		ObjectDefinition objectDefinition,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectEntryLocalService objectEntryLocalService,
 		WorkflowDefinitionLinkLocalService workflowDefinitionLinkLocalService) {
 
+		_kaleoDefinitionLocalService = kaleoDefinitionLocalService;
 		_objectDefinition = objectDefinition;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
@@ -125,19 +129,39 @@ public class ObjectEntryWorkflowHandler
 			long companyId, long groupId, long classPK)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-42553")) {
-			WorkflowDefinitionLink workflowDefinitionLink =
+		WorkflowDefinitionLink workflowDefinitionLink = null;
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-42553")) {
+			workflowDefinitionLink =
 				_workflowDefinitionLinkLocalService.fetchWorkflowDefinitionLink(
 					companyId, groupId, ObjectEntryFolder.class.getName(),
 					_getObjectEntryFolderId(classPK),
 					ObjectDefinitionConstants.OBJECT_DEFINITION_ID_ALL, true);
-
-			if (workflowDefinitionLink != null) {
-				return workflowDefinitionLink;
-			}
 		}
 
-		return super.getWorkflowDefinitionLink(companyId, groupId, classPK);
+		if (workflowDefinitionLink == null) {
+			workflowDefinitionLink = super.getWorkflowDefinitionLink(
+				companyId, groupId, classPK);
+		}
+
+		if (workflowDefinitionLink == null) {
+			return null;
+		}
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+
+		KaleoDefinition kaleoDefinition =
+			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				workflowDefinitionLink.getWorkflowDefinitionName(),
+				serviceContext);
+
+		if ((kaleoDefinition != null) && kaleoDefinition.isActive()) {
+			return workflowDefinitionLink;
+		}
+
+		return null;
 	}
 
 	@Override
@@ -204,6 +228,7 @@ public class ObjectEntryWorkflowHandler
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryWorkflowHandler.class);
 
+	private final KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;

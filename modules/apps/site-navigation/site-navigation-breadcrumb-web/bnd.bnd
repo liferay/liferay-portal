@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Breadcrumb Web
 Bundle-SymbolicName: com.liferay.site.navigation.breadcrumb.web
-Bundle-Version: 7.0.42
+Bundle-Version: 7.0.43
 Web-ContextPath: /site-navigation-breadcrumb-web
 -dsannotations-options: inherit

@@ -117,12 +117,6 @@ const Blog = lazy(() =>
 	import(/* webpackChunkName: "Blog" */ 'assets/blog/pages')
 );
 
-const CustomAssetsDashboard = lazy(() =>
-	import(
-		/* webpackChunkName: "CustomAssetsDashboard" */ 'assets/custom-asset/pages/Dashboard'
-	)
-);
-
 const DocumentAndMedia = lazy(() =>
 	import(
 		/* webpackChunkName: "DocumentAndMedia" */ 'assets/document-and-media/pages'
@@ -185,11 +179,6 @@ const ROUTES = [
 		data: Blog,
 		destructured: false,
 		path: Routes.ASSETS_BLOGS_ROUTES
-	},
-	{
-		data: CustomAssetsDashboard,
-		destructured: false,
-		path: Routes.ASSETS_CUSTOM_DASHBOARD
 	},
 	{
 		data: DocumentAndMedia,

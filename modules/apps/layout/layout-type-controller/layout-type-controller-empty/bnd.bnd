@@ -1,0 +1,5 @@
+Bundle-Name: Liferay Layout Type Controller Empty
+Bundle-SymbolicName: com.liferay.layout.type.controller.empty
+Bundle-Version: 1.0.3
+Web-ContextPath: /layout-type-controller-empty
+-dsannotations-options: inherit

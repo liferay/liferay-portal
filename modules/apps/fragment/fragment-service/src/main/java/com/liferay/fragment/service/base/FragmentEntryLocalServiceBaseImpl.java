@@ -280,6 +280,40 @@ public abstract class FragmentEntryLocalServiceBaseImpl
 		return fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
 	}
 
+	@Override
+	public FragmentEntry fetchFragmentEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId) {
+
+		return fragmentEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public FragmentEntry fetchFragmentEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId, boolean head) {
+
+		return fragmentEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
+	@Override
+	public FragmentEntry getFragmentEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return fragmentEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public FragmentEntry getFragmentEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head)
+		throws PortalException {
+
+		return fragmentEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
 	/**
 	 * Returns the fragment entry with the primary key.
 	 *

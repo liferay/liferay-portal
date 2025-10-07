@@ -599,6 +599,15 @@ public class CTCollectionPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -988,6 +997,14 @@ public class CTCollectionPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByUuid(uuid);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1594,6 +1611,15 @@ public class CTCollectionPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2003,6 +2029,14 @@ public class CTCollectionPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByUuid_C(uuid, companyId);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2555,6 +2589,15 @@ public class CTCollectionPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2908,6 +2951,14 @@ public class CTCollectionPersistenceImpl
 			return countByCompanyId(companyId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByCompanyId(companyId);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
+		}
+
 		StringBundler sb = new StringBundler(2);
 
 		sb.append(_FILTER_SQL_COUNT_CTCOLLECTION_WHERE);
@@ -2947,71 +2998,75 @@ public class CTCollectionPersistenceImpl
 	private static final String _FINDER_COLUMN_COMPANYID_COMPANYID_2 =
 		"ctCollection.companyId = ?";
 
-	private FinderPath _finderPathWithPaginationFindBySchemaVersionId;
-	private FinderPath _finderPathWithoutPaginationFindBySchemaVersionId;
-	private FinderPath _finderPathCountBySchemaVersionId;
+	private FinderPath _finderPathWithPaginationFindByC_U;
+	private FinderPath _finderPathWithoutPaginationFindByC_U;
+	private FinderPath _finderPathCountByC_U;
 
 	/**
-	 * Returns all the ct collections where schemaVersionId = &#63;.
+	 * Returns all the ct collections where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @return the matching ct collections
 	 */
 	@Override
-	public List<CTCollection> findBySchemaVersionId(long schemaVersionId) {
-		return findBySchemaVersionId(
-			schemaVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	public List<CTCollection> findByC_U(long companyId, long userId) {
+		return findByC_U(
+			companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the ct collections where schemaVersionId = &#63;.
+	 * Returns a range of all the ct collections where companyId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
 	 * </p>
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of ct collections
 	 * @param end the upper bound of the range of ct collections (not inclusive)
 	 * @return the range of matching ct collections
 	 */
 	@Override
-	public List<CTCollection> findBySchemaVersionId(
-		long schemaVersionId, int start, int end) {
+	public List<CTCollection> findByC_U(
+		long companyId, long userId, int start, int end) {
 
-		return findBySchemaVersionId(schemaVersionId, start, end, null);
+		return findByC_U(companyId, userId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the ct collections where schemaVersionId = &#63;.
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
 	 * </p>
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of ct collections
 	 * @param end the upper bound of the range of ct collections (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching ct collections
 	 */
 	@Override
-	public List<CTCollection> findBySchemaVersionId(
-		long schemaVersionId, int start, int end,
+	public List<CTCollection> findByC_U(
+		long companyId, long userId, int start, int end,
 		OrderByComparator<CTCollection> orderByComparator) {
 
-		return findBySchemaVersionId(
-			schemaVersionId, start, end, orderByComparator, true);
+		return findByC_U(
+			companyId, userId, start, end, orderByComparator, true);
 	}
 
 	/**
-	 * Returns an ordered range of all the ct collections where schemaVersionId = &#63;.
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
 	 * </p>
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of ct collections
 	 * @param end the upper bound of the range of ct collections (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
@@ -3019,8 +3074,8 @@ public class CTCollectionPersistenceImpl
 	 * @return the ordered range of matching ct collections
 	 */
 	@Override
-	public List<CTCollection> findBySchemaVersionId(
-		long schemaVersionId, int start, int end,
+	public List<CTCollection> findByC_U(
+		long companyId, long userId, int start, int end,
 		OrderByComparator<CTCollection> orderByComparator,
 		boolean useFinderCache) {
 
@@ -3031,14 +3086,14 @@ public class CTCollectionPersistenceImpl
 			(orderByComparator == null)) {
 
 			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindBySchemaVersionId;
-				finderArgs = new Object[] {schemaVersionId};
+				finderPath = _finderPathWithoutPaginationFindByC_U;
+				finderArgs = new Object[] {companyId, userId};
 			}
 		}
 		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindBySchemaVersionId;
+			finderPath = _finderPathWithPaginationFindByC_U;
 			finderArgs = new Object[] {
-				schemaVersionId, start, end, orderByComparator
+				companyId, userId, start, end, orderByComparator
 			};
 		}
 
@@ -3050,7 +3105,9 @@ public class CTCollectionPersistenceImpl
 
 			if ((list != null) && !list.isEmpty()) {
 				for (CTCollection ctCollection : list) {
-					if (schemaVersionId != ctCollection.getSchemaVersionId()) {
+					if ((companyId != ctCollection.getCompanyId()) ||
+						(userId != ctCollection.getUserId())) {
+
 						list = null;
 
 						break;
@@ -3064,15 +3121,17 @@ public class CTCollectionPersistenceImpl
 
 			if (orderByComparator != null) {
 				sb = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+					4 + (orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
-				sb = new StringBundler(3);
+				sb = new StringBundler(4);
 			}
 
 			sb.append(_SQL_SELECT_CTCOLLECTION_WHERE);
 
-			sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+			sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_U_USERID_2);
 
 			if (orderByComparator != null) {
 				appendOrderByComparator(
@@ -3093,7 +3152,9 @@ public class CTCollectionPersistenceImpl
 
 				QueryPos queryPos = QueryPos.getInstance(query);
 
-				queryPos.add(schemaVersionId);
+				queryPos.add(companyId);
+
+				queryPos.add(userId);
 
 				list = (List<CTCollection>)QueryUtil.list(
 					query, getDialect(), start, end);
@@ -3116,32 +3177,36 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the first ct collection in the ordered set where schemaVersionId = &#63;.
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching ct collection
 	 * @throws NoSuchCollectionException if a matching ct collection could not be found
 	 */
 	@Override
-	public CTCollection findBySchemaVersionId_First(
-			long schemaVersionId,
+	public CTCollection findByC_U_First(
+			long companyId, long userId,
 			OrderByComparator<CTCollection> orderByComparator)
 		throws NoSuchCollectionException {
 
-		CTCollection ctCollection = fetchBySchemaVersionId_First(
-			schemaVersionId, orderByComparator);
+		CTCollection ctCollection = fetchByC_U_First(
+			companyId, userId, orderByComparator);
 
 		if (ctCollection != null) {
 			return ctCollection;
 		}
 
-		StringBundler sb = new StringBundler(4);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		sb.append("schemaVersionId=");
-		sb.append(schemaVersionId);
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", userId=");
+		sb.append(userId);
 
 		sb.append("}");
 
@@ -3149,19 +3214,20 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the first ct collection in the ordered set where schemaVersionId = &#63;.
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
 	 */
 	@Override
-	public CTCollection fetchBySchemaVersionId_First(
-		long schemaVersionId,
+	public CTCollection fetchByC_U_First(
+		long companyId, long userId,
 		OrderByComparator<CTCollection> orderByComparator) {
 
-		List<CTCollection> list = findBySchemaVersionId(
-			schemaVersionId, 0, 1, orderByComparator);
+		List<CTCollection> list = findByC_U(
+			companyId, userId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3171,32 +3237,36 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the last ct collection in the ordered set where schemaVersionId = &#63;.
+	 * Returns the last ct collection in the ordered set where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching ct collection
 	 * @throws NoSuchCollectionException if a matching ct collection could not be found
 	 */
 	@Override
-	public CTCollection findBySchemaVersionId_Last(
-			long schemaVersionId,
+	public CTCollection findByC_U_Last(
+			long companyId, long userId,
 			OrderByComparator<CTCollection> orderByComparator)
 		throws NoSuchCollectionException {
 
-		CTCollection ctCollection = fetchBySchemaVersionId_Last(
-			schemaVersionId, orderByComparator);
+		CTCollection ctCollection = fetchByC_U_Last(
+			companyId, userId, orderByComparator);
 
 		if (ctCollection != null) {
 			return ctCollection;
 		}
 
-		StringBundler sb = new StringBundler(4);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
 
-		sb.append("schemaVersionId=");
-		sb.append(schemaVersionId);
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", userId=");
+		sb.append(userId);
 
 		sb.append("}");
 
@@ -3204,25 +3274,26 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the last ct collection in the ordered set where schemaVersionId = &#63;.
+	 * Returns the last ct collection in the ordered set where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching ct collection, or <code>null</code> if a matching ct collection could not be found
 	 */
 	@Override
-	public CTCollection fetchBySchemaVersionId_Last(
-		long schemaVersionId,
+	public CTCollection fetchByC_U_Last(
+		long companyId, long userId,
 		OrderByComparator<CTCollection> orderByComparator) {
 
-		int count = countBySchemaVersionId(schemaVersionId);
+		int count = countByC_U(companyId, userId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<CTCollection> list = findBySchemaVersionId(
-			schemaVersionId, count - 1, count, orderByComparator);
+		List<CTCollection> list = findByC_U(
+			companyId, userId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3232,17 +3303,18 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the ct collections before and after the current ct collection in the ordered set where schemaVersionId = &#63;.
+	 * Returns the ct collections before and after the current ct collection in the ordered set where companyId = &#63; and userId = &#63;.
 	 *
 	 * @param ctCollectionId the primary key of the current ct collection
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next ct collection
 	 * @throws NoSuchCollectionException if a ct collection with the primary key could not be found
 	 */
 	@Override
-	public CTCollection[] findBySchemaVersionId_PrevAndNext(
-			long ctCollectionId, long schemaVersionId,
+	public CTCollection[] findByC_U_PrevAndNext(
+			long ctCollectionId, long companyId, long userId,
 			OrderByComparator<CTCollection> orderByComparator)
 		throws NoSuchCollectionException {
 
@@ -3255,14 +3327,14 @@ public class CTCollectionPersistenceImpl
 
 			CTCollection[] array = new CTCollectionImpl[3];
 
-			array[0] = getBySchemaVersionId_PrevAndNext(
-				session, ctCollection, schemaVersionId, orderByComparator,
+			array[0] = getByC_U_PrevAndNext(
+				session, ctCollection, companyId, userId, orderByComparator,
 				true);
 
 			array[1] = ctCollection;
 
-			array[2] = getBySchemaVersionId_PrevAndNext(
-				session, ctCollection, schemaVersionId, orderByComparator,
+			array[2] = getByC_U_PrevAndNext(
+				session, ctCollection, companyId, userId, orderByComparator,
 				false);
 
 			return array;
@@ -3275,24 +3347,26 @@ public class CTCollectionPersistenceImpl
 		}
 	}
 
-	protected CTCollection getBySchemaVersionId_PrevAndNext(
-		Session session, CTCollection ctCollection, long schemaVersionId,
+	protected CTCollection getByC_U_PrevAndNext(
+		Session session, CTCollection ctCollection, long companyId, long userId,
 		OrderByComparator<CTCollection> orderByComparator, boolean previous) {
 
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(3);
+			sb = new StringBundler(4);
 		}
 
 		sb.append(_SQL_SELECT_CTCOLLECTION_WHERE);
 
-		sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+		sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_U_USERID_2);
 
 		if (orderByComparator != null) {
 			String[] orderByConditionFields =
@@ -3363,7 +3437,9 @@ public class CTCollectionPersistenceImpl
 
 		QueryPos queryPos = QueryPos.getInstance(query);
 
-		queryPos.add(schemaVersionId);
+		queryPos.add(companyId);
+
+		queryPos.add(userId);
 
 		if (orderByComparator != null) {
 			for (Object orderByConditionValue :
@@ -3384,69 +3460,78 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns all the ct collections that the user has permission to view where schemaVersionId = &#63;.
+	 * Returns all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @return the matching ct collections that the user has permission to view
 	 */
 	@Override
-	public List<CTCollection> filterFindBySchemaVersionId(
-		long schemaVersionId) {
-
-		return filterFindBySchemaVersionId(
-			schemaVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	public List<CTCollection> filterFindByC_U(long companyId, long userId) {
+		return filterFindByC_U(
+			companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
-	 * Returns a range of all the ct collections that the user has permission to view where schemaVersionId = &#63;.
+	 * Returns a range of all the ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
 	 * </p>
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of ct collections
 	 * @param end the upper bound of the range of ct collections (not inclusive)
 	 * @return the range of matching ct collections that the user has permission to view
 	 */
 	@Override
-	public List<CTCollection> filterFindBySchemaVersionId(
-		long schemaVersionId, int start, int end) {
+	public List<CTCollection> filterFindByC_U(
+		long companyId, long userId, int start, int end) {
 
-		return filterFindBySchemaVersionId(schemaVersionId, start, end, null);
+		return filterFindByC_U(companyId, userId, start, end, null);
 	}
 
 	/**
-	 * Returns an ordered range of all the ct collections that the user has permissions to view where schemaVersionId = &#63;.
+	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
 	 * </p>
 	 *
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of ct collections
 	 * @param end the upper bound of the range of ct collections (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching ct collections that the user has permission to view
 	 */
 	@Override
-	public List<CTCollection> filterFindBySchemaVersionId(
-		long schemaVersionId, int start, int end,
+	public List<CTCollection> filterFindByC_U(
+		long companyId, long userId, int start, int end,
 		OrderByComparator<CTCollection> orderByComparator) {
 
-		if (!InlineSQLHelperUtil.isEnabled()) {
-			return findBySchemaVersionId(
-				schemaVersionId, start, end, orderByComparator);
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_U(companyId, userId, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
 		}
 
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				3 + (orderByComparator.getOrderByFields().length * 2));
+				4 + (orderByComparator.getOrderByFields().length * 2));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -3457,7 +3542,9 @@ public class CTCollectionPersistenceImpl
 				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
-		sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+		sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_U_USERID_2);
 
 		if (!getDB().isSupportsInlineDistinct()) {
 			sb.append(
@@ -3505,7 +3592,9 @@ public class CTCollectionPersistenceImpl
 
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
-			queryPos.add(schemaVersionId);
+			queryPos.add(companyId);
+
+			queryPos.add(userId);
 
 			return (List<CTCollection>)QueryUtil.list(
 				sqlQuery, getDialect(), start, end);
@@ -3519,23 +3608,24 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the ct collections before and after the current ct collection in the ordered set of ct collections that the user has permission to view where schemaVersionId = &#63;.
+	 * Returns the ct collections before and after the current ct collection in the ordered set of ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
 	 *
 	 * @param ctCollectionId the primary key of the current ct collection
-	 * @param schemaVersionId the schema version ID
+	 * @param companyId the company ID
+	 * @param userId the user ID
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the previous, current, and next ct collection
 	 * @throws NoSuchCollectionException if a ct collection with the primary key could not be found
 	 */
 	@Override
-	public CTCollection[] filterFindBySchemaVersionId_PrevAndNext(
-			long ctCollectionId, long schemaVersionId,
+	public CTCollection[] filterFindByC_U_PrevAndNext(
+			long ctCollectionId, long companyId, long userId,
 			OrderByComparator<CTCollection> orderByComparator)
 		throws NoSuchCollectionException {
 
-		if (!InlineSQLHelperUtil.isEnabled()) {
-			return findBySchemaVersionId_PrevAndNext(
-				ctCollectionId, schemaVersionId, orderByComparator);
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_U_PrevAndNext(
+				ctCollectionId, companyId, userId, orderByComparator);
 		}
 
 		CTCollection ctCollection = findByPrimaryKey(ctCollectionId);
@@ -3547,14 +3637,14 @@ public class CTCollectionPersistenceImpl
 
 			CTCollection[] array = new CTCollectionImpl[3];
 
-			array[0] = filterGetBySchemaVersionId_PrevAndNext(
-				session, ctCollection, schemaVersionId, orderByComparator,
+			array[0] = filterGetByC_U_PrevAndNext(
+				session, ctCollection, companyId, userId, orderByComparator,
 				true);
 
 			array[1] = ctCollection;
 
-			array[2] = filterGetBySchemaVersionId_PrevAndNext(
-				session, ctCollection, schemaVersionId, orderByComparator,
+			array[2] = filterGetByC_U_PrevAndNext(
+				session, ctCollection, companyId, userId, orderByComparator,
 				false);
 
 			return array;
@@ -3567,19 +3657,19 @@ public class CTCollectionPersistenceImpl
 		}
 	}
 
-	protected CTCollection filterGetBySchemaVersionId_PrevAndNext(
-		Session session, CTCollection ctCollection, long schemaVersionId,
+	protected CTCollection filterGetByC_U_PrevAndNext(
+		Session session, CTCollection ctCollection, long companyId, long userId,
 		OrderByComparator<CTCollection> orderByComparator, boolean previous) {
 
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
 			sb = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
-			sb = new StringBundler(4);
+			sb = new StringBundler(5);
 		}
 
 		if (getDB().isSupportsInlineDistinct()) {
@@ -3590,7 +3680,9 @@ public class CTCollectionPersistenceImpl
 				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_1);
 		}
 
-		sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+		sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_U_USERID_2);
 
 		if (!getDB().isSupportsInlineDistinct()) {
 			sb.append(
@@ -3698,6 +3790,970 @@ public class CTCollectionPersistenceImpl
 
 		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
+		queryPos.add(companyId);
+
+		queryPos.add(userId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(ctCollection)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<CTCollection> list = sqlQuery.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the ct collections where companyId = &#63; and userId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 */
+	@Override
+	public void removeByC_U(long companyId, long userId) {
+		for (CTCollection ctCollection :
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					null)) {
+
+			remove(ctCollection);
+		}
+	}
+
+	/**
+	 * Returns the number of ct collections where companyId = &#63; and userId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @return the number of matching ct collections
+	 */
+	@Override
+	public int countByC_U(long companyId, long userId) {
+		FinderPath finderPath = _finderPathCountByC_U;
+
+		Object[] finderArgs = new Object[] {companyId, userId};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_COUNT_CTCOLLECTION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_U_USERID_2);
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(userId);
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	/**
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and userId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param userId the user ID
+	 * @return the number of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public int filterCountByC_U(long companyId, long userId) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByC_U(companyId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByC_U(companyId, userId);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
+		}
+
+		StringBundler sb = new StringBundler(3);
+
+		sb.append(_FILTER_SQL_COUNT_CTCOLLECTION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_U_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_U_USERID_2);
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), CTCollection.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			sqlQuery.addScalar(
+				COUNT_COLUMN_NAME, com.liferay.portal.kernel.dao.orm.Type.LONG);
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(userId);
+
+			Long count = (Long)sqlQuery.uniqueResult();
+
+			return count.intValue();
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	private static final String _FINDER_COLUMN_C_U_COMPANYID_2 =
+		"ctCollection.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_U_USERID_2 =
+		"ctCollection.userId = ?";
+
+	private FinderPath _finderPathWithPaginationFindByC_SVI;
+	private FinderPath _finderPathWithoutPaginationFindByC_SVI;
+	private FinderPath _finderPathCountByC_SVI;
+
+	/**
+	 * Returns all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @return the matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_SVI(
+		long companyId, long schemaVersionId) {
+
+		return findByC_SVI(
+			companyId, schemaVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_SVI(
+		long companyId, long schemaVersionId, int start, int end) {
+
+		return findByC_SVI(companyId, schemaVersionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_SVI(
+		long companyId, long schemaVersionId, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		return findByC_SVI(
+			companyId, schemaVersionId, start, end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching ct collections
+	 */
+	@Override
+	public List<CTCollection> findByC_SVI(
+		long companyId, long schemaVersionId, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			(orderByComparator == null)) {
+
+			if (useFinderCache) {
+				finderPath = _finderPathWithoutPaginationFindByC_SVI;
+				finderArgs = new Object[] {companyId, schemaVersionId};
+			}
+		}
+		else if (useFinderCache) {
+			finderPath = _finderPathWithPaginationFindByC_SVI;
+			finderArgs = new Object[] {
+				companyId, schemaVersionId, start, end, orderByComparator
+			};
+		}
+
+		List<CTCollection> list = null;
+
+		if (useFinderCache) {
+			list = (List<CTCollection>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (CTCollection ctCollection : list) {
+					if ((companyId != ctCollection.getCompanyId()) ||
+						(schemaVersionId !=
+							ctCollection.getSchemaVersionId())) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					4 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(4);
+			}
+
+			sb.append(_SQL_SELECT_CTCOLLECTION_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(CTCollectionModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
+
+				queryPos.add(schemaVersionId);
+
+				list = (List<CTCollection>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection
+	 * @throws NoSuchCollectionException if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection findByC_SVI_First(
+			long companyId, long schemaVersionId,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws NoSuchCollectionException {
+
+		CTCollection ctCollection = fetchByC_SVI_First(
+			companyId, schemaVersionId, orderByComparator);
+
+		if (ctCollection != null) {
+			return ctCollection;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", schemaVersionId=");
+		sb.append(schemaVersionId);
+
+		sb.append("}");
+
+		throw new NoSuchCollectionException(sb.toString());
+	}
+
+	/**
+	 * Returns the first ct collection in the ordered set where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching ct collection, or <code>null</code> if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection fetchByC_SVI_First(
+		long companyId, long schemaVersionId,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		List<CTCollection> list = findByC_SVI(
+			companyId, schemaVersionId, 0, 1, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last ct collection in the ordered set where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching ct collection
+	 * @throws NoSuchCollectionException if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection findByC_SVI_Last(
+			long companyId, long schemaVersionId,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws NoSuchCollectionException {
+
+		CTCollection ctCollection = fetchByC_SVI_Last(
+			companyId, schemaVersionId, orderByComparator);
+
+		if (ctCollection != null) {
+			return ctCollection;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("companyId=");
+		sb.append(companyId);
+
+		sb.append(", schemaVersionId=");
+		sb.append(schemaVersionId);
+
+		sb.append("}");
+
+		throw new NoSuchCollectionException(sb.toString());
+	}
+
+	/**
+	 * Returns the last ct collection in the ordered set where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching ct collection, or <code>null</code> if a matching ct collection could not be found
+	 */
+	@Override
+	public CTCollection fetchByC_SVI_Last(
+		long companyId, long schemaVersionId,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		int count = countByC_SVI(companyId, schemaVersionId);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<CTCollection> list = findByC_SVI(
+			companyId, schemaVersionId, count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the ct collections before and after the current ct collection in the ordered set where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param ctCollectionId the primary key of the current ct collection
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next ct collection
+	 * @throws NoSuchCollectionException if a ct collection with the primary key could not be found
+	 */
+	@Override
+	public CTCollection[] findByC_SVI_PrevAndNext(
+			long ctCollectionId, long companyId, long schemaVersionId,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws NoSuchCollectionException {
+
+		CTCollection ctCollection = findByPrimaryKey(ctCollectionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			CTCollection[] array = new CTCollectionImpl[3];
+
+			array[0] = getByC_SVI_PrevAndNext(
+				session, ctCollection, companyId, schemaVersionId,
+				orderByComparator, true);
+
+			array[1] = ctCollection;
+
+			array[2] = getByC_SVI_PrevAndNext(
+				session, ctCollection, companyId, schemaVersionId,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected CTCollection getByC_SVI_PrevAndNext(
+		Session session, CTCollection ctCollection, long companyId,
+		long schemaVersionId, OrderByComparator<CTCollection> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(4);
+		}
+
+		sb.append(_SQL_SELECT_CTCOLLECTION_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(CTCollectionModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(companyId);
+
+		queryPos.add(schemaVersionId);
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(ctCollection)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<CTCollection> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all the ct collections that the user has permission to view where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @return the matching ct collections that the user has permission to view
+	 */
+	@Override
+	public List<CTCollection> filterFindByC_SVI(
+		long companyId, long schemaVersionId) {
+
+		return filterFindByC_SVI(
+			companyId, schemaVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
+	}
+
+	/**
+	 * Returns a range of all the ct collections that the user has permission to view where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @return the range of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public List<CTCollection> filterFindByC_SVI(
+		long companyId, long schemaVersionId, int start, int end) {
+
+		return filterFindByC_SVI(companyId, schemaVersionId, start, end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the ct collections that the user has permissions to view where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CTCollectionModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param start the lower bound of the range of ct collections
+	 * @param end the upper bound of the range of ct collections (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching ct collections that the user has permission to view
+	 */
+	@Override
+	public List<CTCollection> filterFindByC_SVI(
+		long companyId, long schemaVersionId, int start, int end,
+		OrderByComparator<CTCollection> orderByComparator) {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_SVI(
+				companyId, schemaVersionId, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_SVI(
+					companyId, schemaVersionId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				4 + (orderByComparator.getOrderByFields().length * 2));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_CTCOLLECTION_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			if (getDB().isSupportsInlineDistinct()) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator, true);
+			}
+			else {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_TABLE, orderByComparator, true);
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(CTCollectionModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(CTCollectionModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), CTCollection.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+			if (getDB().isSupportsInlineDistinct()) {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_ALIAS, CTCollectionImpl.class);
+			}
+			else {
+				sqlQuery.addEntity(
+					_FILTER_ENTITY_TABLE, CTCollectionImpl.class);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			queryPos.add(schemaVersionId);
+
+			return (List<CTCollection>)QueryUtil.list(
+				sqlQuery, getDialect(), start, end);
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	/**
+	 * Returns the ct collections before and after the current ct collection in the ordered set of ct collections that the user has permission to view where companyId = &#63; and schemaVersionId = &#63;.
+	 *
+	 * @param ctCollectionId the primary key of the current ct collection
+	 * @param companyId the company ID
+	 * @param schemaVersionId the schema version ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next ct collection
+	 * @throws NoSuchCollectionException if a ct collection with the primary key could not be found
+	 */
+	@Override
+	public CTCollection[] filterFindByC_SVI_PrevAndNext(
+			long ctCollectionId, long companyId, long schemaVersionId,
+			OrderByComparator<CTCollection> orderByComparator)
+		throws NoSuchCollectionException {
+
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return findByC_SVI_PrevAndNext(
+				ctCollectionId, companyId, schemaVersionId, orderByComparator);
+		}
+
+		CTCollection ctCollection = findByPrimaryKey(ctCollectionId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			CTCollection[] array = new CTCollectionImpl[3];
+
+			array[0] = filterGetByC_SVI_PrevAndNext(
+				session, ctCollection, companyId, schemaVersionId,
+				orderByComparator, true);
+
+			array[1] = ctCollection;
+
+			array[2] = filterGetByC_SVI_PrevAndNext(
+				session, ctCollection, companyId, schemaVersionId,
+				orderByComparator, false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected CTCollection filterGetByC_SVI_PrevAndNext(
+		Session session, CTCollection ctCollection, long companyId,
+		long schemaVersionId, OrderByComparator<CTCollection> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sb.append(_FILTER_SQL_SELECT_CTCOLLECTION_WHERE);
+		}
+		else {
+			sb.append(
+				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_1);
+		}
+
+		sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
+
+		if (!getDB().isSupportsInlineDistinct()) {
+			sb.append(
+				_FILTER_SQL_SELECT_CTCOLLECTION_NO_INLINE_DISTINCT_WHERE_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByConditionFields[i],
+							true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByConditionFields[i],
+							true));
+				}
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				if (getDB().isSupportsInlineDistinct()) {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_ALIAS, orderByFields[i], true));
+				}
+				else {
+					sb.append(
+						getColumnName(
+							_ORDER_BY_ENTITY_TABLE, orderByFields[i], true));
+				}
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			if (getDB().isSupportsInlineDistinct()) {
+				sb.append(CTCollectionModelImpl.ORDER_BY_SQL_INLINE_DISTINCT);
+			}
+			else {
+				sb.append(CTCollectionModelImpl.ORDER_BY_SQL);
+			}
+		}
+
+		String sql = InlineSQLHelperUtil.replacePermissionCheck(
+			sb.toString(), CTCollection.class.getName(),
+			_FILTER_ENTITY_TABLE_FILTER_PK_COLUMN);
+
+		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
+
+		sqlQuery.setFirstResult(0);
+		sqlQuery.setMaxResults(2);
+
+		if (getDB().isSupportsInlineDistinct()) {
+			sqlQuery.addEntity(_FILTER_ENTITY_ALIAS, CTCollectionImpl.class);
+		}
+		else {
+			sqlQuery.addEntity(_FILTER_ENTITY_TABLE, CTCollectionImpl.class);
+		}
+
+		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+		queryPos.add(companyId);
+
 		queryPos.add(schemaVersionId);
 
 		if (orderByComparator != null) {
@@ -3719,41 +4775,45 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Removes all the ct collections where schemaVersionId = &#63; from the database.
+	 * Removes all the ct collections where companyId = &#63; and schemaVersionId = &#63; from the database.
 	 *
+	 * @param companyId the company ID
 	 * @param schemaVersionId the schema version ID
 	 */
 	@Override
-	public void removeBySchemaVersionId(long schemaVersionId) {
+	public void removeByC_SVI(long companyId, long schemaVersionId) {
 		for (CTCollection ctCollection :
-				findBySchemaVersionId(
-					schemaVersionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null)) {
+				findByC_SVI(
+					companyId, schemaVersionId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null)) {
 
 			remove(ctCollection);
 		}
 	}
 
 	/**
-	 * Returns the number of ct collections where schemaVersionId = &#63;.
+	 * Returns the number of ct collections where companyId = &#63; and schemaVersionId = &#63;.
 	 *
+	 * @param companyId the company ID
 	 * @param schemaVersionId the schema version ID
 	 * @return the number of matching ct collections
 	 */
 	@Override
-	public int countBySchemaVersionId(long schemaVersionId) {
-		FinderPath finderPath = _finderPathCountBySchemaVersionId;
+	public int countByC_SVI(long companyId, long schemaVersionId) {
+		FinderPath finderPath = _finderPathCountByC_SVI;
 
-		Object[] finderArgs = new Object[] {schemaVersionId};
+		Object[] finderArgs = new Object[] {companyId, schemaVersionId};
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
 		if (count == null) {
-			StringBundler sb = new StringBundler(2);
+			StringBundler sb = new StringBundler(3);
 
 			sb.append(_SQL_COUNT_CTCOLLECTION_WHERE);
 
-			sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+			sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+			sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
 
 			String sql = sb.toString();
 
@@ -3765,6 +4825,8 @@ public class CTCollectionPersistenceImpl
 				Query query = session.createQuery(sql);
 
 				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(companyId);
 
 				queryPos.add(schemaVersionId);
 
@@ -3784,22 +4846,34 @@ public class CTCollectionPersistenceImpl
 	}
 
 	/**
-	 * Returns the number of ct collections that the user has permission to view where schemaVersionId = &#63;.
+	 * Returns the number of ct collections that the user has permission to view where companyId = &#63; and schemaVersionId = &#63;.
 	 *
+	 * @param companyId the company ID
 	 * @param schemaVersionId the schema version ID
 	 * @return the number of matching ct collections that the user has permission to view
 	 */
 	@Override
-	public int filterCountBySchemaVersionId(long schemaVersionId) {
-		if (!InlineSQLHelperUtil.isEnabled()) {
-			return countBySchemaVersionId(schemaVersionId);
+	public int filterCountByC_SVI(long companyId, long schemaVersionId) {
+		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
+			return countByC_SVI(companyId, schemaVersionId);
 		}
 
-		StringBundler sb = new StringBundler(2);
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByC_SVI(
+				companyId, schemaVersionId);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
+		}
+
+		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_CTCOLLECTION_WHERE);
 
-		sb.append(_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2);
+		sb.append(_FINDER_COLUMN_C_SVI_COMPANYID_2);
+
+		sb.append(_FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2);
 
 		String sql = InlineSQLHelperUtil.replacePermissionCheck(
 			sb.toString(), CTCollection.class.getName(),
@@ -3817,6 +4891,8 @@ public class CTCollectionPersistenceImpl
 
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
+			queryPos.add(companyId);
+
 			queryPos.add(schemaVersionId);
 
 			Long count = (Long)sqlQuery.uniqueResult();
@@ -3831,9 +4907,11 @@ public class CTCollectionPersistenceImpl
 		}
 	}
 
-	private static final String
-		_FINDER_COLUMN_SCHEMAVERSIONID_SCHEMAVERSIONID_2 =
-			"ctCollection.schemaVersionId = ?";
+	private static final String _FINDER_COLUMN_C_SVI_COMPANYID_2 =
+		"ctCollection.companyId = ? AND ";
+
+	private static final String _FINDER_COLUMN_C_SVI_SCHEMAVERSIONID_2 =
+		"ctCollection.schemaVersionId = ?";
 
 	private FinderPath _finderPathWithPaginationFindByC_S;
 	private FinderPath _finderPathWithoutPaginationFindByC_S;
@@ -4353,6 +5431,15 @@ public class CTCollectionPersistenceImpl
 			return findByC_S(companyId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_S(
+					companyId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4696,6 +5783,15 @@ public class CTCollectionPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return findByC_S(
 				companyId, statuses, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_S(
+					companyId, statuses, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
 		}
 
 		if (statuses == null) {
@@ -5144,6 +6240,14 @@ public class CTCollectionPersistenceImpl
 			return countByC_S(companyId, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = findByC_S(companyId, status);
+
+			ctCollections = InlineSQLHelperUtil.filter(ctCollections);
+
+			return ctCollections.size();
+		}
+
 		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_CTCOLLECTION_WHERE);
@@ -5195,6 +6299,13 @@ public class CTCollectionPersistenceImpl
 	public int filterCountByC_S(long companyId, int[] statuses) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_S(companyId, statuses);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CTCollection> ctCollections = InlineSQLHelperUtil.filter(
+				findByC_S(companyId, statuses));
+
+			return ctCollections.size();
 		}
 
 		if (statuses == null) {
@@ -6170,23 +7281,43 @@ public class CTCollectionPersistenceImpl
 			new String[] {Long.class.getName()}, new String[] {"companyId"},
 			false);
 
-		_finderPathWithPaginationFindBySchemaVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySchemaVersionId",
+		_finderPathWithPaginationFindByC_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_U",
 			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
 			},
-			new String[] {"schemaVersionId"}, true);
+			new String[] {"companyId", "userId"}, true);
 
-		_finderPathWithoutPaginationFindBySchemaVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBySchemaVersionId",
-			new String[] {Long.class.getName()},
-			new String[] {"schemaVersionId"}, true);
+		_finderPathWithoutPaginationFindByC_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_U",
+			new String[] {Long.class.getName(), Long.class.getName()},
+			new String[] {"companyId", "userId"}, true);
 
-		_finderPathCountBySchemaVersionId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBySchemaVersionId",
-			new String[] {Long.class.getName()},
-			new String[] {"schemaVersionId"}, false);
+		_finderPathCountByC_U = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_U",
+			new String[] {Long.class.getName(), Long.class.getName()},
+			new String[] {"companyId", "userId"}, false);
+
+		_finderPathWithPaginationFindByC_SVI = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_SVI",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			},
+			new String[] {"companyId", "schemaVersionId"}, true);
+
+		_finderPathWithoutPaginationFindByC_SVI = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_SVI",
+			new String[] {Long.class.getName(), Long.class.getName()},
+			new String[] {"companyId", "schemaVersionId"}, true);
+
+		_finderPathCountByC_SVI = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_SVI",
+			new String[] {Long.class.getName(), Long.class.getName()},
+			new String[] {"companyId", "schemaVersionId"}, false);
 
 		_finderPathWithPaginationFindByC_S = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_S",

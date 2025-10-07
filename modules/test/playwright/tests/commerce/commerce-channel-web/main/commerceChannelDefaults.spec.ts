@@ -10,7 +10,10 @@ import {applicationsMenuPageTest} from '../../../../fixtures/applicationsMenuPag
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {productMenuPageTest} from '../../../../fixtures/productMenuPageTest';
+import {siteSettingsPagesTest} from '../../../../fixtures/siteSettingsPagesTest';
 import {liferayConfig} from '../../../../liferay.config';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
@@ -29,7 +32,10 @@ export const test = mergeTests(
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
-	loginTest()
+	isolatedSiteTest,
+	loginTest(),
+	productMenuPageTest,
+	siteSettingsPagesTest
 );
 
 test('LPD-26142 A Sales Agent can manage channel defaults', async ({
@@ -533,3 +539,26 @@ test('LPD-28220 Can user with account manager role view and manage channel defau
 		await performLogin(page, 'test');
 	}
 });
+
+test(
+	'Can see help messages for CP Display Layout Configuration',
+	{tag: '@LPD-64407'},
+	async ({page, site, siteSettingsPage}) => {
+		await siteSettingsPage.goToSiteSetting(
+			'Channel',
+			'CP Display Layout',
+			site.friendlyUrlPath
+		);
+
+		await expect(
+			page.getByText(
+				'The specified layout will be used to display the category.'
+			)
+		).toBeVisible();
+		await expect(
+			page.getByText(
+				'The specified layout will be used to display the product.'
+			)
+		).toBeVisible();
+	}
+);

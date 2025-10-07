@@ -6,6 +6,7 @@
 package com.liferay.info.item.renderer;
 
 import com.liferay.info.type.Keyed;
+import com.liferay.petra.reflect.GenericUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,10 @@ import java.util.Locale;
  * @author Jorge Ferrer
  */
 public interface InfoItemRenderer<T> extends Keyed {
+
+	public default String getItemClassName() {
+		return GenericUtil.getGenericClassName(this);
+	}
 
 	public default String getLabel(Locale locale) {
 		return LanguageUtil.get(locale, getKey());

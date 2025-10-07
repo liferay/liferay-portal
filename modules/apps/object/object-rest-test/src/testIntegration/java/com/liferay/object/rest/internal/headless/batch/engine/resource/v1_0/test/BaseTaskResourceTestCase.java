@@ -25,11 +25,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -52,11 +53,15 @@ public abstract class BaseTaskResourceTestCase {
 	@Before
 	public void setUp() throws Exception {
 		objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
-			Collections.singletonList(
+			Arrays.asList(
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING,
-					OBJECT_FIELD_NAME_TEXT)),
+					OBJECT_FIELD_NAME_TEXT_1),
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING,
+					OBJECT_FIELD_NAME_TEXT_2)),
 			ObjectDefinitionConstants.SCOPE_COMPANY,
 			TestPropsValues.getUserId());
 
@@ -65,7 +70,7 @@ public abstract class BaseTaskResourceTestCase {
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING,
-					OBJECT_FIELD_NAME_TEXT)),
+					OBJECT_FIELD_NAME_TEXT_1)),
 			ObjectDefinitionConstants.SCOPE_SITE, TestPropsValues.getUserId());
 
 		testGroup = GroupTestUtil.addGroup();
@@ -121,7 +126,10 @@ public abstract class BaseTaskResourceTestCase {
 	protected static final String ENDPOINT_IMPORT_TASK_BY_ERC =
 		"headless-batch-engine/v1.0/import-task/by-external-reference-code/";
 
-	protected static final String OBJECT_FIELD_NAME_TEXT =
+	protected static final String OBJECT_FIELD_NAME_TEXT_1 =
+		"x" + RandomTestUtil.randomString();
+
+	protected static final String OBJECT_FIELD_NAME_TEXT_2 =
 		"x" + RandomTestUtil.randomString();
 
 	protected ImportTaskResource importTaskResource;

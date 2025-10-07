@@ -29,7 +29,7 @@ export class CommerceAdminChannelDetailsCurrenciesPage {
 
 	constructor(page: Page) {
 		this.addCurrencyButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.addCurrencyAddButton = page.getByRole('button', {
 			exact: true,

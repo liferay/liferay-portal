@@ -9,16 +9,21 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Application;
@@ -99,20 +104,65 @@ public class ExceptionMapperTest {
 		Assert.assertEquals(
 			404,
 			HTTPTestUtil.invokeToHttpCode(
-				null, "/test-vulcan/testPrincipalException", Http.Method.GET));
+				null, "/test-vulcan/testPrincipalException1", Http.Method.GET));
 
 		JSONObject expectedJSONObject = JSONUtil.put("status", "NOT_FOUND");
 
 		Assert.assertEquals(
 			expectedJSONObject.toString(),
 			HTTPTestUtil.invokeToJSONObject(
-				null, "/test-vulcan/testPrincipalException", Http.Method.GET
+				null, "/test-vulcan/testPrincipalException1", Http.Method.GET
 			).toString());
 		Assert.assertEquals(
 			expectedJSONObject.toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, "/test-vulcan/testNoSuchModelException", Http.Method.GET
 			).toString());
+	}
+
+	@Test
+	@TestInfo("LPD-63186")
+	public void testPrincipalExceptionReturnForbidden() throws Exception {
+		Assert.assertEquals(
+			403,
+			HTTPTestUtil.invokeToHttpCode(
+				null, "/test-vulcan/testPrincipalException2",
+				Http.Method.POST));
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.ENGLISH, "forbidden"),
+			HTTPTestUtil.invokeToJSONObject(
+				null, "/test-vulcan/testPrincipalException2",
+				HashMapBuilder.put(
+					"Accept-Language",
+					LocaleUtil.getDefault(
+					).toLanguageTag()
+				).build(),
+				Http.Method.POST
+			).getString(
+				"title"
+			));
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.ITALIAN, "forbidden"),
+			HTTPTestUtil.invokeToJSONObject(
+				null, "/test-vulcan/testPrincipalException2",
+				HashMapBuilder.put(
+					"Accept-Language", LocaleUtil.ITALIAN.toLanguageTag()
+				).build(),
+				Http.Method.POST
+			).getString(
+				"title"
+			));
+		Assert.assertEquals(
+			LanguageUtil.get(LocaleUtil.JAPAN, "forbidden"),
+			HTTPTestUtil.invokeToJSONObject(
+				null, "/test-vulcan/testPrincipalException2",
+				HashMapBuilder.put(
+					"Accept-Language", LocaleUtil.JAPAN.toLanguageTag()
+				).build(),
+				Http.Method.POST
+			).getString(
+				"title"
+			));
 	}
 
 	@Test
@@ -155,17 +205,24 @@ public class ExceptionMapperTest {
 		}
 
 		@GET
+		@Path("/testPrincipalException1")
+		@Produces("application/json")
+		public String principalException1() throws PrincipalException {
+			throw new PrincipalException();
+		}
+
+		@Path("/testPrincipalException2")
+		@POST
+		@Produces("application/json")
+		public void principalException2() throws PrincipalException {
+			throw new PrincipalException();
+		}
+
+		@GET
 		@Path("/testNoSuchModelException")
 		@Produces("application/json")
 		public String testNoSuchModelException() throws NoSuchModelException {
 			throw new NoSuchModelException();
-		}
-
-		@GET
-		@Path("/testPrincipalException")
-		@Produces("application/json")
-		public String testPrincipalException() throws PrincipalException {
-			throw new PrincipalException();
 		}
 
 		@GET

@@ -54,6 +54,7 @@ export type UploadedFile = {
 				unit: string;
 				value: any;
 		  };
+	tags?: any[];
 	uploaded: boolean;
 	uploadedImage?: UploadedImage;
 	versionName?: string;
@@ -64,6 +65,7 @@ type FileListProps = {
 	onArrowClick?: (index: number, direction: string) => void;
 	onChangeInput?: (newImagesInputs: UploadedFile[]) => void;
 	onDelete: (id: string, versionName?: string) => void;
+	removable?: boolean;
 	type: 'document' | 'image';
 	uploadedFiles: UploadedFile[];
 	uploadedImages?: UploadedFile[];
@@ -75,6 +77,7 @@ export function FileList({
 	onArrowClick = () => {},
 	onChangeInput = () => {},
 	onDelete,
+	removable,
 	type,
 	uploadedFiles,
 	uploadedImages,
@@ -89,6 +92,7 @@ export function FileList({
 							isProcessing={isProcessing}
 							key={uploadedFile?.id}
 							onDelete={onDelete}
+							removable={removable}
 							uploadedFile={uploadedFile}
 							versionName={versionName}
 						/>

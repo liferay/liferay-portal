@@ -1,0 +1,24 @@
+{
+	"description": "[%COMMERCEORDER_AUTHOR_EMAIL_ADDRESS%]",
+	"editorType": "richText",
+	"externalReferenceCode": "TRIAL-COMPLETED-ORDER",
+	"name": "Trial | Completed Order",
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Marketplace"
+			},
+			"to": {
+				"en-US": "[%COMMERCEORDER_AUTHOR_EMAIL_ADDRESS%]"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Liferay Marketplace - Your Trial is ready to use!"
+	},
+	"type": "email"
+}

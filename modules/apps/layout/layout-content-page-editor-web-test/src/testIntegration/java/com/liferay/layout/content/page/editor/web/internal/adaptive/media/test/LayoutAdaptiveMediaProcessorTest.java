@@ -23,7 +23,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -156,8 +155,8 @@ public class LayoutAdaptiveMediaProcessorTest {
 
 		AMImageConfigurationEntry amImageConfigurationEntry = iterator.next();
 
-		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
-			_fragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			_fragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject processorJSONObject = editableValuesJSONObject.getJSONObject(
 			FragmentEntryProcessorConstants.
@@ -271,8 +270,9 @@ public class LayoutAdaptiveMediaProcessorTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), layout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		_themeDisplay.setLayout(layout);
 		_themeDisplay.setLayoutSet(layout.getLayoutSet());

@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import java.util.Date;
+import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  * @author Máté Thurzó
@@ -197,7 +197,9 @@ public class StagedLayoutSetImpl
 	}
 
 	@Override
-	public void setVirtualHostnames(TreeMap virtualHostnames) {
+	public void setVirtualHostnames(
+		NavigableMap<String, String> virtualHostnames) {
+
 		_layoutSet.setVirtualHostnames(virtualHostnames);
 	}
 

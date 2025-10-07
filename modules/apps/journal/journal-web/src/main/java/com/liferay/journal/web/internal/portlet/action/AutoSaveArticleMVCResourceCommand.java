@@ -5,7 +5,6 @@
 
 package com.liferay.journal.web.internal.portlet.action;
 
-import com.liferay.asset.display.page.portlet.AssetDisplayPageEntryFormProcessor;
 import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
 import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
@@ -88,7 +87,7 @@ public class AutoSaveArticleMVCResourceCommand extends BaseMVCResourceCommand {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		JSONObject jsonObject;
+		JSONObject jsonObject = null;
 
 		try {
 			UploadPortletRequest uploadPortletRequest =
@@ -109,11 +108,10 @@ public class AutoSaveArticleMVCResourceCommand extends BaseMVCResourceCommand {
 			}
 
 			JournalArticle article = JournalArticleUtil.addOrUpdateArticle(
-				actionName, _assetDisplayPageEntryFormProcessor,
-				_ddmFormValuesFactory, _ddmFormValuesToFieldsConverter,
-				_ddmStructureLocalService, _journalArticleService,
-				_journalConverter, _journalHelper, _localization, _portal,
-				resourceRequest);
+				actionName, _ddmFormValuesFactory,
+				_ddmFormValuesToFieldsConverter, _ddmStructureLocalService,
+				_journalArticleService, _journalConverter, _journalHelper,
+				_localization, _portal, resourceRequest);
 
 			jsonObject = JSONUtil.put(
 				"articleId", article.getArticleId()
@@ -375,10 +373,6 @@ public class AutoSaveArticleMVCResourceCommand extends BaseMVCResourceCommand {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AutoSaveArticleMVCResourceCommand.class);
-
-	@Reference
-	private AssetDisplayPageEntryFormProcessor
-		_assetDisplayPageEntryFormProcessor;
 
 	@Reference
 	private DDMFormValuesFactory _ddmFormValuesFactory;

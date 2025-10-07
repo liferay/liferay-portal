@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -49,7 +48,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -88,7 +86,6 @@ public class SearchResultsPortletTest {
 	public void setUp() throws Exception {
 		_setUpPortalUtil();
 		_setUpPortletSharedSearchResponse();
-		_setUpPropsUtil();
 		_setUpSearchSettings();
 		_setUpUserLocalService();
 
@@ -405,10 +402,6 @@ public class SearchResultsPortletTest {
 		).getThemeDisplay(
 			Mockito.any()
 		);
-	}
-
-	private void _setUpPropsUtil() {
-		PropsTestUtil.setProps(Collections.emptyMap());
 	}
 
 	private void _setUpSearchResponseDocuments(Document... documents) {

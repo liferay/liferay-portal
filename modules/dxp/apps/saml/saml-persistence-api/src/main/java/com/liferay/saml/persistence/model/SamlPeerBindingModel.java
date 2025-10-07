@@ -79,20 +79,6 @@ public interface SamlPeerBindingModel
 	public void setCompanyId(long companyId);
 
 	/**
-	 * Returns the create date of this saml peer binding.
-	 *
-	 * @return the create date of this saml peer binding
-	 */
-	public Date getCreateDate();
-
-	/**
-	 * Sets the create date of this saml peer binding.
-	 *
-	 * @param createDate the create date of this saml peer binding
-	 */
-	public void setCreateDate(Date createDate);
-
-	/**
 	 * Returns the user ID of this saml peer binding.
 	 *
 	 * @return the user ID of this saml peer binding
@@ -134,6 +120,35 @@ public interface SamlPeerBindingModel
 	 * @param userName the user name of this saml peer binding
 	 */
 	public void setUserName(String userName);
+
+	/**
+	 * Returns the create date of this saml peer binding.
+	 *
+	 * @return the create date of this saml peer binding
+	 */
+	public Date getCreateDate();
+
+	/**
+	 * Sets the create date of this saml peer binding.
+	 *
+	 * @param createDate the create date of this saml peer binding
+	 */
+	public void setCreateDate(Date createDate);
+
+	/**
+	 * Returns the saml peer entity ID of this saml peer binding.
+	 *
+	 * @return the saml peer entity ID of this saml peer binding
+	 */
+	@AutoEscape
+	public String getSamlPeerEntityId();
+
+	/**
+	 * Sets the saml peer entity ID of this saml peer binding.
+	 *
+	 * @param samlPeerEntityId the saml peer entity ID of this saml peer binding
+	 */
+	public void setSamlPeerEntityId(String samlPeerEntityId);
 
 	/**
 	 * Returns the deleted of this saml peer binding.
@@ -230,21 +245,6 @@ public interface SamlPeerBindingModel
 	 * @param samlNameIdValue the saml name ID value of this saml peer binding
 	 */
 	public void setSamlNameIdValue(String samlNameIdValue);
-
-	/**
-	 * Returns the saml peer entity ID of this saml peer binding.
-	 *
-	 * @return the saml peer entity ID of this saml peer binding
-	 */
-	@AutoEscape
-	public String getSamlPeerEntityId();
-
-	/**
-	 * Sets the saml peer entity ID of this saml peer binding.
-	 *
-	 * @param samlPeerEntityId the saml peer entity ID of this saml peer binding
-	 */
-	public void setSamlPeerEntityId(String samlPeerEntityId);
 
 	@Override
 	public SamlPeerBinding cloneWithOriginalValues();

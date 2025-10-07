@@ -1,3 +1,11 @@
 .cms-breadcrumb .breadcrumb-item {
-	font-size: 1.125rem;
+	margin-right: 6px;
+
+	+ .breadcrumb-item {
+		padding-left: 21px;
+	}
+
+	.breadcrumb-link:not([href]) {
+		text-decoration: none;
+	}
 }

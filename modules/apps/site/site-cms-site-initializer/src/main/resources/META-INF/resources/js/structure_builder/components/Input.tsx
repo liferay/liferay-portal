@@ -17,6 +17,7 @@ export default function Input({
 	inputProps,
 	label,
 	onValueChange,
+	placeholder,
 	required = false,
 	value: initialValue,
 }: {
@@ -27,6 +28,7 @@ export default function Input({
 	inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 	label: string;
 	onValueChange: (value: string) => void;
+	placeholder?: string;
 	required?: boolean;
 	value: string;
 }) {
@@ -59,6 +61,7 @@ export default function Input({
 				id={id}
 				onBlur={() => onValueChange(value)}
 				onChange={(event) => setValue(event.target.value)}
+				placeholder={placeholder}
 				required={required}
 				type="text"
 				value={value}

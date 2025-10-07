@@ -1,0 +1,10 @@
+{
+	"contentSubtype": {
+		"subtypeKey": "ANNOUNCEMENT"
+	},
+	"contentType": {
+		"className": "com.liferay.journal.model.JournalArticle"
+	},
+	"defaultTemplate": true,
+	"name": "Announcement"
+}

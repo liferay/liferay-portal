@@ -84,8 +84,10 @@ public class EditVocabularyDisplayContext {
 			PortalUtil.getLayoutFullURL(
 				LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 					_themeDisplay.getScopeGroupId(), false,
-					"/categorization/view_vocabularies"),
+					"/categorization/view-vocabularies"),
 				_themeDisplay)
+		).put(
+			"cmsGroupId", _themeDisplay.getScopeGroupId()
 		).put(
 			"defaultLanguageId",
 			LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())

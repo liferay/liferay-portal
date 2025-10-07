@@ -42,7 +42,7 @@ public interface SourceCheck {
 
 	public void setExcludes(String excludes) throws JSONException;
 
-	public void setFileExtensions(List<String> fileExtenstions);
+	public void setFileExtensions(List<String> fileExtensions);
 
 	public void setFilterCheckNames(List<String> filterCheckNames);
 

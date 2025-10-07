@@ -5,9 +5,10 @@
 
 package com.liferay.knowledge.base.web.internal.info.item.provider;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.knowledge.base.model.KBArticle;
 
@@ -18,11 +19,14 @@ import org.osgi.service.component.annotations.Component;
  * @author Alicia García
  */
 @Component(
-	property = Constants.SERVICE_RANKING + ":Integer=10",
+	property = {
+		Constants.SERVICE_RANKING + ":Integer=10",
+		"item.class.name=com.liferay.knowledge.base.model.KBArticle"
+	},
 	service = InfoItemDetailsProvider.class
 )
 public class KBArticleInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<KBArticle> {
+	extends BaseInfoItemDetailsProvider<KBArticle> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -30,11 +34,29 @@ public class KBArticleInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(KBArticle kbArticle) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				KBArticle.class.getName(), kbArticle.getResourcePrimKey()));
+	protected InfoItemIdentifierFactory<KBArticle>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				KBArticle kbArticle) {
+
+				return new ClassPKInfoItemIdentifier(
+					kbArticle.getResourcePrimKey());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 }

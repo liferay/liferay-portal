@@ -107,7 +107,7 @@ public class SLAResultResourceTest extends BaseSLAResultResourceTestCase {
 	@Override
 	@Test
 	public void testGraphQLGetProcessLastSLAResult() throws Exception {
-		SLAResult slaResult = testGraphQLSLAResult_addSLAResult();
+		SLAResult slaResult = testGraphQLGetProcessLastSLAResult_addSLAResult();
 
 		Assert.assertTrue(
 			equals(
@@ -160,7 +160,9 @@ public class SLAResultResourceTest extends BaseSLAResultResourceTestCase {
 	}
 
 	@Override
-	protected SLAResult testGraphQLSLAResult_addSLAResult() throws Exception {
+	protected SLAResult testGraphQLGetProcessLastSLAResult_addSLAResult()
+		throws Exception {
+
 		return testGetProcessLastSLAResult_addSLAResult();
 	}
 

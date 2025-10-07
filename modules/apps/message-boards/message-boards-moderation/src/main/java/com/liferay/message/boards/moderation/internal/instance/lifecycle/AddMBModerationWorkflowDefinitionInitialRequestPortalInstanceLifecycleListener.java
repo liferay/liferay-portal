@@ -6,7 +6,6 @@
 package com.liferay.message.boards.moderation.internal.instance.lifecycle;
 
 import com.liferay.message.boards.model.MBMessage;
-import com.liferay.message.boards.moderation.internal.constants.MBModerationConstants;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.language.Language;
@@ -17,6 +16,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import java.util.HashMap;
@@ -52,7 +52,9 @@ public class
 		try {
 			int workflowDefinitionsCount =
 				_workflowDefinitionManager.getWorkflowDefinitionsCount(
-					companyId, MBModerationConstants.WORKFLOW_DEFINITION_NAME);
+					companyId,
+					WorkflowDefinitionConstants.
+						NAME_MESSAGE_BOARDS_USER_STATS_MODERATION);
 
 			if (workflowDefinitionsCount > 0) {
 				return;
@@ -66,11 +68,14 @@ public class
 					"/message-boards-moderation-workflow-definition.xml");
 
 			_workflowDefinitionManager.deployWorkflowDefinition(
-				null, companyId, guestUserId,
+				WorkflowDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_MESSAGE_BOARDS_USER_STATS_MODERATION,
+				companyId, guestUserId,
 				_localization.getXml(
 					_getTitleMap(companyId),
 					_language.getLanguageId(company.getLocale()), "title"),
-				MBModerationConstants.WORKFLOW_DEFINITION_NAME,
+				WorkflowDefinitionConstants.
+					NAME_MESSAGE_BOARDS_USER_STATS_MODERATION,
 				MBMessage.class.getName(), content.getBytes());
 		}
 		finally {
@@ -85,7 +90,9 @@ public class
 			titleMap.put(
 				_language.getLanguageId(locale),
 				_language.get(
-					locale, MBModerationConstants.WORKFLOW_DEFINITION_NAME));
+					locale,
+					WorkflowDefinitionConstants.
+						NAME_MESSAGE_BOARDS_USER_STATS_MODERATION));
 		}
 
 		return titleMap;

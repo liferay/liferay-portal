@@ -10,11 +10,12 @@ import React, {useEffect} from 'react';
 import {Config, initializeConfig} from '../config';
 import CacheContextProvider from '../contexts/CacheContext';
 import StateContextProvider, {useSelector} from '../contexts/StateContext';
-import selectStructureId from '../selectors/selectStructureId';
-import {ObjectDefinition} from '../types/ObjectDefinition';
-import buildStructure from '../utils/buildStructure';
-import StructureBuilderManagementBar from './StructureBuilderManagementBar';
-import StructureFields from './StructureFields';
+import selectStructureERC from '../selectors/selectStructureERC';
+import selectStructureStatus from '../selectors/selectStructureStatus';
+import {ObjectDefinition, ObjectDefinitions} from '../types/ObjectDefinition';
+import buildState from '../utils/buildState';
+import Sidebar from './Sidebar';
+import StructureBuilderToolbar from './StructureBuilderToolbar';
 import Settings from './settings/Settings';
 
 export default function StructureBuilder({
@@ -22,22 +23,27 @@ export default function StructureBuilder({
 	state,
 }: {
 	config: Config;
-	state: {objectDefinition: ObjectDefinition};
+	state: {
+		mainObjectDefinition: ObjectDefinition;
+		objectDefinitions: ObjectDefinitions;
+	};
 }) {
 	initializeConfig(config);
 
 	return (
-		<StateContextProvider
-			initialState={buildStructure(state.objectDefinition)}
-		>
-			<CacheContextProvider>
+		<StateContextProvider initialState={buildState(state)}>
+			<CacheContextProvider
+				initialData={{
+					'object-definitions': state.objectDefinitions,
+				}}
+			>
 				<div className="d-flex flex-column structure-builder__wrapper">
 					<HistoryManager />
 
-					<StructureBuilderManagementBar />
+					<StructureBuilderToolbar />
 
 					<div className="d-flex flex-grow-1 p-4">
-						<StructureFields />
+						<Sidebar />
 
 						<Settings />
 					</div>
@@ -48,10 +54,11 @@ export default function StructureBuilder({
 }
 
 function HistoryManager() {
-	const structureId = useSelector(selectStructureId);
+	const erc = useSelector(selectStructureERC);
+	const status = useSelector(selectStructureStatus);
 
 	useEffect(() => {
-		if (!structureId) {
+		if (status !== 'published') {
 			return;
 		}
 
@@ -61,10 +68,10 @@ function HistoryManager() {
 			url.searchParams.delete('objectFolderExternalReferenceCode');
 		}
 
-		url.searchParams.set('objectDefinitionId', structureId.toString());
+		url.searchParams.set('objectDefinitionExternalReferenceCode', erc);
 
 		history.replaceState(null, document.head.title, url.href);
-	}, [structureId]);
+	}, [erc, status]);
 
 	return null;
 }

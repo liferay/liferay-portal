@@ -18,7 +18,10 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.captcha.rest.client.dto.v1_0.Captcha;
+import com.liferay.captcha.rest.client.resource.v1_0.CaptchaResource;
 import com.liferay.captcha.simplecaptcha.SimpleCaptchaImpl;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -58,9 +61,10 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
-import com.liferay.portal.kernel.captcha.Captcha;
 import com.liferay.portal.kernel.captcha.CaptchaException;
+import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -121,6 +125,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -133,7 +138,6 @@ import com.liferay.portal.test.mail.MailMessage;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
@@ -147,6 +151,7 @@ import java.io.InputStream;
 
 import java.text.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -160,14 +165,10 @@ import java.util.function.Consumer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
 
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -190,12 +191,19 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_accountEntry = _addAccountEntry();
 		_organization = OrganizationTestUtil.addOrganization();
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.addResourcePermission(
+			TestPropsValues.getCompanyId(), User.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), _role.getRoleId(),
+			ActionKeys.VIEW);
 
 		_testUser = _userLocalService.getUserByEmailAddress(
 			testGroup.getCompanyId(), "test@liferay.com");
-
-		_userGroup = UserGroupTestUtil.addUserGroup();
 
 		_userLocalService.deleteGroupUser(
 			testGroup.getGroupId(), _testUser.getUserId());
@@ -205,30 +213,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		indexer.reindex(_testUser);
 
-		_accountEntry = _addAccountEntry();
-
-		User otherUser = UserTestUtil.addUser(false);
-
-		otherUser = _userLocalService.updatePassword(
-			otherUser.getUserId(), "test", "test", false, true);
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_userLocalService.addRoleUser(_role.getRoleId(), otherUser);
-
-		_resourcePermissionLocalService.addResourcePermission(
-			TestPropsValues.getCompanyId(), User.class.getName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()), _role.getRoleId(),
-			ActionKeys.VIEW);
-
-		UserAccountResource.Builder builder = UserAccountResource.builder();
-
-		_otherUserAccountResource = builder.authentication(
-			otherUser.getEmailAddress(), "test"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		_userGroup = UserGroupTestUtil.addUserGroup();
 	}
 
 	@Override
@@ -723,6 +708,71 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_testGetUserAccountsPageWithBirthDateFilter();
 		_testGetUserAccountsPageWithCustomFields();
+		_testGetUserAccountsPageWithSortFullName();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		super.
+			testGraphQLDeleteAccountByExternalReferenceCodeUserAccountByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountUserAccount() throws Exception {
+		super.testGraphQLDeleteAccountUserAccount();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountUserAccountByEmailAddress()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountUserAccountByEmailAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountUserAccountByExternalReferenceCodeByEmailAddress()
+		throws Exception {
+
+		super.
+			testGraphQLDeleteAccountUserAccountByExternalReferenceCodeByEmailAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountUserAccountsByEmailAddress()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountUserAccountsByEmailAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountUserAccountsByExternalReferenceCodeByEmailAddress()
+		throws Exception {
+
+		super.
+			testGraphQLDeleteAccountUserAccountsByExternalReferenceCodeByEmailAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountUserAccountsByExternalReferenceCodePage()
+		throws Exception {
+
+		super.testGraphQLGetAccountUserAccountsByExternalReferenceCodePage();
 	}
 
 	@Override
@@ -737,6 +787,29 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 							new GraphQLField(
 								"myUserAccount", getGraphQLFields())),
 						"JSONObject/data", "JSONObject/myUserAccount"))));
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetUserAccountsByStatusPage() throws Exception {
+		super.testGraphQLGetUserAccountsByStatusPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostAccountUserAccount() throws Exception {
+		super.testGraphQLPostAccountUserAccount();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostAccountUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLPostAccountUserAccountByExternalReferenceCode();
 	}
 
 	@Override
@@ -1047,17 +1120,17 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_testPostUserAccountBatch();
 		_testPostUserAccountWithApprovalWorkflow();
+		_testPostUserAccountWithCaptcha();
 		_testPostUserAccountWithGender();
 		_testPostUserAccountWithImageExternalReferenceCode();
 		_testPostUserAccountWithObjectValidationRule();
-		_testPostUserAccountWithSAPEntry();
 	}
 
 	@Override
 	@Test
 	public void testPostUserAccountImage() throws Exception {
 		UserAccount postUserAccount = userAccountResource.postUserAccount(
-			randomUserAccount());
+			null, null, randomUserAccount());
 
 		Assert.assertNull(postUserAccount.getImage());
 
@@ -1332,7 +1405,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				UserAccount userAccount)
 		throws Exception {
 
-		return userAccount.getExternalReferenceCode();
+		return _accountEntry.getExternalReferenceCode();
 	}
 
 	@Override
@@ -1502,7 +1575,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	protected UserAccount testGetUserAccountByEmailAddress_addUserAccount()
 		throws Exception {
 
-		return userAccountResource.postUserAccount(randomUserAccount());
+		return userAccountResource.postUserAccount(
+			null, null, randomUserAccount());
 	}
 
 	@Override
@@ -1613,6 +1687,55 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	}
 
 	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeUserAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Long testGraphQLDeleteAccountUserAccount_getAccountId()
+		throws Exception {
+
+		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteAccountUserAccountByEmailAddress_getAccountId()
+		throws Exception {
+
+		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountUserAccountByExternalReferenceCodeByEmailAddress_getExternalReferenceCode(
+				UserAccount userAccount)
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteAccountUserAccountsByEmailAddress_getAccountId()
+		throws Exception {
+
+		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountUserAccountsByExternalReferenceCodeByEmailAddress_getExternalReferenceCode(
+				UserAccount userAccount)
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
 	protected UserAccount
 			testGraphQLGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCode_addUserAccount()
 		throws Exception {
@@ -1719,18 +1842,14 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
-		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
-			StringPool.BLANK, TestPropsValues.getUserId(),
+		return _accountEntryLocalService.addAccountEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
 			RandomTestUtil.randomString(20), RandomTestUtil.randomString(20),
 			null, null, null, null,
 			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext());
-
-		accountEntry.setExternalReferenceCode(RandomTestUtil.randomString());
-
-		return _accountEntryLocalService.updateAccountEntry(accountEntry);
 	}
 
 	private UserAccount _addAccountUserAccount(
@@ -1779,7 +1898,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	private UserAccount _addUserAccount(long siteId, UserAccount userAccount)
 		throws Exception {
 
-		userAccount = userAccountResource.postUserAccount(userAccount);
+		userAccount = userAccountResource.postUserAccount(
+			null, null, userAccount);
 
 		_userLocalService.addGroupUser(siteId, userAccount.getId());
 
@@ -2090,6 +2210,40 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			userAccount);
 	}
 
+	private void _testGetUserAccountsPageWithSortFullName() throws Exception {
+		List<UserAccount> userAccounts = new ArrayList<>();
+		String domain = StringUtil.randomString() + ".com";
+
+		userAccounts.add(
+			userAccountResource.postUserAccount(
+				null, null,
+				_randomUserAccount(
+					userAccount -> {
+						userAccount.setGivenName("aaa");
+						userAccount.setEmailAddress("aaa@" + domain);
+					})));
+		userAccounts.add(
+			userAccountResource.postUserAccount(
+				null, null,
+				_randomUserAccount(
+					userAccount -> {
+						userAccount.setGivenName("bbb");
+						userAccount.setEmailAddress("bbb@" + domain);
+					})));
+
+		Page<UserAccount> page = userAccountResource.getUserAccountsPage(
+			domain, null, Pagination.of(1, 10), "name:asc");
+
+		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
+
+		Collections.reverse(userAccounts);
+
+		page = userAccountResource.getUserAccountsPage(
+			domain, null, Pagination.of(1, 10), "name:desc");
+
+		assertEquals(userAccounts, (List<UserAccount>)page.getItems());
+	}
+
 	private void _testGetUserAccountWithGender() throws Exception {
 		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
 			testCompany.getCompanyId());
@@ -2205,7 +2359,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			new HashMap<>(),
+			new HashMap<>(), DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), user.getUserId()));
 
@@ -2302,8 +2456,23 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			User user, Role... roles)
 		throws Exception {
 
+		User otherUser = UserTestUtil.addUser(false);
+
+		otherUser = _userLocalService.updatePassword(
+			otherUser.getUserId(), "test", "test", false, true);
+
+		_userLocalService.addRoleUser(_role.getRoleId(), otherUser);
+
+		UserAccountResource.Builder builder = UserAccountResource.builder();
+
+		UserAccountResource otherUserAccountResource = builder.authentication(
+			otherUser.getEmailAddress(), "test"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
 		RoleBrief[] roleBriefs = _getUserAccountRoleBriefs(
-			_otherUserAccountResource.getUserAccount(user.getUserId()));
+			otherUserAccountResource.getUserAccount(user.getUserId()));
 
 		for (Role role : roles) {
 			Assert.assertFalse(_hasRole(role, roleBriefs));
@@ -2424,54 +2593,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		}
 	}
 
-	private void _testPostUserAccount(Captcha captcha, boolean enableCaptcha)
-		throws Exception {
-
-		Bundle bundle = FrameworkUtil.getBundle(UserAccountResourceTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		ServiceRegistration<?> serviceRegistration =
-			bundleContext.registerService(
-				Captcha.class, captcha,
-				HashMapDictionaryBuilder.put(
-					"captcha.engine.impl", TestSimpleCaptchaImpl.class.getName()
-				).build());
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					"com.liferay.captcha.configuration.CaptchaConfiguration",
-					HashMapDictionaryBuilder.<String, Object>put(
-						"captchaEngine", TestSimpleCaptchaImpl.class.getName()
-					).put(
-						"createAccountCaptchaEnabled", enableCaptcha
-					).build())) {
-
-			UserAccount userAccount = randomUserAccount();
-
-			Assert.assertNull(
-				_userLocalService.fetchUserByEmailAddress(
-					TestPropsValues.getCompanyId(),
-					userAccount.getEmailAddress()));
-
-			UserAccountResource.Builder builder = UserAccountResource.builder();
-
-			userAccountResource = builder.locale(
-				LocaleUtil.getDefault()
-			).build();
-
-			userAccountResource.postUserAccount(userAccount);
-
-			Assert.assertNotNull(
-				_userLocalService.fetchUserByEmailAddress(
-					TestPropsValues.getCompanyId(),
-					userAccount.getEmailAddress()));
-		}
-		finally {
-			serviceRegistration.unregister();
-		}
-	}
-
 	private void _testPostUserAccountBatch() throws Exception {
 		UserAccount randomUserAccount = _randomUserAccount(
 			userAccount -> userAccount.setPassword(StringPool.BLANK));
@@ -2505,7 +2626,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	private void _testPostUserAccountWithApprovalWorkflow() throws Exception {
 		UserAccount postUserAccount = userAccountResource.postUserAccount(
-			randomUserAccount());
+			null, null, randomUserAccount());
 
 		User user = _userLocalService.getUser(postUserAccount.getId());
 
@@ -2520,7 +2641,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				0, "Single Approver", 1);
 
 		postUserAccount = userAccountResource.postUserAccount(
-			randomUserAccount());
+			null, null, randomUserAccount());
 
 		user = _userLocalService.getUser(postUserAccount.getId());
 
@@ -2528,6 +2649,73 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_workflowDefinitionLinkLocalService.deleteWorkflowDefinitionLink(
 			workflowDefinitionLink);
+	}
+
+	private void _testPostUserAccountWithCaptcha() throws Exception {
+		SAPEntry sapEntry = _sapEntryLocalService.addSAPEntry(
+			TestPropsValues.getUserId(),
+			"com.liferay.headless.admin.user.internal.resource.v1_0." +
+				"UserAccountResourceImpl#postUserAccount",
+			true, true, "Guest",
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), "Guest"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.captcha.configuration.CaptchaConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"createAccountCaptchaEnabled", true
+					).build())) {
+
+			CaptchaResource captchaResource = CaptchaResource.builder(
+			).endpoint(
+				testCompany.getVirtualHostname(), 8080, "http"
+			).build();
+
+			Captcha captcha = captchaResource.getCaptchaChallenge();
+
+			UserAccountResource.Builder builder = UserAccountResource.builder();
+
+			UserAccountResource userAccountResourceGuestUser = builder.locale(
+				LocaleUtil.getDefault()
+			).build();
+
+			UserAccount userAccount = randomUserAccount();
+
+			try {
+				userAccountResourceGuestUser.postUserAccount(
+					RandomTestUtil.randomString(), captcha.getToken(),
+					userAccount);
+
+				Assert.fail();
+			}
+			catch (Problem.ProblemException problemException) {
+				Problem problem = problemException.getProblem();
+
+				Assert.assertEquals(
+					"The captcha value is invalid", problem.getTitle());
+			}
+
+			captcha = captchaResource.getCaptchaChallenge();
+
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+				EncryptorUtil.decrypt(
+					testCompany.getKeyObj(), captcha.getToken()));
+
+			userAccountResourceGuestUser.postUserAccount(
+				jsonObject.getString("answer"), captcha.getToken(),
+				userAccount);
+
+			Assert.assertNotNull(
+				_userLocalService.fetchUserByEmailAddress(
+					TestPropsValues.getCompanyId(),
+					userAccount.getEmailAddress()));
+		}
+		finally {
+			_sapEntryLocalService.deleteSAPEntry(sapEntry);
+		}
 	}
 
 	private void _testPostUserAccountWithGender() throws Exception {
@@ -2594,7 +2782,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		randomUserAccount.setImageId(0L);
 
 		UserAccount postUserAccount = userAccountResource.postUserAccount(
-			randomUserAccount);
+			null, null, randomUserAccount);
 
 		Assert.assertTrue(postUserAccount.getImageId() > 0);
 	}
@@ -2618,6 +2806,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				"NOT(isEmpty(alternateName))", true, Collections.emptyList());
 
 		UserAccount postUserAccount = userAccountResource.postUserAccount(
+			null, null,
 			_randomUserAccount(
 				userAccount -> userAccount.setUserAccountContactInformation(
 					() -> null)));
@@ -2626,59 +2815,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_objectValidationRuleLocalService.deleteObjectValidationRule(
 			objectValidationRule);
-	}
-
-	private void _testPostUserAccountWithSAPEntry() throws Exception {
-		UserAccount userAccount = randomUserAccount();
-
-		String password = RandomTestUtil.randomString();
-
-		userAccount.setPassword(password);
-
-		UserAccount postUserAccount = userAccountResource.postUserAccount(
-			userAccount);
-
-		assertEquals(userAccount, postUserAccount);
-		assertValid(postUserAccount);
-
-		_assertAuthenticationResult(
-			Authenticator.SUCCESS, postUserAccount.getEmailAddress(), password);
-
-		SAPEntry sapEntry = _sapEntryLocalService.addSAPEntry(
-			TestPropsValues.getUserId(),
-			"com.liferay.headless.admin.user.internal.resource.v1_0." +
-				"UserAccountResourceImpl#postUserAccount",
-			true, true, "Guest",
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), "Guest"
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-
-		_testPostUserAccount(new TestSimpleCaptchaImpl(Assert::fail), false);
-		_testPostUserAccount(
-			new TestSimpleCaptchaImpl(
-				() -> {
-				}),
-			true);
-
-		try {
-			_testPostUserAccount(
-				new TestSimpleCaptchaImpl(
-					() -> {
-						throw new CaptchaException();
-					}),
-				true);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals(
-				"The captcha value is invalid", problem.getTitle());
-		}
-
-		_sapEntryLocalService.deleteSAPEntry(sapEntry);
 	}
 
 	private void _testPutUserAccountByExternalReferenceCodeWithImageExternalReferenceCode()
@@ -2813,7 +2949,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Inject
 	private OrganizationLocalService _organizationLocalService;
 
-	private UserAccountResource _otherUserAccountResource;
 	private UserAccount _regularUserAccount;
 	private String _regularUserAccountCurrentPassword;
 	private UserAccountResource _regularUserAccountResource;

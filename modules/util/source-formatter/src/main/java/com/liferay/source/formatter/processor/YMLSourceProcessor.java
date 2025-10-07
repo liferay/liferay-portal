@@ -12,11 +12,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,36 +33,51 @@ public class YMLSourceProcessor extends BaseSourceProcessor {
 	}
 
 	@Override
-	protected File format(
-			File file, String fileName, String absolutePath, String content)
+	protected String postFormat(
+		String content, String originalReturnCharacter) {
+
+		StringBuffer sb = new StringBuffer();
+
+		Matcher matcher = _dashPattern2.matcher(content);
+
+		while (matcher.find()) {
+			String firstLine = matcher.group(1);
+			String indent = matcher.group(2);
+
+			if (indent.length() <= firstLine.length()) {
+				continue;
+			}
+
+			String secondLine = matcher.group(2) + matcher.group(3);
+
+			String replacement =
+				firstLine + secondLine.substring(firstLine.length());
+
+			matcher.appendReplacement(
+				sb, "\n" + Matcher.quoteReplacement(replacement));
+		}
+
+		if (sb.length() > 0) {
+			matcher.appendTail(sb);
+
+			return super.postFormat(sb.toString(), originalReturnCharacter);
+		}
+
+		return super.postFormat(content, originalReturnCharacter);
+	}
+
+	@Override
+	protected String preFormat(
+			File file, String fileName, String content,
+			Set<String> modifiedMessages, String originalReturnCharacter)
 		throws Exception {
 
-		Set<String> modifiedContents = new HashSet<>();
-		Set<String> modifiedMessages = new TreeSet<>();
-
-		String newContent = _preProcess(content);
-
-		newContent = format(
-			file, fileName, absolutePath, newContent, content,
-			new ArrayList<>(getSourceChecks()), modifiedContents,
-			modifiedMessages, 0);
-
-		newContent = _postProcess(newContent);
-
-		return processFormattedFile(
-			file, fileName, content, newContent, modifiedMessages);
-	}
-
-	private String _postProcess(String content) {
-		content = content.replaceAll("(?m)^( *-)\n +(.*)", "$1   $2");
-
-		return content.replaceAll("\\n +\\n", "\n\n");
-	}
-
-	private String _preProcess(String content) {
-		content = content.replaceAll("\\n +\\n", "\n\n");
-
 		StringBundler sb = new StringBundler();
+
+		content = super.preFormat(
+			file, fileName, content, modifiedMessages, originalReturnCharacter);
+
+		content = content.replaceAll("\\n +\\n", "\n\n");
 
 		String[] lines = content.split("\n");
 
@@ -78,7 +90,7 @@ public class YMLSourceProcessor extends BaseSourceProcessor {
 				continue;
 			}
 
-			Matcher matcher = _dashPattern.matcher(line);
+			Matcher matcher = _dashPattern1.matcher(line);
 
 			if (matcher.matches()) {
 				String indent = matcher.group(1);
@@ -108,6 +120,8 @@ public class YMLSourceProcessor extends BaseSourceProcessor {
 		"**/templates/*.tpl", "**/*.yaml", "**/*.yml"
 	};
 
-	private static final Pattern _dashPattern = Pattern.compile("( +- +)(.+)");
+	private static final Pattern _dashPattern1 = Pattern.compile("( +- +)(.+)");
+	private static final Pattern _dashPattern2 = Pattern.compile(
+		"\n( *-)\n( +)(.+)");
 
 }

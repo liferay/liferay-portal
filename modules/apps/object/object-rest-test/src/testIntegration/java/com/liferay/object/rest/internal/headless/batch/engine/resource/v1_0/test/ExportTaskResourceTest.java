@@ -23,15 +23,16 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
@@ -83,7 +84,7 @@ public class ExportTaskResourceTest extends BaseTaskResourceTestCase {
 						ObjectFieldUtil.createObjectField(
 							ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 							ObjectFieldConstants.DB_TYPE_STRING,
-							OBJECT_FIELD_NAME_TEXT)),
+							OBJECT_FIELD_NAME_TEXT_1)),
 					ObjectDefinitionConstants.SCOPE_COMPANY, user.getUserId());
 
 			_testPostExportTask("FAILED", null, objectDefinition2);
@@ -113,7 +114,7 @@ public class ExportTaskResourceTest extends BaseTaskResourceTestCase {
 		// With "batchNestedFields" query parameter
 
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject");
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject");
 
 		JSONObject jsonObject1 = _testPostExportTask(
 			"COMPLETED", "batchNestedFields=permissions", objectDefinition);
@@ -154,17 +155,43 @@ public class ExportTaskResourceTest extends BaseTaskResourceTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-60157")
+	public void testPostExportTaskWithFieldNames() throws Exception {
+		ObjectEntryTestUtil.addObjectEntry(
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject");
+
+		JSONObject jsonObject = _testPostExportTask(
+			"COMPLETED", "fieldNames=status.code," + OBJECT_FIELD_NAME_TEXT_1,
+			objectDefinition);
+
+		Assert.assertEquals(1, jsonObject.getInt("processedItemsCount"));
+
+		JSONAssert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					OBJECT_FIELD_NAME_TEXT_1, "TestObject"
+				).put(
+					"status", JSONUtil.put("code", 0)
+				)
+			).toString(),
+			_getExportTaskContentJSONArray(
+				jsonObject.getString("externalReferenceCode")
+			).toString(),
+			JSONCompareMode.STRICT);
+	}
+
+	@Test
 	public void testPostExportTaskWithFilter() throws Exception {
 		ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, OBJECT_FIELD_NAME_TEXT, "Object3");
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "Object3");
 
 		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject1");
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject1");
 		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			objectDefinition, OBJECT_FIELD_NAME_TEXT, "TestObject2");
+			objectDefinition, OBJECT_FIELD_NAME_TEXT_1, "TestObject2");
 
 		String filterString =
-			"contains(" + OBJECT_FIELD_NAME_TEXT + ", 'Test')";
+			"contains(" + OBJECT_FIELD_NAME_TEXT_1 + ", 'Test')";
 
 		JSONObject jsonObject = _testPostExportTask(
 			"COMPLETED", "filter=" + URLCodec.encodeURL(filterString),

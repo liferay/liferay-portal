@@ -17,6 +17,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -31,9 +32,9 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListMergeable;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -269,25 +270,32 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 			return StringPool.BLANK;
 		}
 
+		String returnCompanyName = companyName;
+
+		Group group = layout.getGroup();
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				layout.getCompanyId(), "LPD-17564") &&
+			group.isCMS()) {
+
+			returnCompanyName = StringPool.BLANK;
+		}
+
 		if (layoutSEOGeneralGroupConfiguration.includeInstanceName() &&
 			layoutSEOGeneralGroupConfiguration.includeSiteName()) {
-
-			Group group = layout.getGroup();
 
 			if (group.isControlPanel() || group.isLayoutPrototype() ||
 				StringUtil.equals(companyName, group.getDescriptiveName())) {
 
-				return companyName;
+				return returnCompanyName;
 			}
 
-			return _merge(group.getDescriptiveName(), companyName);
+			return _merge(group.getDescriptiveName(), returnCompanyName);
 		}
 
 		if (layoutSEOGeneralGroupConfiguration.includeInstanceName()) {
-			return companyName;
+			return returnCompanyName;
 		}
-
-		Group group = layout.getGroup();
 
 		return group.getDescriptiveName();
 	}
@@ -335,8 +343,12 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 		return layout.getHTMLTitle(_language.getLanguageId(locale));
 	}
 
-	private String _merge(String... strings) {
-		return StringUtil.merge(strings, _SEPARATOR);
+	private String _merge(String string1, String string2) {
+		if (Validator.isNull(string2)) {
+			return string1;
+		}
+
+		return string1 + _SEPARATOR + string2;
 	}
 
 	private static final String _SEPARATOR = " - ";

@@ -1,7 +1,8 @@
 html#{$cadmin-selector} .page-editor {
 	.page-editor__form {
 		button:disabled,
-		input:disabled {
+		input:disabled,
+		textarea:disabled {
 			pointer-events: none;
 		}
 

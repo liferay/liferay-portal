@@ -1,0 +1,573 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "workflow-definition-1"
+		},
+		{
+			"#tag-name": "description",
+			"#value": "A single approver can approve a workflow content."
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "created"
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        165,",
+						"        76",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "created",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "review",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "approved"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Conclude the workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"terminal\": true,",
+						"    \"xy\": [",
+						"        539,",
+						"        74",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "approve"
+								},
+								{
+									"#tag-name": "status",
+									"#value": "0"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onEntry"
+								}
+							],
+							"#tag-name": "action"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "approved",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "denied"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Conclude the workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"terminal\": true,",
+						"    \"xy\": [",
+						"        167.90899658203125,",
+						"        503.4772720336914",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Deny"
+								},
+								{
+									"#tag-name": "description"
+								},
+								{
+									"#tag-name": "status",
+									"#value": "4"
+								},
+								{
+									"#tag-name": "priority",
+									"#value": "1"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onEntry"
+								}
+							],
+							"#tag-name": "action"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "denied",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "review"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Ask a user to work on the item."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        165,",
+						"        292",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Review Notification"
+								},
+								{
+									"#cdata-value": [
+										" ${userName} sent you a ${entryType} for review in the workflow."
+									],
+									"#tag-name": "template"
+								},
+								{
+									"#tag-name": "template-language",
+									"#value": "freemarker"
+								},
+								{
+									"#tag-name": "notification-type",
+									"#value": "email"
+								},
+								{
+									"#tag-name": "notification-type",
+									"#value": "user-notification"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "assignees"
+										}
+									],
+									"#tag-name": "recipients",
+									"receptionType": "to"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onAssignment"
+								}
+							],
+							"#tag-name": "notification"
+						},
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Review Completion Notification"
+								},
+								{
+									"#cdata-value": [
+										" Your submission was reviewed<#if taskComments?has_content> and the reviewer applied the following ${taskComments}</#if>."
+									],
+									"#tag-name": "template"
+								},
+								{
+									"#tag-name": "template-language",
+									"#value": "freemarker"
+								},
+								{
+									"#tag-name": "notification-type",
+									"#value": "email"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "user"
+										}
+									],
+									"#tag-name": "recipients",
+									"receptionType": "to"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onExit"
+								}
+							],
+							"#tag-name": "notification"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "account"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Account Administrator"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "account"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Account Member"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "account"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Order Manager"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "depot"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Asset Library Administrator"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "depot"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Asset Library Content Reviewer"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "depot"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Asset Library Owner"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "organization"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Organization Administrator"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "organization"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Organization Content Reviewer"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "organization"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Organization Owner"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "regular"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Administrator"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "regular"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Portal Content Reviewer"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "site"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Site Administrator"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "site"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Site Content Reviewer"
+										}
+									],
+									"#tag-name": "role"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "role-type",
+											"#value": "site"
+										},
+										{
+											"#tag-name": "name",
+											"#value": "Site Owner"
+										}
+									],
+									"#tag-name": "role"
+								}
+							],
+							"#tag-name": "roles"
+						}
+					],
+					"#tag-name": "assignments"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "review",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "approve",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "approve"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "approved"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						},
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "Reject",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "reject"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "denied"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "false"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "task"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}

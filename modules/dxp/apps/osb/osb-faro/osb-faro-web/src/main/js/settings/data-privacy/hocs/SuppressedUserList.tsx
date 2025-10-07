@@ -71,9 +71,9 @@ const withQueryOptions = Component => ({
 							unsuppressUser({
 								variables: {
 									emailAddresses: [emailAddress],
-									ownerId: currentUser.id,
+									ownerId: String(currentUser.id),
 									types: [GDPRRequestTypes.Unsuppress],
-									userId: currentUser.userId,
+									userId: String(currentUser.userId),
 									userName: currentUser.name
 								}
 							})

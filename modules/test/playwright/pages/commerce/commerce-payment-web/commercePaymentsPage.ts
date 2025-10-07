@@ -32,7 +32,7 @@ export class CommercePaymentsPage {
 		});
 		this.amountInput = page.getByLabel('Amount');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
-		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
+		this.backLink = page.locator('span[title="Back"]');
 		this.commentInput = page
 			.frameLocator('iframe[title="Comment"]')
 			.getByLabel('Note', {exact: true});

@@ -1,6 +1,14 @@
 .counter {
 	$animation-duration: 300ms;
 
+	.c-prefers-reduced-motion & {
+		$animation-duration: 1ms;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		$animation-duration: 1ms;
+	}
+
 	display: inline-flex;
 	justify-content: center;
 	position: relative;

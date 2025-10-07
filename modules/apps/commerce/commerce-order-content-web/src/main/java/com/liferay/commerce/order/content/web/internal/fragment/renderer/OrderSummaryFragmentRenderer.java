@@ -37,7 +37,6 @@ import java.io.IOException;
 
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -54,11 +53,8 @@ public class OrderSummaryFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", getClass());
 
 		try {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -67,14 +63,15 @@ public class OrderSummaryFragmentRenderer implements FragmentRenderer {
 					"order_summary/dependencies/configuration.json"));
 
 			return _fragmentEntryConfigurationParser.translateConfiguration(
-				jsonObject, resourceBundle);
+				jsonObject,
+				ResourceBundleUtil.getBundle("content.Language", getClass()));
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(jsonException);
 			}
 
-			return StringPool.BLANK;
+			return null;
 		}
 	}
 
@@ -95,14 +92,14 @@ public class OrderSummaryFragmentRenderer implements FragmentRenderer {
 			HttpServletResponse httpServletResponse)
 		throws IOException {
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		try {
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher(
 					"/fragment/renderer/order_summary/page.jsp");
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
 
 			long commerceOrderId = 0;
 
@@ -163,31 +160,26 @@ public class OrderSummaryFragmentRenderer implements FragmentRenderer {
 
 		return GetterUtil.getString(
 			_fragmentEntryConfigurationParser.getFieldValue(
-				getConfiguration(fragmentRendererContext),
-				fragmentEntryLink.getEditableValues(),
+				getConfigurationJSONObject(fragmentRendererContext),
+				fragmentEntryLink.getEditableValuesJSONObject(),
 				fragmentRendererContext.getLocale(), name));
 	}
 
 	private String _getFieldLabel(FragmentEntryLink fragmentEntryLink) {
-		try {
-			JSONObject configurationJSONObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
+		JSONObject configurationJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
-			Iterator<String> configurationJSONObjectKeysIterator =
-				configurationJSONObject.keys();
-
-			JSONObject jsonObject = (JSONObject)configurationJSONObject.get(
-				configurationJSONObjectKeysIterator.next());
-
-			return jsonObject.getString("label");
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
-			}
+		if (configurationJSONObject == null) {
+			return StringPool.BLANK;
 		}
 
-		return StringPool.BLANK;
+		Iterator<String> configurationJSONObjectKeysIterator =
+			configurationJSONObject.keys();
+
+		JSONObject jsonObject = (JSONObject)configurationJSONObject.get(
+			configurationJSONObjectKeysIterator.next());
+
+		return jsonObject.getString("label");
 	}
 
 	private String _getFieldValue(

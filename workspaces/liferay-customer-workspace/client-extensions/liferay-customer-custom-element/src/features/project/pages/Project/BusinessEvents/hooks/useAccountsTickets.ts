@@ -4,10 +4,16 @@
  */
 
 import {useCallback, useEffect, useState} from 'react';
+import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
 import {Liferay} from '~/services/liferay';
-import {ITicket} from '~/utils/types';
+import {IBusinessEvent, ITicket} from '~/utils/types';
 
-const useAccountsTickets = (externalReferenceCode?: string, skip?: boolean) => {
+const useAccountsTickets = (
+	businessEvent?: IBusinessEvent,
+	externalReferenceCode?: string,
+	skip?: boolean
+) => {
+	const {featureFlags} = useAppPropertiesContext();
 	const [loading, setLoading] = useState(true);
 	const [tickets, setTickets] = useState<ITicket[] | undefined>(undefined);
 
@@ -17,11 +23,23 @@ const useAccountsTickets = (externalReferenceCode?: string, skip?: boolean) => {
 		}
 
 		try {
+			let ticketsParam = '';
+
+			if (businessEvent && featureFlags.includes('LRSD-8280')) {
+				const associatedTickets = JSON.parse(
+					businessEvent.associatedTickets!
+				);
+
+				ticketsParam = `?ticketIds=${associatedTickets.join(',')}`;
+			}
+
 			const response: ITicket[] =
 				await Liferay.OAuth2Client.FromUserAgentApplication(
 					'liferay-customer-etc-spring-boot-oaua'
 				)
-					.fetch(`/accounts/${externalReferenceCode}/tickets`)
+					.fetch(
+						`/accounts/${externalReferenceCode}/tickets${ticketsParam}`
+					)
 					.then((response: {json: () => any}) => response.json());
 
 			setTickets(response);
@@ -35,7 +53,7 @@ const useAccountsTickets = (externalReferenceCode?: string, skip?: boolean) => {
 
 			setLoading(false);
 		}
-	}, [externalReferenceCode, skip]);
+	}, [businessEvent, externalReferenceCode, featureFlags, skip]);
 
 	useEffect(() => {
 		fetchTickets();

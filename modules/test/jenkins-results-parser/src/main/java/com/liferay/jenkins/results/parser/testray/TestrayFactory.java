@@ -8,14 +8,15 @@ package com.liferay.jenkins.results.parser.testray;
 import com.liferay.jenkins.results.parser.Build;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
+import com.liferay.jenkins.results.parser.test.clazz.ServiceBuilderAntTargetTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.FunctionalAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitAxisTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.ModulesAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.SemVerModulesAxisTestClassGroup;
 
 import java.io.File;
 
@@ -35,6 +36,14 @@ import org.json.JSONObject;
  * @author Michael Hashimoto
  */
 public class TestrayFactory {
+
+	public static TestrayCaseResult newBuildTestrayCaseResult(
+		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
+		AxisTestClassGroup axisTestClassGroup) {
+
+		return newBuildTestrayCaseResult(
+			testrayBuild, topLevelBuildReport, axisTestClassGroup, null, null);
+	}
 
 	public static TestrayCaseResult newBuildTestrayCaseResult(
 		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
@@ -71,10 +80,21 @@ public class TestrayFactory {
 			else if (axisTestClassGroup instanceof JSUnitAxisTestClassGroup) {
 				return new JSUnitBatchBuildTestrayCaseResult(
 					testrayBuild, topLevelBuildReport, axisTestClassGroup,
-					testClassMethod);
+					testClass);
 			}
 			else if (axisTestClassGroup instanceof JUnitAxisTestClassGroup) {
 				return new JUnitBatchBuildTestrayCaseResult(
+					testrayBuild, topLevelBuildReport, axisTestClassGroup,
+					testClass);
+			}
+			else if (axisTestClassGroup instanceof ModulesAxisTestClassGroup) {
+				if (testClass instanceof ServiceBuilderAntTargetTestClass) {
+					return new AntTargetBatchBuildTestrayCaseResult(
+						testrayBuild, topLevelBuildReport, axisTestClassGroup,
+						testClass);
+				}
+
+				return new ModulesBatchBuildTestrayCaseResult(
 					testrayBuild, topLevelBuildReport, axisTestClassGroup,
 					testClass);
 			}
@@ -84,13 +104,6 @@ public class TestrayFactory {
 				return new PlaywrightBatchBuildTestrayCaseResult(
 					testrayBuild, topLevelBuildReport, axisTestClassGroup,
 					testClass, testClassMethod);
-			}
-			else if (axisTestClassGroup instanceof
-						SemVerModulesAxisTestClassGroup) {
-
-				return new SemVerModulesBatchBuildTestrayCaseResult(
-					testrayBuild, topLevelBuildReport, axisTestClassGroup,
-					testClass);
 			}
 		}
 
@@ -175,7 +188,7 @@ public class TestrayFactory {
 			return testrayAttachmentUploader;
 		}
 
-		testrayAttachmentUploader = new S3TestrayAttachmentUploader(
+		testrayAttachmentUploader = new CloudObjectTestrayAttachmentUploader(
 			build, testrayServerURL);
 
 		_testrayAttachmentUploaders.put(key, testrayAttachmentUploader);
@@ -193,6 +206,10 @@ public class TestrayFactory {
 		TestrayServer testrayServer, JSONObject jsonObject) {
 
 		return new TestrayBuild(testrayServer, jsonObject);
+	}
+
+	public static TestrayBuild newTestrayBuild(URL url) {
+		return new TestrayBuild(url);
 	}
 
 	public static TestrayCase newTestrayCase(
@@ -277,6 +294,12 @@ public class TestrayFactory {
 		return new TestrayRun(testrayBuild, batchName, propertiesFiles);
 	}
 
+	public static TestrayRunComparison newTestrayRunComparison(
+		TestrayRun testrayRunA, TestrayRun testrayRunB) {
+
+		return new TestrayRunComparison(testrayRunA, testrayRunB);
+	}
+
 	public static TestrayServer newTestrayServer(String testrayServerURL) {
 		TestrayServer testrayServer = _testrayServers.get(testrayServerURL);
 
@@ -305,8 +328,8 @@ public class TestrayFactory {
 		return new TestrayTeam(testrayProject, jsonObject);
 	}
 
-	public static TopLevelBuildTestrayCaseResult
-		newTopLevelBuildTestrayCaseResult(
+	public static TopLevelStandaloneBuildTestrayCaseResult
+		newTopLevelStandaloneBuildTestrayCaseResult(
 			TestrayBuild testrayBuild,
 			TopLevelBuildReport topLevelBuildReport) {
 
@@ -326,7 +349,7 @@ public class TestrayFactory {
 
 		_topLevelBuildTestrayCaseResults.put(
 			testrayBuildID,
-			new TopLevelBuildTestrayCaseResult(
+			new TopLevelStandaloneBuildTestrayCaseResult(
 				testrayBuild, topLevelBuildReport));
 
 		return _topLevelBuildTestrayCaseResults.get(testrayBuildID);
@@ -343,7 +366,7 @@ public class TestrayFactory {
 	private static final Pattern _testrayURLPattern = Pattern.compile(
 		"https://(testray\\.liferay\\.com|webserver-testray2" +
 			"(-prd\\d*|-uat\\d*)?.lfr.cloud)");
-	private static final Map<Long, TopLevelBuildTestrayCaseResult>
+	private static final Map<Long, TopLevelStandaloneBuildTestrayCaseResult>
 		_topLevelBuildTestrayCaseResults = new HashMap<>();
 
 }

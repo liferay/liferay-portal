@@ -634,12 +634,12 @@ public class AssetCategoryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteCategory() throws Exception {
+	public void testGetOrAddEmptyCategory() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_assetCategoryLocalService.getOrAddIncompleteCategory(
+			_assetCategoryLocalService.getOrAddEmptyCategory(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_group.getGroupId());
 
@@ -655,12 +655,12 @@ public class AssetCategoryLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AssetCategory assetCategory =
-				_assetCategoryLocalService.getOrAddIncompleteCategory(
+				_assetCategoryLocalService.getOrAddEmptyCategory(
 					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 					_group.getGroupId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, assetCategory.getStatus());
+				WorkflowConstants.STATUS_EMPTY, assetCategory.getStatus());
 		}
 	}
 
@@ -894,12 +894,12 @@ public class AssetCategoryLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AssetCategory assetCategory =
-				_assetCategoryLocalService.getOrAddIncompleteCategory(
+				_assetCategoryLocalService.getOrAddEmptyCategory(
 					RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 					_group.getGroupId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, assetCategory.getStatus());
+				WorkflowConstants.STATUS_EMPTY, assetCategory.getStatus());
 
 			String name = RandomTestUtil.randomString();
 
@@ -988,6 +988,44 @@ public class AssetCategoryLocalServiceTest {
 		Assert.assertEquals(
 			"Expected title map does not match", titleMap,
 			assetCategory.getTitleMap());
+	}
+
+	@Test
+	public void testUpdateAssetCategoryWithUpdatedAssetVocabulary()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		String assetCategoryName = RandomTestUtil.randomString();
+
+		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(), assetCategoryName,
+			_assetVocabulary.getVocabularyId(), serviceContext);
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+
+		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(), assetCategoryName,
+			assetVocabulary.getVocabularyId(), serviceContext);
+
+		assetCategory1 = _assetCategoryLocalService.updateCategory(
+			TestPropsValues.getUserId(), assetCategory1.getCategoryId(),
+			assetCategory2.getCategoryId(),
+			Collections.singletonMap(
+				LocaleUtil.getSiteDefault(), assetCategory1.getName()),
+			assetCategory1.getDescriptionMap(),
+			assetVocabulary.getVocabularyId(), null, serviceContext);
+
+		Assert.assertEquals(
+			assetCategory1.getVocabularyId(), assetCategory2.getVocabularyId());
+		Assert.assertEquals(
+			assetCategory1.getParentCategoryId(),
+			assetCategory2.getCategoryId());
 	}
 
 	@Rule

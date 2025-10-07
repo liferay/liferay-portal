@@ -1,17 +1,17 @@
 const currentLength = document.getElementById(
-	`${fragmentNamespace}-current-length`
+	`${fragmentElementId}-current-length`
 );
 const errorMessage = document.getElementById(
-	`${fragmentNamespace}-text-input-error-message`
+	`${fragmentElementId}-text-input-error-message`
 );
-const formGroup = document.getElementById(`${fragmentNamespace}-form-group`);
-const inputElement = document.getElementById(`${fragmentNamespace}-text-input`);
-const lengthInfo = document.getElementById(`${fragmentNamespace}-length-info`);
+const formGroup = document.getElementById(`${fragmentElementId}-form-group`);
+const inputElement = document.getElementById(`${fragmentElementId}-text-input`);
+const lengthInfo = document.getElementById(`${fragmentElementId}-length-info`);
 const lengthWarning = document.getElementById(
-	`${fragmentNamespace}-length-warning`
+	`${fragmentElementId}-length-warning`
 );
 const lengthWarningText = document.getElementById(
-	`${fragmentNamespace}-length-warning-text`
+	`${fragmentElementId}-length-warning-text`
 );
 
 function main() {
@@ -65,7 +65,7 @@ function main() {
 						inputElement,
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
-						namespace: fragmentNamespace,
+						namespace: fragmentElementId,
 					});
 
 					inputElement.addEventListener('change', (event) => {
@@ -77,12 +77,12 @@ function main() {
 						defaultLanguageId,
 						inputElement,
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-text-input-readonly`
+							`${fragmentElementId}-text-input-readonly`
 						),
 						unlocalizedFieldsState:
 							input.attributes.unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

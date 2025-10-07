@@ -148,11 +148,13 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 
 			<div className="c-mb-3 form-group-autofit">
 				<ClayInput.GroupItem>
-					<label>
-						{Liferay.Language.get('activity')}
+					<label htmlFor={`activity${index}`}>
+						<span>
+							{Liferay.Language.get('activity')}
 
-						<span className="reference-mark">
-							<ClayIcon symbol="asterisk" />
+							<span className="reference-mark">
+								<ClayIcon symbol="asterisk" />
+							</span>
 						</span>
 					</label>
 
@@ -162,6 +164,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 						)}
 						className="form-control form-control-select"
 						displayType="unstyled"
+						id={`activity${index}`}
 						onClick={_handleActivityDropdownClick}
 						ref={alignElementRef}
 					>
@@ -220,6 +223,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 
 			<div className="c-mb-3 form-group-autofit">
 				<DisplayGroupNameInput
+					index={index}
 					onBlur={onBlur('displayGroupName')}
 					onChange={onInputSetItemChange(index, 'displayGroupName')}
 					touched={touched.displayGroupName}
@@ -227,6 +231,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 				/>
 
 				<SizeInput
+					index={index}
 					onBlur={onBlur('size')}
 					onChange={onInputSetItemChange(index, 'size')}
 					touched={touched.size}
@@ -240,6 +245,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 			].includes(value.contributorName) ? (
 				<div className="c-mb-0 form-group-autofit">
 					<CharacterThresholdInput
+						index={index}
 						onBlur={onBlur('attributes.characterThreshold')}
 						onChange={_handleChangeAttributeInput(
 							'characterThreshold'
@@ -249,6 +255,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 					/>
 
 					<MatchDisplayLanguageInput
+						index={index}
 						onChange={_handleChangeAttributeInput(
 							'matchDisplayLanguageId'
 						)}
@@ -256,6 +263,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 					/>
 
 					<MinimumSearchesInput
+						index={index}
 						onBlur={onBlur('attributes.minCounts')}
 						onChange={_handleChangeAttributeInput('minCounts')}
 						touched={touched['attributes.minCounts']}
@@ -268,6 +276,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 			  ].includes(value.contributorName) ? (
 				<div className="c-mb-0 form-group-autofit">
 					<CharacterThresholdInput
+						index={index}
 						onBlur={onBlur('attributes.characterThreshold')}
 						onChange={_handleChangeAttributeInput(
 							'characterThreshold'
@@ -277,6 +286,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 					/>
 
 					<TimeRangeInput
+						index={index}
 						onBlur={onBlur('attributes.rangeKey')}
 						onChange={_handleChangeAttributeValue('rangeKey')}
 						touched={touched['attributes.rangeKey']}
@@ -287,6 +297,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 				<>
 					<div className="c-mb-3 form-group-autofit">
 						<CharacterThresholdInput
+							index={index}
 							onBlur={onBlur('attributes.characterThreshold')}
 							onChange={_handleChangeAttributeInput(
 								'characterThreshold'
@@ -298,6 +309,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 						{value.contributorName ===
 							CONTRIBUTOR_TYPES.ASAH_RECENT_SEARCHES_USER_ACTIVITY && (
 							<MatchDisplayLanguageInput
+								index={index}
 								onChange={_handleChangeAttributeInput(
 									'matchDisplayLanguageId'
 								)}
@@ -308,6 +320,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 						{value.contributorName ===
 							CONTRIBUTOR_TYPES.ASAH_RECENT_ASSETS_USER_ACTIVITY && (
 							<ContentTypesInput
+								index={index}
 								onBlur={onBlur('attributes.contentTypes')}
 								onChange={_handleChangeAttributeValue(
 									'contentTypes'
@@ -322,6 +335,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 						{value.contributorName ===
 							CONTRIBUTOR_TYPES.ASAH_RECENT_SEARCHES_USER_ACTIVITY && (
 							<MinimumSearchesInput
+								index={index}
 								onBlur={onBlur('attributes.minCounts')}
 								onChange={_handleChangeAttributeInput(
 									'minCounts'
@@ -332,6 +346,7 @@ function SiteActivities({index, onBlur, onInputSetItemChange, touched, value}) {
 						)}
 
 						<TimeRangeInput
+							index={index}
 							onChange={_handleChangeAttributeValue('rangeKey')}
 							value={value.attributes?.rangeKey}
 						/>

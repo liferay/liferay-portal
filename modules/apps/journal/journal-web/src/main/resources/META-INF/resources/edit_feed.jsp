@@ -213,7 +213,7 @@ renderResponse.setTitle(editJournalFeedDisplayContext.getTitle());
 				%>
 
 				<c:if test="<%= ddmForm != null %>">
-					<optgroup label="<liferay-ui:message key="structure-fields" />">
+					<optgroup label="<liferay-ui:message key="content-structure-fields" />">
 
 						<%
 						Map<String, DDMFormField> ddmFormFieldsMap = ddmForm.getDDMFormFieldsMap(true);

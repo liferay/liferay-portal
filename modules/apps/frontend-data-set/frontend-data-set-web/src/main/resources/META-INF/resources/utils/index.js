@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fetch} from 'frontend-js-web';
+import {fetch, getObjectValueFromPath} from 'frontend-js-web';
 
 import {DEFAULT_FETCH_HEADERS} from '../constants';
 import getValueFromItem from './getValueFromItem';
@@ -72,7 +72,9 @@ export function getCurrentItemUpdates(
 	valuePath
 ) {
 	const itemChanged = items.find(
-		(item) => item[selectedItemsKey] === itemKey
+		(item) =>
+			getObjectValueFromPath({object: item, path: selectedItemsKey}) ===
+			itemKey
 	);
 
 	const itemChanges = itemsChanges[itemKey];

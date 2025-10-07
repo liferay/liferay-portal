@@ -42,7 +42,6 @@ import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.option.CommerceOptionType;
 import com.liferay.commerce.product.option.CommerceOptionTypeRegistry;
-import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
@@ -74,7 +73,6 @@ import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -306,16 +304,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 	public FileVersion getCPDefinitionImageFileVersion(
 			long cpDefinitionId, HttpServletRequest httpServletRequest)
 		throws Exception {
-
-		if (!_commerceProductViewPermission.contains(
-				PermissionThreadLocal.getPermissionChecker(),
-				CommerceUtil.getCommerceAccountId(
-					(CommerceContext)httpServletRequest.getAttribute(
-						CommerceWebKeys.COMMERCE_CONTEXT)),
-				cpDefinitionId)) {
-
-			return null;
-		}
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
 			_cpDefinitionLocalService.getDefaultImageCPAttachmentFileEntry(
@@ -714,11 +702,18 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 	@Override
 	public boolean hasRequiredCPDefinitionOptionRels(long cpDefinitionId) {
-		return ListUtil.isNotEmpty(
-			ListUtil.filter(
-				_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRels(
-					cpDefinitionId),
-				CPDefinitionOptionRel::isRequired));
+		if (ListUtil.isNotEmpty(
+				ListUtil.filter(
+					_cpDefinitionOptionRelLocalService.
+						getCPDefinitionOptionRels(cpDefinitionId),
+					cpDefinitionOptionRel ->
+						cpDefinitionOptionRel.isRequired() &&
+						!cpDefinitionOptionRel.isSkuContributor()))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -872,9 +867,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 	@Reference
 	private CommerceOptionTypeRegistry _commerceOptionTypeRegistry;
-
-	@Reference
-	private CommerceProductViewPermission _commerceProductViewPermission;
 
 	@Reference
 	private CommerceWishListItemService _commerceWishListItemService;

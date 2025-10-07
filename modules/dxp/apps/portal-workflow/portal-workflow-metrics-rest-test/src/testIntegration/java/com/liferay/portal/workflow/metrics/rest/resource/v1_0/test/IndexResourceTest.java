@@ -7,14 +7,11 @@ package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.Index;
 import com.liferay.portal.workflow.metrics.rest.client.http.HttpInvoker;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
-import com.liferay.portal.workflow.metrics.rest.client.serdes.v1_0.IndexSerDes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,24 +38,6 @@ public class IndexResourceTest extends BaseIndexResourceTestCase {
 		Assert.assertEquals(indexes.toString(), 7, indexes.size());
 
 		assertEqualsIgnoringOrder(indexes, _getDefaultIndexes());
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetIndexesPage() throws Exception {
-		JSONObject indexesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField(
-					"indexes", new GraphQLField("items", getGraphQLFields()),
-					new GraphQLField("page"), new GraphQLField("totalCount"))),
-			"JSONObject/data", "JSONObject/indexes");
-
-		Assert.assertEquals(7, indexesJSONObject.get("totalCount"));
-
-		assertEqualsIgnoringOrder(
-			_getDefaultIndexes(),
-			Arrays.asList(
-				IndexSerDes.toDTOs(indexesJSONObject.getString("items"))));
 	}
 
 	@Override

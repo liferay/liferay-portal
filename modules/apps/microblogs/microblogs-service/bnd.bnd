@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Microblogs Service
 Bundle-SymbolicName: com.liferay.microblogs.service
-Bundle-Version: 6.0.49
+Bundle-Version: 6.0.50
 Liferay-Require-SchemaVersion: 1.0.2
 Liferay-Service: true
 -dsannotations-options: inherit

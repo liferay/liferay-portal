@@ -1,0 +1,27 @@
+{
+	"editorType": "richText",
+	"externalReferenceCode": "TRIAL-ADMIN-EXTENSION-RESPONSE",
+	"name": "Trial | Admin Extension Response",
+	"name_i18n": {
+		"en_US": "Trial | Admin Extension Response"
+	},
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Marketplace"
+			},
+			"to": {
+				"en-US": "[%TRIALEXTENSIONREQUEST_AUTHOR_EMAIL_ADDRESS%]"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Subject: Liferay Marketplace - Trial Extension Request [%TRIALEXTENSIONREQUEST_DUESTATUS%]: [%TRIALEXTENSIONREQUEST_PROJECTID%]"
+	},
+	"system": false,
+	"type": "email"
+}

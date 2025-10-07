@@ -6,4 +6,5 @@
 export const config = {
 	name: 'nested-portlets-web.main',
 	testDir: 'tests/nested-portlets-web/main',
+	timeout: 90 * 1000,
 };

@@ -95,7 +95,6 @@ definition {
 	@description = "LPS-73332 - Verify that when a Form is duplicated, the Rules in that Form are also duplicated"
 	@priority = 2
 	test AreDuplicatedWhenTheFormIsDuplicated {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -162,7 +161,6 @@ definition {
 	@description = "LPS-73332 - Verify that when creating a new Form, rules from a pre-existing Form are not copied into the new Form"
 	@priority = 2
 	test AreNotCopiedIntoANewForm {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 
 		FormsAdmin.addForm();
@@ -301,7 +299,6 @@ definition {
 	@description = "LPS-71466 - Verify that a Rule can be created using a Field with a Predefined Value"
 	@priority = 2
 	test CanBeCreatedUsingAFieldWithAPredefinedValue {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

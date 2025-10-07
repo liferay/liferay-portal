@@ -1,7 +1,7 @@
 batch:
-    oAuthApplicationHeadlessServer: oauth
+    oAuthApplicationHeadlessServer: oauth-batch
     type: batch
-oauth:
+oauth-batch:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     scopes:

@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -252,7 +252,7 @@ public class PortalCacheExtenderTest {
 		_bundle.stop();
 
 		File ehcacheFolder = new File(
-			_props.get(PropsKeys.MODULE_FRAMEWORK_BASE_DIR) + "/ehcache/");
+			PropsUtil.get(PropsKeys.MODULE_FRAMEWORK_BASE_DIR) + "/ehcache/");
 
 		try {
 			_file.write(
@@ -501,8 +501,5 @@ public class PortalCacheExtenderTest {
 	)
 	private PortalCacheManager<? extends Serializable, ? extends Serializable>
 		_multiVMPortalCacheManager;
-
-	@Inject
-	private Props _props;
 
 }

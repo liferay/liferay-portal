@@ -78,6 +78,22 @@ public class BatchEngineExportTaskLocalServiceWrapper
 			batchEngineExportTaskId);
 	}
 
+	@Override
+	public com.liferay.batch.engine.model.BatchEngineExportTask
+		createBatchEngineExportTask(
+			long batchEngineExportTaskId, String externalReferenceCode,
+			long companyId, long userId, String callbackURL, String className,
+			String contentType, String executeStatus,
+			java.util.List<String> fieldNames,
+			java.util.Map<String, java.io.Serializable> parameters,
+			String taskItemDelegateName) {
+
+		return _batchEngineExportTaskLocalService.createBatchEngineExportTask(
+			batchEngineExportTaskId, externalReferenceCode, companyId, userId,
+			callbackURL, className, contentType, executeStatus, fieldNames,
+			parameters, taskItemDelegateName);
+	}
+
 	/**
 	 * @throws PortalException
 	 */

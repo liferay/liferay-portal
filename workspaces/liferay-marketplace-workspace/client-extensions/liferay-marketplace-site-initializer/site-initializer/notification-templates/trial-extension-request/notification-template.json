@@ -1,0 +1,23 @@
+{
+	"editorType": "richText",
+	"externalReferenceCode": "TRIAL-EXTENSION-REQUEST",
+	"name": "Trial | Extension Request",
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Marketplace"
+			},
+			"to": {
+				"en-US": "[%COMMERCEORDER_AUTHOR_EMAIL_ADDRESS%]"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Liferay Marketplace - Trial Extension Request: [%TRIALEXTENSIONREQUEST_PROJECTID%] - User [%TRIALEXTENSIONREQUEST_AUTHOR_FIRST_NAME%]"
+	},
+	"type": "email"
+}

@@ -85,6 +85,10 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 		return matcher.group("specFilePath");
 	}
 
+	public boolean isAnalyticsCloudEnabled() {
+		return _analyticsCloudEnabled;
+	}
+
 	protected PlaywrightJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
 
@@ -99,6 +103,16 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 
 			Properties testProperties = JenkinsResultsParserUtil.getProperties(
 				testPropertiesFile);
+
+			String analyticsCloudEnabled = JenkinsResultsParserUtil.getProperty(
+				testProperties, "analytics.cloud.enabled");
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					analyticsCloudEnabled) &&
+				analyticsCloudEnabled.equals("true")) {
+
+				_analyticsCloudEnabled = true;
+			}
 
 			String minimumSlaveRAM = JenkinsResultsParserUtil.getProperty(
 				testProperties, "test.batch.minimum.slave.ram");
@@ -138,6 +152,7 @@ public class PlaywrightJUnitTestClass extends JUnitTestClass {
 	private static final Pattern _testFilePathPattern = Pattern.compile(
 		".+/playwright/(setup|tests)/(?<specFilePath>.+)");
 
+	private boolean _analyticsCloudEnabled;
 	private Long _averageDuration;
 	private final Integer _minimumSlaveRAM;
 	private final String _slaveLabel;

@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.manager.CurrentAccountEntryManager;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.role.AccountRolePermissionThreadLocal;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.settings.AccountEntryGroupSettings;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -60,6 +61,18 @@ public class CurrentAccountEntryManagerImpl
 			return guestAccountEntry;
 		}
 
+		long accountEntryId =
+			AccountRolePermissionThreadLocal.getAccountEntryId();
+
+		if (accountEntryId != 0) {
+			AccountEntry accountEntry =
+				_accountEntryLocalService.fetchAccountEntry(accountEntryId);
+
+			if (accountEntry != null) {
+				return accountEntry;
+			}
+		}
+
 		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
 			user);
 
@@ -70,6 +83,9 @@ public class CurrentAccountEntryManagerImpl
 		String[] allowedTypes = _getAllowedTypes(groupId);
 
 		if (_isValid(accountEntry, allowedTypes, permissionChecker)) {
+			AccountRolePermissionThreadLocal.setAccountEntryIdWithSafeCloseable(
+				accountEntry.getAccountEntryId());
+
 			return accountEntry;
 		}
 
@@ -80,6 +96,9 @@ public class CurrentAccountEntryManagerImpl
 		if (_isValid(accountEntry, allowedTypes, permissionChecker)) {
 			_currentAccountEntryManagerStore.saveInHttpSession(
 				accountEntry.getAccountEntryId(), groupId);
+
+			AccountRolePermissionThreadLocal.setAccountEntryIdWithSafeCloseable(
+				accountEntry.getAccountEntryId());
 
 			return accountEntry;
 		}

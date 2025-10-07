@@ -10,7 +10,7 @@ import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LoggingTimer;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.internal.constants.LegacySamlPropsKeys;
 
@@ -28,10 +28,9 @@ public class SamlConfigurationPreferencesUpgradeProcess
 	extends BaseUpgradeSaml {
 
 	public SamlConfigurationPreferencesUpgradeProcess(
-		ConfigurationAdmin configurationAdmin, Props props) {
+		ConfigurationAdmin configurationAdmin) {
 
 		_configurationAdmin = configurationAdmin;
-		_props = props;
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class SamlConfigurationPreferencesUpgradeProcess
 
 			Filter filter = null;
 
-			String entityId = _props.get(LegacySamlPropsKeys.SAML_ENTITY_ID);
+			String entityId = PropsUtil.get(LegacySamlPropsKeys.SAML_ENTITY_ID);
 
 			if (Validator.isNotNull(entityId)) {
 				filter = new Filter(entityId);
@@ -63,7 +62,7 @@ public class SamlConfigurationPreferencesUpgradeProcess
 					continue;
 				}
 
-				String value = getPropsValue(_props, key, filter);
+				String value = getPropsValue(key, filter);
 
 				if (value == null) {
 					continue;
@@ -81,6 +80,5 @@ public class SamlConfigurationPreferencesUpgradeProcess
 	}
 
 	private final ConfigurationAdmin _configurationAdmin;
-	private final Props _props;
 
 }

@@ -390,6 +390,10 @@ public class UserCacheModel
 
 		try {
 			_groupIdMethodHandle.invokeExact(userImpl, groupId);
+
+			_layoutsUpdatedMethodHandle.invokeExact(userImpl, layoutsUpdated);
+
+			_userGroupIdsMethodHandle.invokeExact(userImpl, userGroupIds);
 		}
 		catch (Throwable throwable) {
 			ReflectionUtil.throwException(throwable);
@@ -464,6 +468,10 @@ public class UserCacheModel
 		status = objectInput.readInt();
 
 		groupId = (long)objectInput.readObject();
+
+		layoutsUpdated = (boolean)objectInput.readObject();
+
+		userGroupIds = (long[])objectInput.readObject();
 	}
 
 	@Override
@@ -653,6 +661,10 @@ public class UserCacheModel
 		objectOutput.writeInt(status);
 
 		objectOutput.writeObject(groupId);
+
+		objectOutput.writeObject(layoutsUpdated);
+
+		objectOutput.writeObject(userGroupIds);
 	}
 
 	public long mvccVersion;
@@ -700,8 +712,12 @@ public class UserCacheModel
 	public int type;
 	public int status;
 	public volatile long groupId;
+	public volatile boolean layoutsUpdated;
+	public volatile long[] userGroupIds;
 
 	private static final MethodHandle _groupIdMethodHandle;
+	private static final MethodHandle _layoutsUpdatedMethodHandle;
+	private static final MethodHandle _userGroupIdsMethodHandle;
 
 	static {
 		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
@@ -709,6 +725,12 @@ public class UserCacheModel
 		try {
 			_groupIdMethodHandle = lookup.findSetter(
 				UserImpl.class, "_groupId", long.class);
+
+			_layoutsUpdatedMethodHandle = lookup.findSetter(
+				UserImpl.class, "_layoutsUpdated", boolean.class);
+
+			_userGroupIdsMethodHandle = lookup.findSetter(
+				UserImpl.class, "_userGroupIds", long[].class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
 			throw new ExceptionInInitializerError(reflectiveOperationException);

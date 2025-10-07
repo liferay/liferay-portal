@@ -71,14 +71,12 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.util.LocalizationImpl;
-import com.liferay.portal.util.PropsImpl;
 import com.liferay.portal.xml.SAXReaderImpl;
 
 import java.io.IOException;
@@ -149,7 +147,6 @@ public abstract class BaseDDMTestCase {
 	public void setUp() throws Exception {
 		setUpPortalClassLoaderUtil();
 		setUpPortalUtil();
-		setUpPropsUtil();
 		setUpResourceBundleUtil();
 	}
 
@@ -770,10 +767,6 @@ public abstract class BaseDDMTestCase {
 		);
 
 		portalUtil.setPortal(portal);
-	}
-
-	protected void setUpPropsUtil() {
-		PropsUtil.setProps(new PropsImpl());
 	}
 
 	protected void setUpResourceBundleUtil() {

@@ -13,6 +13,7 @@ export class UserPersonalSitePage {
 	readonly languageSelectorMenuItem: Locator;
 	readonly languageSelectorOptionsMenu: Locator;
 	readonly myDashboardMenuItem: Locator;
+	readonly myProfileMenuItem: Locator;
 	readonly page: Page;
 	readonly removeMenuItem: Locator;
 	readonly searchBar: Locator;
@@ -27,6 +28,9 @@ export class UserPersonalSitePage {
 			.getByRole('button', {exact: true, name: 'Add Content'});
 		this.myDashboardMenuItem = page.getByRole('menuitem', {
 			name: 'My Dashboard',
+		});
+		this.myProfileMenuItem = page.getByRole('menuitem', {
+			name: 'MY Profile',
 		});
 		this.page = page;
 		this.searchBar = page

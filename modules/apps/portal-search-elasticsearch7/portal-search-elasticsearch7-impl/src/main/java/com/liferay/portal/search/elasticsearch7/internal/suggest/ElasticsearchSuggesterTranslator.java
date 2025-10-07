@@ -28,20 +28,16 @@ import org.elasticsearch.search.suggest.phrase.DirectCandidateGeneratorBuilder;
 import org.elasticsearch.search.suggest.phrase.PhraseSuggestionBuilder;
 import org.elasticsearch.search.suggest.term.TermSuggestionBuilder;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Michael C. Han
  */
-@Component(
-	property = "search.engine.impl=Elasticsearch",
-	service = SuggesterTranslator.class
-)
 public class ElasticsearchSuggesterTranslator
 	implements SuggesterTranslator<SuggestionBuilder>,
 			   SuggesterVisitor<SuggestionBuilder> {
+
+	public ElasticsearchSuggesterTranslator(IndexNameBuilder indexNameBuilder) {
+		_queryTranslator = new ElasticsearchQueryTranslator(indexNameBuilder);
+	}
 
 	@Override
 	public SuggestionBuilder translate(
@@ -204,11 +200,6 @@ public class ElasticsearchSuggesterTranslator
 		termSuggesterBuilder.text(termSuggester.getValue());
 
 		return termSuggesterBuilder;
-	}
-
-	@Activate
-	protected void activate() {
-		_queryTranslator = new ElasticsearchQueryTranslator(_indexNameBuilder);
 	}
 
 	private void _translate(
@@ -389,9 +380,6 @@ public class ElasticsearchSuggesterTranslator
 		return SortBy.SCORE;
 	}
 
-	@Reference
-	private IndexNameBuilder _indexNameBuilder;
-
-	private QueryTranslator<QueryBuilder> _queryTranslator;
+	private final QueryTranslator<QueryBuilder> _queryTranslator;
 
 }

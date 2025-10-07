@@ -21,8 +21,6 @@
 
 	&:hover, &:focus, &:focus-visible {
 		background: #1A3B7B;
-		outline: var(--color-brand-primary-lighten-2, #6399FF) solid 2px;
-		transition: all 0.1s linear;
 
 		svg {
 			opacity: 1;

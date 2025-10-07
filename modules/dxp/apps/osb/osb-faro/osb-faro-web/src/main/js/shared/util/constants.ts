@@ -243,8 +243,7 @@ export enum SegmentStates {
 }
 
 export enum SegmentTypes {
-	Dynamic = 'DYNAMIC',
-	Static = 'STATIC'
+	Dynamic = 'DYNAMIC'
 }
 
 export enum SessionEntityTypes {

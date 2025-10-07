@@ -22,10 +22,9 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Tina Tian
@@ -33,11 +32,16 @@ import java.util.Map;
  */
 public class PathUtil {
 
-	public static void copyDirectory(
-			Path fromPath, Path toPath, Path... excludedPaths)
+	public static void copyDirectory(Path fromPath, Path toPath)
 		throws IOException {
 
-		List<Path> excludedPathList = Arrays.asList(excludedPaths);
+		copyDirectory(fromPath, toPath, null);
+	}
+
+	public static void copyDirectory(
+			Path fromPath, Path toPath,
+			Function<Path, Boolean> excludeDirFunction)
+		throws IOException {
 
 		if (Files.exists(toPath)) {
 			deleteDir(toPath);
@@ -72,7 +76,9 @@ public class PathUtil {
 							Path dir, BasicFileAttributes basicFileAttributes)
 						throws IOException {
 
-						if (excludedPathList.contains(dir)) {
+						if ((excludeDirFunction != null) &&
+							excludeDirFunction.apply(dir)) {
+
 							return FileVisitResult.CONTINUE;
 						}
 
@@ -91,7 +97,9 @@ public class PathUtil {
 							Path file, BasicFileAttributes basicFileAttributes)
 						throws IOException {
 
-						if (excludedPathList.contains(file.getParent())) {
+						if ((excludeDirFunction != null) &&
+							excludeDirFunction.apply(file.getParent())) {
+
 							return FileVisitResult.CONTINUE;
 						}
 

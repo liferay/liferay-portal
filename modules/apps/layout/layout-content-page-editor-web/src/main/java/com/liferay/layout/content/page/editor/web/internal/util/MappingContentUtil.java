@@ -91,6 +91,49 @@ public class MappingContentUtil {
 			itemClassName, locale);
 	}
 
+	private static JSONObject _getInfoFieldSetJSONObject(
+		boolean includeEditableInfoFields, InfoFieldSet infoFieldSet,
+		Locale locale) {
+
+		JSONArray fieldSetFieldsJSONArray = JSONFactoryUtil.createJSONArray();
+
+		for (InfoFieldSetEntry infoFieldSetEntry :
+				infoFieldSet.getInfoFieldSetEntries()) {
+
+			if (infoFieldSetEntry instanceof InfoField) {
+				InfoField<?> infoField = (InfoField<?>)infoFieldSetEntry;
+
+				if (!includeEditableInfoFields || infoField.isEditable()) {
+					fieldSetFieldsJSONArray.put(
+						getInfoFieldJSONObject(infoField, locale));
+				}
+			}
+			else if (infoFieldSetEntry instanceof InfoFieldSet) {
+				JSONObject jsonObject = _getInfoFieldSetJSONObject(
+					includeEditableInfoFields, (InfoFieldSet)infoFieldSetEntry,
+					locale);
+
+				if (jsonObject != null) {
+					fieldSetFieldsJSONArray.put(jsonObject);
+				}
+			}
+		}
+
+		if (fieldSetFieldsJSONArray.length() > 0) {
+			return JSONUtil.put(
+				"fields", fieldSetFieldsJSONArray
+			).put(
+				"label", infoFieldSet.getLabel(locale)
+			).put(
+				"name", infoFieldSet.getName()
+			).put(
+				"relationship", infoFieldSet.isRelationship()
+			);
+		}
+
+		return null;
+	}
+
 	private static JSONArray _getMappingFieldsJSONArray(
 			String formVariationKey, long groupId,
 			boolean includeEditableInfoFields,
@@ -136,27 +179,12 @@ public class MappingContentUtil {
 				}
 			}
 			else if (infoFieldSetEntry instanceof InfoFieldSet) {
-				JSONArray fieldSetFieldsJSONArray =
-					JSONFactoryUtil.createJSONArray();
+				JSONObject infoFieldSetJSONObject = _getInfoFieldSetJSONObject(
+					includeEditableInfoFields, (InfoFieldSet)infoFieldSetEntry,
+					locale);
 
-				InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
-
-				for (InfoField<?> infoField : infoFieldSet.getAllInfoFields()) {
-					if (!includeEditableInfoFields || infoField.isEditable()) {
-						fieldSetFieldsJSONArray.put(
-							getInfoFieldJSONObject(infoField, locale));
-					}
-				}
-
-				if (fieldSetFieldsJSONArray.length() > 0) {
-					fieldSetsJSONArray.put(
-						JSONUtil.put(
-							"fields", fieldSetFieldsJSONArray
-						).put(
-							"label", infoFieldSet.getLabel(locale)
-						).put(
-							"name", infoFieldSet.getName()
-						));
+				if (infoFieldSetJSONObject != null) {
+					fieldSetsJSONArray.put(infoFieldSetJSONObject);
 				}
 			}
 		}

@@ -961,7 +961,7 @@ definition {
 
 		Navigator.gotoPage(pageName = "Blogs Page");
 
-		Notifications.viewBadgeCount(notificationCount = 0);
+		Notifications.viewBadgeCount(notificationCount = 1);
 
 		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
 
@@ -987,7 +987,7 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		Notifications.viewBadgeCount(notificationCount = 0);
+		Notifications.viewBadgeCount(notificationCount = 1);
 	}
 
 	@ignore = "true"

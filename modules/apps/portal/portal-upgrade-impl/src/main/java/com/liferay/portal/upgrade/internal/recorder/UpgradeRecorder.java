@@ -12,10 +12,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.upgrade.ReleaseManager;
 import com.liferay.portal.kernel.upgrade.recorder.UpgradeSQLRecorder;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.tools.DBUpgrader;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.verify.PreupgradeVerifyProcessSuite;
 import com.liferay.portal.verify.VerifyException;
 
@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import javax.sql.DataSource;
 
@@ -44,11 +45,6 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 @Component(service = UpgradeRecorder.class)
 public class UpgradeRecorder {
-
-	public static boolean isPreupgradeVerifyFailure() {
-		return _errorMessages.containsKey(
-			PreupgradeVerifyProcessSuite.class.getName());
-	}
 
 	public Map<String, Map<String, Integer>> getDataCleanUpMessages() {
 		return _dataCleanUpMessages;
@@ -94,6 +90,24 @@ public class UpgradeRecorder {
 
 	public Map<String, Map<String, Integer>> getWarningMessages() {
 		return _warningMessages;
+	}
+
+	public boolean isPreupgradeVerifyFailure() {
+		ReleaseManager releaseManager = _serviceTracker.getService();
+
+		if (releaseManager != null) {
+			return false;
+		}
+
+		return _errorMessages.containsKey(
+			PreupgradeVerifyProcessSuite.class.getName());
+	}
+
+	public void recordDataCleanupMessage(String loggerName, String message) {
+		Map<String, Integer> messages = _dataCleanUpMessages.computeIfAbsent(
+			loggerName, key -> new ConcurrentSkipListMap<>());
+
+		messages.put(message, messages.getOrDefault(message, 0) + 1);
 	}
 
 	public void recordErrorMessage(
@@ -275,15 +289,6 @@ public class UpgradeRecorder {
 	private Map<String, Map<String, Integer>> _filter(
 		Map<String, Map<String, Integer>> messages) {
 
-		for (String dataCleanUpClassName : _DATA_CLEAN_UP_CLASS_NAMES) {
-			if (messages.containsKey(dataCleanUpClassName)) {
-				_dataCleanUpMessages.putIfAbsent(
-					dataCleanUpClassName, messages.get(dataCleanUpClassName));
-
-				messages.remove(dataCleanUpClassName);
-			}
-		}
-
 		for (String filteredClassName : _FILTERED_CLASS_NAMES) {
 			messages.remove(filteredClassName);
 		}
@@ -331,11 +336,6 @@ public class UpgradeRecorder {
 			_log.error("Unable to process Release_ table", exception);
 		}
 	}
-
-	private static final String[] _DATA_CLEAN_UP_CLASS_NAMES = {
-		"com.liferay.portal.kernel.upgrade." +
-			"DeleteDuplicateUniqueFinderRowsUpgradeProcess"
-	};
 
 	private static final String[] _FILTERED_CLASS_NAMES = {
 		"com.liferay.portal.search.elasticsearch7.internal.sidecar." +

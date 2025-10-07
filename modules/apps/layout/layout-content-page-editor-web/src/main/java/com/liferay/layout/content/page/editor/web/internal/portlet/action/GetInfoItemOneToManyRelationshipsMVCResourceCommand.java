@@ -11,6 +11,7 @@ import com.liferay.info.item.RelatedInfoItem;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 import com.liferay.info.item.provider.RelatedInfoItemProvider;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -52,7 +53,9 @@ public class GetInfoItemOneToManyRelationshipsMVCResourceCommand
 		ClassName className = _classNameLocalService.fetchClassName(
 			classNameId);
 
-		if (className == null) {
+		if ((className == null) ||
+			!FeatureFlagManagerUtil.isEnabled("LPD-60546")) {
+
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
 				_jsonFactory.createJSONArray());

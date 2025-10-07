@@ -33,78 +33,69 @@ public interface PageRuleActionResource {
 		return new Builder();
 	}
 
-	public void deleteSiteSiteByExternalReferenceCodePageRuleAction(
+	public void deleteSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			deleteSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleActionExternalReferenceCode)
-		throws Exception;
-
-	public PageRuleAction getSiteSiteByExternalReferenceCodePageRuleAction(
+	public HttpInvoker.HttpResponse deleteSitePageRuleActionHttpResponse(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleActionExternalReferenceCode)
+	public PageRuleAction getSitePageRuleAction(
+			String siteExternalReferenceCode,
+			String pageRuleActionExternalReferenceCode)
 		throws Exception;
 
-	public Page<PageRuleAction>
-			getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPage(
+	public HttpInvoker.HttpResponse getSitePageRuleActionHttpResponse(
+			String siteExternalReferenceCode,
+			String pageRuleActionExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageRuleAction> getSitePageRulePageRuleActionsPage(
+			String siteExternalReferenceCode,
+			String pageRuleExternalReferenceCode, Boolean flatten)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSitePageRulePageRuleActionsPageHttpResponse(
 				String siteExternalReferenceCode,
 				String pageRuleExternalReferenceCode, Boolean flatten)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleExternalReferenceCode, Boolean flatten)
-		throws Exception;
-
-	public PageRuleAction patchSiteSiteByExternalReferenceCodePageRuleAction(
+	public PageRuleAction patchSitePageRuleAction(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode,
 			PageRuleAction pageRuleAction)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			patchSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleActionExternalReferenceCode,
-				PageRuleAction pageRuleAction)
-		throws Exception;
-
-	public PageRuleAction
-			postSiteSiteByExternalReferenceCodePageRulePageRuleAction(
-				String siteExternalReferenceCode,
-				String pageRuleExternalReferenceCode,
-				PageRuleAction pageRuleAction)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			postSiteSiteByExternalReferenceCodePageRulePageRuleActionHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleExternalReferenceCode,
-				PageRuleAction pageRuleAction)
-		throws Exception;
-
-	public PageRuleAction putSiteSiteByExternalReferenceCodePageRuleAction(
+	public HttpInvoker.HttpResponse patchSitePageRuleActionHttpResponse(
 			String siteExternalReferenceCode,
 			String pageRuleActionExternalReferenceCode,
 			PageRuleAction pageRuleAction)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			putSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-				String siteExternalReferenceCode,
-				String pageRuleActionExternalReferenceCode,
-				PageRuleAction pageRuleAction)
+	public PageRuleAction postSitePageRulePageRuleAction(
+			String siteExternalReferenceCode,
+			String pageRuleExternalReferenceCode, PageRuleAction pageRuleAction)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse postSitePageRulePageRuleActionHttpResponse(
+			String siteExternalReferenceCode,
+			String pageRuleExternalReferenceCode, PageRuleAction pageRuleAction)
+		throws Exception;
+
+	public PageRuleAction putSitePageRuleAction(
+			String siteExternalReferenceCode,
+			String pageRuleActionExternalReferenceCode,
+			PageRuleAction pageRuleAction)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse putSitePageRuleActionHttpResponse(
+			String siteExternalReferenceCode,
+			String pageRuleActionExternalReferenceCode,
+			PageRuleAction pageRuleAction)
 		throws Exception;
 
 	public static class Builder {
@@ -216,13 +207,13 @@ public interface PageRuleActionResource {
 	public static class PageRuleActionResourceImpl
 		implements PageRuleActionResource {
 
-		public void deleteSiteSiteByExternalReferenceCodePageRuleAction(
+		public void deleteSitePageRuleAction(
 				String siteExternalReferenceCode,
 				String pageRuleActionExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				deleteSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
+				deleteSitePageRuleActionHttpResponse(
 					siteExternalReferenceCode,
 					pageRuleActionExternalReferenceCode);
 
@@ -285,10 +276,9 @@ public interface PageRuleActionResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				deleteSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-					String siteExternalReferenceCode,
-					String pageRuleActionExternalReferenceCode)
+		public HttpInvoker.HttpResponse deleteSitePageRuleActionHttpResponse(
+				String siteExternalReferenceCode,
+				String pageRuleActionExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -331,13 +321,13 @@ public interface PageRuleActionResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageRuleAction getSiteSiteByExternalReferenceCodePageRuleAction(
+		public PageRuleAction getSitePageRuleAction(
 				String siteExternalReferenceCode,
 				String pageRuleActionExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
+				getSitePageRuleActionHttpResponse(
 					siteExternalReferenceCode,
 					pageRuleActionExternalReferenceCode);
 
@@ -400,10 +390,9 @@ public interface PageRuleActionResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-					String siteExternalReferenceCode,
-					String pageRuleActionExternalReferenceCode)
+		public HttpInvoker.HttpResponse getSitePageRuleActionHttpResponse(
+				String siteExternalReferenceCode,
+				String pageRuleActionExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -446,14 +435,13 @@ public interface PageRuleActionResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<PageRuleAction>
-				getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPage(
-					String siteExternalReferenceCode,
-					String pageRuleExternalReferenceCode, Boolean flatten)
+		public Page<PageRuleAction> getSitePageRulePageRuleActionsPage(
+				String siteExternalReferenceCode,
+				String pageRuleExternalReferenceCode, Boolean flatten)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPageHttpResponse(
+				getSitePageRulePageRuleActionsPageHttpResponse(
 					siteExternalReferenceCode, pageRuleExternalReferenceCode,
 					flatten);
 
@@ -517,7 +505,7 @@ public interface PageRuleActionResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodePageRulePageRuleActionsPageHttpResponse(
+				getSitePageRulePageRuleActionsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String pageRuleExternalReferenceCode, Boolean flatten)
 			throws Exception {
@@ -565,15 +553,14 @@ public interface PageRuleActionResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageRuleAction
-				patchSiteSiteByExternalReferenceCodePageRuleAction(
-					String siteExternalReferenceCode,
-					String pageRuleActionExternalReferenceCode,
-					PageRuleAction pageRuleAction)
+		public PageRuleAction patchSitePageRuleAction(
+				String siteExternalReferenceCode,
+				String pageRuleActionExternalReferenceCode,
+				PageRuleAction pageRuleAction)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				patchSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
+				patchSitePageRuleActionHttpResponse(
 					siteExternalReferenceCode,
 					pageRuleActionExternalReferenceCode, pageRuleAction);
 
@@ -636,11 +623,10 @@ public interface PageRuleActionResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				patchSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-					String siteExternalReferenceCode,
-					String pageRuleActionExternalReferenceCode,
-					PageRuleAction pageRuleAction)
+		public HttpInvoker.HttpResponse patchSitePageRuleActionHttpResponse(
+				String siteExternalReferenceCode,
+				String pageRuleActionExternalReferenceCode,
+				PageRuleAction pageRuleAction)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -685,15 +671,14 @@ public interface PageRuleActionResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageRuleAction
-				postSiteSiteByExternalReferenceCodePageRulePageRuleAction(
-					String siteExternalReferenceCode,
-					String pageRuleExternalReferenceCode,
-					PageRuleAction pageRuleAction)
+		public PageRuleAction postSitePageRulePageRuleAction(
+				String siteExternalReferenceCode,
+				String pageRuleExternalReferenceCode,
+				PageRuleAction pageRuleAction)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postSiteSiteByExternalReferenceCodePageRulePageRuleActionHttpResponse(
+				postSitePageRulePageRuleActionHttpResponse(
 					siteExternalReferenceCode, pageRuleExternalReferenceCode,
 					pageRuleAction);
 
@@ -757,7 +742,7 @@ public interface PageRuleActionResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postSiteSiteByExternalReferenceCodePageRulePageRuleActionHttpResponse(
+				postSitePageRulePageRuleActionHttpResponse(
 					String siteExternalReferenceCode,
 					String pageRuleExternalReferenceCode,
 					PageRuleAction pageRuleAction)
@@ -804,14 +789,14 @@ public interface PageRuleActionResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageRuleAction putSiteSiteByExternalReferenceCodePageRuleAction(
+		public PageRuleAction putSitePageRuleAction(
 				String siteExternalReferenceCode,
 				String pageRuleActionExternalReferenceCode,
 				PageRuleAction pageRuleAction)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				putSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
+				putSitePageRuleActionHttpResponse(
 					siteExternalReferenceCode,
 					pageRuleActionExternalReferenceCode, pageRuleAction);
 
@@ -874,11 +859,10 @@ public interface PageRuleActionResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				putSiteSiteByExternalReferenceCodePageRuleActionHttpResponse(
-					String siteExternalReferenceCode,
-					String pageRuleActionExternalReferenceCode,
-					PageRuleAction pageRuleAction)
+		public HttpInvoker.HttpResponse putSitePageRuleActionHttpResponse(
+				String siteExternalReferenceCode,
+				String pageRuleActionExternalReferenceCode,
+				PageRuleAction pageRuleAction)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();

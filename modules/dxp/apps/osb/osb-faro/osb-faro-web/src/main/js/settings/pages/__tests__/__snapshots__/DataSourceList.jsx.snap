@@ -580,7 +580,7 @@ exports[`DataSourceList should render with a message to connect datasources if t
       Add a data source to get started.
       <a
         class="d-block mb-3"
-        href="https://learn.liferay.com/analytics-cloud/latest/en/getting-started/connecting-liferay-dxp-to-analytics-cloud.html"
+        href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-data/managing-data-sources"
         rel="noreferrer noopener"
         target="_blank"
       >

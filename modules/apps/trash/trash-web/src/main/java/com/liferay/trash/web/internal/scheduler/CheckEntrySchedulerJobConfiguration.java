@@ -9,7 +9,7 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.trash.service.TrashEntryLocalService;
 
 import org.osgi.service.component.annotations.Component;

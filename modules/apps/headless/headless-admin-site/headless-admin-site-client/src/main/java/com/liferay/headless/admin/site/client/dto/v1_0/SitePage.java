@@ -69,60 +69,6 @@ public class SitePage implements Cloneable, Serializable {
 
 	protected Creator creator;
 
-	public String getCreatorExternalReferenceCode() {
-		return creatorExternalReferenceCode;
-	}
-
-	public void setCreatorExternalReferenceCode(
-		String creatorExternalReferenceCode) {
-
-		this.creatorExternalReferenceCode = creatorExternalReferenceCode;
-	}
-
-	public void setCreatorExternalReferenceCode(
-		UnsafeSupplier<String, Exception>
-			creatorExternalReferenceCodeUnsafeSupplier) {
-
-		try {
-			creatorExternalReferenceCode =
-				creatorExternalReferenceCodeUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String creatorExternalReferenceCode;
-
-	public com.liferay.headless.admin.site.client.custom.field.CustomField[]
-		getCustomFields() {
-
-		return customFields;
-	}
-
-	public void setCustomFields(
-		com.liferay.headless.admin.site.client.custom.field.CustomField[]
-			customFields) {
-
-		this.customFields = customFields;
-	}
-
-	public void setCustomFields(
-		UnsafeSupplier
-			<com.liferay.headless.admin.site.client.custom.field.CustomField[],
-			 Exception> customFieldsUnsafeSupplier) {
-
-		try {
-			customFields = customFieldsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected com.liferay.headless.admin.site.client.custom.field.CustomField[]
-		customFields;
-
 	public Date getDateCreated() {
 		return dateCreated;
 	}
@@ -253,41 +199,16 @@ public class SitePage implements Cloneable, Serializable {
 
 	protected Map<String, String> friendlyUrlPath_i18n;
 
-	public ItemExternalReference[] getKeywordItemExternalReferences() {
-		return keywordItemExternalReferences;
-	}
-
-	public void setKeywordItemExternalReferences(
-		ItemExternalReference[] keywordItemExternalReferences) {
-
-		this.keywordItemExternalReferences = keywordItemExternalReferences;
-	}
-
-	public void setKeywordItemExternalReferences(
-		UnsafeSupplier<ItemExternalReference[], Exception>
-			keywordItemExternalReferencesUnsafeSupplier) {
-
-		try {
-			keywordItemExternalReferences =
-				keywordItemExternalReferencesUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected ItemExternalReference[] keywordItemExternalReferences;
-
-	public Keyword[] getKeywords() {
+	public String[] getKeywords() {
 		return keywords;
 	}
 
-	public void setKeywords(Keyword[] keywords) {
+	public void setKeywords(String[] keywords) {
 		this.keywords = keywords;
 	}
 
 	public void setKeywords(
-		UnsafeSupplier<Keyword[], Exception> keywordsUnsafeSupplier) {
+		UnsafeSupplier<String[], Exception> keywordsUnsafeSupplier) {
 
 		try {
 			keywords = keywordsUnsafeSupplier.get();
@@ -297,7 +218,7 @@ public class SitePage implements Cloneable, Serializable {
 		}
 	}
 
-	protected Keyword[] keywords;
+	protected String[] keywords;
 
 	public Map<String, String> getName_i18n() {
 		return name_i18n;
@@ -390,27 +311,34 @@ public class SitePage implements Cloneable, Serializable {
 
 	protected String parentSitePageExternalReferenceCode;
 
-	public TaxonomyCategory[] getTaxonomyCategories() {
-		return taxonomyCategories;
+	public com.liferay.headless.admin.site.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
 	}
 
-	public void setTaxonomyCategories(TaxonomyCategory[] taxonomyCategories) {
-		this.taxonomyCategories = taxonomyCategories;
+	public void setPermissions(
+		com.liferay.headless.admin.site.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
 	}
 
-	public void setTaxonomyCategories(
-		UnsafeSupplier<TaxonomyCategory[], Exception>
-			taxonomyCategoriesUnsafeSupplier) {
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.headless.admin.site.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
 
 		try {
-			taxonomyCategories = taxonomyCategoriesUnsafeSupplier.get();
+			permissions = permissionsUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected TaxonomyCategory[] taxonomyCategories;
+	protected com.liferay.headless.admin.site.client.permission.Permission[]
+		permissions;
 
 	public ItemExternalReference[] getTaxonomyCategoryItemExternalReferences() {
 		return taxonomyCategoryItemExternalReferences;

@@ -1,16 +1,16 @@
 {
 	"dependencies": {
-		"@clayui/alert": "3.129.1",
-		"@clayui/autocomplete": "3.139.1",
-		"@clayui/button": "3.136.0",
-		"@clayui/data-provider": "3.139.0",
-		"@clayui/date-picker": "3.139.1",
-		"@clayui/drop-down": "3.139.1",
-		"@clayui/form": "3.139.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/management-toolbar": "3.129.0",
-		"@clayui/modal": "3.139.0",
-		"@clayui/multi-select": "3.139.1",
+		"@clayui/alert": "3.148.0",
+		"@clayui/autocomplete": "3.149.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/data-provider": "3.148.0",
+		"@clayui/date-picker": "3.149.1",
+		"@clayui/drop-down": "3.149.0",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
+		"@clayui/management-toolbar": "3.144.1",
+		"@clayui/modal": "3.148.0",
+		"@clayui/multi-select": "3.149.0",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"commerce-frontend-js": "*",
@@ -35,5 +35,5 @@
 		"test": "node-scripts test",
 		"test:watch": "node-scripts test --watch"
 	},
-	"version": "5.0.83"
+	"version": "5.0.90"
 }

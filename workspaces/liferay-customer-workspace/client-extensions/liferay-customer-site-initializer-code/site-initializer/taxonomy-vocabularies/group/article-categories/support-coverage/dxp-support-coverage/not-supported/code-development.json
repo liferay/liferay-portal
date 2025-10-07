@@ -1,0 +1,10 @@
+{
+	"name": "Code Development",
+	"name_i18n": {
+		"en_US": "Code Development",
+		"es-ES": "Desarrollo de código",
+		"ja-JP": "コード開発／API関連事象",
+		"pt-BR": "Desenvolvimento de Código"
+	},
+	"viewableBy": "Anyone"
+}

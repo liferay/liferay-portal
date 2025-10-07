@@ -264,6 +264,11 @@ public interface ObjectFieldLocalService
 	public ObjectField fetchObjectField(
 		String externalReferenceCode, long objectDefinitionId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ObjectField fetchObjectFieldByBusinessType(
+		long objectDefinitionId, String businessType,
+		OrderByComparator<ObjectField> orderByComparator);
+
 	/**
 	 * Returns the object field with the matching UUID and company.
 	 *
@@ -302,6 +307,10 @@ public interface ObjectFieldLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectField> getLocalizedObjectFields(long objectDefinitionId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<ObjectField> getLocalizedObjectFields(
+		long objectDefinitionId, boolean system);
 
 	/**
 	 * Returns the object field with the primary key.

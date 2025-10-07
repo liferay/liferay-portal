@@ -30,12 +30,13 @@ import java.util.Set;
 public class UserBagImpl implements UserBag {
 
 	public UserBagImpl(
-		long userId, long[] userGroupIds, Collection<Organization> userOrgIds,
-		Collection<Long> userOrgGroupIds,
+		long userId, long userMvccVersion, long[] userGroupIds,
+		Collection<Organization> userOrgIds, Collection<Long> userOrgGroupIds,
 		Collection<UserGroup> userUserGroupIds, long[] userUserGroupGroupIds,
 		Collection<Role> userRoleIds) {
 
 		_userId = userId;
+		_userMvccVersion = userMvccVersion;
 		_userGroupIds = _toSortedLongArray(userGroupIds);
 		_userOrgIds = _toSortedLongArray(userOrgIds);
 		_userOrgGroupIds = _toSortedLongArray(
@@ -46,12 +47,13 @@ public class UserBagImpl implements UserBag {
 	}
 
 	public UserBagImpl(
-		long userId, long[] userGroupIds, Collection<Organization> userOrgIds,
-		Collection<Long> userOrgGroupIds,
+		long userId, long userMvccVersion, long[] userGroupIds,
+		Collection<Organization> userOrgIds, Collection<Long> userOrgGroupIds,
 		Collection<UserGroup> userUserGroupIds, long[] userUserGroupGroupIds,
 		long[] userRoleIds) {
 
 		_userId = userId;
+		_userMvccVersion = userMvccVersion;
 		_userGroupIds = _toSortedLongArray(userGroupIds);
 		_userOrgIds = _toSortedLongArray(userOrgIds);
 		_userOrgGroupIds = _toSortedLongArray(
@@ -94,6 +96,11 @@ public class UserBagImpl implements UserBag {
 	@Override
 	public long getUserId() {
 		return _userId;
+	}
+
+	@Override
+	public long getUserMVCCVersion() {
+		return _userMvccVersion;
 	}
 
 	@Override
@@ -188,6 +195,7 @@ public class UserBagImpl implements UserBag {
 
 	private final long[] _userGroupIds;
 	private final long _userId;
+	private final long _userMvccVersion;
 	private final long[] _userOrgGroupIds;
 	private final long[] _userOrgIds;
 	private final long[] _userRoleIds;

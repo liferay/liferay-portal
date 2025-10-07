@@ -5,6 +5,8 @@
 
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
+import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkInlineValue;
+import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkMappedValue;
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
@@ -42,44 +44,26 @@ public class FragmentLinkValueSerDes {
 			return "null";
 		}
 
-		StringBuilder sb = new StringBuilder();
+		FragmentLinkValue.Type type = fragmentLinkValue.getType();
 
-		sb.append("{");
+		if (type != null) {
+			String typeString = type.toString();
 
-		if (fragmentLinkValue.getHref() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
+			if (typeString.equals("FragmentInlineValue")) {
+				return FragmentLinkInlineValueSerDes.toJSON(
+					(FragmentLinkInlineValue)fragmentLinkValue);
 			}
 
-			sb.append("\"href\": ");
+			if (typeString.equals("FragmentMappedValue")) {
+				return FragmentLinkMappedValueSerDes.toJSON(
+					(FragmentLinkMappedValue)fragmentLinkValue);
+			}
 
-			if (fragmentLinkValue.getHref() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentLinkValue.getHref());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentLinkValue.getHref());
-			}
+			throw new IllegalArgumentException("Unknown type " + typeString);
 		}
-
-		if (fragmentLinkValue.getTarget() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"target\": ");
-
-			sb.append("\"");
-
-			sb.append(fragmentLinkValue.getTarget());
-
-			sb.append("\"");
+		else {
+			throw new IllegalArgumentException("Missing type parameter");
 		}
-
-		sb.append("}");
-
-		return sb.toString();
 	}
 
 	public static Map<String, Object> toMap(String json) {
@@ -98,18 +82,11 @@ public class FragmentLinkValueSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (fragmentLinkValue.getHref() == null) {
-			map.put("href", null);
+		if (fragmentLinkValue.getType() == null) {
+			map.put("type", null);
 		}
 		else {
-			map.put("href", String.valueOf(fragmentLinkValue.getHref()));
-		}
-
-		if (fragmentLinkValue.getTarget() == null) {
-			map.put("target", null);
-		}
-		else {
-			map.put("target", String.valueOf(fragmentLinkValue.getTarget()));
+			map.put("type", String.valueOf(fragmentLinkValue.getType()));
 		}
 
 		return map;
@@ -120,7 +97,7 @@ public class FragmentLinkValueSerDes {
 
 		@Override
 		protected FragmentLinkValue createDTO() {
-			return new FragmentLinkValue();
+			return null;
 		}
 
 		@Override
@@ -130,10 +107,7 @@ public class FragmentLinkValueSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "href")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "target")) {
+			if (Objects.equals(jsonParserFieldName, "type")) {
 				return false;
 			}
 
@@ -141,19 +115,39 @@ public class FragmentLinkValueSerDes {
 		}
 
 		@Override
+		public FragmentLinkValue parseToDTO(String json) {
+			Map<String, Object> jsonMap = parseToMap(json);
+
+			Object type = jsonMap.get("type");
+
+			if (type != null) {
+				String typeString = type.toString();
+
+				if (typeString.equals("FragmentInlineValue")) {
+					return FragmentLinkInlineValue.toDTO(json);
+				}
+
+				if (typeString.equals("FragmentMappedValue")) {
+					return FragmentLinkMappedValue.toDTO(json);
+				}
+
+				throw new IllegalArgumentException(
+					"Unknown type " + typeString);
+			}
+			else {
+				throw new IllegalArgumentException("Missing type parameter");
+			}
+		}
+
+		@Override
 		protected void setField(
 			FragmentLinkValue fragmentLinkValue, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "href")) {
+			if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					fragmentLinkValue.setHref((Object)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "target")) {
-				if (jsonParserFieldValue != null) {
-					fragmentLinkValue.setTarget(
-						FragmentLinkValue.Target.create(
+					fragmentLinkValue.setType(
+						FragmentLinkValue.Type.create(
 							(String)jsonParserFieldValue));
 				}
 			}

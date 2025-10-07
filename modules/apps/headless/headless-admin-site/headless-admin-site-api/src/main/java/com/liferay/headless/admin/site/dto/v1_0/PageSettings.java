@@ -24,6 +24,8 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -158,35 +160,33 @@ public abstract class PageSettings implements Serializable {
 	private Supplier<Boolean> _hiddenFromNavigationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The page's site navigation menu settings."
+		description = "The page's site navigation settings."
 	)
 	@Valid
-	public NavigationMenuSettings getNavigationMenuSettings() {
-		if (_navigationMenuSettingsSupplier != null) {
-			navigationMenuSettings = _navigationMenuSettingsSupplier.get();
+	public NavigationSettings getNavigationSettings() {
+		if (_navigationSettingsSupplier != null) {
+			navigationSettings = _navigationSettingsSupplier.get();
 
-			_navigationMenuSettingsSupplier = null;
+			_navigationSettingsSupplier = null;
 		}
 
-		return navigationMenuSettings;
+		return navigationSettings;
 	}
 
-	public void setNavigationMenuSettings(
-		NavigationMenuSettings navigationMenuSettings) {
+	public void setNavigationSettings(NavigationSettings navigationSettings) {
+		this.navigationSettings = navigationSettings;
 
-		this.navigationMenuSettings = navigationMenuSettings;
-
-		_navigationMenuSettingsSupplier = null;
+		_navigationSettingsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setNavigationMenuSettings(
-		UnsafeSupplier<NavigationMenuSettings, Exception>
-			navigationMenuSettingsUnsafeSupplier) {
+	public void setNavigationSettings(
+		UnsafeSupplier<NavigationSettings, Exception>
+			navigationSettingsUnsafeSupplier) {
 
-		_navigationMenuSettingsSupplier = () -> {
+		_navigationSettingsSupplier = () -> {
 			try {
-				return navigationMenuSettingsUnsafeSupplier.get();
+				return navigationSettingsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -197,12 +197,12 @@ public abstract class PageSettings implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The page's site navigation menu settings.")
+	@GraphQLField(description = "The page's site navigation settings.")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected NavigationMenuSettings navigationMenuSettings;
+	protected NavigationSettings navigationSettings;
 
 	@JsonIgnore
-	private Supplier<NavigationMenuSettings> _navigationMenuSettingsSupplier;
+	private Supplier<NavigationSettings> _navigationSettingsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page's Open Graph settings."
@@ -248,6 +248,96 @@ public abstract class PageSettings implements Serializable {
 
 	@JsonIgnore
 	private Supplier<OpenGraphSettings> _openGraphSettingsSupplier;
+
+	@DecimalMax("2147483647")
+	@DecimalMin("0")
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The priority of the page, determining the order in which the page will be listed, for example within the page administration."
+	)
+	public Integer getPriority() {
+		if (_prioritySupplier != null) {
+			priority = _prioritySupplier.get();
+
+			_prioritySupplier = null;
+		}
+
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+
+		_prioritySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPriority(
+		UnsafeSupplier<Integer, Exception> priorityUnsafeSupplier) {
+
+		_prioritySupplier = () -> {
+			try {
+				return priorityUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The priority of the page, determining the order in which the page will be listed, for example within the page administration."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Integer priority;
+
+	@JsonIgnore
+	private Supplier<Integer> _prioritySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The default parameter for a page."
+	)
+	public String getQueryString() {
+		if (_queryStringSupplier != null) {
+			queryString = _queryStringSupplier.get();
+
+			_queryStringSupplier = null;
+		}
+
+		return queryString;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+
+		_queryStringSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setQueryString(
+		UnsafeSupplier<String, Exception> queryStringUnsafeSupplier) {
+
+		_queryStringSupplier = () -> {
+			try {
+				return queryStringUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The default parameter for a page.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String queryString;
+
+	@JsonIgnore
+	private Supplier<String> _queryStringSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The page's SEO settings."
@@ -406,17 +496,16 @@ public abstract class PageSettings implements Serializable {
 			sb.append(hiddenFromNavigation);
 		}
 
-		NavigationMenuSettings navigationMenuSettings =
-			getNavigationMenuSettings();
+		NavigationSettings navigationSettings = getNavigationSettings();
 
-		if (navigationMenuSettings != null) {
+		if (navigationSettings != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"navigationMenuSettings\": ");
+			sb.append("\"navigationSettings\": ");
 
-			sb.append(String.valueOf(navigationMenuSettings));
+			sb.append(String.valueOf(navigationSettings));
 		}
 
 		OpenGraphSettings openGraphSettings = getOpenGraphSettings();
@@ -429,6 +518,34 @@ public abstract class PageSettings implements Serializable {
 			sb.append("\"openGraphSettings\": ");
 
 			sb.append(String.valueOf(openGraphSettings));
+		}
+
+		Integer priority = getPriority();
+
+		if (priority != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"priority\": ");
+
+			sb.append(priority);
+		}
+
+		String queryString = getQueryString();
+
+		if (queryString != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"queryString\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(queryString));
+
+			sb.append("\"");
 		}
 
 		SEOSettings seoSettings = getSeoSettings();

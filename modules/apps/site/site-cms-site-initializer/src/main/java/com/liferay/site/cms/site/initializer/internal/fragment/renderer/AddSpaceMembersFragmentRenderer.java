@@ -9,6 +9,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.renderer.FragmentRendererContext;
+import com.liferay.learn.LearnMessageUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -62,6 +63,7 @@ public class AddSpaceMembersFragmentRenderer
 
 		String assetLibraryName = StringPool.BLANK;
 		long creatorUserId = 0;
+		String externalReferenceCode = StringPool.BLANK;
 		DepotEntry depotEntry = _depotEntryLocalService.fetchDepotEntry(
 			assetLibraryId);
 
@@ -72,6 +74,7 @@ public class AddSpaceMembersFragmentRenderer
 			assetLibraryName = group.getDescriptiveName(
 				themeDisplay.getLocale());
 			creatorUserId = group.getCreatorUserId();
+			externalReferenceCode = group.getExternalReferenceCode();
 		}
 
 		return HashMapBuilder.<String, Object>put(
@@ -82,6 +85,13 @@ public class AddSpaceMembersFragmentRenderer
 			"assetLibraryName", assetLibraryName
 		).put(
 			"baseAssetLibraryURL", ActionUtil.getBaseSpaceURL(themeDisplay)
+		).put(
+			"externalReferenceCode", externalReferenceCode
+		).put(
+			"hasAssignMembersPermission", true
+		).put(
+			"learnResources",
+			LearnMessageUtil.getReactDataJSONObject("site-cms-site-initializer")
 		).build();
 	}
 

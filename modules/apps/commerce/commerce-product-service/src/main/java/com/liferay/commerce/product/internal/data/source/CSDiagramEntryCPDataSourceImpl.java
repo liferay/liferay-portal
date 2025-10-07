@@ -89,7 +89,7 @@ public class CSDiagramEntryCPDataSourceImpl implements CPDataSource {
 						commerceAccountId,
 						commerceContext.getCommerceChannelGroupId(),
 						csDiagramEntry.getCPDefinitionId(),
-						_portal.getLocale(httpServletRequest)));
+						_portal.getLocale(httpServletRequest), false));
 			}
 		}
 

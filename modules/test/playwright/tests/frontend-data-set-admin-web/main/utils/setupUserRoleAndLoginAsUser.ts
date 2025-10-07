@@ -110,10 +110,10 @@ async function createUserRole(
 }
 
 async function getDataSetObjectInfo(apiHelpers: DataApiHelpers) {
-	return await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode(
-		'object-admin/v1.0/object-definitions',
-		'L_DATA_SET'
-	);
+	return await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode({
+		applicationName: 'object-admin/v1.0/object-definitions',
+		externalReferenceCode: 'L_DATA_SET',
+	});
 }
 
 export async function setupUserRoleAndLoginAsUser({

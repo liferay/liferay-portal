@@ -18,16 +18,6 @@ function ModalDisableInheritance() {
 		},
 	});
 
-	const warningMessages = [
-		Liferay.Language.get('permissions-are-copied-from-the-previous-parent'),
-		Liferay.Language.get(
-			'rest-endpoints-are-created-for-the-new-parent-with-child-endpoints-grouped-under-them'
-		),
-		Liferay.Language.get(
-			'an-action-trigger-is-created-for-updating-child-objects'
-		),
-	];
-
 	useEffect(() => {
 		const openModal = ({
 			handleDisable,
@@ -61,17 +51,9 @@ function ModalDisableInheritance() {
 						<ClayModal.Body className="c-gap-4 d-flex flex-column">
 							<Text>
 								{Liferay.Language.get(
-									'when-you-disable-inheritance,-the-first-child-object-is-updated-with-options-for-showing-the-widget-in-the-page-builder-and-for-configuring-the-panel-link'
+									'when-you-disable-inheritance-the-regular-relationship-is-restored'
 								)}
 							</Text>
-
-							<ol>
-								{warningMessages.map((warningMessage) => (
-									<li key={warningMessage}>
-										<Text>{warningMessage}</Text>
-									</li>
-								))}
-							</ol>
 						</ClayModal.Body>
 
 						<ClayModal.Footer

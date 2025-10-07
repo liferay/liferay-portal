@@ -4,7 +4,7 @@ dependencies {
 	compileOnly group: "javax.servlet", name: "javax.servlet-api"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations"
 	compileOnly project(":modules:test-include-resource")
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "7.4.13.u27"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2024.q1.1"
 	compileInclude group: "org.apache.commons", name: "commons-collections4", version: "4.1"
 	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.4"
 	compileInclude group: "org.apache.poi", name: "ooxml-schemas", version: "1.3"

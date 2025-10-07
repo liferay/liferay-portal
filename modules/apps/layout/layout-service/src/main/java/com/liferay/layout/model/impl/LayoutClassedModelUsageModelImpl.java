@@ -65,8 +65,8 @@ public class LayoutClassedModelUsageModelImpl
 		{"uuid_", Types.VARCHAR}, {"layoutClassedModelUsageId", Types.BIGINT},
 		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"classExternalReferenceCode", Types.VARCHAR},
 		{"classNameId", Types.BIGINT}, {"classPK", Types.BIGINT},
-		{"cmExternalReferenceCode", Types.VARCHAR},
 		{"containerKey", Types.VARCHAR}, {"containerType", Types.BIGINT},
 		{"plid", Types.BIGINT}, {"type_", Types.INTEGER},
 		{"lastPublishDate", Types.TIMESTAMP}
@@ -84,9 +84,9 @@ public class LayoutClassedModelUsageModelImpl
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("classExternalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classPK", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("cmExternalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("containerKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("containerType", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("plid", Types.BIGINT);
@@ -95,7 +95,7 @@ public class LayoutClassedModelUsageModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table LayoutClassedModelUsage (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,layoutClassedModelUsageId LONG not null,groupId LONG,companyId LONG,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,cmExternalReferenceCode VARCHAR(75) null,containerKey VARCHAR(200) null,containerType LONG,plid LONG,type_ INTEGER,lastPublishDate DATE null,primary key (layoutClassedModelUsageId, ctCollectionId))";
+		"create table LayoutClassedModelUsage (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,layoutClassedModelUsageId LONG not null,groupId LONG,companyId LONG,createDate DATE null,modifiedDate DATE null,classExternalReferenceCode VARCHAR(75) null,classNameId LONG,classPK LONG,containerKey VARCHAR(200) null,containerType LONG,plid LONG,type_ INTEGER,lastPublishDate DATE null,primary key (layoutClassedModelUsageId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table LayoutClassedModelUsage";
@@ -116,20 +116,19 @@ public class LayoutClassedModelUsageModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CLASSNAMEID_COLUMN_BITMASK = 1L;
+	public static final long CLASSEXTERNALREFERENCECODE_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CLASSPK_COLUMN_BITMASK = 2L;
+	public static final long CLASSNAMEID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CLASSEDMODELEXTERNALREFERENCECODE_COLUMN_BITMASK =
-		4L;
+	public static final long CLASSPK_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
@@ -310,12 +309,12 @@ public class LayoutClassedModelUsageModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", LayoutClassedModelUsage::getModifiedDate);
 			attributeGetterFunctions.put(
+				"classExternalReferenceCode",
+				LayoutClassedModelUsage::getClassExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"classNameId", LayoutClassedModelUsage::getClassNameId);
 			attributeGetterFunctions.put(
 				"classPK", LayoutClassedModelUsage::getClassPK);
-			attributeGetterFunctions.put(
-				"classedModelExternalReferenceCode",
-				LayoutClassedModelUsage::getClassedModelExternalReferenceCode);
 			attributeGetterFunctions.put(
 				"containerKey", LayoutClassedModelUsage::getContainerKey);
 			attributeGetterFunctions.put(
@@ -378,6 +377,10 @@ public class LayoutClassedModelUsageModelImpl
 				(BiConsumer<LayoutClassedModelUsage, Date>)
 					LayoutClassedModelUsage::setModifiedDate);
 			attributeSetterBiConsumers.put(
+				"classExternalReferenceCode",
+				(BiConsumer<LayoutClassedModelUsage, String>)
+					LayoutClassedModelUsage::setClassExternalReferenceCode);
+			attributeSetterBiConsumers.put(
 				"classNameId",
 				(BiConsumer<LayoutClassedModelUsage, Long>)
 					LayoutClassedModelUsage::setClassNameId);
@@ -385,11 +388,6 @@ public class LayoutClassedModelUsageModelImpl
 				"classPK",
 				(BiConsumer<LayoutClassedModelUsage, Long>)
 					LayoutClassedModelUsage::setClassPK);
-			attributeSetterBiConsumers.put(
-				"classedModelExternalReferenceCode",
-				(BiConsumer<LayoutClassedModelUsage, String>)
-					LayoutClassedModelUsage::
-						setClassedModelExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"containerKey",
 				(BiConsumer<LayoutClassedModelUsage, String>)
@@ -569,6 +567,36 @@ public class LayoutClassedModelUsageModelImpl
 	}
 
 	@Override
+	public String getClassExternalReferenceCode() {
+		if (_classExternalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _classExternalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setClassExternalReferenceCode(
+		String classExternalReferenceCode) {
+
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_classExternalReferenceCode = classExternalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalClassExternalReferenceCode() {
+		return getColumnOriginalValue("classExternalReferenceCode");
+	}
+
+	@Override
 	public String getClassName() {
 		if (getClassNameId() <= 0) {
 			return "";
@@ -633,36 +661,6 @@ public class LayoutClassedModelUsageModelImpl
 	@Deprecated
 	public long getOriginalClassPK() {
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("classPK"));
-	}
-
-	@Override
-	public String getClassedModelExternalReferenceCode() {
-		if (_classedModelExternalReferenceCode == null) {
-			return "";
-		}
-		else {
-			return _classedModelExternalReferenceCode;
-		}
-	}
-
-	@Override
-	public void setClassedModelExternalReferenceCode(
-		String classedModelExternalReferenceCode) {
-
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_classedModelExternalReferenceCode = classedModelExternalReferenceCode;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalClassedModelExternalReferenceCode() {
-		return getColumnOriginalValue("cmExternalReferenceCode");
 	}
 
 	@Override
@@ -852,10 +850,10 @@ public class LayoutClassedModelUsageModelImpl
 		layoutClassedModelUsageImpl.setCompanyId(getCompanyId());
 		layoutClassedModelUsageImpl.setCreateDate(getCreateDate());
 		layoutClassedModelUsageImpl.setModifiedDate(getModifiedDate());
+		layoutClassedModelUsageImpl.setClassExternalReferenceCode(
+			getClassExternalReferenceCode());
 		layoutClassedModelUsageImpl.setClassNameId(getClassNameId());
 		layoutClassedModelUsageImpl.setClassPK(getClassPK());
-		layoutClassedModelUsageImpl.setClassedModelExternalReferenceCode(
-			getClassedModelExternalReferenceCode());
 		layoutClassedModelUsageImpl.setContainerKey(getContainerKey());
 		layoutClassedModelUsageImpl.setContainerType(getContainerType());
 		layoutClassedModelUsageImpl.setPlid(getPlid());
@@ -888,12 +886,12 @@ public class LayoutClassedModelUsageModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		layoutClassedModelUsageImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		layoutClassedModelUsageImpl.setClassExternalReferenceCode(
+			this.<String>getColumnOriginalValue("classExternalReferenceCode"));
 		layoutClassedModelUsageImpl.setClassNameId(
 			this.<Long>getColumnOriginalValue("classNameId"));
 		layoutClassedModelUsageImpl.setClassPK(
 			this.<Long>getColumnOriginalValue("classPK"));
-		layoutClassedModelUsageImpl.setClassedModelExternalReferenceCode(
-			this.<String>getColumnOriginalValue("cmExternalReferenceCode"));
 		layoutClassedModelUsageImpl.setContainerKey(
 			this.<String>getColumnOriginalValue("containerKey"));
 		layoutClassedModelUsageImpl.setContainerType(
@@ -1021,22 +1019,21 @@ public class LayoutClassedModelUsageModelImpl
 			layoutClassedModelUsageCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		layoutClassedModelUsageCacheModel.classExternalReferenceCode =
+			getClassExternalReferenceCode();
+
+		String classExternalReferenceCode =
+			layoutClassedModelUsageCacheModel.classExternalReferenceCode;
+
+		if ((classExternalReferenceCode != null) &&
+			(classExternalReferenceCode.length() == 0)) {
+
+			layoutClassedModelUsageCacheModel.classExternalReferenceCode = null;
+		}
+
 		layoutClassedModelUsageCacheModel.classNameId = getClassNameId();
 
 		layoutClassedModelUsageCacheModel.classPK = getClassPK();
-
-		layoutClassedModelUsageCacheModel.classedModelExternalReferenceCode =
-			getClassedModelExternalReferenceCode();
-
-		String classedModelExternalReferenceCode =
-			layoutClassedModelUsageCacheModel.classedModelExternalReferenceCode;
-
-		if ((classedModelExternalReferenceCode != null) &&
-			(classedModelExternalReferenceCode.length() == 0)) {
-
-			layoutClassedModelUsageCacheModel.
-				classedModelExternalReferenceCode = null;
-		}
 
 		layoutClassedModelUsageCacheModel.containerKey = getContainerKey();
 
@@ -1134,9 +1131,9 @@ public class LayoutClassedModelUsageModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _classExternalReferenceCode;
 	private long _classNameId;
 	private long _classPK;
-	private String _classedModelExternalReferenceCode;
 	private String _containerKey;
 	private long _containerType;
 	private long _plid;
@@ -1182,10 +1179,10 @@ public class LayoutClassedModelUsageModelImpl
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put(
+			"classExternalReferenceCode", _classExternalReferenceCode);
 		_columnOriginalValues.put("classNameId", _classNameId);
 		_columnOriginalValues.put("classPK", _classPK);
-		_columnOriginalValues.put(
-			"cmExternalReferenceCode", _classedModelExternalReferenceCode);
 		_columnOriginalValues.put("containerKey", _containerKey);
 		_columnOriginalValues.put("containerType", _containerType);
 		_columnOriginalValues.put("plid", _plid);
@@ -1199,8 +1196,6 @@ public class LayoutClassedModelUsageModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("uuid_", "uuid");
-		attributeNames.put(
-			"cmExternalReferenceCode", "classedModelExternalReferenceCode");
 		attributeNames.put("type_", "type");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
@@ -1233,11 +1228,11 @@ public class LayoutClassedModelUsageModelImpl
 
 		columnBitmasks.put("modifiedDate", 128L);
 
-		columnBitmasks.put("classNameId", 256L);
+		columnBitmasks.put("classExternalReferenceCode", 256L);
 
-		columnBitmasks.put("classPK", 512L);
+		columnBitmasks.put("classNameId", 512L);
 
-		columnBitmasks.put("cmExternalReferenceCode", 1024L);
+		columnBitmasks.put("classPK", 1024L);
 
 		columnBitmasks.put("containerKey", 2048L);
 

@@ -21,6 +21,8 @@ FileEntry fileEntry = (FileEntry)request.getAttribute(WebKeys.DOCUMENT_LIBRARY_F
 	function <portlet:namespace />sendDocumentPreviewedAnalyticsEvent() {
 		if (window.Analytics) {
 			Analytics.send('documentPreviewed', 'Document', {
+				externalReferenceCode:
+					'<%= fileEntry.getExternalReferenceCode() %>',
 				fileEntryId: '<%= fileEntry.getFileEntryId() %>',
 				groupId: '<%= fileEntry.getGroupId() %>',
 				fileEntryUUID: '<%= fileEntry.getUuid() %>',

@@ -12,7 +12,9 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -123,25 +125,37 @@ public class LayoutPageTemplateEntryTestUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			LayoutPageTemplateCollectionLocalServiceUtil.
-				addLayoutPageTemplateCollection(
-					null, TestPropsValues.getUserId(),
-					serviceContext.getScopeGroupId(),
-					LayoutPageTemplateConstants.
-						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-					null, RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(),
-					LayoutPageTemplateCollectionTypeConstants.BASIC,
-					serviceContext);
+		long layoutPageTemplateCollectionId =
+			LayoutPageTemplateConstants.
+				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT;
+
+		Group group = GroupLocalServiceUtil.getGroup(
+			serviceContext.getScopeGroupId());
+
+		if (!group.isCompany()) {
+			LayoutPageTemplateCollection layoutPageTemplateCollection =
+				LayoutPageTemplateCollectionLocalServiceUtil.
+					addLayoutPageTemplateCollection(
+						null, TestPropsValues.getUserId(),
+						serviceContext.getScopeGroupId(),
+						LayoutPageTemplateConstants.
+							PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+						null, RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
+						LayoutPageTemplateCollectionTypeConstants.BASIC,
+						serviceContext);
+
+			layoutPageTemplateCollectionId =
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId();
+		}
 
 		return LayoutPageTemplateEntryLocalServiceUtil.
 			addLayoutPageTemplateEntry(
 				null, TestPropsValues.getUserId(),
 				serviceContext.getScopeGroupId(),
-				layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId(),
-				null, RandomTestUtil.randomString(),
+				layoutPageTemplateCollectionId, null,
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE, 0,
 				WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}

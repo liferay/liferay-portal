@@ -79,7 +79,7 @@ public class GetFriendlyURLWarningResourceCommand
 			Layout layout = _layoutLocalService.getLayout(plid);
 
 			if (!_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
-					layout.getUuid(), layout.getGroupId(),
+					layout.getExternalReferenceCode(), layout.getGroupId(),
 					layout.isPrivateLayout(), friendlyURL)) {
 
 				JSONPortletResponseUtil.writeJSON(

@@ -167,8 +167,12 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 				layoutDisplayPageObjectProvider.getClassPK(),
 				layoutDisplayPageObjectProvider.getClassTypeId())) {
 
-			return _getURLViewInContext(
-				layoutDisplayPageObjectProvider, themeDisplay);
+			if (groupId == themeDisplay.getScopeGroupId()) {
+				return _getURLViewInContext(
+					layoutDisplayPageObjectProvider, themeDisplay);
+			}
+
+			return null;
 		}
 
 		return StringBundler.concat(

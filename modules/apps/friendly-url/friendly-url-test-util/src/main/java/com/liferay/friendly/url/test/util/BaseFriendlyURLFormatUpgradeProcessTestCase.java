@@ -58,10 +58,10 @@ public abstract class BaseFriendlyURLFormatUpgradeProcessTestCase {
 			_friendlyURLEntry.getFriendlyURLEntryId());
 
 		friendlyURLEntryLocalization.setLanguageId(languageId);
-		friendlyURLEntryLocalization.setUrlTitle(urlTitle);
 		friendlyURLEntryLocalization.setGroupId(group.getGroupId());
 		friendlyURLEntryLocalization.setClassNameId(classNameId);
 		friendlyURLEntryLocalization.setClassPK(classPK);
+		friendlyURLEntryLocalization.setUrlTitle(urlTitle);
 
 		friendlyURLEntryLocalService.updateFriendlyURLLocalization(
 			friendlyURLEntryLocalization);

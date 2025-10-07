@@ -1,0 +1,20 @@
+{
+	"advancedConfiguration": {
+	},
+	"aggregationConfiguration": {
+	},
+	"generalConfiguration": {
+		"searchableAssetTypes": [
+			"com.liferay.document.library.kernel.model.DLFileEntry"
+		]
+	},
+	"highlightConfiguration": {
+	},
+	"parameterConfiguration": {
+	},
+	"queryConfiguration": {
+		"applyIndexerClauses": true
+	},
+	"sortConfiguration": {
+	}
+}

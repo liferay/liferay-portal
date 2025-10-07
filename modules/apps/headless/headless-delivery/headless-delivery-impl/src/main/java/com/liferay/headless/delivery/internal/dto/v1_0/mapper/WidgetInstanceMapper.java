@@ -8,33 +8,18 @@ package com.liferay.headless.delivery.internal.dto.v1_0.mapper;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.headless.delivery.dto.v1_0.WidgetInstance;
 import com.liferay.headless.delivery.dto.v1_0.WidgetPermission;
+import com.liferay.layout.exporter.PortletPermissionsExporter;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.model.ResourceAction;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.TeamLocalService;
-import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Jürgen Kappler
@@ -43,23 +28,17 @@ import java.util.Set;
 public class WidgetInstanceMapper {
 
 	public WidgetInstanceMapper(
-		LayoutLocalService layoutLocalService, Portal portal,
+		LayoutLocalService layoutLocalService,
 		PortletLocalService portletLocalService,
+		PortletPermissionsExporter portletPermissionsExporter,
 		PortletPreferencesPortletConfigurationExporter
-			portletPreferencesPortletConfigurationExporter,
-		ResourceActionLocalService resourceActionLocalService,
-		ResourcePermissionLocalService resourcePermissionLocalService,
-		RoleLocalService roleLocalService, TeamLocalService teamLocalService) {
+			portletPreferencesPortletConfigurationExporter) {
 
 		_layoutLocalService = layoutLocalService;
-		_portal = portal;
 		_portletLocalService = portletLocalService;
+		_portletPermissionsExporter = portletPermissionsExporter;
 		_portletPreferencesPortletConfigurationExporter =
 			portletPreferencesPortletConfigurationExporter;
-		_resourceActionLocalService = resourceActionLocalService;
-		_resourcePermissionLocalService = resourcePermissionLocalService;
-		_roleLocalService = roleLocalService;
-		_teamLocalService = teamLocalService;
 	}
 
 	public WidgetInstance getWidgetInstance(
@@ -129,107 +108,28 @@ public class WidgetInstanceMapper {
 	private WidgetPermission[] _getWidgetPermissions(
 		long plid, String portletId) {
 
-		Layout layout = _layoutLocalService.fetchLayout(plid);
+		Map<String, String[]> permissionsMap =
+			_portletPermissionsExporter.getPortletPermissions(plid, portletId);
 
-		if (layout == null) {
+		if (MapUtil.isEmpty(permissionsMap)) {
 			return null;
 		}
 
-		String portletName = PortletIdCodec.decodePortletName(portletId);
-
-		Portlet portlet = _portletLocalService.getPortletById(portletName);
-
-		if (portlet == null) {
-			return null;
-		}
-
-		String resourcePrimKey = PortletPermissionUtil.getPrimaryKey(
-			plid, portletId);
-
-		List<ResourcePermission> resourcePermissions =
-			_resourcePermissionLocalService.getResourcePermissions(
-				layout.getCompanyId(), portletName,
-				ResourceConstants.SCOPE_INDIVIDUAL, resourcePrimKey);
-
-		if (ListUtil.isEmpty(resourcePermissions)) {
-			return null;
-		}
-
-		List<ResourceAction> resourceActions =
-			_resourceActionLocalService.getResourceActions(portletName);
-
-		if (ListUtil.isEmpty(resourceActions)) {
-			return null;
-		}
-
-		List<WidgetPermission> widgetPermissions = new ArrayList<>();
-
-		for (ResourcePermission resourcePermission : resourcePermissions) {
-			Role role = _roleLocalService.fetchRole(
-				resourcePermission.getRoleId());
-
-			if (role == null) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						String.format(
-							"Resource permission %s will not be exported " +
-								"since no role was found with role ID %s",
-							resourcePermission.getName(),
-							resourcePermission.getRoleId()));
+		return TransformUtil.transformToArray(
+			permissionsMap.entrySet(),
+			entry -> new WidgetPermission() {
+				{
+					setActionKeys(entry::getValue);
+					setRoleKey(entry::getKey);
 				}
-
-				continue;
-			}
-
-			Set<String> actionIdsSet = new HashSet<>();
-
-			long actionIds = resourcePermission.getActionIds();
-
-			for (ResourceAction resourceAction : resourceActions) {
-				long bitwiseValue = resourceAction.getBitwiseValue();
-
-				if ((actionIds & bitwiseValue) == bitwiseValue) {
-					actionIdsSet.add(resourceAction.getActionId());
-				}
-			}
-
-			String roleKey = role.getName();
-
-			if (role.getClassNameId() == _portal.getClassNameId(Team.class)) {
-				Team team = _teamLocalService.fetchTeam(role.getClassPK());
-
-				if (team != null) {
-					roleKey = team.getName();
-				}
-			}
-
-			String finalRoleKey = roleKey;
-
-			widgetPermissions.add(
-				new WidgetPermission() {
-					{
-						setActionKeys(
-							() -> actionIdsSet.toArray(new String[0]));
-						setRoleKey(() -> finalRoleKey);
-					}
-				});
-		}
-
-		return widgetPermissions.toArray(new WidgetPermission[0]);
+			},
+			WidgetPermission.class);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		WidgetInstanceMapper.class);
-
 	private final LayoutLocalService _layoutLocalService;
-	private final Portal _portal;
 	private final PortletLocalService _portletLocalService;
+	private final PortletPermissionsExporter _portletPermissionsExporter;
 	private final PortletPreferencesPortletConfigurationExporter
 		_portletPreferencesPortletConfigurationExporter;
-	private final ResourceActionLocalService _resourceActionLocalService;
-	private final ResourcePermissionLocalService
-		_resourcePermissionLocalService;
-	private final RoleLocalService _roleLocalService;
-	private final TeamLocalService _teamLocalService;
 
 }

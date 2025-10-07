@@ -77,7 +77,7 @@ exports[`Edit should render 1`] = `
                 <span
                   class="label-item"
                 >
-                  Dynamic Segment
+                  Segment
                 </span>
               </div>
             </span>

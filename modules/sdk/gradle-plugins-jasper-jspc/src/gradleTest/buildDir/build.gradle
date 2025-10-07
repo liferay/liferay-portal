@@ -10,21 +10,10 @@ generateJSPJava {
 
 task runGradleTest
 
-VersionNumber gradleVersionNumber = VersionNumber.parse(gradle.gradleVersion)
-
-if (gradleVersionNumber >= new VersionNumber(2, 12, 0, null)) {
-	dependencies {
-		compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
-		compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
-		compileOnly group: "javax.portlet", name: "portlet-api", version: "3.0.1"
-	}
-}
-else {
-	dependencies {
-		api group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "2.0.0"
-		api group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "2.0.0"
-		api group: "javax.portlet", name: "portlet-api", version: "3.0.1"
-	}
+dependencies {
+	api group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
+	api group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "163.0.1"
+	api group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "28.0.0"
 }
 
 repositories {

@@ -2,32 +2,23 @@ definition {
 
 	@description = "Disable Cookie Preference handling on instance level"
 	@summary = "Default summary"
-	macro disablePreferenceHandling(explicitMode = null) {
+	macro disablePreferenceHandling() {
 		CookieNavigator.gotoInstanceSettings(portlet = "Preference Handling");
 
 		FormFields.disableCheckbox(fieldName = "Enabled");
-
-		if (${explicitMode} == "enable") {
-			FormFields.enableCheckbox(fieldName = "Explicit Cookie Consent Mode");
-		}
-		else if (${explicitMode} == "disable") {
-			FormFields.disableCheckbox(fieldName = "Explicit Cookie Consent Mode");
-		}
 
 		CookiePreferenceHandlingAdmin.saveConfiguration();
 	}
 
 	@description = "Disable Cookie Preference handling with Explicit cookie setting Disabled on site level"
 	@summary = "Default summary"
-	macro disablePreferenceHandlingWithOutCookieConsentInSiteSettings(baseURL = null, siteURLKey = null) {
+	macro disablePreferenceHandlingInSiteSettings(baseURL = null, siteURLKey = null) {
 		CookieNavigator.gotoSiteSettings(
 			baseURL = ${baseURL},
 			portlet = "Preference Handling",
 			siteURLKey = ${siteURLKey});
 
 		FormFields.disableCheckbox(fieldName = "Enabled");
-
-		FormFields.disableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration();
 	}

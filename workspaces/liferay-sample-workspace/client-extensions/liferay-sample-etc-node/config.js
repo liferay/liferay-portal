@@ -9,7 +9,7 @@ export default {
 		process.env.LIFERAY_ROUTES_DXP,
 	],
 	'liferay.oauth.application.external.reference.codes':
-		'liferay-sample-etc-node-oauth-application-user-agent',
+		'liferay-sample-etc-node-oaua',
 	'readyPath': '/ready',
 	'server.port': 3001,
 };

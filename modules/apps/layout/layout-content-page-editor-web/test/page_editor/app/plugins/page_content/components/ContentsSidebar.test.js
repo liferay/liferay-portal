@@ -4,10 +4,11 @@
  */
 
 import {State} from '@liferay/frontend-js-state-web';
+
+// eslint-disable-next-line
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
-
-import {checkAccessibility} from '../../../../../__lib__/checkAccessibility';
 
 import '@testing-library/jest-dom/extend-expect';
 

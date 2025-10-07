@@ -29,7 +29,7 @@ public class ReindexStatusMessageSenderImpl
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put(ReindexBackgroundTaskConstants.CLASS_NAME, className);
 		message.put(ReindexBackgroundTaskConstants.COUNT, count);
@@ -46,7 +46,7 @@ public class ReindexStatusMessageSenderImpl
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put(ReindexBackgroundTaskConstants.COMPANY_ID, companyId);
 		message.put(ReindexBackgroundTaskConstants.COMPANY_IDS, companyIds);

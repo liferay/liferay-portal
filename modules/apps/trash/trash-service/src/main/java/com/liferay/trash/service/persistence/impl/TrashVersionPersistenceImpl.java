@@ -595,9 +595,9 @@ public class TrashVersionPersistenceImpl
 	private static final String _FINDER_COLUMN_ENTRYID_ENTRYID_2 =
 		"trashVersion.entryId = ?";
 
-	private FinderPath _finderPathWithPaginationFindByE_C;
-	private FinderPath _finderPathWithoutPaginationFindByE_C;
-	private FinderPath _finderPathCountByE_C;
+	private FinderPath _finderPathWithPaginationFindByE_CN;
+	private FinderPath _finderPathWithoutPaginationFindByE_CN;
+	private FinderPath _finderPathCountByE_CN;
 
 	/**
 	 * Returns all the trash versions where entryId = &#63; and classNameId = &#63;.
@@ -607,8 +607,8 @@ public class TrashVersionPersistenceImpl
 	 * @return the matching trash versions
 	 */
 	@Override
-	public List<TrashVersion> findByE_C(long entryId, long classNameId) {
-		return findByE_C(
+	public List<TrashVersion> findByE_CN(long entryId, long classNameId) {
+		return findByE_CN(
 			entryId, classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
@@ -626,10 +626,10 @@ public class TrashVersionPersistenceImpl
 	 * @return the range of matching trash versions
 	 */
 	@Override
-	public List<TrashVersion> findByE_C(
+	public List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end) {
 
-		return findByE_C(entryId, classNameId, start, end, null);
+		return findByE_CN(entryId, classNameId, start, end, null);
 	}
 
 	/**
@@ -647,11 +647,11 @@ public class TrashVersionPersistenceImpl
 	 * @return the ordered range of matching trash versions
 	 */
 	@Override
-	public List<TrashVersion> findByE_C(
+	public List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end,
 		OrderByComparator<TrashVersion> orderByComparator) {
 
-		return findByE_C(
+		return findByE_CN(
 			entryId, classNameId, start, end, orderByComparator, true);
 	}
 
@@ -671,7 +671,7 @@ public class TrashVersionPersistenceImpl
 	 * @return the ordered range of matching trash versions
 	 */
 	@Override
-	public List<TrashVersion> findByE_C(
+	public List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end,
 		OrderByComparator<TrashVersion> orderByComparator,
 		boolean useFinderCache) {
@@ -687,12 +687,12 @@ public class TrashVersionPersistenceImpl
 				(orderByComparator == null)) {
 
 				if (useFinderCache) {
-					finderPath = _finderPathWithoutPaginationFindByE_C;
+					finderPath = _finderPathWithoutPaginationFindByE_CN;
 					finderArgs = new Object[] {entryId, classNameId};
 				}
 			}
 			else if (useFinderCache) {
-				finderPath = _finderPathWithPaginationFindByE_C;
+				finderPath = _finderPathWithPaginationFindByE_CN;
 				finderArgs = new Object[] {
 					entryId, classNameId, start, end, orderByComparator
 				};
@@ -730,9 +730,9 @@ public class TrashVersionPersistenceImpl
 
 				sb.append(_SQL_SELECT_TRASHVERSION_WHERE);
 
-				sb.append(_FINDER_COLUMN_E_C_ENTRYID_2);
+				sb.append(_FINDER_COLUMN_E_CN_ENTRYID_2);
 
-				sb.append(_FINDER_COLUMN_E_C_CLASSNAMEID_2);
+				sb.append(_FINDER_COLUMN_E_CN_CLASSNAMEID_2);
 
 				if (orderByComparator != null) {
 					appendOrderByComparator(
@@ -788,12 +788,12 @@ public class TrashVersionPersistenceImpl
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion findByE_C_First(
+	public TrashVersion findByE_CN_First(
 			long entryId, long classNameId,
 			OrderByComparator<TrashVersion> orderByComparator)
 		throws NoSuchVersionException {
 
-		TrashVersion trashVersion = fetchByE_C_First(
+		TrashVersion trashVersion = fetchByE_CN_First(
 			entryId, classNameId, orderByComparator);
 
 		if (trashVersion != null) {
@@ -824,11 +824,11 @@ public class TrashVersionPersistenceImpl
 	 * @return the first matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion fetchByE_C_First(
+	public TrashVersion fetchByE_CN_First(
 		long entryId, long classNameId,
 		OrderByComparator<TrashVersion> orderByComparator) {
 
-		List<TrashVersion> list = findByE_C(
+		List<TrashVersion> list = findByE_CN(
 			entryId, classNameId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -848,12 +848,12 @@ public class TrashVersionPersistenceImpl
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion findByE_C_Last(
+	public TrashVersion findByE_CN_Last(
 			long entryId, long classNameId,
 			OrderByComparator<TrashVersion> orderByComparator)
 		throws NoSuchVersionException {
 
-		TrashVersion trashVersion = fetchByE_C_Last(
+		TrashVersion trashVersion = fetchByE_CN_Last(
 			entryId, classNameId, orderByComparator);
 
 		if (trashVersion != null) {
@@ -884,17 +884,17 @@ public class TrashVersionPersistenceImpl
 	 * @return the last matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion fetchByE_C_Last(
+	public TrashVersion fetchByE_CN_Last(
 		long entryId, long classNameId,
 		OrderByComparator<TrashVersion> orderByComparator) {
 
-		int count = countByE_C(entryId, classNameId);
+		int count = countByE_CN(entryId, classNameId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<TrashVersion> list = findByE_C(
+		List<TrashVersion> list = findByE_CN(
 			entryId, classNameId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -915,7 +915,7 @@ public class TrashVersionPersistenceImpl
 	 * @throws NoSuchVersionException if a trash version with the primary key could not be found
 	 */
 	@Override
-	public TrashVersion[] findByE_C_PrevAndNext(
+	public TrashVersion[] findByE_CN_PrevAndNext(
 			long versionId, long entryId, long classNameId,
 			OrderByComparator<TrashVersion> orderByComparator)
 		throws NoSuchVersionException {
@@ -929,13 +929,13 @@ public class TrashVersionPersistenceImpl
 
 			TrashVersion[] array = new TrashVersionImpl[3];
 
-			array[0] = getByE_C_PrevAndNext(
+			array[0] = getByE_CN_PrevAndNext(
 				session, trashVersion, entryId, classNameId, orderByComparator,
 				true);
 
 			array[1] = trashVersion;
 
-			array[2] = getByE_C_PrevAndNext(
+			array[2] = getByE_CN_PrevAndNext(
 				session, trashVersion, entryId, classNameId, orderByComparator,
 				false);
 
@@ -949,7 +949,7 @@ public class TrashVersionPersistenceImpl
 		}
 	}
 
-	protected TrashVersion getByE_C_PrevAndNext(
+	protected TrashVersion getByE_CN_PrevAndNext(
 		Session session, TrashVersion trashVersion, long entryId,
 		long classNameId, OrderByComparator<TrashVersion> orderByComparator,
 		boolean previous) {
@@ -967,9 +967,9 @@ public class TrashVersionPersistenceImpl
 
 		sb.append(_SQL_SELECT_TRASHVERSION_WHERE);
 
-		sb.append(_FINDER_COLUMN_E_C_ENTRYID_2);
+		sb.append(_FINDER_COLUMN_E_CN_ENTRYID_2);
 
-		sb.append(_FINDER_COLUMN_E_C_CLASSNAMEID_2);
+		sb.append(_FINDER_COLUMN_E_CN_CLASSNAMEID_2);
 
 		if (orderByComparator != null) {
 			String[] orderByConditionFields =
@@ -1069,9 +1069,9 @@ public class TrashVersionPersistenceImpl
 	 * @param classNameId the class name ID
 	 */
 	@Override
-	public void removeByE_C(long entryId, long classNameId) {
+	public void removeByE_CN(long entryId, long classNameId) {
 		for (TrashVersion trashVersion :
-				findByE_C(
+				findByE_CN(
 					entryId, classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					null)) {
 
@@ -1087,12 +1087,12 @@ public class TrashVersionPersistenceImpl
 	 * @return the number of matching trash versions
 	 */
 	@Override
-	public int countByE_C(long entryId, long classNameId) {
+	public int countByE_CN(long entryId, long classNameId) {
 		try (SafeCloseable safeCloseable =
 				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
 					TrashVersion.class)) {
 
-			FinderPath finderPath = _finderPathCountByE_C;
+			FinderPath finderPath = _finderPathCountByE_CN;
 
 			Object[] finderArgs = new Object[] {entryId, classNameId};
 
@@ -1104,9 +1104,9 @@ public class TrashVersionPersistenceImpl
 
 				sb.append(_SQL_COUNT_TRASHVERSION_WHERE);
 
-				sb.append(_FINDER_COLUMN_E_C_ENTRYID_2);
+				sb.append(_FINDER_COLUMN_E_CN_ENTRYID_2);
 
-				sb.append(_FINDER_COLUMN_E_C_CLASSNAMEID_2);
+				sb.append(_FINDER_COLUMN_E_CN_CLASSNAMEID_2);
 
 				String sql = sb.toString();
 
@@ -1139,13 +1139,13 @@ public class TrashVersionPersistenceImpl
 		}
 	}
 
-	private static final String _FINDER_COLUMN_E_C_ENTRYID_2 =
+	private static final String _FINDER_COLUMN_E_CN_ENTRYID_2 =
 		"trashVersion.entryId = ? AND ";
 
-	private static final String _FINDER_COLUMN_E_C_CLASSNAMEID_2 =
+	private static final String _FINDER_COLUMN_E_CN_CLASSNAMEID_2 =
 		"trashVersion.classNameId = ?";
 
-	private FinderPath _finderPathFetchByC_C;
+	private FinderPath _finderPathFetchByCN_CPK;
 
 	/**
 	 * Returns the trash version where classNameId = &#63; and classPK = &#63; or throws a <code>NoSuchVersionException</code> if it could not be found.
@@ -1156,10 +1156,10 @@ public class TrashVersionPersistenceImpl
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion findByC_C(long classNameId, long classPK)
+	public TrashVersion findByCN_CPK(long classNameId, long classPK)
 		throws NoSuchVersionException {
 
-		TrashVersion trashVersion = fetchByC_C(classNameId, classPK);
+		TrashVersion trashVersion = fetchByCN_CPK(classNameId, classPK);
 
 		if (trashVersion == null) {
 			StringBundler sb = new StringBundler(6);
@@ -1192,8 +1192,8 @@ public class TrashVersionPersistenceImpl
 	 * @return the matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion fetchByC_C(long classNameId, long classPK) {
-		return fetchByC_C(classNameId, classPK, true);
+	public TrashVersion fetchByCN_CPK(long classNameId, long classPK) {
+		return fetchByCN_CPK(classNameId, classPK, true);
 	}
 
 	/**
@@ -1205,7 +1205,7 @@ public class TrashVersionPersistenceImpl
 	 * @return the matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
 	@Override
-	public TrashVersion fetchByC_C(
+	public TrashVersion fetchByCN_CPK(
 		long classNameId, long classPK, boolean useFinderCache) {
 
 		try (SafeCloseable safeCloseable =
@@ -1222,7 +1222,7 @@ public class TrashVersionPersistenceImpl
 
 			if (useFinderCache) {
 				result = finderCache.getResult(
-					_finderPathFetchByC_C, finderArgs, this);
+					_finderPathFetchByCN_CPK, finderArgs, this);
 			}
 
 			if (result instanceof TrashVersion) {
@@ -1240,9 +1240,9 @@ public class TrashVersionPersistenceImpl
 
 				sb.append(_SQL_SELECT_TRASHVERSION_WHERE);
 
-				sb.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+				sb.append(_FINDER_COLUMN_CN_CPK_CLASSNAMEID_2);
 
-				sb.append(_FINDER_COLUMN_C_C_CLASSPK_2);
+				sb.append(_FINDER_COLUMN_CN_CPK_CLASSPK_2);
 
 				String sql = sb.toString();
 
@@ -1264,7 +1264,7 @@ public class TrashVersionPersistenceImpl
 					if (list.isEmpty()) {
 						if (useFinderCache) {
 							finderCache.putResult(
-								_finderPathFetchByC_C, finderArgs, list);
+								_finderPathFetchByCN_CPK, finderArgs, list);
 						}
 					}
 					else {
@@ -1300,10 +1300,10 @@ public class TrashVersionPersistenceImpl
 	 * @return the trash version that was removed
 	 */
 	@Override
-	public TrashVersion removeByC_C(long classNameId, long classPK)
+	public TrashVersion removeByCN_CPK(long classNameId, long classPK)
 		throws NoSuchVersionException {
 
-		TrashVersion trashVersion = findByC_C(classNameId, classPK);
+		TrashVersion trashVersion = findByCN_CPK(classNameId, classPK);
 
 		return remove(trashVersion);
 	}
@@ -1316,8 +1316,8 @@ public class TrashVersionPersistenceImpl
 	 * @return the number of matching trash versions
 	 */
 	@Override
-	public int countByC_C(long classNameId, long classPK) {
-		TrashVersion trashVersion = fetchByC_C(classNameId, classPK);
+	public int countByCN_CPK(long classNameId, long classPK) {
+		TrashVersion trashVersion = fetchByCN_CPK(classNameId, classPK);
 
 		if (trashVersion == null) {
 			return 0;
@@ -1326,10 +1326,10 @@ public class TrashVersionPersistenceImpl
 		return 1;
 	}
 
-	private static final String _FINDER_COLUMN_C_C_CLASSNAMEID_2 =
+	private static final String _FINDER_COLUMN_CN_CPK_CLASSNAMEID_2 =
 		"trashVersion.classNameId = ? AND ";
 
-	private static final String _FINDER_COLUMN_C_C_CLASSPK_2 =
+	private static final String _FINDER_COLUMN_CN_CPK_CLASSPK_2 =
 		"trashVersion.classPK = ?";
 
 	public TrashVersionPersistenceImpl() {
@@ -1357,7 +1357,7 @@ public class TrashVersionPersistenceImpl
 				trashVersion);
 
 			finderCache.putResult(
-				_finderPathFetchByC_C,
+				_finderPathFetchByCN_CPK,
 				new Object[] {
 					trashVersion.getClassNameId(), trashVersion.getClassPK()
 				},
@@ -1451,7 +1451,7 @@ public class TrashVersionPersistenceImpl
 			};
 
 			finderCache.putResult(
-				_finderPathFetchByC_C, args, trashVersionModelImpl);
+				_finderPathFetchByCN_CPK, args, trashVersionModelImpl);
 		}
 	}
 
@@ -2145,8 +2145,8 @@ public class TrashVersionPersistenceImpl
 			new String[] {Long.class.getName()}, new String[] {"entryId"},
 			false);
 
-		_finderPathWithPaginationFindByE_C = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByE_C",
+		_finderPathWithPaginationFindByE_CN = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByE_CN",
 			new String[] {
 				Long.class.getName(), Long.class.getName(),
 				Integer.class.getName(), Integer.class.getName(),
@@ -2154,18 +2154,18 @@ public class TrashVersionPersistenceImpl
 			},
 			new String[] {"entryId", "classNameId"}, true);
 
-		_finderPathWithoutPaginationFindByE_C = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByE_C",
+		_finderPathWithoutPaginationFindByE_CN = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByE_CN",
 			new String[] {Long.class.getName(), Long.class.getName()},
 			new String[] {"entryId", "classNameId"}, true);
 
-		_finderPathCountByE_C = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByE_C",
+		_finderPathCountByE_CN = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByE_CN",
 			new String[] {Long.class.getName(), Long.class.getName()},
 			new String[] {"entryId", "classNameId"}, false);
 
-		_finderPathFetchByC_C = new FinderPath(
-			FINDER_CLASS_NAME_ENTITY, "fetchByC_C",
+		_finderPathFetchByCN_CPK = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByCN_CPK",
 			new String[] {Long.class.getName(), Long.class.getName()},
 			new String[] {"classNameId", "classPK"}, true);
 

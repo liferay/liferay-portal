@@ -35,6 +35,7 @@ function AccountSelector({
 	currentCommerceOrder: order,
 	hasAddCommerceOrderPermission,
 	hasManageAccountsPermission,
+	orderSelectionDisabled = false,
 	refreshPageOnAccountSelected: forceRefresh,
 	selectOrderURL,
 	setCurrentAccountURL: selectAccountURL,
@@ -50,7 +51,9 @@ function AccountSelector({
 		id: order?.orderId || 0,
 	});
 	const [currentView, setCurrentView] = useState(
-		account?.id ? VIEWS.ORDERS_LIST : VIEWS.ACCOUNTS_LIST
+		account?.id && !orderSelectionDisabled
+			? VIEWS.ORDERS_LIST
+			: VIEWS.ACCOUNTS_LIST
 	);
 	const [currentUser, setCurrentUser] = useState({});
 
@@ -138,24 +141,26 @@ function AccountSelector({
 						currentAccount={currentAccount}
 						currentUser={currentUser}
 						disabled={!active}
+						orderSelectionDisabled={orderSelectionDisabled}
 						setCurrentView={setCurrentView}
 					/>
 				)}
 
-				{currentView === VIEWS.ORDERS_LIST && (
-					<OrdersListView
-						commerceChannelId={commerceChannelId}
-						createOrderURL={createNewOrderURL}
-						currencyCode={currencyCode}
-						currentAccount={currentAccount}
-						disabled={!active}
-						hasAddCommerceOrderPermission={
-							hasAddCommerceOrderPermission
-						}
-						selectOrderURL={selectOrderURL}
-						setCurrentView={setCurrentView}
-					/>
-				)}
+				{currentView === VIEWS.ORDERS_LIST &&
+					!orderSelectionDisabled && (
+						<OrdersListView
+							commerceChannelId={commerceChannelId}
+							createOrderURL={createNewOrderURL}
+							currencyCode={currencyCode}
+							currentAccount={currentAccount}
+							disabled={!active}
+							hasAddCommerceOrderPermission={
+								hasAddCommerceOrderPermission
+							}
+							selectOrderURL={selectOrderURL}
+							setCurrentView={setCurrentView}
+						/>
+					)}
 			</ClayDropDown>
 
 			{!!availableAccounts.length &&
@@ -196,6 +201,7 @@ AccountSelector.propTypes = {
 	}),
 	hasAddCommerceOrderPermission: PropTypes.bool,
 	hasManageAccountsPermission: PropTypes.bool,
+	orderSelectionDisabled: PropTypes.bool,
 	refreshPageOnAccountSelected: PropTypes.bool,
 	selectOrderURL: PropTypes.string.isRequired,
 	setCurrentAccountURL: PropTypes.string.isRequired,
@@ -211,6 +217,7 @@ AccountSelector.defaultProps = {
 	},
 	hasAddCommerceOrderPermission: false,
 	hasManageAccountsPermission: false,
+	orderSelectionDisabled: false,
 	refreshPageOnAccountSelected: false,
 };
 

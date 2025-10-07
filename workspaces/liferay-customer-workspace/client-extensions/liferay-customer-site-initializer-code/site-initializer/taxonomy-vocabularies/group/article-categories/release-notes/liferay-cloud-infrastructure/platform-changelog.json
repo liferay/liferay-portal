@@ -1,0 +1,10 @@
+{
+	"name": "Platform Changelog",
+	"name_i18n": {
+		"en_US": "Platform Changelog",
+		"es-ES": "Registro de cambios en la plataforma",
+		"ja-JP": "プラットフォームチェンジログ",
+		"pt-BR": "Registro de Alterações da Plataforma"
+	},
+	"viewableBy": "Anyone"
+}

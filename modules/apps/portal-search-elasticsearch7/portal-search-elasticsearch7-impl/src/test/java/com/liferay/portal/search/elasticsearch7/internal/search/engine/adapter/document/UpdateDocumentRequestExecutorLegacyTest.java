@@ -142,12 +142,12 @@ public class UpdateDocumentRequestExecutorLegacyTest {
 	}
 
 	protected void assertIndexedFieldEquals(
-		String uid, String fieldName, String expecedFieldValue) {
+		String uid, String fieldName, String expectedFieldValue) {
 
 		com.liferay.portal.search.document.Document document =
 			_requestExecutorFixture.getDocumentById(_INDEX_NAME, uid);
 
-		Assert.assertEquals(expecedFieldValue, document.getString(fieldName));
+		Assert.assertEquals(expectedFieldValue, document.getString(fieldName));
 	}
 
 	protected Document buildDocument(String fieldName, String... fieldValue) {

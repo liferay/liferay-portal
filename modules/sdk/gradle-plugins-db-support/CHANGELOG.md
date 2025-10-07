@@ -1,5 +1,17 @@
 # Liferay Gradle Plugins DB Support Change Log
 
+## 1.1.2 - 2025-01-16
+
+### Commits
+- [LPD-15162] Pin version (f636f23295)
+- [LPD-15162] Fix tests (939fd44678)
+- [LPD-15162] Move tests (f23b048eff)
+- [LPD-15162] Update README.markdown (5e6c766cd3)
+- [LPD-15162] Update plugins Gradle version (7757c65773)
+
+### Dependencies
+- [LPD-15162] Update the com.liferay.gradle.util dependency to version 1.0.49.
+
 ## 1.1.1 - 2023-08-04
 
 ### Commits
@@ -136,6 +148,7 @@ in gradle-util * Replace gradle osgi plugin dependency by local OsgiHelper
 - [LPS-70060] Test plugins with Gradle 3.3 (09bed59a42)
 - [LPS-67688] minor README edits (448366ef14)
 
+[LPD-15162]: https://issues.liferay.com/browse/LPD-15162
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-62970]: https://issues.liferay.com/browse/LPS-62970
 [LPS-66709]: https://issues.liferay.com/browse/LPS-66709

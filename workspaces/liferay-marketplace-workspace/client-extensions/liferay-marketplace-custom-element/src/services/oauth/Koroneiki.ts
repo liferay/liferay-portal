@@ -11,7 +11,7 @@ class KoroneikiOAuth2 extends MarketplaceSpringBootOAuth2 {
 		return this.get<SubscriptionsType[]>(`/subscriptions/${orderId}`);
 	}
 
-	async syncProduct(productId: number) {
+	async syncProduct(productId: number | string) {
 		await this.post(`/product/${productId}`);
 	}
 }

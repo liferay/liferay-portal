@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Entry Rel API
 Bundle-SymbolicName: com.liferay.asset.entry.rel.api
-Bundle-Version: 6.1.5
+Bundle-Version: 6.1.6
 Export-Package:\
 	com.liferay.asset.entry.rel.exception,\
 	com.liferay.asset.entry.rel.model,\

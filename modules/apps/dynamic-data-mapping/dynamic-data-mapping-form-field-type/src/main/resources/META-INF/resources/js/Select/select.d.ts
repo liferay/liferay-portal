@@ -28,6 +28,7 @@ type MultiSelectItem = {
 
 interface MultipleSelectBaseProps<TValue> {
 	defaultLanguageId: Locale;
+	displayErrors?: boolean;
 	errorMessage: string;
 	fieldName: string;
 	fixedOptions?: Option<string>[];
@@ -46,12 +47,14 @@ interface MultipleSelectBaseProps<TValue> {
 	readOnly: boolean;
 	required: boolean;
 	tip?: string;
+	valid?: boolean;
 	value: TValue;
 }
 
 interface SelectMainProps extends MultipleSelectBaseProps<string | string[]> {
 	className?: string;
 	defaultSearch?: boolean;
+	displayErrors?: boolean;
 	editingLanguageId?: Locale;
 	fixedOptions?: Option<string>[];
 	localizedValue?: any;
@@ -60,5 +63,6 @@ interface SelectMainProps extends MultipleSelectBaseProps<string | string[]> {
 	onSelectionChange?: (value: React.Key) => void;
 	selectedKey: string;
 	showEmptyOption: boolean;
+	valid?: boolean;
 	visible?: boolean;
 }

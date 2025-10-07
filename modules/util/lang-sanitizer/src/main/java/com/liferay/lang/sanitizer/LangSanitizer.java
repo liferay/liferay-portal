@@ -84,7 +84,7 @@ public class LangSanitizer {
 
 					@Override
 					public List<SanitizedMessage> call() throws Exception {
-						return _sanitizeProperites(file);
+						return _sanitizeProperties(file);
 					}
 
 				});
@@ -242,7 +242,7 @@ public class LangSanitizer {
 		return null;
 	}
 
-	private List<SanitizedMessage> _sanitizeProperites(File file)
+	private List<SanitizedMessage> _sanitizeProperties(File file)
 		throws Exception {
 
 		List<SanitizedMessage> sanitizedMessages = new ArrayList<>();

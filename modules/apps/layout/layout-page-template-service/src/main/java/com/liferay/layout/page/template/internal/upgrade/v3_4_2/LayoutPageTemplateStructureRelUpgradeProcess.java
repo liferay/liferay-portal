@@ -233,8 +233,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				}
 
 				JSONObject editableValuesJSONObject =
-					JSONFactoryUtil.createJSONObject(
-						fragmentEntryLink.getEditableValues());
+					fragmentEntryLink.getEditableValuesJSONObject();
 
 				JSONObject fragmentConfigValuesJSONObject =
 					editableValuesJSONObject.getJSONObject(
@@ -248,7 +247,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 				_replaceBottomSpacing(
 					_fragmentEntryConfigurationParser.
 						getConfigurationDefaultValuesJSONObject(
-							fragmentEntryLink.getConfiguration()),
+							fragmentEntryLink.getConfigurationJSONObject()),
 					fragmentConfigValuesJSONObject, stylesJSONObject);
 
 				if (_isEmpty(fragmentConfigValuesJSONObject)) {

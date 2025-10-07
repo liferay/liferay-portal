@@ -72,9 +72,22 @@ public class MissingEmptyLineCheck extends BaseCheck {
 
 		DetailAST parentDetailAST = detailAST.getParent();
 
+		if (parentDetailAST.getType() == TokenTypes.EXPR) {
+			DetailAST grandParentDetailAST = parentDetailAST.getParent();
+
+			if (grandParentDetailAST.getType() == TokenTypes.SLIST) {
+				grandParentDetailAST = grandParentDetailAST.getParent();
+
+				if (grandParentDetailAST.getType() ==
+						TokenTypes.INSTANCE_INIT) {
+
+					return;
+				}
+			}
+		}
+
 		_checkMissingEmptyLineAfterReferencingVariable(
-			parentDetailAST, variableName, detailAST,
-			getEndLineNumber(detailAST));
+			parentDetailAST, variableName, getEndLineNumber(detailAST));
 		_checkMissingEmptyLineBetweenAssigningAndUsingVariable(
 			parentDetailAST, variableName, getEndLineNumber(detailAST));
 	}
@@ -98,7 +111,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 
 		if (nextSiblingDetailAST.getType() == TokenTypes.EXPR) {
 			List<String> enforceEmptyLineAfterMethodNames = getAttributeValues(
-				_ENFORCE_EMPTY_LINE_AFTER_METHOD_NAMES);
+				_ENFORCE_EMPTY_LINE_AFTER_METHOD_NAMES_KEY);
 
 			String methodName = getMethodName(detailAST);
 
@@ -123,7 +136,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			}
 		}
 
-		if (containsVariableName(nextSiblingDetailAST, variableName, null)) {
+		if (containsVariableName(nextSiblingDetailAST, variableName)) {
 			log(
 				endLineNumber, _MSG_MISSING_EMPTY_LINE_LINE_NUMBER, "after",
 				endLineNumber);
@@ -131,8 +144,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 	}
 
 	private void _checkMissingEmptyLineAfterReferencingVariable(
-		DetailAST detailAST, String variableName, DetailAST assignDetailAST,
-		int endLineNumber) {
+		DetailAST detailAST, String variableName, int endLineNumber) {
 
 		String lastAssignedVariableName = null;
 		DetailAST previousDetailAST = null;
@@ -157,9 +169,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				return;
 			}
 
-			if (!containsVariableName(
-					nextSiblingDetailAST, variableName, assignDetailAST)) {
-
+			if (!containsVariableName(nextSiblingDetailAST, variableName)) {
 				if (!referenced) {
 					return;
 				}
@@ -172,11 +182,9 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				}
 
 				if (!containsVariableName(
-						previousDetailAST, lastAssignedVariableName,
-						assignDetailAST) ||
+						previousDetailAST, lastAssignedVariableName) ||
 					!containsVariableName(
-						nextSiblingDetailAST, lastAssignedVariableName,
-						assignDetailAST)) {
+						nextSiblingDetailAST, lastAssignedVariableName)) {
 
 					log(
 						nextExpressionStartLineNumber,
@@ -351,7 +359,8 @@ public class MissingEmptyLineCheck extends BaseCheck {
 				variableName.equals(getVariableName(firstChildDetailAST))) {
 
 				List<String> enforceEmptyLineBeforeMethodNames =
-					getAttributeValues(_ENFORCE_EMPTY_LINE_BEFORE_METHOD_NAMES);
+					getAttributeValues(
+						_ENFORCE_EMPTY_LINE_BEFORE_METHOD_NAMES_KEY);
 
 				String methodName = getMethodName(detailAST);
 				List<DetailAST> parameterExprDetailASTList =
@@ -371,9 +380,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			}
 		}
 
-		if (containsVariableName(
-				previousSiblingDetailAST, variableName, null)) {
-
+		if (containsVariableName(previousSiblingDetailAST, variableName)) {
 			log(
 				startLineNumber, _MSG_MISSING_EMPTY_LINE_LINE_NUMBER, "before",
 				startLineNumber);
@@ -462,6 +469,14 @@ public class MissingEmptyLineCheck extends BaseCheck {
 
 			if (!identName.equals(name)) {
 				continue;
+			}
+
+			if (detailAST.getType() == TokenTypes.VARIABLE_DEF) {
+				log(
+					nextExpressionStartLineNumber,
+					_MSG_MISSING_EMPTY_LINE_BEFORE_VARIABLE_USE, name);
+
+				return;
 			}
 
 			DetailAST parentDetailAST = identDetailAST.getParent();
@@ -652,8 +667,7 @@ public class MissingEmptyLineCheck extends BaseCheck {
 			return false;
 		}
 
-		return containsVariableName(
-			identDetailASTList, variableName, assignDetailAST);
+		return containsVariableName(identDetailASTList, variableName);
 	}
 
 	private List<DetailAST> _getAdjacentAssignDetailASTList(
@@ -789,10 +803,10 @@ public class MissingEmptyLineCheck extends BaseCheck {
 		return false;
 	}
 
-	private static final String _ENFORCE_EMPTY_LINE_AFTER_METHOD_NAMES =
+	private static final String _ENFORCE_EMPTY_LINE_AFTER_METHOD_NAMES_KEY =
 		"enforceEmptyLineAfterMethodNames";
 
-	private static final String _ENFORCE_EMPTY_LINE_BEFORE_METHOD_NAMES =
+	private static final String _ENFORCE_EMPTY_LINE_BEFORE_METHOD_NAMES_KEY =
 		"enforceEmptyLineBeforeMethodNames";
 
 	private static final String _MSG_MISSING_EMPTY_LINE_AFTER_METHOD_NAME =

@@ -89,6 +89,7 @@ const CheckboxMultiple = ({
 };
 
 const Main = ({
+	displayErrors,
 	inline,
 	name,
 	options = [
@@ -107,16 +108,24 @@ const Main = ({
 	predefinedValue,
 	readOnly,
 	showAsSwitcher = true,
+	valid,
 	value,
 	localizedValueEdited,
 	...otherProps
 }) => (
-	<FieldBase name={name} readOnly={readOnly} {...otherProps}>
+	<FieldBase
+		displayErrors={displayErrors}
+		name={name}
+		readOnly={readOnly}
+		valid={valid}
+		{...otherProps}
+	>
 		<CheckboxMultiple
 			accessibleProps={{
 				...((otherProps.errorMessage || otherProps.tip) && {
 					'aria-describedby': `${otherProps.id ?? name}_fieldFeedback`,
 				}),
+				...(displayErrors && !valid && {'aria-invalid': true}),
 				'aria-required': otherProps.required,
 			}}
 			disabled={readOnly}

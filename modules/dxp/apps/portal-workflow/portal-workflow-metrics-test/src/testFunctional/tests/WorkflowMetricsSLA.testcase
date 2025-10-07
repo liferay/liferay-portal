@@ -365,7 +365,7 @@ definition {
 		AssertElementPresent(locator1 = "WorkflowMetrics#WARNING_SLA_BLOCKED");
 	}
 
-	@description = "LPS-89082 - Verify and click (if possible) the error messages (at metrics, SLA list, and SLA defintion page) when SLA is blocked due to workflow changes"
+	@description = "LPS-89082 - Verify and click (if possible) the error messages (at metrics, SLA list, and SLA definition page) when SLA is blocked due to workflow changes"
 	@priority = 4
 	test ErrorMessagesAreDisplayedAndClickableWhenSLABlocked {
 		property test.liferay.virtual.instance = "false";

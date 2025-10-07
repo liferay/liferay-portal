@@ -65,7 +65,7 @@ public class PortletPanelAppAdapterRegistry {
 	private ServiceTracker<Portlet, PanelApp> _serviceTracker;
 
 	@Reference(
-		target = "(&(original.bean=true)(bean.id=jakarta.servlet.ServletContext))"
+		target = "(&(bean.id=jakarta.servlet.ServletContext)(original.bean=true))"
 	)
 	private ServletContext _servletContext;
 

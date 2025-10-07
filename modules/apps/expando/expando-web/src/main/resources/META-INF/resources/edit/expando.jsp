@@ -138,7 +138,7 @@ else {
 
 		<liferay-frontend:edit-form-body>
 			<h2 class="sheet-title">
-				<%= LanguageUtil.format(request, expandoColumn != null ? "edit-x" : "new-x", new Object[] {propertyDisplayType}) %>
+				<%= HtmlUtil.escape(LanguageUtil.format(request, expandoColumn != null ? "edit-x" : "new-x", new Object[] {propertyDisplayType})) %>
 			</h2>
 
 			<liferay-frontend:fieldset

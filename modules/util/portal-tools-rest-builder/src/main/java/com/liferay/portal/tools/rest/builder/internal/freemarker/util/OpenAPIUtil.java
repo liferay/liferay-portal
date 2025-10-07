@@ -71,7 +71,9 @@ public class OpenAPIUtil {
 		}
 		else if (s.endsWith("s") &&
 				 (!s.endsWith("ss") ||
-				  !ConfigUtil.isVersionCompatible(configYAML, 6))) {
+				  !ConfigUtil.isVersionCompatible(configYAML, 6)) &&
+				 (!s.endsWith("tus") ||
+				  !ConfigUtil.isVersionCompatible(configYAML, 11))) {
 
 			s = s.substring(0, s.length() - 1);
 		}

@@ -13,4 +13,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }

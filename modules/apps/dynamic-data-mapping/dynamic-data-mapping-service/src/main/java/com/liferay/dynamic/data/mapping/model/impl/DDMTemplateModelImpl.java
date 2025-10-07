@@ -50,7 +50,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -2081,19 +2080,21 @@ public class DDMTemplateModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<String>
-		resourceClassNameUpdateEntityCacheConsumer = resourceClassName -> {
-			DDMTemplateCacheModel ddmTemplateCacheModel =
-				EntityCacheUtil.fetchCacheModel(
-					DDMTemplateImpl.class, _templateId,
-					DDMTemplateCacheModel.class);
+	protected static final BiConsumer<DDMTemplate, String>
+		resourceClassNameUpdateEntityCacheBiConsumer =
+			(ddmTemplate, resourceClassName) -> {
+				DDMTemplateCacheModel ddmTemplateCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						DDMTemplateImpl.class, ddmTemplate.getPrimaryKey(),
+						DDMTemplateCacheModel.class);
 
-			if ((ddmTemplateCacheModel != null) &&
-				(ddmTemplateCacheModel.getMvccVersion() == getMvccVersion())) {
+				if ((ddmTemplateCacheModel != null) &&
+					(ddmTemplateCacheModel.getMvccVersion() ==
+						ddmTemplate.getMvccVersion())) {
 
-				ddmTemplateCacheModel.resourceClassName = resourceClassName;
-			}
-		};
+					ddmTemplateCacheModel.resourceClassName = resourceClassName;
+				}
+			};
 
 	private static final MethodHandle _resourceClassNameMethodHandle;
 

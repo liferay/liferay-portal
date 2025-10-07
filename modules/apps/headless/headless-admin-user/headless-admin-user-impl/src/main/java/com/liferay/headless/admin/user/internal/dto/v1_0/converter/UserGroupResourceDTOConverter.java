@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Erick Monteiro
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.kernel.model.UserGroup",
+	property = {
+		"dto.class.name=com.liferay.portal.kernel.model.UserGroup",
+		"service.ranking:Integer=" + Integer.MAX_VALUE
+	},
 	service = DTOConverter.class
 )
 public class UserGroupResourceDTOConverter

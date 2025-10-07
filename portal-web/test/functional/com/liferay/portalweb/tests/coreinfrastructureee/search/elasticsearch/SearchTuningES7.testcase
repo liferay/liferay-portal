@@ -1110,7 +1110,7 @@ definition {
 
 	@priority = 5
 	test SearchWithSynonyms {
-		property portal.acceptance = "true";
+		property portal.acceptance = "quarantine";
 
 		for (var title : list "banana,red apple,citrus-orange,blue.berry!,\"xigua\"") {
 			JSONWebcontent.addWebContent(

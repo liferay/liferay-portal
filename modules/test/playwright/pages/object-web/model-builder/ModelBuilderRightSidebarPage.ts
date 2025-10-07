@@ -57,12 +57,12 @@ export class ModelBuilderRightSidebarPage {
 			exact: true,
 		});
 		this.objectDefinitionLabelLocalizationButton = page
-			.getByTitle('Open Localizations')
+			.locator('[aria-label="Open Localizations"]')
 			.first();
 		this.objectDefinitionPanelLink = page.getByLabel('Panel Link');
 		this.objectDefinitionPluralLabel = page.getByLabel('Plural Label');
 		this.objectDefinitionPluralLabelLocalizationButton = page
-			.getByTitle('Open Localizations')
+			.locator('[aria-label="Open Localizations"]')
 			.last();
 		this.objectDefinitionScope = page.getByLabel('Scope');
 		this.objectDefinitionSeo = page.getByLabel(

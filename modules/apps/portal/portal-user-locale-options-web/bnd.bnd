@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal User Locale Options Web
 Bundle-SymbolicName: com.liferay.portal.user.locale.options.web
-Bundle-Version: 2.0.21
+Bundle-Version: 2.0.22
 Web-ContextPath: /portal-user-locale-options-web

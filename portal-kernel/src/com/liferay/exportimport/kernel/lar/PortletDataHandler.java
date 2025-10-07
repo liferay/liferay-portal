@@ -276,6 +276,8 @@ public interface PortletDataHandler {
 
 	public boolean isDataAlwaysStaged();
 
+	public boolean isDataDepotLevel();
+
 	public boolean isDataLocalized();
 
 	public boolean isDataPortalLevel();
@@ -291,8 +293,6 @@ public interface PortletDataHandler {
 	public default boolean isEnabled(long companyId) {
 		return true;
 	}
-
-	public boolean isModelCountSupported();
 
 	/**
 	 * Returns whether the data exported by this handler should be included by

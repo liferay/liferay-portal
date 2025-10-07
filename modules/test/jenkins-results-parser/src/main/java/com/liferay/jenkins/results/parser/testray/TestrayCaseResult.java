@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,12 @@ public class TestrayCaseResult {
 		"attachments", "buildToCaseResult", "caseToCaseResult",
 		"componentToCaseResult", "dateCreated", "dateModified",
 		"dueStatus { key name }", "errors", "id", "startDate"
+	};
+
+	public static final String[] TESTRAY_REPORT_FIELD_NAMES = {
+		"buildToCaseResult", "caseToCaseResult", "componentToCaseResult",
+		"dateCreated", "dateModified", "dueStatus { key name }", "errors", "id",
+		"startDate"
 	};
 
 	public TestrayAttachment getBuildResultTestrayAttachment() {
@@ -89,17 +96,13 @@ public class TestrayCaseResult {
 		}
 
 		for (TestrayCaseResult previousTestrayCaseResult :
-				getTestrayCaseResultHistory(5)) {
+				getTestrayCaseResultHistory(5, 5)) {
 
 			if (Objects.equals(getID(), previousTestrayCaseResult.getID())) {
 				continue;
 			}
 
-			if (_isSimilarError(previousTestrayCaseResult) &&
-				!Objects.equals(
-					getPullRequestSenderUsername(),
-					previousTestrayCaseResult.getPullRequestSenderUsername())) {
-
+			if (_isSimilarError(previousTestrayCaseResult)) {
 				_errorType = ErrorType.COMMON;
 
 				return _errorType;
@@ -122,6 +125,10 @@ public class TestrayCaseResult {
 
 	public long getID() {
 		return _jsonObject.optLong("id");
+	}
+
+	public String getIssues() {
+		return null;
 	}
 
 	public JSONObject getJSONObject() {
@@ -214,7 +221,9 @@ public class TestrayCaseResult {
 		return _testrayCase;
 	}
 
-	public List<TestrayCaseResult> getTestrayCaseResultHistory(int maxCount) {
+	public List<TestrayCaseResult> getTestrayCaseResultHistory(
+		int maxCount, int pageSize) {
+
 		List<TestrayCaseResult> testrayCaseResults = new ArrayList<>();
 
 		StringBuilder sb = new StringBuilder();
@@ -228,14 +237,21 @@ public class TestrayCaseResult {
 		TestrayServer testrayServer = getTestrayServer();
 
 		try {
-			List<JSONObject> entityJSONObjects = testrayServer.requestGraphQL(
+			Set<JSONObject> entityJSONObjects = testrayServer.requestGraphQL(
 				"caseResults", TestrayCaseResult.FIELD_NAMES, sb.toString(),
-				"dateCreated:desc", maxCount, 5);
+				"dateCreated:desc", maxCount, pageSize);
 
 			for (JSONObject entityJSONObject : entityJSONObjects) {
-				testrayCaseResults.add(
+				TestrayCaseResult testrayCaseResult =
 					TestrayFactory.newJSONObjectTestrayCaseResult(
-						testrayServer, entityJSONObject));
+						testrayServer, entityJSONObject);
+
+				if (!Objects.equals(
+						testrayCaseResult.getPullRequestSenderUsername(),
+						getPullRequestSenderUsername())) {
+
+					testrayCaseResults.add(testrayCaseResult);
+				}
 			}
 		}
 		catch (IOException ioException) {
@@ -404,6 +420,10 @@ public class TestrayCaseResult {
 		testrayAttachments = new TreeMap<>();
 
 		String attachments = _jsonObject.getString("attachments");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(attachments)) {
+			return;
+		}
 
 		JSONArray attachmentsJSONArray;
 

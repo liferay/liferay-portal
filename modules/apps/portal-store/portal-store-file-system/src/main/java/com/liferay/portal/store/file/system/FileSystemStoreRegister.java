@@ -10,11 +10,11 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.convert.documentlibrary.FileSystemStoreRootDirException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.store.file.system.configuration.FileSystemStoreConfiguration;
 import com.liferay.portal.store.file.system.lenient.LenientStore;
 import com.liferay.portal.store.file.system.safe.file.name.SafeFileNameStore;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.Map;
 

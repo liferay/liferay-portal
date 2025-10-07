@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Saved Content Service
 Bundle-SymbolicName: com.liferay.saved.content.service
-Bundle-Version: 1.0.13
+Bundle-Version: 1.0.14
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

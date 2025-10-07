@@ -217,6 +217,27 @@ public class SharedAsset implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public FileEntry getFile() {
+		return file;
+	}
+
+	public void setFile(FileEntry file) {
+		this.file = file;
+	}
+
+	public void setFile(
+		UnsafeSupplier<FileEntry, Exception> fileUnsafeSupplier) {
+
+		try {
+			file = fileUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected FileEntry file;
+
 	public String getFileTypeIcon() {
 		return fileTypeIcon;
 	}

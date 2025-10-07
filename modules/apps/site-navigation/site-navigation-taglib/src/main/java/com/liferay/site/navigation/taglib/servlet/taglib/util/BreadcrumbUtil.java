@@ -330,7 +330,7 @@ public class BreadcrumbUtil {
 
 		LayoutType layoutType = layout.getLayoutType();
 
-		if (!layoutType.isBrowsable()) {
+		if (!layoutType.isBrowsable() || layout.isTypeEmpty()) {
 			breadcrumbEntry.setBrowsable(false);
 		}
 

@@ -15,16 +15,26 @@ import com.liferay.object.util.comparator.ObjectEntryVersionCreateDateComparator
 import com.liferay.object.util.comparator.ObjectEntryVersionVersionComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DefaultActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import java.util.Date;
 import java.util.List;
@@ -66,6 +76,68 @@ public class ObjectEntryVersionLocalServiceImpl
 		}
 
 		return objectEntryVersion;
+	}
+
+	public void checkObjectEntryVersions(long companyId)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			return;
+		}
+
+		ObjectEntryVersionConfiguration objectEntryVersionConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				ObjectEntryVersionConfiguration.class, companyId);
+
+		Date endDate = Date.from(
+			LocalDate.now(
+			).minusMonths(
+				objectEntryVersionConfiguration.maximumRetentionPeriod()
+			).atStartOfDay(
+				ZoneId.systemDefault()
+			).toInstant());
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			dynamicQuery -> {
+				Property companyIdProperty = PropertyFactoryUtil.forName(
+					"companyId");
+
+				dynamicQuery.add(companyIdProperty.eq(companyId));
+
+				Property createDateProperty = PropertyFactoryUtil.forName(
+					"createDate");
+
+				dynamicQuery.add(createDateProperty.lt(endDate));
+			});
+		actionableDynamicQuery.setPerformActionMethod(
+			(ObjectEntryVersion objectEntryVersion) -> {
+				try {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Deleting object entry version " +
+								objectEntryVersion.getObjectEntryVersionId());
+					}
+
+					deleteObjectEntryVersion(
+						objectEntryVersion.getObjectEntryId(),
+						objectEntryVersion.getVersion());
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to delete object entry version " +
+								objectEntryVersion.getObjectEntryVersionId(),
+							portalException);
+					}
+				}
+			});
+		actionableDynamicQuery.setTransactionConfig(
+			DefaultActionableDynamicQuery.REQUIRES_NEW_TRANSACTION_CONFIG);
+
+		actionableDynamicQuery.performActions();
 	}
 
 	@Override
@@ -131,6 +203,38 @@ public class ObjectEntryVersionLocalServiceImpl
 	}
 
 	@Override
+	public void expireObjectEntryVersions(
+			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
+		throws Exception {
+
+		for (ObjectEntryVersion objectEntryVersion :
+				getObjectEntryVersions(objectEntry.getObjectEntryId())) {
+
+			expireObjectEntryVersion(
+				userId, objectEntry, objectEntryVersion.getVersion(),
+				serviceContext);
+		}
+	}
+
+	@Override
+	public ObjectEntryVersion fetchLatestApprovedObjectEntryVersion(
+		long objectEntryId,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		return objectEntryVersionPersistence.fetchByOEI_S_First(
+			objectEntryId, WorkflowConstants.STATUS_APPROVED,
+			orderByComparator);
+	}
+
+	@Override
+	public ObjectEntryVersion fetchObjectEntryVersion(
+		long objectEntryId, int version) {
+
+		return objectEntryVersionPersistence.fetchByOEI_V(
+			objectEntryId, version);
+	}
+
+	@Override
 	public ObjectEntryVersion getObjectEntryVersion(
 			long objectEntryId, int version)
 		throws PortalException {
@@ -156,6 +260,20 @@ public class ObjectEntryVersionLocalServiceImpl
 	public int getObjectEntryVersionsCount(long objectEntryId) {
 		return objectEntryVersionPersistence.countByObjectEntryId(
 			objectEntryId);
+	}
+
+	@Override
+	public boolean isLatestObjectEntryVersion(long objectEntryId, int version)
+		throws PortalException {
+
+		ObjectEntryVersion objectEntryVersion = _getLatestObjectEntryVersion(
+			objectEntryId);
+
+		if (version == objectEntryVersion.getVersion()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
@@ -234,6 +352,14 @@ public class ObjectEntryVersionLocalServiceImpl
 		return objectEntryVersionPersistence.update(objectEntryVersion);
 	}
 
+	private ObjectEntryVersion _getLatestObjectEntryVersion(long objectEntryId)
+		throws PortalException {
+
+		return objectEntryVersionPersistence.findByObjectEntryId_First(
+			objectEntryId,
+			ObjectEntryVersionVersionComparator.getInstance(false));
+	}
+
 	private ObjectEntryVersion _updateObjectEntryVersion(
 			ObjectEntry objectEntry, ObjectEntryVersion objectEntryVersion,
 			int version)
@@ -295,6 +421,9 @@ public class ObjectEntryVersionLocalServiceImpl
 
 		return objectEntryVersionPersistence.update(objectEntryVersion);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectEntryVersionLocalServiceImpl.class);
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

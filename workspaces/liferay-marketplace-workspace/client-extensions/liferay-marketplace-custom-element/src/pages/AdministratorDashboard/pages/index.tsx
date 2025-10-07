@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayIcon from '@clayui/icon';
 import {useMemo} from 'react';
+import {Link} from 'react-router-dom';
 
 import ErrorBoundary from '../../../components/ErrorBoundary';
 import Page from '../../../components/Page';
+import {useMarketplaceContext} from '../../../context/MarketplaceContext';
 import i18n from '../../../i18n';
 import {formatCurrency} from '../../../utils/currencies';
 import InfoCard from '../components/InfoCard';
@@ -19,9 +22,11 @@ import AdministratorAppsListView from './Apps/AdministratorAppsListView';
 import {AdministratorOrdersListView} from './Orders';
 
 export default function AdministratorSummary() {
+	const {data: {kpis = [], projectsKPI} = {}} = useKPI();
 	const {data: accounts} = useAccountsMetrics('week');
-	const {visitorsMetric} = useAnalyticsViewsMetrics();
 	const {data: orderMetrics} = useOrderMetrics('week');
+	const {marketplaceUserAccount} = useMarketplaceContext();
+	const {visitorsMetric} = useAnalyticsViewsMetrics();
 
 	const infoCards = useMemo(
 		() => [
@@ -40,7 +45,7 @@ export default function AdministratorSummary() {
 						&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;
 					</span>
 				),
-				value: formatCurrency(orderMetrics?.paidAmount),
+				value: formatCurrency(projectsKPI?.totalAmount?.USD || 0),
 			},
 			{
 				growth: orderMetrics?.growth ?? 0,
@@ -61,13 +66,11 @@ export default function AdministratorSummary() {
 			accounts?.totalCount,
 			orderMetrics?.growth,
 			orderMetrics?.lastPeriod,
-			orderMetrics?.paidAmount,
 			orderMetrics?.totalCount,
+			projectsKPI?.totalAmount?.USD,
 			visitorsMetric,
 		]
 	);
-
-	const {data: kpis = []} = useKPI();
 
 	return (
 		<Page
@@ -95,6 +98,14 @@ export default function AdministratorSummary() {
 					pageRendererProps={{
 						className: 'border py-2 rounded-lg mb-8',
 					}}
+					rightButton={
+						marketplaceUserAccount.isAdmin && (
+							<Link className="font-weight-bold" to="/orders">
+								{i18n.translate('view-all')}
+								<ClayIcon symbol="order-arrow-right" />
+							</Link>
+						)
+					}
 					title={i18n.translate('recent-orders')}
 				>
 					<AdministratorOrdersListView
@@ -111,6 +122,12 @@ export default function AdministratorSummary() {
 
 				<Page
 					pageRendererProps={{className: 'border py-2 rounded-lg'}}
+					rightButton={
+						<Link className="font-weight-bold" to="/apps">
+							{i18n.translate('view-all')}
+							<ClayIcon symbol="order-arrow-right" />
+						</Link>
+					}
 					title={i18n.translate('published-apps')}
 				>
 					<AdministratorAppsListView

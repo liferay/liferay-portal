@@ -531,6 +531,15 @@ public class PatcherFixPackLocalServiceWrapper
 			patcherFixId, patcherFixPackIds);
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherFixPack updatePatcherFixPack(
+			long patcherFixPackId, String requirements, int status)
+		throws Exception {
+
+		return _patcherFixPackLocalService.updatePatcherFixPack(
+			patcherFixPackId, requirements, status);
+	}
+
 	/**
 	 * Updates the patcher fix pack in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

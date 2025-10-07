@@ -507,17 +507,39 @@ import org.osgi.service.component.annotations.Reference;
 			</#if>
 		</#if>
 
-		<#if entity.hasExternalReferenceCode() && !entity.versionEntity??>
+		<#if entity.hasExternalReferenceCode()>
 			<#if serviceBuilder.isVersionGTE_7_4_0()>
-				@Override
-				public ${entity.name} fetch${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
-					return ${entity.variableName}Persistence.fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}(externalReferenceCode, ${entity.externalReferenceCode}Id);
-				}
+				<#if entity.versionEntity??>
+					@Override
+					public ${entity.name} fetch${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+						return ${entity.variableName}Persistence.fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}_Head(externalReferenceCode, ${entity.externalReferenceCode}Id, true);
+					}
 
-				@Override
-				public ${entity.name} get${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) throws PortalException {
-					return ${entity.variableName}Persistence.findByERC_${entity.externalReferenceCode?cap_first[0..0]}(externalReferenceCode, ${entity.externalReferenceCode}Id);
-				}
+					@Override
+					public ${entity.name} fetch${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id, boolean head) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+						return ${entity.variableName}Persistence.fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}_Head(externalReferenceCode, ${entity.externalReferenceCode}Id, head);
+					}
+
+					@Override
+					public ${entity.name} get${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) throws PortalException {
+						return ${entity.variableName}Persistence.findByERC_${entity.externalReferenceCode?cap_first[0..0]}_Head(externalReferenceCode, ${entity.externalReferenceCode}Id, true);
+					}
+
+					@Override
+					public ${entity.name} get${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id, boolean head) throws PortalException {
+						return ${entity.variableName}Persistence.findByERC_${entity.externalReferenceCode?cap_first[0..0]}_Head(externalReferenceCode, ${entity.externalReferenceCode}Id, head);
+					}
+				<#else>
+					@Override
+					public ${entity.name} fetch${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) <#if (serviceBaseExceptions?size gt 0)>throws ${stringUtil.merge(serviceBaseExceptions)} </#if>{
+						return ${entity.variableName}Persistence.fetchByERC_${entity.externalReferenceCode?cap_first[0..0]}(externalReferenceCode, ${entity.externalReferenceCode}Id);
+					}
+
+					@Override
+					public ${entity.name} get${entity.name}ByExternalReferenceCode(String externalReferenceCode, long ${entity.externalReferenceCode}Id) throws PortalException {
+						return ${entity.variableName}Persistence.findByERC_${entity.externalReferenceCode?cap_first[0..0]}(externalReferenceCode, ${entity.externalReferenceCode}Id);
+					}
+				</#if>
 			<#else>
 				@Deprecated
 				@Override

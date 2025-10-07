@@ -7,6 +7,7 @@ package com.liferay.portal.search.internal.ml.embedding.text;
 
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -110,6 +111,29 @@ public class TextEmbeddingDocumentContributorTest {
 	}
 
 	@Test
+	public void testGetEmbeddingProviderConfigurationWithObjectEntry()
+		throws Exception {
+
+		String objectDefinitionClassName1 = RandomTestUtil.randomString();
+
+		_setSemanticSearchConfiguration(
+			new String[] {LocaleUtil.toLanguageId(LocaleUtil.US)},
+			new String[] {objectDefinitionClassName1}, true);
+
+		String objectDefinitionClassName2 = RandomTestUtil.randomString();
+
+		Assert.assertNotNull(
+			_textEmbeddingDocumentContributorImpl.
+				getEmbeddingProviderConfiguration(
+					_getObjectEntry(objectDefinitionClassName1)));
+
+		Assert.assertNull(
+			_textEmbeddingDocumentContributorImpl.
+				getEmbeddingProviderConfiguration(
+					_getObjectEntry(objectDefinitionClassName2)));
+	}
+
+	@Test
 	public void testGetEmbeddingProviderConfigurationWithTextEmbeddingsDisabled()
 		throws Exception {
 
@@ -196,11 +220,11 @@ public class TextEmbeddingDocumentContributorTest {
 	private BlogsEntry _getBlogsEntry() {
 		BlogsEntry blogsEntry = Mockito.mock(BlogsEntry.class);
 
-		Mockito.when(
-			blogsEntry.getCompanyId()
-		).thenReturn(
+		Mockito.doReturn(
 			RandomTestUtil.randomLong()
-		);
+		).when(
+			blogsEntry
+		).getCompanyId();
 
 		Mockito.doReturn(
 			BlogsEntry.class
@@ -208,13 +232,39 @@ public class TextEmbeddingDocumentContributorTest {
 			blogsEntry
 		).getModelClass();
 
-		Mockito.when(
-			blogsEntry.getStatus()
-		).thenReturn(
+		Mockito.doReturn(
 			WorkflowConstants.STATUS_APPROVED
-		);
+		).when(
+			blogsEntry
+		).getStatus();
 
 		return blogsEntry;
+	}
+
+	private ObjectEntry _getObjectEntry(String objectDefinitionClassName)
+		throws Exception {
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.doReturn(
+			RandomTestUtil.randomLong()
+		).when(
+			objectEntry
+		).getCompanyId();
+
+		Mockito.doReturn(
+			ObjectEntry.class
+		).when(
+			objectEntry
+		).getModelClass();
+
+		Mockito.doReturn(
+			objectDefinitionClassName
+		).when(
+			objectEntry
+		).getModelClassName();
+
+		return objectEntry;
 	}
 
 	private void _setSemanticSearchConfiguration(

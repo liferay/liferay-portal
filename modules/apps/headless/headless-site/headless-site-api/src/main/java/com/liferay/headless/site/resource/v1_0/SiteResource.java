@@ -14,7 +14,11 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.annotation.Generated;
 
@@ -45,8 +49,13 @@ public interface SiteResource {
 
 	public void deleteSite(Long siteId) throws Exception;
 
+	public Response deleteSiteBatch(String callbackURL, Object object)
+		throws Exception;
+
 	public void deleteSiteByExternalReferenceCode(String externalReferenceCode)
 		throws Exception;
+
+	public Site getSite(Long siteId) throws Exception;
 
 	public Site getSiteByExternalReferenceCode(String externalReferenceCode)
 		throws Exception;
@@ -55,9 +64,27 @@ public interface SiteResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public Page<Site> getSitesPage(
+			Boolean active, String search, Pagination pagination)
+		throws Exception;
+
 	public Site postSite(Site site) throws Exception;
 
-	public Site postSite(MultipartBody multipartBody) throws Exception;
+	public Response postSiteBatch(String callbackURL, Object object)
+		throws Exception;
+
+	public Site postSiteSiteInitializer(MultipartBody multipartBody)
+		throws Exception;
+
+	public Response postSitesPageExportBatch(
+			Boolean active, String search, String callbackURL,
+			String contentType, String fieldNames)
+		throws Exception;
+
+	public Site putSite(Site site) throws Exception;
+
+	public Response putSiteBatch(String callbackURL, Object object)
+		throws Exception;
 
 	public Site putSiteByExternalReferenceCode(
 			String externalReferenceCode, MultipartBody multipartBody)
@@ -102,6 +129,14 @@ public interface SiteResource {
 	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public void setSortParserProvider(SortParserProvider sortParserProvider);
+
+	public void setVulcanBatchEngineExportTaskResource(
+		VulcanBatchEngineExportTaskResource
+			vulcanBatchEngineExportTaskResource);
+
+	public void setVulcanBatchEngineImportTaskResource(
+		VulcanBatchEngineImportTaskResource
+			vulcanBatchEngineImportTaskResource);
 
 	public default com.liferay.portal.kernel.search.filter.Filter toFilter(
 		String filterString) {

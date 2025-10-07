@@ -74,7 +74,7 @@ public class AnnouncementsUtil {
 
 		// Organization announcements
 
-		UserBag userBag = UserBagFactoryUtil.create(userId);
+		UserBag userBag = UserBagFactoryUtil.create(user);
 
 		long[] organizationIds = userBag.getUserOrgIds();
 

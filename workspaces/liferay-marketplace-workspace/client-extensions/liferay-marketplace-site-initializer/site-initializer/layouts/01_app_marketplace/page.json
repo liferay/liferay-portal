@@ -1,7 +1,7 @@
 {
 	"description": "",
 	"fragmentCompositionDefinitionPath": "page-definition.json",
-	"friendlyURL": "/home",
+	"friendlyURL": "/applications",
 	"hidden": false,
 	"name": "Applications",
 	"name_i18n": {

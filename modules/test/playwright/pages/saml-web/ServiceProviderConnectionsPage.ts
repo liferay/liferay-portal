@@ -102,10 +102,6 @@ export class ServiceProviderConnectionsPage {
 	}
 
 	async deleteServiceProviderConnections() {
-		this.page.on('dialog', (dialog) => {
-			dialog.accept();
-		});
-
 		await this.page.waitForTimeout(1000);
 
 		const row = await this.serviceProviderConnectionsTable
@@ -113,6 +109,10 @@ export class ServiceProviderConnectionsPage {
 			.last();
 
 		while (await row.isVisible()) {
+			this.page.once('dialog', (dialog) => {
+				dialog.accept();
+			});
+
 			await clickAndExpectToBeVisible({
 				autoClick: true,
 				target: this.page.getByRole('link', {name: 'Delete'}),

@@ -6,6 +6,7 @@
 package com.liferay.change.tracking.internal.messaging;
 
 import com.liferay.change.tracking.constants.CTDestinationNames;
+import com.liferay.change.tracking.internal.score.CTScoreCalculator;
 import com.liferay.change.tracking.service.CTScoreLocalService;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Destination;
@@ -35,7 +36,7 @@ public class CTScoreMessageListener extends BaseMessageListener {
 	protected void activate(BundleContext bundleContext) {
 		DestinationConfiguration destinationConfiguration =
 			new DestinationConfiguration(
-				DestinationConfiguration.DESTINATION_TYPE_SYNCHRONOUS,
+				DestinationConfiguration.DESTINATION_TYPE_SERIAL,
 				CTDestinationNames.CT_SCORE);
 
 		Destination destination = _destinationFactory.createDestination(
@@ -57,14 +58,19 @@ public class CTScoreMessageListener extends BaseMessageListener {
 		if (message.getBoolean("increment")) {
 			_ctScoreLocalService.incrementScore(
 				message.getLong("ctCollectionId"),
-				message.getLong("modelClassNameId"));
+				_ctScoreCalculator.calculate(
+					message.getLong("modelClassNameId")));
 		}
 		else {
 			_ctScoreLocalService.decrementScore(
 				message.getLong("ctCollectionId"),
-				message.getLong("modelClassNameId"));
+				_ctScoreCalculator.calculate(
+					message.getLong("modelClassNameId")));
 		}
 	}
+
+	@Reference
+	private CTScoreCalculator _ctScoreCalculator;
 
 	@Reference
 	private CTScoreLocalService _ctScoreLocalService;

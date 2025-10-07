@@ -45,7 +45,7 @@ public class StagingGroupHelperImpl implements StagingGroupHelper {
 
 	@Override
 	public Group fetchCompanyGroup(long companyId) {
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-35914")) {
 			return null;
 		}
 
@@ -192,6 +192,13 @@ public class StagingGroupHelperImpl implements StagingGroupHelper {
 	@Override
 	public boolean isCompanyGroupFriendlyURL(String friendlyURL) {
 		return Objects.equals(friendlyURL, CompanyGroupConstants.FRIENDLY_URL);
+	}
+
+	@Override
+	public boolean isDepotGroup(long groupId) {
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		return group.isDepot();
 	}
 
 	@Override

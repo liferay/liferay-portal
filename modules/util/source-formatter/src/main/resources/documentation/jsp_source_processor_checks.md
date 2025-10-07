@@ -18,6 +18,7 @@ ConstantNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-con
 ContractionsCheck | [Styling](styling_checks.md#styling-checks) | Finds contractions in Strings (such as `can't` or `you're`). |
 [CopyrightCheck](check/copyright_check.md#copyrightcheck) | [Styling](styling_checks.md#styling-checks) | Validates `copyright` header. |
 [DefaultComesLastCheck](https://checkstyle.sourceforge.io/checks/coding/defaultcomeslast.html) | [Styling](styling_checks.md#styling-checks) | Checks that the `default` is after all the cases in a `switch` statement. |
+DeprecatedClassesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Replaces deprecated classes. |
 EmptyCollectionCheck | [Styling](styling_checks.md#styling-checks) | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 [ExceptionMessageCheck](check/message_check.md#messagecheck) | [Styling](styling_checks.md#styling-checks) | Validates messages that are passed to exceptions. |
 FactoryCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `*Factory` should be used when creating new instances of an object. |
@@ -43,7 +44,6 @@ JSPGetStaticResourceURLCheck | [Bug Prevention](bug_prevention_checks.md#bug-pre
 [JSPIncludeCheck](check/jsp_include_check.md#jspincludecheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Validates values of `include` in `.jsp` files. |
 JSPIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in `.jsp` files. |
 JSPInlineVariableCheck | [Styling](styling_checks.md#styling-checks) | Finds cases where variables can be inlined. |
-JSPJakartaTransformCheck | [JakartaTransform](jakarta_transform_checks.md#jakartatransform-checks) | Performs replacements for use of Jakarta. |
 JSPJavaParserCheck | [Styling](styling_checks.md#styling-checks) | Performs JavaParser on `.java` files. |
 JSPLanguageKeysCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing language keys in `Language.properties`. |
 JSPLanguageUtilCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds incorrect use of `LanguageUtil.get` in `.jsp` files. |

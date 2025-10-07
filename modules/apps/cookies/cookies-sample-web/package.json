@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
+		"@clayui/button": "3.144.1",
 		"@liferay/cookies-banner-web": "*",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",

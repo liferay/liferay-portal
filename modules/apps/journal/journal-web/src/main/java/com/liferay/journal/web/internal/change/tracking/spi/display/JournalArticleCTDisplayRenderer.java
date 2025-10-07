@@ -5,12 +5,19 @@
 
 package com.liferay.journal.web.internal.change.tracking.spi.display;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
+import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.change.tracking.spi.display.BaseCTDisplayRenderer;
 import com.liferay.change.tracking.spi.display.CTDisplayRenderer;
 import com.liferay.change.tracking.spi.display.context.DisplayContext;
 import com.liferay.diff.exception.CompareVersionsException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleDisplay;
@@ -23,6 +30,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -118,6 +126,49 @@ public class JournalArticleCTDisplayRenderer
 		HttpServletRequest httpServletRequest =
 			displayContext.getHttpServletRequest();
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClass(
+				JournalArticle.class);
+
+		JournalArticle journalArticle = displayContext.getModel();
+
+		AssetEntry assetEntry = assetRendererFactory.getAssetEntry(
+			JournalArticle.class.getName(),
+			journalArticle.getResourcePrimKey());
+
+		if (AssetDisplayPageUtil.hasAssetDisplayPage(
+				assetEntry.getGroupId(), assetEntry)) {
+
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				new ClassPKInfoItemIdentifier(assetEntry.getClassPK());
+
+			classPKInfoItemIdentifier.setVersion(
+				String.valueOf(journalArticle.getVersion()));
+
+			String previewURL =
+				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+					new InfoItemReference(
+						assetEntry.getClassName(), classPKInfoItemIdentifier),
+					themeDisplay);
+
+			previewURL = HttpComponentsUtil.addParameter(
+				previewURL, "p_l_mode", Constants.PREVIEW);
+			previewURL = HttpComponentsUtil.addParameter(
+				previewURL, "previewCTCollectionId",
+				assetEntry.getCtCollectionId());
+			previewURL = HttpComponentsUtil.addParameter(
+				previewURL, "version", journalArticle.getVersion());
+
+			return String.format(
+				"<iframe frameborder=\"0\" height=\"664px\" src=\"%s\" " +
+					"width=\"100%%\"></iframe>",
+				previewURL);
+		}
+
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_REQUEST);
@@ -127,12 +178,6 @@ public class JournalArticleCTDisplayRenderer
 
 		PortletRequestModel portletRequestModel = new PortletRequestModel(
 			portletRequest, portletResponse);
-
-		JournalArticle journalArticle = displayContext.getModel();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		if (!_journalArticleLocalService.isRenderable(
 				journalArticle, portletRequestModel, themeDisplay)) {
@@ -155,14 +200,24 @@ public class JournalArticleCTDisplayRenderer
 	}
 
 	@Override
-	protected void buildDisplay(DisplayBuilder<JournalArticle> displayBuilder) {
+	protected void buildDisplay(DisplayBuilder<JournalArticle> displayBuilder)
+		throws PortalException {
+
 		JournalArticle journalArticle = displayBuilder.getModel();
 
 		displayBuilder.display(
 			"name", journalArticle.getTitle(displayBuilder.getLocale())
 		).display(
+			"title", journalArticle.getTitle(displayBuilder.getLocale())
+		).display(
 			"description",
 			journalArticle.getDescription(displayBuilder.getLocale())
+		).display(
+			"friendly-url",
+			journalArticle.getFriendlyURLMap(
+			).get(
+				displayBuilder.getLocale()
+			)
 		).display(
 			"created-by",
 			() -> {
@@ -196,6 +251,10 @@ public class JournalArticleCTDisplayRenderer
 			}
 		);
 	}
+
+	@Reference
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

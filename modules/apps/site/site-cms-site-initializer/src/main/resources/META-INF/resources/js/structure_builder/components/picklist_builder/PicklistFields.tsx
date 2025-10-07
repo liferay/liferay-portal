@@ -15,6 +15,7 @@ import {
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import getLocalizedValue from '../../../common/utils/getLocalizedValue';
 import {
 	useErc,
 	useId,
@@ -46,7 +47,7 @@ export default function PicklistFields({
 				>
 					<span className="mr-1">
 						{Liferay.Language.get(
-							'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-structures-that-use-it'
+							'picklists-are-shared-resources,-so-changes-to-a-picklist-affect-all-content-structures-that-use-it'
 						)}
 					</span>
 
@@ -65,7 +66,7 @@ export default function PicklistFields({
 				<InputLocalized
 					aria-label={Liferay.Language.get('picklist-name')}
 					error={
-						name[Liferay.ThemeDisplay.getDefaultLanguageId()]
+						getLocalizedValue(name)
 							? ''
 							: Liferay.Language.get('this-field-is-required')
 					}

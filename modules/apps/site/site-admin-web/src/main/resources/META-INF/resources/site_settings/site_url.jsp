@@ -17,7 +17,7 @@ LayoutSet publicLayoutSet = LayoutSetLocalServiceUtil.getLayoutSet(liveGroupId, 
 
 Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(liveGroupId);
 
-TreeMap<String, String> publicVirtualHostnames = publicLayoutSet.getVirtualHostnames();
+NavigableMap<String, String> publicVirtualHostnames = publicLayoutSet.getVirtualHostnames();
 
 if (publicVirtualHostnames.isEmpty()) {
 	publicVirtualHostnames = TreeMapBuilder.put(
@@ -167,7 +167,7 @@ if (publicVirtualHostnames.isEmpty()) {
 		<%
 		LayoutSet stagingPublicLayoutSet = LayoutSetLocalServiceUtil.getLayoutSet(stagingGroupId, false);
 
-		TreeMap<String, String> stagingPublicVirtualHostnames = stagingPublicLayoutSet.getVirtualHostnames();
+		NavigableMap<String, String> stagingPublicVirtualHostnames = stagingPublicLayoutSet.getVirtualHostnames();
 
 		if (stagingPublicVirtualHostnames.isEmpty()) {
 			stagingPublicVirtualHostnames = TreeMapBuilder.put(

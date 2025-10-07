@@ -14,7 +14,8 @@ import {
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import {API_URL, DEFAULT_FETCH_HEADERS} from '../utils/constants';
+import {DEFAULT_FETCH_HEADERS} from '../utils/constants';
+import getDataSetResourceURL from '../utils/getDataSetResourceURL';
 import getFields from '../utils/getFields';
 import openDefaultFailureToast from '../utils/openDefaultFailureToast';
 import {IDataSet, IFieldTreeItem} from '../utils/types';
@@ -109,7 +110,9 @@ const DataSet = ({
 
 	useEffect(() => {
 		const getDataSet = async () => {
-			const url = `${API_URL.DATA_SETS}/by-external-reference-code/${dataSetERC}`;
+			const url = getDataSetResourceURL({
+				dataSetERC,
+			});
 
 			const response = await fetch(url, {
 				headers: DEFAULT_FETCH_HEADERS,

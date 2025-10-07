@@ -8,6 +8,7 @@ package com.liferay.layout.content.page.editor.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentComposition;
 import com.liferay.fragment.model.FragmentEntry;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -129,8 +131,59 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		int numberOfFragmentEntryLinks = RandomTestUtil.randomInt(1, 3);
 
 		_testAddFragmentEntryLinks(
-			"<div><lfr-drop-zone></lfr-drop-zone></div>",
+			StringPool.BLANK, "<div><lfr-drop-zone></lfr-drop-zone></div>",
 			numberOfFragmentEntryLinks);
+	}
+
+	@Test
+	@TestInfo("LPD-61879")
+	public void testAddFragmentCompositionWithNamespaceInEditableID()
+		throws Exception {
+
+		FragmentComposition fragmentComposition = _addFragmentComposition(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"[$NAMESPACE$]-element-text",
+					JSONUtil.put(
+						LocaleUtil.toLanguageId(
+							_portal.getSiteDefaultLocale(_group)),
+						RandomTestUtil.randomString()))
+			).toString(),
+			null, FragmentConstants.TYPE_COMPONENT,
+			"<div> data-lfr-editable-id=\"${fragmentEntryLinkNamespace}-" +
+				"element-text\"\n\tdata-lfr-editable-type=\"text\">\n" +
+					"\tHeading Example</div>",
+			1);
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doTransactionalCommand",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getMockLiferayPortletActionRequest(
+				fragmentComposition.getFragmentCompositionKey(), null,
+				TestPropsValues.getUser()),
+			new MockLiferayPortletActionResponse());
+
+		JSONObject fragmentEntryLinksJSONObject = jsonObject.getJSONObject(
+			"fragmentEntryLinks");
+
+		Set<String> fragmentEntryLinkIds =
+			fragmentEntryLinksJSONObject.keySet();
+
+		for (String fragmentEntryLinkId : fragmentEntryLinkIds) {
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.getFragmentEntryLink(
+					GetterUtil.getLong(fragmentEntryLinkId));
+
+			Assert.assertNotNull(fragmentEntryLink);
+
+			String editableValues = fragmentEntryLink.getEditableValues();
+
+			Assert.assertTrue(
+				editableValues.contains(
+					fragmentEntryLink.getNamespace() + "-element-text"));
+		}
 	}
 
 	@Test
@@ -138,15 +191,16 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		int numberOfFragmentEntryLinks = RandomTestUtil.randomInt(1, 3);
 
 		_testAddFragmentEntryLinks(
-			RandomTestUtil.randomString(), numberOfFragmentEntryLinks);
+			StringPool.BLANK, RandomTestUtil.randomString(),
+			numberOfFragmentEntryLinks);
 	}
 
 	@Test
 	@TestInfo("LPD-46069")
 	public void testAddInputFragmentEntryLinks() throws Exception {
 		FragmentComposition fragmentComposition = _addFragmentComposition(
-			SetUtil.fromArray("text"), FragmentConstants.TYPE_INPUT,
-			"<div></div>", 1);
+			StringPool.BLANK, SetUtil.fromArray("text"),
+			FragmentConstants.TYPE_INPUT, "<div></div>", 1);
 
 		_testErrorMessage(fragmentComposition.getFragmentCompositionKey());
 
@@ -171,7 +225,7 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 			jsonObject.getString("addedItemId"), TestPropsValues.getUser());
 
 		fragmentComposition = _addFragmentComposition(
-			SetUtil.fromArray("localizationSelect"),
+			StringPool.BLANK, SetUtil.fromArray("localizationSelect"),
 			FragmentConstants.TYPE_INPUT, "<div>localizationSelect</div>", 1);
 
 		_testProcessAddFragmentEntryLinks(
@@ -180,8 +234,8 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	private FragmentComposition _addFragmentComposition(
-			Set<String> fieldTypes, int fragmentEntryType, String html,
-			int numberOfFragmentEntryLinks)
+			String editableValues, Set<String> fieldTypes,
+			int fragmentEntryType, String html, int numberOfFragmentEntryLinks)
 		throws Exception {
 
 		ServiceContext serviceContext =
@@ -225,8 +279,8 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 					defaultSegmentsExperienceId, layout.getPlid(),
 					fragmentEntry.getCss(), fragmentEntry.getHtml(),
 					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-					"{}", StringPool.BLANK, 0, null, fragmentEntry.getType(),
-					serviceContext);
+					editableValues, StringPool.BLANK, 0, null,
+					fragmentEntry.getType(), serviceContext);
 
 			layoutStructure.addFragmentStyledLayoutStructureItem(
 				fragmentEntryLink.getFragmentEntryLinkId(),
@@ -235,13 +289,14 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), layout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		String layoutStructureItemJSON =
 			_layoutStructureItemJSONSerializer.toJSONString(
-				layout, containerStyledLayoutStructureItem.getItemId(), false,
-				false, defaultSegmentsExperienceId);
+				layout, containerStyledLayoutStructureItem.getItemId(), true,
+				true, defaultSegmentsExperienceId);
 
 		return _fragmentCompositionLocalService.addFragmentComposition(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -252,12 +307,12 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	private FragmentComposition _addFragmentComposition(
-			String html, int numberOfFragmentEntryLinks)
+			String editableValues, String html, int numberOfFragmentEntryLinks)
 		throws Exception {
 
 		return _addFragmentComposition(
-			Collections.emptySet(), FragmentConstants.TYPE_COMPONENT, html,
-			numberOfFragmentEntryLinks);
+			editableValues, Collections.emptySet(),
+			FragmentConstants.TYPE_COMPONENT, html, numberOfFragmentEntryLinks);
 	}
 
 	private void _assertFragmentEntryLinksContent(
@@ -388,11 +443,11 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	private void _testAddFragmentEntryLinks(
-			String html, int numberOfFragmentEntryLinks)
+			String editableValues, String html, int numberOfFragmentEntryLinks)
 		throws Exception {
 
 		FragmentComposition fragmentComposition = _addFragmentComposition(
-			html, numberOfFragmentEntryLinks);
+			editableValues, html, numberOfFragmentEntryLinks);
 
 		User user = UserTestUtil.addCompanyAdminUser(_company);
 

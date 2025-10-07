@@ -27,8 +27,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -80,10 +78,6 @@ public class SiteActionDropdownItemsProviderTest {
 
 		_groupPermissionUtilMockedStatic = Mockito.mockStatic(
 			GroupPermissionUtil.class);
-
-		PropsUtil propsUtil = new PropsUtil();
-
-		propsUtil.setProps(Mockito.mock(Props.class));
 	}
 
 	@AfterClass
@@ -291,9 +285,7 @@ public class SiteActionDropdownItemsProviderTest {
 			}
 
 			Assert.assertEquals(entry.getKey(), dropdownItem.get("label"));
-			Assert.assertTrue(
-				href,
-				StringUtil.contains(href, entry.getValue(), StringPool.BLANK));
+			Assert.assertTrue(href, href.contains(entry.getValue()));
 		}
 	}
 

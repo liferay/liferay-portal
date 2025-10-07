@@ -98,12 +98,23 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 					<label class="control-label" for="<portlet:namespace />descriptionMapAsXML"><liferay-ui:message key="full-description" /></label>
 
 					<div class="entry-content form-group">
-						<liferay-ui:input-localized
-							defaultLanguageId="<%= defaultLanguageId %>"
-							name="descriptionMapAsXML"
-							type="editor"
-							xml="<%= descriptionMapAsXML %>"
-						/>
+						<c:choose>
+							<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+								<liferay-ui:input-localized
+									defaultLanguageId="<%= defaultLanguageId %>"
+									name="descriptionMapAsXML"
+									type="editor"
+									xml="<%= descriptionMapAsXML %>"
+								/>
+							</c:when>
+							<c:otherwise>
+								<liferay-editor:input-localized
+									defaultLanguageId="<%= defaultLanguageId %>"
+									name="descriptionMapAsXML"
+									xml="<%= descriptionMapAsXML %>"
+								/>
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</aui:field-wrapper>
 			</commerce-ui:panel>
@@ -219,87 +230,12 @@ if ((cpDefinition != null) && (cpDefinition.getExpirationDate() != null)) {
 		module="{debounceDetails} from commerce-product-definitions-web"
 	/>
 
-	<aui:script>
-		document
-			.getElementById('<portlet:namespace />commerceCatalogGroupId')
-			.addEventListener('change', (event) => {
-				var languageId = event.target.querySelector(
-					'[value="' + event.target.value + '"]'
-				).dataset.languageid;
-
-				var nameInput = document.getElementById(
-					'<portlet:namespace />nameMapAsXML'
-				);
-				var shortDescriptionInput = document.getElementById(
-					'<portlet:namespace />shortDescriptionMapAsXML'
-				);
-				var descriptionInput =
-					window.<portlet:namespace />descriptionMapAsXMLEditor;
-				var urlInput = document.getElementById(
-					'<portlet:namespace />urlTitleMapAsXML'
-				);
-				var metaTitleInput = document.getElementById(
-					'<portlet:namespace />metaTitleMapAsXML'
-				);
-				var metaDescriptionInput = document.getElementById(
-					'<portlet:namespace />metaDescriptionMapAsXML'
-				);
-				var metaKeywordsInput = document.getElementById(
-					'<portlet:namespace />metaKeywordsMapAsXML'
-				);
-
-				var nameInputLocalized = Liferay.component(
-					'<portlet:namespace />nameMapAsXML'
-				);
-				var shortDescriptionInputLocalized = Liferay.component(
-					'<portlet:namespace />shortDescriptionMapAsXML'
-				);
-				var descriptionInputLocalized = Liferay.component(
-					'<portlet:namespace />descriptionMapAsXML'
-				);
-				var urlTitleInputLocalized = Liferay.component(
-					'<portlet:namespace />urlTitleMapAsXML'
-				);
-				var metaTitleInputLocalized = Liferay.component(
-					'<portlet:namespace />metaTitleMapAsXML'
-				);
-				var metaDescriptionInputLocalized = Liferay.component(
-					'<portlet:namespace />metaDescriptionMapAsXML'
-				);
-				var metaKeywordsInputLocalized = Liferay.component(
-					'<portlet:namespace />metaKeywordsMapAsXML'
-				);
-
-				nameInputLocalized.updateInputLanguage(nameInput.value, languageId);
-				shortDescriptionInputLocalized.updateInputLanguage(
-					shortDescriptionInput.value,
-					languageId
-				);
-				descriptionInputLocalized.updateInputLanguage(
-					descriptionInput.getHTML(),
-					languageId
-				);
-				urlTitleInputLocalized.updateInputLanguage(urlInput.value, languageId);
-				metaTitleInputLocalized.updateInputLanguage(
-					metaTitleInput.value,
-					languageId
-				);
-				metaDescriptionInputLocalized.updateInputLanguage(
-					metaDescriptionInput.value,
-					languageId
-				);
-				metaKeywordsInputLocalized.updateInputLanguage(
-					metaKeywordsInput.value,
-					languageId
-				);
-
-				nameInputLocalized.selectFlag(languageId, false);
-				shortDescriptionInputLocalized.selectFlag(languageId, false);
-				descriptionInputLocalized.selectFlag(languageId, false);
-				urlTitleInputLocalized.selectFlag(languageId, false);
-				metaTitleInputLocalized.selectFlag(languageId, false);
-				metaDescriptionInputLocalized.selectFlag(languageId, false);
-				metaKeywordsInputLocalized.selectFlag(languageId, false);
-			});
-	</aui:script>
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"portletNamespace", liferayPortletResponse.getNamespace()
+			).build()
+		%>'
+		module="{changeLocalizedInputs} from commerce-product-definitions-web"
+	/>
 </c:if>

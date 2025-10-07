@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Sharing API
 Bundle-SymbolicName: com.liferay.sharing.api
-Bundle-Version: 14.0.1
+Bundle-Version: 16.0.1
 Export-Package:\
 	com.liferay.sharing.configuration,\
 	com.liferay.sharing.constants,\

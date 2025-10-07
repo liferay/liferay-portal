@@ -52,7 +52,6 @@ test.describe('Script management container', () => {
 	}) => {
 		const objectDefinition =
 			(await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			})) as ObjectDefinition;
 
@@ -104,7 +103,6 @@ test.describe('Script management container', () => {
 	}) => {
 		const objectDefinition =
 			(await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			})) as ObjectDefinition;
 

@@ -73,13 +73,74 @@ test('LPD-47067 check that two forms on same page with simplecaptcha could refre
 
 	await addAndConfigureForms(formName, formWidgetPage, widgetPagePage);
 
-	await refreshAndCheckCaptcha(page);
+	await refreshAndCheckCaptcha(2, page);
 
 	await performLogout(page);
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-	await refreshAndCheckCaptcha(page);
+	await refreshAndCheckCaptcha(2, page);
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
+});
+
+test('LPD-66742 Check if image refresh works when multiple elements have the modal-body class', async ({
+	apiHelpers,
+	captchaConfigPage,
+	page,
+	pageEditorPage,
+	site,
+}) => {
+	await captchaConfigPage.goTo();
+
+	await captchaConfigPage.resetCaptchaConfiguration();
+
+	const fragmentCollectionName = getRandomString();
+
+	const {fragmentCollectionId} =
+		await apiHelpers.jsonWebServicesFragmentCollection.addFragmentCollection(
+			{
+				groupId: site.id,
+				name: fragmentCollectionName,
+			}
+		);
+
+	const fragmentEntryName = getRandomString();
+
+	await apiHelpers.jsonWebServicesFragmentEntry.addFragmentEntry({
+		fragmentCollectionId,
+		groupId: site.id,
+		html: `<div class="modal-body">
+					This is modal body div
+				</div>
+				[@liferay_captcha["captcha"]/]`,
+		name: fragmentEntryName,
+		type: 'component',
+	});
+
+	// Add a layout and add custom fragment
+
+	const layoutTitle = getRandomString();
+
+	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		options: {type: 'content'},
+		title: layoutTitle,
+	});
+
+	await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+	await pageEditorPage.addFragment(fragmentCollectionName, fragmentEntryName);
+
+	await pageEditorPage.waitForChangesSaved();
+
+	await pageEditorPage.publishPage();
+
+	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+	refreshAndCheckCaptcha(1, page);
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 async function addAndConfigureForms(formName, formWidgetPage, widgetPagePage) {
@@ -100,8 +161,8 @@ async function addAndConfigureForms(formName, formWidgetPage, widgetPagePage) {
 	}
 }
 
-async function refreshAndCheckCaptcha(page) {
-	for (let count = 0; count < 2; count++) {
+async function refreshAndCheckCaptcha(captchaCount, page) {
+	for (let count = 0; count < captchaCount; count++) {
 		const captchaImgSource = await page
 			.getByAltText('Text to Identify')
 			.nth(count)

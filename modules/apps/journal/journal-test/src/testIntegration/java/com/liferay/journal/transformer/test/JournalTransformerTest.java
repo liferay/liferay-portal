@@ -391,6 +391,32 @@ public class JournalTransformerTest {
 	}
 
 	@Test
+	public void testLocalTransformerWithPartialTranslation() throws Exception {
+		Assert.assertEquals(
+			"2022-11-26",
+			_transformMethod.invoke(
+				_journalTransformer, _journalArticle, null, _journalHelper,
+				LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+				_layoutDisplayPageProviderRegistry,
+				ListUtil.filter(
+					_serviceTrackerList.toList(),
+					TransformerListener::isEnabled),
+				null, false, "${FieldsGroup19507604.birthday.getData()}", null,
+				Constants.VIEW));
+		Assert.assertEquals(
+			"",
+			_transformMethod.invoke(
+				_journalTransformer, _journalArticle, null, _journalHelper,
+				LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+				_layoutDisplayPageProviderRegistry,
+				ListUtil.filter(
+					_serviceTrackerList.toList(),
+					TransformerListener::isEnabled),
+				null, false, "${FieldsGroup19507604.language.getData()}", null,
+				Constants.VIEW));
+	}
+
+	@Test
 	public void testRandomNamespaceAssetPublisherTemplate() throws Exception {
 		PermissionChecker originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -803,12 +829,12 @@ public class JournalTransformerTest {
 			new ThemeDisplay());
 
 		Assert.assertTrue(MapUtil.isEmpty(templateNode.getAttributes()));
-		Assert.assertTrue(
-			StringUtil.contains(
-				templateNode.getData(), "option1", StringPool.BLANK));
-		Assert.assertTrue(
-			StringUtil.contains(
-				templateNode.getData(), "option2", StringPool.BLANK));
+
+		String data = templateNode.getData();
+
+		Assert.assertTrue(data.contains("option1"));
+		Assert.assertTrue(data.contains("option2"));
+
 		Assert.assertEquals("name", templateNode.getName());
 		Assert.assertEquals("select", templateNode.getType());
 

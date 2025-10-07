@@ -1,0 +1,6 @@
+{
+	"className": "com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext",
+	"ddmTemplateKey": "LEARN-ANNOUNCEMENT-RESULTS",
+	"name": "Learn Announcement Results",
+	"resourceClassName": "com.liferay.portlet.display.template.PortletDisplayTemplate"
+}

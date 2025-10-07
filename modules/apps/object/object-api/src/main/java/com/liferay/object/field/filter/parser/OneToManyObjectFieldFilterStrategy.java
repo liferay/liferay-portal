@@ -147,7 +147,7 @@ public class OneToManyObjectFieldFilterStrategy
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-				(String)jsonArray.get(i),
+				(String)jsonArray.get(i), _groupId,
 				_objectDefinition1.getObjectDefinitionId());
 
 			if (objectEntry == null) {
@@ -199,7 +199,7 @@ public class OneToManyObjectFieldFilterStrategy
 			for (int i = 0; i < jsonArray.length(); i++) {
 				if (Validator.isNull(
 						_objectEntryLocalService.fetchObjectEntry(
-							(String)jsonArray.get(i),
+							(String)jsonArray.get(i), _groupId,
 							_objectDefinition1.getObjectDefinitionId()))) {
 
 					throw new ObjectViewFilterColumnException(

@@ -30,9 +30,9 @@ export class CategoriesPage {
 		this.createNewCategoryButton = this.page.getByTitle('New Category');
 		this.createNewSubcategoryButton =
 			this.page.getByTitle('New Subcategory');
-		this.closePermissionsModalButton = this.page.locator(
-			'//button[@aria-label="close"]'
-		);
+		this.closePermissionsModalButton = this.page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true});
 		this.deleteConfirmationModal = this.page.locator('.modal-content', {
 			hasText: 'Delete',
 		});

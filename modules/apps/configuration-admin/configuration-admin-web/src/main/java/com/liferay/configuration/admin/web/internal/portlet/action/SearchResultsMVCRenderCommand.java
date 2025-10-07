@@ -18,7 +18,7 @@ import com.liferay.configuration.admin.web.internal.search.FieldNames;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryIterator;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationEntryRetriever;
 import com.liferay.configuration.admin.web.internal.util.ConfigurationModelRetriever;
-import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.search.Document;
@@ -36,6 +36,7 @@ import jakarta.portlet.RenderResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -61,110 +62,135 @@ public class SearchResultsMVCRenderCommand implements MVCRenderCommand {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		Indexer<ConfigurationModel> indexer =
-			_indexerRegistry.nullSafeGetIndexer(ConfigurationModel.class);
+		try {
+			Indexer<ConfigurationModel> indexer =
+				_indexerRegistry.nullSafeGetIndexer(ConfigurationModel.class);
 
+			SearchContext searchContext = _getSearchContext(
+				renderRequest.getParameter("keywords"),
+				renderRequest.getLocale());
+
+			Hits hits = indexer.search(searchContext);
+
+			renderRequest.setAttribute(
+				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY_ITERATOR,
+				new ConfigurationEntryIterator(
+					_getConfigurationEntries(
+						ConfigurationScopeDisplayContextFactory.create(
+							renderRequest),
+						hits.getDocs(), renderRequest.getLocale(),
+						searchContext)));
+
+			renderRequest.setAttribute(
+				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY_RETRIEVER,
+				_configurationEntryRetriever);
+
+			return "/search_results.jsp";
+		}
+		catch (Exception exception) {
+			throw new PortletException(exception);
+		}
+	}
+
+	private List<ConfigurationEntry> _getConfigurationEntries(
+		ConfigurationScopeDisplayContext configurationScopeDisplayContext,
+		Document[] documents, Locale locale, SearchContext searchContext) {
+
+		List<ConfigurationEntry> configurationEntries = new ArrayList<>();
+
+		Map<String, ConfigurationModel> configurationModels =
+			_configurationModelRetriever.getConfigurationModels(
+				configurationScopeDisplayContext.getScope(),
+				configurationScopeDisplayContext.getScopePK());
+
+		for (Document document : documents) {
+			ConfigurationModel configurationModel = _getConfigurationModel(
+				configurationModels, document);
+
+			if ((configurationModel != null) &&
+				configurationModel.isGenerateUI()) {
+
+				configurationEntries.add(
+					new ConfigurationModelConfigurationEntry(
+						configurationModel, locale));
+			}
+		}
+
+		for (ConfigurationScreen configurationScreen :
+				_configurationEntryRetriever.getAllConfigurationScreens()) {
+
+			if (!Objects.equals(
+					String.valueOf(configurationScopeDisplayContext.getScope()),
+					configurationScreen.getScope()) ||
+				!configurationScreen.isVisible()) {
+
+				continue;
+			}
+
+			String configurationScreenCategoryKey = StringUtil.toLowerCase(
+				_language.get(
+					locale, "category." + configurationScreen.getCategoryKey()),
+				locale);
+			String configurationScreenKey = StringUtil.toLowerCase(
+				configurationScreen.getKey(), locale);
+			String configurationScreenName = StringUtil.toLowerCase(
+				configurationScreen.getName(locale), locale);
+			String keywords = StringUtil.toLowerCase(
+				searchContext.getKeywords(), locale);
+
+			if (Validator.isNull(keywords) ||
+				configurationScreenCategoryKey.contains(keywords) ||
+				configurationScreenKey.contains(keywords) ||
+				configurationScreenName.contains(keywords)) {
+
+				configurationEntries.add(
+					new ConfigurationScreenConfigurationEntry(
+						configurationScreen, locale));
+			}
+		}
+
+		return configurationEntries;
+	}
+
+	private ConfigurationModel _getConfigurationModel(
+		Map<String, ConfigurationModel> configurationModels,
+		Document document) {
+
+		String configurationModelId = document.get(
+			FieldNames.CONFIGURATION_MODEL_ID);
+
+		ConfigurationModel configurationModel = configurationModels.get(
+			configurationModelId);
+
+		if (configurationModel == null) {
+			String configurationModelFactoryId = document.get(
+				FieldNames.CONFIGURATION_MODEL_FACTORY_PID);
+
+			configurationModel = configurationModels.get(
+				configurationModelFactoryId);
+		}
+
+		return configurationModel;
+	}
+
+	private SearchContext _getSearchContext(String keywords, Locale locale) {
 		SearchContext searchContext = new SearchContext();
+
+		QueryConfig queryConfig = searchContext.getQueryConfig();
+
+		queryConfig.setHighlightEnabled(true);
+		queryConfig.setLocale(locale);
+		queryConfig.setScoreEnabled(true);
 
 		searchContext.setAndSearch(false);
 		searchContext.setCompanyId(CompanyConstants.SYSTEM);
-		searchContext.setLocale(renderRequest.getLocale());
-
-		String keywords = renderRequest.getParameter("keywords");
+		searchContext.setLocale(locale);
 
 		if (Validator.isNotNull(keywords)) {
 			searchContext.setKeywords(keywords);
 		}
 
-		QueryConfig queryConfig = searchContext.getQueryConfig();
-
-		queryConfig.setHighlightEnabled(true);
-		queryConfig.setLocale(renderRequest.getLocale());
-		queryConfig.setScoreEnabled(true);
-
-		try {
-			Hits hits = indexer.search(searchContext);
-
-			Document[] documents = hits.getDocs();
-
-			ConfigurationScopeDisplayContext configurationScopeDisplayContext =
-				ConfigurationScopeDisplayContextFactory.create(renderRequest);
-
-			Map<String, ConfigurationModel> configurationModels =
-				_configurationModelRetriever.getConfigurationModels(
-					configurationScopeDisplayContext.getScope(),
-					configurationScopeDisplayContext.getScopePK());
-
-			List<ConfigurationEntry> configurationEntries = new ArrayList<>(
-				documents.length);
-
-			for (Document document : documents) {
-				String configurationModelId = document.get(
-					FieldNames.CONFIGURATION_MODEL_ID);
-
-				ConfigurationModel configurationModel = configurationModels.get(
-					configurationModelId);
-
-				if (configurationModel == null) {
-					String configurationModelFactoryId = document.get(
-						FieldNames.CONFIGURATION_MODEL_FACTORY_PID);
-
-					configurationModel = configurationModels.get(
-						configurationModelFactoryId);
-				}
-
-				if ((configurationModel != null) &&
-					configurationModel.isGenerateUI()) {
-
-					configurationEntries.add(
-						new ConfigurationModelConfigurationEntry(
-							configurationModel, renderRequest.getLocale()));
-				}
-			}
-
-			ExtendedObjectClassDefinition.Scope scope =
-				configurationScopeDisplayContext.getScope();
-
-			for (ConfigurationScreen configurationScreen :
-					_configurationEntryRetriever.getAllConfigurationScreens()) {
-
-				if (!Objects.equals(scope, configurationScreen.getScope()) ||
-					!configurationScreen.isVisible()) {
-
-					continue;
-				}
-
-				String configurationScreenKey = StringUtil.toLowerCase(
-					configurationScreen.getKey(), renderRequest.getLocale());
-				String configurationScreenName = StringUtil.toLowerCase(
-					configurationScreen.getName(renderRequest.getLocale()),
-					renderRequest.getLocale());
-
-				String searchReadyKeywords = StringUtil.toLowerCase(
-					keywords, renderRequest.getLocale());
-
-				if (Validator.isNull(keywords) ||
-					configurationScreenKey.contains(searchReadyKeywords) ||
-					configurationScreenName.contains(searchReadyKeywords)) {
-
-					configurationEntries.add(
-						new ConfigurationScreenConfigurationEntry(
-							configurationScreen, renderRequest.getLocale()));
-				}
-			}
-
-			renderRequest.setAttribute(
-				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY_ITERATOR,
-				new ConfigurationEntryIterator(configurationEntries));
-			renderRequest.setAttribute(
-				ConfigurationAdminWebKeys.CONFIGURATION_ENTRY_RETRIEVER,
-				_configurationEntryRetriever);
-		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
-
-		return "/search_results.jsp";
+		return searchContext;
 	}
 
 	@Reference
@@ -175,5 +201,8 @@ public class SearchResultsMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;
+
+	@Reference
+	private Language _language;
 
 }

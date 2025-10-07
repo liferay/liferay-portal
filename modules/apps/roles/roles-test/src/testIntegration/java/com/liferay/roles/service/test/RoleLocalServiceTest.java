@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -145,6 +147,36 @@ public class RoleLocalServiceTest {
 			RoleConstants.TYPE_REGULAR, null, null);
 
 		Assert.assertNotNull(_role.getExternalReferenceCode());
+	}
+
+	@Test
+	public void testCopyRole() throws Exception {
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		String name = RandomTestUtil.randomString();
+		Role sourceRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		Role targetRole = _roleLocalService.copyRole(
+			TestPropsValues.getUserId(), name, sourceRole.getRoleId(),
+			new ServiceContext());
+
+		Assert.assertNotEquals(sourceRole.getRoleId(), targetRole.getRoleId());
+		Assert.assertEquals(name, targetRole.getName());
+
+		List<ResourcePermission> sourceRoleResourcePermissions =
+			_resourcePermissionLocalService.getRoleResourcePermissions(
+				sourceRole.getRoleId());
+
+		List<ResourcePermission> targetRoleResourcePermissions =
+			_resourcePermissionLocalService.getRoleResourcePermissions(
+				targetRole.getRoleId());
+
+		Assert.assertEquals(
+			targetRoleResourcePermissions.toString(),
+			sourceRoleResourcePermissions.size(),
+			targetRoleResourcePermissions.size());
 	}
 
 	@Test
@@ -468,12 +500,12 @@ public class RoleLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteRole() throws Exception {
+	public void testGetOrAddEmptyRole() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_roleLocalService.getOrAddIncompleteRole(
+			_roleLocalService.getOrAddEmptyRole(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Role.class.getName(), 0,
 				RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
@@ -489,13 +521,13 @@ public class RoleLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-			Role role = _roleLocalService.getOrAddIncompleteRole(
+			Role role = _roleLocalService.getOrAddEmptyRole(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Role.class.getName(), 0,
 				RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, role.getStatus());
+				WorkflowConstants.STATUS_EMPTY, role.getStatus());
 		}
 	}
 
@@ -751,13 +783,13 @@ public class RoleLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-			Role role = _roleLocalService.getOrAddIncompleteRole(
+			Role role = _roleLocalService.getOrAddEmptyRole(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Role.class.getName(), 0,
 				RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, role.getStatus());
+				WorkflowConstants.STATUS_EMPTY, role.getStatus());
 
 			role = _roleLocalService.updateRole(
 				role.getExternalReferenceCode(), role.getRoleId(),

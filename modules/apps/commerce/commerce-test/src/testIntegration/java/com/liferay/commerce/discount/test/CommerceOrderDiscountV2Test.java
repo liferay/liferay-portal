@@ -298,7 +298,7 @@ public class CommerceOrderDiscountV2Test {
 
 		String couponCode = StringUtil.randomString();
 
-		CommerceDiscountTestUtil.addCouponDiscount(
+		CommerceDiscountTestUtil.addCouponCommerceDiscount(
 			_user.getGroupId(), 1, couponCode,
 			CommerceDiscountConstants.TARGET_TOTAL, null);
 
@@ -547,7 +547,7 @@ public class CommerceOrderDiscountV2Test {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount2 =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_user.getGroupId(), 10, couponCode,
 				CommerceDiscountConstants.TARGET_TOTAL, null);
 
@@ -638,7 +638,7 @@ public class CommerceOrderDiscountV2Test {
 				BigDecimal.valueOf(30));
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addChannelOrderDiscount(
+			CommerceDiscountTestUtil.addChannelOrderCommerceDiscount(
 				commerceCatalog.getGroupId(),
 				_commerceChannel.getCommerceChannelId(),
 				CommerceDiscountConstants.TARGET_SUBTOTAL);

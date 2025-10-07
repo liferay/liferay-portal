@@ -12,6 +12,7 @@ import com.liferay.change.tracking.model.CTEntry;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
@@ -129,6 +130,32 @@ public class DLFileEntryCTTest {
 			_ctCollection.getCtCollectionId());
 
 		Assert.assertEquals(ctEntries.toString(), 0, ctEntries.size());
+
+		Assert.assertFalse(fileEntry.isCheckedOut());
+	}
+
+	@Test
+	public void testUpdateFileEntry() throws Exception {
+		FileEntry fileEntry = _addFileEntry();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(fileEntry.getGroupId());
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			_dlAppService.updateFileEntry(
+				fileEntry.getFileEntryId(), fileEntry.getFileName(),
+				fileEntry.getMimeType(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), fileEntry.getDescription(),
+				RandomTestUtil.randomString(), DLVersionNumberIncrease.MINOR,
+				null, fileEntry.getSize(), fileEntry.getDisplayDate(),
+				fileEntry.getExpirationDate(), fileEntry.getReviewDate(),
+				serviceContext);
+		}
+
+		fileEntry = _dlAppService.getFileEntry(fileEntry.getFileEntryId());
 
 		Assert.assertFalse(fileEntry.isCheckedOut());
 	}

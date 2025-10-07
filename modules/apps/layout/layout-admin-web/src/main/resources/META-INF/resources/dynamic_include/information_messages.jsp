@@ -14,7 +14,7 @@ LayoutInformationMessagesDisplayContext layoutInformationMessagesDisplayContext 
 <li class="control-menu-nav-item lfr-portal-tooltip">
 	<clay:button
 		aria-label='<%= LanguageUtil.get(request, "additional-information") %>'
-		cssClass="control-menu-nav-link"
+		cssClass="color-white control-menu-nav-link"
 		data-qa-id="info"
 		displayType="unstyled"
 		monospaced="<%= true %>"

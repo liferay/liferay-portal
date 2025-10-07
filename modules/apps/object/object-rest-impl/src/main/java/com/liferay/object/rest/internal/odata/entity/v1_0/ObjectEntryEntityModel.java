@@ -285,13 +285,32 @@ public class ObjectEntryEntityModel implements EntityModel {
 						NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
 					objectField);
 
-			entityFieldsMap.put(
-				objectRelationshipERCObjectFieldName,
-				new ReferenceStringEntityField(
+			// TODO: Temporary workaround for LPD-59378. Remove when filtering
+			// is supported for system objects.
+
+			ObjectDefinition relatedObjectDefinition =
+				ObjectRelationshipUtil.getRelatedObjectDefinition(
+					objectDefinition,
+					ObjectRelationshipLocalServiceUtil.
+						fetchObjectRelationshipByObjectFieldId2(
+							objectField.getObjectFieldId()));
+
+			if (relatedObjectDefinition.isUnmodifiableSystemObject()) {
+				entityFieldsMap.put(
 					objectRelationshipERCObjectFieldName,
-					_getExternalReferenceCodeFunction(),
-					objectFieldName.split(StringPool.UNDERLINE)[1] +
-						"/externalReferenceCode"));
+					new StringEntityField(
+						objectRelationshipERCObjectFieldName,
+						locale -> objectFieldName));
+			}
+			else {
+				entityFieldsMap.put(
+					objectRelationshipERCObjectFieldName,
+					new ReferenceStringEntityField(
+						objectRelationshipERCObjectFieldName,
+						_getExternalReferenceCodeFunction(),
+						objectFieldName.split(StringPool.UNDERLINE)[1] +
+							"/externalReferenceCode"));
+			}
 
 			String relationshipIdName = objectFieldName.substring(
 				objectFieldName.lastIndexOf(StringPool.UNDERLINE) + 1);

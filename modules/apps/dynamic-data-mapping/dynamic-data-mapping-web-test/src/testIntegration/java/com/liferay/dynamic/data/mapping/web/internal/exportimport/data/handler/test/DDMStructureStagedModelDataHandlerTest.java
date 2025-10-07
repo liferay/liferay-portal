@@ -110,6 +110,8 @@ public class DDMStructureStagedModelDataHandlerTest
 	@After
 	@Override
 	public void tearDown() throws Exception {
+		super.tearDown();
+
 		LanguageUtil.init();
 
 		CompanyTestUtil.resetCompanyLocales(

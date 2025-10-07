@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.service.impl;
 
 import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
+import com.liferay.commerce.product.exception.CPConfigurationEntryAllowedOrderQuantitiesException;
 import com.liferay.commerce.product.exception.RequiredCPConfigurationEntryException;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
@@ -36,6 +37,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.math.BigDecimal;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,9 +66,11 @@ public class CPConfigurationEntryLocalServiceImpl
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
+
+		_validateAllowedOrderQuantities(allowedOrderQuantities);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -103,7 +108,6 @@ public class CPConfigurationEntryLocalServiceImpl
 		cpConfigurationEntry.setShippingExtraPrice(shippingExtraPrice);
 		cpConfigurationEntry.setShipSeparately(shipSeparately);
 		cpConfigurationEntry.setTaxExempt(taxExempt);
-		cpConfigurationEntry.setVisible(visible);
 		cpConfigurationEntry.setWeight(weight);
 		cpConfigurationEntry.setWidth(width);
 
@@ -316,14 +320,6 @@ public class CPConfigurationEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<CPConfigurationEntry> getCPConfigurationEntries(
-		long classNameId, long classPK, boolean visible) {
-
-		return cpConfigurationEntryPersistence.findByC_C_V(
-			classNameId, classPK, visible);
-	}
-
-	@Override
 	public CPConfigurationEntry getCPConfigurationEntry(
 			long classNameId, long classPK, long cpConfigurationListId)
 		throws PortalException {
@@ -344,9 +340,11 @@ public class CPConfigurationEntryLocalServiceImpl
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
+
+		_validateAllowedOrderQuantities(allowedOrderQuantities);
 
 		CPConfigurationEntry cpConfigurationEntry =
 			cpConfigurationEntryPersistence.findByPrimaryKey(
@@ -375,7 +373,6 @@ public class CPConfigurationEntryLocalServiceImpl
 		cpConfigurationEntry.setShippingExtraPrice(shippingExtraPrice);
 		cpConfigurationEntry.setShipSeparately(shipSeparately);
 		cpConfigurationEntry.setTaxExempt(taxExempt);
-		cpConfigurationEntry.setVisible(visible);
 		cpConfigurationEntry.setWeight(weight);
 		cpConfigurationEntry.setWidth(width);
 
@@ -456,6 +453,24 @@ public class CPConfigurationEntryLocalServiceImpl
 
 		indexer.reindex(CPDefinition.class.getName(), cpDefinitionId);
 	}
+
+	private void _validateAllowedOrderQuantities(String allowedOrderQuantities)
+		throws PortalException {
+
+		if (Validator.isNull(allowedOrderQuantities)) {
+			return;
+		}
+
+		Matcher matcher = _pattern.matcher(allowedOrderQuantities);
+
+		if (!matcher.matches()) {
+			throw new CPConfigurationEntryAllowedOrderQuantitiesException();
+		}
+	}
+
+	private static final Pattern _pattern = Pattern.compile(
+		"^(\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?)" +
+			"(\\s\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?)*$");
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

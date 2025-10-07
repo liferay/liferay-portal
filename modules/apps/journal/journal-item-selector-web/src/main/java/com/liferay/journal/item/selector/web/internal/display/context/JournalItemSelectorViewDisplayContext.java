@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.PortletURL;
@@ -120,7 +121,7 @@ public class JournalItemSelectorViewDisplayContext {
 			"resourcePrimKey",
 			_journalItemSelectorCriterion.getResourcePrimKey()
 		).setParameter(
-			"selectedTab", getTitle(httpServletRequest.getLocale())
+			"selectedTab", _getSelectedTab()
 		).buildPortletURL();
 	}
 
@@ -147,6 +148,16 @@ public class JournalItemSelectorViewDisplayContext {
 		return _search;
 	}
 
+	private String _getSelectedTab() {
+		if (_selectedTab != null) {
+			return _selectedTab;
+		}
+
+		_selectedTab = ParamUtil.getString(_httpServletRequest, "selectedTab");
+
+		return _selectedTab;
+	}
+
 	private final HttpServletRequest _httpServletRequest;
 	private final String _itemSelectedEventName;
 	private final ItemSelectorReturnTypeResolverHandler
@@ -156,5 +167,6 @@ public class JournalItemSelectorViewDisplayContext {
 	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
+	private String _selectedTab;
 
 }

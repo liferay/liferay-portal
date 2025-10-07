@@ -21,6 +21,13 @@ public interface LayoutDisplayPageProvider<T> {
 	public LayoutDisplayPageObjectProvider<T>
 		getLayoutDisplayPageObjectProvider(InfoItemReference infoItemReference);
 
+	public default LayoutDisplayPageObjectProvider<T>
+		getLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
+
+		return getLayoutDisplayPageObjectProvider(infoItemReference);
+	}
+
 	public LayoutDisplayPageObjectProvider<T>
 		getLayoutDisplayPageObjectProvider(long groupId, String urlTitle);
 

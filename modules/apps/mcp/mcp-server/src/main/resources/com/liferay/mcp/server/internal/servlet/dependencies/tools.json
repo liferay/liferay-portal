@@ -1,0 +1,48 @@
+{
+	"call-http-endpoint": {
+		"description": "Calls an HTTP endpoint from a Liferay OpenAPI. Never call a batch endpoint, always use individual operations.",
+		"schema": {
+			"additionalProperties": false,
+			"properties": {
+				"method": {
+					"description": "The HTTP method.",
+					"type": "string"
+				},
+				"path": {
+					"description": "The full endpoint path starting with / relative to [$BASE_URL$]. Do not include the leading /o.",
+					"type": "string"
+				},
+				"payload": {
+					"description": "The endpoint payload. Can be an empty string if there is no payload.",
+					"type": "string"
+				}
+			},
+			"required": [
+				"method",
+				"path",
+				"payload"
+			],
+			"type": "object"
+		}
+	},
+	"get-openapi": {
+		"description": "Retrieves the OpenAPI YAML file.",
+		"schema": {
+			"properties": {
+				"url": {
+					"description": "The OpenAPI YAML URL.",
+					"type": "string"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"get-openapis": {
+		"description": "Retrieves the current available Liferay OpenAPIs. Use it to discover the most suitable API that could fulfill the user request. The flow should be: get-openapis, get-openapi, call-http-endpoint. If you are not sure about what the user wants, just call this to get an idea of what is possible.",
+		"schema": {
+			"properties": {
+			},
+			"type": "object"
+		}
+	}
+}

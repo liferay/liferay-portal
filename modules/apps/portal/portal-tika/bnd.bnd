@@ -1,7 +1,7 @@
 Bundle-Activator: com.liferay.portal.tika.internal.activator.TikaBundleActivator
 Bundle-Name: Liferay Portal Tika
 Bundle-SymbolicName: com.liferay.portal.tika
-Bundle-Version: 1.0.33
+Bundle-Version: 1.0.34
 Eclipse-BuddyPolicy: parent
 Import-Package:\
 	!javax.servlet.*,\

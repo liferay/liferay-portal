@@ -25,12 +25,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -127,17 +127,13 @@ public class StatusStrutsActionTest {
 
 		Assert.assertTrue(
 			content,
-			StringUtil.contains(
-				content,
+			content.contains(
 				_language.format(
 					LocaleUtil.US, "powered-by-x",
 					"<a class=\"text-decoration-underline text-white\" " +
 						"href=\"http://www.liferay.com\" rel=\"external\">" +
-							"Liferay</a>"),
-				StringPool.BLANK));
-		Assert.assertTrue(
-			content,
-			StringUtil.contains(content, expectedContent, StringPool.BLANK));
+							"Liferay</a>")));
+		Assert.assertTrue(content, content.contains(expectedContent));
 	}
 
 	@Inject

@@ -63,6 +63,7 @@ public class CSDiagramEntryModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
+		{"externalReferenceCode", Types.VARCHAR},
 		{"CSDiagramEntryId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
@@ -78,6 +79,7 @@ public class CSDiagramEntryModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("CSDiagramEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -94,7 +96,7 @@ public class CSDiagramEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CSDiagramEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,CSDiagramEntryId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPInstanceId LONG,CProductId LONG,diagram BOOLEAN,quantity INTEGER,sequence VARCHAR(75) null,sku VARCHAR(75) null,primary key (CSDiagramEntryId, ctCollectionId))";
+		"create table CSDiagramEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,externalReferenceCode VARCHAR(75) null,CSDiagramEntryId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPInstanceId LONG,CProductId LONG,diagram BOOLEAN,quantity INTEGER,sequence VARCHAR(75) null,sku VARCHAR(75) null,primary key (CSDiagramEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CSDiagramEntry";
 
@@ -132,7 +134,19 @@ public class CSDiagramEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SEQUENCE_COLUMN_BITMASK = 8L;
+	public static final long COMPANYID_COLUMN_BITMASK = 8L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 16L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SEQUENCE_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -249,6 +263,9 @@ public class CSDiagramEntryModelImpl
 			attributeGetterFunctions.put(
 				"ctCollectionId", CSDiagramEntry::getCtCollectionId);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CSDiagramEntry::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"CSDiagramEntryId", CSDiagramEntry::getCSDiagramEntryId);
 			attributeGetterFunctions.put(
 				"companyId", CSDiagramEntry::getCompanyId);
@@ -296,6 +313,10 @@ public class CSDiagramEntryModelImpl
 				"ctCollectionId",
 				(BiConsumer<CSDiagramEntry, Long>)
 					CSDiagramEntry::setCtCollectionId);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CSDiagramEntry, String>)
+					CSDiagramEntry::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"CSDiagramEntryId",
 				(BiConsumer<CSDiagramEntry, Long>)
@@ -384,6 +405,35 @@ public class CSDiagramEntryModelImpl
 
 	@JSON
 	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
+	}
+
+	@JSON
+	@Override
 	public long getCSDiagramEntryId() {
 		return _CSDiagramEntryId;
 	}
@@ -410,6 +460,16 @@ public class CSDiagramEntryModelImpl
 		}
 
 		_companyId = companyId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalCompanyId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
 	@JSON
@@ -717,6 +777,7 @@ public class CSDiagramEntryModelImpl
 
 		csDiagramEntryImpl.setMvccVersion(getMvccVersion());
 		csDiagramEntryImpl.setCtCollectionId(getCtCollectionId());
+		csDiagramEntryImpl.setExternalReferenceCode(getExternalReferenceCode());
 		csDiagramEntryImpl.setCSDiagramEntryId(getCSDiagramEntryId());
 		csDiagramEntryImpl.setCompanyId(getCompanyId());
 		csDiagramEntryImpl.setUserId(getUserId());
@@ -744,6 +805,8 @@ public class CSDiagramEntryModelImpl
 			this.<Long>getColumnOriginalValue("mvccVersion"));
 		csDiagramEntryImpl.setCtCollectionId(
 			this.<Long>getColumnOriginalValue("ctCollectionId"));
+		csDiagramEntryImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		csDiagramEntryImpl.setCSDiagramEntryId(
 			this.<Long>getColumnOriginalValue("CSDiagramEntryId"));
 		csDiagramEntryImpl.setCompanyId(
@@ -848,6 +911,18 @@ public class CSDiagramEntryModelImpl
 		csDiagramEntryCacheModel.mvccVersion = getMvccVersion();
 
 		csDiagramEntryCacheModel.ctCollectionId = getCtCollectionId();
+
+		csDiagramEntryCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			csDiagramEntryCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			csDiagramEntryCacheModel.externalReferenceCode = null;
+		}
 
 		csDiagramEntryCacheModel.CSDiagramEntryId = getCSDiagramEntryId();
 
@@ -970,6 +1045,7 @@ public class CSDiagramEntryModelImpl
 
 	private long _mvccVersion;
 	private long _ctCollectionId;
+	private String _externalReferenceCode;
 	private long _CSDiagramEntryId;
 	private long _companyId;
 	private long _userId;
@@ -1015,6 +1091,8 @@ public class CSDiagramEntryModelImpl
 
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("ctCollectionId", _ctCollectionId);
+		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
 		_columnOriginalValues.put("CSDiagramEntryId", _CSDiagramEntryId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
@@ -1045,31 +1123,33 @@ public class CSDiagramEntryModelImpl
 
 		columnBitmasks.put("ctCollectionId", 2L);
 
-		columnBitmasks.put("CSDiagramEntryId", 4L);
+		columnBitmasks.put("externalReferenceCode", 4L);
 
-		columnBitmasks.put("companyId", 8L);
+		columnBitmasks.put("CSDiagramEntryId", 8L);
 
-		columnBitmasks.put("userId", 16L);
+		columnBitmasks.put("companyId", 16L);
 
-		columnBitmasks.put("userName", 32L);
+		columnBitmasks.put("userId", 32L);
 
-		columnBitmasks.put("createDate", 64L);
+		columnBitmasks.put("userName", 64L);
 
-		columnBitmasks.put("modifiedDate", 128L);
+		columnBitmasks.put("createDate", 128L);
 
-		columnBitmasks.put("CPDefinitionId", 256L);
+		columnBitmasks.put("modifiedDate", 256L);
 
-		columnBitmasks.put("CPInstanceId", 512L);
+		columnBitmasks.put("CPDefinitionId", 512L);
 
-		columnBitmasks.put("CProductId", 1024L);
+		columnBitmasks.put("CPInstanceId", 1024L);
 
-		columnBitmasks.put("diagram", 2048L);
+		columnBitmasks.put("CProductId", 2048L);
 
-		columnBitmasks.put("quantity", 4096L);
+		columnBitmasks.put("diagram", 4096L);
 
-		columnBitmasks.put("sequence", 8192L);
+		columnBitmasks.put("quantity", 8192L);
 
-		columnBitmasks.put("sku", 16384L);
+		columnBitmasks.put("sequence", 16384L);
+
+		columnBitmasks.put("sku", 32768L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

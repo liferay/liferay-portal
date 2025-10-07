@@ -31,6 +31,7 @@ public class ViewDashboardJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new ViewDashboardDisplayContext(
+			groupLocalService,
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
 	}

@@ -220,6 +220,10 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		return _buildURL;
 	}
 
+	public String getCloudBucketURL() {
+		return _cloudBucketURL;
+	}
+
 	public String getComplianceAlertMessage(
 		ComplianceAlertType complianceAlertType) {
 
@@ -311,10 +315,6 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		return null;
 	}
 
-	public String getS3URL() {
-		return _s3URL;
-	}
-
 	public SimpleDateFormat getSimpleDateFormat() {
 		return _simpleDateFormat;
 	}
@@ -361,7 +361,7 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		}
 	}
 
-	public void sendSlackNotification(String s3URL) {
+	public void sendSlackNotification(String cloudBucketURL) {
 		StringBuilder sb = new StringBuilder();
 
 		String subject = "ScanCode pipeline is complete";
@@ -417,10 +417,10 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 				"(^\\[|\\]$)", ""
 			));
 
-		if (_s3URL != null) {
-			sb.append("\n*S3 tar.gz:* ");
+		if (_cloudBucketURL != null) {
+			sb.append("\n*Cloud Bucket tar.gz:* ");
 			sb.append("<");
-			sb.append(_s3URL);
+			sb.append(_cloudBucketURL);
 			sb.append("|");
 			sb.append(_projectNameFromURL + ".tar.gz");
 			sb.append(">");
@@ -476,12 +476,13 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		File tarGzFile = new File(tarGzFilePath);
 
 		try {
-			ScanCodeS3Bucket scanCodeS3Bucket = ScanCodeS3Bucket.getInstance();
+			ScanCodeCloudBucket scanCodeCloudBucket =
+				ScanCodeCloudBucket.getInstance();
 
-			scanCodeS3Bucket.createScanCodeS3Object(
+			scanCodeCloudBucket.createScanCodeCloudObject(
 				"inbox/" + tarGzFile.getName(), tarGzFile);
 
-			_s3URL = scanCodeS3Bucket.getS3URL();
+			_cloudBucketURL = scanCodeCloudBucket.getCloudBucketURL();
 		}
 		catch (Exception exception) {
 			exception.printStackTrace();
@@ -631,6 +632,7 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 	}
 
 	private final String _buildURL;
+	private String _cloudBucketURL;
 	private final List<String> _pipelineNames = new ArrayList<>();
 	private String _projectAPIURL;
 	private String _projectID;
@@ -639,7 +641,6 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 	private final List<String> _projectStatuses = new ArrayList<>();
 	private String _projectURL;
 	private final String _releaseBuildURL;
-	private String _s3URL;
 	private final SimpleDateFormat _simpleDateFormat = new SimpleDateFormat(
 		"MMM d yy HH:mm:ss");
 

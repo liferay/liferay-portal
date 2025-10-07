@@ -32,17 +32,29 @@ env:
     -   name: DNS_MEMBERSHIP_SERVICE_NAME
         value: liferay-default-headless
     -   name: LIFERAY_CLUSTER_PERIOD_LINK_PERIOD_BIND_PERIOD_ADDR_OPENBRACKET__QUOTE_CLUSTER_MINUS_LINK_MINUS_CONTROL_QUOTE__CLOSEBRACKET_
-        value: ${env.POD_ID}
+        value: ${env.POD_IP}
     -   name: LIFERAY_CLUSTER_PERIOD_LINK_PERIOD_BIND_PERIOD_ADDR_OPENBRACKET__QUOTE_CLUSTER_MINUS_LINK_MINUS_UDP_QUOTE__CLOSEBRACKET_
-        value: ${env.POD_ID}
+        value: ${env.POD_IP}
     -   name: LIFERAY_PORTAL_PERIOD_INSTANCE_PERIOD_INET_PERIOD_SOCKET_PERIOD_ADDRESS
-        value: ${env.POD_ID}:8080
+        value: ${env.POD_IP}:8080
     -   name: LIFERAY_TOMCAT_SESSION_REPLICATION_ENABLED
         value: "true"
-    -   name: POD_ID
+    -   name: POD_APP
+        valueFrom:
+            fieldRef:
+                fieldPath: metadata.labels['app.kubernetes.io/name']
+    -   name: POD_IP
         valueFrom:
             fieldRef:
                 fieldPath: status.podIP
+    -   name: POD_NAME
+        valueFrom:
+            fieldRef:
+                fieldPath: metadata.name
+    -   name: POD_NAMESPACE
+        valueFrom:
+            fieldRef:
+                fieldPath: metadata.namespace
 envFrom:
     -   secretRef:
             name: liferay-default
@@ -152,12 +164,13 @@ initContainers:
                 imagePullPolicy: IfNotPresent
                 name: liferay-wait-on-services
 livenessProbe:
-    failureThreshold: 2
+    failureThreshold: 3
     httpGet:
         path: /c/portal/robots
         port: http
-    initialDelaySeconds: 10
-    periodSeconds: 5
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 5
 nameOverride: ""
 nodeSelector: {}
 podAnnotations: {}
@@ -188,8 +201,9 @@ readinessProbe:
     httpGet:
         path: /c/portal/robots
         port: http
-    initialDelaySeconds: 10
-    periodSeconds: 5
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 5
 replicaCount: 1
 resources: {}
 schedulingGates: []
@@ -225,12 +239,13 @@ serviceAccount:
                 verbs:
                     -   "*"
 startupProbe:
-    failureThreshold: 30
+    failureThreshold: 90
     httpGet:
         path: /c/portal/robots
         port: http
-    initialDelaySeconds: 20
-    periodSeconds: 5
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
 tolerations: []
 updateStrategy:
     type: RollingUpdate
@@ -259,6 +274,9 @@ volumeMounts:
     -   mountPath: /opt/liferay/logs
         name: liferay-persistent-volume
         subPath: liferay/logs
+    -   mountPath: /opt/liferay/metrics
+        name: liferay-persistent-volume
+        subPath: liferay/metrics
     -   mountPath: /opt/liferay/osgi/configs
         name: liferay-persistent-volume
         subPath: osgi/configs
@@ -310,6 +328,9 @@ volumeMounts:
     -   mountPath: /usr/local/liferay/scripts/pre-configure/000_jdk_java_options.sh
         name: liferay-configmap
         subPath: 000_jdk_java_options.sh
+    -   mountPath: /usr/local/liferay/scripts/pre-configure/010_install_prometheus_jmx_agent.sh
+        name: liferay-configmap
+        subPath: 010_install_prometheus_jmx_agent.sh
 volumes:
     -   configMap:
             name: liferay-default

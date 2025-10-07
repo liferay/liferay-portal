@@ -444,8 +444,8 @@ public class GetPageContentMVCResourceCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), _layout.getPlid(),
-				layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_layout.getPlid(), layoutStructure.toString());
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayPortletResourceRequest(

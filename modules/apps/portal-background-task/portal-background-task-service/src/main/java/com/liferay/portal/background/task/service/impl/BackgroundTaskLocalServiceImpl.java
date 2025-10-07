@@ -26,12 +26,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -218,7 +218,7 @@ public class BackgroundTaskLocalServiceImpl
 				Message message = new Message();
 
 				message.put(
-					BackgroundTaskConstants.BACKGROUND_TASK_ID,
+					BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 					backgroundTask.getBackgroundTaskId());
 				message.put("companyId", backgroundTask.getCompanyId());
 				message.put("name", backgroundTask.getName());
@@ -650,7 +650,8 @@ public class BackgroundTaskLocalServiceImpl
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID, backgroundTaskId);
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
+			backgroundTaskId);
 		message.put("companyId", backgroundTask.getCompanyId());
 
 		_messageBus.sendMessage(DestinationNames.BACKGROUND_TASK, message);
@@ -680,7 +681,8 @@ public class BackgroundTaskLocalServiceImpl
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID, backgroundTaskId);
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
+			backgroundTaskId);
 		message.put("companyId", backgroundTask.getCompanyId());
 
 		_messageBus.sendMessage(DestinationNames.BACKGROUND_TASK, message);
@@ -713,7 +715,8 @@ public class BackgroundTaskLocalServiceImpl
 			backgroundTask.setUserName(user.getFullName());
 		}
 		else {
-			backgroundTask.setCompanyId(CompanyConstants.SYSTEM);
+			backgroundTask.setCompanyId(
+				CompanyThreadLocal.getNonsystemCompanyId());
 			backgroundTask.setUserName(StringPool.BLANK);
 		}
 

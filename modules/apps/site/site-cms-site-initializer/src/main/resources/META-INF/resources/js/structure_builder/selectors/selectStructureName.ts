@@ -6,5 +6,5 @@
 import {State} from '../contexts/StateContext';
 
 export default function selectStructureName(state: State) {
-	return state.name;
+	return state.structure.name;
 }

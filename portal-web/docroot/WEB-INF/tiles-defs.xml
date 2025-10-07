@@ -76,6 +76,11 @@
 		<put name="content" value="/portal/update_password.jsp" />
 	</definition>
 
+	<definition extends="portal" name="portal.update_password_utility_page">
+		<put name="title" value="new-password" />
+		<put name="content" value="/portal/update_password_utility_page.jsp" />
+	</definition>
+
 	<definition extends="portal" name="portal.update_reminder_query">
 		<put name="title" value="password-reminder" />
 		<put name="content" value="/portal/update_reminder_query.jsp" />

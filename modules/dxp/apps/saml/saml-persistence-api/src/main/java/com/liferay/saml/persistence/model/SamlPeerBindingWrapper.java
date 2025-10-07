@@ -35,9 +35,10 @@ public class SamlPeerBindingWrapper
 
 		attributes.put("samlPeerBindingId", getSamlPeerBindingId());
 		attributes.put("companyId", getCompanyId());
-		attributes.put("createDate", getCreateDate());
 		attributes.put("userId", getUserId());
 		attributes.put("userName", getUserName());
+		attributes.put("createDate", getCreateDate());
+		attributes.put("samlPeerEntityId", getSamlPeerEntityId());
 		attributes.put("deleted", isDeleted());
 		attributes.put("samlNameIdFormat", getSamlNameIdFormat());
 		attributes.put("samlNameIdNameQualifier", getSamlNameIdNameQualifier());
@@ -45,7 +46,6 @@ public class SamlPeerBindingWrapper
 			"samlNameIdSpNameQualifier", getSamlNameIdSpNameQualifier());
 		attributes.put("samlNameIdSpProvidedId", getSamlNameIdSpProvidedId());
 		attributes.put("samlNameIdValue", getSamlNameIdValue());
-		attributes.put("samlPeerEntityId", getSamlPeerEntityId());
 
 		return attributes;
 	}
@@ -64,12 +64,6 @@ public class SamlPeerBindingWrapper
 			setCompanyId(companyId);
 		}
 
-		Date createDate = (Date)attributes.get("createDate");
-
-		if (createDate != null) {
-			setCreateDate(createDate);
-		}
-
 		Long userId = (Long)attributes.get("userId");
 
 		if (userId != null) {
@@ -80,6 +74,18 @@ public class SamlPeerBindingWrapper
 
 		if (userName != null) {
 			setUserName(userName);
+		}
+
+		Date createDate = (Date)attributes.get("createDate");
+
+		if (createDate != null) {
+			setCreateDate(createDate);
+		}
+
+		String samlPeerEntityId = (String)attributes.get("samlPeerEntityId");
+
+		if (samlPeerEntityId != null) {
+			setSamlPeerEntityId(samlPeerEntityId);
 		}
 
 		Boolean deleted = (Boolean)attributes.get("deleted");
@@ -119,12 +125,6 @@ public class SamlPeerBindingWrapper
 
 		if (samlNameIdValue != null) {
 			setSamlNameIdValue(samlNameIdValue);
-		}
-
-		String samlPeerEntityId = (String)attributes.get("samlPeerEntityId");
-
-		if (samlPeerEntityId != null) {
-			setSamlPeerEntityId(samlPeerEntityId);
 		}
 	}
 

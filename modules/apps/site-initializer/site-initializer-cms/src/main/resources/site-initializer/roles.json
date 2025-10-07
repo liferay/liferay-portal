@@ -1,0 +1,187 @@
+[
+	{
+		"actions": [
+			{
+				"actionId": "VIEW_CONTROL_PANEL",
+				"resource": "90",
+				"scope": 1
+			},
+			{
+				"actionId": "ACCESS_IN_CONTROL_PANEL",
+				"resource": "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "CONFIGURATION",
+				"resource": "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "PREFERENCES",
+				"resource": "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "ACCESS_IN_CONTROL_PANEL",
+				"resource": "com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "CONFIGURATION",
+				"resource": "com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "PREFERENCES",
+				"resource": "com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com_liferay_asset_tags_admin_web_portlet_AssetTagsAdminPortlet",
+				"scope": 1
+			},
+			{
+				"actionId": "ADD_CATEGORY",
+				"resource": "com.liferay.asset.categories",
+				"scope": 1
+			},
+			{
+				"actionId": "ADD_VOCABULARY",
+				"resource": "com.liferay.asset.categories",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.asset.categories",
+				"scope": 1
+			},
+			{
+				"actionId": "ADD_CATEGORY",
+				"resource": "com.liferay.asset.kernel.model.AssetCategory",
+				"scope": 1
+			},
+			{
+				"actionId": "DELETE",
+				"resource": "com.liferay.asset.kernel.model.AssetCategory",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.asset.kernel.model.AssetCategory",
+				"scope": 1
+			},
+			{
+				"actionId": "UPDATE",
+				"resource": "com.liferay.asset.kernel.model.AssetCategory",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.asset.kernel.model.AssetCategory",
+				"scope": 1
+			},
+			{
+				"actionId": "DELETE",
+				"resource": "com.liferay.asset.kernel.model.AssetVocabulary",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.asset.kernel.model.AssetVocabulary",
+				"scope": 1
+			},
+			{
+				"actionId": "UPDATE",
+				"resource": "com.liferay.asset.kernel.model.AssetVocabulary",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.asset.kernel.model.AssetVocabulary",
+				"scope": 1
+			},
+			{
+				"actionId": "MANAGE_TAG",
+				"resource": "com.liferay.asset.tags",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.asset.tags",
+				"scope": 1
+			},
+			{
+				"actionId": "SUBSCRIBE",
+				"resource": "com.liferay.asset.tags",
+				"scope": 1
+			},
+			{
+				"actionId": "ADD_DEPOT_ENTRY",
+				"resource": "com.liferay.depot",
+				"scope": 1
+			},
+			{
+				"actionId": "DELETE",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 1
+			},
+			{
+				"actionId": "UPDATE",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.depot.model.DepotEntry",
+				"scope": 1
+			},
+			{
+				"actionId": "DELETE",
+				"resource": "com.liferay.object.model.ObjectDefinition",
+				"scope": 1
+			},
+			{
+				"actionId": "PERMISSIONS",
+				"resource": "com.liferay.object.model.ObjectDefinition",
+				"scope": 1
+			},
+			{
+				"actionId": "UPDATE",
+				"resource": "com.liferay.object.model.ObjectDefinition",
+				"scope": 1
+			},
+			{
+				"actionId": "VIEW",
+				"resource": "com.liferay.object.model.ObjectDefinition",
+				"scope": 1
+			}
+		],
+		"name": "CMS Administrator",
+		"name_i18n": {
+			"en-US": "CMS Administrator"
+		},
+		"scope": 1,
+		"type": 1
+	}
+]

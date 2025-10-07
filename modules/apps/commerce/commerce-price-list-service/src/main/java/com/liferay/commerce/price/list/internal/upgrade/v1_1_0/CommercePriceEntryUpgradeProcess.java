@@ -46,7 +46,7 @@ public class CommercePriceEntryUpgradeProcess extends UpgradeProcess {
 		_addIndexes(CommercePriceEntryModelImpl.TABLE_NAME);
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update CommercePriceEntry set CProductId = ?," +
+				"update CommercePriceEntry set CProductId = ?, " +
 					"CPInstanceUuid = ? where CPInstanceId = ?");
 			Statement s = connection.createStatement();
 			ResultSet resultSet = s.executeQuery(

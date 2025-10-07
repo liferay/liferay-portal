@@ -14,7 +14,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Olivér Kecskeméty
  */
 @ExtendedObjectClassDefinition(
-	category = "content-security-policy", featureFlagKey = "LPS-134060",
+	category = "content-security-policy",
 	scope = ExtendedObjectClassDefinition.Scope.GROUP
 )
 @Meta.OCD(
@@ -26,6 +26,9 @@ public interface ContentSecurityPolicyConfiguration {
 
 	@Meta.AD(deflt = "false", name = "enabled", required = false)
 	public boolean enabled();
+
+	@Meta.AD(deflt = "true", name = "report-only", required = false)
+	public boolean reportOnly();
 
 	@ExtendedAttributeDefinition(descriptionArguments = "[$NONCE$]")
 	@Meta.AD(

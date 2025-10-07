@@ -2,7 +2,7 @@
 	"connect": {
 		"en_US": {
 			"message": "Learn more how to connect Liferay to the Marketplace.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/marketplace/connecting-liferay-dxp-to-marketplace"
+			"url": "https://learn.liferay.com/w/dxp/development/marketplace/connecting-liferay-dxp-to-marketplace"
 		}
 	}
 }

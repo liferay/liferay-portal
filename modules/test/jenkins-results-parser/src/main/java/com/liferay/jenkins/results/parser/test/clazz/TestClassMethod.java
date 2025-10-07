@@ -12,6 +12,10 @@ import org.json.JSONObject;
  */
 public class TestClassMethod {
 
+	public String getIssues() {
+		return _issues;
+	}
+
 	public JSONObject getJSONObject() {
 		return _jsonObject;
 	}
@@ -24,8 +28,30 @@ public class TestClassMethod {
 		return _testClass;
 	}
 
+	public boolean isBuildCachingEnabled() {
+		return _testClass.isBuildCachingEnabled();
+	}
+
 	public boolean isIgnored() {
 		return _ignored;
+	}
+
+	protected TestClassMethod(
+		boolean ignored, String name, String issues, TestClass testClass) {
+
+		_ignored = ignored;
+		_name = name;
+		_issues = issues;
+		_testClass = testClass;
+
+		_jsonObject = new JSONObject(
+		).put(
+			"ignored", ignored
+		).put(
+			"issues", issues
+		).put(
+			"name", name
+		);
 	}
 
 	protected TestClassMethod(
@@ -35,10 +61,13 @@ public class TestClassMethod {
 		_name = name;
 		_testClass = testClass;
 
-		_jsonObject = new JSONObject();
+		_issues = null;
 
-		_jsonObject.put(
+		_jsonObject = new JSONObject(
+		).put(
 			"ignored", ignored
+		).put(
+			"issues", ""
 		).put(
 			"name", name
 		);
@@ -49,10 +78,12 @@ public class TestClassMethod {
 		_testClass = testClass;
 
 		_ignored = jsonObject.getBoolean("ignored");
+		_issues = jsonObject.optString("issues");
 		_name = jsonObject.getString("name");
 	}
 
 	private final boolean _ignored;
+	private final String _issues;
 	private final JSONObject _jsonObject;
 	private final String _name;
 	private final TestClass _testClass;

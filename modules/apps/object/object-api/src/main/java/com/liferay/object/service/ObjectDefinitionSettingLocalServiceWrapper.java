@@ -381,6 +381,14 @@ public class ObjectDefinitionSettingLocalServiceWrapper
 			getObjectDefinitionSettingsCount();
 	}
 
+	@Override
+	public java.util.Map<Long, com.liferay.object.model.ObjectDefinitionSetting>
+		getObjectDefinitionSettingsMap(long companyId, String name) {
+
+		return _objectDefinitionSettingLocalService.
+			getObjectDefinitionSettingsMap(companyId, name);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

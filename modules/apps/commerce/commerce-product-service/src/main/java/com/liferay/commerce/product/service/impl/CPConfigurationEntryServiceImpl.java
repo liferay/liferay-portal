@@ -45,8 +45,8 @@ public class CPConfigurationEntryServiceImpl
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
 
 		_checkCommerceCatalog(groupId, ActionKeys.UPDATE);
@@ -59,7 +59,7 @@ public class CPConfigurationEntryServiceImpl
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	@Override
@@ -134,8 +134,8 @@ public class CPConfigurationEntryServiceImpl
 			BigDecimal maxOrderQuantity, BigDecimal minOrderQuantity,
 			BigDecimal minStockQuantity, BigDecimal multipleOrderQuantity,
 			boolean purchasable, boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
@@ -152,7 +152,7 @@ public class CPConfigurationEntryServiceImpl
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	private void _checkCommerceCatalog(long groupId, String actionId)

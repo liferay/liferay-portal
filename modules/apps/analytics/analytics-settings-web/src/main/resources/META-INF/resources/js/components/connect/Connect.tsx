@@ -44,7 +44,7 @@ const Connect: React.FC<
 	return (
 		<BasePage
 			description={Liferay.Language.get(
-				'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'
+				'use-the-token-generated-in-your-analytics-cloud-to-connect-this-workspace'
 			)}
 			title={title}
 		>

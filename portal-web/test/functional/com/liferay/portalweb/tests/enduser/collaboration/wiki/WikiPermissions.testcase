@@ -285,6 +285,7 @@ definition {
 	@refactordone
 	test CannotAddWikiAssetsWithRegularRoleWithoutPermissions {
 		property custom.properties = "feature.flag.LPS-188058=true${line.separator}jsonws.web.service.paths.excludes=";
+		property portal.acceptance = "false";
 
 		Permissions.setUpRegRoleLoginUserCP(
 			roleTitle = "Regrole Name",
@@ -364,6 +365,8 @@ definition {
 	@description = "This is a test for LPS-162742. It checks that configured permissions will remain after renaming the wiki page."
 	@priority = 3
 	test ConfiguredPermissionsWillRemainAfterRenamingPage {
+		property portal.acceptance = "false";
+
 		WikiNavigator.openToAddPage(
 			groupName = "Guest",
 			siteURLKey = "guest",

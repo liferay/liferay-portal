@@ -6,12 +6,18 @@
 package com.liferay.commerce.order.content.web.internal.info.item.provider;
 
 import com.liferay.commerce.model.CommerceOrderItem;
-import com.liferay.commerce.service.CommerceOrderItemService;
+import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -22,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
 		"item.class.name=com.liferay.commerce.model.CommerceOrderItem",
 		"service.ranking:Integer=100"
 	},
@@ -30,31 +37,99 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceOrderItemInfoItemObjectProvider
 	implements InfoItemObjectProvider<CommerceOrderItem> {
 
-	@Override
 	public CommerceOrderItem getInfoItem(InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		return getInfoItem(
+			serviceContext.getScopeGroupId(), infoItemIdentifier);
+	}
+
+	@Override
+	public CommerceOrderItem getInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
+		throws NoSuchInfoItemException {
+
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
 			throw new NoSuchInfoItemException(
 				"Unsupported info item identifier " + infoItemIdentifier);
 		}
 
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)infoItemIdentifier;
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
-		try {
-			return _commerceOrderItemService.getCommerceOrderItem(
-				classPKInfoItemIdentifier.getClassPK());
+			CommerceOrderItem commerceOrderItem =
+				_commerceOrderItemLocalService.fetchCommerceOrderItem(
+					classPKInfoItemIdentifier.getClassPK());
+
+			if (commerceOrderItem == null) {
+				throw new NoSuchInfoItemException(
+					"Unable to get commerce order item " +
+						classPKInfoItemIdentifier.getClassPK());
+			}
+
+			return commerceOrderItem;
 		}
-		catch (PortalException portalException) {
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
+
+		Group group = null;
+
+		if (Validator.isNull(
+				ercInfoItemIdentifier.getScopeExternalReferenceCode())) {
+
+			group = _groupLocalService.fetchGroup(groupId);
+
+			if (group == null) {
+				throw new NoSuchInfoItemException(
+					"No group found with group ID " + groupId);
+			}
+		}
+		else {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				ercInfoItemIdentifier.getScopeExternalReferenceCode(),
+				serviceContext.getCompanyId());
+
+			if (group == null) {
+				throw new NoSuchInfoItemException(
+					StringBundler.concat(
+						"No group found with company ID ",
+						serviceContext.getCompanyId(),
+						" and external reference code ",
+						ercInfoItemIdentifier.getScopeExternalReferenceCode()));
+			}
+		}
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.
+				fetchCommerceOrderItemByExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(),
+					group.getCompanyId());
+
+		if (commerceOrderItem == null) {
 			throw new NoSuchInfoItemException(
-				"Unable to get commerce order item " +
-					classPKInfoItemIdentifier.getClassPK(),
-				portalException);
+				StringBundler.concat(
+					"No commerce order item found with company ID ",
+					group.getCompanyId(), " and external reference code ",
+					ercInfoItemIdentifier.getExternalReferenceCode()));
 		}
+
+		return commerceOrderItem;
 	}
 
 	@Reference
-	private CommerceOrderItemService _commerceOrderItemService;
+	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }

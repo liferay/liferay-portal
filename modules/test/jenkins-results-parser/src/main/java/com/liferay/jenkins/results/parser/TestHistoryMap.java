@@ -85,7 +85,7 @@ public class TestHistoryMap {
 
 			List<TestrayCaseResult> testrayCaseResults =
 				_latestTestrayBuild.getTestrayCaseResults(
-					testrayCaseType, testrayRun);
+					testrayCaseType, testrayRun, false);
 
 			for (TestrayCaseResult testrayCaseResult : testrayCaseResults) {
 				String testClassName = testrayCaseResult.getName();

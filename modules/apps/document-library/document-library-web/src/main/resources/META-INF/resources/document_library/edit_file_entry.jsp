@@ -661,7 +661,7 @@ renderResponse.setTitle(headerTitle);
 		) {
 			Liferay.Util.openConfirmModal({
 				message:
-					'<liferay-ui:message key="changing-the-document-type-will-cause-data-loss" />',
+					'<liferay-ui:message key="changing-the-document-type-will-clear-the-currently-selected-file-and-metadata" />',
 				onConfirm: (isConfirmed) => {
 					if (isConfirmed) {
 						updateFileEntryType();

@@ -86,7 +86,8 @@ public class StagingConfigurationPortlet extends MVCPortlet {
 
 		try {
 			long backgroundTaskId = ParamUtil.getLong(
-				actionRequest, BackgroundTaskConstants.BACKGROUND_TASK_ID);
+				actionRequest,
+				BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 			_backgroundTaskManager.deleteBackgroundTask(backgroundTaskId);
 

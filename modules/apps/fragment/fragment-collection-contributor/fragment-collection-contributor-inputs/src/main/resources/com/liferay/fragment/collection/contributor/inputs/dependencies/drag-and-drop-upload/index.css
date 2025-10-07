@@ -1,0 +1,32 @@
+.drag-and-drop-upload {
+	--default-fragment-height: 281px;
+	height: var(--default-fragment-height, fit-content);
+}
+
+.dropzone-default-content,
+.dropzone-no-preview {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 0;
+}
+
+.dropzone-default-content {
+	background: #f7f8f9;
+	border: 2px dashed #cdced9;
+
+	&.dropzone-hover {
+		background-color: #f0f5ff;
+		border: 2px solid #80acff;
+		cursor: grabbing;
+	}
+}
+
+.dropzone-no-preview {
+	background: #ffffff;
+	border: 1px solid #e7e7ed;
+}
+
+.preview-container {
+	overflow: hidden;
+}

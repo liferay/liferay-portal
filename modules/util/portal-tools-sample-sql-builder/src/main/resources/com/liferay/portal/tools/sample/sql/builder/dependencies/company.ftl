@@ -24,4 +24,6 @@
 	<#include "system_object_definitions.ftl">
 
 	<#include "groups.ftl">
+
+	${csvFileWriter.write("portalPreferenceValue", companyModel.companyId + "," + dataFactory.recentGroupIds + "\n")}
 </#list>

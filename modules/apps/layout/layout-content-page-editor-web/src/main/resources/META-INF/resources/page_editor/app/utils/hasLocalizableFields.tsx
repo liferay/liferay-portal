@@ -4,9 +4,10 @@
  */
 
 import {FormLayoutDataItem} from '../../types/layout_data/FormLayoutDataItem';
+import {ObjectFields} from '../contexts/ObjectDataContext';
 import {State} from '../reducers';
 import selectFormConfiguration from '../selectors/selectFormConfiguration';
-import FormService, {FormFieldSet} from '../services/FormService';
+import FormService from '../services/FormService';
 import {CACHE_KEYS, getCacheItem, getCacheKey} from './cache';
 import {findSelectedFormFields} from './findSelectedFormFields';
 
@@ -31,7 +32,7 @@ export async function hasLocalizableFields(
 		classTypeId,
 	]);
 
-	const {data: fields} = getCacheItem<FormFieldSet[]>(cacheKey);
+	const {data: fields} = getCacheItem<ObjectFields>(cacheKey);
 
 	const promise = fields
 		? Promise.resolve(fields)
@@ -43,7 +44,9 @@ export async function hasLocalizableFields(
 	const formFields = await promise;
 
 	return formFields
-		.flatMap((field) => field.fields)
-		.filter((field) => selectedFormFields.includes(field.key))
-		.some((field) => field.localizable);
+		.flatMap((field) => ('fields' in field ? field.fields : []))
+		.filter(
+			(field) => 'key' in field && selectedFormFields.includes(field.key)
+		)
+		.some((field) => 'localizable' in field && field.localizable);
 }

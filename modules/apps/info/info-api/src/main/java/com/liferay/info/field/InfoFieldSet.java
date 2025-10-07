@@ -129,6 +129,10 @@ public class InfoFieldSet implements InfoFieldSetEntry {
 		return HashUtil.hash(hash, _builder._name);
 	}
 
+	public boolean isRelationship() {
+		return _builder._relationship;
+	}
+
 	@Override
 	public String toString() {
 		return StringBundler.concat(
@@ -192,11 +196,18 @@ public class InfoFieldSet implements InfoFieldSetEntry {
 			return this;
 		}
 
+		public Builder relationship(boolean relationship) {
+			_relationship = relationship;
+
+			return this;
+		}
+
 		private InfoLocalizedValue<String> _descriptionInfoLocalizedValue;
 		private final Map<String, InfoFieldSetEntry> _infoFieldSetEntries =
 			new LinkedHashMap<>();
 		private InfoLocalizedValue<String> _labelInfoLocalizedValue;
 		private String _name;
+		private boolean _relationship;
 
 	}
 

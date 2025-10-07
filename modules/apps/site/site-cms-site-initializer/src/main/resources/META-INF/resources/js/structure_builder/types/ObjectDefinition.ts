@@ -18,7 +18,7 @@ export type ObjectField = {
 	name: string;
 	objectFieldSettings?: {name: string; value: boolean | string | number}[];
 	required: boolean;
-	system?: boolean;
+	system: boolean;
 };
 
 export type ObjectRelationship = {
@@ -31,10 +31,13 @@ export type ObjectRelationship = {
 };
 
 export type ObjectDefinition = {
+	enableComments: boolean;
 	enableFriendlyURLCustomization: boolean;
 	enableIndexSearch: boolean;
 	enableLocalization: boolean;
 	enableObjectEntryDraft: boolean;
+	enableObjectEntryHistory: boolean;
+	enableObjectEntrySchedule: boolean;
 	enableObjectEntryVersioning: boolean;
 	externalReferenceCode: string;
 	id?: number;
@@ -45,11 +48,24 @@ export type ObjectDefinition = {
 		value: string;
 	}[];
 	objectFields?: ObjectField[];
-	objectFolderExternalReferenceCode?: string;
+	objectFolderExternalReferenceCode?:
+		| 'L_CMS_CONTENT_STRUCTURES'
+		| 'L_CMS_FILE_TYPES'
+		| 'L_CMS_STRUCTURE_REPEATABLE_GROUPS';
 	objectRelationships?: ObjectRelationship[];
 	pluralLabel: Liferay.Language.LocalizedValue<string>;
 	scope: 'company' | 'depot' | 'site';
 	status?: {
-		label: string;
+		code: number;
 	};
+	titleObjectFieldName?: string;
+	workflowDefinitionLinks?: {
+		groupExternalReferenceCode: string;
+		workflowDefinitionName: string;
+	}[];
 };
+
+export type ObjectDefinitions = Record<
+	ObjectDefinition['externalReferenceCode'],
+	ObjectDefinition
+>;

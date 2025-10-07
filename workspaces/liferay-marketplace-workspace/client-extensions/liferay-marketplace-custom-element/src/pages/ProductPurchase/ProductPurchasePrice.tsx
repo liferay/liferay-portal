@@ -3,38 +3,53 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayLabel from '@clayui/label';
 import {useSelector} from '@xstate/store/react';
 import classNames from 'classnames';
+import {useMemo} from 'react';
 
 import ProductPurchase from '../../components/ProductPurchase';
-import {getLicenseTagText, getProductPrice} from '../../utils/productUtils';
-import {cartStore} from './store/CartStore';
+import {MarketplaceDeliveryProduct} from '../../entity/MarketplaceDeliveryProduct';
+import {ProductPriceModel} from '../../enums/Product';
+import useProductPurchaseCart from '../../hooks/useProductPurchaseCart';
+import i18n from '../../i18n';
+import {cartStore} from './store';
 
 type ProductPurchasePriceProps = {
-	activeStepIndex: number;
 	product: DeliveryProduct;
+	productPurchaseCart: ReturnType<typeof useProductPurchaseCart>;
 };
 
 const ProductPurchasePrice: React.FC<ProductPurchasePriceProps> = ({
-	activeStepIndex,
 	product,
 }) => {
 	const cart = useSelector(cartStore, ({context}) => context.cart);
-	const firstStep = activeStepIndex === 0;
+
+	const marketplaceDeliveryProduct = useMemo(() => {
+		return new MarketplaceDeliveryProduct(product);
+	}, [product]);
+
+	const getFormattedPrice = () => {
+		const productPrice =
+			cart?.summary?.totalFormatted ||
+			marketplaceDeliveryProduct.getPrice();
+
+		const vatText =
+			marketplaceDeliveryProduct.getPriceModel() ===
+			ProductPriceModel.PAID
+				? `(${i18n.translate('excluding-vat')})`
+				: '';
+
+		return `${productPrice} ${vatText}`;
+	};
 
 	return (
 		<ProductPurchase.Price
-			className={classNames('mr-1 py-2', {h4: !firstStep})}
-			price={
-				(activeStepIndex === 0
-					? getProductPrice(product)
-					: cart?.summary?.totalFormatted) || '$ 0,00'
-			}
+			className={classNames('mr-1 pr--2 py-2 text-nowrap')}
+			price={getFormattedPrice()}
 		>
-			<ClayLabel displayType="info">
-				{getLicenseTagText(product)}
-			</ClayLabel>
+			<div className="license-tag px-2">
+				{marketplaceDeliveryProduct.getLicenseTagText()}
+			</div>
 		</ProductPurchase.Price>
 	);
 };

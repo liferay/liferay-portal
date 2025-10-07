@@ -23,14 +23,22 @@ const standardObjectDefinitionMock = {
 
 const rootObjectDefinitionMock = {
 	...standardObjectDefinitionMock,
-	rootObjectDefinitionExternalReferenceCode:
-		'e11aa801-238b-f2d2-195c-e96b6b03dbd5',
+	objectDefinitionSettings: [
+		{
+			name: 'rootObjectDefinitionExternalReferenceCodes',
+			value: 'e11aa801-238b-f2d2-195c-e96b6b03dbd5',
+		},
+	],
 };
 
 const inheritedObjectDefinitionMock = {
 	...standardObjectDefinitionMock,
-	rootObjectDefinitionExternalReferenceCode:
-		'660defb8-7549-8191-3174-fca8bad17656',
+	objectDefinitionSettings: [
+		{
+			name: 'rootObjectDefinitionExternalReferenceCodes',
+			value: '660defb8-7549-8191-3174-fca8bad17656',
+		},
+	],
 };
 
 describe('The ObjectDefinitionInheritanceDataRenderer component should', () => {

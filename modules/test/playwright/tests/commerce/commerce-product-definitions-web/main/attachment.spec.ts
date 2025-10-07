@@ -32,7 +32,6 @@ test('LPD-3209 The download URL is present when the file entry is a file upload'
 		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'Channel',
 		siteGroupId: site.id,
 	});
 
@@ -93,7 +92,6 @@ test('LPD-3209 The download URL is not present when the file entry is an externa
 		await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath('guest');
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'Channel',
 		siteGroupId: site.id,
 	});
 

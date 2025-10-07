@@ -3,21 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
-import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import Container from '../components/Container';
-import {Authorization} from '../types';
 
 type StatusProps = {
-	authorization: Authorization;
 	onDisconnect: () => void;
 };
 
-export default function Status({authorization, onDisconnect}: StatusProps) {
-	const settings = authorization.data?.settings;
-
+export default function Status({onDisconnect}: StatusProps) {
 	return (
 		<Container
 			footer={
@@ -32,19 +28,15 @@ export default function Status({authorization, onDisconnect}: StatusProps) {
 			}
 			title="Status"
 		>
-			<p
-				dangerouslySetInnerHTML={{
-					__html: sub(
-						Liferay.Language.get(
-							'congratulations-x.-you-have-successfully-connected-x-to-the-marketplace'
-						),
-						[
-							`<strong>${settings?.userAccount?.name}</strong>`,
-							`<strong>${settings?.account?.name}</strong>`,
-						]
-					),
-				}}
-			/>
+			<ClayAlert displayType="success">
+				{Liferay.Language.get('connected')}
+			</ClayAlert>
+
+			<p>
+				{Liferay.Language.get(
+					'your-liferay-instance-is-connected-to-the-marketplace'
+				)}
+			</p>
 		</Container>
 	);
 }

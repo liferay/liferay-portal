@@ -32,7 +32,11 @@ const Sidebar = () => {
 	const [visible, setVisible] = useState(false);
 	const {pathname} = useLocation();
 
-	const relevantPaths = ['project', 'case-result'];
+	const relevantPaths = [
+		['case-result', 'project'],
+		['issues'],
+		['testflow'],
+	];
 
 	const CompareRunsContent = (
 		<div
@@ -87,6 +91,11 @@ const Sidebar = () => {
 			icon: 'polls',
 			label: i18n.translate('results'),
 			path: '/',
+		},
+		{
+			icon: 'box-container',
+			label: i18n.translate('Issues'),
+			path: '/issues',
 		},
 		{
 			icon: 'merge',
@@ -166,18 +175,16 @@ const Sidebar = () => {
 						<div className="tr-sidebar__content__list">
 							{sidebarItems.map(
 								({element, icon, label, path}, index) => {
-									if (path) {
+									if (path && index <= 2) {
 										return (
 											<SidebarItem
-												active={
-													relevantPaths.some(
-														(relevantPath) =>
-															pathname.includes(
-																relevantPath
-															)
-													) &&
-													!path.includes('testflow')
-												}
+												active={relevantPaths[
+													index
+												].some((relevantPath) =>
+													pathname.includes(
+														relevantPath
+													)
+												)}
 												expanded={expanded}
 												icon={icon}
 												key={index}
@@ -193,7 +200,7 @@ const Sidebar = () => {
 												'tr-sidebar__content_list__item"',
 												{
 													'tr-sidebar__content__list__item--active':
-														index === 3 &&
+														index === 4 &&
 														pathname.includes(
 															'compare-runs'
 														),

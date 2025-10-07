@@ -202,6 +202,18 @@ public class ObjectValidationRuleResourceTest
 
 	@Override
 	protected ObjectValidationRule
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectValidationRulesPageObjectDefinitionObjectValidationRule_addObjectValidationRule(
+				String objectDefinitionExternalReferenceCode,
+				ObjectValidationRule objectValidationRule)
+		throws Exception {
+
+		return objectValidationRuleResource.
+			postObjectDefinitionByExternalReferenceCodeObjectValidationRule(
+				objectDefinitionExternalReferenceCode, objectValidationRule);
+	}
+
+	@Override
+	protected ObjectValidationRule
 			testGraphQLObjectValidationRule_addObjectValidationRule()
 		throws Exception {
 
@@ -209,6 +221,22 @@ public class ObjectValidationRuleResourceTest
 			postObjectDefinitionObjectValidationRule(
 				_objectDefinition.getObjectDefinitionId(),
 				randomObjectValidationRule());
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectValidationRule_getObjectDefinitionId(
+			ObjectValidationRule objectValidationRule) {
+
+		return objectValidationRule.getObjectDefinitionId();
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionObjectValidationRule_getObjectDefinitionId(
+			ObjectValidationRule objectValidationRule) {
+
+		return objectValidationRule.getObjectDefinitionId();
 	}
 
 	@Override

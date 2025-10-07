@@ -8,6 +8,7 @@ package com.liferay.depot.web.internal.asset.model.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -68,7 +69,8 @@ public class DepotAssetRendererFactoryTrackerTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), "name"
 			).build(),
-			new HashMap<>(), ServiceContextTestUtil.getServiceContext());
+			new HashMap<>(), DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test

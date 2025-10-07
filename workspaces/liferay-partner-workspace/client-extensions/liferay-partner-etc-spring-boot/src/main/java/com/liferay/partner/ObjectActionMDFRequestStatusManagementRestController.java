@@ -131,8 +131,7 @@ public class ObjectActionMDFRequestStatusManagementRestController
 
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
-			"liferay-partner-etc-spring-boot-oauth-application-headless-" +
-				"server");
+			"liferay-partner-etc-spring-boot-oahs");
 	}
 
 	@Autowired

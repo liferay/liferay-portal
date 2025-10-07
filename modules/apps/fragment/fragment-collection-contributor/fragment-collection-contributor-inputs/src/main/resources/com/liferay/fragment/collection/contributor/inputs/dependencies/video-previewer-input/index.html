@@ -1,9 +1,9 @@
-<div class="video-previewer-input" data-localizable="${input.localizable?string('true', 'false')}">
-	<div class="form-group [#if input.errorMessage?has_content]has-error [/#if]mb-4" id="${fragmentEntryLinkNamespace}-form-group">
-		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentEntryLinkNamespace}-video-previewer-input" id="${fragmentEntryLinkNamespace}-video-previewer-label">
+<div class="video-previewer-input">
+	<div class="form-group [#if input.errorMessage?has_content]has-error [/#if]mb-4" id="${fragmentElementId}-form-group">
+		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentElementId}-video-previewer-input" id="${fragmentElementId}-video-previewer-label">
 			${htmlUtil.escape(input.label)}
 
-			<span class="[#if !input.readOnly]d-none[/#if]" id="${fragmentEntryLinkNamespace}-video-previewer-readonly">
+			<span class="[#if !input.readOnly]d-none[/#if]" id="${fragmentElementId}-video-previewer-readonly">
 				(${languageUtil.get(locale, "read-only")})
 			</span>
 
@@ -11,26 +11,26 @@
 		</label>
 
 		<div class="d-flex">
-			<input aria-describedby="${fragmentEntryLinkNamespace}-video-previewer-help-text" aria-labelledby="${fragmentEntryLinkNamespace}-video-previewer-label [#if  input.errorMessage?has_content]${fragmentEntryLinkNamespace}-video-previewer-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentEntryLinkNamespace}-video-previewer-input" name="${input.name}" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="text" [#if input.value??]value="${input.value}"[/#if] />
+			<input aria-describedby="${fragmentElementId}-video-previewer-help-text" aria-labelledby="${fragmentElementId}-video-previewer-label [#if  input.errorMessage?has_content]${fragmentElementId}-video-previewer-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-video-previewer-input" name="${input.name}" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="text" [#if input.value??]value="${input.value}"[/#if] />
 
 			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="tooltip" tabindex="0">
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" role="tooltip" tabindex="0">
 					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
 				</div>
 			[/#if]
 		</div>
 
-		<p class="mt-1 text-secondary [#if input.errorMessage?has_content || !configuration.showCharactersCount]sr-only[/#if]" id="${fragmentEntryLinkNamespace}-length-info">
-			<span class="sr-only" id="${fragmentEntryLinkNamespace}-length-warning">
+		<p class="mt-1 text-secondary [#if input.errorMessage?has_content || !configuration.showCharactersCount]sr-only[/#if]" id="${fragmentElementId}-length-info">
+			<span class="sr-only" id="${fragmentElementId}-length-warning">
 				[@clay["icon"] symbol="info-circle" /]
 
-				<span aria-live="assertive" data-error-message="${languageUtil.get(locale, "maximum-number-of-characters-exceeded")}" data-valid-message="${languageUtil.get(locale, "current-text-length-is-valid")}" id="${fragmentEntryLinkNamespace}-length-warning-text"></span>:
+				<span aria-live="assertive" data-error-message="${languageUtil.get(locale, "maximum-number-of-characters-exceeded")}" data-valid-message="${languageUtil.get(locale, "current-text-length-is-valid")}" id="${fragmentElementId}-length-warning-text"></span>:
 			</span>
-			<span id="${fragmentEntryLinkNamespace}-current-length">0</span> / [#if input.attributes.maxLength??]${input.attributes.maxLength}[/#if]
+			<span id="${fragmentElementId}-current-length">0</span> / [#if input.attributes.maxLength??]${input.attributes.maxLength}[/#if]
 		</p>
 
 		[#if input.errorMessage?has_content]
-			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentEntryLinkNamespace}-video-previewer-error-message">
+			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentElementId}-video-previewer-error-message">
 				[@clay["icon"] symbol="info-circle" /]
 
 				<span>${input.errorMessage}</span>
@@ -38,7 +38,7 @@
 		[/#if]
 
 		[#if input.showHelpText && input.helpText?has_content]
-			<p class="mb-0 mt-1 text-secondary" id="${fragmentEntryLinkNamespace}-video-previewer-help-text">${htmlUtil.escape(input.helpText)}</p>
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-video-previewer-help-text">${htmlUtil.escape(input.helpText)}</p>
 		[/#if]
 	</div>
 
@@ -48,7 +48,7 @@
 
 	<div class="border border-light p-3 rounded-lg">
 		<div class="aspect-ratio aspect-ratio-16-to-9 position-relative rounded-lg video-preview-placeholder">
-			<div class="video-preview" id="${fragmentEntryLinkNamespace}-video-preview"></div>
+			<div class="video-preview" id="${fragmentElementId}-video-preview"></div>
 		</div>
 	</div>
 </div>

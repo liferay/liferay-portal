@@ -27,7 +27,7 @@ import java.util.Calendar;
  */
 public class CommerceDiscountTestUtil {
 
-	public static CommerceDiscount addCouponDiscount(
+	public static CommerceDiscount addCouponCommerceDiscount(
 			long groupId, double amount, String couponCode, String target,
 			long... targetIds)
 		throws Exception {

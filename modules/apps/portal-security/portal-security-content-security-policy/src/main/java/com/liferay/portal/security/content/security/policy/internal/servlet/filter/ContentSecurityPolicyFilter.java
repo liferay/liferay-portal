@@ -99,7 +99,14 @@ public class ContentSecurityPolicyFilter extends BasePortalFilter {
 
 			policy = StringUtil.replace(policy, "[$NONCE$]", "nonce-" + nonce);
 
-			httpServletResponse.setHeader("Content-Security-Policy", policy);
+			if (contentSecurityPolicyConfiguration.reportOnly()) {
+				httpServletResponse.setHeader(
+					"Content-Security-Policy-Report-Only", policy);
+			}
+			else {
+				httpServletResponse.setHeader(
+					"Content-Security-Policy", policy);
+			}
 
 			filterChain.doFilter(httpServletRequest, httpServletResponse);
 		}

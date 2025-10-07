@@ -14,7 +14,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,11 +43,9 @@ public class OpenGraphConfigurationImpl implements OpenGraphConfiguration {
 	public boolean isLayoutTranslatedLanguagesEnabled(Group group)
 		throws PortalException {
 
-		Company company = _companyLocalService.getCompany(group.getCompanyId());
-
 		LayoutSEOCompanyConfiguration layoutSEOCompanyConfiguration =
 			_configurationProvider.getCompanyConfiguration(
-				LayoutSEOCompanyConfiguration.class, company.getCompanyId());
+				LayoutSEOCompanyConfiguration.class, group.getCompanyId());
 
 		if (!layoutSEOCompanyConfiguration.enableOpenGraph() ||
 			!_isOpenGraphEnabled(group)) {
@@ -68,23 +65,21 @@ public class OpenGraphConfigurationImpl implements OpenGraphConfiguration {
 	}
 
 	@Override
-	public boolean isOpenGraphEnabled(Company company) throws PortalException {
-		LayoutSEOCompanyConfiguration layoutSEOCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				LayoutSEOCompanyConfiguration.class, company.getCompanyId());
-
-		return layoutSEOCompanyConfiguration.enableOpenGraph();
-	}
-
-	@Override
 	public boolean isOpenGraphEnabled(Group group) throws PortalException {
-		if (!isOpenGraphEnabled(
-				_companyLocalService.getCompany(group.getCompanyId()))) {
-
+		if (!isOpenGraphEnabled(group.getCompanyId())) {
 			return false;
 		}
 
 		return _isOpenGraphEnabled(group);
+	}
+
+	@Override
+	public boolean isOpenGraphEnabled(long companyId) throws PortalException {
+		LayoutSEOCompanyConfiguration layoutSEOCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				LayoutSEOCompanyConfiguration.class, companyId);
+
+		return layoutSEOCompanyConfiguration.enableOpenGraph();
 	}
 
 	private boolean _isOpenGraphEnabled(Group group) {
@@ -98,9 +93,6 @@ public class OpenGraphConfigurationImpl implements OpenGraphConfiguration {
 
 		return false;
 	}
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

@@ -13,10 +13,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -34,8 +39,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -49,7 +56,6 @@ import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.permission.Permission;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.CompanyTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.CompanyTestEntitySerDes;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -82,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -128,6 +135,16 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 			testCompany.getCompanyId());
 
 		companyTestEntityResource = CompanyTestEntityResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		importTaskResource = ImportTaskResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -223,6 +240,136 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteCompanyTestEntityByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		CompanyTestEntity companyTestEntity =
+			testDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity();
+
+		assertHttpResponseStatusCode(
+			204,
+			companyTestEntityResource.
+				deleteCompanyTestEntityByExternalReferenceCodeHttpResponse(
+					companyTestEntity.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			companyTestEntityResource.
+				getCompanyTestEntityByExternalReferenceCodeHttpResponse(
+					companyTestEntity.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			companyTestEntityResource.
+				getCompanyTestEntityByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected CompanyTestEntity
+			testDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteCompanyTestEntityByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		CompanyTestEntity companyTestEntity1 =
+			testGraphQLDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteCompanyTestEntityByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										companyTestEntity1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteCompanyTestEntityByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"companyTestEntityByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									companyTestEntity1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace test_v1_0
+
+		CompanyTestEntity companyTestEntity2 =
+			testGraphQLDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"deleteCompanyTestEntityByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											companyTestEntity2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/test_v1_0",
+				"Object/deleteCompanyTestEntityByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"test_v1_0",
+					new GraphQLField(
+						"companyTestEntityByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										companyTestEntity2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected CompanyTestEntity
+			testGraphQLDeleteCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity()
+		throws Exception {
+
+		return testGraphQLCompanyTestEntity_addCompanyTestEntity();
+	}
+
+	@Test
 	public void testGetCompanyTestEntitiesPage() throws Exception {
 		Page<CompanyTestEntity> page =
 			companyTestEntityResource.getCompanyTestEntitiesPage();
@@ -275,6 +422,76 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetCompanyTestEntitiesPage() throws Exception {
+		GraphQLField graphQLField = new GraphQLField(
+			"companyTestEntities",
+			new HashMap<String, Object>() {
+				{
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject companyTestEntitiesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/companyTestEntities");
+
+		long totalCount = companyTestEntitiesJSONObject.getLong("totalCount");
+
+		CompanyTestEntity companyTestEntity1 =
+			testGraphQLCompanyTestEntity_addCompanyTestEntity(
+				randomCompanyTestEntity());
+
+		CompanyTestEntity companyTestEntity2 =
+			testGraphQLCompanyTestEntity_addCompanyTestEntity(
+				randomCompanyTestEntity());
+
+		companyTestEntitiesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/companyTestEntities");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			companyTestEntitiesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			companyTestEntity1,
+			Arrays.asList(
+				CompanyTestEntitySerDes.toDTOs(
+					companyTestEntitiesJSONObject.getString("items"))));
+		assertContains(
+			companyTestEntity2,
+			Arrays.asList(
+				CompanyTestEntitySerDes.toDTOs(
+					companyTestEntitiesJSONObject.getString("items"))));
+
+		// Using the namespace test_v1_0
+
+		companyTestEntitiesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(new GraphQLField("test_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/test_v1_0",
+			"JSONObject/companyTestEntities");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			companyTestEntitiesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			companyTestEntity1,
+			Arrays.asList(
+				CompanyTestEntitySerDes.toDTOs(
+					companyTestEntitiesJSONObject.getString("items"))));
+		assertContains(
+			companyTestEntity2,
+			Arrays.asList(
+				CompanyTestEntitySerDes.toDTOs(
+					companyTestEntitiesJSONObject.getString("items"))));
 	}
 
 	@Test
@@ -499,6 +716,107 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetCompanyTestEntity() throws Exception {
+		CompanyTestEntity companyTestEntity =
+			testGraphQLGetCompanyTestEntity_addCompanyTestEntity();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				companyTestEntity,
+				CompanyTestEntitySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"companyTestEntity",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"companyTestEntityId",
+											companyTestEntity.getId());
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data", "Object/companyTestEntity"))));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertTrue(
+			equals(
+				companyTestEntity,
+				CompanyTestEntitySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"test_v1_0",
+								new GraphQLField(
+									"companyTestEntity",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"companyTestEntityId",
+												companyTestEntity.getId());
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/test_v1_0",
+						"Object/companyTestEntity"))));
+	}
+
+	@Test
+	public void testGraphQLGetCompanyTestEntityNotFound() throws Exception {
+		Long irrelevantCompanyTestEntityId = RandomTestUtil.randomLong();
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"companyTestEntity",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"companyTestEntityId",
+									irrelevantCompanyTestEntityId);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"companyTestEntity",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"companyTestEntityId",
+										irrelevantCompanyTestEntityId);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected CompanyTestEntity
+			testGraphQLGetCompanyTestEntity_addCompanyTestEntity()
+		throws Exception {
+
+		return testGraphQLCompanyTestEntity_addCompanyTestEntity();
+	}
+
+	@Test
 	public void testGetCompanyTestEntityByExternalReferenceCode()
 		throws Exception {
 
@@ -532,6 +850,119 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetCompanyTestEntityByExternalReferenceCode()
+		throws Exception {
+
+		CompanyTestEntity companyTestEntity =
+			testGraphQLGetCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				companyTestEntity,
+				CompanyTestEntitySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"companyTestEntityByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"externalReferenceCode",
+											"\"" +
+												companyTestEntity.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/companyTestEntityByExternalReferenceCode"))));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertTrue(
+			equals(
+				companyTestEntity,
+				CompanyTestEntitySerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"test_v1_0",
+								new GraphQLField(
+									"companyTestEntityByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"externalReferenceCode",
+												"\"" +
+													companyTestEntity.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data", "JSONObject/test_v1_0",
+						"Object/companyTestEntityByExternalReferenceCode"))));
+	}
+
+	@Test
+	public void testGraphQLGetCompanyTestEntityByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"companyTestEntityByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace test_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"companyTestEntityByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected CompanyTestEntity
+			testGraphQLGetCompanyTestEntityByExternalReferenceCode_addCompanyTestEntity()
+		throws Exception {
+
+		return testGraphQLCompanyTestEntity_addCompanyTestEntity();
+	}
+
+	@Test
 	public void testGetCompanyTestEntityPermissionsPage() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		CompanyTestEntity postCompanyTestEntity =
@@ -550,6 +981,38 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetCompanyTestEntityPermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		CompanyTestEntity postCompanyTestEntity =
+			testGraphQLGetCompanyTestEntityPermissionsPage_addCompanyTestEntity();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"companyTestEntityPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("companyTestEntityId", postCompanyTestEntity.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject companyTestEntityPermissionsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/companyTestEntityPermissions");
+
+		Assert.assertNotNull(companyTestEntityPermissionsJSONObject);
+	}
+
+	protected CompanyTestEntity
+			testGraphQLGetCompanyTestEntityPermissionsPage_addCompanyTestEntity()
+		throws Exception {
+
+		return testGraphQLCompanyTestEntity_addCompanyTestEntity();
 	}
 
 	@Test
@@ -633,6 +1096,17 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostCompanyTestEntity() throws Exception {
+		CompanyTestEntity randomCompanyTestEntity = randomCompanyTestEntity();
+
+		CompanyTestEntity companyTestEntity =
+			testGraphQLCompanyTestEntity_addCompanyTestEntity(
+				randomCompanyTestEntity);
+
+		Assert.assertTrue(equals(randomCompanyTestEntity, companyTestEntity));
 	}
 
 	@Test
@@ -822,7 +1296,174 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
-		Assert.assertTrue(true);
+		CompanyTestEntity companyTestEntity1 =
+			testBatchEngineDeleteImportTask_addCompanyTestEntity();
+
+		testBatchEngineDeleteImportTask_deleteCompanyTestEntity(
+			200, companyTestEntity1.getExternalReferenceCode());
+
+		assertHttpResponseStatusCode(
+			404,
+			companyTestEntityResource.getCompanyTestEntityHttpResponse(
+				companyTestEntity1.getId()));
+	}
+
+	protected CompanyTestEntity
+			testBatchEngineDeleteImportTask_addCompanyTestEntity()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected void testBatchEngineDeleteImportTask_deleteCompanyTestEntity(
+			int expectedStatusCode, String externalReferenceCode,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(), 8080, "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.portal.tools.rest.builder.test.dto.v1_0.CompanyTestEntity",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
+	}
+
+	protected CompanyTestEntity
+			testGraphQLCompanyTestEntity_addCompanyTestEntity()
+		throws Exception {
+
+		return testGraphQLCompanyTestEntity_addCompanyTestEntity(
+			randomCompanyTestEntity());
+	}
+
+	protected CompanyTestEntity
+			testGraphQLCompanyTestEntity_addCompanyTestEntity(
+				CompanyTestEntity companyTestEntity)
+		throws Exception {
+
+		JSONDeserializer<CompanyTestEntity> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(CompanyTestEntity.class)) {
+
+			if (getGraphQLValue(field.get(companyTestEntity)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(companyTestEntity)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createCompanyTestEntity",
+						new HashMap<String, Object>() {
+							{
+								put("companyTestEntity", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createCompanyTestEntity"),
+			CompanyTestEntity.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1005,6 +1646,10 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
@@ -1496,7 +2141,30 @@ public abstract class BaseCompanyTestEntityResourceTestCase {
 		return companyTestEntity;
 	}
 
+	protected final JSONObject waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			ImportTask.ExecuteStatus executeStatus =
+				importTask.getExecuteStatus();
+
+			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
+				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus, executeStatus.getValue());
+
+				return jsonObject;
+			}
+		}
+	}
+
 	protected CompanyTestEntityResource companyTestEntityResource;
+	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected CompanyTestEntityResource permissionsCompanyTestEntityResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;

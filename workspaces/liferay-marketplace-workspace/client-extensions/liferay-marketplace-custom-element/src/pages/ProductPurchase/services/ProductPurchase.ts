@@ -5,6 +5,7 @@
 
 import {Analytics} from '../../../core/Analytics';
 import {OrderTypes} from '../../../enums/Order';
+import {Liferay} from '../../../liferay/liferay';
 import CommerceSelectAccount from '../../../services/rest/CommerceSelectAccount';
 import HeadlessCommerceDeliveryCart from '../../../services/rest/HeadlessCommerceDeliveryCart';
 
@@ -14,15 +15,14 @@ export default class ProductPurchase {
 
 	constructor(
 		protected readonly account: Account,
-		protected readonly channel: Channel,
 		protected readonly product: DeliveryProduct
 	) {}
 
 	protected getCart() {
 		return {
-			accountId: this.account.id,
+			accountId: this.account?.id,
 			cartItems: this.getCartItems(),
-			currencyCode: this.channel.currencyCode,
+			currencyCode: Liferay.CommerceContext.currency.currencyCode,
 			orderTypeExternalReferenceCode: this.orderTypeExternalReferenceCode,
 		} as Cart;
 	}
@@ -35,7 +35,7 @@ export default class ProductPurchase {
 		return [
 			{
 				price: {
-					currency: this.channel.currencyCode,
+					currency: Liferay.CommerceContext.currency.currencyCode,
 					discount: 0,
 				},
 				productId: this.product.productId,
@@ -64,7 +64,10 @@ export default class ProductPurchase {
 
 		const newCart = await (cart?.id
 			? HeadlessCommerceDeliveryCart.updateCart(cart.id, body)
-			: HeadlessCommerceDeliveryCart.createCart(this.channel.id, body));
+			: HeadlessCommerceDeliveryCart.createCart(
+					Liferay.CommerceContext.commerceChannelId,
+					body
+				));
 
 		await Promise.all([
 			CommerceSelectAccount.selectAccount(this.account.id),

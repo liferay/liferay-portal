@@ -1,0 +1,40 @@
+<FragmentEntryLink>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>1</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>dc9abf34-1833-fa4d-a12e-4438ba45e9e2</__uuid>
+  <__externalReferenceCode>dc9abf34-1833-fa4d-a12e-4438ba45e9e2</__externalReferenceCode>
+  <__fragmentEntryLinkId>35844</__fragmentEntryLinkId>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:34:31.502</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 11:03:14.887</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__originalFragmentEntryLinkId>0</__originalFragmentEntryLinkId>
+  <__fragmentEntryId>0</__fragmentEntryId>
+  <__segmentsExperienceId>35835</__segmentsExperienceId>
+  <__classNameId>20033</__classNameId>
+  <__classPK>101</__classPK>
+  <__plid>101</__plid>
+  <__css>.component-paragraph img {
+	max-width: 100%;
+}</__css>
+  <__html>&lt;div class=&quot;clearfix component-paragraph text-break&quot; data-lfr-editable-id=&quot;element-text&quot; data-lfr-editable-type=&quot;rich-text&quot;&gt;
+	A paragraph is a self-contained unit of a discourse in writing dealing with
+	a particular point or idea. Paragraphs are usually an expected part of
+	formal writing, used to organize longer prose.
+&lt;/div&gt;</__html>
+  <__js></__js>
+  <__configuration></__configuration>
+  <__deleted>false</__deleted>
+  <__editableValues>{&quot;com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor&quot;:{&quot;element-text&quot;:{&quot;sv_SE&quot;:&quot;Det gick inte att hantera den begärda sidan.&quot;,&quot;defaultValue&quot;:&quot;\n\tA paragraph is a self-contained unit of a discourse in writing dealing with\n\ta particular point or idea. Paragraphs are usually an expected part of\n\tformal writing, used to organize longer prose.\n&quot;,&quot;pt_BR&quot;:&quot;Ocorreu um problema ao atender a página solicitada.&quot;,&quot;ja_JP&quot;:&quot;リクエストされたページを提供中に問題が発生しました。&quot;,&quot;fr_FR&quot;:&quot;Un problème est survenu lors de la diffusion de la page demandée.&quot;,&quot;hu_HU&quot;:&quot;A kért oldal kiszolgálása során probléma merült fel.&quot;,&quot;de_DE&quot;:&quot;Es gab ein Problem bei der Bereitstellung der angeforderten Seite.&quot;,&quot;ca_ES&quot;:&quot;S&apos;ha produït un problema en difondre la pàgina sol·licitada.&quot;,&quot;ar_SA&quot;:&quot;حدث مشكلة في عرض الصفحة المطلوبة.&quot;,&quot;fi_FI&quot;:&quot;Virhe näytettäessä pyydettyä sivua.&quot;,&quot;en_US&quot;:&quot;There was a problem serving the requested page.&quot;,&quot;zh_CN&quot;:&quot;提供请求的页面时发生问题。&quot;,&quot;es_ES&quot;:&quot;Se produjo un problema al servir la página solicitada.&quot;,&quot;config&quot;:{&quot;mapperType&quot;:&quot;link&quot;},&quot;nl_NL&quot;:&quot;Er is een probleem opgetreden bij het weergeven van de opgevraagde pagina.&quot;}}}</__editableValues>
+  <__namespace>bwtx</__namespace>
+  <__position>2</__position>
+  <__rendererKey>BASIC_COMPONENT-paragraph</__rendererKey>
+  <__type>1</__type>
+  <__lastPropagationDate class="sql-timestamp">2025-08-29 11:03:14.887</__lastPropagationDate>
+  <__columnBitmask>0</__columnBitmask>
+</FragmentEntryLink>

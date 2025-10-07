@@ -6,27 +6,35 @@
 package com.liferay.object.web.internal.object.entries.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.display.context.ObjectEntryDisplayContext;
 import com.liferay.object.display.context.ObjectEntryDisplayContextFactory;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
+import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
-import com.liferay.object.tree.Edge;
-import com.liferay.object.tree.Node;
-import com.liferay.object.tree.Tree;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -34,10 +42,20 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import jakarta.portlet.PortletRequest;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,108 +77,261 @@ public class ObjectEntryDisplayContextTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		_defaultObjectEntryManager =
+			(DefaultObjectEntryManager)_objectEntryManager;
+		_dtoConverterContext = new DefaultDTOConverterContext(
+			false, Collections.emptyMap(), _dtoConverterRegistry, null,
+			LocaleUtil.getDefault(), null, TestPropsValues.getUser());
+		_group = GroupTestUtil.addGroup();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		PrincipalThreadLocal.setName(TestPropsValues.getUserId());
+
+		_companyObjectDefinitionA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		_companyObjectDefinitionAA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_companyObjectRelationshipA_AA = TreeTestUtil.bind(
+			_companyObjectDefinitionA.getObjectDefinitionId(),
+			_companyObjectDefinitionAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_companyObjectDefinitionAAA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_companyObjectRelationshipAA_AAA = TreeTestUtil.bind(
+			_companyObjectDefinitionAA.getObjectDefinitionId(),
+			_companyObjectDefinitionAAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_companyObjectEntryA = _addObjectEntry(
+			_companyObjectDefinitionA, ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_companyObjectEntryAA = _addRelatedObjectEntry(
+			_companyObjectEntryA, _companyObjectRelationshipA_AA,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_companyObjectEntryAAA = _addRelatedObjectEntry(
+			_companyObjectEntryAA, _companyObjectRelationshipAA_AAA,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		_siteObjectDefinitionA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_SITE);
+		_siteObjectDefinitionAA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		_siteObjectRelationshipA_AA = TreeTestUtil.bind(
+			_siteObjectDefinitionA.getObjectDefinitionId(),
+			_siteObjectDefinitionAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_siteObjectDefinitionAAA = _addObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		_siteObjectRelationshipAA_AAA = TreeTestUtil.bind(
+			_siteObjectDefinitionAA.getObjectDefinitionId(),
+			_siteObjectDefinitionAAA.getObjectDefinitionId(),
+			_objectRelationshipLocalService);
+
+		_siteObjectEntryA = _addObjectEntry(
+			_siteObjectDefinitionA, _group.getGroupKey());
+
+		_siteObjectEntryAA = _addRelatedObjectEntry(
+			_siteObjectEntryA, _siteObjectRelationshipA_AA,
+			_group.getGroupKey());
+
+		_siteObjectEntryAAA = _addRelatedObjectEntry(
+			_siteObjectEntryAA, _siteObjectRelationshipAA_AAA,
+			_group.getGroupKey());
+	}
+
+	@Test
+	public void testGetAPIURL() throws Exception {
+		_testGetAPIURL(
+			_companyObjectEntryAA, _companyObjectRelationshipA_AA,
+			_companyObjectEntryA);
+		_testGetAPIURL(
+			_companyObjectEntryAAA, _companyObjectRelationshipAA_AAA,
+			_companyObjectEntryAA);
+		_testGetAPIURL(
+			_siteObjectEntryAA, _siteObjectRelationshipA_AA, _siteObjectEntryA);
+		_testGetAPIURL(
+			_siteObjectEntryAAA, _siteObjectRelationshipAA_AAA,
+			_siteObjectEntryAA);
+	}
+
 	@Test
 	public void testGetBackURL() throws Exception {
-		Tree objectDefinitionTree = TreeTestUtil.createObjectDefinitionTree(
-			_objectDefinitionLocalService, _objectRelationshipLocalService,
-			true,
-			LinkedHashMapBuilder.put(
-				"A", new String[] {"AA", "AB"}
-			).put(
-				"AA", new String[] {"AAA", "AAB"}
-			).put(
-				"AB", new String[0]
-			).put(
-				"AAA", new String[0]
-			).put(
-				"AAB", new String[0]
-			).build());
 
-		Node nodeA = objectDefinitionTree.getRootNode();
-
-		TreeTestUtil.createObjectEntryTree(
-			"1", _objectDefinitionLocalService, _objectEntryLocalService,
-			_objectFieldLocalService, _objectRelationshipLocalService,
-			nodeA.getPrimaryKey());
-
-		ObjectDefinition objectDefinitionAA =
-			_objectDefinitionLocalService.getObjectDefinition(
-				TestPropsValues.getCompanyId(), "C_AA");
-
-		ObjectEntry objectEntryAA1 = _objectEntryLocalService.getObjectEntry(
-			"AA1", objectDefinitionAA.getObjectDefinitionId());
+		// Root descendant object entry
 
 		MockHttpServletRequest mockHttpServletRequest =
 			_getMockHttpServletRequest(
-				objectEntryAA1.getExternalReferenceCode(), objectDefinitionAA);
-
-		ObjectEntry objectEntryA1 = _objectEntryLocalService.getObjectEntry(
-			"A1", nodeA.getPrimaryKey());
-
-		ObjectDefinition objectDefinitionA =
-			_objectDefinitionLocalService.getObjectDefinition(
-				nodeA.getPrimaryKey());
+				_companyObjectEntryAAA.getExternalReferenceCode(),
+				_companyObjectDefinitionAAA,
+				_companyObjectRelationshipAA_AAA.getObjectRelationshipId(),
+				_companyObjectEntryAA.getExternalReferenceCode());
 
 		Assert.assertEquals(
 			PortletURLBuilder.create(
 				PortalUtil.getControlPanelPortletURL(
-					mockHttpServletRequest, objectDefinitionA.getPortletId(),
+					mockHttpServletRequest,
+					_companyObjectDefinitionAA.getPortletId(),
 					PortletRequest.ACTION_PHASE)
 			).setMVCRenderCommandName(
 				"/object_entries/edit_object_entry"
 			).setParameter(
 				"externalReferenceCode",
-				objectEntryA1.getExternalReferenceCode()
+				_companyObjectEntryAA.getExternalReferenceCode()
+			).setParameter(
+				"objectRelationshipId",
+				_companyObjectRelationshipA_AA.getObjectRelationshipId()
+			).setParameter(
+				"parentObjectEntryERC",
+				_companyObjectEntryA.getExternalReferenceCode()
 			).setParameter(
 				"screenNavigationCategoryKey",
-				() -> {
-					Node nodeAA = objectDefinitionTree.getNode(
-						objectDefinitionAA.getPrimaryKey());
-
-					Edge edge = nodeAA.getEdge();
-
-					return edge.getObjectRelationshipId();
-				}
+				_companyObjectRelationshipAA_AAA.getObjectRelationshipId()
 			).buildString(),
 			_getBackURL(mockHttpServletRequest));
 
-		ObjectDefinition objectDefinitionAAA =
-			_objectDefinitionLocalService.getObjectDefinition(
-				TestPropsValues.getCompanyId(), "C_AAA");
-
-		ObjectEntry objectEntryAAA1 = _objectEntryLocalService.getObjectEntry(
-			"AAA1", objectDefinitionAAA.getObjectDefinitionId());
+		// Root object entry
 
 		mockHttpServletRequest = _getMockHttpServletRequest(
-			objectEntryAAA1.getExternalReferenceCode(), objectDefinitionAAA);
+			_companyObjectEntryAA.getExternalReferenceCode(),
+			_companyObjectDefinitionAA,
+			_companyObjectRelationshipA_AA.getObjectRelationshipId(),
+			_companyObjectEntryA.getExternalReferenceCode());
 
 		Assert.assertEquals(
 			PortletURLBuilder.create(
 				PortalUtil.getControlPanelPortletURL(
-					mockHttpServletRequest, objectDefinitionAA.getPortletId(),
+					mockHttpServletRequest,
+					_companyObjectDefinitionA.getPortletId(),
 					PortletRequest.ACTION_PHASE)
 			).setMVCRenderCommandName(
 				"/object_entries/edit_object_entry"
 			).setParameter(
 				"externalReferenceCode",
-				objectEntryAA1.getExternalReferenceCode()
+				_companyObjectEntryA.getExternalReferenceCode()
 			).setParameter(
 				"screenNavigationCategoryKey",
-				() -> {
-					Node nodeAAA = objectDefinitionTree.getNode(
-						objectDefinitionAAA.getPrimaryKey());
-
-					Edge edge = nodeAAA.getEdge();
-
-					return edge.getObjectRelationshipId();
-				}
+				_companyObjectRelationshipA_AA.getObjectRelationshipId()
 			).buildString(),
 			_getBackURL(mockHttpServletRequest));
+	}
 
-		TreeTestUtil.deleteObjectDefinitionHierarchy(
-			_objectDefinitionLocalService,
-			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
-			_objectEntryLocalService, _objectRelationshipLocalService);
+	@Test
+	public void testIsShowScreenNavigation() throws Exception {
+		com.liferay.object.model.ObjectEntry objectEntry =
+			ObjectEntryTestUtil.addObjectEntry(_companyObjectDefinitionAA);
+
+		ObjectEntryDisplayContext objectEntryDisplayContext =
+			_objectEntryDisplayContextFactory.create(
+				_getMockHttpServletRequest(
+					objectEntry.getExternalReferenceCode(),
+					_companyObjectDefinitionAA, 0L, null));
+
+		Assert.assertFalse(objectEntryDisplayContext.isShowScreenNavigation());
+	}
+
+	@Test
+	public void testIsShowScreenNavigationWithRootDescendantObjectEntry()
+		throws Exception {
+
+		ObjectEntryDisplayContext objectEntryDisplayContext =
+			_objectEntryDisplayContextFactory.create(
+				_getMockHttpServletRequest(
+					_companyObjectEntryAA.getExternalReferenceCode(),
+					_companyObjectDefinitionAA,
+					_companyObjectRelationshipA_AA.getObjectRelationshipId(),
+					_companyObjectEntryA.getExternalReferenceCode()));
+
+		Assert.assertTrue(objectEntryDisplayContext.isShowScreenNavigation());
+	}
+
+	@Test
+	public void testIsShowScreenNavigationWithRootObjectEntry()
+		throws Exception {
+
+		ObjectEntryDisplayContext objectEntryDisplayContext =
+			_objectEntryDisplayContextFactory.create(
+				_getMockHttpServletRequest(
+					_companyObjectEntryA.getExternalReferenceCode(),
+					_companyObjectDefinitionA, 0L, null));
+
+		Assert.assertTrue(objectEntryDisplayContext.isShowScreenNavigation());
+	}
+
+	private static ObjectDefinition _addObjectDefinition(String scope)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.addCustomObjectDefinition(
+				TestPropsValues.getUserId(), 0, null, false, true, false, true,
+				true, false, false, false, false, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				true, scope, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+				Collections.emptyList(),
+				List.of(
+					new TextObjectFieldBuilder(
+					).indexed(
+						true
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"textObjectFieldName"
+					).build()),
+				Collections.emptyList());
+
+		return _objectDefinitionLocalService.publishCustomObjectDefinition(
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId());
+	}
+
+	private static ObjectEntry _addObjectEntry(
+			ObjectDefinition objectDefinition, String scopeKey)
+		throws Exception {
+
+		return _defaultObjectEntryManager.addObjectEntry(
+			_dtoConverterContext, objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = new HashMap<>(Collections.emptyMap());
+				}
+			},
+			scopeKey);
+	}
+
+	private static ObjectEntry _addRelatedObjectEntry(
+			ObjectEntry objectEntry, ObjectRelationship objectRelationship,
+			String scopeKey)
+		throws Exception {
+
+		return _defaultObjectEntryManager.addRelatedObjectEntry(
+			_dtoConverterContext, objectEntry.getExternalReferenceCode(),
+			new ObjectEntry() {
+				{
+					properties = new HashMap<>(Collections.emptyMap());
+				}
+			},
+			objectRelationship, scopeKey);
+	}
+
+	private String _getAPIURL(MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		ObjectEntryDisplayContext objectEntryDisplayContext =
+			_objectEntryDisplayContextFactory.create(mockHttpServletRequest);
+
+		return objectEntryDisplayContext.getAPIURL();
 	}
 
 	private String _getBackURL(MockHttpServletRequest mockHttpServletRequest)
@@ -173,7 +344,8 @@ public class ObjectEntryDisplayContextTest {
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
-			String externalReferenceCode, ObjectDefinition objectDefinition)
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			long objectRelationshipId, String parentObjectEntryERC)
 		throws Exception {
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -194,8 +366,8 @@ public class ObjectEntryDisplayContextTest {
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
-		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
-		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		mockHttpServletRequest.setAttribute(
@@ -205,26 +377,92 @@ public class ObjectEntryDisplayContextTest {
 			"externalReferenceCode", externalReferenceCode);
 		mockHttpServletRequest.setParameter(
 			"mvcRenderCommandName", "/object_entries/edit_object_entry");
+		mockHttpServletRequest.setParameter(
+			"objectRelationshipId", String.valueOf(objectRelationshipId));
+		mockHttpServletRequest.setParameter(
+			"parentObjectEntryERC", parentObjectEntryERC);
 
 		return mockHttpServletRequest;
 	}
+
+	private void _testGetAPIURL(
+			ObjectEntry objectEntry, ObjectRelationship objectRelationship,
+			ObjectEntry parentObjectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectRelationship.getObjectDefinitionId1());
+
+		String apiURL = StringBundler.concat(
+			"/o", objectDefinition.getRESTContextPath(),
+			"/by-external-reference-code/",
+			parentObjectEntry.getExternalReferenceCode(), "/",
+			objectRelationship.getName());
+
+		if (Objects.equals(
+				objectDefinition.getScope(),
+				ObjectDefinitionConstants.SCOPE_SITE)) {
+
+			apiURL = StringBundler.concat(
+				"/o", objectDefinition.getRESTContextPath(), "/scopes/",
+				_group.getGroupId(), "/by-external-reference-code/",
+				parentObjectEntry.getExternalReferenceCode(), "/",
+				objectRelationship.getName());
+		}
+
+		Assert.assertEquals(
+			apiURL,
+			_getAPIURL(
+				_getMockHttpServletRequest(
+					objectEntry.getExternalReferenceCode(),
+					_objectDefinitionLocalService.getObjectDefinition(
+						objectRelationship.getObjectDefinitionId2()),
+					objectRelationship.getObjectRelationshipId(),
+					parentObjectEntry.getExternalReferenceCode())));
+	}
+
+	private static ObjectDefinition _companyObjectDefinitionA;
+	private static ObjectDefinition _companyObjectDefinitionAA;
+	private static ObjectDefinition _companyObjectDefinitionAAA;
+	private static ObjectEntry _companyObjectEntryA;
+	private static ObjectEntry _companyObjectEntryAA;
+	private static ObjectEntry _companyObjectEntryAAA;
+	private static ObjectRelationship _companyObjectRelationshipA_AA;
+	private static ObjectRelationship _companyObjectRelationshipAA_AAA;
+	private static DefaultObjectEntryManager _defaultObjectEntryManager;
+	private static DTOConverterContext _dtoConverterContext;
+
+	@Inject
+	private static DTOConverterRegistry _dtoConverterRegistry;
+
+	private static Group _group;
+
+	@Inject
+	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject(
+		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
+	)
+	private static ObjectEntryManager _objectEntryManager;
+
+	@Inject
+	private static ObjectRelationshipLocalService
+		_objectRelationshipLocalService;
+
+	private static ObjectDefinition _siteObjectDefinitionA;
+	private static ObjectDefinition _siteObjectDefinitionAA;
+	private static ObjectDefinition _siteObjectDefinitionAAA;
+	private static ObjectEntry _siteObjectEntryA;
+	private static ObjectEntry _siteObjectEntryAA;
+	private static ObjectEntry _siteObjectEntryAAA;
+	private static ObjectRelationship _siteObjectRelationshipA_AA;
+	private static ObjectRelationship _siteObjectRelationshipAA_AAA;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
 	private ObjectEntryDisplayContextFactory _objectEntryDisplayContextFactory;
-
-	@Inject
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Inject
-	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Inject
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }

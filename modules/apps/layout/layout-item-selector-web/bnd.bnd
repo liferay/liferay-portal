@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout Item Selector Web
 Bundle-SymbolicName: com.liferay.layout.item.selector.web
-Bundle-Version: 5.0.24
+Bundle-Version: 5.0.25
 Web-ContextPath: /layout-item-selector-web
 -dsannotations-options: inherit

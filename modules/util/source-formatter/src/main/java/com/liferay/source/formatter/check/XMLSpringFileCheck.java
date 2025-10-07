@@ -126,12 +126,13 @@ public class XMLSpringFileCheck extends BaseFileCheck {
 		}
 
 		private int _compareServiceElements(String name1, String name2) {
-			SpringBeanServiceElement springBeanServiceElemen1 =
+			SpringBeanServiceElement springBeanServiceElement1 =
 				new SpringBeanServiceElement(name1);
-			SpringBeanServiceElement springBeanServiceElemen2 =
+			SpringBeanServiceElement springBeanServiceElement2 =
 				new SpringBeanServiceElement(name2);
 
-			return springBeanServiceElemen1.compareTo(springBeanServiceElemen2);
+			return springBeanServiceElement1.compareTo(
+				springBeanServiceElement2);
 		}
 
 		private class SpringBeanServiceElement

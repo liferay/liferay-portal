@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Category Property Service
 Bundle-SymbolicName: com.liferay.asset.category.property.service
-Bundle-Version: 4.0.53
+Bundle-Version: 4.0.54
 Liferay-Require-SchemaVersion: 2.4.0
 Liferay-Service: true
 -dsannotations-options: inherit

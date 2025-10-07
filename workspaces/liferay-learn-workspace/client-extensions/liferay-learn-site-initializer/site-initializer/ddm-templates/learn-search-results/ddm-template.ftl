@@ -14,6 +14,26 @@
 	</#if>
 </#macro>
 
+<#function getValue contentString end start>
+	<#assign startIndex = contentString?index_of(start) />
+
+	<#if startIndex == -1>
+		<#return "" />
+	</#if>
+
+	<#assign
+		substring = contentString?substring(startIndex + start?length)
+
+		endIndex = substring?index_of(end)
+	/>
+
+	<#if endIndex == -1>
+		<#return substring?trim />
+	</#if>
+
+	<#return substring?substring(0, endIndex)?trim />
+</#function>
+
 <div class="search-results" id="searchResults">
 	<#if entries?has_content>
 		<#list entries as searchEntry>
@@ -53,8 +73,13 @@
 						</div>
 
 						<div class="description search-results-entry-content">
-							${searchEntryContent}
+							<#if className?contains("com.liferay.journal.model.JournalArticle")>
+								${searchEntryContent}
+							<#else>
+								${getValue(searchEntryContent, " end:", "content:")}
+							</#if>
 						</div>
+
 						<#if searchEntry.getPublishedDateString()?has_content>
 							<div class="pt-2 published-date">
 								${languageUtil.get(locale, "published-date")}: ${searchEntry.getPublishedDateString()}

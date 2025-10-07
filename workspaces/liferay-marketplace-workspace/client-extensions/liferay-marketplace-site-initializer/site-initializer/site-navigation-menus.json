@@ -21,6 +21,16 @@
 				"friendlyURL": "/administrator-dashboard",
 				"privateLayout": false,
 				"type": "layout"
+			},
+			{
+				"friendlyURL": "/ssa-dashboard",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"friendlyURL": "/finance-dashboard",
+				"privateLayout": false,
+				"type": "layout"
 			}
 		],
 		"name": "Primary Navigation"
@@ -50,6 +60,16 @@
 			},
 			{
 				"friendlyURL": "/administrator-dashboard",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"friendlyURL": "/ssa-dashboard",
+				"privateLayout": false,
+				"type": "layout"
+			},
+			{
+				"friendlyURL": "/finance-dashboard",
 				"privateLayout": false,
 				"type": "layout"
 			}

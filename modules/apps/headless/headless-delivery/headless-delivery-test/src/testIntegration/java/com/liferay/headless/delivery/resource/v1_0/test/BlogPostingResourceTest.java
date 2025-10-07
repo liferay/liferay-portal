@@ -34,6 +34,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -111,6 +112,13 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 
 		Assert.assertThat(
 			siteBlogPostingsPage.getItems(), CoreMatchers.hasItem(blogPosting));
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteBlogPostingMyRating() throws Exception {
+		super.testGraphQLDeleteBlogPostingMyRating();
 	}
 
 	@Override

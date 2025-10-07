@@ -95,7 +95,7 @@
 </tr>
 <tr>
 	<td>RULE_BUILDER_TIMELINE_RULE_CONDITION</td>
-	<td>//ul[contains(@class, 'timeline')][1]//li[contains(@class,'timeline-item')]/following-sibling::li[contains(@class, 'timeline-item')][${key_conditonRowNumber}]//div[contains(@class, 'operator')]//span[contains(.,'${key_condition}')]</td>
+	<td>//ul[contains(@class, 'timeline')][1]//li[contains(@class,'timeline-item')]/following-sibling::li[contains(@class, 'timeline-item')][${key_conditionRowNumber}]//div[contains(@class, 'operator')]//span[contains(.,'${key_condition}')]</td>
 	<td></td>
 </tr>
 <tr>

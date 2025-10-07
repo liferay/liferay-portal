@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portlet.PortalPreferencesImpl;
@@ -40,14 +39,12 @@ public class SessionClicksTest {
 
 	@Test
 	public void testPutMaxAllowedValues() {
-		PropsTestUtil.setProps(
-			HashMapBuilder.<String, Object>put(
-				PropsKeys.SESSION_CLICKS_MAX_ALLOWED_VALUES,
-				String.valueOf(_MAX_ALLOWED_VALUES)
-			).put(
-				PropsKeys.SESSION_CLICKS_MAX_SIZE_TERMS,
-				String.valueOf(Integer.MAX_VALUE)
-			).build());
+		PropsUtil.set(
+			PropsKeys.SESSION_CLICKS_MAX_ALLOWED_VALUES,
+			String.valueOf(_MAX_ALLOWED_VALUES));
+		PropsUtil.set(
+			PropsKeys.SESSION_CLICKS_MAX_SIZE_TERMS,
+			String.valueOf(Integer.MAX_VALUE));
 
 		PortalPreferences portalPreferences = new PortalPreferencesImpl();
 
@@ -107,14 +104,12 @@ public class SessionClicksTest {
 
 	@Test
 	public void testPutMaxSizeTerms() {
-		PropsTestUtil.setProps(
-			HashMapBuilder.<String, Object>put(
-				PropsKeys.SESSION_CLICKS_MAX_ALLOWED_VALUES,
-				String.valueOf(Integer.MAX_VALUE)
-			).put(
-				PropsKeys.SESSION_CLICKS_MAX_SIZE_TERMS,
-				String.valueOf(_MAX_SIZE_TERMS)
-			).build());
+		PropsUtil.set(
+			PropsKeys.SESSION_CLICKS_MAX_ALLOWED_VALUES,
+			String.valueOf(Integer.MAX_VALUE));
+		PropsUtil.set(
+			PropsKeys.SESSION_CLICKS_MAX_SIZE_TERMS,
+			String.valueOf(_MAX_SIZE_TERMS));
 
 		HttpSession httpSession = new MockHttpSession();
 

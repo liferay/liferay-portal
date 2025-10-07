@@ -24,4 +24,4 @@ JavaEmptyLineAfterSuperCallCheck | .java | Finds missing empty line after a `sup
 PropertiesDuplicateKeysCheck | .eslintignore, .prettierignore, or .properties | Checks for duplicate property keys. |
 ReturnVariableDeclarationAsUsedCheck | .java | Finds cases where a variable declaration should be moved. |
 [UnicodePropertiesBuilderCheck](check/builder_check.md#buildercheck) | .java | Checks that `UnicodePropertiesBuilder` is used when possible. |
-XMLLog4jLoggersCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd | Checks the loggers defined in `*-log4j.xml` file. |
+XMLLog4jLoggersCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xml, or .xsd | Checks the loggers defined in `*-log4j.xml` file. |

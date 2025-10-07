@@ -79,7 +79,8 @@ public class ObjectEntryFolderModelImpl
 		{"modifiedDate", Types.TIMESTAMP},
 		{"parentObjectEntryFolderId", Types.BIGINT},
 		{"description", Types.VARCHAR}, {"label", Types.VARCHAR},
-		{"name", Types.VARCHAR}, {"treePath", Types.VARCHAR}
+		{"name", Types.VARCHAR}, {"treePath", Types.VARCHAR},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -101,10 +102,11 @@ public class ObjectEntryFolderModelImpl
 		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("treePath", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectEntryFolder (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectEntryFolderId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentObjectEntryFolderId LONG,description STRING null,label STRING null,name VARCHAR(75) null,treePath STRING null)";
+		"create table ObjectEntryFolder (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectEntryFolderId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentObjectEntryFolderId LONG,description STRING null,label STRING null,name VARCHAR(75) null,treePath STRING null,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectEntryFolder";
 
@@ -312,6 +314,8 @@ public class ObjectEntryFolderModelImpl
 			attributeGetterFunctions.put("name", ObjectEntryFolder::getName);
 			attributeGetterFunctions.put(
 				"treePath", ObjectEntryFolder::getTreePath);
+			attributeGetterFunctions.put(
+				"status", ObjectEntryFolder::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -390,6 +394,10 @@ public class ObjectEntryFolderModelImpl
 				"treePath",
 				(BiConsumer<ObjectEntryFolder, String>)
 					ObjectEntryFolder::setTreePath);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<ObjectEntryFolder, Integer>)
+					ObjectEntryFolder::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -833,6 +841,21 @@ public class ObjectEntryFolderModelImpl
 		return getColumnOriginalValue("treePath");
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public long getContainerModelId() {
 		return getObjectEntryFolderId();
@@ -1004,6 +1027,7 @@ public class ObjectEntryFolderModelImpl
 		objectEntryFolderImpl.setLabel(getLabel());
 		objectEntryFolderImpl.setName(getName());
 		objectEntryFolderImpl.setTreePath(getTreePath());
+		objectEntryFolderImpl.setStatus(getStatus());
 
 		objectEntryFolderImpl.resetOriginalValues();
 
@@ -1045,6 +1069,8 @@ public class ObjectEntryFolderModelImpl
 			this.<String>getColumnOriginalValue("name"));
 		objectEntryFolderImpl.setTreePath(
 			this.<String>getColumnOriginalValue("treePath"));
+		objectEntryFolderImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return objectEntryFolderImpl;
 	}
@@ -1215,6 +1241,8 @@ public class ObjectEntryFolderModelImpl
 			objectEntryFolderCacheModel.treePath = null;
 		}
 
+		objectEntryFolderCacheModel.status = getStatus();
+
 		return objectEntryFolderCacheModel;
 	}
 
@@ -1294,6 +1322,7 @@ public class ObjectEntryFolderModelImpl
 	private String _labelCurrentLanguageId;
 	private String _name;
 	private String _treePath;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1342,6 +1371,7 @@ public class ObjectEntryFolderModelImpl
 		_columnOriginalValues.put("label", _label);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("treePath", _treePath);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1394,6 +1424,8 @@ public class ObjectEntryFolderModelImpl
 		columnBitmasks.put("name", 8192L);
 
 		columnBitmasks.put("treePath", 16384L);
+
+		columnBitmasks.put("status", 32768L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

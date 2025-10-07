@@ -235,7 +235,11 @@ export default function ViewObjectDefinitions({
 
 			if (action.data.id === 'deleteObjectDefinition') {
 				if (
-					itemData.rootObjectDefinitionExternalReferenceCode &&
+					itemData.objectDefinitionSettings?.some(
+						(setting) =>
+							setting.name ===
+							'rootObjectDefinitionExternalReferenceCodes'
+					) &&
 					Liferay.FeatureFlags['LPD-34594']
 				) {
 					setSelectedObjectDefinition(itemData);

@@ -36,21 +36,17 @@ import org.opensearch.client.opensearch.core.search.PhraseSuggestHighlight;
 import org.opensearch.client.opensearch.core.search.StringDistance;
 import org.opensearch.client.opensearch.core.search.SuggestSort;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Michael C. Han
  * @author Petteri Karttunen
  */
-@Component(
-	property = "search.engine.impl=OpenSearch",
-	service = SuggesterTranslator.class
-)
 public class OpenSearchSuggesterTranslator
 	implements SuggesterTranslator<FieldSuggester>,
 			   SuggesterVisitor<FieldSuggester> {
+
+	public OpenSearchSuggesterTranslator(IndexNameBuilder indexNameBuilder) {
+		_queryTranslator = new OpenSearchQueryTranslator(indexNameBuilder);
+	}
 
 	@Override
 	public FieldSuggester translate(
@@ -204,11 +200,6 @@ public class OpenSearchSuggesterTranslator
 		return fieldSuggesterBuilder.build();
 	}
 
-	@Activate
-	protected void activate() {
-		_queryTranslator = new OpenSearchQueryTranslator(_indexNameBuilder);
-	}
-
 	private DirectGenerator _translateCandidateGenerator(
 		PhraseSuggester.CandidateGenerator candidateGenerator) {
 
@@ -306,9 +297,6 @@ public class OpenSearchSuggesterTranslator
 		return SuggestMode.Missing;
 	}
 
-	@Reference
-	private IndexNameBuilder _indexNameBuilder;
-
-	private QueryTranslator<QueryVariant> _queryTranslator;
+	private final QueryTranslator<QueryVariant> _queryTranslator;
 
 }

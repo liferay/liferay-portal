@@ -9,11 +9,11 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -36,6 +36,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
@@ -80,8 +81,11 @@ public class ServletResponseUtilRangeTest {
 			}
 		);
 
-		PropsTestUtil.setProps(
-			PropsKeys.WEB_SERVER_SERVLET_MAX_RANGE_FIELDS, "10");
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(PropsKeys.WEB_SERVER_SERVLET_MAX_RANGE_FIELDS)
+		).thenReturn(
+			"10"
+		);
 
 		MimeTypes mimeTypes = Mockito.mock(MimeTypes.class);
 
@@ -100,6 +104,8 @@ public class ServletResponseUtilRangeTest {
 	@AfterClass
 	public static void tearDownClass() {
 		_serviceRegistration.unregister();
+
+		_propsUtilMockedStatic.close();
 	}
 
 	@Test
@@ -314,6 +320,8 @@ public class ServletResponseUtilRangeTest {
 	private static final String _CONTENT_TYPE_BOUNDARY_PREFACE =
 		"multipart/byteranges; boundary=";
 
+	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
+		Mockito.mockStatic(PropsUtil.class);
 	private static ServiceRegistration<MimeTypes> _serviceRegistration;
 
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(

@@ -26,6 +26,10 @@ Liferay.Util = {
 	},
 };
 
+jest.mock('ckeditor5', () => ({
+	Plugin: () => {},
+}));
+
 jest.mock('frontend-js-web', () => ({
 	...jest.requireActual('frontend-js-web'),
 	fetch: jest.fn(),

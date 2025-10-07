@@ -20,7 +20,6 @@ export function BasicInfoContainer({
 	return (
 		<Card title={Liferay.Language.get('basic-info')}>
 			<Input
-				disabled={values.system}
 				error={errors.name}
 				id="name"
 				label={Liferay.Language.get('name')}

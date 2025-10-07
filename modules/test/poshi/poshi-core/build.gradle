@@ -5,7 +5,7 @@ dependencies {
 	api group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	api group: "commons-lang", name: "commons-lang", version: "2.6"
-	api group: "org.apache.commons", name: "commons-lang3", version: "3.0"
+	api group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	api group: "org.dom4j", name: "dom4j", transitive: false, version: "2.1.3"
 	api group: "org.json", name: "json", version: "20231013"
 	api group: "org.reflections", name: "reflections", version: "0.10.2"

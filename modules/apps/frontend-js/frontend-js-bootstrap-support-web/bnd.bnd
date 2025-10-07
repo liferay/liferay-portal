@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Bootstrap Support Web
 Bundle-SymbolicName: com.liferay.frontend.js.bootstrap.support.web
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Web-ContextPath: /frontend-js-bootstrap-support-web

@@ -13,8 +13,8 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Mátyás Wollner
  */
 @ExtendedObjectClassDefinition(
-	category = "accounts", featureFlagKey = "LPD-43000",
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY, strictScope = true
+	category = "accounts", scope = ExtendedObjectClassDefinition.Scope.COMPANY,
+	strictScope = true
 )
 @Meta.OCD(
 	id = "com.liferay.account.configuration.AccountEntryAddressSubtypeConfiguration",

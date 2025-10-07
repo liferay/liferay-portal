@@ -189,7 +189,7 @@ public class PortalInstancePool {
 
 		List<Long> companyIds = new ArrayList<>();
 
-		long defaultCompanyId = _getDefaultCompanyIdBySQL();
+		long defaultCompanyId = _getDefaultCompanyIdBySQL(connection);
 
 		if (defaultCompanyId != 0) {
 			companyIds.add(defaultCompanyId);

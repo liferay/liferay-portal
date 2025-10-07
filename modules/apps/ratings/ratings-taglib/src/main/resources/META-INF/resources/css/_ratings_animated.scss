@@ -4,7 +4,15 @@
 
 	button {
 		&:hover:not(:disabled) .lexicon-icon {
-			transform: scale(1.3);
+			transform: scale(1.2);
+
+			@media (prefers-reduced-motion: reduce) {
+				transform: none;
+			}
+
+			.c-prefers-reduced-motion & {
+				transform: none;
+			}
 		}
 
 		.on {

@@ -13,9 +13,9 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.BaseFilter;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.remote.cors.internal.CORSSupport;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

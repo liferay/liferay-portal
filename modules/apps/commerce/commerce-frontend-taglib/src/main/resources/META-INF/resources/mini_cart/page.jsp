@@ -57,7 +57,11 @@
 				).put(
 					"siteDefaultURL", siteDefaultURL
 				).put(
+					"slowConnectionOrderFlowEnabled", slowConnectionOrderFlowEnabled
+				).put(
 					"toggleable", toggleable
+				).put(
+					"undoCartItemDeletionDisabled", undoCartItemDeletionDisabled
 				).build()
 			%>'
 			module="{cart} from commerce-frontend-taglib"

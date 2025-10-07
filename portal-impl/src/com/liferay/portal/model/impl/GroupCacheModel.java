@@ -6,6 +6,7 @@
 package com.liferay.portal.model.impl;
 
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.Group;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -215,6 +219,13 @@ public class GroupCacheModel
 
 		groupImpl.resetOriginalValues();
 
+		try {
+			_classNameMethodHandle.invokeExact(groupImpl, className);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return groupImpl;
 	}
 
@@ -262,6 +273,8 @@ public class GroupCacheModel
 		inheritContent = objectInput.readBoolean();
 
 		active = objectInput.readBoolean();
+
+		className = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -354,6 +367,8 @@ public class GroupCacheModel
 		objectOutput.writeBoolean(inheritContent);
 
 		objectOutput.writeBoolean(active);
+
+		objectOutput.writeObject(className);
 	}
 
 	public long mvccVersion;
@@ -381,5 +396,20 @@ public class GroupCacheModel
 	public int remoteStagingGroupCount;
 	public boolean inheritContent;
 	public boolean active;
+	public volatile String className;
+
+	private static final MethodHandle _classNameMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_classNameMethodHandle = lookup.findSetter(
+				GroupImpl.class, "_className", String.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

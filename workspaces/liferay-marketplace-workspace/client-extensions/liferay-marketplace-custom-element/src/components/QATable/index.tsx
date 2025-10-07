@@ -4,7 +4,7 @@
  */
 
 import classNames from 'classnames';
-import React, {ReactNode} from 'react';
+import React, {HTMLAttributes, ReactNode} from 'react';
 
 import './index.scss';
 
@@ -14,6 +14,7 @@ export enum Orientation {
 }
 
 type QAItem = {
+	className?: HTMLAttributes<HTMLTableRowElement>['className'];
 	divider?: boolean;
 	flexHeading?: boolean;
 	title: string;
@@ -37,7 +38,7 @@ const QATable: React.FC<QATableProps> = ({
 				.map((item, index) => (
 					<React.Fragment key={index}>
 						<tr
-							className={classNames({
+							className={classNames(item.className, {
 								'd-flex flex-column':
 									orientation === Orientation.VERTICAL,
 							})}

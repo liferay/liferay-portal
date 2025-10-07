@@ -4,6 +4,10 @@
 		opacity: 1;
 	}
 
+	.custom-control-outside label {
+		display: inline;
+	}
+
 	.disabled.sv-clear-button {
 		color: var(--color-action-neutral-disabled);
 	}

@@ -35,7 +35,7 @@ exports[`Options shows the options 1`] = `
             class="panel panel-secondary"
           >
             <button
-              aria-controls="clay-id-1"
+              aria-controls="clay-id-15"
               aria-expanded="true"
               class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle show btn btn-unstyled"
               type="button"
@@ -71,9 +71,9 @@ exports[`Options shows the options 1`] = `
               </span>
             </button>
             <div
-              aria-labelledby="clay-id-1"
+              aria-labelledby="clay-id-15"
               class="panel-collapse expanded"
-              id="clay-id-1"
+              id="clay-id-15"
               role="region"
             >
               <div
@@ -97,7 +97,6 @@ exports[`Options shows the options 1`] = `
                       title="Option 1"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueDisplayNameoption0"
                         name="keyValueDisplayNameoption0"
@@ -169,7 +168,6 @@ exports[`Options shows the options 1`] = `
                       title="Option1"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueReferenceOption1"
                         name="keyValueReferenceOption1"
@@ -240,7 +238,6 @@ exports[`Options shows the options 1`] = `
                       title="Option1"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueNameOption1"
                         name="keyValueNameOption1"
@@ -309,7 +306,7 @@ exports[`Options shows the options 1`] = `
             class="panel panel-secondary"
           >
             <button
-              aria-controls="clay-id-2"
+              aria-controls="clay-id-16"
               aria-expanded="true"
               class="panel-header panel-header-link collapsable-option-header collapse-icon collapse-icon-middle show btn btn-unstyled"
               type="button"
@@ -345,9 +342,9 @@ exports[`Options shows the options 1`] = `
               </span>
             </button>
             <div
-              aria-labelledby="clay-id-2"
+              aria-labelledby="clay-id-16"
               class="panel-collapse expanded"
-              id="clay-id-2"
+              id="clay-id-16"
               role="region"
             >
               <div
@@ -371,7 +368,6 @@ exports[`Options shows the options 1`] = `
                       title="Option 2"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueDisplayNameoption1"
                         name="keyValueDisplayNameoption1"
@@ -443,7 +439,6 @@ exports[`Options shows the options 1`] = `
                       title="Option2"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueReferenceOption2"
                         name="keyValueReferenceOption2"
@@ -514,7 +509,6 @@ exports[`Options shows the options 1`] = `
                       title="Option2"
                     >
                       <input
-                        aria-invalid="true"
                         class="form-control ddm-field-text"
                         id="keyValueNameOption2"
                         name="keyValueNameOption2"

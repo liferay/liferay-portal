@@ -22,6 +22,7 @@ import com.liferay.headless.object.client.serdes.v1_0.CollaboratorSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -34,13 +35,13 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -231,6 +232,118 @@ public abstract class BaseCollaboratorResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator()
+		throws Exception {
+
+		// No namespace
+
+		Collaborator collaborator1 =
+			testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_addCollaborator();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteObjectEntryFolderCollaboratorByTypeCollaborator",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"objectEntryFolderId",
+									testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId());
+								put(
+									"type",
+									"\"" + collaborator1.getType() + "\"");
+								put("collaboratorId", collaborator1.getId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteObjectEntryFolderCollaboratorByTypeCollaborator"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"objectEntryFolderCollaboratorByTypeCollaborator",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"objectEntryFolderId",
+								testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId());
+							put("type", "\"" + collaborator1.getType() + "\"");
+							put("collaboratorId", collaborator1.getId());
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessObject_v1_0
+
+		Collaborator collaborator2 =
+			testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_addCollaborator();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessObject_v1_0",
+						new GraphQLField(
+							"deleteObjectEntryFolderCollaboratorByTypeCollaborator",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"objectEntryFolderId",
+										testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId());
+									put(
+										"type",
+										"\"" + collaborator2.getType() + "\"");
+									put(
+										"collaboratorId",
+										collaborator2.getId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessObject_v1_0",
+				"Object/deleteObjectEntryFolderCollaboratorByTypeCollaborator"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessObject_v1_0",
+					new GraphQLField(
+						"objectEntryFolderCollaboratorByTypeCollaborator",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"objectEntryFolderId",
+									testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId());
+								put(
+									"type",
+									"\"" + collaborator2.getType() + "\"");
+								put("collaboratorId", collaborator2.getId());
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected Long
+			testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Collaborator
+			testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_addCollaborator()
+		throws Exception {
+
+		return testGraphQLCollaborator_addCollaborator();
+	}
+
+	@Test
 	public void testDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator()
 		throws Exception {
 
@@ -288,6 +401,159 @@ public abstract class BaseCollaboratorResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator()
+		throws Exception {
+
+		// No namespace
+
+		Collaborator collaborator1 =
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_addCollaborator();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"scopeKey",
+									"\"" +
+										testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey() +
+											"\"");
+
+								put(
+									"externalReferenceCode",
+									"\"" +
+										testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+											collaborator1) + "\"");
+								put(
+									"type",
+									"\"" + collaborator1.getType() + "\"");
+								put("collaboratorId", collaborator1.getId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"scopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"scopeKey",
+								"\"" +
+									testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey() +
+										"\"");
+
+							put(
+								"externalReferenceCode",
+								"\"" +
+									testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+										collaborator1) + "\"");
+							put("type", "\"" + collaborator1.getType() + "\"");
+							put("collaboratorId", collaborator1.getId());
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessObject_v1_0
+
+		Collaborator collaborator2 =
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_addCollaborator();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessObject_v1_0",
+						new GraphQLField(
+							"deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"scopeKey",
+										"\"" +
+											testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey() +
+												"\"");
+
+									put(
+										"externalReferenceCode",
+										"\"" +
+											testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+												collaborator2) + "\"");
+									put(
+										"type",
+										"\"" + collaborator2.getType() + "\"");
+									put(
+										"collaboratorId",
+										collaborator2.getId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessObject_v1_0",
+				"Object/deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessObject_v1_0",
+					new GraphQLField(
+						"scopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"scopeKey",
+									"\"" +
+										testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey() +
+											"\"");
+
+								put(
+									"externalReferenceCode",
+									"\"" +
+										testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+											collaborator2) + "\"");
+								put(
+									"type",
+									"\"" + collaborator2.getType() + "\"");
+								put("collaboratorId", collaborator2.getId());
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+				Collaborator collaborator)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Collaborator
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_addCollaborator()
+		throws Exception {
+
+		return testGraphQLCollaborator_addCollaborator();
 	}
 
 	@Test
@@ -1409,6 +1675,10 @@ public abstract class BaseCollaboratorResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

@@ -48,7 +48,6 @@ public class RankingGetVisibleResultsBuilderTest
 		setUpDLAppLocalService();
 		setUpFastDateFormatFactory();
 		setUpPortalUtil();
-		setUpPropsUtil();
 		setUpQuery();
 
 		Ranking ranking = Mockito.mock(Ranking.class);

@@ -373,6 +373,15 @@ public class CalendarBookingLocalServiceWrapper
 		return _calendarBookingLocalService.fetchCalendarBooking(uuid, groupId);
 	}
 
+	@Override
+	public CalendarBooking fetchCalendarBookingByExternalReferenceCode(
+		String externalReferenceCode, long groupId) {
+
+		return _calendarBookingLocalService.
+			fetchCalendarBookingByExternalReferenceCode(
+				externalReferenceCode, groupId);
+	}
+
 	/**
 	 * Returns the calendar booking matching the UUID and group.
 	 *
@@ -417,6 +426,16 @@ public class CalendarBookingLocalServiceWrapper
 
 		return _calendarBookingLocalService.getCalendarBooking(
 			calendarId, parentCalendarBookingId);
+	}
+
+	@Override
+	public CalendarBooking getCalendarBookingByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _calendarBookingLocalService.
+			getCalendarBookingByExternalReferenceCode(
+				externalReferenceCode, groupId);
 	}
 
 	/**

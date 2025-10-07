@@ -13,6 +13,12 @@ import com.liferay.portal.kernel.model.change.tracking.CTModel;
  */
 public interface CTEntryConflictHelper {
 
+	public default String getMissingRequirementTypeName(
+		CTEntry ctEntry, long targetCTCollectionId) {
+
+		return null;
+	}
+
 	public Class<? extends CTModel<?>> getModelClass();
 
 	public default boolean hasDeletionModificationConflict(

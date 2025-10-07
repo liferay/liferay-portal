@@ -7,19 +7,27 @@ import {ObjectField} from '@liferay/object-admin-rest-client-js';
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 import path from 'path';
 
+import {getFDSDateFormat} from '../../../tests/object-web/main/utils/dateFormat';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+
+import type {SupportedBusinessType} from '../../../tests/object-web/main/utils/generateObjectEntry';
 
 export class ViewObjectEntriesPage {
 	readonly addObjectEntryButton: Locator;
 	readonly backButton: Locator;
+	readonly cancelObjectEntryButton: Locator;
 	readonly dateTimeInput: Locator;
 	readonly deletionConfirmationModal: Locator;
 	readonly deleteFileButton: Locator;
 	readonly duplicateEntryErrorMessage: Locator;
 	readonly editObjectEntryForm: Locator;
+	readonly expirationDateInput: Locator;
 	readonly frameSelect: FrameLocator;
 	readonly frontendDatasetActions: Locator;
 	readonly frontendDatasetDeleteAction: Locator;
+	readonly frontendDatasetItems: Locator;
+	readonly frontendDatasetViewAction: Locator;
+	readonly neverExpire: Locator;
 	readonly neverReview: Locator;
 	readonly objectEntryButton: Locator;
 	readonly page: Page;
@@ -29,8 +37,10 @@ export class ViewObjectEntriesPage {
 	readonly reviewDateInput: Locator;
 	readonly saveObjectEntryButton: Locator;
 	readonly saveObjectEntryButtonArabic: Locator;
+	readonly schedulePanelButton: Locator;
 	readonly schedulePublicationOption: Locator;
 	readonly schedulePublicationButton: Locator;
+	readonly schedulePublicationCloseButton: Locator;
 	readonly searchBar: Locator;
 	readonly searchButton: Locator;
 	readonly searchContainer: Locator;
@@ -46,6 +56,9 @@ export class ViewObjectEntriesPage {
 			.getByTestId('fdsCreationActionButton')
 			.first();
 		this.backButton = page.getByTitle('Back');
+		this.cancelObjectEntryButton = page.getByRole('button', {
+			name: 'Cancel',
+		});
 		this.dateTimeInput = page.getByPlaceholder('__/__/____ __:__ _');
 		this.deleteFileButton = page.getByRole('button', {name: 'Delete'});
 		this.deletionConfirmationModal = page
@@ -55,6 +68,12 @@ export class ViewObjectEntriesPage {
 			'Error:The field values are already in use. Please choose unique values.'
 		);
 		this.editObjectEntryForm = page.locator('[id="editObjectEntry"]');
+		this.expirationDateInput = page.getByLabel(
+			'Expiration Date' + 'Mandatory',
+			{
+				exact: true,
+			}
+		);
 		this.frameSelect = page
 			.locator('iframe[title="Select"]')
 			.contentFrame();
@@ -64,6 +83,11 @@ export class ViewObjectEntriesPage {
 		this.frontendDatasetDeleteAction = page.getByRole('menuitem', {
 			name: 'Delete',
 		});
+		this.frontendDatasetItems = page.getByRole('cell').getByRole('link');
+		this.frontendDatasetViewAction = page.getByRole('menuitem', {
+			name: 'View',
+		});
+		this.neverExpire = page.getByLabel('Never Expire', {exact: true});
 		this.neverReview = page.getByLabel('Never Review', {exact: true});
 		this.objectEntryButton = page.getByRole('link', {name: 'View'});
 		this.page = page;
@@ -77,9 +101,11 @@ export class ViewObjectEntriesPage {
 		this.reviewDateInput = page.getByLabel('Review Date' + 'Mandatory', {
 			exact: true,
 		});
+		this.schedulePanelButton = page.getByRole('button', {name: 'Schedule'});
 		this.schedulePublicationButton = page
 			.getByLabel('Schedule Publication')
 			.getByRole('button', {name: 'Schedule'});
+		this.schedulePublicationCloseButton = page.getByLabel('Close');
 		this.schedulePublicationOption = page.getByRole('menuitem', {
 			name: 'Schedule Publication',
 		});
@@ -128,7 +154,10 @@ export class ViewObjectEntriesPage {
 
 	async clickAddObjectEntry(objectName?: string) {
 		objectName
-			? await this.page.getByLabel('Add ' + objectName).click()
+			? await this.page
+					.getByLabel('Add ' + objectName)
+					.first()
+					.click()
 			: await this.addObjectEntryButton.click();
 
 		await this.editObjectEntryForm.waitFor({state: 'visible'});
@@ -152,6 +181,8 @@ export class ViewObjectEntriesPage {
 				})
 				.frameLocator('iframe')
 				.getByRole('textbox');
+
+			await richTextInput.clear();
 
 			await richTextInput.fill(objectFieldValue);
 
@@ -193,14 +224,14 @@ export class ViewObjectEntriesPage {
 	}
 
 	async scheduleForCurrentDate(
-		scheduleField: 'Display' | 'Expiration' | 'Review'
+		scheduleField: 'Expiration' | 'Publish' | 'Review'
 	) {
 		const fieldLabel = `${scheduleField} DateMandatory`;
 
 		await this.page
 			.locator('div')
 			.filter({hasText: new RegExp(`^${fieldLabel}$`)})
-			.getByLabel('Choose date')
+			.getByLabel('Select date')
 			.click();
 
 		await this.page
@@ -272,7 +303,145 @@ export class ViewObjectEntriesPage {
 		await fileChooser.setFiles(
 			path.join(dirName, 'dependencies', fileName)
 		);
+	}
 
-		await this.page.getByText(fileName).waitFor({state: 'visible'});
+	getMaximumFileSizeErrorMessage({
+		maximumFileSizeAllowed,
+	}: {
+		maximumFileSizeAllowed: string;
+	}) {
+		return this.page.getByText(
+			`File size is larger than the allowed overall maximum upload request size ${maximumFileSizeAllowed} MB.`,
+			{exact: true}
+		);
+	}
+
+	async fillObjectFields({
+		attachmentFileName = '',
+		objectEntry,
+		objectFields,
+	}) {
+		const objectEntries: {
+			businessType: SupportedBusinessType;
+			entry: string;
+			name: string;
+		}[] = [];
+
+		for (const objectField of objectFields) {
+			switch (objectField.businessType) {
+				case 'Assignee': {
+					await this.selectDropdownItem(
+						objectField.label['en_US'],
+						objectEntry[objectField.name]
+					);
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: objectEntry[objectField.name],
+						name: objectField.name,
+					});
+
+					break;
+				}
+				case 'Attachment': {
+					await this.selectFileButton.click();
+
+					await this.selectFileFromDocumentsAndMedia(
+						attachmentFileName
+							? attachmentFileName
+							: 'astronaut.png'
+					);
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: attachmentFileName,
+						name: objectField.name,
+					});
+
+					break;
+				}
+				case 'Boolean': {
+					objectEntry[objectField.name]
+						? await this.page
+								.getByLabel(objectField.label['en_US'])
+								.check()
+						: await this.page
+								.getByLabel(objectField.label['en_US'])
+								.uncheck();
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: objectEntry[objectField.name] ? 'Yes' : 'No',
+						name: objectField.name,
+					});
+
+					break;
+				}
+
+				case 'Picklist': {
+					await this.selectDropdownItem(
+						objectField.label['en_US'],
+						objectEntry[objectField.name].key.toString()
+					);
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: objectEntry[objectField.name].key.toString(),
+						name: objectField.name,
+					});
+
+					break;
+				}
+				case 'RichText': {
+					await this.fillObjectEntry({
+						objectFieldBusinessType: objectField.businessType,
+						objectFieldLabel: objectField.label['en_US'],
+						objectFieldValue: objectEntry[objectField.name]
+							.toString()
+							.substring(0, 35),
+					});
+
+					objectEntries.push({
+						businessType: objectField.businessType,
+						entry: objectEntry[objectField.name]
+							.toString()
+							.substring(0, 34),
+						name: objectField.name,
+					});
+
+					break;
+				}
+				default: {
+					await this.fillObjectEntry({
+						objectFieldBusinessType: objectField.businessType,
+						objectFieldLabel: objectField.label['en_US'],
+						objectFieldValue:
+							objectEntry[objectField.name].toString(),
+					});
+
+					if (
+						objectField.businessType === 'Date' ||
+						objectField.businessType === 'DateTime'
+					) {
+						objectEntries.push({
+							businessType: objectField.businessType,
+							entry: getFDSDateFormat(
+								new Date(objectEntry[objectField.name])
+							),
+							name: objectField.name,
+						});
+					}
+					else {
+						objectEntries.push({
+							businessType: objectField.businessType,
+							entry: objectEntry[objectField.name].toString(),
+							name: objectField.name,
+						});
+					}
+				}
+			}
+		}
+
+		return objectEntries;
 	}
 }

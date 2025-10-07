@@ -1,0 +1,16 @@
+{
+	"name": "PaaS Support Coverage",
+	"name_i18n": {
+		"en_US": "PaaS Support Coverage",
+		"es-ES": "Cobertura de soporte PaaS",
+		"ja-JP": "PaaSのサポート範囲",
+		"pt-BR": "Cobertura de Suporte do PaaS"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/paas_support_coverage.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

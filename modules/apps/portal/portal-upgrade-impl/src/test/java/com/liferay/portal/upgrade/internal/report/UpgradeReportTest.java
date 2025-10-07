@@ -6,12 +6,14 @@
 package com.liferay.portal.upgrade.internal.report;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DuplicateUniqueFinderRowsCleaner;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.upgrade.DeleteDuplicateUniqueFinderRowsUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.tools.DBUpgrader;
+import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.upgrade.internal.recorder.UpgradeRecorder;
 
 import java.util.ArrayList;
@@ -47,7 +49,9 @@ public class UpgradeReportTest {
 
 	@After
 	public void tearDown() {
+		_dataAccessMockedStatic.close();
 		_dbUpgraderMockedStatic.close();
+		_portalUpgradeProcessMockedStatic.close();
 	}
 
 	@Test
@@ -56,7 +60,7 @@ public class UpgradeReportTest {
 			_upgradeRecorder.getDataCleanUpMessages()
 		).thenReturn(
 			HashMapBuilder.<String, Map<String, Integer>>put(
-				DeleteDuplicateUniqueFinderRowsUpgradeProcess.class.getName(),
+				DuplicateUniqueFinderRowsCleaner.class.getName(),
 				HashMapBuilder.put(
 					"Deleted row from TestTable due to duplicate values", 1
 				).build()
@@ -98,7 +102,7 @@ public class UpgradeReportTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"Class name: ",
-				DeleteDuplicateUniqueFinderRowsUpgradeProcess.class.getName(),
+				DuplicateUniqueFinderRowsCleaner.class.getName(),
 				"\n\tDeleted row from TestTable due to duplicate values\n"),
 			dataCleanUp.get(
 				0
@@ -127,8 +131,13 @@ public class UpgradeReportTest {
 			runningUpgradeProcesses.size());
 	}
 
+	private static final MockedStatic<DataAccess> _dataAccessMockedStatic =
+		Mockito.mockStatic(DataAccess.class);
 	private static final MockedStatic<DBUpgrader> _dbUpgraderMockedStatic =
 		Mockito.mockStatic(DBUpgrader.class);
+	private static final MockedStatic<PortalUpgradeProcess>
+		_portalUpgradeProcessMockedStatic = Mockito.mockStatic(
+			PortalUpgradeProcess.class);
 
 	@Mock
 	private UpgradeRecorder _upgradeRecorder;

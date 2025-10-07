@@ -27,6 +27,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -42,9 +43,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -53,7 +56,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -267,6 +270,95 @@ public abstract class BaseRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 =
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" + role1.getExternalReferenceCode() +
+										"\"");
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+
+								put(
+									"organizationId",
+									testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getOrganizationId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 =
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											role2.getExternalReferenceCode() +
+												"\"");
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+
+									put(
+										"organizationId",
+										testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getOrganizationId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_getOrganizationId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Role
+			testGraphQLDeleteOrganizationRoleByExternalReferenceCodeUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
+	}
+
+	@Test
 	public void testDeleteOrganizationRoleUserAccountAssociation()
 		throws Exception {
 
@@ -303,6 +395,88 @@ public abstract class BaseRoleResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteOrganizationRoleUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 =
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteOrganizationRoleUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put("roleId", role1.getId());
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteOrganizationRoleUserAccountAssociation_getUserAccountId());
+
+								put(
+									"organizationId",
+									testGraphQLDeleteOrganizationRoleUserAccountAssociation_getOrganizationId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteOrganizationRoleUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 =
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteOrganizationRoleUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put("roleId", role2.getId());
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteOrganizationRoleUserAccountAssociation_getUserAccountId());
+
+									put(
+										"organizationId",
+										testGraphQLDeleteOrganizationRoleUserAccountAssociation_getOrganizationId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteOrganizationRoleUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_getOrganizationId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Role
+			testGraphQLDeleteOrganizationRoleUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
 	}
 
 	@Test
@@ -351,7 +525,7 @@ public abstract class BaseRoleResourceTestCase {
 							put("roleId", role1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -386,7 +560,7 @@ public abstract class BaseRoleResourceTestCase {
 								put("roleId", role2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -482,6 +656,94 @@ public abstract class BaseRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteRoleByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 = testGraphQLDeleteRoleByExternalReferenceCode_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteRoleByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" + role1.getExternalReferenceCode() +
+										"\"");
+							}
+						})),
+				"JSONObject/data", "Object/deleteRoleByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"roleByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" + role1.getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 = testGraphQLDeleteRoleByExternalReferenceCode_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteRoleByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											role2.getExternalReferenceCode() +
+												"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteRoleByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessAdminUser_v1_0",
+					new GraphQLField(
+						"roleByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" + role2.getExternalReferenceCode() +
+										"\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected Role testGraphQLDeleteRoleByExternalReferenceCode_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
+	}
+
+	@Test
 	public void testDeleteRoleByExternalReferenceCodeUserAccountAssociation()
 		throws Exception {
 
@@ -514,6 +776,79 @@ public abstract class BaseRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 =
+			testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteRoleByExternalReferenceCodeUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" + role1.getExternalReferenceCode() +
+										"\"");
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteRoleByExternalReferenceCodeUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 =
+			testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteRoleByExternalReferenceCodeUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											role2.getExternalReferenceCode() +
+												"\"");
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteRoleByExternalReferenceCodeUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Role
+			testGraphQLDeleteRoleByExternalReferenceCodeUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
+	}
+
+	@Test
 	public void testDeleteRoleUserAccountAssociation() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		Role role = testDeleteRoleUserAccountAssociation_addRole();
@@ -537,6 +872,67 @@ public abstract class BaseRoleResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteRoleUserAccountAssociation() throws Exception {
+
+		// No namespace
+
+		Role role1 = testGraphQLDeleteRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteRoleUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put("roleId", role1.getId());
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteRoleUserAccountAssociation_getUserAccountId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteRoleUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 = testGraphQLDeleteRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteRoleUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put("roleId", role2.getId());
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteRoleUserAccountAssociation_getUserAccountId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteRoleUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Role testGraphQLDeleteRoleUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
 	}
 
 	@Test
@@ -576,8 +972,99 @@ public abstract class BaseRoleResourceTestCase {
 			testDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId()
 		throws Exception {
 
+		return testGroup.getGroupId();
+	}
+
+	@Test
+	public void testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 =
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteSiteRoleByExternalReferenceCodeUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" + role1.getExternalReferenceCode() +
+										"\"");
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+
+								put(
+									"siteKey",
+									"\"" +
+										testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteSiteRoleByExternalReferenceCodeUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 =
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteSiteRoleByExternalReferenceCodeUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											role2.getExternalReferenceCode() +
+												"\"");
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId());
+
+									put(
+										"siteKey",
+										"\"" +
+											testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId() +
+												"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteSiteRoleByExternalReferenceCodeUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId()
+		throws Exception {
+
+		return testGroup.getGroupId();
+	}
+
+	protected Role
+			testGraphQLDeleteSiteRoleByExternalReferenceCodeUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
 	}
 
 	@Test
@@ -610,8 +1097,88 @@ public abstract class BaseRoleResourceTestCase {
 	protected Long testDeleteSiteRoleUserAccountAssociation_getSiteId()
 		throws Exception {
 
+		return testGroup.getGroupId();
+	}
+
+	@Test
+	public void testGraphQLDeleteSiteRoleUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		Role role1 = testGraphQLDeleteSiteRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteSiteRoleUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put("roleId", role1.getId());
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteSiteRoleUserAccountAssociation_getUserAccountId());
+
+								put(
+									"siteKey",
+									"\"" +
+										testGraphQLDeleteSiteRoleUserAccountAssociation_getSiteId() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteSiteRoleUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		Role role2 = testGraphQLDeleteSiteRoleUserAccountAssociation_addRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteSiteRoleUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put("roleId", role2.getId());
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteSiteRoleUserAccountAssociation_getUserAccountId());
+
+									put(
+										"siteKey",
+										"\"" +
+											testGraphQLDeleteSiteRoleUserAccountAssociation_getSiteId() +
+												"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteSiteRoleUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteSiteRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected Long testGraphQLDeleteSiteRoleUserAccountAssociation_getSiteId()
+		throws Exception {
+
+		return testGroup.getGroupId();
+	}
+
+	protected Role testGraphQLDeleteSiteRoleUserAccountAssociation_addRole()
+		throws Exception {
+
+		return testGraphQLRole_addRole();
 	}
 
 	@Test
@@ -1215,6 +1782,7 @@ public abstract class BaseRoleResourceTestCase {
 			"roles",
 			new HashMap<String, Object>() {
 				{
+					put("search", null);
 					put("page", 1);
 					put("pageSize", 10);
 				}
@@ -1230,8 +1798,9 @@ public abstract class BaseRoleResourceTestCase {
 
 		long totalCount = rolesJSONObject.getLong("totalCount");
 
-		Role role1 = testGraphQLGetRolesPage_addRole();
-		Role role2 = testGraphQLGetRolesPage_addRole();
+		Role role1 = testGraphQLRole_addRole(randomRole());
+
+		Role role2 = testGraphQLRole_addRole(randomRole());
 
 		rolesJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -1268,10 +1837,6 @@ public abstract class BaseRoleResourceTestCase {
 			role2,
 			Arrays.asList(
 				RoleSerDes.toDTOs(rolesJSONObject.getString("items"))));
-	}
-
-	protected Role testGraphQLGetRolesPage_addRole() throws Exception {
-		return testGraphQLRole_addRole();
 	}
 
 	@Test
@@ -1437,6 +2002,15 @@ public abstract class BaseRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostRole() throws Exception {
+		Role randomRole = randomRole();
+
+		Role role = testGraphQLRole_addRole(randomRole);
+
+		Assert.assertTrue(equals(randomRole, role));
+	}
+
+	@Test
 	public void testPostRoleByExternalReferenceCodeUserAccountAssociation()
 		throws Exception {
 
@@ -1543,8 +2117,7 @@ public abstract class BaseRoleResourceTestCase {
 			testPostSiteRoleByExternalReferenceCodeUserAccountAssociation_getSiteId()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getGroupId();
 	}
 
 	protected Role
@@ -1584,8 +2157,7 @@ public abstract class BaseRoleResourceTestCase {
 	protected Long testPostSiteRoleUserAccountAssociation_getSiteId()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGroup.getGroupId();
 	}
 
 	protected Role testPostSiteRoleUserAccountAssociation_addRole()
@@ -1744,8 +2316,111 @@ public abstract class BaseRoleResourceTestCase {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected Role testGraphQLRole_addRole() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGraphQLRole_addRole(randomRole());
+	}
+
+	protected Role testGraphQLRole_addRole(Role role) throws Exception {
+		JSONDeserializer<Role> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field : getDeclaredFields(Role.class)) {
+			if (getGraphQLValue(field.get(role)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(role)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createRole",
+						new HashMap<String, Object>() {
+							{
+								put("role", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createRole"),
+			Role.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(Role role, List<Role> roles) {
@@ -1972,6 +2647,10 @@ public abstract class BaseRoleResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

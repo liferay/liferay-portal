@@ -26,8 +26,8 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.batch.BatchIndexingActionable;
 import com.liferay.portal.search.batch.BatchIndexingHelper;
@@ -62,8 +62,7 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 		SearchPermissionIndexWriter searchPermissionIndexWriter,
 		UpdateDocumentIndexWriter updateDocumentIndexWriter,
 		IndexStatusManager indexStatusManager,
-		IndexWriterHelper indexWriterHelper, Props props,
-		UIDFactory uidFactory) {
+		IndexWriterHelper indexWriterHelper, UIDFactory uidFactory) {
 
 		_modelSearchSettings = modelSearchSettings;
 		_baseModelRetriever = baseModelRetriever;
@@ -75,7 +74,6 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 		_updateDocumentIndexWriter = updateDocumentIndexWriter;
 		_indexStatusManager = indexStatusManager;
 		_indexWriterHelper = indexWriterHelper;
-		_props = props;
 		_uidFactory = uidFactory;
 	}
 
@@ -121,7 +119,7 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 	@Override
 	public boolean isEnabled() {
 		if (_indexerEnabled == null) {
-			String indexerEnabled = _props.get(
+			String indexerEnabled = PropsUtil.get(
 				PropsKeys.INDEXER_ENABLED,
 				new Filter(_modelSearchSettings.getClassName()));
 
@@ -326,7 +324,6 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 	private final ModelIndexerWriterContributor<T>
 		_modelIndexerWriterContributor;
 	private final ModelSearchSettings _modelSearchSettings;
-	private final Props _props;
 	private final SearchPermissionIndexWriter _searchPermissionIndexWriter;
 	private final UIDFactory _uidFactory;
 	private final UpdateDocumentIndexWriter _updateDocumentIndexWriter;

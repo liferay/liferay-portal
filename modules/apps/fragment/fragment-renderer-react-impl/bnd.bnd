@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Renderer React Implementation
 Bundle-SymbolicName: com.liferay.fragment.renderer.react.impl
-Bundle-Version: 2.0.34
+Bundle-Version: 2.0.35
 Web-ContextPath: /fragment-renderer-react-impl

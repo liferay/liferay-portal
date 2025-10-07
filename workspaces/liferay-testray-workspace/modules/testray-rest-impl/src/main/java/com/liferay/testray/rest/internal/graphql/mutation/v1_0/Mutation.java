@@ -115,6 +115,33 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public TestrayTestFlow createTestrayTestFlow(
+			@GraphQLName("testrayTaskId") Long testrayTaskId)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_testrayTestFlowResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			testrayTestFlowResource ->
+				testrayTestFlowResource.postTestrayTestFlow(testrayTaskId));
+	}
+
+	@GraphQLField
+	public Response createTestrayTestFlowBatch(
+			@GraphQLName("testrayTaskId") Long testrayTaskId,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_testrayTestFlowResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			testrayTestFlowResource ->
+				testrayTestFlowResource.postTestrayTestFlowBatch(
+					testrayTaskId, callbackURL, object));
+	}
+
+	@GraphQLField
 	public TestrayTestFlow
 			updateTestrayTestFlowByTestraySubtaskIdTestraySubtask(
 				@GraphQLName("testraySubtaskId") Long testraySubtaskId,
@@ -148,33 +175,6 @@ public class Mutation {
 
 				return paginationPage.getItems();
 			});
-	}
-
-	@GraphQLField
-	public TestrayTestFlow createTestrayTestFlow(
-			@GraphQLName("testrayTaskId") Long testrayTaskId)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_testrayTestFlowResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			testrayTestFlowResource ->
-				testrayTestFlowResource.postTestrayTestFlow(testrayTaskId));
-	}
-
-	@GraphQLField
-	public Response createTestrayTestFlowBatch(
-			@GraphQLName("testrayTaskId") Long testrayTaskId,
-			@GraphQLName("callbackURL") String callbackURL,
-			@GraphQLName("object") Object object)
-		throws Exception {
-
-		return _applyComponentServiceObjects(
-			_testrayTestFlowResourceComponentServiceObjects,
-			this::_populateResourceContext,
-			testrayTestFlowResource ->
-				testrayTestFlowResource.postTestrayTestFlowBatch(
-					testrayTaskId, callbackURL, object));
 	}
 
 	@GraphQLField

@@ -53,8 +53,7 @@
 								"widgetConfig": {
 									"destination": "",
 									"displayStyle": "ddmTemplate_SEARCH-BAR-LEFT-ALIGNED-ICON-FTL",
-									"displayStyleGroupId": "20121",
-									"displayStyleGroupKey": "19497231034269",
+									"displayStyleGroupId": "[$GROUP_ID$]",
 									"federatedSearchKey": "",
 									"invisible": "false",
 									"keywordsParameterName": "q",
@@ -183,7 +182,10 @@
 												},
 												"text": {
 													"value_i18n": {
-														"en_US": "Sign in to access the Customer Portal features"
+														"en_US": "Sign in to access the Customer Portal features",
+														"es_ES": "Inicia sesión para acceder a las funcionalidades del Portal del cliente",
+														"ja_JP": "サインインしてカスタマーポータルの機能にアクセスする",
+														"pt_BR": "Faça login para acessar os recursos do Portal do Cliente"
 													}
 												}
 											}
@@ -225,7 +227,10 @@
 												},
 												"text": {
 													"value_i18n": {
-														"en_US": "Sign In"
+														"en_US": "Sign In",
+														"es_ES": "Inicia sesión",
+														"ja_JP": "ログイン",
+														"pt_BR": "Entrar"
 													}
 												}
 											}
@@ -403,7 +408,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Find documentation, tutorials, and guides."
+																		"en_US": "Find documentation, tutorials, and guides.",
+																		"es_ES": "Encuentra documentación, tutoriales y guías.",
+																		"ja_JP": "ドキュメント、チュートリアル、ガイドを検索します。",
+																		"pt_BR": "Encontre documentação, tutoriais e guias."
 																	}
 																}
 															}
@@ -515,7 +523,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Release Notes"
+																		"en_US": "Release Notes",
+																		"es_ES": "Notas de las actualizaciones",
+																		"ja_JP": "リリースノート",
+																		"pt_BR": "Notas de versão"
 																	}
 																}
 															}
@@ -548,7 +559,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Review version highlights and technical details."
+																		"en_US": "Review version highlights and technical details.",
+																		"es_ES": "Revisa los detalles técnicos y aspectos destacados de la versión.",
+																		"ja_JP": "バージョンのハイライトと技術的な詳細を確認する。",
+																		"pt_BR": "Revise os destaques da versão e os detalhes técnicos."
 																	}
 																}
 															}
@@ -575,11 +589,9 @@
 		"type": "Root"
 	},
 	"settings": {
-		"colorSchemeName": "01",
 		"masterPage": {
 			"key": "home"
-		},
-		"themeName": "Dialect"
+		}
 	},
 	"version": 1.1
 }

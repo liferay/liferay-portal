@@ -6,10 +6,8 @@
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
 import com.liferay.headless.admin.site.client.dto.v1_0.ItemExternalReference;
-import com.liferay.headless.admin.site.client.dto.v1_0.Keyword;
 import com.liferay.headless.admin.site.client.dto.v1_0.MasterPage;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageSpecification;
-import com.liferay.headless.admin.site.client.dto.v1_0.TaxonomyCategory;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -62,20 +60,6 @@ public class MasterPageSerDes {
 			sb.append("\"creator\": ");
 
 			sb.append(masterPage.getCreator());
-		}
-
-		if (masterPage.getCreatorExternalReferenceCode() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"creatorExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(masterPage.getCreatorExternalReferenceCode()));
-
-			sb.append("\"");
 		}
 
 		if (masterPage.getDateCreated() != null) {
@@ -151,33 +135,6 @@ public class MasterPageSerDes {
 			sb.append("\"");
 		}
 
-		if (masterPage.getKeywordItemExternalReferences() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"keywordItemExternalReferences\": ");
-
-			sb.append("[");
-
-			for (int i = 0;
-				 i < masterPage.getKeywordItemExternalReferences().length;
-				 i++) {
-
-				sb.append(
-					String.valueOf(
-						masterPage.getKeywordItemExternalReferences()[i]));
-
-				if ((i + 1) <
-						masterPage.getKeywordItemExternalReferences().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		if (masterPage.getKeywords() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -188,7 +145,7 @@ public class MasterPageSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < masterPage.getKeywords().length; i++) {
-				sb.append(masterPage.getKeywords()[i]);
+				sb.append(_toJSON(masterPage.getKeywords()[i]));
 
 				if ((i + 1) < masterPage.getKeywords().length) {
 					sb.append(", ");
@@ -245,21 +202,19 @@ public class MasterPageSerDes {
 			sb.append("]");
 		}
 
-		if (masterPage.getTaxonomyCategories() != null) {
+		if (masterPage.getPermissions() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"taxonomyCategories\": ");
+			sb.append("\"permissions\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < masterPage.getTaxonomyCategories().length;
-				 i++) {
+			for (int i = 0; i < masterPage.getPermissions().length; i++) {
+				sb.append(masterPage.getPermissions()[i]);
 
-				sb.append(masterPage.getTaxonomyCategories()[i]);
-
-				if ((i + 1) < masterPage.getTaxonomyCategories().length) {
+				if ((i + 1) < masterPage.getPermissions().length) {
 					sb.append(", ");
 				}
 			}
@@ -349,15 +304,6 @@ public class MasterPageSerDes {
 			map.put("creator", String.valueOf(masterPage.getCreator()));
 		}
 
-		if (masterPage.getCreatorExternalReferenceCode() == null) {
-			map.put("creatorExternalReferenceCode", null);
-		}
-		else {
-			map.put(
-				"creatorExternalReferenceCode",
-				String.valueOf(masterPage.getCreatorExternalReferenceCode()));
-		}
-
 		if (masterPage.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
@@ -401,15 +347,6 @@ public class MasterPageSerDes {
 			map.put("key", String.valueOf(masterPage.getKey()));
 		}
 
-		if (masterPage.getKeywordItemExternalReferences() == null) {
-			map.put("keywordItemExternalReferences", null);
-		}
-		else {
-			map.put(
-				"keywordItemExternalReferences",
-				String.valueOf(masterPage.getKeywordItemExternalReferences()));
-		}
-
 		if (masterPage.getKeywords() == null) {
 			map.put("keywords", null);
 		}
@@ -442,13 +379,11 @@ public class MasterPageSerDes {
 				String.valueOf(masterPage.getPageSpecifications()));
 		}
 
-		if (masterPage.getTaxonomyCategories() == null) {
-			map.put("taxonomyCategories", null);
+		if (masterPage.getPermissions() == null) {
+			map.put("permissions", null);
 		}
 		else {
-			map.put(
-				"taxonomyCategories",
-				String.valueOf(masterPage.getTaxonomyCategories()));
+			map.put("permissions", String.valueOf(masterPage.getPermissions()));
 		}
 
 		if (masterPage.getTaxonomyCategoryItemExternalReferences() == null) {
@@ -496,11 +431,6 @@ public class MasterPageSerDes {
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -518,11 +448,6 @@ public class MasterPageSerDes {
 			else if (Objects.equals(jsonParserFieldName, "key")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "keywordItemExternalReferences")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "keywords")) {
 				return false;
 			}
@@ -537,9 +462,7 @@ public class MasterPageSerDes {
 
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "taxonomyCategories")) {
-
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -567,14 +490,6 @@ public class MasterPageSerDes {
 				if (jsonParserFieldValue != null) {
 					masterPage.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				if (jsonParserFieldValue != null) {
-					masterPage.setCreatorExternalReferenceCode(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -608,42 +523,10 @@ public class MasterPageSerDes {
 					masterPage.setKey((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "keywordItemExternalReferences")) {
-
-				if (jsonParserFieldValue != null) {
-					Object[] jsonParserFieldValues =
-						(Object[])jsonParserFieldValue;
-
-					ItemExternalReference[] keywordItemExternalReferencesArray =
-						new ItemExternalReference[jsonParserFieldValues.length];
-
-					for (int i = 0;
-						 i < keywordItemExternalReferencesArray.length; i++) {
-
-						keywordItemExternalReferencesArray[i] =
-							ItemExternalReferenceSerDes.toDTO(
-								(String)jsonParserFieldValues[i]);
-					}
-
-					masterPage.setKeywordItemExternalReferences(
-						keywordItemExternalReferencesArray);
-				}
-			}
 			else if (Objects.equals(jsonParserFieldName, "keywords")) {
 				if (jsonParserFieldValue != null) {
-					Object[] jsonParserFieldValues =
-						(Object[])jsonParserFieldValue;
-
-					Keyword[] keywordsArray =
-						new Keyword[jsonParserFieldValues.length];
-
-					for (int i = 0; i < keywordsArray.length; i++) {
-						keywordsArray[i] = KeywordSerDes.toDTO(
-							(String)jsonParserFieldValues[i]);
-					}
-
-					masterPage.setKeywords(keywordsArray);
+					masterPage.setKeywords(
+						toStrings((Object[])jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "markedAsDefault")) {
@@ -676,23 +559,24 @@ public class MasterPageSerDes {
 					masterPage.setPageSpecifications(pageSpecificationsArray);
 				}
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "taxonomyCategories")) {
-
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				if (jsonParserFieldValue != null) {
 					Object[] jsonParserFieldValues =
 						(Object[])jsonParserFieldValue;
 
-					TaxonomyCategory[] taxonomyCategoriesArray =
-						new TaxonomyCategory[jsonParserFieldValues.length];
+					com.liferay.headless.admin.site.client.permission.
+						Permission[] permissionsArray = new
+						com.liferay.headless.admin.site.client.permission.
+							Permission[jsonParserFieldValues.length];
 
-					for (int i = 0; i < taxonomyCategoriesArray.length; i++) {
-						taxonomyCategoriesArray[i] =
-							TaxonomyCategorySerDes.toDTO(
-								(String)jsonParserFieldValues[i]);
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.admin.site.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
 					}
 
-					masterPage.setTaxonomyCategories(taxonomyCategoriesArray);
+					masterPage.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(

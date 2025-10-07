@@ -161,7 +161,8 @@ public class FragmentEntryLinkLocalServiceImpl
 			editableValues = String.valueOf(
 				_fragmentEntryProcessorRegistry.
 					getDefaultEditableValuesJSONObject(
-						processedHTML, configuration));
+						processedHTML,
+						_jsonFactory.safeCreateJSONObject(configuration)));
 		}
 
 		fragmentEntryLink.setEditableValues(editableValues);
@@ -278,8 +279,8 @@ public class FragmentEntryLinkLocalServiceImpl
 
 				if (fragmentEntryLink.isTypePortlet()) {
 					try {
-						JSONObject jsonObject = _jsonFactory.createJSONObject(
-							fragmentEntryLink.getEditableValues());
+						JSONObject jsonObject =
+							fragmentEntryLink.getEditableValuesJSONObject();
 
 						String instanceId = jsonObject.getString("instanceId");
 						String portletId = jsonObject.getString("portletId");
@@ -807,7 +808,7 @@ public class FragmentEntryLinkLocalServiceImpl
 						_getProcessedHTML(
 							fragmentEntryLink,
 							ServiceContextThreadLocal.getServiceContext()),
-						fragmentEntryLink.getConfiguration()));
+						fragmentEntryLink.getConfigurationJSONObject()));
 
 			fragmentEntryLink.setEditableValues(
 				_mergeEditableValues(defaultEditableValues, editableValues));

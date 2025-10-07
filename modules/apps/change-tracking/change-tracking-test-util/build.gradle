@@ -3,10 +3,12 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
 	compileOnly project(":apps:change-tracking:change-tracking-api")
+	compileOnly project(":apps:change-tracking:change-tracking-sample-api")
 	compileOnly project(":apps:portal:portal-upgrade-test-util")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-string")
 }
 
 liferay {

@@ -5,10 +5,30 @@
 
 import ClayIcon from '@clayui/icon';
 
+import {LiferayPackage} from '../../../../../context/NewAppContext';
 import i18n from '../../../../../i18n';
 import {ProductTypeOptions} from '../../../pages/Apps/AppCreationFlow/ProvideAppBuildPage/constants/productTypes';
 import {AppReviewProps} from '../AppReview';
 import AppReviewSection from '../AppReviewSection';
+
+const FileContent = ({liferayPackage}: {liferayPackage: LiferayPackage}) => {
+	if (liferayPackage.uploaded) {
+		return (
+			<a
+				className="app-review-file-name ml-3"
+				href={liferayPackage?.file?.src}
+			>
+				{liferayPackage?.file?.fileName}
+			</a>
+		);
+	}
+
+	return (
+		<span className="app-review-file-name ml-3">
+			{liferayPackage?.file?.fileName}
+		</span>
+	);
+};
 
 const Build = ({
 	context,
@@ -56,10 +76,14 @@ const Build = ({
 											symbol="document-text"
 										/>
 									</div>
-
-									<span className="app-review-file-name ml-3">
-										{liferayPackage?.file?.fileName}
-									</span>
+									<div className="d-flex flex-column">
+										<FileContent
+											liferayPackage={liferayPackage}
+										/>
+										<small className="document-file-list-item-left-content-text-file-size ml-3">
+											{liferayPackage.file?.readableSize}
+										</small>
+									</div>
 								</div>
 								<div className="p-4">
 									<p className="font-weight-bold mb-0">

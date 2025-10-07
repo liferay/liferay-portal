@@ -53,6 +53,7 @@
 		<column name="authRequestParametersJSON" type="String" />
 		<column name="authServerWellKnownURI" type="String" />
 		<column name="clientId" type="String" />
+		<column name="customClaimsJSON" type="String" />
 		<column name="infoJSON" type="String" />
 		<column name="metadataCacheTime" type="long" />
 		<column method-name="OIDCUserInfoMapperJSON" name="oidcUserInfoMapperJSON" type="String" />

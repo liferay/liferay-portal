@@ -154,7 +154,7 @@ public class NPMTestBatchTestClassGroup extends BatchTestClassGroup {
 				continue;
 			}
 
-			testClasses.add(testClass);
+			addTestClass(testClass);
 
 			axisTestClassGroup.addTestClass(testClass);
 		}

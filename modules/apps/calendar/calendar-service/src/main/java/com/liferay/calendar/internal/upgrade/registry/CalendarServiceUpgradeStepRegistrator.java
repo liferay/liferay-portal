@@ -164,6 +164,11 @@ public class CalendarServiceUpgradeStepRegistrator
 			"4.2.1", "4.3.0",
 			new CalendarNotificationTemplateResourceUpgradeProcess(
 				_resourceLocalService));
+
+		registry.register(
+			"4.3.0", "4.4.0",
+			UpgradeProcessFactory.addColumns(
+				"CalendarBooking", "externalReferenceCode VARCHAR(75)"));
 	}
 
 	@Reference

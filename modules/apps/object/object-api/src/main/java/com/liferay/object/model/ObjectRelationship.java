@@ -53,9 +53,6 @@ public interface ObjectRelationship
 
 	public boolean isAllowedObjectRelationshipType(String type);
 
-	public boolean isEdgeCandidate()
-		throws com.liferay.portal.kernel.exception.PortalException;
-
 	public boolean isSelf();
 
 }

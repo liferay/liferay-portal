@@ -156,8 +156,7 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 			accountEntryId);
 	}
 
-	@Override
-	public AccountGroup getOrAddIncompleteAccountGroup(
+	public AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, String name)
 		throws Exception {
 
@@ -173,7 +172,7 @@ public class AccountGroupServiceImpl extends AccountGroupServiceBaseImpl {
 		PortalPermissionUtil.check(
 			permissionChecker, AccountActionKeys.ADD_ACCOUNT_GROUP);
 
-		return accountGroupLocalService.getOrAddIncompleteAccountGroup(
+		return accountGroupLocalService.getOrAddEmptyAccountGroup(
 			externalReferenceCode, permissionChecker.getCompanyId(),
 			permissionChecker.getUserId(), name);
 	}

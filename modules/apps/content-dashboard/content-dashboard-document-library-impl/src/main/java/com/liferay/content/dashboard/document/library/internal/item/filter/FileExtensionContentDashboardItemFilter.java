@@ -72,7 +72,7 @@ public class FileExtensionContentDashboardItemFilter
 		).setActive(
 			ListUtil.isNotEmpty(getParameterValues())
 		).setLabel(
-			_language.get(_httpServletRequest, "extension")
+			_language.get(_httpServletRequest, "extension[file]")
 		).build();
 	}
 
@@ -110,7 +110,7 @@ public class FileExtensionContentDashboardItemFilter
 
 	@Override
 	public String getParameterLabel(Locale locale) {
-		return _language.get(locale, "extension");
+		return _language.get(locale, "extension[file]");
 	}
 
 	@Override

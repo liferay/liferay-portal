@@ -217,6 +217,17 @@ public class RepositoryProxyBean
 	}
 
 	@Override
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
+		FileEntry fileEntry = _repository.fetchFileEntry(fileEntryId);
+
+		if (fileEntry == null) {
+			return fileEntry;
+		}
+
+		return newFileEntryProxyBean(fileEntry);
+	}
+
+	@Override
 	public <T extends Capability> T getCapability(Class<T> capabilityClass) {
 		return _repository.getCapability(capabilityClass);
 	}

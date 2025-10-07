@@ -8,7 +8,9 @@ export function isRequiredFormField(fieldId, formFields) {
 		return false;
 	}
 
-	const flattenedFields = formFields.flatMap((fieldSet) => fieldSet.fields);
+	const flattenedFields = formFields.flatMap((field) =>
+		'fields' in field ? field.fields : [field]
+	);
 
 	return flattenedFields.some(
 		(field) => field.key === fieldId && field.required

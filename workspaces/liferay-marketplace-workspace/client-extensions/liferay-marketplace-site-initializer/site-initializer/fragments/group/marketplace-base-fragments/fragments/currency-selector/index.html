@@ -1,0 +1,16 @@
+[#if themeDisplay.isSignedIn()]
+<div class="currency-selector-fragment">
+	<div class="currency-dropdown">
+	<button aria-expanded="false" aria-haspopup="true" class="align-items-center btn btn-unstyled d-flex dropdown-trigger" id="currencyDropdownToggle" type="button">
+			<span class="me-2" id="currentCurrencyCode"></span>
+			<span class="dropdown-arrow">
+				[@clay["icon"] symbol="caret-bottom" /]
+			</span>
+		</button>
+
+		<div class="dropdown-menu-container" style="display: none">
+		<ul class="dropdown-menu-inner list-unstyled mb-0" id="currencyOptionsList" />
+		</div>
+	</div>
+</div>
+[/#if]

@@ -6,10 +6,8 @@
 package com.liferay.portal.spring.bean;
 
 import com.liferay.petra.reflect.ReflectionUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.spring.aop.BaseServiceBeanAutoProxyCreator;
-import com.liferay.portal.util.PropsValues;
-
-import java.beans.PropertyDescriptor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,17 +45,18 @@ public class LiferayBeanFactory extends DefaultListableBeanFactory {
 
 	@Override
 	protected void invokeCustomInitMethod(
-			String beanName, Object bean, RootBeanDefinition rootBeanDefinition)
+			String beanName, Object bean, RootBeanDefinition rootBeanDefinition,
+			String initMethodName)
 		throws Throwable {
 
 		if (!PropsValues.SPRING_BEANFACTORY_STRICT_LIFECYCLE_ENABLED) {
-			super.invokeCustomInitMethod(beanName, bean, rootBeanDefinition);
+			super.invokeCustomInitMethod(
+				beanName, bean, rootBeanDefinition, initMethodName);
 
 			return;
 		}
 
-		Method initMethod = _getMethod(
-			bean.getClass(), rootBeanDefinition.getInitMethodName());
+		Method initMethod = _getMethod(bean.getClass(), initMethodName);
 
 		if (initMethod != null) {
 			try {
@@ -134,25 +133,18 @@ public class LiferayBeanFactory extends DefaultListableBeanFactory {
 			 _postProcessPropertyValues) ||
 			needsDependencyCheck) {
 
-			PropertyDescriptor[] propertyDescriptors =
-				filterPropertyDescriptorsForDependencyCheck(beanWrapper, true);
-
 			if (hasInstantiationAwareBeanPostProcessors) {
 				for (BeanPostProcessor beanPostProcessor :
 						getBeanPostProcessors()) {
 
 					if (beanPostProcessor instanceof
-							InstantiationAwareBeanPostProcessor) {
-
-						InstantiationAwareBeanPostProcessor
-							instantiationAwareBeanPostProcessor =
-								(InstantiationAwareBeanPostProcessor)
-									beanPostProcessor;
+							InstantiationAwareBeanPostProcessor
+								instantiationAwareBeanPostProcessor) {
 
 						propertyValues =
 							instantiationAwareBeanPostProcessor.
-								postProcessPropertyValues(
-									propertyValues, propertyDescriptors,
+								postProcessProperties(
+									propertyValues,
 									beanWrapper.getWrappedInstance(), beanName);
 
 						if (propertyValues == null) {
@@ -164,7 +156,9 @@ public class LiferayBeanFactory extends DefaultListableBeanFactory {
 
 			if (needsDependencyCheck) {
 				checkDependencies(
-					beanName, rootBeanDefinition, propertyDescriptors,
+					beanName, rootBeanDefinition,
+					filterPropertyDescriptorsForDependencyCheck(
+						beanWrapper, true),
 					propertyValues);
 			}
 		}

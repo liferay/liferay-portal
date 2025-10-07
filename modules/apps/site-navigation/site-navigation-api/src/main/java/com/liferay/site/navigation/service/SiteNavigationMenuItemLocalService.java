@@ -342,6 +342,9 @@ public interface SiteNavigationMenuItemLocalService
 		long siteNavigationMenuId,
 		OrderByComparator<SiteNavigationMenuItem> orderByComparator);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<SiteNavigationMenuItem> getSiteNavigationMenuItems(String type);
+
 	/**
 	 * Returns all the site navigation menu items matching the UUID and company.
 	 *

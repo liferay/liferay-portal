@@ -219,6 +219,25 @@ public class InfoFormValidationException extends InfoFormException {
 
 	}
 
+	public static class InvalidExpirationDate extends InvalidInfoFieldValue {
+
+		public InvalidExpirationDate(
+			String infoFieldUniqueId, String messageKey) {
+
+			super(infoFieldUniqueId);
+
+			_messageKey = messageKey;
+		}
+
+		@Override
+		public String getLocalizedMessage(Locale locale) {
+			return LanguageUtil.get(locale, _messageKey);
+		}
+
+		private final String _messageKey;
+
+	}
+
 	public static class InvalidFileExtension
 		extends InfoFormValidationException {
 

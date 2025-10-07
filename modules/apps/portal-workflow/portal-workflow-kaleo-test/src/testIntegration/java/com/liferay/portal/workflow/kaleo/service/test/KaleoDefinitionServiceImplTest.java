@@ -118,8 +118,8 @@ public class KaleoDefinitionServiceImplTest {
 			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _companyAdminUser.getUserId(), " must have ",
-				WorkflowConstants.RESOURCE_NAME, ",ADD_DEFINITION permission ",
-				"for null "),
+				"ADD_DEFINITION, ", WorkflowConstants.RESOURCE_NAME,
+				" permission for null "),
 			this::_addKaleoDefinition);
 
 		// Administrator with "company.administrator.can.publish" enabled
@@ -211,8 +211,8 @@ public class KaleoDefinitionServiceImplTest {
 			PrincipalException.MustHavePermission.class,
 			StringBundler.concat(
 				"User ", _companyAdminUser.getUserId(), " must have ",
-				WorkflowConstants.RESOURCE_NAME, ",ADD_DEFINITION permission ",
-				"for null "),
+				"ADD_DEFINITION, ", WorkflowConstants.RESOURCE_NAME,
+				" permission for null "),
 			() -> _kaleoDefinitionService.updateKaleoDefinition(
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),

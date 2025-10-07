@@ -1,23 +1,25 @@
-<div class="friendly-url-input" data-localizable="true">
-	<div class="align-items-baseline autofit-row [#if  input.errorMessage?has_content]has-error[/#if]" id="${fragmentEntryLinkNamespace}-form-group">
+<div class="friendly-url-input">
+	<div class="align-items-baseline autofit-row [#if  input.errorMessage?has_content]has-error[/#if]" id="${fragmentElementId}-form-group">
 		<div class="autofit-col">
 			<div class="align-items-center autofit-row mr-3">
 				<span class="text-secondary">
 					[@clay["icon"] symbol="link" /]
 				</span>
 
-				<label class="mb-0 ml-3" for="${fragmentEntryLinkNamespace}-friendly-url-input" id="${fragmentEntryLinkNamespace}-friendly-url-input-label">
+				<label class="mb-0 ml-3" for="${fragmentElementId}-friendly-url-input" id="${fragmentElementId}-friendly-url-input-label">
 					${htmlUtil.escape(input.label)}
+
+					<span class="[#if !input.readOnly]d-none[/#if]" id="${fragmentElementId}-friendly-url-input-read-only">(${languageUtil.get(locale, "read-only")})</span>
 				</label>
 			</div>
 		</div>
 
 		<div class="autofit-col autofit-col-expand">
 			<div class="ml-3">
-				<input aria-labelledby="${fragmentEntryLinkNamespace}-friendly-url-input-label [#if  input.errorMessage?has_content]${fragmentEntryLinkNamespace}-friendly-url-input-error-message[/#if]" class="form-control form-control-sm" id="${fragmentEntryLinkNamespace}-friendly-url-input" name="${input.name}" type="text" [#if input.value??]value="${input.value}"[/#if] />
+				<input aria-labelledby="${fragmentElementId}-friendly-url-input-label [#if input.errorMessage?has_content]${fragmentElementId}-friendly-url-input-error-message[/#if]" class="form-control form-control-sm" id="${fragmentElementId}-friendly-url-input" name="${input.name}" [#if input.readOnly]readonly[/#if] type="text" [#if input.value??]value="${input.value}"[/#if] />
 
 				[#if input.errorMessage?has_content]
-					<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentEntryLinkNamespace}-friendly-url-input-error-message">
+					<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentElementId}-friendly-url-input-error-message">
 						[@clay["icon"] symbol="info-circle" /]
 
 						<span>

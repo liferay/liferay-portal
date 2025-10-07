@@ -26,6 +26,8 @@ import com.liferay.headless.commerce.delivery.cart.resource.v1_0.TermResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1662,6 +1664,10 @@ public class Query {
 		addressResource.setContextUriInfo(_uriInfo);
 		addressResource.setContextUser(_user);
 		addressResource.setGroupLocalService(_groupLocalService);
+		addressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		addressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		addressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1675,6 +1681,10 @@ public class Query {
 		attachmentResource.setContextUriInfo(_uriInfo);
 		attachmentResource.setContextUser(_user);
 		attachmentResource.setGroupLocalService(_groupLocalService);
+		attachmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		attachmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		attachmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1688,6 +1698,9 @@ public class Query {
 		cartResource.setContextUriInfo(_uriInfo);
 		cartResource.setContextUser(_user);
 		cartResource.setGroupLocalService(_groupLocalService);
+		cartResource.setResourceActionLocalService(_resourceActionLocalService);
+		cartResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		cartResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1702,6 +1715,10 @@ public class Query {
 		cartCommentResource.setContextUriInfo(_uriInfo);
 		cartCommentResource.setContextUser(_user);
 		cartCommentResource.setGroupLocalService(_groupLocalService);
+		cartCommentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		cartCommentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		cartCommentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1715,6 +1732,10 @@ public class Query {
 		cartItemResource.setContextUriInfo(_uriInfo);
 		cartItemResource.setContextUser(_user);
 		cartItemResource.setGroupLocalService(_groupLocalService);
+		cartItemResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		cartItemResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		cartItemResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1731,6 +1752,10 @@ public class Query {
 		cartTransitionResource.setContextUriInfo(_uriInfo);
 		cartTransitionResource.setContextUser(_user);
 		cartTransitionResource.setGroupLocalService(_groupLocalService);
+		cartTransitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		cartTransitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		cartTransitionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1746,6 +1771,10 @@ public class Query {
 		paymentMethodResource.setContextUriInfo(_uriInfo);
 		paymentMethodResource.setContextUser(_user);
 		paymentMethodResource.setGroupLocalService(_groupLocalService);
+		paymentMethodResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		paymentMethodResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		paymentMethodResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1762,6 +1791,10 @@ public class Query {
 		shippingMethodResource.setContextUriInfo(_uriInfo);
 		shippingMethodResource.setContextUser(_user);
 		shippingMethodResource.setGroupLocalService(_groupLocalService);
+		shippingMethodResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		shippingMethodResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		shippingMethodResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1775,6 +1808,9 @@ public class Query {
 		termResource.setContextUriInfo(_uriInfo);
 		termResource.setContextUser(_user);
 		termResource.setGroupLocalService(_groupLocalService);
+		termResource.setResourceActionLocalService(_resourceActionLocalService);
+		termResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		termResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1805,6 +1841,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

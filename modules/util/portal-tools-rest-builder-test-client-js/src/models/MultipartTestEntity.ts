@@ -10,6 +10,7 @@
  */
 
 	export class MultipartTestEntity {
+			"id"?: number;
 			"name"?: string;
 
 		static "discriminator": string | undefined = undefined;
@@ -19,6 +20,11 @@
 		name: string;
 		type: string;
 	}> = [
+		{
+			baseName: "id",
+			name: "id",
+			type: "number",
+		},
 		{
 			baseName: "name",
 			name: "name",

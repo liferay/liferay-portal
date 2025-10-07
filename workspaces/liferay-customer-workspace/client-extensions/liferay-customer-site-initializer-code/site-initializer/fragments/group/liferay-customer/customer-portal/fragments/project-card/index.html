@@ -1,0 +1,184 @@
+[#assign
+	currentURL = (themeDisplay.getURLCurrent()!"")?keep_before("/home")!""
+	koroneikiAccounts = restClient.get("/c/koroneikiaccounts?pageSize=1&sort=dateCreated:desc")
+	lastCreatedProjectERC = ""
+	lastViewedProjectERC = ""
+	parsedDate = ""
+	projectCount = 0
+/]
+
+[#list request.getCookies() as cookie]
+	[#if cookie.getName() == "CP_LAST_VIEWED_PROJECT_" + themeDisplay.getUserId()]
+		[#assign lastViewedProjectERC = cookie.getValue()!""]
+
+		[#break]
+	[/#if]
+[/#list]
+
+[#if koroneikiAccounts?is_hash && koroneikiAccounts.items?? && koroneikiAccounts.totalCount??]
+	[#assign
+		lastCreatedProjectERC = (koroneikiAccounts.items[0].externalReferenceCode)!""
+		projectCount = (koroneikiAccounts.totalCount)!0
+	/]
+[/#if]
+
+[#assign projectERC = lastViewedProjectERC?has_content?then(lastViewedProjectERC, lastCreatedProjectERC) /]
+
+[#if projectERC?has_content]
+	[#assign
+		parsedDate = ""
+		project = restClient.get("/c/koroneikiaccounts/by-external-reference-code/" + projectERC)
+		slaProjectCardDate = ""
+		status = ""
+	/]
+
+	[#if project.slaCurrent?has_content]
+		[#assign
+			slaProjectCardDate = project.slaCurrentEndDate!""
+			status = "active"
+		/]
+	[#elseif project.slaFuture?has_content]
+		[#assign
+			slaProjectCardDate = project.slaFutureStartDate!""
+			status = "future"
+		/]
+	[#elseif project.slaExpired?has_content]
+		[#assign
+			slaProjectCardDate = project.slaExpiredEndDate!""
+			status = "expired"
+		/]
+	[/#if]
+
+	[#if slaProjectCardDate?has_content]
+		[#assign parsedDate = slaProjectCardDate?datetime("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")!""]
+	[/#if]
+[/#if]
+
+[#assign
+	projectDetailsPath = currentURL + "/project/#/${projectERC}"
+	projectEventsPath = currentURL + "/project/#/${projectERC}/business-events"
+	projectKeysPath = currentURL + "/project/#/${projectERC}/activation/dxp"
+	projectMembersPath = currentURL + "/project/#/${projectERC}/team-members"
+	projectsPath = currentURL + "/projects"
+/]
+
+[#assign
+	dxpSubscription = restClient.get("/c/accountsubscriptiongroups/by-external-reference-code/" + projectERC + "_liferay-self-hosted")
+	hasDXP = false
+/]
+
+[#if dxpSubscription?is_hash && dxpSubscription.hasActivation?? && dxpSubscription.activationProductName?? && dxpSubscription.hasActivation == true && dxpSubscription.activationProductName == "DXP"]
+	[#assign hasDXP = true]
+[/#if]
+
+[#if projectCount == 1]
+	<div class="d-flex mb-3 project-card-access">
+		<h2 class="mr-3">${languageUtil.get(locale, "your-project")}</h2>
+	</div>
+[#elseif lastViewedProjectERC?has_content]
+	<div class="d-flex mb-3 project-card-access project-card-primary-button">
+		<h2 class="mb-0 mr-3">${languageUtil.get(locale, "last-viewed-project")}</h2>
+
+		<a class="align-items-center btn btn-solid btn-style-primary cp-button d-flex medium" href="${projectsPath}" role="button">
+			${languageUtil.get(locale, "view-all")}
+
+			<svg class="lexicon-icon lexicon-icon-order-arrow-right ml-2 my-0" role="presentation">
+				<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#order-arrow-right" />
+			</svg>
+		</a>
+	</div>
+[#elseif projectCount > 1]
+	<div class="d-flex mb-3 project-card-access project-card-primary-button">
+		<h2 class="mb-0 mr-3">${languageUtil.get(locale, "last-created-project")}</h2>
+
+		<a class="align-items-center btn btn-solid btn-style-primary cp-button d-flex medium" href="${projectsPath}" role="button">
+			${languageUtil.get(locale, "view-all")}
+
+			<svg class="lexicon-icon lexicon-icon-order-arrow-right ml-2 my-0" role="presentation">
+				<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#order-arrow-right" />
+			</svg>
+		</a>
+	</div>
+[/#if]
+
+[#if project?has_content]
+	<div class="card card-actionable card-flat project-card" data-href="${projectDetailsPath}" id="projectCard">
+		<div class="project-card-container">
+			<div class="d-flex justify-content-between project-card-name-section">
+				<div>
+					<h2 class="product-title">${project.name!}</h2>
+
+					<div class="font-weight-semi-bold">${project.code!}</div>
+				</div>
+
+				<div class="d-flex">
+					[#if hasDXP]
+						<div class="mr-2 project-card-button">
+							<a class="btn btn-ghost btn-inverted btn-style-neutral cp-button medium" href="${projectKeysPath}" role="button">
+								<svg class="lexicon-icon lexicon-icon-check-circle mr-2 my-0" role="presentation">
+									<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#check-circle" />
+								</svg>
+
+								${languageUtil.get(locale, "activation-keys")}
+							</a>
+						</div>
+					[/#if]
+
+					<div class="project-card-button">
+						<a class="btn btn-ghost btn-inverted btn-style-neutral cp-button medium" href="${projectMembersPath}" role="button">
+							<svg class="lexicon-icon lexicon-icon-users mr-2 my-0" role="presentation">
+								<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#users" />
+							</svg>
+
+							${languageUtil.get(locale, "team-members")}
+						</a>
+					</div>
+
+					<div class="ml-2 project-card-button">
+						<a class="btn btn-ghost btn-inverted btn-style-neutral cp-button medium" href="${projectEventsPath}" role="button">
+							<svg class="lexicon-icon lexicon-icon-date mr-2 my-0" role="presentation">
+								<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#date" />
+							</svg>
+
+							${languageUtil.get(locale, "business-events")}
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="project-card-status-container">
+				<div class="status-${status} status-badge status-badge-${status}">
+					<span class="status-dot"></span>
+
+					${languageUtil.get(locale, status)}
+				</div>
+			</div>
+
+			<div class="align-items-end d-flex justify-content-between project-card-footer">
+				<div>
+					<div>
+						[#if status == "active"]
+							${languageUtil.get(locale, "ends-on")}: <b>${parsedDate?string("MMM dd, yyyy")}</b>
+						[#elseif status == "future"]
+							${languageUtil.get(locale, "starts-on")}: <b>${parsedDate?string("MMM dd, yyyy")}</b>
+						[#elseif status == "expired"]
+							${languageUtil.get(locale, "ended-on")}: <b>${parsedDate?string("MMM dd, yyyy")}</b>
+						[/#if]
+					</div>
+
+					<div>${languageUtil.get(locale, "support-region")}: <b>${project.region!}</b></div>
+				</div>
+
+				<div class="font-weight-bold project-details-button">
+					<a class="align-items-center btn btn-unstyled d-inline-flex" href="${projectDetailsPath}" role="button">
+						${languageUtil.get(locale, "see-project-details")}
+
+						<svg class="lexicon-icon lexicon-icon-order-arrow-right ml-2 my-0" role="presentation">
+							<use xlink:href="${themeDisplay.getPathThemeImages()}/clay/icons.svg#order-arrow-right" />
+						</svg>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+[/#if]

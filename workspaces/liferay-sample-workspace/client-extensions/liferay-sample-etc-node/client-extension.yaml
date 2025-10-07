@@ -2,7 +2,7 @@ assemble:
     -   include:
             -   "**/*.js"
             -   package.json
-liferay-sample-etc-node-oauth-application-user-agent:
+liferay-sample-etc-node-oaua:
     .serviceAddress: localhost:3001
     .serviceScheme: http
     name: Liferay Sample Etc Node OAuth Application User Agent
@@ -11,11 +11,11 @@ liferay-sample-etc-node-oauth-application-user-agent:
     type: oAuthApplicationUserAgent
 liferay-sample-etc-node-object-action-1:
     name: Liferay Sample Node Object Action 1
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-node-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-node-oaua
     resourcePath: /sample/object/action/1
     type: objectAction
 liferay-sample-etc-node-object-action-2:
     name: Liferay Sample Node Object Action 2
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-node-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-etc-node-oaua
     resourcePath: /sample/object/action/2
     type: objectAction

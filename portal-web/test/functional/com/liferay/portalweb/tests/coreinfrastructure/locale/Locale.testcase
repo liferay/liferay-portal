@@ -630,9 +630,12 @@ definition {
 
 		AssertLocation.assertPartialLocation(value1 = "en/group/guest");
 
-		PagesAdmin.movePageItemUp(
-			pageName = "Test Page 2",
-			pageNameTo = "Test Page 1");
+		DragAndDrop.javaScriptDragAndDropToBottom(
+			key_pageName = "Test Page 2",
+			key_pageNameTo = "Test Page 1",
+			locator1 = "PagesAdmin#LIST_GROUP_ITEM_DROP_TARGET",
+			locator2 = "PagesAdmin#LIST_GROUP_ITEM_DRAG_HANDLER",
+			value1 = "");
 
 		PagesAdmin.viewPagesOrder(
 			depth = 1,
@@ -875,6 +878,59 @@ definition {
 			AssertElementPresent(
 				key_portletTitleName = "Breadcrumb Custom",
 				locator1 = "Portlet#SPECIFIC_TITLE");
+		}
+	}
+
+	@description = "An alert localization message will be shown for user with different language from the site."
+	@priority = 4
+	test ViewAvailableSiteLocaleAlternatives {
+		property custom.properties = "jsonws.web.service.paths.excludes=";
+
+		User.firstLoginPG();
+
+		HeadlessSite.addSite(siteName = "Test Site Name");
+
+		task ("Add a new user") {
+			JSONUser.addUser(
+				preferredLocale = "es_ES",
+				userEmailAddress = "userea@liferay.com",
+				userFirstName = "userfn",
+				userLastName = "userln",
+				userScreenName = "usersn");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "userea@liferay.com");
+		}
+
+		task ("Define English as current site languages") {
+			Site.openSiteSettingsAdmin(siteURLKey = "test-site-name");
+
+			Site.configureCurrentLanguagesCP(
+				currentSiteLanguages = "English (United States)",
+				defaultSiteLanguage = "English (United States)",
+				displaySettings = "Display Settings");
+		}
+
+		task ("Add a widget page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Page Name");
+		}
+
+		task ("Sign in as new user") {
+			User.logoutAndLoginPG(userLoginEmailAddress = "userea@liferay.com");
+		}
+
+		task ("View alert localization message is shown") {
+			Navigator.gotoSitePage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
+
+			Alert.viewLocalizationMessage(
+				preferredLanguageLocalizationMessage = "Set English (United States) as your preferred language.",
+				translationLanguageLocalizationMessage = "Esta página se muestra en inglés (Estados Unidos).");
 		}
 	}
 

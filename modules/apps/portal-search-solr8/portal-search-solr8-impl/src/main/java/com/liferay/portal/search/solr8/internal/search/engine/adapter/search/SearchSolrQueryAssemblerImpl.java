@@ -102,7 +102,8 @@ public class SearchSolrQueryAssemblerImpl implements SearchSolrQueryAssembler {
 
 		String sortFieldName = sort.getFieldName();
 
-		if (Objects.equals(sortFieldName, Field.PRIORITY) ||
+		if (Objects.equals(sortFieldName, Field.ENTRY_CLASS_NAME) ||
+			Objects.equals(sortFieldName, Field.PRIORITY) ||
 			Objects.equals(sortFieldName, "score")) {
 
 			return sortFieldName;

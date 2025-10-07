@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +46,9 @@ public class UsersCommerceHealthStatus implements CommerceHealthStatus {
 	public void fixIssue(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-10562")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-10562")) {
+
 			throw new UnsupportedOperationException();
 		}
 
@@ -106,7 +109,7 @@ public class UsersCommerceHealthStatus implements CommerceHealthStatus {
 	public boolean isFixed(long companyId, long commerceChannelId)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-10562")) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-10562")) {
 			return true;
 		}
 
@@ -125,6 +128,9 @@ public class UsersCommerceHealthStatus implements CommerceHealthStatus {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private Portal _portal;
 
 	private class UserRoleCallable implements Callable<Object> {
 

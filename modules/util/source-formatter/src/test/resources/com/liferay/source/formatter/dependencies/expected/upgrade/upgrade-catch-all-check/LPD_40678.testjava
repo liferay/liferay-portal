@@ -5,8 +5,8 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.util.PropsValues;
 
 /**
  * @author Nícolas Moura

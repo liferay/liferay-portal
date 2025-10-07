@@ -172,7 +172,7 @@ public class BaseBatchEngineTaskExecutorTest {
 				Map<String, Serializable> parameters)
 			throws Exception {
 
-			Assert.assertTrue(LazyReferencingThreadLocal.isEnabled());
+			Assert.assertFalse(LazyReferencingThreadLocal.isEnabled());
 
 			super.create(blogPostings, parameters);
 		}
@@ -205,7 +205,7 @@ public class BaseBatchEngineTaskExecutorTest {
 				Map<String, Serializable> parameters)
 			throws Exception {
 
-			Assert.assertTrue(LazyReferencingThreadLocal.isEnabled());
+			Assert.assertFalse(LazyReferencingThreadLocal.isEnabled());
 
 			super.delete(blogPostings, parameters);
 		}
@@ -262,7 +262,7 @@ public class BaseBatchEngineTaskExecutorTest {
 				Map<String, Serializable> parameters)
 			throws Exception {
 
-			Assert.assertTrue(LazyReferencingThreadLocal.isEnabled());
+			Assert.assertFalse(LazyReferencingThreadLocal.isEnabled());
 
 			super.update(blogPostings, parameters);
 		}
@@ -272,7 +272,7 @@ public class BaseBatchEngineTaskExecutorTest {
 				BlogPosting blogPosting, Map<String, Serializable> parameters)
 			throws Exception {
 
-			Assert.assertTrue(LazyReferencingThreadLocal.isEnabled());
+			Assert.assertFalse(LazyReferencingThreadLocal.isEnabled());
 
 			LocalDateTime localDateTime = _toLocalDateTime(
 				blogPosting.getDatePublished());

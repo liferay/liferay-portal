@@ -145,21 +145,6 @@ public interface FriendlyURLEntryLocalizationModel
 	public void setLanguageId(String languageId);
 
 	/**
-	 * Returns the url title of this friendly url entry localization.
-	 *
-	 * @return the url title of this friendly url entry localization
-	 */
-	@AutoEscape
-	public String getUrlTitle();
-
-	/**
-	 * Sets the url title of this friendly url entry localization.
-	 *
-	 * @param urlTitle the url title of this friendly url entry localization
-	 */
-	public void setUrlTitle(String urlTitle);
-
-	/**
 	 * Returns the group ID of this friendly url entry localization.
 	 *
 	 * @return the group ID of this friendly url entry localization
@@ -214,6 +199,21 @@ public interface FriendlyURLEntryLocalizationModel
 	 */
 	@Override
 	public void setClassPK(long classPK);
+
+	/**
+	 * Returns the url title of this friendly url entry localization.
+	 *
+	 * @return the url title of this friendly url entry localization
+	 */
+	@AutoEscape
+	public String getUrlTitle();
+
+	/**
+	 * Sets the url title of this friendly url entry localization.
+	 *
+	 * @param urlTitle the url title of this friendly url entry localization
+	 */
+	public void setUrlTitle(String urlTitle);
 
 	@Override
 	public FriendlyURLEntryLocalization cloneWithOriginalValues();

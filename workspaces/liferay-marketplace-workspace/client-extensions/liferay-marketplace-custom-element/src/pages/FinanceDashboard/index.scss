@@ -1,0 +1,54 @@
+.finance-orders-dashboard-page-container {
+	display: flex;
+	gap: 2rem;
+	min-width: 300px;
+	padding: 0;
+
+	.dashboard-navigation-container {
+		min-width: 280px;
+	}
+
+	.detailed-card-container {
+		padding-bottom: 1px !important;
+	}
+
+	.detailed-card-header {
+		&-clay-icon {
+			color: #377cff;
+		}
+
+		&-icon-container {
+			background-color: #e7efff !important;
+		}
+	}
+
+	.finance-dashboard-secondary-text {
+		color: #6c6c75;
+	}
+
+	.order-details-app-icon {
+		height: 36px;
+		width: 36px;
+	}
+
+	.order-item-display {
+		border-bottom: none !important;
+		margin: 0 !important;
+	}
+
+	.publisher-payout-footer {
+		background-color: #f7f7f8;
+
+		td {
+			&:first-child {
+				border-bottom-left-radius: 8px;
+				border-top-left-radius: 8px;
+			}
+
+			&:last-child {
+				border-bottom-right-radius: 8px;
+				border-top-right-radius: 8px;
+			}
+		}
+	}
+}

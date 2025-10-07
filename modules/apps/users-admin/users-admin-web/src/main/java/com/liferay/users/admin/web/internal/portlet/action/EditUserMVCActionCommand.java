@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.NoSuchListTypeException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredUserException;
+import com.liferay.portal.kernel.exception.UserCommentsException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserFieldException;
 import com.liferay.portal.kernel.exception.UserIdException;
@@ -37,7 +38,9 @@ import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.ListTypeConstants;
 import com.liferay.portal.kernel.model.Phone;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.Website;
+import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.portlet.DynamicActionRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -45,11 +48,14 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyException;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -67,6 +73,8 @@ import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowTask;
+import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 import com.liferay.portlet.InvokerPortletUtil;
 import com.liferay.portlet.admin.util.AdminUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
@@ -83,6 +91,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -127,9 +136,17 @@ public class EditUserMVCActionCommand
 
 			_userLocalService.validateMaxUsers(themeDisplay.getCompanyId());
 
-			_updateUsers(
-				actionRequest, deleteUserIds,
-				WorkflowConstants.STATUS_APPROVED);
+			if (_workflowDefinitionLinkLocalService.hasWorkflowDefinitionLink(
+					portal.getCompanyId(actionRequest),
+					themeDisplay.getScopeGroupId(), User.class.getName())) {
+
+				_activateUserWithWorkflow(deleteUserIds, actionRequest);
+			}
+			else {
+				_updateUsers(
+					actionRequest, deleteUserIds,
+					WorkflowConstants.STATUS_APPROVED);
+			}
 		}
 	}
 
@@ -272,6 +289,7 @@ public class EditUserMVCActionCommand
 					 exception instanceof MembershipPolicyException ||
 					 exception instanceof NoSuchListTypeException ||
 					 exception instanceof RequiredUserException ||
+					 exception instanceof UserCommentsException ||
 					 exception instanceof UserEmailAddressException ||
 					 exception instanceof UserFieldException ||
 					 exception instanceof UserIdException ||
@@ -357,8 +375,11 @@ public class EditUserMVCActionCommand
 		Company company = portal.getCompany(actionRequest);
 
 		if (company.isUpdatePasswordRequired() &&
-			(!screenName.equals(oldScreenName) ||
-			 !emailAddress.equals(oldEmailAddress))) {
+			((!StringUtil.endsWith(
+				oldEmailAddress,
+				UserConstants.USERS_EMAIL_ADDRESS_AUTO_SUFFIX) &&
+			  !emailAddress.equals(oldEmailAddress)) ||
+			 !screenName.equals(oldScreenName))) {
 
 			int authResult = _userLocalService.authenticateByUserId(
 				themeDisplay.getCompanyId(), portal.getUserId(actionRequest),
@@ -476,6 +497,37 @@ public class EditUserMVCActionCommand
 	@Reference
 	protected UserLocalService userLocalService;
 
+	private void _activateUserWithWorkflow(
+			long[] accountUserIds, ActionRequest actionRequest)
+		throws Exception {
+
+		long companyId = _portal.getCompanyId(actionRequest);
+		long userId = _portal.getUserId(actionRequest);
+
+		for (long accountUserId : accountUserIds) {
+			WorkflowTask workflowTask = _getWorkflowTask(
+				_workflowInstanceLinkLocalService.fetchWorkflowInstanceLink(
+					companyId, WorkflowConstants.DEFAULT_GROUP_ID,
+					User.class.getName(), accountUserId));
+
+			if (workflowTask == null) {
+				_userService.updateStatus(
+					accountUserId, WorkflowConstants.STATUS_APPROVED,
+					ServiceContextFactory.getInstance(
+						User.class.getName(), actionRequest));
+			}
+			else if (!workflowTask.isAssignedToSingleUser()) {
+				workflowTask = _workflowTaskManager.assignWorkflowTaskToUser(
+					companyId, userId, workflowTask.getWorkflowTaskId(), userId,
+					StringPool.BLANK, null, null);
+
+				_workflowTaskManager.completeWorkflowTask(
+					companyId, userId, workflowTask.getWorkflowTaskId(),
+					"approve", StringPool.BLANK, null, true);
+			}
+		}
+	}
+
 	private User _addUser(ActionRequest actionRequest) throws Exception {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -559,14 +611,59 @@ public class EditUserMVCActionCommand
 		String parameterValue = ParamUtil.getString(
 			portletRequest, parameterName);
 
-		if (Validator.isNull(parameterValue)) {
-			return 0;
+		if (Validator.isNotNull(parameterValue)) {
+			ListType listType = _listTypeLocalService.addListType(
+				companyId, parameterValue, type);
+
+			return listType.getListTypeId();
 		}
 
-		ListType listType = _listTypeLocalService.addListType(
-			companyId, parameterValue, type);
+		User currentUser = _portal.getUser(portletRequest);
+		User selectedUser = _portal.getSelectedUser(portletRequest);
 
-		return listType.getListTypeId();
+		if (type.equals(ListTypeConstants.CONTACT_PREFIX)) {
+			if (!UsersAdminUtil.hasUpdateFieldPermission(
+					_permissionCheckerFactory.create(currentUser), currentUser,
+					selectedUser, "prefix")) {
+
+				Contact contact = selectedUser.getContact();
+
+				return contact.getPrefixListTypeId();
+			}
+		}
+		else {
+			if (!UsersAdminUtil.hasUpdateFieldPermission(
+					_permissionCheckerFactory.create(currentUser), currentUser,
+					selectedUser, "suffix")) {
+
+				Contact contact = selectedUser.getContact();
+
+				return contact.getSuffixListTypeId();
+			}
+		}
+
+		return 0;
+	}
+
+	private WorkflowTask _getWorkflowTask(
+			WorkflowInstanceLink workflowInstanceLink)
+		throws Exception {
+
+		if (workflowInstanceLink == null) {
+			return null;
+		}
+
+		List<WorkflowTask> workflowTasks =
+			_workflowTaskManager.getWorkflowTasksByWorkflowInstance(
+				workflowInstanceLink.getCompanyId(), null,
+				workflowInstanceLink.getWorkflowInstanceId(), false, 0, 1,
+				null);
+
+		if (workflowTasks.isEmpty()) {
+			return null;
+		}
+
+		return workflowTasks.get(0);
 	}
 
 	private User _updateLockout(ActionRequest actionRequest) throws Exception {
@@ -624,6 +721,9 @@ public class EditUserMVCActionCommand
 	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
+	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Reference
 	private Portal _portal;
 
 	@Reference
@@ -631,5 +731,15 @@ public class EditUserMVCActionCommand
 
 	@Reference
 	private UserService _userService;
+
+	@Reference
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
+
+	@Reference
+	private WorkflowInstanceLinkLocalService _workflowInstanceLinkLocalService;
+
+	@Reference
+	private WorkflowTaskManager _workflowTaskManager;
 
 }

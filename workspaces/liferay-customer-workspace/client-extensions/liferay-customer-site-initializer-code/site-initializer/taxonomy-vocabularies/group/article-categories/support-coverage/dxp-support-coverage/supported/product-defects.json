@@ -1,0 +1,10 @@
+{
+	"name": "Product Defects",
+	"name_i18n": {
+		"en_US": "Product Defects",
+		"es-ES": "Defectos de producto",
+		"ja-JP": "製品の欠陥",
+		"pt-BR": "Defeitos do Produto"
+	},
+	"viewableBy": "Anyone"
+}

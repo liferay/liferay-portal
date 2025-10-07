@@ -39,13 +39,13 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TestrayRunComparisonResource {
 
-	public Object getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine(
-			Long testrayRoutineId)
-		throws Exception;
-
 	public TestrayRunComparison getTestrayRunComparison(
 			Long testrayRunId1, Long testrayRunId2,
 			com.liferay.portal.kernel.search.filter.Filter filter)
+		throws Exception;
+
+	public Object getTestrayRunComparisonByTestrayRoutineIdTestrayRoutine(
+			Long testrayRoutineId)
 		throws Exception;
 
 	public TestrayRunComparison getTestrayRunComparisonRun(

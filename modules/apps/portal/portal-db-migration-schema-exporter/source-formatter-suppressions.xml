@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<checkstyle>
+		<suppress checks="CompanyIterationCheck" files="src/main/java/com/liferay/portal/db/migration/schema/exporter/internal/sql/provider/ObjectSQLProvider\.java" />
+	</checkstyle>
+</suppressions>

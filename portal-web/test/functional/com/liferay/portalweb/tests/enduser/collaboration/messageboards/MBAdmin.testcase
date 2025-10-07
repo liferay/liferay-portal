@@ -46,6 +46,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddSubcategory {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
 			categoryName = "MB Category Name",
@@ -174,6 +176,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanDeleteCategories {
+		property portal.acceptance = "false";
+
 		for (var num : list "1,2,3") {
 			JSONMBMessage.addCategory(
 				categoryDescription = "MB Category Description",
@@ -213,6 +217,8 @@ definition {
 	@description = "This is a test for LPS-136918. It checks that a category can be exported."
 	@priority = 3
 	test CanExportCategory {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
 			categoryName = "MB Category Name",
@@ -228,6 +234,8 @@ definition {
 	@description = "This is a test for LPS-136917. It checks that a category can be imported."
 	@priority = 3
 	test CanImportCategory {
+		property portal.acceptance = "false";
+
 		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
 
 		LAR.importPortlet(

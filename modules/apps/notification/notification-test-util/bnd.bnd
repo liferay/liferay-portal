@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Notification Test Utilities
 Bundle-SymbolicName: com.liferay.notification.test.util
-Bundle-Version: 1.0.2
+Bundle-Version: 2.0.1
 Export-Package: com.liferay.notification.test.util

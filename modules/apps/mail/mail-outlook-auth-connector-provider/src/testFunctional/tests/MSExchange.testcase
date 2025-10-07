@@ -37,7 +37,9 @@ definition {
 	@description = "This is a use case for LPS-183419. Verify users can view and reply to message board threads via email with Microsoft Exchange Server."
 	@priority = 5
 	test MSExhangeViewMBThreadAndReply {
-		property custom.properties = "admin.email.from.address=qa-exchange-pop-test@liferay0.onmicrosoft.com${line.separator}jsonws.web.service.paths.excludes=${line.separator}mail.send.blacklist=noreply@liferay.com,test@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property custom.properties = "admin.email.from.address=qa-exchange-pop-test@liferay0.onmicrosoft.com${line.separator}jsonws.web.service.paths.excludes=";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"test@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property portal.acceptance = "quarantine";
 		property portal.upstream = "quarantine";
 		property test.liferay.virtual.instance = "false";

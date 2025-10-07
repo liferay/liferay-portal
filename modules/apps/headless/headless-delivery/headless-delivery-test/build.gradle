@@ -14,6 +14,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:data-engine:data-engine-rest-api")
 	testIntegrationImplementation project(":apps:data-engine:data-engine-rest-test-util")
 	testIntegrationImplementation project(":apps:depot:depot-api")
+	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")

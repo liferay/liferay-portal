@@ -12,14 +12,12 @@ import com.liferay.portal.kernel.model.GroupWrapper;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceWrapper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 
-import java.util.Collections;
 import java.util.Locale;
 
 import org.junit.Assert;
@@ -41,8 +39,6 @@ public class BaseIndexerGetSiteGroupIdTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropsTestUtil.setProps(Collections.emptyMap());
-
 		_indexer = new TestIndexer();
 	}
 

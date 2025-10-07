@@ -99,10 +99,10 @@ public class BatchEngineExportTaskCacheModel
 		sb.append(endTime);
 		sb.append(", errorMessage=");
 		sb.append(errorMessage);
-		sb.append(", fieldNames=");
-		sb.append(fieldNames);
 		sb.append(", executeStatus=");
 		sb.append(executeStatus);
+		sb.append(", fieldNames=");
+		sb.append(fieldNames);
 		sb.append(", parameters=");
 		sb.append(parameters);
 		sb.append(", processedItemsCount=");
@@ -194,18 +194,18 @@ public class BatchEngineExportTaskCacheModel
 			batchEngineExportTaskImpl.setErrorMessage(errorMessage);
 		}
 
-		if (fieldNames == null) {
-			batchEngineExportTaskImpl.setFieldNames("");
-		}
-		else {
-			batchEngineExportTaskImpl.setFieldNames(fieldNames);
-		}
-
 		if (executeStatus == null) {
 			batchEngineExportTaskImpl.setExecuteStatus("");
 		}
 		else {
 			batchEngineExportTaskImpl.setExecuteStatus(executeStatus);
+		}
+
+		if (fieldNames == null) {
+			batchEngineExportTaskImpl.setFieldNames("");
+		}
+		else {
+			batchEngineExportTaskImpl.setFieldNames(fieldNames);
 		}
 
 		batchEngineExportTaskImpl.setParameters(parameters);
@@ -253,8 +253,8 @@ public class BatchEngineExportTaskCacheModel
 		contentType = objectInput.readUTF();
 		endTime = objectInput.readLong();
 		errorMessage = (String)objectInput.readObject();
-		fieldNames = objectInput.readUTF();
 		executeStatus = objectInput.readUTF();
+		fieldNames = objectInput.readUTF();
 		parameters = (Map<String, Serializable>)objectInput.readObject();
 
 		processedItemsCount = objectInput.readInt();
@@ -320,18 +320,18 @@ public class BatchEngineExportTaskCacheModel
 			objectOutput.writeObject(errorMessage);
 		}
 
-		if (fieldNames == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(fieldNames);
-		}
-
 		if (executeStatus == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(executeStatus);
+		}
+
+		if (fieldNames == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(fieldNames);
 		}
 
 		objectOutput.writeObject(parameters);
@@ -362,8 +362,8 @@ public class BatchEngineExportTaskCacheModel
 	public String contentType;
 	public long endTime;
 	public String errorMessage;
-	public String fieldNames;
 	public String executeStatus;
+	public String fieldNames;
 	public Map<String, Serializable> parameters;
 	public int processedItemsCount;
 	public long startTime;

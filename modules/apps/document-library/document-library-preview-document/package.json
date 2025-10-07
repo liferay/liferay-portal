@@ -1,15 +1,15 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/loading-indicator": "3.128.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/icon": "3.144.1",
+		"@clayui/loading-indicator": "3.144.1",
 		"@liferay/document-library-preview-css": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"frontend-js-web": "*",
 		"prop-types": "15.7.2",
 		"react": "18.2.0"
 	},
-	"main": "preview/js/index.js",
+	"main": "preview/js/index.tsx",
 	"name": "document-library-preview-document",
 	"private": true,
 	"scripts": {
@@ -18,5 +18,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "3.0.42"
+	"version": "3.0.45"
 }

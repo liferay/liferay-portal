@@ -5,7 +5,7 @@
 
 package com.liferay.asset.display.page.item.selector.web.internal;
 
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.item.selector.BaseItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
 
@@ -20,13 +20,13 @@ import org.osgi.service.component.annotations.Deactivate;
 @Component(service = ItemSelectorCriterionHandler.class)
 public class AssetDisplayPageSelectorCriterionHandler
 	extends BaseItemSelectorCriterionHandler
-		<AssetDisplayPageSelectorCriterion> {
+		<AssetDisplayPageItemSelectorCriterion> {
 
 	@Override
-	public Class<AssetDisplayPageSelectorCriterion>
+	public Class<AssetDisplayPageItemSelectorCriterion>
 		getItemSelectorCriterionClass() {
 
-		return AssetDisplayPageSelectorCriterion.class;
+		return AssetDisplayPageItemSelectorCriterion.class;
 	}
 
 	@Activate

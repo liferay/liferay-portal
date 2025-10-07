@@ -17,6 +17,8 @@ public class ObjectActionTriggerConstants {
 
 	public static final String KEY_ON_AFTER_DELETE = "onAfterDelete";
 
+	public static final String KEY_ON_AFTER_LOGIN = "onAfterLogin";
+
 	public static final String KEY_ON_AFTER_ROOT_UPDATE = "onAfterRootUpdate";
 
 	public static final String KEY_ON_AFTER_UPDATE = "onAfterUpdate";

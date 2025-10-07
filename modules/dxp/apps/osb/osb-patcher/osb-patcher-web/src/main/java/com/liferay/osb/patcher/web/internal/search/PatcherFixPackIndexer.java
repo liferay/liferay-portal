@@ -24,8 +24,8 @@ import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
@@ -49,71 +49,31 @@ public class PatcherFixPackIndexer extends BaseIndexer<PatcherFixPack> {
 	}
 
 	@Override
-	public void postProcessContextQuery(
-			BooleanQuery searchQuery, SearchContext searchContext)
+	public void postProcessContextBooleanFilter(
+			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
-
-		long entryClassPK = GetterUtil.getLong(
-			searchContext.getAttribute(Field.ENTRY_CLASS_PK));
-
-		if (entryClassPK > 0) {
-			if (searchContext.isAndSearch()) {
-				searchQuery.addRequiredTerm(Field.ENTRY_CLASS_PK, entryClassPK);
-			}
-			else {
-				searchQuery.addTerm(Field.ENTRY_CLASS_PK, entryClassPK);
-			}
-		}
-
-		String name = GetterUtil.getString(searchContext.getAttribute("name"));
-
-		if (Validator.isNotNull(name)) {
-			if (searchContext.isAndSearch()) {
-				searchQuery.addRequiredTerm("name", name);
-			}
-			else {
-				searchQuery.addTerm("name", name);
-			}
-		}
 
 		long patcherFixComponentIdFilter = GetterUtil.getLong(
 			searchContext.getAttribute("patcherFixComponentIdFilter"));
 
 		if (patcherFixComponentIdFilter > 0) {
-			if (searchContext.isAndSearch()) {
-				searchQuery.addRequiredTerm(
-					"patcherFixComponentId", patcherFixComponentIdFilter);
-			}
-			else {
-				searchQuery.addTerm(
-					"patcherFixComponentId", patcherFixComponentIdFilter);
-			}
+			contextBooleanFilter.addRequiredTerm(
+				"patcherFixComponentId", patcherFixComponentIdFilter);
 		}
 
 		long patcherProjectVersionIdFilter = GetterUtil.getLong(
 			searchContext.getAttribute("patcherProjectVersionIdFilter"));
 
 		if (patcherProjectVersionIdFilter > 0) {
-			if (searchContext.isAndSearch()) {
-				searchQuery.addRequiredTerm(
-					"patcherProjectVersionId", patcherProjectVersionIdFilter);
-			}
-			else {
-				searchQuery.addTerm(
-					"patcherProjectVersionId", patcherProjectVersionIdFilter);
-			}
+			contextBooleanFilter.addRequiredTerm(
+				"patcherProjectVersionId", patcherProjectVersionIdFilter);
 		}
 
 		int statusFilter = GetterUtil.getInteger(
 			searchContext.getAttribute("statusFilter"));
 
 		if (statusFilter > 0) {
-			if (searchContext.isAndSearch()) {
-				searchQuery.addRequiredTerm("status", statusFilter);
-			}
-			else {
-				searchQuery.addTerm("status", statusFilter);
-			}
+			contextBooleanFilter.addRequiredTerm("status", statusFilter);
 		}
 	}
 
@@ -128,18 +88,12 @@ public class PatcherFixPackIndexer extends BaseIndexer<PatcherFixPack> {
 			return;
 		}
 
-		boolean advancedSearch = GetterUtil.getBoolean(
-			searchContext.getAttribute("advancedSearch"));
-
-		if (!advancedSearch) {
-			addSearchTerm(
-				searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
-			addSearchTerm(searchQuery, searchContext, "name", true);
-			addSearchTerm(
-				searchQuery, searchContext, "patcherFixComponentName", true);
-			addSearchTerm(
-				searchQuery, searchContext, "patcherProjectVersionName", true);
-		}
+		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
+		addSearchTerm(searchQuery, searchContext, "name", true);
+		addSearchTerm(
+			searchQuery, searchContext, "patcherFixComponentName", true);
+		addSearchTerm(
+			searchQuery, searchContext, "patcherProjectVersionName", true);
 	}
 
 	@Override

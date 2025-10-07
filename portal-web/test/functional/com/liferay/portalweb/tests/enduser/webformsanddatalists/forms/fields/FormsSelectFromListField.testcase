@@ -429,7 +429,6 @@ definition {
 	@description = "Verify can that a Form create an empty option in the Select from List"
 	@priority = 3
 	test CanCreateEmptyOption {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 
 		FormsAdmin.addForm();
@@ -1147,7 +1146,6 @@ definition {
 	@description = "LPS-68362 - Verify that options can be removed"
 	@priority = 3
 	test OptionsCanBeDeleted {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

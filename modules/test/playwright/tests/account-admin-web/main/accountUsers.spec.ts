@@ -9,6 +9,7 @@ import {accountsPagesTest} from '../../../fixtures/accountsPagesTest';
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {serverAdministrationPageTest} from '../../../fixtures/serverAdministrationPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
@@ -28,6 +29,9 @@ export const test = mergeTests(
 	apiHelpersTest,
 	applicationsMenuPageTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-35914': {enabled: true},
+	}),
 	loginTest(),
 	serverAdministrationPageTest,
 	usersAndOrganizationsPagesTest,
@@ -949,13 +953,18 @@ test(
 			await editAccountPage.usersLink.click();
 			await accountUsersPage.usersTable.newButton.click();
 			await accountUsersPage.assignUserMenuItem.click();
-			await accountUserSelectorPage.usersTable.newButton.click();
 
 			const randomString = getRandomString();
 
-			await editUserPage.emailAddressInput.fill(
-				`${randomString}@liferay.com`
-			);
+			await expect(async () => {
+				await accountUserSelectorPage.usersTable.newButton.click();
+
+				await editUserPage.emailAddressInput.fill(
+					`${randomString}@liferay.com`,
+					{timeout: 500}
+				);
+			}).toPass();
+
 			await editUserPage.firstNameInput.fill(randomString);
 			await editUserPage.lastNameInput.fill(randomString);
 			await editUserPage.screenNameInput.fill(randomString);
@@ -2516,7 +2525,7 @@ test(
 
 test(
 	'Can add an account to an account user',
-	{tag: ['@LPD-48750']},
+	{tag: ['@LPD-48750', '@LPD-58550']},
 	async ({
 		accountUsersAccountSelectorPage,
 		accountUsersPage,
@@ -2558,6 +2567,10 @@ test(
 			accountUsersAccountSelectorPage.accountsTable.searchInput
 		).toBeEditable();
 
+		await expect(
+			accountUsersAccountSelectorPage.accountsTable.cell('Active')
+		).toBeVisible();
+
 		await accountUsersAccountSelectorPage
 			.chooseButton(account2.name)
 			.click();
@@ -2574,6 +2587,7 @@ test(
 		await expect(
 			(await accountUsersPage.usersTable.row(1, user.name)).row
 		).toContainText(account2.name);
+		await expect(accountUsersPage.usersTable.cell('Active')).toBeVisible();
 	}
 );
 

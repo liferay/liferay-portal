@@ -1,0 +1,3 @@
+apiVersion: v2
+name: liferay-aws-backup-restore
+version: 0.1.0

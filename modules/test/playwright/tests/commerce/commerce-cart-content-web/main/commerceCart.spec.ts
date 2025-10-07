@@ -38,7 +38,6 @@ test('LPD-27036 Cart shows decimal quantities', async ({
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -118,7 +117,6 @@ test('LPD-29864 Cart updates when order is open', async ({apiHelpers}) => {
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'Cart Channel',
 		siteGroupId: site.id,
 	});
 

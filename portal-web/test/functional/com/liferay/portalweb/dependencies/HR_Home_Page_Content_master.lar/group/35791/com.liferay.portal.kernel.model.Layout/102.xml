@@ -1,0 +1,53 @@
+<Layout>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>5</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>af95dae5-3318-1c27-e812-6c44ecf78d49</__uuid>
+  <__externalReferenceCode>af95dae5-3318-1c27-e812-6c44ecf78d49</__externalReferenceCode>
+  <__plid>102</__plid>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate>2025-08-29 10:34:42.288 UTC</__createDate>
+  <__modifiedDate>2025-08-29 10:36:35.221 UTC</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__parentPlid>0</__parentPlid>
+  <__privateLayout>false</__privateLayout>
+  <__layoutId>5</__layoutId>
+  <__parentLayoutId>0</__parentLayoutId>
+  <__classNameId>0</__classNameId>
+  <__classPK>0</__classPK>
+  <__name>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US&quot; default-locale=&quot;en_US&quot;&gt;&lt;Name language-id=&quot;en_US&quot;&gt;Widget Page&lt;/Name&gt;&lt;/root&gt;</__name>
+  <__title></__title>
+  <__description></__description>
+  <__keywords></__keywords>
+  <__robots></__robots>
+  <__type>portlet</__type>
+  <__typeSettings>last-import-date=1756463795222
+last-import-user-name=Test Test
+last-import-user-uuid=14278c55-68a2-2768-c037-34dbba5044c3
+layout-template-id=2_columns_ii
+</__typeSettings>
+  <__hidden>false</__hidden>
+  <__system>false</__system>
+  <__friendlyURL>/5</__friendlyURL>
+  <__iconImageId>0</__iconImageId>
+  <__themeId></__themeId>
+  <__colorSchemeId></__colorSchemeId>
+  <__styleBookEntryId>0</__styleBookEntryId>
+  <__css></__css>
+  <__priority>2</__priority>
+  <__faviconFileEntryId>0</__faviconFileEntryId>
+  <__masterLayoutPlid>0</__masterLayoutPlid>
+  <__layoutPrototypeUuid></__layoutPrototypeUuid>
+  <__layoutPrototypeLinkEnabled>false</__layoutPrototypeLinkEnabled>
+  <__layoutSetPrototypeLayoutERC></__layoutSetPrototypeLayoutERC>
+  <__publishDate>2025-08-29 10:34:42.288 UTC</__publishDate>
+  <__status>0</__status>
+  <__statusByUserId>20132</__statusByUserId>
+  <__statusByUserName>Test Test</__statusByUserName>
+  <__statusDate>2025-08-29 10:34:42.288 UTC</__statusDate>
+  <__columnBitmask>0</__columnBitmask>
+</Layout>

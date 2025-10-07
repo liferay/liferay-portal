@@ -48,6 +48,7 @@ export default function ({
 			size="lg"
 			trigger={
 				<ClayButtonWithIcon
+					className="color-white control-menu-nav-link"
 					data-qa-id="info"
 					displayType="unstyled"
 					onClick={(event) => {

@@ -8,6 +8,7 @@ package com.liferay.frontend.js.portlet.extender.internal;
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.util.DDM;
+import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.frontend.js.portlet.extender.internal.portlet.JSPortlet;
 import com.liferay.frontend.js.portlet.extender.internal.portlet.action.PortletExtenderConfigurationAction;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -37,6 +39,7 @@ import java.util.Set;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleCapability;
 import org.osgi.framework.wiring.BundleWire;
@@ -210,6 +213,14 @@ public class JSPortletExtender {
 
 		String packageVersion = packageJSONObject.getString("version");
 
+		String portletAlias = GetterUtil.getString(
+			properties.get(_PROPERTY_KEY_PORTLET_ALIAS));
+
+		if (Validator.isNotNull(portletAlias)) {
+			_portletRegistry.registerAlias(
+				portletAlias, _getPortletName(packageJSONObject));
+		}
+
 		return bundleContext.registerService(
 			new String[] {
 				ManagedService.class.getName(), Portlet.class.getName()
@@ -219,6 +230,9 @@ public class JSPortletExtender {
 				portletPreferencesFieldNames),
 			properties);
 	}
+
+	private static final String _PROPERTY_KEY_PORTLET_ALIAS =
+		"com.liferay.fragment.entry.processor.portlet.alias";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JSPortletExtender.class);
@@ -289,6 +303,17 @@ public class JSPortletExtender {
 					Bundle bundle, BundleEvent bundleEvent,
 					ServiceRegistration<?> serviceRegistration) {
 
+					ServiceReference<?> serviceReference =
+						serviceRegistration.getReference();
+
+					String portletAlias = GetterUtil.getString(
+						serviceReference.getProperty(
+							_PROPERTY_KEY_PORTLET_ALIAS));
+
+					if (Validator.isNotNull(portletAlias)) {
+						_portletRegistry.unregisterAlias(portletAlias);
+					}
+
 					serviceRegistration.unregister();
 				}
 
@@ -308,5 +333,8 @@ public class JSPortletExtender {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletRegistry _portletRegistry;
 
 }

@@ -1,0 +1,28 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "[ { \"id\": \"1\", \"name\": \"Payment methods\", \"color\": \"#4B9BFF\", \"icon\": \"dollar-symbol\" }, { \"id\": \"2\", \"name\": \"Theme\", \"color\": \"#AF78FF\", \"icon\": \"theme\" }, { \"id\": \"3\", \"name\": \"Site Initializer\", \"color\": \"#50D2A0\", \"icon\": \"display\" }, { \"id\": \"4\", \"name\": \"Fragments\", \"color\": \"#FF5F5F\", \"icon\": \"web-content\" }, { \"id\": \"5\", \"name\": \"Batch\", \"color\": \"#FFB46E\", \"icon\": \"cog\" }, { \"id\": \"6\", \"name\": \"Checkout\", \"color\": \"#9BE169\", \"icon\": \"shopping-cart\" }, { \"id\": \"7\", \"name\": \"Object action\", \"color\": \"#5FC8FF\", \"icon\": \"sheets\" }, { \"id\": \"8\", \"name\": \"Workflow action\", \"color\": \"#7785FF\", \"icon\": \"rules\" }]",
+					"description": "App Categories",
+					"label": "App Categories",
+					"name": "appCategories",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "EXPLORE BY CATEGORY",
+					"description": "Section Title",
+					"label": "Section Title",
+					"name": "sectionTitle",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

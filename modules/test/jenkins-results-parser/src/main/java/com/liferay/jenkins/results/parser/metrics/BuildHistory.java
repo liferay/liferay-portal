@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -49,6 +51,10 @@ public class BuildHistory {
 
 	public boolean containsTopLevelBuildURL(String url) {
 		return _topLevelBuildURLs.contains(url);
+	}
+
+	public Map<String, BuildJSONObject> getBuildJSONObjectsMap() {
+		return _buildJSONObjectsMap;
 	}
 
 	public Map<String, Long> getDailyInvokedBuilds() {
@@ -143,6 +149,7 @@ public class BuildHistory {
 			setStartTime(buildHistory.getStartTime());
 		}
 
+		_buildJSONObjectsMap.putAll(buildHistory.getBuildJSONObjectsMap());
 		_topLevelBuildURLs.addAll(buildHistory.getTopLevelBuildURLs());
 	}
 
@@ -493,6 +500,12 @@ public class BuildHistory {
 		if (buildJSONObject.isTopLevelBuild()) {
 			_topLevelBuildURLs.add(buildJSONObject.getURL());
 
+			String buildIdentifier = _getBuildIdentifier(buildJSONObject);
+
+			if (buildIdentifier != null) {
+				_buildJSONObjectsMap.put(buildIdentifier, buildJSONObject);
+			}
+
 			_addData(_dailyInvokedTopLevelBuilds, dateString, 1L);
 			_addData(
 				_dailyTotalTopLevelBuildDurations, dateString,
@@ -511,6 +524,55 @@ public class BuildHistory {
 		}
 
 		dataMap.put(key, dataMap.get(key) + value);
+	}
+
+	private String _getBuildIdentifier(BuildJSONObject buildJSONObject) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(_getJobName(buildJSONObject.getURL()));
+		sb.append("/");
+
+		Map<String, String> parametersMap = buildJSONObject.getParameters();
+
+		String portalUpstreamSHA = parametersMap.get("PORTAL_GIT_COMMIT");
+
+		String portalSenderSHA = portalUpstreamSHA;
+
+		if (portalUpstreamSHA == null) {
+			portalSenderSHA = parametersMap.get("GITHUB_SENDER_BRANCH_SHA");
+			portalUpstreamSHA = parametersMap.get("GITHUB_UPSTREAM_BRANCH_SHA");
+		}
+
+		if ((portalSenderSHA == null) || (portalUpstreamSHA == null)) {
+			return null;
+		}
+
+		if (portalUpstreamSHA.length() > 8) {
+			portalUpstreamSHA = portalUpstreamSHA.substring(0, 7);
+		}
+
+		sb.append(portalUpstreamSHA);
+		sb.append("/");
+
+		if (portalSenderSHA.length() > 8) {
+			portalSenderSHA = portalSenderSHA.substring(0, 7);
+		}
+
+		sb.append(portalSenderSHA);
+		sb.append("/");
+		sb.append(parametersMap.get("CI_TEST_SUITE"));
+
+		return sb.toString();
+	}
+
+	private String _getJobName(String buildURL) {
+		Matcher matcher = _jobURLPattern.matcher(String.valueOf(buildURL));
+
+		if (matcher.find()) {
+			return matcher.group("jobName");
+		}
+
+		return null;
 	}
 
 	private Long _getQuotient(Long value1, Long value2) {
@@ -588,6 +650,12 @@ public class BuildHistory {
 
 	private static final long _TIMELINE_SAMPLE_PERIOD_MINUTES = 15;
 
+	private static final Pattern _jobURLPattern = Pattern.compile(
+		"https?://(?<masterHostname>test-\\d+-\\d+)(\\.liferay\\.com)?/job/" +
+			"(?<jobName>[^/]+)/?");
+
+	private final Map<String, BuildJSONObject> _buildJSONObjectsMap =
+		new TreeMap<>();
 	private final Map<String, Long> _dailyInvokedBuilds = new TreeMap<>();
 	private final Map<String, Long> _dailyInvokedTopLevelBuilds =
 		new TreeMap<>();

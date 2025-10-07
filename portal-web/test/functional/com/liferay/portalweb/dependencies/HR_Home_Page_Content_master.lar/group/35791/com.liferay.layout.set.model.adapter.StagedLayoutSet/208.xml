@@ -1,0 +1,45 @@
+<StagedLayoutSet>
+  <model class="com.liferay.portal.model.impl.LayoutSetImpl">
+    <__cachedModel>false</__cachedModel>
+    <__new>false</__new>
+    <__mvccVersion>1</__mvccVersion>
+    <__ctCollectionId>0</__ctCollectionId>
+    <__layoutSetId>208</__layoutSetId>
+    <__groupId>35791</__groupId>
+    <__companyId>27744324501275</__companyId>
+    <__createDate>2025-08-29 10:34:31.332 UTC</__createDate>
+    <__modifiedDate>2025-08-29 10:36:35.236 UTC</__modifiedDate>
+    <__setModifiedDate>false</__setModifiedDate>
+    <__privateLayout>false</__privateLayout>
+    <__logoId>0</__logoId>
+    <__themeId>classic_WAR_classictheme</__themeId>
+    <__colorSchemeId>01</__colorSchemeId>
+    <__faviconFileEntryId>0</__faviconFileEntryId>
+    <__css></__css>
+    <__settings></__settings>
+    <__layoutSetPrototypeUuid></__layoutSetPrototypeUuid>
+    <__layoutSetPrototypeLinkEnabled>false</__layoutSetPrototypeLinkEnabled>
+    <__columnBitmask>0</__columnBitmask>
+    <__settingsUnicodeProperties serialization="custom">
+      <unserializable-parents/>
+      <map>
+        <default>
+          <loadFactor>0.75</loadFactor>
+          <threshold>0</threshold>
+        </default>
+        <int>16</int>
+        <int>0</int>
+      </map>
+      <com.liferay.portal.kernel.util.UnicodeProperties>
+        <default>
+          <__safe>true</__safe>
+        </default>
+      </com.liferay.portal.kernel.util.UnicodeProperties>
+    </__settingsUnicodeProperties>
+  </model>
+  <__lastPublishDate>1970-01-01 00:00:00.0 UTC</__lastPublishDate>
+  <__layoutSet class="com.liferay.portal.model.impl.LayoutSetImpl" reference="../model"/>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__userUuid>14278c55-68a2-2768-c037-34dbba5044c3</__userUuid>
+</StagedLayoutSet>

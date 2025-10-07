@@ -22,19 +22,15 @@ import {openModal} from 'frontend-js-components-web';
 import {fetch, navigate} from 'frontend-js-web';
 
 import Toggle from './components/Toggle';
-import {
-	API_URL,
-	DEFAULT_FETCH_HEADERS,
-	FDS_DEFAULT_PROPS,
-} from './utils/constants';
+import {DEFAULT_FETCH_HEADERS, FDS_DEFAULT_PROPS} from './utils/constants';
 import getAPIExplorerURL from './utils/getAPIExplorerURL';
+import getDataSetResourceURL from './utils/getDataSetResourceURL';
 import openDefaultFailureToast from './utils/openDefaultFailureToast';
 import openDefaultSuccessToast from './utils/openDefaultSuccessToast';
 import {IDataSet, ISystemDataSet} from './utils/types';
 
 interface IFrontendDataSetContext {
-	onSelect: Function;
-	selectItems: Function;
+	selectItems: ({value}: {value: any}) => void;
 	selectable: boolean;
 	selectedItemsKey: keyof ISystemDataSet;
 	selectedItemsValue: Array<any>;
@@ -43,17 +39,15 @@ interface IFrontendDataSetContext {
 const SystemDataSetsView = ({
 	frontendDataSetContext,
 	items,
+	onItemSelectionChange,
 }: {
 	frontendDataSetContext: any;
 	items: Array<ISystemDataSet>;
+	onItemSelectionChange?: Function;
 }) => {
-	const {
-		onSelect,
-		selectItems,
-		selectable,
-		selectedItemsKey,
-		selectedItemsValue,
-	} = useContext(frontendDataSetContext) as IFrontendDataSetContext;
+	const {selectable, selectedItemsKey, selectedItemsValue} = useContext(
+		frontendDataSetContext
+	) as IFrontendDataSetContext;
 
 	return (
 		<ClayList>
@@ -72,9 +66,7 @@ const SystemDataSetsView = ({
 						key={item.name}
 						onClick={() => {
 							if (selectable) {
-								selectItems(item[selectedItemsKey]);
-
-								onSelect({selectedItems: [item]});
+								onItemSelectionChange?.(item);
 							}
 						}}
 					>
@@ -193,13 +185,12 @@ const SelectSystemDataSetModalContent = ({
 						{...FDS_DEFAULT_PROPS}
 						apiURL={getSystemDataSetsURL}
 						id="SystemDataSets"
-						onSelect={({
-							selectedItems,
-						}: {
-							selectedItems: Array<ISystemDataSet>;
-						}) => {
+						onSelectedItemsChange={(
+							selectedItems: Array<ISystemDataSet>
+						) => {
 							setSelectedSystemDataSet(selectedItems[0]);
 						}}
+						selectedItems={[selectedSystemDataSet]}
 						selectedItemsKey="name"
 						selectionType="single"
 						views={[
@@ -264,7 +255,11 @@ const SystemDataSets = ({
 			.map((systemDataSet) => `'${systemDataSet.name}'`)
 			.join(',');
 
-		return `${API_URL.DATA_SETS}?filter=externalReferenceCode in (${systemDataSetNames})`;
+		return getDataSetResourceURL({
+			params: {
+				filter: `externalReferenceCode in (${systemDataSetNames})`,
+			},
+		});
 	};
 
 	const getEditURL = (itemData: IDataSet) => {
@@ -330,14 +325,15 @@ const SystemDataSets = ({
 	}) => {
 		setToogleDisabled(true);
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${itemData.externalReferenceCode}`,
-			{
-				body: JSON.stringify({active: !itemData.active}),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: itemData.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify({active: !itemData.active}),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();

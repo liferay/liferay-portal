@@ -89,6 +89,13 @@ public class GetFragmentEntryInputFieldTypesMVCResourceCommand
 	private String _getFragmentTypeOptions(
 		String fragmentEntryKey, long groupId) {
 
+		FragmentRenderer fragmentRenderer =
+			_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
+
+		if (fragmentRenderer != null) {
+			return fragmentRenderer.getTypeOptions();
+		}
+
 		FragmentEntry fragmentEntry =
 			_fragmentEntryLocalService.fetchFragmentEntry(
 				groupId, fragmentEntryKey);
@@ -101,13 +108,6 @@ public class GetFragmentEntryInputFieldTypesMVCResourceCommand
 
 		if (fragmentEntry != null) {
 			return fragmentEntry.getTypeOptions();
-		}
-
-		FragmentRenderer fragmentRenderer =
-			_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
-
-		if (fragmentRenderer != null) {
-			return fragmentRenderer.getTypeOptions();
 		}
 
 		return StringPool.BLANK;

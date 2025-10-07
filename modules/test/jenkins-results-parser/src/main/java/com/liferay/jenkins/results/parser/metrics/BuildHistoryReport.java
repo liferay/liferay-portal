@@ -6,13 +6,21 @@
 package com.liferay.jenkins.results.parser.metrics;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.testray.TestrayBuild;
+import com.liferay.jenkins.results.parser.testray.TestrayFactory;
+import com.liferay.jenkins.results.parser.testray.TestrayRun;
+import com.liferay.jenkins.results.parser.testray.TestrayRunComparison;
 
 import java.io.File;
 import java.io.IOException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,6 +62,146 @@ public class BuildHistoryReport {
 		buildHistoryReport.addFile(
 			"js/timeline-data.js",
 			_getTimelineDataJSFileContent(buildHistories, duration, startTime));
+
+		return buildHistoryReport;
+	}
+
+	public static BuildHistoryReport newAWSBuildComparisonReport(
+		long durationDays, File outputDir, String startDateString) {
+
+		BuildHistoryReport buildHistoryReport = new BuildHistoryReport(
+			outputDir);
+
+		buildHistoryReport.addFilesFromResource(
+			"dependencies/metrics/build-comparison-report", "/css/main.css",
+			"/index.html", "/js/main.js");
+
+		BuildHistory buildHistory = BuildHistoryProcessor.mergeBuildHistories(
+			BuildHistoryProcessor.newTopLevelBuildHistories(
+				TimeUnit.DAYS.toMillis(durationDays),
+				_getStartTime(startDateString)),
+			"");
+
+		File baseDir = BuildHistoryProcessor.getBaseDir();
+
+		BuildHistoryProcessor.setBaseDir(
+			new File(baseDir.getParentFile(), "aws/builds"));
+
+		BuildHistory awsBuildHistory =
+			BuildHistoryProcessor.mergeBuildHistories(
+				BuildHistoryProcessor.newTopLevelBuildHistories(
+					TimeUnit.DAYS.toMillis(durationDays),
+					_getStartTime(startDateString)),
+				"aws");
+
+		Map<String, BuildJSONObject> awsBuildJSONObjectsMap =
+			awsBuildHistory.getBuildJSONObjectsMap();
+
+		Map<String, BuildJSONObject> buildJSONObjectsMap =
+			buildHistory.getBuildJSONObjectsMap();
+
+		List<List<Object>> rows = new ArrayList<>();
+
+		rows.add(
+			new ArrayList<Object>() {
+				{
+					add("Build Identifier");
+					add("Testray Comparison URL");
+					add("Test Results in Common (%)");
+					add("Test Failure Differences");
+					add("Untested Test Differences");
+					add("Build URL (DB)");
+					add("Build URL (AWS)");
+					add("DB Build Testray URL");
+					add("AWS Build Testray URL");
+					add("Top Level Start Time (DB)");
+					add("Top Level Start Time (AWS)");
+					add("Top Level Duration (DB)");
+					add("Top Level Duration (AWS)");
+				}
+			});
+
+		for (Map.Entry<String, BuildJSONObject> entry :
+				buildJSONObjectsMap.entrySet()) {
+
+			String buildIdentifier = entry.getKey();
+
+			if (!awsBuildJSONObjectsMap.containsKey(buildIdentifier)) {
+				continue;
+			}
+
+			BuildJSONObject awsBuildJSONObject = awsBuildJSONObjectsMap.get(
+				buildIdentifier);
+			BuildJSONObject buildJSONObject = entry.getValue();
+
+			String awsTestrayBuildURL = awsBuildJSONObject.getTestrayBuildURL();
+			String testrayBuildURL = buildJSONObject.getTestrayBuildURL();
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(awsTestrayBuildURL) ||
+				JenkinsResultsParserUtil.isNullOrEmpty(testrayBuildURL)) {
+
+				continue;
+			}
+
+			TestrayBuild awsTestrayBuild = TestrayFactory.newTestrayBuild(
+				_getURL(awsTestrayBuildURL));
+
+			TestrayRun awsTestrayRun = awsTestrayBuild.getTestrayRun(
+				TestrayRun.getDefaultRunIDString());
+
+			TestrayBuild testrayBuild = TestrayFactory.newTestrayBuild(
+				_getURL(testrayBuildURL));
+
+			TestrayRun testrayRun = testrayBuild.getTestrayRun(
+				TestrayRun.getDefaultRunIDString());
+
+			if ((awsTestrayRun == null) || (testrayRun == null)) {
+				continue;
+			}
+
+			TestrayRunComparison testrayRunComparison =
+				TestrayFactory.newTestrayRunComparison(
+					testrayRun, awsTestrayRun);
+
+			rows.add(
+				new ArrayList<Object>() {
+					{
+						add(buildIdentifier);
+						add(testrayRunComparison.getComparisonURL());
+						add(
+							testrayRunComparison.
+								getCommonStatusTestCountPercentage());
+						add(testrayRunComparison.getNewFailureTestCount());
+						add(testrayRunComparison.getNewUntestedTestCount());
+						add(buildJSONObject.getURL());
+						add(awsBuildJSONObject.getURL());
+						add(testrayBuildURL);
+						add(awsTestrayBuildURL);
+						add(buildJSONObject.getStartTime());
+						add(awsBuildJSONObject.getStartTime());
+						add(buildJSONObject.getDuration());
+						add(awsBuildJSONObject.getDuration());
+					}
+				});
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("var dataGeneratedDate = new Date(");
+		sb.append(JenkinsResultsParserUtil.getCurrentTimeMillis());
+		sb.append(");\nvar reportName = \"AWS Build Comparison Report\";");
+		sb.append("var tableData = ");
+
+		JSONArray tableJSONArray = new JSONArray();
+
+		for (List<Object> row : rows) {
+			tableJSONArray.put(new JSONArray(row));
+		}
+
+		sb.append(tableJSONArray);
+		sb.append(";");
+
+		buildHistoryReport.addFile("js/table-data.js", sb.toString());
 
 		return buildHistoryReport;
 	}
@@ -250,6 +398,19 @@ public class BuildHistoryReport {
 		);
 
 		return "var timelineData = " + jsonObject.toString();
+	}
+
+	private static URL _getURL(String url) {
+		if (!JenkinsResultsParserUtil.isURL(url)) {
+			return null;
+		}
+
+		try {
+			return new URL(url);
+		}
+		catch (MalformedURLException malformedURLException) {
+			return null;
+		}
 	}
 
 	private static BuildHistoryReport _newTestSuiteReport(

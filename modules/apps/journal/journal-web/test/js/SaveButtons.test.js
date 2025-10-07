@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
-import {act, render, screen} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -35,18 +35,6 @@ const renderComponent = (props = DEFAULT_PROPS) => {
 	);
 };
 
-const runAllTimersAndExecuteAction = (action) => {
-	jest.useFakeTimers();
-
-	action();
-
-	act(() => {
-		jest.runAllTimers();
-	});
-
-	jest.useRealTimers();
-};
-
 describe('SaveButtons', () => {
 	beforeEach(() => {
 		global.Liferay.component = jest.fn().mockReturnValue({
@@ -59,6 +47,19 @@ describe('SaveButtons', () => {
 				html: () => Promise.resolve('<div>holi</div>'),
 			})
 		);
+
+		global.Liferay.componentReady = jest.fn().mockResolvedValue({
+			reactComponentRef: {current: {validate: () => true}},
+		});
+
+		global.Liferay.Form = {
+			get: () => ({
+				formValidator: {
+					hasErrors: jest.fn().mockReturnValue(false),
+					validate: jest.fn().mockReturnValue(true),
+				},
+			}),
+		};
 
 		global.Liferay.Workflow = {ACTION_PUBLISH: null};
 	});
@@ -125,111 +126,128 @@ describe('SaveButtons', () => {
 		).not.toBeInTheDocument();
 	});
 
-	it('opens modal for all buttons when there is not an articleId', () => {
+	it('opens modal for all buttons when there is not an articleId', async () => {
 		renderComponent({
 			...DEFAULT_PROPS,
 			articleId: null,
 			saveButtonLabel: 'save',
 		});
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByText('save'));
-		});
+		userEvent.click(screen.getByText('save'));
 
 		expect(
-			screen.getByText(
+			await screen.findByText(
 				'confirm-the-web-content-visibility-before-saving-as-draft'
 			)
 		).toBeInTheDocument();
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByLabelText('close'));
-		});
+		userEvent.click(screen.getByLabelText('Close'));
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(
-				screen.getByText('publish-with-permissions', {
-					selector: '.dropdown-item',
-				})
-			);
-		});
+		userEvent.click(
+			screen.getByText('publish-with-permissions', {
+				selector: '.dropdown-item',
+			})
+		);
 
 		expect(
-			screen.getByText(
+			await screen.findByText(
 				'confirm-the-web-content-visibility-before-publishing'
 			)
 		).toBeInTheDocument();
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByLabelText('close'));
+		userEvent.click(screen.getByLabelText('Close'));
+
+		await waitFor(() => {
+			expect(
+				screen.queryByText(
+					'confirm-the-web-content-visibility-before-publishing'
+				)
+			).not.toBeInTheDocument();
 		});
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(
-				screen.getByText('schedule-publication', {
-					selector: '.dropdown-item',
-				})
-			);
-		});
+		userEvent.click(
+			screen.getByText('schedule-publication', {
+				selector: '.dropdown-item',
+			})
+		);
 
 		expect(
-			screen.getByText(
+			await screen.findByText(
 				'set-the-date-and-time-for-publishing-the-web-content-and-confirm-the-visibility-before-scheduling'
 			)
 		).toBeInTheDocument();
 	});
 
-	it('show alert and input feedback when trying to schedule without a date introduced', () => {
+	it('show alert and input feedback when trying to schedule without a date introduced', async () => {
 		renderComponent({
 			...DEFAULT_PROPS,
 			articleId: null,
 		});
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByText('schedule-publication'));
-		});
+		userEvent.click(screen.getByText('schedule-publication'));
 
-		userEvent.click(screen.getByText('schedule'));
+		userEvent.click(await screen.findByText('schedule[verb]'));
 
 		const alerts = screen.getAllByText('please-enter-a-valid-date');
 
 		expect(alerts.length).toBe(2);
 	});
 
-	it('shows error when introducing an invalid date', () => {
+	it('shows error when introducing an invalid date', async () => {
 		renderComponent({
 			...DEFAULT_PROPS,
 			articleId: null,
 		});
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByText('schedule-publication'));
-		});
+		userEvent.click(screen.getByText('schedule-publication'));
 
-		userEvent.type(screen.getByLabelText('date-and-time'), 'pepito');
+		userEvent.type(await screen.findByLabelText('date-and-time'), 'pepito');
 
 		expect(
 			screen.getByText('please-enter-a-valid-date')
 		).toBeInTheDocument();
 	});
 
-	it('show no error when introducing a past date', () => {
+	it('show no error when introducing a past date', async () => {
 		renderComponent({
 			...DEFAULT_PROPS,
 			articleId: null,
 		});
 
-		runAllTimersAndExecuteAction(() => {
-			userEvent.click(screen.getByText('schedule-publication'));
-		});
+		userEvent.click(screen.getByText('schedule-publication'));
 
 		userEvent.type(
-			screen.getByLabelText('date-and-time'),
+			await screen.findByLabelText('date-and-time'),
 			'1970-01-01 12:00'
 		);
 
 		expect(
 			screen.queryByText('please-enter-a-valid-date')
+		).not.toBeInTheDocument();
+	});
+
+	it('does not proceed if required fields validation fails', async () => {
+		global.Liferay.Form = {
+			get: () => ({
+				formValidator: {
+					hasErrors: jest.fn().mockReturnValue(true),
+					validate: jest.fn(),
+				},
+			}),
+		};
+
+		renderComponent({
+			...DEFAULT_PROPS,
+			articleId: null,
+			saveButtonLabel: 'save',
+		});
+
+		userEvent.click(screen.getByText('save'));
+
+		expect(
+			screen.queryByText(
+				'confirm-the-web-content-visibility-before-saving-as-draft'
+			)
 		).not.toBeInTheDocument();
 	});
 });

@@ -124,7 +124,7 @@ exports[`ActivatingDisplay should render 1`] = `
           >
             <a
               class="button-root btn btn-primary"
-              href="https://learn.liferay.com/analytics-cloud/latest/en/getting-started.html"
+              href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/getting-started"
               rel="noreferrer noopener"
               target="_blank"
             >

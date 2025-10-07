@@ -78,9 +78,9 @@ public class RelatedModelsFDSDataProvider
 
 		return TransformUtil.transform(
 			(List<ObjectEntry>)objectRelatedModelsProvider.getRelatedModels(
-				groupId, objectRelationshipId, objectEntryId,
+				groupId, objectRelationshipId, null, false, objectEntryId,
 				fdsKeywords.getKeywords(), fdsPagination.getStartPosition(),
-				fdsPagination.getEndPosition()),
+				fdsPagination.getEndPosition(), null),
 			objectEntry -> new RelatedModel(
 				objectDefinition.getClassName(), objectEntry.getObjectEntryId(),
 				objectEntry.getTitleValue(), false));
@@ -116,7 +116,8 @@ public class RelatedModelsFDSDataProvider
 
 		return objectRelatedModelsProvider.getRelatedModelsCount(
 			objectScopeProvider.getGroupId(httpServletRequest),
-			objectRelationshipId, objectEntryId, fdsKeywords.getKeywords());
+			objectRelationshipId, null, objectEntryId,
+			fdsKeywords.getKeywords());
 	}
 
 	@Reference

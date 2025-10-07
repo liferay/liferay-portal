@@ -3,7 +3,7 @@
 		{
 			"fields": [
 				{
-					"defaultValue": "info",
+					"defaultValue": "alert-info",
 					"description": "Type of alert",
 					"label": "Alert Type",
 					"name": "alertType",

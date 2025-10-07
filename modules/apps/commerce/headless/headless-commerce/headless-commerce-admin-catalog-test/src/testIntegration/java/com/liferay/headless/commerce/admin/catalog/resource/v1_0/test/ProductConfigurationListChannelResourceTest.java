@@ -70,7 +70,8 @@ public class ProductConfigurationListChannelResourceTest
 				_commerceCatalog.getGroupId(), 0, false,
 				RandomTestUtil.randomString(), 0D, dateConfig.getMonth(),
 				dateConfig.getDay(), dateConfig.getYear(), dateConfig.getHour(),
-				dateConfig.getMinute(), 0, 0, 0, 0, 0, true);
+				dateConfig.getMinute(), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 	}
 
 	@After

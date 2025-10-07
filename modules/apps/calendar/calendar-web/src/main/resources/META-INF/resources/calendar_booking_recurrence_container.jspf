@@ -132,7 +132,7 @@ if (recurrence != null) {
 						for (Weekday weekday : weekdaysArray) {
 						%>
 
-							<aui:input checked="<%= weekdays.contains(weekday) %>" id="<%= weekday.getValue() %>" label='<%= "weekday." + weekday.getValue() %>' name="weekdays" type="checkbox" value="<%= weekday.getValue() %>" />
+							<aui:input checked="<%= weekdays.isEmpty() ? (weekday == startTimeWeekday) : weekdays.contains(weekday) %>" id="<%= weekday.getValue() %>" label='<%= "weekday." + weekday.getValue() %>' name="weekdays" type="checkbox" value="<%= weekday.getValue() %>" />
 
 						<%
 						}
@@ -412,6 +412,28 @@ if (recurrence != null) {
 
 	recurrenceDialogController.on('recurrenceChange', (event) => {
 		window.<portlet:namespace />updateSummaries();
+	});
+
+	const startTimeWeekdayValue = '<%= startTimeWeekday %>';
+
+	const weekdays = document.querySelectorAll(
+		'input[name="<portlet:namespace />weekdays"]'
+	);
+
+	weekdays.forEach((weekday) => {
+		weekday.addEventListener('change', () => {
+			const daysChecked = Array.from(weekdays).filter(
+				(checkbox) => checkbox.checked
+			);
+
+			if (daysChecked.length === 0) {
+				const eventStartDay = Array.from(weekdays).find(
+					(checkbox) => checkbox.value === startTimeWeekdayValue
+				);
+
+				eventStartDay.checked = true;
+			}
+		});
 	});
 
 	window.<portlet:namespace />updateSummary = function (element) {

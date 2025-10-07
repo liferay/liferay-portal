@@ -158,18 +158,18 @@ public class WidgetPageWidgetInstance implements Cloneable, Serializable {
 
 	protected String widgetInstanceId;
 
-	public WidgetLookAndFeelConfig[] getWidgetLookAndFeelConfig() {
+	public WidgetLookAndFeelConfig getWidgetLookAndFeelConfig() {
 		return widgetLookAndFeelConfig;
 	}
 
 	public void setWidgetLookAndFeelConfig(
-		WidgetLookAndFeelConfig[] widgetLookAndFeelConfig) {
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig) {
 
 		this.widgetLookAndFeelConfig = widgetLookAndFeelConfig;
 	}
 
 	public void setWidgetLookAndFeelConfig(
-		UnsafeSupplier<WidgetLookAndFeelConfig[], Exception>
+		UnsafeSupplier<WidgetLookAndFeelConfig, Exception>
 			widgetLookAndFeelConfigUnsafeSupplier) {
 
 		try {
@@ -181,7 +181,7 @@ public class WidgetPageWidgetInstance implements Cloneable, Serializable {
 		}
 	}
 
-	protected WidgetLookAndFeelConfig[] widgetLookAndFeelConfig;
+	protected WidgetLookAndFeelConfig widgetLookAndFeelConfig;
 
 	public String getWidgetName() {
 		return widgetName;

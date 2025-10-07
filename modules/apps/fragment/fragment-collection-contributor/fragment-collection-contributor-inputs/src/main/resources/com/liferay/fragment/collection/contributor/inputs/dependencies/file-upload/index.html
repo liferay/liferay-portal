@@ -8,38 +8,38 @@
 	[#assign localFileUploaded = true]
 [/#if]
 
-<div class="file-upload" data-localizable="${input.localizable?string('true', 'false')}">
+<div class="file-upload">
 	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0">
-		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" id="${fragmentEntryLinkNamespace}-file-upload-label">
+		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" id="${fragmentElementId}-file-upload-label">
 			${htmlUtil.escape(input.label)}
 
-			<span id="${fragmentEntryLinkNamespace}-file-upload-read-only" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
+			<span id="${fragmentElementId}-file-upload-read-only" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
 
 			[#if input.required][@clay["icon"] className="reference-mark" symbol="asterisk" /][/#if]
 		</label>
 
 		[#if input.readOnly]
-			<input class="form-control" aria-labelledby="${fragmentEntryLinkNamespace}-file-upload-label" class="form-control" id="${fragmentEntryLinkNamespace}-file-upload" name="${input.name}" placeholder="${languageUtil.get(locale, "no-file-selected")}" readonly type="text" [#if input.attributes.fileName??]value="${htmlUtil.escape(input.attributes.fileName)}"[/#if] />
+			<input class="form-control" aria-labelledby="${fragmentElementId}-file-upload-label" class="form-control" id="${fragmentElementId}-file-upload" name="${input.name}" placeholder="${languageUtil.get(locale, "no-file-selected")}" readonly type="text" [#if input.attributes.fileName??]value="${htmlUtil.escape(input.attributes.fileName)}"[/#if] />
 		[#else]
 			<div class="align-items-center d-flex">
 				<div class="position-relative">
-					<button class="btn btn-secondary" id="${fragmentEntryLinkNamespace}-file-upload-button-label" type="button">[@clay["icon"] className="inline-item-before" symbol="upload" /] ${htmlUtil.escape(configuration.buttonText)}</button>
+					<button class="btn btn-secondary" id="${fragmentElementId}-file-upload-button-label" type="button">[@clay["icon"] className="inline-item-before" symbol="upload" /] ${htmlUtil.escape(configuration.buttonText)}</button>
 
-					<input id="${fragmentEntryLinkNamespace}-file-upload-hidden" [#if localFileUploaded]name="${input.name}"[/#if] type="hidden" value="${input.value?has_content?then(input.value, '')}" />
+					<input id="${fragmentElementId}-file-upload-hidden" [#if localFileUploaded]name="${input.name}"[/#if] type="hidden" value="${input.value?has_content?then(input.value, '')}" />
 
-					<input accept="${(input.attributes.allowedFileExtensions?has_content)?then(input.attributes.allowedFileExtensions, '*')}" aria-describedby="${fragmentEntryLinkNamespace}-file-upload-help-text" aria-labelledby="${fragmentEntryLinkNamespace}-file-upload-label ${fragmentEntryLinkNamespace}-file-upload-button-label [#if  input.errorMessage?has_content]${fragmentEntryLinkNamespace}-file-upload-error-message[/#if]" class="file-upload-input" formenctype="multipart/form-data" id="${fragmentEntryLinkNamespace}-file-upload" [#if !localFileUploaded]name="${input.name}"[/#if] ${input.required?then('required', '' )} type="${showDocumentLibrarySelector?then('text', 'file')}" [#if input.value??]value="${input.value}"[/#if] tabIndex="-1" />
+					<input accept="${(input.attributes.allowedFileExtensions?has_content)?then(input.attributes.allowedFileExtensions, '*')}" aria-describedby="${fragmentElementId}-file-upload-help-text" aria-labelledby="${fragmentElementId}-file-upload-label ${fragmentElementId}-file-upload-button-label [#if  input.errorMessage?has_content]${fragmentElementId}-file-upload-error-message[/#if]" class="file-upload-input sr-only" formenctype="multipart/form-data" id="${fragmentElementId}-file-upload" [#if !localFileUploaded]name="${input.name}"[/#if] ${input.required?then('required', '' )} type="${showDocumentLibrarySelector?then('text', 'file')}" [#if input.value??]value="${input.value}"[/#if] tabIndex="-1" />
 				</div>
 
 				<strong aria-label="${htmlUtil.escape(input.label)}" class="forms-file-upload-file-name pl-2" data-placeholder="${languageUtil.get(locale, "no-file-selected")}" role="textbox" value="">
 					[#if input.attributes.fileName??]${htmlUtil.escape(input.attributes.fileName)}[/#if]
 				</strong>
 
-				<button class="btn btn-monospaced btn-outline-borderless btn-outline-secondary d-none lfr-portal-tooltip" [#if disabled]disabled[/#if] id="${fragmentEntryLinkNamespace}-file-upload-remove-button" title="${languageUtil.get(locale, 'remove-item')}" type="button">
+				<button class="btn btn-monospaced btn-outline-borderless btn-outline-secondary d-none lfr-portal-tooltip" [#if disabled]disabled[/#if] id="${fragmentElementId}-file-upload-remove-button" title="${languageUtil.get(locale, 'remove-item')}" type="button">
 					[@clay["icon"] symbol="times-circle-full" /]
 				</button>
 
 				[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-					<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="dialog" tabindex="0">
+					<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" role="dialog" tabindex="0">
 						[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
 					</div>
 				[/#if]
@@ -47,7 +47,7 @@
 		[/#if]
 
 		[#if input.errorMessage?has_content]
-			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentEntryLinkNamespace}-file-upload-error-message">
+			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentElementId}-file-upload-error-message">
 				<svg class="lexicon-icon lexicon-icon-info-circle" focusable="false" role="presentation">
 					<use xlink:href="${siteSpritemap}#info-circle" />
 				</svg>
@@ -59,7 +59,17 @@
 		[/#if]
 
 		[#if !input.readOnly && ((input.showHelpText && input.helpText?has_content) || (configuration.showSupportedFileInfo && input.attributes.allowedFileExtensions?? && input.attributes.maxFileSize??))]
-			<p class="mb-0 mt-1 text-secondary" id="${fragmentEntryLinkNamespace}-file-upload-help-text">${configuration.showSupportedFileInfo?then(languageUtil.format(locale, "upload-a-x-no-larger-than-x-mb", [input.attributes.allowedFileExtensions!"", input.attributes.maxFileSize!""]), '' )} ${input.showHelpText?then(htmlUtil.escape(input.helpText), '' )}</p>
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-file-upload-help-text">
+				[#if configuration.showSupportedFileInfo ]
+					[#if input.attributes.allowedFileExtensions?? && input.attributes.allowedFileExtensions == "*" ]
+						${languageUtil.format(locale, "upload-a-file-no-larger-than-x-mb", [input.attributes.maxFileSize!""])}
+					[#else]
+						${languageUtil.format(locale, "upload-a-x-no-larger-than-x-mb", [input.attributes.allowedFileExtensions!"", input.attributes.maxFileSize!""])}
+					[/#if]
+				[/#if]
+
+				${input.showHelpText?then(htmlUtil.escape(input.helpText), '' )}
+			</p>
 		[/#if]
 	</div>
 </div>

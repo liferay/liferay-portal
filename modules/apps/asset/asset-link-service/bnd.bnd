@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Link Service
 Bundle-SymbolicName: com.liferay.asset.link.service
-Bundle-Version: 4.0.30
+Bundle-Version: 4.0.31
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

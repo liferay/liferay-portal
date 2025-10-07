@@ -13,7 +13,6 @@
 		{
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": false,
 			"enableComments": false,
 			"enableObjectEntryDraft": false,

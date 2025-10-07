@@ -22,19 +22,7 @@ $structureFieldsWidth: 448px;
 		}
 	}
 
-	&__fields-tree {
-		&-node {
-			&--field-icon {
-				color: $cadmin-blue-l1;
-			}
-
-			&--structure-icon {
-				color: $cadmin-orange-l1;
-			}
-		}
-	}
-
-	&__structure-fields {
+	&__sidebar {
 		background-color: $cadmin-light-l1;
 		border-radius: 8px;
 		width: $structureFieldsWidth;
@@ -48,12 +36,23 @@ $structureFieldsWidth: 448px;
 		font-size: 28px;
 	}
 
-	&__wrapper {
-		height: calc(100vh - (var(--control-menu-container-height)));
+	&__tree {
+		&-node {
+			&--field-icon {
+				color: $cadmin-blue-l1;
+			}
 
-		.management-bar .vertical-divider {
-			border-left: 1px solid $cadmin-secondary-l1;
-			height: 16px;
+			&--group-icon {
+				color: $cadmin-teal-l1;
+			}
+
+			&--structure-icon {
+				color: $cadmin-orange-l1;
+			}
 		}
+	}
+
+	&__wrapper {
+		min-height: calc(100vh - (var(--control-menu-container-height)));
 	}
 }

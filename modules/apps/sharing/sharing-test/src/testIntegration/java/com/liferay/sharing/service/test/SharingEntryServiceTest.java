@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.SynchronousMailTestRule;
@@ -572,14 +573,19 @@ public class SharingEntryServiceTest {
 		List<SharingEntry> sharingEntries =
 			_sharingEntryService.getSharingEntries(
 				_classNameId, _group.getGroupId(), _group.getGroupId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
-		Assert.assertTrue(
-			sharingEntries.toString(), sharingEntries.contains(sharingEntry1));
-		Assert.assertTrue(
-			sharingEntries.toString(), sharingEntries.contains(sharingEntry2));
 		Assert.assertEquals(
-			sharingEntries.toString(), 2, sharingEntries.size());
+			Arrays.asList(sharingEntry1, sharingEntry2), sharingEntries);
+
+		sharingEntries = _sharingEntryService.getSharingEntries(
+			_classNameId, _group.getGroupId(), _group.getGroupId(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			OrderByComparatorFactoryUtil.create(
+				"SharingEntry", "createDate", false));
+
+		Assert.assertEquals(
+			Arrays.asList(sharingEntry2, sharingEntry1), sharingEntries);
 	}
 
 	@Test(expected = PrincipalException.class)

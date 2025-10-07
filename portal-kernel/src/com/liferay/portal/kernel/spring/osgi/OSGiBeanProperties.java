@@ -133,7 +133,7 @@ public @interface OSGiBeanProperties {
 				String key = parts[0];
 				String className = String.class.getSimpleName();
 
-				if (key.indexOf(StringPool.COLON) != -1) {
+				if (key.contains(StringPool.COLON)) {
 					String[] keyParts = StringUtil.split(key, StringPool.COLON);
 
 					key = keyParts[0];

@@ -79,7 +79,6 @@ public class ViewResultRankingsMVCRenderCommandTest
 		setUpLanguageUtil("");
 		setUpPortal();
 		setUpPortalUtil();
-		setUpPropsUtil();
 		setUpQuery();
 		setUpRankingIndexNameBuilder();
 		setUpRenderResponse(_renderResponse);

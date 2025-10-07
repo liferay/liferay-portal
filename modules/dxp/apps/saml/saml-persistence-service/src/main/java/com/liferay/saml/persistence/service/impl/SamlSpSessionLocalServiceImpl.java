@@ -47,8 +47,8 @@ public class SamlSpSessionLocalServiceImpl
 
 		SamlPeerBinding samlPeerBinding =
 			_samlPeerBindingLocalService.fetchSamlPeerBinding(
-				user.getCompanyId(), false, nameIdFormat, nameIdNameQualifier,
-				nameIdValue, samlIdpEntityId);
+				user.getCompanyId(), samlIdpEntityId, false, nameIdFormat,
+				nameIdNameQualifier, nameIdValue);
 
 		if ((samlPeerBinding != null) &&
 			(user.getUserId() != samlPeerBinding.getUserId())) {
@@ -63,12 +63,12 @@ public class SamlSpSessionLocalServiceImpl
 		if (samlPeerBinding == null) {
 			_deleteSamlPeerBindings(
 				_samlPeerBindingLocalService.getUserSamlPeerBindings(
-					user.getUserId(), false, nameIdFormat, nameIdNameQualifier,
-					samlIdpEntityId));
+					user.getUserId(), samlIdpEntityId, false, nameIdFormat,
+					nameIdNameQualifier));
 
 			samlPeerBinding = _samlPeerBindingLocalService.addSamlPeerBinding(
-				user.getUserId(), nameIdFormat, nameIdNameQualifier,
-				nameIdSPNameQualifier, null, nameIdValue, samlIdpEntityId);
+				user.getUserId(), samlIdpEntityId, nameIdFormat,
+				nameIdNameQualifier, nameIdSPNameQualifier, null, nameIdValue);
 		}
 
 		long samlSpSessionId = counterLocalService.increment(
@@ -166,8 +166,8 @@ public class SamlSpSessionLocalServiceImpl
 
 		for (SamlPeerBinding samlPeerBinding :
 				_samlPeerBindingLocalService.getSamlPeerBindings(
-					companyId, false, nameIdFormat, nameIdNameQualifier,
-					nameIdValue, samlIdpEntityId)) {
+					companyId, samlIdpEntityId, false, nameIdFormat,
+					nameIdNameQualifier, nameIdValue)) {
 
 			samlSpSessions.addAll(
 				samlSpSessionPersistence.findBySamlPeerBindingId(
@@ -176,8 +176,8 @@ public class SamlSpSessionLocalServiceImpl
 
 		for (SamlPeerBinding samlPeerBinding :
 				_samlPeerBindingLocalService.getSamlPeerBindings(
-					companyId, true, nameIdFormat, nameIdNameQualifier,
-					nameIdValue, samlIdpEntityId)) {
+					companyId, samlIdpEntityId, true, nameIdFormat,
+					nameIdNameQualifier, nameIdValue)) {
 
 			samlSpSessions.addAll(
 				samlSpSessionPersistence.findBySamlPeerBindingId(
@@ -214,13 +214,13 @@ public class SamlSpSessionLocalServiceImpl
 
 		SamlPeerBinding samlPeerBinding =
 			_samlPeerBindingLocalService.fetchSamlPeerBinding(
-				user.getCompanyId(), false, nameIdFormat, nameIdNameQualifier,
-				nameIdValue, samlIdpEntityId);
+				user.getCompanyId(), samlIdpEntityId, false, nameIdFormat,
+				nameIdNameQualifier, nameIdValue);
 
 		if (samlPeerBinding == null) {
 			samlPeerBinding = _samlPeerBindingLocalService.addSamlPeerBinding(
-				user.getUserId(), nameIdFormat, nameIdNameQualifier,
-				nameIdSPNameQualifier, null, nameIdValue, samlIdpEntityId);
+				user.getUserId(), samlIdpEntityId, nameIdFormat,
+				nameIdNameQualifier, nameIdSPNameQualifier, null, nameIdValue);
 		}
 
 		SamlSpSession samlSpSession = samlSpSessionPersistence.findByPrimaryKey(

@@ -1,0 +1,33 @@
+{
+	"description": "",
+	"fragmentCompositionDefinitionPath": "page-definition.json",
+	"friendlyURL": "/ssa-dashboard",
+	"hidden": false,
+	"name": "SSA",
+	"name_i18n": {
+		"en_US": "SSA"
+	},
+	"permissions": [
+		{
+			"actionIds": [
+			],
+			"roleName": "Guest",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+				"VIEW"
+			],
+			"roleName": "SSA User",
+			"scope": 4
+		},
+		{
+			"actionIds": [
+			],
+			"roleName": "Site Member",
+			"scope": 4
+		}
+	],
+	"system": false,
+	"type": "content"
+}

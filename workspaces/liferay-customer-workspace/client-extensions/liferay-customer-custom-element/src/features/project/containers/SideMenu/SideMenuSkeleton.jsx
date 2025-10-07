@@ -19,7 +19,7 @@ const SideMenuSkeleton = () => {
 								className="mb-1"
 								height={36}
 								width={
-									menuName !== MENU_TYPES.productActivation
+									menuName !== MENU_TYPES.activation
 										? 120
 										: 200
 								}

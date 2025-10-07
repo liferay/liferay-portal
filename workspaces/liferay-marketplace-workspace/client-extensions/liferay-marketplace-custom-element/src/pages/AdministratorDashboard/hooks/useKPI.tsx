@@ -3,44 +3,47 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ComponentProps} from 'react';
 import {useNavigate} from 'react-router-dom';
 import useSWR from 'swr';
 
 import {useMarketplaceContext} from '../../../context/MarketplaceContext';
 import SearchBuilder from '../../../core/SearchBuilder';
-import {
-	PartnershipType,
-	ProductCategories,
-	ProductType,
-} from '../../../enums/Product';
+import {AccountType} from '../../../enums/Account';
+import {ProductType, ProductWorkflowStatusCode} from '../../../enums/Product';
+import useListTypeDefinition from '../../../hooks/useListTypeDefinition';
 import useModalContext from '../../../hooks/useModalContext';
-import marketplaceOAuth2 from '../../../services/oauth/Marketplace';
 import HeadlessCommerceAdminCatalog from '../../../services/rest/HeadlessCommerceAdminCatalog';
+import GraphQL from '../../../services/rest/HeadlessGraphQL';
+import {safeJSONParse} from '../../../utils/util';
+import ProjectsUsingMarketplaceModalBody from '../components/ProjectsUsingMarketplace';
 
 const baseSearchBuilder = new SearchBuilder()
+	.in('statusCode', [ProductWorkflowStatusCode.APPROVED])
+	.and();
+
+const appsAndConnectorSupportingQReleaseFilter = baseSearchBuilder
+	.clone()
 	.group('OPEN')
 	.lambdaContains('specificationValues', '2025 Q')
 	.or()
 	.lambdaContains('specificationValues', '2024 Q')
 	.or()
 	.lambdaContains('specificationValues', '2023 Q')
-	.group('CLOSE');
-
-const connectorQuartelyReleaseFilter = baseSearchBuilder
-	.clone()
+	.group('CLOSE')
 	.and()
-	.lambda('categoryNames', ProductCategories.PAYMENT_METHODS)
-	.build();
-
-const lowCodeConfigurationsPublishedFilter = new SearchBuilder()
+	.not()
 	.lambda('specificationValues', ProductType.LOW_CODE_CONFIGURATION)
 	.build();
 
-const partnershipIntegrationFilter = new SearchBuilder()
-	.lambda('specificationValues', PartnershipType.TECHNOLOGY_PARTNERSHIP)
+const lowCodeConfigurationsPublishedFilter = baseSearchBuilder
+	.clone()
+	.lambda('specificationValues', ProductType.LOW_CODE_CONFIGURATION)
 	.build();
 
-const supportingQuartelyReleaseFilter = baseSearchBuilder.clone().build();
+const technologyPartnershipIntegrationFilter = new SearchBuilder()
+	.lambda('specificationValues', AccountType.TECHNOLOGY_PARTNER)
+	.build();
 
 const getAnnualTargetValues = (kpiTarget: string, value: number) => {
 	if (kpiTarget.includes('/')) {
@@ -58,9 +61,63 @@ const getAnnualTargetValues = (kpiTarget: string, value: number) => {
 	};
 };
 
+const queries = [
+	HeadlessCommerceAdminCatalog.getProductsDashboardKPI(
+		{
+			appsAndConnectorSupportingQRelease:
+				appsAndConnectorSupportingQReleaseFilter,
+			lowCodeConfigurationsPublished:
+				lowCodeConfigurationsPublishedFilter,
+			partnershipIntegration: technologyPartnershipIntegrationFilter,
+		},
+		{
+			appsAndConnectorSupportingQRelease: {
+				body: ` items { catalogExternalReferenceCode, id, name, thumbnail } `,
+				pageSize: -1,
+			},
+		}
+	),
+	HeadlessCommerceAdminCatalog.getCatalogs(
+		new URLSearchParams({
+			fields: 'externalReferenceCode,name',
+			pageSize: '-1',
+		})
+	),
+	GraphQL.metrics<{name: string; value: string}>(
+		{
+			group: 'c',
+			name: 'reports',
+			options: {
+				body: `items { name, value }`,
+				sort: 'dateCreated:desc',
+			},
+		},
+		{
+			projectsUsingMarketplace: SearchBuilder.eq(
+				'name',
+				'projectsUsingMarketplace'
+			),
+			totalAmount: SearchBuilder.eq('name', 'totalAmount'),
+		}
+	),
+] as const;
+
 const useKPI = () => {
+	const {data: liferayVersionsPicklist} =
+		useListTypeDefinition('LIFERAY-VERSIONS');
+
 	const modal = useModalContext();
 	const navigate = useNavigate();
+
+	const liferayQuarterlyVersionEntries =
+		liferayVersionsPicklist?.listTypeEntries.filter((entry) =>
+			entry.externalReferenceCode.includes('Q')
+		);
+
+	const liferayQuarterlyVersionsAndConnectors = JSON.stringify({
+		'specificationValues|liferayVersion':
+			liferayQuarterlyVersionEntries?.map((entry) => entry.name),
+	});
 
 	const {
 		properties: {kpi: anualTargetKPIs},
@@ -74,78 +131,121 @@ const useKPI = () => {
 		kpiQuartelyReleaseApps,
 	} = anualTargetKPIs;
 
-	const {data, ...swr} = useSWR(
-		'metrics/kpi',
-		async () => {
-			const [
-				{
-					data: {
-						metrics: {
-							connectorQuartelyRelease,
-							lowCodeConfigurationsPublished,
-							partnerShipIntegration,
-							supportingQuartelyRelease,
-						},
+	return useSWR('metrics/kpi', async () => {
+		const [
+			{
+				data: {
+					metrics: {
+						appsAndConnectorSupportingQRelease,
+						lowCodeConfigurationsPublished,
+						partnershipIntegration,
 					},
 				},
-				projectUsingMarketplaceApps,
-			] = await Promise.all([
-				HeadlessCommerceAdminCatalog.getProductsDashboardKPI({
-					connectorQuartelyRelease: connectorQuartelyReleaseFilter,
-					lowCodeConfigurationsPublished:
-						lowCodeConfigurationsPublishedFilter,
-					partnerShipIntegration: partnershipIntegrationFilter,
-					supportingQuartelyRelease: supportingQuartelyReleaseFilter,
-				}),
-				marketplaceOAuth2.getMarketplaceProjectsKPI(),
-			]);
+			},
+			catalogsResponse,
+			projectsKPI,
+		] = await Promise.all(queries);
 
-			const newProjectsUsingMarketplaceApps = Object.keys(
-				projectUsingMarketplaceApps
-			).length;
+		const projectsUsingMarkeplaceApps = Object.entries(
+			safeJSONParse(
+				projectsKPI?.data?.metrics?.projectsUsingMarketplace?.items?.[0]
+					?.value,
+				{}
+			)
+		);
 
-			return [
+		const catalogs = Object.groupBy(
+			appsAndConnectorSupportingQRelease.items.map((product) => ({
+				...product,
+				catalogName:
+					catalogsResponse.items.find(
+						(catalog) =>
+							catalog.externalReferenceCode ===
+							product.catalogExternalReferenceCode
+					)?.name ?? product.externalReferenceCode,
+			})),
+			({catalogName}) => catalogName
+		);
+
+		const supportingQuartelyRelease = {
+			...appsAndConnectorSupportingQRelease,
+			totalCount: Object.keys(catalogs).length,
+		};
+
+		return {
+			kpis: [
 				{
 					...getAnnualTargetValues(
 						kpiProjectUsingMarketplaceApps,
-						newProjectsUsingMarketplaceApps
+						projectsUsingMarkeplaceApps.length
 					),
 					colors: ['#9CE269', '#D4F3BE'],
-					onClick: newProjectsUsingMarketplaceApps
-						? () => {
+					onClick: projectsUsingMarkeplaceApps.length
+						? () =>
 								modal.onOpenModal({
 									body: (
-										<ul>
-											{Object.keys(
-												projectUsingMarketplaceApps
-											).map((project) => (
-												<li key={project}>{project}</li>
-											))}
-										</ul>
+										<ProjectsUsingMarketplaceModalBody
+											projectsUsingMarkeplaceApps={
+												projectsUsingMarkeplaceApps as ComponentProps<
+													typeof ProjectsUsingMarketplaceModalBody
+												>['projectsUsingMarkeplaceApps']
+											}
+										/>
 									),
 									header: 'New Projects Using Marketplace Apps',
-								});
-							}
+									size: 'lg',
+								})
 						: null,
 					title: 'New Projects Using Marketplace Apps',
 				},
 				{
 					onClick: () =>
 						navigate(
-							`/publishers?filter=customFields/AccountType:${PartnershipType.TECHNOLOGY_PARTNERSHIP}`
+							`/publishers?filter={"customFields/AccountType":["${AccountType.TECHNOLOGY_PARTNER}"]}&filterSchema=administratorPublishers`
 						),
 					...getAnnualTargetValues(
 						kpiPartnershipIntegration,
-						partnerShipIntegration.totalCount
+						partnershipIntegration.totalCount
 					),
 					colors: ['#FFB46E', '#FFE9D4'],
+					externalPage: true,
 					title: 'Technology Partnership With Integrations',
 				},
 				{
 					onClick: () =>
-						navigate(
-							`/apps?filter=${supportingQuartelyReleaseFilter}`
-						),
+						modal.onOpenModal({
+							body: (
+								<ol>
+									{Object.entries(catalogs).map(
+										([catalog, products = []], index) => (
+											<li key={index}>
+												<span className="font-weight-bold">
+													{catalog}
+												</span>
+
+												<ol>
+													{products.map(
+														(
+															{name},
+															productIndex
+														) => (
+															<li
+																key={
+																	productIndex
+																}
+															>
+																{name.en_US}
+															</li>
+														)
+													)}
+												</ol>
+											</li>
+										)
+									)}
+								</ol>
+							),
+							header: `Publisher With Apps Supporting Quarterly Release (${supportingQuartelyRelease.totalCount})`,
+						}),
 					...getAnnualTargetValues(
 						kpiQuartelyReleaseApps,
 						supportingQuartelyRelease.totalCount
@@ -156,12 +256,13 @@ const useKPI = () => {
 				{
 					...getAnnualTargetValues(
 						kpiConnectorQuartelyRelease,
-						connectorQuartelyRelease.totalCount
+						appsAndConnectorSupportingQRelease.totalCount
 					),
 					colors: ['#FF73C3', '#FFE1F0'],
+					externalPage: true,
 					onClick: () =>
 						navigate(
-							`/apps?filter=${connectorQuartelyReleaseFilter}`
+							`/apps?filter=${liferayQuarterlyVersionsAndConnectors}&filterSchema=administratorApps`
 						),
 					title: 'Apps & Connectors Supporting Quarterly Release',
 				},
@@ -171,20 +272,24 @@ const useKPI = () => {
 						lowCodeConfigurationsPublished.totalCount
 					),
 					colors: ['#FFD76E', '#FFF3D4'],
+					externalPage: true,
 					onClick: () =>
 						navigate(
-							`/apps?filter=${lowCodeConfigurationsPublishedFilter}`
+							`/apps?filter={"specificationValues|appType":"${ProductType.LOW_CODE_CONFIGURATION}"}&filterSchema=administratorApps`
 						),
 					title: 'Low Code Configurations Published',
 				},
-			];
-		},
-		{
-			refreshInterval: 120000,
-		}
-	);
-
-	return {data, ...swr};
+			],
+			projectsKPI: {
+				...projectsKPI,
+				totalAmount: safeJSONParse(
+					projectsKPI?.data.metrics.totalAmount.items?.[0]
+						?.value as string,
+					{USD: 0}
+				),
+			},
+		};
+	});
 };
 
 export default useKPI;

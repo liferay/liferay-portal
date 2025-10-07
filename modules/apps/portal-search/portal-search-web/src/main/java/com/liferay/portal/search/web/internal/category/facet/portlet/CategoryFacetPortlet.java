@@ -93,6 +93,9 @@ public class CategoryFacetPortlet extends MVCPortlet {
 	protected AssetVocabularyLocalService assetVocabularyLocalService;
 
 	@Reference
+	protected GroupLocalService groupLocalService;
+
+	@Reference
 	protected Portal portal;
 
 	@Reference
@@ -105,7 +108,7 @@ public class CategoryFacetPortlet extends MVCPortlet {
 		AssetCategoriesSearchFacetDisplayContextBuilder
 			assetCategoriesSearchFacetDisplayContextBuilder =
 				new AssetCategoriesSearchFacetDisplayContextBuilder(
-					renderRequest);
+					groupLocalService, renderRequest);
 
 		assetCategoriesSearchFacetDisplayContextBuilder.
 			setAssetCategoryLocalService(assetCategoryLocalService);

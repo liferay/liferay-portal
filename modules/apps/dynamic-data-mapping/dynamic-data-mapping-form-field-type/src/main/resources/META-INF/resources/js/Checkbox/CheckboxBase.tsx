@@ -7,6 +7,8 @@ import {ClayCheckbox, ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import React from 'react';
 
+import {getNonLocalizableFieldMessage} from '../api/FieldBase/translation';
+
 import type {FieldChangeEventHandler, LocalizedValue} from '../types';
 
 const Switcher: React.FC<ISwitcherProps> = ({
@@ -116,6 +118,7 @@ const Toggle: React.FC<ISwitcherProps> = ({
 
 export default function CheckboxBase({
 	checked,
+	displayErrors,
 	editOnlyInDefaultLanguage,
 	isLocalizationSupported,
 	name,
@@ -123,6 +126,7 @@ export default function CheckboxBase({
 	showAsSwitcher = true,
 	showLabel = true,
 	showMaximumRepetitionsInfo = false,
+	valid,
 	...otherProps
 }: IProps) {
 	return (
@@ -132,6 +136,7 @@ export default function CheckboxBase({
 					...((otherProps.errorMessage || otherProps.tip) && {
 						'aria-describedby': `${otherProps.id ?? name}_fieldFeedback`,
 					}),
+					...(displayErrors && !valid && {'aria-invalid': true}),
 					'aria-required': !!otherProps.required,
 				}}
 				checked={checked}
@@ -150,15 +155,9 @@ export default function CheckboxBase({
 					className="c-ml-2 text-4 text-secondary"
 					data-testid="tooltip"
 					tabIndex={0}
-					title={
+					title={getNonLocalizableFieldMessage(
 						isLocalizationSupported
-							? Liferay.Language.get(
-									'translation-is-disabled-for-this-field'
-								)
-							: Liferay.Language.get(
-									'this-field-does-not-support-translations'
-								)
-					}
+					)}
 				>
 					<ClayIcon symbol="question-circle-full" />
 				</span>
@@ -191,6 +190,7 @@ interface ISwitcherProps extends ICheckboxBaseProps {
 }
 
 interface IProps extends ICheckboxBaseProps {
+	displayErrors?: boolean;
 	editOnlyInDefaultLanguage: boolean;
 	errorMessage: string;
 	id?: string;
@@ -201,5 +201,6 @@ interface IProps extends ICheckboxBaseProps {
 	showMaximumRepetitionsInfo?: boolean;
 	systemSettingsURL: string;
 	tip: string;
+	valid?: boolean;
 	visible?: boolean;
 }

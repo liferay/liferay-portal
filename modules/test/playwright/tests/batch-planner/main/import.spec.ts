@@ -15,9 +15,13 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import createTempFile from '../../../utils/createTempFile';
+import {readCSVFile} from '../../../utils/fileReader';
 import getRandomString from '../../../utils/getRandomString';
 import {dataMigrationCenterPagesTest} from './fixtures/dataMigrationCenterPagesTest';
-import {OBJECT_ENTRY_ENTITY_TYPE} from './utils/constants';
+import {
+	OBJECT_DEFINITION_TYPE,
+	OBJECT_ENTRY_ENTITY_TYPE,
+} from './utils/constants';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -495,6 +499,56 @@ const siteObjectDefinition: ObjectDefinition = {
 	status: {code: 0},
 };
 
+test('can download custom object sample file', async ({
+	apiHelpers,
+	dataMigrationCenterPage,
+}) => {
+	const objectDefinitionAPIClient =
+		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+	const {body: objectDefinition} =
+		await objectDefinitionAPIClient.postObjectDefinition(
+			companyObjectDefinition
+		);
+	apiHelpers.data.push({
+		id: objectDefinition.id,
+		type: 'objectDefinition',
+	});
+
+	await dataMigrationCenterPage.gotoPage();
+	await dataMigrationCenterPage.goToImportFile();
+
+	const file = await dataMigrationCenterPage.downloadSampleFile(
+		OBJECT_ENTRY_ENTITY_TYPE
+	);
+
+	expect(file).toEqual(
+		await readCSVFile(
+			path.join(__dirname, '/dependencies/object_entry_import_sample.csv')
+		)
+	);
+});
+
+test('can download object definition sample file', async ({
+	dataMigrationCenterPage,
+}) => {
+	await dataMigrationCenterPage.gotoPage();
+	await dataMigrationCenterPage.goToImportFile();
+
+	const file = await dataMigrationCenterPage.downloadSampleFile(
+		OBJECT_DEFINITION_TYPE
+	);
+
+	expect(file).toEqual(
+		await readCSVFile(
+			path.join(
+				__dirname,
+				'/dependencies/object_definition_import_sample.csv'
+			)
+		)
+	);
+});
+
 test('can handle OnlyAddNewRecords and UpdateChangedRecordFields import strategies with duplicate ERCs', async ({
 	apiHelpers,
 	dataMigrationCenterPage,
@@ -524,7 +578,10 @@ test('can handle OnlyAddNewRecords and UpdateChangedRecordFields import strategi
 		page.getByText('The import process completed successfully.')
 	).toBeVisible();
 
-	await page.getByRole('button', {exact: true, name: 'Close'}).click();
+	await page
+		.locator('.modal-header')
+		.getByRole('button', {exact: true, name: 'Close'})
+		.click();
 
 	await dataMigrationCenterPage.importFile(
 		OBJECT_ENTRY_ENTITY_TYPE,
@@ -762,7 +819,7 @@ test('can import CSV file with new and existing site scoped object entries', asy
 		'UPDATE'
 	);
 
-	await page.getByRole('button', {exact: true, name: 'Close'}).click();
+	await page.getByText('Close', {exact: true}).click();
 
 	await dataMigrationCenterPage.importFile(
 		OBJECT_ENTRY_ENTITY_TYPE,
@@ -1306,7 +1363,7 @@ test('can show duplicate error message with CSV import existing entry and only a
 		'UPDATE'
 	);
 
-	await page.getByRole('button', {exact: true, name: 'Close'}).click();
+	await page.getByText('Close', {exact: true}).click();
 
 	await dataMigrationCenterPage.importFile(
 		OBJECT_ENTRY_ENTITY_TYPE,
@@ -1347,7 +1404,7 @@ test('can show unique contraint error message with CSV import existing entry and
 		'UPDATE'
 	);
 
-	await page.getByRole('button', {exact: true, name: 'Close'}).click();
+	await page.getByText('Close', {exact: true}).click();
 
 	await dataMigrationCenterPage.importFile(
 		OBJECT_ENTRY_ENTITY_TYPE,

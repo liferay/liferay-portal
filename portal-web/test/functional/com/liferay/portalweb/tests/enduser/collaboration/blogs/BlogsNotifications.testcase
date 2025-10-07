@@ -74,6 +74,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewEmailNotificationForFlaggedEntry {
+		property portal.acceptance = "false";
 		property test.smtp.server.enabled = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
@@ -158,6 +159,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewWebsiteNotificationForMention {
+		property portal.acceptance = "false";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");

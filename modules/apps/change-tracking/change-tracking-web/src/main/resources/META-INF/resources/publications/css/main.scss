@@ -280,6 +280,18 @@
 	.publications-key-td {
 		font-weight: 600;
 	}
+
+	.publications-section-header {
+		background: var(--Color-Light-light-l1, #f7f8f9);
+		border-bottom: 0.0695rem solid
+			var(--Color-Secondary-secondary-l2, #cdced9);
+		border-top: 0.0695rem solid var(--Color-Secondary-secondary-l2, #cdced9);
+		color: #6b6c7e;
+		font-weight: var(--font-weight-semi-bold, 600);
+		height: 34px;
+		line-height: 150%;
+		vertical-align: middle;
+	}
 }
 
 table.publications-render-view {

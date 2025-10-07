@@ -1,9 +1,9 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.139.1",
-		"@clayui/form": "3.139.0",
-		"@clayui/icon": "3.128.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/core": "3.149.0",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
@@ -17,5 +17,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "9.0.2"
+	"version": "9.1.6"
 }

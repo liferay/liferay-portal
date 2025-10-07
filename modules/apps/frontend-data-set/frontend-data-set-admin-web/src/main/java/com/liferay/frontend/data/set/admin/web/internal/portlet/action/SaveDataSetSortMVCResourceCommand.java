@@ -14,6 +14,7 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -104,7 +105,8 @@ public class SaveDataSetSortMVCResourceCommand
 					values.put("default", false);
 
 					_objectEntryService.updateObjectEntry(
-						dataSetSortObjectEntry.getId(), values,
+						dataSetSortObjectEntry.getId(),
+						dataSetSortObjectEntry.getObjectEntryFolderId(), values,
 						new ServiceContext());
 				}
 			}
@@ -141,7 +143,7 @@ public class SaveDataSetSortMVCResourceCommand
 	}
 
 	private Collection<ObjectEntry> _getDataSetSortObjectEntries(
-			ObjectDefinition dataSetObjectDefinition, Long objectEntryId)
+			ObjectDefinition dataSetObjectDefinition, long objectEntryId)
 		throws Exception {
 
 		DTOConverterContext dtoConverterContext =
@@ -155,9 +157,11 @@ public class SaveDataSetSortMVCResourceCommand
 					dataSetObjectDefinition.getStorageType()));
 
 		Page<ObjectEntry> relatedObjectEntriesPage =
-			defaultObjectEntryManager.getObjectEntryRelatedObjectEntries(
-				dtoConverterContext, dataSetObjectDefinition, objectEntryId,
-				"dataSetToDataSetSorts",
+			defaultObjectEntryManager.getRelatedObjectEntries(
+				dtoConverterContext, objectEntryId,
+				_objectRelationshipLocalService.getObjectRelationship(
+					dataSetObjectDefinition.getObjectDefinitionId(),
+					"dataSetToDataSetSorts"),
 				Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 		return relatedObjectEntriesPage.getItems();
@@ -174,5 +178,8 @@ public class SaveDataSetSortMVCResourceCommand
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }

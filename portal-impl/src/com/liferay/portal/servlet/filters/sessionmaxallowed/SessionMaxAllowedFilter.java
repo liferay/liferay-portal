@@ -6,9 +6,9 @@
 package com.liferay.portal.servlet.filters.sessionmaxallowed;
 
 import com.liferay.portal.kernel.servlet.TryFinallyFilter;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

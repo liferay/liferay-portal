@@ -10,8 +10,10 @@ import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRelModel;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.ModelWrapper;
@@ -27,6 +29,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 
 import java.sql.Blob;
@@ -779,6 +783,14 @@ public class LayoutPageTemplateStructureRelModelImpl
 		_statusDate = statusDate;
 	}
 
+	public com.liferay.portal.kernel.json.JSONObject getDataJSONObject() {
+		return null;
+	}
+
+	public void setDataJSONObject(
+		com.liferay.portal.kernel.json.JSONObject dataJSONObject) {
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1182,6 +1194,16 @@ public class LayoutPageTemplateStructureRelModelImpl
 				Long.MIN_VALUE;
 		}
 
+		try {
+			layoutPageTemplateStructureRelCacheModel.dataJSONObject =
+				(com.liferay.portal.kernel.json.JSONObject)
+					_dataJSONObjectMethodHandle.invokeExact(
+						(LayoutPageTemplateStructureRelImpl)this);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return layoutPageTemplateStructureRelCacheModel;
 	}
 
@@ -1383,6 +1405,45 @@ public class LayoutPageTemplateStructureRelModelImpl
 	}
 
 	private long _columnBitmask;
+
+	protected static final BiConsumer
+		<LayoutPageTemplateStructureRel,
+		 com.liferay.portal.kernel.json.JSONObject>
+			dataJSONObjectUpdateEntityCacheBiConsumer =
+				(layoutPageTemplateStructureRel, dataJSONObject) -> {
+					LayoutPageTemplateStructureRelCacheModel
+						layoutPageTemplateStructureRelCacheModel =
+							EntityCacheUtil.fetchCacheModel(
+								LayoutPageTemplateStructureRelImpl.class,
+								layoutPageTemplateStructureRel.getPrimaryKey(),
+								LayoutPageTemplateStructureRelCacheModel.class);
+
+					if ((layoutPageTemplateStructureRelCacheModel != null) &&
+						(layoutPageTemplateStructureRelCacheModel.
+							getMvccVersion() ==
+								layoutPageTemplateStructureRel.
+									getMvccVersion())) {
+
+						layoutPageTemplateStructureRelCacheModel.
+							dataJSONObject = dataJSONObject;
+					}
+				};
+
+	private static final MethodHandle _dataJSONObjectMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_dataJSONObjectMethodHandle = lookup.findGetter(
+				LayoutPageTemplateStructureRelImpl.class, "_dataJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
+
 	private LayoutPageTemplateStructureRel _escapedModel;
 
 }

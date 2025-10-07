@@ -7,53 +7,62 @@ import {useCallback, useState} from 'react';
 import {Liferay} from '~/services/liferay';
 
 interface IParams {
+	gcsSessionURL: string;
 	ticketAttachmentId: string;
 }
 
 interface IProps {
 	deleteAttachment: (params: IParams) => Promise<void>;
-	error: Error | null;
 	loading: boolean;
 }
 
 const useTicketAttachmentsDelete = (): IProps => {
-	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
 
 	const deleteAttachment = useCallback(async (params: IParams) => {
-		setError(null);
 		setLoading(true);
 
-		const {ticketAttachmentId} = params;
+		const {gcsSessionURL, ticketAttachmentId} = params;
 
 		try {
-			const response =
-				await Liferay.OAuth2Client.FromUserAgentApplication(
-					'liferay-customer-etc-spring-boot-oaua'
-				).fetch(`/ticket-attachments/${ticketAttachmentId}`, {
+			const ticketAttachmentResponse = await fetch(
+				`${window.location.origin}/o/c/ticketattachments/${ticketAttachmentId}`,
+				{
+					headers: {
+						'x-csrf-token': Liferay.authToken,
+					},
 					method: 'DELETE',
-				});
+				}
+			);
 
-			if (!response.ok) {
+			if (!ticketAttachmentResponse.ok) {
 				throw new Error(
-					`Failed to delete attachment: ${response.text()}`
+					`Failed to delete ticket attachment: ${ticketAttachmentResponse.text()}`
+				);
+			}
+
+			const gcpResponse = await fetch(gcsSessionURL, {
+				headers: {
+					'Content-Length': '0',
+				},
+				method: 'DELETE',
+			});
+
+			if (gcpResponse.status !== 499) {
+				throw new Error(
+					`Failed to delete gcp file: ${gcpResponse.text()}`
 				);
 			}
 		}
 		catch (deleteError) {
-			console.error('Delete attachment error:', deleteError);
-			setError(
-				deleteError instanceof Error
-					? deleteError
-					: new Error(String(deleteError))
-			);
+			console.error(deleteError);
 		}
 		finally {
 			setLoading(false);
 		}
 	}, []);
 
-	return {deleteAttachment, error, loading};
+	return {deleteAttachment, loading};
 };
 
 export default useTicketAttachmentsDelete;

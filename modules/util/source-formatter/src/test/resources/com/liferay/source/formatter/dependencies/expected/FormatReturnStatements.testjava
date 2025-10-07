@@ -80,4 +80,12 @@ public class FormatReturnStatements {
 		return false;
 	}
 
+	protected String setName(String name) {
+		_name = name;
+
+		return _name;
+	}
+
+	private String _name;
+
 }

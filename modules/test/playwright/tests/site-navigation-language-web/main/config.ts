@@ -6,4 +6,5 @@
 export const config = {
 	name: 'site-navigation-language-web.main',
 	testDir: 'tests/site-navigation-language-web/main',
+	timeout: 90 * 1000,
 };

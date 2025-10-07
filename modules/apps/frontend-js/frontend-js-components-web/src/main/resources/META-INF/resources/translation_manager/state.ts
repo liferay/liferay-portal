@@ -5,5 +5,11 @@
 
 import {State} from '@liferay/frontend-js-state-web';
 
-export const activeLanguageIdsAtom = State.atom('activeLocaleIds', []);
-export const selectedLanguageIdAtom = State.atom('selectedLocaleId', []);
+export const activeLanguageIdsAtom = State.atom<Liferay.Language.Locale[]>(
+	'activeLocaleIds',
+	[]
+);
+export const selectedLanguageIdAtom = State.atom<Liferay.Language.Locale>(
+	'selectedLocaleId',
+	'en_US'
+);

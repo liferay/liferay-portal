@@ -45,7 +45,7 @@ async function changeCookiePreference({
 
 	await page.getByRole('menuitem', {name: 'Instance Settings'}).click();
 
-	await page.getByRole('link', {name: 'Cookies'}).click();
+	await page.getByRole('link', {name: 'Privacy'}).click();
 
 	const cookieBannerCheckbox = await page.getByLabel('Enabled');
 

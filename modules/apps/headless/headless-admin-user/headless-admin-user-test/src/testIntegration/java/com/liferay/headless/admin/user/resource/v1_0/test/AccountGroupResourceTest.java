@@ -18,6 +18,8 @@ import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.exportimport.test.rule.LazyReferencing;
+import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.headless.admin.user.client.custom.field.CustomField;
 import com.liferay.headless.admin.user.client.custom.field.CustomValue;
 import com.liferay.headless.admin.user.client.dto.v1_0.AccountBrief;
@@ -34,6 +36,7 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -52,12 +55,12 @@ import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
 import java.text.DateFormat;
@@ -69,6 +72,8 @@ import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -78,6 +83,11 @@ import org.junit.runner.RunWith;
 @DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
+
+	@ClassRule
+	@Rule
+	public static final LazyReferencingTestRule lazyReferencingTestRule =
+		LazyReferencingTestRule.INSTANCE;
 
 	@Before
 	@Override
@@ -124,7 +134,8 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 		_testPatchAccountGroupByExternalReferenceCodeWithoutName();
 	}
 
-	@FeatureFlag("LPD-47858")
+	@FeatureFlag("LPD-35914")
+	@LazyReferencing
 	@Override
 	@Test
 	public void testPostAccountGroup() throws Exception {
@@ -282,6 +293,14 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 	}
 
 	@Override
+	protected String
+			testGraphQLDeleteAccountGroupByExternalReferenceCodeAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
 	protected AccountGroup testPatchAccountGroup_addAccountGroup()
 		throws Exception {
 
@@ -415,8 +434,19 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 
 		long totalCount = page.getTotalCount();
 
+		// Sleep for 1 second to ensure that account group 1 and existing
+		// account groups are created 1 second apart
+
+		Thread.sleep(1000);
+
 		AccountGroup accountGroup1 = testGetAccountGroupsPage_addAccountGroup(
 			randomAccountGroup());
+
+		// Sleep for 1 second to ensure that account group 1 and account
+		// group 2 are created 1 second apart
+
+		Thread.sleep(1000);
+
 		AccountGroup accountGroup2 = testGetAccountGroupsPage_addAccountGroup(
 			randomAccountGroup());
 
@@ -436,6 +466,11 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 			Pagination.of(1, 2), null);
 
 		Assert.assertEquals(2, page.getTotalCount());
+
+		// Sleep for 1 second to ensure that account group 1 and account
+		// group 2 are modified 1 second apart
+
+		Thread.sleep(1000);
 
 		accountGroup1.setDescription(
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));
@@ -518,6 +553,13 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 
 		Assert.assertTrue(creator.getId() == TestPropsValues.getUserId());
 
+		User user = TestPropsValues.getUser();
+
+		Assert.assertTrue(
+			Objects.equals(
+				creator.getExternalReferenceCode(),
+				user.getExternalReferenceCode()));
+
 		Assert.assertTrue(
 			ArrayUtil.exists(
 				getAccountGroup.getPermissions(),
@@ -598,6 +640,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 				type = serviceBuilderAccountEntry1.getType();
 			}
 		};
+
 		AccountBrief accountBrief2 = new AccountBrief() {
 			{
 				externalReferenceCode = RandomTestUtil.randomString();
@@ -622,6 +665,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 					serviceBuilderRole1.getType());
 			}
 		};
+
 		Permission permission2 = new Permission() {
 			{
 				actionIds = new String[] {ActionKeys.UPDATE};
@@ -689,7 +733,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 		Assert.assertEquals(
 			accountBrief2.getType(), serviceBuilderAccountEntry3.getType());
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_INCOMPLETE,
+			WorkflowConstants.STATUS_EMPTY,
 			serviceBuilderAccountEntry3.getStatus());
 
 		Role serviceBuilderRole2 =
@@ -746,8 +790,7 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 			RoleConstants.getLabelType(permission2.getRoleType()),
 			serviceBuilderRole3.getType());
 		Assert.assertEquals(
-			WorkflowConstants.STATUS_INCOMPLETE,
-			serviceBuilderRole3.getStatus());
+			WorkflowConstants.STATUS_EMPTY, serviceBuilderRole3.getStatus());
 	}
 
 	private void _testPutAccountGroupByExternalReferenceWithoutName()

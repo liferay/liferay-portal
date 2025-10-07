@@ -19,6 +19,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -267,6 +268,32 @@ public class DBInspector {
 
 			if (resultSet.getInt("NULLABLE") ==
 					DatabaseMetaData.columnNullable) {
+
+				return true;
+			}
+
+			return false;
+		}
+	}
+
+	public boolean isNumeric(String tableName, String columnName)
+		throws Exception {
+
+		try (ResultSet resultSet = _getColumnsResultSet(
+				tableName, columnName)) {
+
+			if (!resultSet.next()) {
+				return false;
+			}
+
+			int columnType = resultSet.getInt("DATA_TYPE");
+
+			if ((columnType == Types.BIGINT) || (columnType == Types.DECIMAL) ||
+				(columnType == Types.DOUBLE) || (columnType == Types.FLOAT) ||
+				(columnType == Types.INTEGER) ||
+				(columnType == Types.NUMERIC) || (columnType == Types.REAL) ||
+				(columnType == Types.SMALLINT) ||
+				(columnType == Types.TINYINT)) {
 
 				return true;
 			}

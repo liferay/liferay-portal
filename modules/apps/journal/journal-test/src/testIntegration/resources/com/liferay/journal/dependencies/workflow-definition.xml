@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Single Approver</name>
+	<description>A single approver can approve a workflow content.</description>
+	<version>1</version>
+	<state>
+		<name>created</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						165,
+						76
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>review</name>
+				<target>review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<state>
+		<name>approved</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						539,
+						74
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>approve</name>
+				<status>0</status>
+				<execution-type>onEntry</execution-type>
+			</action>
+		</actions>
+	</state>
+	<task>
+		<name>update</name>
+		<metadata>
+			<![CDATA[
+				{
+					"transitions": {
+						"resubmit": {
+							"bendpoints": [
+								[
+									303,
+									140
+								]
+							]
+						}
+					},
+					"xy": [
+						164,
+						533
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<action>
+				<name>deny</name>
+				<status>4</status>
+				<priority>1</priority>
+				<execution-type>onAssignment</execution-type>
+			</action>
+			<action>
+				<name>pending</name>
+				<status>1</status>
+				<priority>2</priority>
+				<execution-type>onAssignment</execution-type>
+			</action>
+			<notification>
+				<name>Creator Modification Notification</name>
+				<template>
+					<![CDATA[Your submission was rejected by ${userName}, please modify and resubmit.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>email</notification-type>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<user></user>
+				</recipients>
+				<execution-type>onAssignment</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<user></user>
+		</assignments>
+		<transitions>
+			<transition>
+				<name>resubmit</name>
+				<target>review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<task>
+		<name>review</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						165,
+						292
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<notification>
+				<name>Review Notification</name>
+				<template>
+					<![CDATA[${userName} sent you a ${entryType} for review in the workflow. Please click the link below to review: <a href="${url}">Review Task</a>]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>email</notification-type>
+				<notification-type>user-notification</notification-type>
+				<recipients receptionType="to">
+					<assignees></assignees>
+				</recipients>
+				<execution-type>onAssignment</execution-type>
+			</notification>
+			<notification>
+				<name>Review Completion Notification</name>
+				<template>
+					<![CDATA[Your submission was reviewed<#if taskComments?has_content> and the reviewer applied the following ${taskComments}</#if>.]]>
+				</template>
+				<template-language>freemarker</template-language>
+				<notification-type>email</notification-type>
+				<recipients receptionType="to">
+					<user></user>
+				</recipients>
+				<execution-type>onExit</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<roles>
+				<role>
+					<role-type>account</role-type>
+					<name>Account Administrator</name>
+				</role>
+				<role>
+					<role-type>account</role-type>
+					<name>Account Member</name>
+				</role>
+				<role>
+					<role-type>account</role-type>
+					<name>Order Manager</name>
+				</role>
+				<role>
+					<role-type>depot</role-type>
+					<name>Asset Library Administrator</name>
+				</role>
+				<role>
+					<role-type>depot</role-type>
+					<name>Asset Library Content Reviewer</name>
+				</role>
+				<role>
+					<role-type>depot</role-type>
+					<name>Asset Library Owner</name>
+				</role>
+				<role>
+					<role-type>organization</role-type>
+					<name>Organization Administrator</name>
+				</role>
+				<role>
+					<role-type>organization</role-type>
+					<name>Organization Content Reviewer</name>
+				</role>
+				<role>
+					<role-type>organization</role-type>
+					<name>Organization Owner</name>
+				</role>
+				<role>
+					<role-type>regular</role-type>
+					<name>Administrator</name>
+				</role>
+				<role>
+					<role-type>regular</role-type>
+					<name>Portal Content Reviewer</name>
+				</role>
+				<role>
+					<role-type>site</role-type>
+					<name>Site Administrator</name>
+				</role>
+				<role>
+					<role-type>site</role-type>
+					<name>Site Content Reviewer</name>
+				</role>
+				<role>
+					<role-type>site</role-type>
+					<name>Site Owner</name>
+				</role>
+			</roles>
+		</assignments>
+		<transitions>
+			<transition>
+				<name>approve</name>
+				<target>approved</target>
+				<default>true</default>
+			</transition>
+			<transition>
+				<name>reject</name>
+				<target>update</target>
+				<default>false</default>
+			</transition>
+		</transitions>
+	</task>
+</workflow-definition>

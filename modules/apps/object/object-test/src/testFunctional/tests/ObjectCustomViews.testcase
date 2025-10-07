@@ -1423,7 +1423,7 @@ definition {
 
 			Check.checkNotVisible(locator1 = "ObjectCustomViews#TOGGLE_SWITCH_EXCLUDE_STATUS");
 
-			Button.click(button = "Edit Filter");
+			Button.click(button = "Show Results");
 
 			ObjectPortlet.viewEntry(entry = "Entry Test");
 		}

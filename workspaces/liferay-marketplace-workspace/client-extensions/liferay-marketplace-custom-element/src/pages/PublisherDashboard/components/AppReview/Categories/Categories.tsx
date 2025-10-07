@@ -17,7 +17,7 @@ const Categories = ({
 		<>
 			<AppReviewSection title={i18n.translate('category')}>
 				<div className="app-review-section-body">
-					{context.profile.categories.label && (
+					{context.profile.categories?.label && (
 						<Tag label={context.profile.categories.label} />
 					)}
 				</div>

@@ -146,7 +146,7 @@ const Layout = () => {
 								[
 									`<a href="${Liferay.currentURL}#/${accountKey}/project-usage">`,
 									'</a>',
-									'<a href="https://help.liferay.com/hc/articles/13068602483853-Liferay-SaaS-Plans">',
+									'<a href="https://support.liferay.com/w/liferay-saas-plans">',
 									'</a>',
 								]
 							)}

@@ -1,0 +1,87 @@
+@import 'cadmin-variables';
+@import 'mixins';
+
+html#{$cadmin-selector} {
+	.cadmin {
+		.content-dashboard-performance {
+			transition: opacity 0.5s ease;
+
+			@include metrics-chart;
+
+			@include tooltip-template;
+
+			@include overview-metric;
+
+			.global-filters .filter .filter__trigger-label {
+				@media screen and (max-width: 768px) {
+					display: none;
+				}
+			}
+
+			.stacked-bar {
+				position: relative;
+
+				&.active .stacked-bar-chart__bar:not(.active) {
+					opacity: 0.4;
+				}
+
+				&.multiple-bars {
+					.stacked-bar-chart__bar:first-child {
+						border-radius: 6px 0 0 6px;
+					}
+
+					.stacked-bar-chart__bar:last-child {
+						border-radius: 0 6px 6px 0;
+					}
+				}
+
+				&:not(.multiple-bars) .stacked-bar-chart__bar {
+					border-radius: 6px;
+				}
+			}
+
+			.stacked-bar-chart {
+				display: flex;
+				height: 24px;
+				width: 100%;
+
+				&__bar {
+					height: 24px;
+				}
+			}
+
+			.stacked-bar-legend {
+				display: flex;
+
+				&__item {
+					align-items: center;
+					cursor: pointer;
+					display: flex;
+					margin: 14px 0 0 24px;
+				}
+
+				&__icon {
+					border-radius: 2px;
+					height: 8px;
+					margin: 2px 8px 0 0;
+					width: 8px;
+				}
+			}
+
+			.stacked-bar-tooltip {
+				left: 0;
+				margin: 0 auto;
+				position: absolute;
+				right: 0;
+				top: -90px;
+
+				&__icon {
+					border-radius: 2px;
+					height: 8px;
+					margin: 2px 8px 0 0;
+					width: 8px;
+				}
+			}
+		}
+	}
+}

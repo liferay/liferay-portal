@@ -107,6 +107,27 @@ public class UserGroup implements Cloneable, Serializable {
 
 	protected Map<String, String> name_i18n;
 
+	public Integer getNumberOfUserAccounts() {
+		return numberOfUserAccounts;
+	}
+
+	public void setNumberOfUserAccounts(Integer numberOfUserAccounts) {
+		this.numberOfUserAccounts = numberOfUserAccounts;
+	}
+
+	public void setNumberOfUserAccounts(
+		UnsafeSupplier<Integer, Exception> numberOfUserAccountsUnsafeSupplier) {
+
+		try {
+			numberOfUserAccounts = numberOfUserAccountsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer numberOfUserAccounts;
+
 	public Role[] getRoles() {
 		return roles;
 	}

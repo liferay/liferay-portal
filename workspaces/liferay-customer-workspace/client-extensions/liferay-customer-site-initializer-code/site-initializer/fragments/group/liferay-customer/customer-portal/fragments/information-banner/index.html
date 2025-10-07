@@ -1,19 +1,21 @@
-<div class="alert-fluid cp-information-banner ${configuration.alertType}">
-	<div class="cp-banner-content">
-		[#if configuration.icon?? && configuration.icon != "none"]
-			<div class="alert-indicator cp-icon-content">
-				[@clay.icon symbol="${configuration.icon}" /]
-			</div>
+[#if configuration.content?has_content]
+	<div class="alert-fluid cp-information-banner ${configuration.alertType}">
+		<div class="cp-banner-content">
+			[#if configuration.icon?? && configuration.icon != "none"]
+				<div class="alert-indicator cp-icon-content">
+					[@clay.icon symbol="${configuration.icon}" /]
+				</div>
+			[/#if]
+
+			<p>
+				${configuration.content}
+			</p>
+		</div>
+
+		[#if configuration.dismissible]
+			<button aria-label="Close" class="close" type="button">
+				<div> [@clay.icon symbol="times" /] </div>
+			</button>
 		[/#if]
-
-		<p>
-			${configuration.content}
-		</p>
 	</div>
-
-	[#if configuration.dismissible]
-		<button aria-label="Close" class="close" type="button">
-			<div> [@clay.icon symbol="times" /] </div>
-		</button>
-	[/#if]
-</div>
+[/#if]

@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.CriteriaSerializer;
@@ -89,6 +90,8 @@ public class SegmentsEntryRoleContributorTest {
 			).put(
 				"segmentationEnabled", true
 			).build());
+
+		_segmentsConfigurationProvider.clearSegmentsCompanyConfigurations();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
@@ -419,6 +422,9 @@ public class SegmentsEntryRoleContributorTest {
 
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private SegmentsConfigurationProvider _segmentsConfigurationProvider;
 
 	private SegmentsEntry _segmentsEntry;
 

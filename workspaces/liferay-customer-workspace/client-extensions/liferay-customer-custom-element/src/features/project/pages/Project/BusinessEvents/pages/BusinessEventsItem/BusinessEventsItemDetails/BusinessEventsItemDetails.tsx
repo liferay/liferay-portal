@@ -40,7 +40,11 @@ const BusinessEventsItemDetails = () => {
 	const [modalType, setModalType] = useState('');
 	const {hasAllEventsPermissions} = useHasAllEventsPermissions();
 
-	const {loading: loadingTickets, tickets} = useAccountsTickets(accountKey);
+	const {loading: loadingTickets, tickets} = useAccountsTickets(
+		businessEvent,
+		accountKey,
+		loading
+	);
 
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -321,7 +325,7 @@ const BusinessEventsItemDetails = () => {
 									__html: i18n.sub(
 										'we-apologize-for-the-inconvenience-but-we-ve-detected-a-system-error-with-this-project',
 										[
-											'<a href="https://help.liferay.com">',
+											'<a href="https://liferay.atlassian.net/servicedesk/customer/portals">',
 											'</a>',
 										]
 									),

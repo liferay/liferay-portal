@@ -123,8 +123,8 @@ public class SAPEntryScopeDescriptorFinderRegistrator {
 
 		_serviceTracker = ServiceTrackerFactory.open(
 			bundleContext,
-			"(&(osgi.jaxrs.name=*)(sap.scope.finder=true)(objectClass=" +
-				ScopeFinder.class.getName() + "))",
+			"(&(objectClass=" + ScopeFinder.class.getName() +
+				")(osgi.jaxrs.name=*)(sap.scope.finder=true))",
 			new ServiceTrackerCustomizer<ScopeFinder, ScopeFinder>() {
 
 				@Override

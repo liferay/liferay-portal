@@ -8,13 +8,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro closePortalLocalizationWarning() {
-		Alert.closeMessage(messageType = "PORTAL_LOCALIZATION");
-
-		Pause(value1 = 2000);
-	}
-
-	@summary = "Default summary"
 	macro closeToastMessage() {
 		if ((IsElementPresent(locator1 = "ClayAlertToast#ALERT_TOAST_CONTAINER")) && (IsVisible(locator1 = "ClayAlertToast#ALERT_TOAST_CONTAINER")) && (IsVisible(locator1 = "ClayAlertToast#ALERT_TOAST_CLOSE_BUTTON"))) {
 			Click(locator1 = "ClayAlertToast#ALERT_TOAST_CLOSE_BUTTON");

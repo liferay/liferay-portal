@@ -91,10 +91,12 @@ public class ServiceContextUtil {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
-		_setObjectEntryTaxonomyCategoryIds(
-			companyId, groupId, userId, objectEntry);
+		if (objectEntry.getTaxonomyCategoryIds() == null) {
+			_setObjectEntryTaxonomyCategoryIds(
+				companyId, groupId, userId, objectEntry);
+		}
 
-		if (Validator.isNotNull(objectEntry.getTaxonomyCategoryIds())) {
+		if (objectEntry.getTaxonomyCategoryIds() != null) {
 			serviceContext.setAssetCategoryIds(
 				ArrayUtil.toArray(objectEntry.getTaxonomyCategoryIds()));
 		}
@@ -116,10 +118,6 @@ public class ServiceContextUtil {
 	private static long _getGroupId(
 		long companyId, long groupId, String externalReferenceCode,
 		TaxonomyCategoryBrief taxonomyCategoryBrief) {
-
-		if (groupId != 0) {
-			return groupId;
-		}
 
 		Scope scope = taxonomyCategoryBrief.getScope();
 
@@ -166,7 +164,7 @@ public class ServiceContextUtil {
 			objectEntry.getTaxonomyCategoryBriefs();
 
 		if ((taxonomyCategoryBriefs == null) ||
-			!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+			!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
 
 			return;
 		}
@@ -190,7 +188,7 @@ public class ServiceContextUtil {
 
 			try {
 				AssetCategory assetCategory =
-					AssetCategoryLocalServiceUtil.getOrAddIncompleteCategory(
+					AssetCategoryLocalServiceUtil.getOrAddEmptyCategory(
 						externalReferenceCode, userId, groupId);
 
 				assetCategoryIds.add(assetCategory.getCategoryId());

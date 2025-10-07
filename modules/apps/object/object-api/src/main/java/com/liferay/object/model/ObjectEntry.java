@@ -76,6 +76,10 @@ public interface ObjectEntry
 
 	public java.util.Map<String, java.io.Serializable> getValues();
 
+	public boolean isHead();
+
+	public boolean isRootDescendantNode();
+
 	public void setTransientValues(
 		java.util.Map<String, java.io.Serializable> values);
 

@@ -19,6 +19,8 @@ type TWarehouse = {
 type TWarehouseItem = {
 	quantity: number;
 	sku: string;
+	unitOfMeasureKey?: string;
+	warehouseId?: number;
 };
 
 export class HeadlessCommerceAdminInventoryApiHelper {
@@ -35,9 +37,36 @@ export class HeadlessCommerceAdminInventoryApiHelper {
 		);
 	}
 
+	async deleteWarehouseItem(warehouseItemId: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/warehouseItems/${warehouseItemId}`
+		);
+	}
+
 	async getWarehousesPage() {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/warehouses`
+		);
+	}
+
+	async getWarehouseIdWarehouseItemsPage(
+		warehouseId: number,
+		pageSize: number = 100
+	) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/warehouses/${warehouseId}/warehouseItems?pageSize=${pageSize}`
+		);
+	}
+
+	async patchWarehouseItem(
+		warehouseItemId: number,
+		warehouseItem: TWarehouseItem
+	) {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/warehouseItems/${warehouseItemId}`,
+			{
+				...(warehouseItem || {}),
+			}
 		);
 	}
 
@@ -74,5 +103,28 @@ export class HeadlessCommerceAdminInventoryApiHelper {
 				},
 			}
 		);
+	}
+
+	async postWarehousesWarehouseItems(
+		warehouseId: number,
+		warehouseItem: TWarehouseItem
+	) {
+		const warehouseItems = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/warehouses/${warehouseId}/warehouseItems`,
+			{
+				data: {
+					...warehouseItem,
+				},
+			}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: warehouseItems.id,
+				type: 'warehouse-item',
+			});
+		}
+
+		return warehouseItems;
 	}
 }

@@ -410,8 +410,8 @@ public class PortalHotfixReleasePortalTopLevelBuild
 		"https?://.*(?<majorVersion>\\d)(?<minorVersion>\\d)" +
 			"(?<fixVersion>\\d{2})\\.(lpkg|zip)",
 		"https?://.*liferay-dxp-(?<majorVersion>\\d{4})." +
-			"(?<minorVersion>q\\d+).(?<fixVersion>\\d+)-hotfix-\\d+.(zip|tar." +
-				"gz|lpkg)");
+			"(?<minorVersion>q\\d+).(?<fixVersion>\\d+)" +
+				"(-lts)?-hotfix-\\d+.(zip|tar.gz|lpkg)");
 	private static final Pattern _patcherPortalVersion62Pattern =
 		Pattern.compile(
 			"(?<majorVersion>6)\\.(?<minorVersion>2)\\." +
@@ -428,7 +428,7 @@ public class PortalHotfixReleasePortalTopLevelBuild
 			"(?<majorVersion>7)\\.(?<minorVersion>4)\\." +
 				"(?<fixVersion>\\d{2})(?<updateVersion>-(ep|u)\\d+)?",
 			"(?<majorVersion>\\d{4}).(?<minorVersion>q\\d+)." +
-				"(?<fixVersion>\\d+)");
+				"(?<fixVersion>\\d+)(?<updateVersion>-lts)?");
 	private static final Pattern _quarterlyReleaseBranchNamePattern =
 		Pattern.compile("(?<branchName>\\d{4}.[Qq]\\d+).\\d+");
 

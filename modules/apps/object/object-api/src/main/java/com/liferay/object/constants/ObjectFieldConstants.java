@@ -12,6 +12,8 @@ public class ObjectFieldConstants {
 
 	public static final String BUSINESS_TYPE_AGGREGATION = "Aggregation";
 
+	public static final String BUSINESS_TYPE_ASSIGNEE = "Assignee";
+
 	public static final String BUSINESS_TYPE_ATTACHMENT = "Attachment";
 
 	public static final String BUSINESS_TYPE_AUTO_INCREMENT = "AutoIncrement";

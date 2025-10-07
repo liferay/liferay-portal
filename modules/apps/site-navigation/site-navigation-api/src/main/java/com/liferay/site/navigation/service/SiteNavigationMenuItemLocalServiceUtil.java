@@ -421,6 +421,12 @@ public class SiteNavigationMenuItemLocalServiceUtil {
 			siteNavigationMenuId, orderByComparator);
 	}
 
+	public static List<SiteNavigationMenuItem> getSiteNavigationMenuItems(
+		String type) {
+
+		return getService().getSiteNavigationMenuItems(type);
+	}
+
 	/**
 	 * Returns all the site navigation menu items matching the UUID and company.
 	 *

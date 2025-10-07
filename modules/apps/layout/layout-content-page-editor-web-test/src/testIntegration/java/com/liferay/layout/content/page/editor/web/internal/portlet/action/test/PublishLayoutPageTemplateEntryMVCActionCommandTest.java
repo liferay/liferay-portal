@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -108,14 +109,16 @@ public class PublishLayoutPageTemplateEntryMVCActionCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), _draftLayout.getPlid(),
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_draftLayout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()),
 				layoutStructure.toString());
 
 		ReflectionTestUtil.invoke(
 			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
-			new Class<?>[] {Layout.class, Layout.class}, _draftLayout, _layout);
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			_draftLayout, _layout, TestPropsValues.getUserId());
 
 		layoutStructure = _getLayoutStructure(_draftLayout);
 
@@ -147,7 +150,8 @@ public class PublishLayoutPageTemplateEntryMVCActionCommandTest {
 
 		ReflectionTestUtil.invoke(
 			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
-			new Class<?>[] {Layout.class, Layout.class}, _draftLayout, _layout);
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			_draftLayout, _layout, TestPropsValues.getUserId());
 
 		_assertGuestViewPermission(_layout, portletId, true);
 	}
@@ -162,7 +166,8 @@ public class PublishLayoutPageTemplateEntryMVCActionCommandTest {
 
 		ReflectionTestUtil.invoke(
 			_mvcActionCommand, "_publishLayoutPageTemplateEntry",
-			new Class<?>[] {Layout.class, Layout.class}, _draftLayout, _layout);
+			new Class<?>[] {Layout.class, Layout.class, long.class},
+			_draftLayout, _layout, TestPropsValues.getUserId());
 
 		_assertGuestViewPermission(_layout, portletId, false);
 	}

@@ -25,10 +25,10 @@ import FieldSelectModalContent, {
 } from '../../../components/AddDataSourceFieldsModalContent';
 import OrderableTable from '../../../components/OrderableTable';
 import {
-	API_URL,
 	DEFAULT_FETCH_HEADERS,
 	FUZZY_OPTIONS,
 	OBJECT_RELATIONSHIP,
+	PAGE_SIZE,
 } from '../../../utils/constants';
 import openDefaultFailureToast from '../../../utils/openDefaultFailureToast';
 import openDefaultSuccessToast from '../../../utils/openDefaultSuccessToast';
@@ -40,9 +40,11 @@ import '../../../../css/TableVisualizationMode.scss';
 import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 
+import getDataSetResourceURL from '../../../utils/getDataSetResourceURL';
 import sortItems from '../../../utils/sortItems';
 import {
 	EFieldType,
+	IDataSet,
 	IDataSetTableSection,
 	IField,
 	IFieldTreeItem,
@@ -119,6 +121,7 @@ const RendererLabelCellRendererComponent = ({
 const EditTableSectionModalContent = ({
 	cellClientExtensionRenderers,
 	closeModal,
+	dataSet,
 	namespace,
 	onSaveButtonClick,
 	sortable,
@@ -126,6 +129,7 @@ const EditTableSectionModalContent = ({
 }: {
 	cellClientExtensionRenderers: IClientExtensionRenderer[];
 	closeModal: Function;
+	dataSet: IDataSet;
 	namespace: string;
 	onSaveButtonClick: Function;
 	sortable: boolean;
@@ -160,14 +164,17 @@ const EditTableSectionModalContent = ({
 			sortable: tableSectionSortable,
 		};
 
-		const response = await fetch(
-			`${API_URL.TABLE_SECTIONS}/by-external-reference-code/${tableSection.externalReferenceCode}`,
-			{
-				body: JSON.stringify(body),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			relatedResourceERC: tableSection.externalReferenceCode,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -371,12 +378,19 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const getFDSFields = async () => {
-		const response = await fetch(
-			`${API_URL.TABLE_SECTIONS}?filter=(${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS_ID} eq '${dataSet.id}')&nestedFields=${OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS}&sort=dateCreated:asc`,
-			{
-				headers: DEFAULT_FETCH_HEADERS,
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+			params: {
+				nestedFields: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
+				pageSize: PAGE_SIZE,
+				sort: 'dateCreated:asc',
+			},
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
+		});
+
+		const response = await fetch(url, {
+			headers: DEFAULT_FETCH_HEADERS,
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -431,7 +445,14 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 					}) => {
 						processClose();
 
-						const url = `${API_URL.TABLE_SECTIONS}/${item.id}`;
+						const url = getDataSetResourceURL({
+							dataSetERC: dataSet.externalReferenceCode,
+							relatedResourceERC: String(
+								item.externalReferenceCode
+							),
+							relationship:
+								OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
+						});
 
 						const response = await fetch(url, {method: 'DELETE'});
 
@@ -520,14 +541,15 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 			tableSectionsOrder,
 		};
 
-		const response = await fetch(
-			`${API_URL.DATA_SETS}/by-external-reference-code/${dataSet.externalReferenceCode}`,
-			{
-				body: JSON.stringify(body),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'PATCH',
-			}
-		);
+		const url = getDataSetResourceURL({
+			dataSetERC: dataSet.externalReferenceCode,
+		});
+
+		const response = await fetch(url, {
+			body: JSON.stringify(body),
+			headers: DEFAULT_FETCH_HEADERS,
+			method: 'PATCH',
+		});
 
 		if (!response.ok) {
 			openDefaultFailureToast();
@@ -561,6 +583,7 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 	useEffect(() => {
 		getFDSFields();
 
+		// eslint-disable-next-line react-compiler/react-compiler
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -623,6 +646,7 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 				<EditTableSectionModalContent
 					cellClientExtensionRenderers={cellClientExtensionRenderers}
 					closeModal={closeModal}
+					dataSet={dataSet}
 					namespace={namespace}
 					onSaveButtonClick={({
 						editedTableSection,

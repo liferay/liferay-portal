@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend JS Dependencies Web
 Bundle-SymbolicName: com.liferay.frontend.js.dependencies.web
-Bundle-Version: 1.0.32
+Bundle-Version: 1.0.33
 Web-ContextPath: /frontend-js-dependencies-web

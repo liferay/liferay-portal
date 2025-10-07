@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Info Field Item Selector Web
 Bundle-SymbolicName: com.liferay.info.field.item.selector.web
-Bundle-Version: 1.0.11
+Bundle-Version: 1.0.12
 Web-ContextPath: /info-field-item-selector-web

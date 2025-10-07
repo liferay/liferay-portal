@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Item Selector Criteria API
 Bundle-SymbolicName: com.liferay.item.selector.criteria.api
-Bundle-Version: 11.4.1
+Bundle-Version: 11.5.1
 Export-Package:\
 	com.liferay.item.selector.criteria,\
 	com.liferay.item.selector.criteria.asset.criterion,\

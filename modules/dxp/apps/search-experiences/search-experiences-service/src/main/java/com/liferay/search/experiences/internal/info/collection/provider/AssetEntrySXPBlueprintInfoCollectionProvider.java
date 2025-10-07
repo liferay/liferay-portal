@@ -11,6 +11,8 @@ import com.liferay.info.collection.provider.CollectionQuery;
 import com.liferay.info.collection.provider.FilteredInfoCollectionProvider;
 import com.liferay.info.collection.provider.SingleFormVariationInfoCollectionProvider;
 import com.liferay.info.pagination.InfoPage;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
@@ -55,6 +57,14 @@ public class AssetEntrySXPBlueprintInfoCollectionProvider
 
 		return InfoPage.of(
 			Collections.emptyList(), collectionQuery.getPagination(), 0);
+	}
+
+	@Override
+	public String getKey() {
+		return StringBundler.concat(
+			AssetEntrySXPBlueprintInfoCollectionProvider.class.getName(),
+			StringPool.UNDERLINE, sxpBlueprint.getCompanyId(),
+			StringPool.UNDERLINE, sxpBlueprint.getExternalReferenceCode());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

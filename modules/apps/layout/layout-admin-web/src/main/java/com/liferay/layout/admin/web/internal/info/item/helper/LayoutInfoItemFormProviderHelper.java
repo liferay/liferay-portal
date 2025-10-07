@@ -11,7 +11,7 @@ import com.liferay.info.field.InfoFieldSetEntry;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.layout.admin.web.internal.info.item.LayoutInfoItemFields;
-import com.liferay.layout.admin.web.internal.util.InfoFieldUtil;
+import com.liferay.layout.util.InfoFieldUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.segments.service.SegmentsExperienceLocalServiceUtil;
 
@@ -91,7 +91,7 @@ public class LayoutInfoItemFormProviderHelper {
 
 		InfoFieldUtil.forEachInfoField(
 			_fragmentRendererController, layout, segmentsExperienceId,
-			(name, infoField, unsafeSupplier) -> infoFieldSetEntries.add(
+			(infoField, type, unsafeSupplier) -> infoFieldSetEntries.add(
 				infoField));
 
 		return infoFieldSetEntries;

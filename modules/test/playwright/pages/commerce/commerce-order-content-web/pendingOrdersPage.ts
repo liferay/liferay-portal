@@ -39,6 +39,8 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
+	readonly questionsAndAnswersLink: Locator;
+	readonly questionAndAnswersText: Locator;
 	readonly skuLink: (sku: string) => Locator;
 	readonly viewButton: Locator;
 
@@ -62,7 +64,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 			name: 'Edit',
 		});
 		this.errorMessageCloseButton = page.getByRole('button', {
-			name: 'close',
+			name: 'Close',
 		});
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.orderCell = (orderId) => page.getByRole('cell', {name: orderId});
@@ -129,6 +131,12 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		this.panelList = page
 			.getByTestId('specificationFacetPanel')
 			.getByRole('button');
+		this.questionsAndAnswersLink = page.getByRole('link', {
+			name: 'Questions and Answers',
+		});
+		this.questionAndAnswersText = page
+			.locator('dt')
+			.filter({hasText: 'Questions and Answers'});
 		this.skuLink = (sku) => page.getByRole('link', {name: sku});
 		this.viewButton = page.getByLabel('View');
 	}

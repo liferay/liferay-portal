@@ -7,6 +7,7 @@ package com.liferay.sharing.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.sharing.model.SharingEntry;
 
 import java.util.List;
@@ -150,11 +151,12 @@ public class SharingEntryServiceUtil {
 	}
 
 	public static List<SharingEntry> getSharingEntries(
-			long classNameId, long classPK, long groupId, int start, int end)
+			long classNameId, long classPK, long groupId, int start, int end,
+			OrderByComparator<SharingEntry> orderByComparator)
 		throws PortalException {
 
 		return getService().getSharingEntries(
-			classNameId, classPK, groupId, start, end);
+			classNameId, classPK, groupId, start, end, orderByComparator);
 	}
 
 	public static SharingEntry getSharingEntry(long sharingEntryId)

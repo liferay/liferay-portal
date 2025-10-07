@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Navigation Service
 Bundle-SymbolicName: com.liferay.site.navigation.service
-Bundle-Version: 4.0.58
-Liferay-Require-SchemaVersion: 2.5.0
+Bundle-Version: 4.0.61
+Liferay-Require-SchemaVersion: 3.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

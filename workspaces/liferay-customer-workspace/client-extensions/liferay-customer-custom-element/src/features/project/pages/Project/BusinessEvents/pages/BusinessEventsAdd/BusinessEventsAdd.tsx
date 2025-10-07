@@ -53,7 +53,7 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 	touched,
 	values,
 }) => {
-	const {client} = useAppPropertiesContext();
+	const {client, featureFlags} = useAppPropertiesContext();
 
 	const [{project, subscriptionGroups}] = useAppContext();
 
@@ -91,6 +91,7 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 	const {isSaasOnly} = useIsSaasOnly(subscriptionGroups);
 
 	const {loading: loadingTickets, tickets} = useAccountsTickets(
+		undefined,
 		project?.accountKey || ''
 	);
 
@@ -225,8 +226,10 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 
 	useEffect(() => {
 		if (hasImpactingEvents === 'yes') {
-			const selectedTicketsMap = selectedTickets.map(
-				(ticket) => ticket.ticketId
+			const selectedTicketsMap = selectedTickets.map((ticket) =>
+				featureFlags.includes('LRSD-8280')
+					? `"${ticket.ticketId}"`
+					: ticket.ticketId
 			);
 
 			setFieldValue(
@@ -237,7 +240,7 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 		else {
 			setFieldValue('businessEvent.associatedTickets', '[]');
 		}
-	}, [hasImpactingEvents, selectedTickets, setFieldValue]);
+	}, [featureFlags, hasImpactingEvents, selectedTickets, setFieldValue]);
 
 	useEffect(() => {
 		setFieldValue(
@@ -364,15 +367,16 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 		setTicketOptions([
 			...(tickets
 				?.filter((ticket) => {
-					return (
-						ticket.status !== 'closed' && ticket.status !== 'solved'
-					);
+					return featureFlags.includes('LRSD-8280')
+						? true
+						: ticket.status !== 'closed' &&
+								ticket.status !== 'solved';
 				})
 				.map((ticket) => {
 					return {...ticket, selected: false};
 				}) || []),
 		]);
-	}, [tickets]);
+	}, [featureFlags, tickets]);
 
 	return !loading ? (
 		tickets ? (
@@ -426,7 +430,7 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 								<Select
 									badgeClassName="mt-1 mx-3"
 									label={i18n.translate('event-type')}
-									link="https://help.liferay.com/hc/articles/36002102323597"
+									link="https://support.liferay.com/w/business-events"
 									name="businessEvent.eventType.key"
 									onChange={(value: string) =>
 										handleOptionChange(
@@ -649,7 +653,10 @@ const BusinessEventsAddPage: React.FC<IProps> = ({
 				dangerouslySetInnerHTML={{
 					__html: i18n.sub(
 						'we-apologize-for-the-inconvenience-but-we-ve-detected-a-system-error-with-this-project',
-						['<a href="https://help.liferay.com">', '</a>']
+						[
+							'<a href="https://liferay.atlassian.net/servicedesk/customer/portals">',
+							'</a>',
+						]
 					),
 				}}
 			/>

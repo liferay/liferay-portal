@@ -76,8 +76,19 @@ const LAYOUT_DATA_CHECK_ALLOWED_CHILDREN = {
 					LAYOUT_DATA_ITEM_TYPES.dropZone,
 					LAYOUT_DATA_ITEM_TYPES.row,
 					LAYOUT_DATA_ITEM_TYPES.fragment,
+					LAYOUT_DATA_ITEM_TYPES.formRelationship,
 				].some((type) => type === child.type)
 			: false,
+
+	[LAYOUT_DATA_ITEM_TYPES.formRelationship]: (child: LayoutDataItem) =>
+		[
+			LAYOUT_DATA_ITEM_TYPES.collection,
+			LAYOUT_DATA_ITEM_TYPES.container,
+			LAYOUT_DATA_ITEM_TYPES.dropZone,
+			LAYOUT_DATA_ITEM_TYPES.row,
+			LAYOUT_DATA_ITEM_TYPES.fragment,
+			LAYOUT_DATA_ITEM_TYPES.formRelationship,
+		].some((type) => type === child.type),
 	[LAYOUT_DATA_ITEM_TYPES.formStep]: (child: LayoutDataItem) =>
 		[
 			LAYOUT_DATA_ITEM_TYPES.collection,
@@ -86,6 +97,7 @@ const LAYOUT_DATA_CHECK_ALLOWED_CHILDREN = {
 			LAYOUT_DATA_ITEM_TYPES.row,
 			LAYOUT_DATA_ITEM_TYPES.fragment,
 			LAYOUT_DATA_ITEM_TYPES.form,
+			LAYOUT_DATA_ITEM_TYPES.formRelationship,
 		].some((type) => type === child.type),
 	[LAYOUT_DATA_ITEM_TYPES.formStepContainer]: (child: LayoutDataItem) =>
 		[LAYOUT_DATA_ITEM_TYPES.formStep].some((type) => type === child.type),
@@ -117,6 +129,7 @@ type Result = {
 		| 'input-outside-form'
 		| 'disabled-part-of-collection'
 		| 'existing-stepper'
+		| 'form-relationship-outside-form'
 		| 'noninstanceable-widget-inside-collection'
 		| 'stepper-outside-form'
 		| 'stepper-multiple-action'
@@ -205,6 +218,10 @@ export default function checkAllowedChild(
 				}
 			}
 		}
+	}
+
+	if (!formParent && child.type === 'form-relationship') {
+		return {reason: 'form-relationship-outside-form', valid: false};
 	}
 
 	if (

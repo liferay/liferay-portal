@@ -84,13 +84,13 @@ public class AddLayoutSiteNavigationMenuItemMVCActionCommand
 			while (iterator.hasNext()) {
 				JSONObject itemJSONObject = iterator.next();
 
-				String layoutUuid = itemJSONObject.getString("id");
+				String externalReferenceCode = itemJSONObject.getString(
+					"externalReferenceCode");
 				long groupId = itemJSONObject.getLong("groupId");
-				boolean privateLayout = itemJSONObject.getBoolean(
-					"privateLayout");
 
-				Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
-					layoutUuid, groupId, privateLayout);
+				Layout layout =
+					_layoutLocalService.fetchLayoutByExternalReferenceCode(
+						externalReferenceCode, groupId);
 
 				if (layout == null) {
 					continue;
@@ -107,11 +107,15 @@ public class AddLayoutSiteNavigationMenuItemMVCActionCommand
 						UnicodePropertiesBuilder.create(
 							true
 						).put(
+							"externalReferenceCode", externalReferenceCode
+						).put(
 							"groupId", String.valueOf(groupId)
 						).put(
-							"layoutUuid", layoutUuid
+							"layoutUuid", itemJSONObject.getString("id")
 						).put(
-							"privateLayout", String.valueOf(privateLayout)
+							"privateLayout",
+							String.valueOf(
+								itemJSONObject.getBoolean("privateLayout"))
 						).put(
 							"title", layout.getName(themeDisplay.getLocale())
 						).buildString(),

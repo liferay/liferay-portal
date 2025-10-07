@@ -4,29 +4,35 @@
  */
 
 import {useCallback, useRef, useState} from 'react';
+import {IUpload} from '~/utils/types';
 
 import {generateFileMd5} from '../utils/generateFileMd5';
 
 interface IParams {
 	file: File;
+	ticketId: string;
+}
+
+interface IResponse {
+	hash?: string;
+	success: boolean;
+	uploadProperties?: IUpload;
 }
 
 interface IProps {
 	abortGenerateMd5: () => void;
-	error: Error | null;
-	generateMd5: (params: IParams) => Promise<string | null>;
+	generateMd5: (params: IParams) => Promise<IResponse>;
 	loading: boolean;
 	md5: string | null;
 }
 
 export default function useGenerateFileMd5(): IProps {
-	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [md5, setMd5] = useState<string | null>(null);
 	const abortControllerRef = useRef<AbortController | null>(null);
 
 	const generateMd5 = useCallback(
-		async (params: IParams): Promise<string | null> => {
+		async (params: IParams): Promise<IResponse> => {
 			if (abortControllerRef.current) {
 				abortControllerRef.current.abort();
 			}
@@ -34,7 +40,6 @@ export default function useGenerateFileMd5(): IProps {
 			abortControllerRef.current = new AbortController();
 
 			setLoading(true);
-			setError(null);
 			setMd5(null);
 
 			const {file} = params;
@@ -45,30 +50,34 @@ export default function useGenerateFileMd5(): IProps {
 				if (abortControllerRef.current?.signal.aborted) {
 					setMd5(null);
 
-					return null;
+					return {
+						success: false,
+					};
 				}
 
 				setMd5(hash);
 
-				return hash;
+				return {hash, success: true};
 			}
 			catch (generateError) {
 				if (abortControllerRef.current?.signal.aborted) {
 					setMd5(null);
-				}
-				else {
-					setError(
-						generateError instanceof Error
-							? generateError
-							: new Error(String(generateError))
-					);
+
+					return {
+						success: false,
+						uploadProperties: {
+							errorCode: 'UNEXPECTED_ERROR',
+							errorMessage: String(generateError),
+						},
+					};
 				}
 
-				return null;
+				return {
+					success: false,
+				};
 			}
 			finally {
 				setLoading(false);
-
 				abortControllerRef.current = null;
 			}
 		},
@@ -79,10 +88,9 @@ export default function useGenerateFileMd5(): IProps {
 		if (abortControllerRef.current) {
 			abortControllerRef.current.abort();
 			setLoading(false);
-
 			setMd5(null);
 		}
 	}, []);
 
-	return {abortGenerateMd5, error, generateMd5, loading, md5};
+	return {abortGenerateMd5, generateMd5, loading, md5};
 }

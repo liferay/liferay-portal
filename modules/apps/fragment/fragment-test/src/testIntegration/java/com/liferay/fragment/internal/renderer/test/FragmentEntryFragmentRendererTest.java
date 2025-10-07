@@ -171,6 +171,8 @@ public class FragmentEntryFragmentRendererTest {
 							"https://liferay.com")
 					).put(
 						"mapperType", "link"
+					).put(
+						"target", "_blank"
 					)
 				).put(
 					"defaultValue", "Heading Example"
@@ -182,6 +184,8 @@ public class FragmentEntryFragmentRendererTest {
 		String content = mockHttpServletResponse.getContentAsString();
 
 		Assert.assertTrue(content.contains("https://liferay.com"));
+		Assert.assertTrue(
+			content.contains("rel=\"noopener noreferrer\" target=\"_blank\""));
 	}
 
 	@Test

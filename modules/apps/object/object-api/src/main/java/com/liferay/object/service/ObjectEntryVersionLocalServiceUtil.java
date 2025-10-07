@@ -59,6 +59,12 @@ public class ObjectEntryVersionLocalServiceUtil {
 		return getService().addObjectEntryVersion(objectEntryVersion);
 	}
 
+	public static void checkObjectEntryVersions(long companyId)
+		throws PortalException {
+
+		getService().checkObjectEntryVersions(companyId);
+	}
+
 	/**
 	 * Creates a new object entry version with the primary key. Does not add the object entry version to the database.
 	 *
@@ -246,10 +252,33 @@ public class ObjectEntryVersionLocalServiceUtil {
 			userId, objectEntryVersion);
 	}
 
+	public static void expireObjectEntryVersions(
+			long userId, com.liferay.object.model.ObjectEntry objectEntry,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws Exception {
+
+		getService().expireObjectEntryVersions(
+			userId, objectEntry, serviceContext);
+	}
+
+	public static ObjectEntryVersion fetchLatestApprovedObjectEntryVersion(
+		long objectEntryId,
+		OrderByComparator<ObjectEntryVersion> orderByComparator) {
+
+		return getService().fetchLatestApprovedObjectEntryVersion(
+			objectEntryId, orderByComparator);
+	}
+
 	public static ObjectEntryVersion fetchObjectEntryVersion(
 		long objectEntryVersionId) {
 
 		return getService().fetchObjectEntryVersion(objectEntryVersionId);
+	}
+
+	public static ObjectEntryVersion fetchObjectEntryVersion(
+		long objectEntryId, int version) {
+
+		return getService().fetchObjectEntryVersion(objectEntryId, version);
 	}
 
 	/**
@@ -382,6 +411,13 @@ public class ObjectEntryVersionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
+	}
+
+	public static boolean isLatestObjectEntryVersion(
+			long objectEntryId, int version)
+		throws PortalException {
+
+		return getService().isLatestObjectEntryVersion(objectEntryId, version);
 	}
 
 	public static ObjectEntryVersion updateLatestObjectEntryVersion(

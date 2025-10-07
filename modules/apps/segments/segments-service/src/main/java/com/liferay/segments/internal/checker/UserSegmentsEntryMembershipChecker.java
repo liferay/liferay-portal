@@ -5,29 +5,37 @@
 
 package com.liferay.segments.internal.checker;
 
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.time.DateUtils;
+
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.SecureASTCustomizer;
+import org.codehaus.groovy.syntax.Types;
 
 /**
  * @author Marcos Martins
@@ -35,14 +43,53 @@ import org.apache.commons.lang3.time.DateUtils;
 public class UserSegmentsEntryMembershipChecker {
 
 	public static boolean isMember(
-			String filterString, Map<String, Object> userAttributes)
-		throws Exception {
+		String filterString, Map<String, Object> userAttributes) {
 
-		GroovyShell groovyShell = new GroovyShell();
+		String template = _buildGroovyTemplate(filterString);
 
-		Script script = groovyShell.parse(_parse(filterString, userAttributes));
+		Class<?> clazz = _cachedScriptClasses.get(template);
+
+		if (clazz == null) {
+			Object lock = _locks.computeIfAbsent(template, o -> new Object());
+
+			synchronized (lock) {
+				clazz = _cachedScriptClasses.computeIfAbsent(
+					template, _groovyShell.getClassLoader()::parseClass);
+			}
+		}
+
+		Script script = null;
+
+		try {
+			Constructor<?> constructor = clazz.getDeclaredConstructor();
+
+			script = (Script)constructor.newInstance();
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(
+				"Unable to evaluate filter: " + filterString, exception);
+		}
+
+		Binding binding = new Binding();
+
+		binding.setVariable(
+			"CLASS_PK", String.valueOf(userAttributes.get("classPK")));
+		binding.setVariable("user", _getFilteredUserAttributes(userAttributes));
+
+		script.setBinding(binding);
 
 		return (boolean)script.invokeMethod("evaluate", null);
+	}
+
+	private static String _buildGroovyTemplate(String filterString) {
+		String parsedFilterString = filterString;
+
+		parsedFilterString = _processContainsOperations(parsedFilterString);
+		parsedFilterString = _processLogicalOperations(parsedFilterString);
+		parsedFilterString = _processNotOperations(parsedFilterString);
+		parsedFilterString = _processOperations(parsedFilterString);
+
+		return "def evaluate() {return " + parsedFilterString + " }";
 	}
 
 	private static String _getDateValueString(String input) throws Exception {
@@ -68,14 +115,53 @@ public class UserSegmentsEntryMembershipChecker {
 		return key;
 	}
 
-	private static Object _getFieldValue(
-		String fieldName, Map<String, Object> userAttributes) {
+	private static Object _getFieldValue(Object value) {
+		if (value == null) {
+			return null;
+		}
 
-		return userAttributes.get(_getFieldName(StringUtil.trim(fieldName)));
+		if (value instanceof Boolean || value instanceof Date) {
+			return value;
+		}
+
+		Class<?> clazz = value.getClass();
+
+		if (clazz.isArray()) {
+			List<Object> list = new ArrayList<>();
+
+			for (int i = 0; i < Array.getLength(value); i++) {
+				list.add(_getFieldValue(Array.get(value, i)));
+			}
+
+			return list.toArray();
+		}
+
+		if (Validator.isBlank(value.toString())) {
+			return null;
+		}
+
+		return StringUtil.lowerCase(value.toString());
 	}
 
-	private static String _getGroup(String input, Pattern pattern) {
-		Matcher matcher = pattern.matcher(input);
+	private static Map<String, Object> _getFilteredUserAttributes(
+		Map<String, Object> userAttributes) {
+
+		Map<String, Object> filteredUserAttributes = new HashMap<>();
+
+		userAttributes.forEach(
+			(key, value) -> {
+				Object fieldValue = _getFieldValue(value);
+
+				if (Validator.isNotNull(fieldValue)) {
+					filteredUserAttributes.put(key, fieldValue);
+				}
+			});
+
+		return filteredUserAttributes;
+	}
+
+	private static String _getValue(String input) {
+		Matcher matcher = _valuePattern.matcher(input);
 
 		if (matcher.find()) {
 			return matcher.group();
@@ -84,63 +170,22 @@ public class UserSegmentsEntryMembershipChecker {
 		return null;
 	}
 
-	private static String _getValue(String input) throws Exception {
-		String value = _getGroup(input, _valuePattern);
-
-		if (value == null) {
-			return null;
-		}
-
-		String dateValueString = _getDateValueString(value);
-
-		if (dateValueString != null) {
-			return StringUtil.quote(dateValueString, StringPool.QUOTE);
-		}
-
-		return value;
-	}
-
-	private static String _parse(
-			String filterString, Map<String, Object> userAttributes)
-		throws Exception {
-
-		String parsedFilterString = _processContainsOperations(
-			filterString, userAttributes);
-
-		parsedFilterString = _processLogicalOperations(parsedFilterString);
-		parsedFilterString = _processNotOperations(parsedFilterString);
-		parsedFilterString = _processOperations(
-			parsedFilterString, userAttributes);
-
-		return StringBundler.concat(
-			"def evaluate() {return ", parsedFilterString, "}");
-	}
-
-	private static String _processContainsOperations(
-		String filterString, Map<String, Object> userAttributes) {
-
+	private static String _processContainsOperations(String filterString) {
 		StringBuffer sb = new StringBuffer();
 
 		Matcher matcher = _containsOperationPattern.matcher(filterString);
 
 		while (matcher.find()) {
-			String group = matcher.group();
+			String fieldName = matcher.group(1);
+			String value = StringUtil.lowerCase(matcher.group(2));
 
-			Object fieldValue = _getFieldValue(
-				_getGroup(group, _fieldNameContainsPattern), userAttributes);
+			String replacement = StringBundler.concat(
+				"((user['", _getFieldName(fieldName),
+				"']?.toLowerCase().indexOf('", value, "') != null ? user['",
+				_getFieldName(fieldName), "'].toLowerCase().indexOf('", value,
+				"') : -1) >= 0)");
 
-			group = _getGroup(group, _valuePattern);
-
-			if ((fieldValue == null) || Validator.isBlank(group)) {
-				continue;
-			}
-
-			matcher.appendReplacement(
-				sb,
-				StringBundler.concat(
-					"-1 < ",
-					StringUtil.quote(_toString(fieldValue), StringPool.QUOTE),
-					".indexOf(", group, ")"));
+			matcher.appendReplacement(sb, replacement);
 		}
 
 		matcher.appendTail(sb);
@@ -181,64 +226,46 @@ public class UserSegmentsEntryMembershipChecker {
 		return sb.toString();
 	}
 
-	private static String _processOperations(
-			String filterString, Map<String, Object> userAttributes)
-		throws Exception {
-
+	private static String _processOperations(String filterString) {
 		StringBuffer sb = new StringBuffer();
 
 		Matcher matcher = _operationPattern.matcher(filterString);
 
 		while (matcher.find()) {
-			String group = matcher.group();
+			String fieldName = matcher.group(1);
+			String operator = matcher.group(2);
 
-			Object fieldValue = _getFieldValue(
-				_getGroup(group, _fieldNamePattern), userAttributes);
+			String value = _getValue(String.valueOf(matcher.group(3)));
 
-			String operatorGroup = StringUtil.trim(
-				_getGroup(group, _operatorPattern));
-
-			String operator = _operators.getOrDefault(
-				operatorGroup, operatorGroup);
-
-			String value = _getValue(group);
-
-			if ((fieldValue == null) || Validator.isBlank(operator) ||
+			if ((value == null) || Validator.isBlank(operator) ||
 				Validator.isBlank(value)) {
 
 				continue;
 			}
 
-			Class<?> clazz = fieldValue.getClass();
-
-			if (clazz.isArray()) {
-				matcher.appendReplacement(
-					sb,
-					StringBundler.concat(
-						"(", value, " in [",
-						StringUtil.merge(
-							TransformUtil.unsafeTransform(
-								_toArray(fieldValue),
-								item -> StringUtil.quote(String.valueOf(item)),
-								String.class)),
-						"])"));
-			}
-			else {
-				String fieldValueString = _toString(fieldValue);
-
-				if (Validator.isNull(fieldValueString)) {
-					matcher.appendReplacement(sb, "false");
+			try {
+				if (_getDateValueString(value) != null) {
+					value = StringBundler.concat(
+						"Date.parse(\"yyyy-MM-dd'T'HH:mm:ss.SSSX\", \"", value,
+						"\")");
 				}
-				else {
-					matcher.appendReplacement(
-						sb,
-						StringBundler.concat(
-							StringUtil.quote(
-								fieldValueString, StringPool.QUOTE),
-							StringPool.SPACE, operator, StringPool.SPACE,
-							value));
+				else if (!StringUtil.equals(value, "CLASS_PK")) {
+					value = StringUtil.lowerCase(value);
 				}
 			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+
+			matcher.appendReplacement(
+				sb,
+				StringBundler.concat(
+					"(user['", _getFieldName(fieldName),
+					"'] instanceof Object[] ? ", value, " in user['",
+					_getFieldName(fieldName), "'] : user['",
+					_getFieldName(fieldName), "'] ",
+					_operators.getOrDefault(operator, operator), " ", value,
+					")"));
 		}
 
 		matcher.appendTail(sb);
@@ -246,67 +273,65 @@ public class UserSegmentsEntryMembershipChecker {
 		return sb.toString();
 	}
 
-	private static Object[] _toArray(Object object) {
-		Class<?> clazz = object.getClass();
-
-		clazz = clazz.getComponentType();
-
-		if (!clazz.isPrimitive()) {
-			return (Object[])object;
-		}
-
-		List<Object> list = new ArrayList<>();
-
-		for (int i = 0; i < Array.getLength(object); i++) {
-			list.add(Array.get(object, i));
-		}
-
-		return list.toArray();
-	}
-
-	private static String _toString(Object object) {
-		if (object == null) {
-			return null;
-		}
-
-		if (object instanceof Date) {
-			return _dateTimeFormat.format((Date)object);
-		}
-
-		return String.valueOf(object);
-	}
-
 	private static final String[] _DATE_PATTERNS = {
 		"yyyy-MM-dd", "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
 		"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	};
 
+	private static final Map<String, Class<?>> _cachedScriptClasses =
+		new ConcurrentHashMap<>();
 	private static final Pattern _containsOperationPattern = Pattern.compile(
-		"contains\\((customField/){0,1}\\w*, '([^')]*)'\\)");
+		"contains\\(((?:customField/)?\\w*), '([^')]*)'\\)");
 	private static final DateFormat _dateTimeFormat = new SimpleDateFormat(
 		"yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private static final Pattern _dateTimePattern = Pattern.compile(
 		"\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.\\d{3}){0,1}((Z)|" +
 			"((\\+|-)(\\d*))){0,1}");
-	private static final Pattern _fieldNameContainsPattern = Pattern.compile(
-		"(?<=contains\\()(customField/){0,1}\\w*");
-	private static final Pattern _fieldNamePattern = Pattern.compile(
-		"(customField\\/){0,1}\\w*\\s+(?=eq|ge|gt|in|le|lt)");
 	private static final Map<String, String> _fieldNames = HashMapBuilder.put(
 		"dateModified", "modifiedDate"
 	).build();
+	private static final GroovyShell _groovyShell = new GroovyShell(
+		new CompilerConfiguration() {
+			{
+				addCompilationCustomizers(
+					new SecureASTCustomizer() {
+						{
+							setImportsWhitelist(Collections.emptyList());
+							setReceiversWhiteList(
+								List.of(
+									Date.class.getName(),
+									Object.class.getName(),
+									String.class.getName()));
+							setTokensWhitelist(
+								List.of(
+									Types.COMPARE_EQUAL,
+									Types.COMPARE_GREATER_THAN,
+									Types.COMPARE_GREATER_THAN_EQUAL,
+									Types.COMPARE_LESS_THAN,
+									Types.COMPARE_LESS_THAN_EQUAL,
+									Types.COMPARE_NOT_EQUAL, Types.KEYWORD_DEF,
+									Types.KEYWORD_FALSE, Types.KEYWORD_IN,
+									Types.KEYWORD_INSTANCEOF,
+									Types.KEYWORD_TRUE, Types.LEFT_PARENTHESIS,
+									Types.LEFT_SQUARE_BRACKET,
+									Types.LOGICAL_AND, Types.LOGICAL_OR,
+									Types.NOT, Types.RIGHT_PARENTHESIS,
+									Types.RIGHT_SQUARE_BRACKET));
+						}
+					});
+			}
+		});
+	private static final Map<String, Object> _locks = new ConcurrentHashMap<>();
 	private static final Pattern _logicalOperationPattern = Pattern.compile(
 		"\\s+(and|or)\\s+");
 	private static final Pattern _notOperationPattern = Pattern.compile(
 		"not(?=\\s*\\()");
 	private static final Pattern _operationPattern = Pattern.compile(
 		StringBundler.concat(
-			"(customField\\/){0,1}\\w*\\s+(eq|ge|gt|in|le|lt)\\s+",
-			"('([^')]*)'|\\('([^')]*)'\\)|",
+			"((?:customField/)?\\w*)\\s+(eq|ge|gt|in|le|lt)\\s+",
+			"('([^')]*)'|\\('([^')]*)'\\)|false|true|CLASS_PK|",
 			"\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.\\d{3}){0,1}((Z)|",
 			"((\\+|\\-)(\\d*))){0,1})"));
-	private static final Pattern _operatorPattern = Pattern.compile(
-		"\\s+(eq|ge|gt|in|le|lt)(?=\\w*\\s+)");
 	private static final Map<String, String> _operators = HashMapBuilder.put(
 		"and", "&&"
 	).put(
@@ -325,7 +350,8 @@ public class UserSegmentsEntryMembershipChecker {
 		"or", "||"
 	).build();
 	private static final Pattern _valuePattern = Pattern.compile(
-		"'([^')]*)'|'{0,1}\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.\\d{3})" +
-			"{0,1}((Z)|((\\+|-)(\\d*))){0,1}'{0,1}");
+		"'([^')]*)'|false|true|CLASS_PK|" +
+			"'{0,1}\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2}.\\d{3})" +
+				"{0,1}((Z)|((\\+|-)(\\d*))){0,1}'{0,1}");
 
 }

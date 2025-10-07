@@ -64,6 +64,15 @@ public abstract class BaseTopLevelBuild
 	extends BaseParentBuild implements TopLevelBuild {
 
 	@Override
+	public void addTestrayAttachmentURL(URL testrayAttachmentURL) {
+		if (_testrayAttachmentURLs.contains(testrayAttachmentURL)) {
+			return;
+		}
+
+		_testrayAttachmentURLs.add(testrayAttachmentURL);
+	}
+
+	@Override
 	public void addTimelineData(TimelineData timelineData) {
 		timelineData.addTimelineData(this);
 
@@ -581,6 +590,11 @@ public abstract class BaseTopLevelBuild
 	}
 
 	@Override
+	public synchronized List<URL> getTestrayAttachmentURLs() {
+		return _testrayAttachmentURLs;
+	}
+
+	@Override
 	public JSONObject getTestReportJSONObject(boolean cache) {
 		return null;
 	}
@@ -598,6 +612,21 @@ public abstract class BaseTopLevelBuild
 
 	public TimelineData getTimelineData() {
 		return new TimelineData(500, this);
+	}
+
+	@Override
+	public TopLevelBuildReport getTopLevelBuildReport() {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(getBuildURL())) {
+			return null;
+		}
+
+		if (_topLevelBuildReport != null) {
+			return _topLevelBuildReport;
+		}
+
+		_topLevelBuildReport = BuildReportFactory.newTopLevelBuildReport(this);
+
+		return _topLevelBuildReport;
 	}
 
 	public URL getUserContentURL() {
@@ -1074,17 +1103,15 @@ public abstract class BaseTopLevelBuild
 			Element gitHubMessageElement =
 				failedDownstreamBuild.getGitHubMessageElement();
 
-			if (gitHubMessageElement != null) {
-				allCurrentBuildFailureElements.add(gitHubMessageElement);
+			if (gitHubMessageElement == null) {
+				continue;
 			}
 
-			Element gitHubMessageUpstreamJobFailureElement =
-				failedDownstreamBuild.
-					getGitHubMessageUpstreamJobFailureElement();
-
-			if (gitHubMessageUpstreamJobFailureElement != null) {
-				upstreamBuildFailureElements.add(
-					gitHubMessageUpstreamJobFailureElement);
+			if (failedDownstreamBuild.isUniqueFailure()) {
+				allCurrentBuildFailureElements.add(gitHubMessageElement);
+			}
+			else {
+				upstreamBuildFailureElements.add(gitHubMessageElement);
 			}
 		}
 
@@ -1515,6 +1542,9 @@ public abstract class BaseTopLevelBuild
 			Dom4JUtil.getNewElement(
 				"p", null, "Total number of Jenkins slaves used: ",
 				String.valueOf(getTotalSlavesUsedCount())),
+			Dom4JUtil.getNewElement(
+				"p", null, "Total number of reinvocations: ",
+				String.valueOf(_getTotalReinvocationCount())),
 			Dom4JUtil.getNewElement(
 				"p", null, "Average delay time for invoked build to start: ",
 				JenkinsResultsParserUtil.toDurationString(
@@ -2415,6 +2445,27 @@ public abstract class BaseTopLevelBuild
 			" Total ");
 	}
 
+	private int _getTotalReinvocationCount() {
+		BuildDatabase buildDatabase = getBuildDatabase();
+
+		Properties properties = buildDatabase.getProperties(
+			BAD_BUILD_URLS_PROPERTIES_KEY);
+
+		int totalReinvocationCount = 0;
+
+		for (String propertyName : properties.stringPropertyNames()) {
+			String badBuildURLsString = properties.getProperty(propertyName);
+
+			if (!badBuildURLsString.isEmpty()) {
+				String[] badBuildURLs = badBuildURLsString.split(",");
+
+				totalReinvocationCount += badBuildURLs.length;
+			}
+		}
+
+		return totalReinvocationCount;
+	}
+
 	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =
 		{
 			new CITestSuiteValidationFailureMessageGenerator(),
@@ -2474,5 +2525,7 @@ public abstract class BaseTopLevelBuild
 	private String _metricsHostName;
 	private int _metricsHostPort;
 	private final boolean _sendBuildMetrics;
+	private final List<URL> _testrayAttachmentURLs = new ArrayList<>();
+	private TopLevelBuildReport _topLevelBuildReport;
 
 }

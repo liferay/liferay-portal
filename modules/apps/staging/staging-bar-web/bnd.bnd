@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Staging Bar Web
 Bundle-SymbolicName: com.liferay.staging.bar.web
-Bundle-Version: 5.0.70
+Bundle-Version: 5.0.72
 Web-ContextPath: /staging-bar-web

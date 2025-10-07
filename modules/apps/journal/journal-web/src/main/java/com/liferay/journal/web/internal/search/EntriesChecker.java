@@ -119,15 +119,15 @@ public class EntriesChecker extends EmptyOnClickRowChecker {
 			}
 		}
 
-		if (!showInput) {
-			return StringPool.BLANK;
-		}
+		String checkBoxRowIds = StringPool.BLANK;
 
-		String checkBoxRowIds = StringBundler.concat(
-			"['", _liferayPortletResponse.getNamespace(), RowChecker.ROW_IDS,
-			JournalFolder.class.getSimpleName(), "', '",
-			_liferayPortletResponse.getNamespace(), RowChecker.ROW_IDS,
-			JournalArticle.class.getSimpleName(), "']");
+		if (showInput) {
+			checkBoxRowIds = StringBundler.concat(
+				"['", _liferayPortletResponse.getNamespace(),
+				RowChecker.ROW_IDS, JournalFolder.class.getSimpleName(), "', '",
+				_liferayPortletResponse.getNamespace(), RowChecker.ROW_IDS,
+				JournalArticle.class.getSimpleName(), "']");
+		}
 
 		return getRowCheckBox(
 			httpServletRequest, checked, disabled,

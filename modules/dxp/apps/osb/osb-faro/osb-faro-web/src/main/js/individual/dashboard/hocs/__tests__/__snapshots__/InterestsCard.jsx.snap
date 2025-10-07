@@ -414,7 +414,7 @@ exports[`InterestsCard renders with empty data 1`] = `
           </span>
           <a
             class=""
-            href="https://learn.liferay.com/analytics-cloud/latest/en/people/individuals/individuals-dashboard.html#interests"
+            href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/people/individuals-analytics#interests"
             rel="noreferrer noopener"
             target="_blank"
           >

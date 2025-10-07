@@ -21,6 +21,8 @@ import {FieldFeedback} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
+import {getFilteredPage, getNonLocalizableFieldMessage} from './translation';
+
 import './FieldBase.scss';
 
 export function updateFieldNameLocale(editingLanguageId, locale, name) {
@@ -259,17 +261,16 @@ export default function FieldBase({
 		type,
 	]);
 
-	const nonLocalizableFieldMessage =
-		isLocalizationSupported === undefined
-			? Liferay.Language.get('this-field-cannot-be-localized')
-			: isLocalizationSupported
-				? Liferay.Language.get('translation-is-disabled-for-this-field')
-				: Liferay.Language.get(
-						'this-field-does-not-support-translations'
-					);
+	const nonLocalizableFieldMessage = getNonLocalizableFieldMessage(
+		isLocalizationSupported
+	);
 
 	const renderLabel =
 		(label && showLabel) || hideField || repeatable || required || tooltip;
+
+	const shouldRenderAsGroup =
+		!!label && !overMaximumRepetitionsLimit && repeatable;
+
 	const showDisabledFieldIcon =
 		editOnlyInDefaultLanguage && showLabel && readOnly;
 	const showGroup =
@@ -364,94 +365,28 @@ export default function FieldBase({
 		}
 	}, [fieldReference, name, pages, repeatable]);
 
-	const disableRepeatableButton = () => {
-		setDisabledRepeatableButton(true);
-
-		setTimeout(() => {
-			setDisabledRepeatableButton(false);
-		}, 1000);
-	};
-
 	const translationFilterChange = useCallback(
 		(event) => {
 			const pagesVisitor = new PagesVisitor(pages);
 			switch (event.option) {
 				case 'translated':
 					dispatch({
-						payload: pagesVisitor.mapFields(
-							(field) => {
-								if (!field.localizable) {
-									return {
-										...field,
-										disabled: true,
-										hidden: true,
-										visible: false,
-									};
-								}
-								if (
-									field.localizedValueEdited?.[
-										editingLanguageId
-									]
-								) {
-									return {
-										...field,
-										disabled: false,
-										hidden: false,
-										visible: true,
-									};
-								}
-								else {
-									return {
-										...field,
-										disabled: true,
-										hidden: true,
-										visible: false,
-									};
-								}
-							},
-							false,
-							true
-						),
+						payload: getFilteredPage({
+							editingLanguageId,
+							filter: 'translated',
+							pagesVisitor,
+						}),
 						type: CORE_EVENT_TYPES.PAGE.UPDATE,
 					});
 
 					break;
 				case 'untranslated':
 					dispatch({
-						payload: pagesVisitor.mapFields(
-							(field) => {
-								if (!field.localizable) {
-									return {
-										...field,
-										disabled: true,
-										hidden: true,
-										visible: false,
-									};
-								}
-								if (
-									field.localizedValueEdited?.[
-										editingLanguageId
-									]
-								) {
-									return {
-										...field,
-										disabled: true,
-										hidden: true,
-										visible: false,
-									};
-								}
-								else {
-									return {
-										...field,
-										disabled: false,
-										hidden: false,
-										visible: true,
-									};
-								}
-							},
-							false,
-							true
-						),
+						payload: getFilteredPage({
+							editingLanguageId,
+							filter: 'untranslated',
+							pagesVisitor,
+						}),
 						type: CORE_EVENT_TYPES.PAGE.UPDATE,
 					});
 					break;
@@ -480,16 +415,6 @@ export default function FieldBase({
 	useEffect(() => {
 		if (disableFieldRepetition) {
 			setDisabledRepeatableButton(true);
-		}
-		else {
-			Liferay.on('disableRepeatableButton', disableRepeatableButton);
-
-			return () => {
-				Liferay.detach(
-					'disableRepeatableButton',
-					disableRepeatableButton
-				);
-			};
 		}
 	}, [disableFieldRepetition]);
 
@@ -584,6 +509,10 @@ export default function FieldBase({
 			data-field-reference={fieldReference}
 			onClick={onClick}
 			style={style}
+			{...(shouldRenderAsGroup && {
+				'aria-labelledby': fieldLabelId,
+				'role': 'group',
+			})}
 		>
 			{repeatable && (
 				<div className="lfr-ddm-form-field-repeatable-toolbar">
@@ -602,16 +531,22 @@ export default function FieldBase({
 							)}
 							disabled={readOnly || disabledRepeatableButton}
 							onClick={() => {
-								dispatch({
-									payload: name,
-									type: CORE_EVENT_TYPES.FIELD.REMOVED,
-								});
+								setTimeout(
+									() => {
+										dispatch({
+											payload: name,
+											type: CORE_EVENT_TYPES.FIELD
+												.REMOVED,
+										});
 
-								Liferay.fire('journal:storeState', {
-									fieldName: Liferay.Language.get(
-										'remove-repeatable-field'
-									),
-								});
+										Liferay.fire('journal:storeState', {
+											fieldName: Liferay.Language.get(
+												'remove-repeatable-field'
+											),
+										});
+									},
+									type === 'text' ? 1000 : 0
+								);
 							}}
 							small
 							title={Liferay.Language.get('remove')}
@@ -635,18 +570,23 @@ export default function FieldBase({
 							}
 						)}
 						disabled={readOnly || disabledRepeatableButton}
-						onClick={() => {
-							dispatch({
-								payload: name,
-								type: CORE_EVENT_TYPES.FIELD.REPEATED,
-							});
+						onClick={() =>
+							setTimeout(
+								() => {
+									dispatch({
+										payload: name,
+										type: CORE_EVENT_TYPES.FIELD.REPEATED,
+									});
 
-							Liferay.fire('journal:storeState', {
-								fieldName: Liferay.Language.get(
-									'add-repeatable-field'
-								),
-							});
-						}}
+									Liferay.fire('journal:storeState', {
+										fieldName: Liferay.Language.get(
+											'add-repeatable-field'
+										),
+									});
+								},
+								type === 'text' ? 1000 : 0
+							)
+						}
 						small
 						title={Liferay.Language.get('duplicate')}
 						type="button"
@@ -663,7 +603,7 @@ export default function FieldBase({
 							<label
 								{...accessiblePropsFields}
 								className={classNames('lfr-ddm-legend', {
-									'text-muted': showDisabledFieldIcon,
+									'text-secondary': showDisabledFieldIcon,
 								})}
 								id={fieldLabelId}
 							>
@@ -695,9 +635,12 @@ export default function FieldBase({
 									'ddm-empty': !showLabel && !required,
 									'ddm-label': showLabel || required,
 									'ddm-repeatable': repeatable,
-									'text-muted': showDisabledFieldIcon,
+									'text-secondary': showDisabledFieldIcon,
 								})}
-								{...(type === 'select' && {id: id ?? name})}
+								{...((shouldRenderAsGroup ||
+									type === 'select') && {
+									id: fieldLabelId,
+								})}
 							>
 								{showLabel && label && (
 									<LabelProperty

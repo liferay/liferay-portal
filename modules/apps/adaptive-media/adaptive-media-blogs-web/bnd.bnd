@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Blogs Web
 Bundle-SymbolicName: com.liferay.adaptive.media.blogs.web
-Bundle-Version: 5.0.19
+Bundle-Version: 5.0.20
 -dsannotations-options: inherit

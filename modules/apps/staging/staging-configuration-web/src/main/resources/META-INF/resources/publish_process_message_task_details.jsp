@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-long backgroundTaskId = ParamUtil.getLong(request, BackgroundTaskConstants.BACKGROUND_TASK_ID);
+long backgroundTaskId = ParamUtil.getLong(request, BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 BackgroundTask backgroundTask = BackgroundTaskManagerUtil.fetchBackgroundTask(backgroundTaskId);
 

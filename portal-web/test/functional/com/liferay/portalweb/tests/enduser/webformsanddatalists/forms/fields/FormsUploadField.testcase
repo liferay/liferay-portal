@@ -35,8 +35,6 @@ definition {
 	@description = "Verify that a user can upload up to 5 files when the Repeatable option is enabled"
 	@priority = 3
 	test AllowsFiveUploadsWhenRepeatableIsEnabled {
-		property portal.acceptance = "true";
-
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -637,7 +635,6 @@ definition {
 	@description = "This is a use case for LPS-125499."
 	@priority = 2
 	test GuestUserCannotUploadFileWithInvalidSize {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

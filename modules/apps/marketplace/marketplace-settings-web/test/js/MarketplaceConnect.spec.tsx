@@ -179,11 +179,7 @@ describe('MarketplaceConnect', () => {
 
 		expect(statusListItem).toHaveClass('active');
 
-		expect(
-			queryByText(
-				'congratulations-x.-you-have-successfully-connected-x-to-the-marketplace'
-			)
-		).toBeInTheDocument();
+		expect(queryByText('connected')).toBeInTheDocument();
 
 		expect(queryByText('disconnect')).toBeTruthy();
 	});

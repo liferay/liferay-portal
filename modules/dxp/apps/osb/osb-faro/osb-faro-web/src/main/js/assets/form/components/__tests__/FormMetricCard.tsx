@@ -121,7 +121,7 @@ describe('FormMetricCard', () => {
 		expect(linkToTheDocumentation).toBeInTheDocument();
 		expect(linkToTheDocumentation).toHaveAttribute(
 			'href',
-			'https://learn.liferay.com/w/analytics-cloud/touchpoints/assets/forms#visitor-behavior'
+			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/assets-analytics/forms-analytics#visitor-behavior'
 		);
 	});
 });

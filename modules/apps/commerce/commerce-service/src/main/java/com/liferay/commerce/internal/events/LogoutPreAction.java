@@ -31,20 +31,26 @@ public class LogoutPreAction extends Action {
 		HttpServletResponse httpServletResponse) {
 
 		try {
-			String domain = CookiesManagerUtil.getDomain(httpServletRequest);
-
 			Cookie[] cookies = httpServletRequest.getCookies();
+
+			if (cookies == null) {
+				return;
+			}
+
+			String domain = CookiesManagerUtil.getDomain(httpServletRequest);
 
 			for (Cookie cookie : cookies) {
 				String name = cookie.getName();
 
-				if (name.startsWith(
-						CommerceOrder.class.getName() + StringPool.POUND)) {
+				if (name.startsWith("COMMERCE_COMPARE")) {
+					CookiesManagerUtil.deleteCookies(
+						domain, httpServletRequest, httpServletResponse, name);
+				}
+				else if (name.startsWith(
+							CommerceOrder.class.getName() + StringPool.POUND)) {
 
 					CookiesManagerUtil.deleteCookies(
 						domain, httpServletRequest, httpServletResponse, name);
-
-					break;
 				}
 			}
 		}

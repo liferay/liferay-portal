@@ -10,20 +10,6 @@ export enum LicenseType {
 	SUBSCRIPTION = 'subscription',
 }
 
-export enum ProductCategories {
-	MARKETPLACE_APP_CATEGORY = 'marketplace-app-category',
-	MARKETPLACE_APP_TAGS = 'marketplace-app-tags',
-	MARKETPLACE_LIFERAY_VERSION = 'marketplace-liferay-version',
-	MARKETPLACE_PRODUCT_TYPE = 'marketplace-product-type',
-	MARKETPLACE_SOLUTION_CATEGORY = 'marketplace-solution-category',
-	MARKETPLACE_SOLUTION_TAGS = 'marketplace-solution-tags',
-}
-
-export enum ProductCategories {
-	FRAGMENTS = 'Fragments',
-	PAYMENT_METHODS = 'Payment methods',
-}
-
 export enum ProductEditionOption {
 	EE = 'EE',
 }
@@ -119,6 +105,7 @@ export enum ProductType {
 	DXP = 'dxp',
 	LOW_CODE_CONFIGURATION = 'low-code-configuration',
 	OTHER = 'other',
+	SSA_SAAS = 'ssa-saas',
 }
 
 export enum ProductTypeVocabulary {
@@ -140,7 +127,7 @@ export enum ProductVocabulary {
 	APP_AREA = 'Marketplace App Category',
 	APP_CATEGORY = 'Marketplace Category',
 	APP_TAGS = 'Marketplace App Tags',
-	EDITION = 'Marketplace Edition',
+	AVAILABILITY = 'Marketplace Availability',
 	LIFERAY_PLATFORM_OFFERING = 'Marketplace Liferay Platform Offering',
 	LIFERAY_VERSION = 'Marketplace Liferay Version',
 	PRODUCT_TYPE = 'Marketplace Product Type',
@@ -190,6 +177,7 @@ export const ProductTypeLabels = {
 	[ProductType.DXP]: 'DXP',
 	[ProductType.LOW_CODE_CONFIGURATION]: 'Low-Code Configuration',
 	[ProductType.OTHER]: 'Other',
+	[ProductType.SSA_SAAS]: 'SSA SaaS',
 } as const;
 
 export const ProductTypeLicenseOptions = {
@@ -203,6 +191,7 @@ export const ProductTypeLicenseOptions = {
 	],
 	[ProductType.LOW_CODE_CONFIGURATION]: [ProductLicenseTier.STANDARD],
 	[ProductType.OTHER]: [ProductLicenseTier.STANDARD],
+	[ProductType.SSA_SAAS]: [ProductLicenseTier.STANDARD],
 };
 
 export const ProductWorkflowDisplayType = {
@@ -219,8 +208,4 @@ export const ProductWorkflowStatusLabel = {
 
 export function getOfferingTypes(type: ProductType) {
 	return offeringTypes[type as keyof typeof offeringTypes];
-}
-
-export enum PartnershipType {
-	TECHNOLOGY_PARTNERSHIP = 'Technology Partnership',
 }

@@ -218,8 +218,8 @@ public class CalendarUtilTest {
 				0, null, null,
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(),
-					"lp'\"></option>" +
-						"<img onerror=alert(document.location) src=x>"
+					"lp'\"></option><img onerror=alert(document.location) " +
+						"src=x>"
 				).build(),
 				RandomTestUtil.randomLocaleStringMap(), true, serviceContext);
 
@@ -244,8 +244,8 @@ public class CalendarUtilTest {
 			calendarBookingInstance.getTimeZone());
 
 		Assert.assertEquals(
-			"lp&#39;&#34;&gt;&lt;/option&gt;&lt;" +
-				"img onerror=alert(document.location) src=x&gt;",
+			"lp&#39;&#34;&gt;&lt;/option&gt;&lt;img " +
+				"onerror=alert(document.location) src=x&gt;",
 			jsonObject.get("calendarResourceName"));
 	}
 

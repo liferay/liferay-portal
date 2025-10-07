@@ -483,99 +483,6 @@ definition {
 		}
 	}
 
-	@description = "This is a test for LPS-189238 TC-2 TC-5 TC-6. Verify there is advanced staging configuration checkbox with description in Instance Setting,the configuration checkbox can be enabled."
-	@priority = 3
-	test CanEnableAdvancedStagingConfigurationInInstanceSetting {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Enable local staging with advanced staging configuration checkbox unchecked in instance setting.") {
-			JSONStaging.enableLocalStaging(groupName = "Site Name");
-
-			PortalSettings.openInstanceSettingsAdmin();
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Infrastructure",
-				configurationName = "Export/Import, Staging",
-				configurationScope = "Virtual Instance Scope");
-
-			SystemSettings.viewTextLabel(fieldLabel = "Show Advanced Staging Configuration by Default");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_settingFieldName = "Show Advanced Staging Configuration by Default",
-				locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
-
-			SystemSettings.viewSettingsText(settingsText = "If checked, then the advanced publication configuration screen will be displayed by default when publishing pages.");
-		}
-
-		task ("When: Enable advanced staging configuration checkbox") {
-			SystemSettings.configureSystemSetting(
-				enableSetting = "true",
-				settingFieldName = "Show Advanced Staging Configuration by Default");
-		}
-
-		task ("Then: Verify the configuration of the advanced staging process is displayed.") {
-			Navigator.gotoStagedSitePage(
-				pageName = "Staging Test Page",
-				siteName = "Site Name");
-
-			Staging.gotoPublishToLive();
-
-			AssertTextEquals(
-				locator1 = "StagingPublishToLive#SWITCH_TO_SIMPLE_PUBLICATION",
-				value1 = "Switch to Simple Publish Process");
-		}
-	}
-
-	@description = "This is a test for LPS-189238 TC-1 TC-3 TC-4. Verify there is advanced staging configuration checkbox with description in System Setting,the configuration checkbox can be enabled."
-	@priority = 3
-	test CanEnableAdvancedStagingConfigurationInSystemSetting {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Enable local staging with advanced staging configuration checkbox unchecked in system setting.") {
-			JSONStaging.enableLocalStaging(groupName = "Site Name");
-
-			Navigator.openURL();
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Configuration",
-				panel = "Control Panel",
-				portlet = "System Settings");
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Infrastructure",
-				configurationName = "Export/Import, Staging",
-				configurationScope = "Virtual Instance Scope");
-
-			SystemSettings.viewTextLabel(fieldLabel = "Show Advanced Staging Configuration by Default");
-
-			AssertNotChecked.assertNotCheckedNotVisible(
-				key_settingFieldName = "Show Advanced Staging Configuration by Default",
-				locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
-
-			SystemSettings.viewSettingsText(settingsText = "If checked, then the advanced publication configuration screen will be displayed by default when publishing pages.");
-		}
-
-		task ("When: Enable advanced staging configuration checkbox") {
-			SystemSettings.configureSystemSetting(
-				enableSetting = "true",
-				settingFieldName = "Show Advanced Staging Configuration by Default");
-		}
-
-		task ("Then: Verify the configuration of the advanced staging process is displayed.") {
-			Navigator.gotoStagedSitePage(
-				pageName = "Staging Test Page",
-				siteName = "Site Name");
-
-			Staging.gotoPublishToLive();
-
-			AssertTextEquals(
-				locator1 = "StagingPublishToLive#SWITCH_TO_SIMPLE_PUBLICATION",
-				value1 = "Switch to Simple Publish Process");
-		}
-	}
-
 	@description = "This is a test for LPS-146160. Verify Admin can enable local staging on the inherited site even site template propagation is disabled. The testcase is blocked by LPS-146160."
 	@priority = 3
 	test CanEnableLocalStagingOnInheritedSite {
@@ -892,69 +799,6 @@ definition {
 			selectedAsset = "Web Content Article");
 	}
 
-	@description = "This is a use case for LPS-189191 and LPS-190360. TC-1: Verify that the admin could configure staging to ignore previews and thumbnails during the local staging publish process."
-	@priority = 3
-	test ConfigureIgnorePreviewsAndThumbnails {
-		property test.liferay.virtual.instance = "false";
-
-		task ("Given: Verify that the checkbox Include Thumbnails And Previews During Staging is checked by default") {
-			StagingNavigator.openToConfigInSystemSettings(portlet = "Export/Import, Staging");
-
-			AssertChecked.assertCheckedNotVisible(
-				key_settingFieldName = "Include Thumbnails And Previews During Staging",
-				locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
-
-			SystemSettings.viewSettingsText(settingsText = "If checked, then the generated previews and thumbnails will be included during the staging process.");
-
-			StagingNavigator.openToConfigInInstanceSettings(portlet = "Export/Import, Staging");
-
-			AssertChecked.assertCheckedNotVisible(
-				key_settingFieldName = "Include Thumbnails And Previews During Staging",
-				locator1 = "SystemSettings#SETTING_FIELD_NAME_CHECKBOX");
-
-			SystemSettings.viewSettingsText(settingsText = "If checked, then the generated previews and thumbnails will be included during the staging process.");
-		}
-
-		task ("And: Enable local staging and add a new file to DM") {
-			JSONStaging.enableLocalStaging(groupName = "Site Name");
-
-			JSONDocument.addFileWithUploadedFile(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentTitle = "DM Document Title",
-				groupName = "Site Name-staging",
-				mimeType = "image/jpeg",
-				sourceFileName = "Document_1.jpg");
-		}
-
-		task ("When: Create a new publish process") {
-			Navigator.gotoStagedSitePage(
-				pageName = "Staging Test Page",
-				siteName = "Site Name");
-
-			Staging.gotoPublishToLive();
-
-			AssertTextEquals(
-				locator1 = "Message#WARNING",
-				value1 = "Recommendation:Publish small incremental changes to avoid large publishing processes that can take a long time to execute.");
-		}
-
-		task ("Then: Assert the Previews and Thumbnails are displayed under DM item") {
-			Staging.configurePublishToLive(
-				checkContentNameList = "Documents and Media",
-				includeThumbnailsAndPreviewsDuringStaging = "true");
-
-			AssertTextEquals(
-				locator1 = "Message#WARNING",
-				value1 = "Recommendation:Publish small incremental changes to avoid large publishing processes that can take a long time to execute.");
-
-			Staging.publishToLive();
-
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-			DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
-		}
-	}
-
 	@description = "This is a use case for LPS-92039 and LPS-92636."
 	@priority = 3
 	test CreateWidgetTemplateWhenNotStagedADT {
@@ -1263,8 +1107,6 @@ definition {
 
 	@priority = 3
 	test ImportLarFrom70ToCurrent {
-		property portal.acceptance = "true";
-
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
 
 		LAR.importPortlet(
@@ -1377,8 +1219,6 @@ definition {
 
 	@priority = 3
 	test NotStagedAssets {
-		property portal.acceptance = "true";
-
 		Staging.openStagingAdmin(siteURLKey = "site-name");
 
 		Staging.activateStagingCP(
@@ -2693,7 +2533,6 @@ definition {
 
 	@priority = 3
 	test StagingMultipleDM {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -2746,173 +2585,6 @@ definition {
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
 		DMDocument.viewStagingDetailsPG();
-	}
-
-	@priority = 3
-	test StagingOnlyApprovedPublishToLive {
-		property portal.acceptance = "quarantine";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Staging Test Page 2");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Staging Test Page",
-			widgetName = "Web Content Display");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Staging Test Page 2",
-			widgetName = "Web Content Display");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		Workflow.configureWCWorkflowViaFolderInfo(workflowDefinition = "Single Approver");
-
-		JSONStaging.enableLocalStaging(
-			branchingPrivate = "true",
-			branchingPublic = "true",
-			groupName = "Site Name");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.addWithWorkflow(
-			webContentContent = "Web Content Content 1",
-			webContentTitle = "Web Content Title 1");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.addWithWorkflow(
-			webContentContent = "Web Content Content 2",
-			webContentTitle = "Web Content Title 2");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.assignToMeTaskByActions(
-			workflowAssetTitle = "Web Content Title 1",
-			workflowAssetType = "Web Content Article",
-			workflowTask = "Review");
-
-		Workflow.approveTaskByActions(
-			workflowAssetTitle = "Web Content Title 1",
-			workflowAssetType = "Web Content Article",
-			workflowTask = "Review");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		AssertTextEquals.assertPartialText(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_CONTENT",
-			value1 = "Web Content Content 1");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		AssertTextEquals(
-			locator1 = "Message#ERROR_3",
-			value1 = "Web Content Title 2 is not approved.");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Staging.markAsReadyForPublication();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		AssertTextEquals.assertPartialText(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_CONTENT",
-			value1 = "Web Content Content 1");
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		if (IsElementPresent(index = 1, locator1 = "WCD#WEB_CONTENT_CONTENT")) {
-			AssertTextNotEquals(
-				index = 1,
-				locator1 = "WCD#WEB_CONTENT_CONTENT",
-				value1 = "Web Content Title 2");
-		}
-		else {
-			AssertElementNotPresent(
-				index = 1,
-				locator1 = "WCD#WEB_CONTENT_CONTENT");
-		}
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Workflow.assignToMeTaskByActions(
-			workflowAssetTitle = "Web Content Title 2",
-			workflowAssetType = "Web Content Article",
-			workflowTask = "Review");
-
-		Workflow.approveTaskByActions(
-			workflowAssetTitle = "Web Content Title 2",
-			workflowAssetType = "Web Content Article",
-			workflowTask = "Review");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		Staging.markAsReadyForPublication();
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		AssertTextEquals.assertPartialText(
-			index = 1,
-			locator1 = "WCD#WEB_CONTENT_CONTENT",
-			value1 = "Web Content Content 2");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
-
-		WebContent.moveToRecycleBinCP(
-			assetType = "Web Content Article",
-			webContentTitle = "Web Content Title 2");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.viewMessage(recycleBinWebContentTitle = "Web Content Title 2");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page 2",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.viewMessage(recycleBinWebContentTitle = "Web Content Title 2");
 	}
 
 	@description = "This is a use case for LPS-89629."

@@ -16,6 +16,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.util.ClassPathUtil;
@@ -333,7 +334,7 @@ public class CompilerWrapper extends Compiler {
 			}
 
 			_populateTldMappings(
-				StringPool.SLASH.concat(resourcePath), taglibXmls,
+				StringPool.SLASH.concat(resourcePath), bundle, taglibXmls,
 				tldResourcePaths, url);
 		}
 
@@ -347,7 +348,7 @@ public class CompilerWrapper extends Compiler {
 
 		for (URL url : urls) {
 			_populateTldMappings(
-				url.getPath(), taglibXmls, tldResourcePaths, url);
+				url.getPath(), bundle, taglibXmls, tldResourcePaths, url);
 		}
 	}
 
@@ -617,7 +618,7 @@ public class CompilerWrapper extends Compiler {
 	}
 
 	private void _populateTldMappings(
-			String absoluteResourcePath,
+			String absoluteResourcePath, Bundle bundle,
 			Map<TldResourcePath, TaglibXml> taglibXmls,
 			Map<String, TldResourcePath> tldResourcePaths, URL url)
 		throws IOException {
@@ -634,8 +635,6 @@ public class CompilerWrapper extends Compiler {
 			TldResourcePath tldResourcePath = new TldResourcePath(
 				url, absoluteResourcePath);
 
-			tldResourcePaths.put(uri, tldResourcePath);
-
 			TldParser tldParser = new TldParser(true, false, true);
 
 			Digester digester = (Digester)_digesterField.get(tldParser);
@@ -645,7 +644,18 @@ public class CompilerWrapper extends Compiler {
 					DigesterFactory.SERVLET_API_PUBLIC_IDS,
 					DigesterFactory.SERVLET_API_SYSTEM_IDS, true));
 
-			taglibXmls.put(tldResourcePath, tldParser.parse(tldResourcePath));
+			TaglibXml taglibXml = tldParser.parse(tldResourcePath);
+
+			if (ListUtil.isNotEmpty(taglibXml.getTagFiles())) {
+				URL bundleURL = new URL(bundle.getLocation());
+
+				tldResourcePath = new TldResourcePath(
+					bundleURL, absoluteResourcePath,
+					absoluteResourcePath.substring(1));
+			}
+
+			taglibXmls.put(tldResourcePath, taglibXml);
+			tldResourcePaths.put(uri, tldResourcePath);
 		}
 		catch (Exception exception) {
 			_log.error(exception);

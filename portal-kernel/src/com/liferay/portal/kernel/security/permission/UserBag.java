@@ -35,6 +35,8 @@ public interface UserBag extends Serializable {
 
 	public long getUserId();
 
+	public long getUserMVCCVersion();
+
 	public long[] getUserOrgGroupIds();
 
 	public Collection<Group> getUserOrgGroups() throws PortalException;

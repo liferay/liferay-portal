@@ -95,26 +95,58 @@ public class ObjectEntryInfoItemFormProvider
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.createDateInfoField
 				).infoFieldSetEntry(
+					unsafeConsumer -> {
+						if (FeatureFlagManagerUtil.isEnabled(
+								_objectDefinition.getCompanyId(),
+								"LPD-17564")) {
+
+							unsafeConsumer.accept(
+								ObjectEntryInfoItemFields.
+									getDisplayDateInfoField(_objectDefinition));
+						}
+					}
+				).infoFieldSetEntry(
+					unsafeConsumer -> {
+						if (FeatureFlagManagerUtil.isEnabled(
+								_objectDefinition.getCompanyId(),
+								"LPD-17564")) {
+
+							unsafeConsumer.accept(
+								ObjectEntryInfoItemFields.
+									getExpirationDateInfoField(
+										_objectDefinition));
+						}
+					}
+				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.externalReferenceCodeInfoField
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.modifiedDateInfoField
 				).infoFieldSetEntry(
 					unsafeConsumer -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
+						if (FeatureFlagManagerUtil.isEnabled(
 								_objectDefinition.getCompanyId(),
 								"LPD-21926")) {
 
-							return;
+							unsafeConsumer.accept(
+								ObjectEntryInfoItemFields.
+									getFriendlyURLInfoField(_objectDefinition));
 						}
-
-						unsafeConsumer.accept(
-							ObjectEntryInfoItemFields.getFriendlyURLInfoField(
-								_objectDefinition));
 					}
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.objectEntryIdInfoField
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.publishDateInfoField
+				).infoFieldSetEntry(
+					unsafeConsumer -> {
+						if (FeatureFlagManagerUtil.isEnabled(
+								_objectDefinition.getCompanyId(),
+								"LPD-17564")) {
+
+							unsafeConsumer.accept(
+								ObjectEntryInfoItemFields.
+									getReviewDateInfoField(_objectDefinition));
+						}
+					}
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.statusInfoField
 				).infoFieldSetEntry(

@@ -23,6 +23,14 @@ describe('Grid', () => {
 	// eslint-disable-next-line no-console
 	const originalWarn = console.warn;
 
+	afterAll(() => {
+
+		// eslint-disable-next-line no-console
+		console.warn = originalWarn;
+	});
+
+	afterEach(cleanup);
+
 	beforeAll(() => {
 
 		// eslint-disable-next-line no-console
@@ -34,145 +42,8 @@ describe('Grid', () => {
 		};
 	});
 
-	afterAll(() => {
-
-		// eslint-disable-next-line no-console
-		console.warn = originalWarn;
-	});
-
-	afterEach(cleanup);
-
 	beforeEach(() => {
 		fetch.mockResponseOnce(JSON.stringify({}));
-	});
-
-	it('renders columns', () => {
-		const {container} = render(
-			<GridWithProvider
-				columns={[
-					{
-						label: 'col1',
-						value: 'fieldId',
-					},
-					{
-						label: 'col2',
-						value: 'fieldId',
-					},
-				]}
-				spritemap={spritemap}
-			/>
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders no columns when columns comes empty', () => {
-		const {container} = render(
-			<GridWithProvider columns={[]} spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('is not editable', () => {
-		const {container} = render(
-			<GridWithProvider readOnly={true} spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a tip', () => {
-		const {container} = render(
-			<GridWithProvider spritemap={spritemap} tip="Type something" />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has an id', () => {
-		const {container} = render(
-			<GridWithProvider id="Id" spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a label', () => {
-		const {container} = render(
-			<GridWithProvider label="label" spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('is not required', () => {
-		const {container} = render(
-			<GridWithProvider required={false} spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders data-option-reference for rows and columns', () => {
-		const columns = [
-			{reference: 'col1OptionReference'},
-			{reference: 'col2OptionReference'},
-		];
-		const rows = [
-			{reference: 'row1OptionReference'},
-			{reference: 'row2OptionReference'},
-		];
-
-		const {container} = render(
-			<GridWithProvider columns={columns} rows={rows} />
-		);
-
-		columns.forEach((column) => {
-			rows.forEach((row) => {
-				const radioInputElement = container.querySelector(
-					`input[value][type="radio"][data-option-reference-column=${column.reference}][data-option-reference-row=${row.reference}]`
-				);
-
-				expect(radioInputElement).toBeTruthy();
-			});
-		});
-	});
-
-	it('renders rows', () => {
-		const {container} = render(
-			<GridWithProvider
-				rows={[
-					{
-						label: 'row1',
-						value: 'fieldId',
-					},
-					{
-						label: 'row2',
-						value: 'fieldId',
-					},
-				]}
-				spritemap={spritemap}
-			/>
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders no rows when row comes empty', () => {
-		const {container} = render(
-			<GridWithProvider rows={[]} spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders Label if showLabel is true', () => {
-		const {container} = render(
-			<GridWithProvider label="text" showLabel spritemap={spritemap} />
-		);
-
-		expect(container).toMatchSnapshot();
 	});
 
 	it('emits a fieldBlurred event when blurring the radio input', () => {
@@ -296,5 +167,134 @@ describe('Grid', () => {
 		fireEvent.focus(radioInputElement);
 
 		expect(handleFieldFocused).toHaveBeenCalled();
+	});
+
+	it('has a label', () => {
+		const {container} = render(
+			<GridWithProvider label="label" spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has a tip', () => {
+		const {container} = render(
+			<GridWithProvider spritemap={spritemap} tip="Type something" />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has an id', () => {
+		const {container} = render(
+			<GridWithProvider id="Id" spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not editable', () => {
+		const {container} = render(
+			<GridWithProvider readOnly={true} spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not required', () => {
+		const {container} = render(
+			<GridWithProvider required={false} spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders columns', () => {
+		const {container} = render(
+			<GridWithProvider
+				columns={[
+					{
+						label: 'col1',
+						value: 'fieldId',
+					},
+					{
+						label: 'col2',
+						value: 'fieldId',
+					},
+				]}
+				spritemap={spritemap}
+			/>
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders data-option-reference for rows and columns', () => {
+		const columns = [
+			{reference: 'col1OptionReference'},
+			{reference: 'col2OptionReference'},
+		];
+		const rows = [
+			{reference: 'row1OptionReference'},
+			{reference: 'row2OptionReference'},
+		];
+
+		const {container} = render(
+			<GridWithProvider columns={columns} rows={rows} />
+		);
+
+		columns.forEach((column) => {
+			rows.forEach((row) => {
+				const radioInputElement = container.querySelector(
+					`input[value][type="radio"][data-option-reference-column=${column.reference}][data-option-reference-row=${row.reference}]`
+				);
+
+				expect(radioInputElement).toBeTruthy();
+			});
+		});
+	});
+
+	it('renders Label if showLabel is true', () => {
+		const {container} = render(
+			<GridWithProvider label="text" showLabel spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders no columns when columns comes empty', () => {
+		const {container} = render(
+			<GridWithProvider columns={[]} spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders no rows when row comes empty', () => {
+		const {container} = render(
+			<GridWithProvider rows={[]} spritemap={spritemap} />
+		);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders rows', () => {
+		const {container} = render(
+			<GridWithProvider
+				rows={[
+					{
+						label: 'row1',
+						value: 'fieldId',
+					},
+					{
+						label: 'row2',
+						value: 'fieldId',
+					},
+				]}
+				spritemap={spritemap}
+			/>
+		);
+
+		expect(container).toMatchSnapshot();
 	});
 });

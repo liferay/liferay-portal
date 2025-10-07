@@ -1,0 +1,11 @@
+{
+	"deletionType": "cascade",
+	"label": {
+		"en_US": "Account To Trial Extension Request"
+	},
+	"name": "accountToTrialExtensionRequest",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:AccountEntry$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:TrialExtensionRequest$]",
+	"objectDefinitionName2": "TrialExtensionRequest",
+	"type": "oneToMany"
+}

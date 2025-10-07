@@ -116,6 +116,12 @@ public class MeasurementUnitResourceTest
 	public void testGetMeasurementUnitsPageWithSortString() {
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetMeasurementUnitsByType() {
+	}
+
 	@Override
 	@Test
 	public void testPatchMeasurementUnit() throws Exception {
@@ -310,6 +316,14 @@ public class MeasurementUnitResourceTest
 		throws Exception {
 
 		return _postMeasurementUnit(randomMeasurementUnit());
+	}
+
+	@Override
+	protected MeasurementUnit testGraphQLMeasurementUnit_addMeasurementUnit(
+			MeasurementUnit measurementUnit)
+		throws Exception {
+
+		return _postMeasurementUnit(measurementUnit);
 	}
 
 	@Override

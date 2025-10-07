@@ -60,9 +60,9 @@ public class OAuthClientEntryLocalServiceImpl
 	@Override
 	public OAuthClientEntry addOAuthClientEntry(
 			long userId, String authRequestParametersJSON,
-			String authServerWellKnownURI, String infoJSON,
-			long metadataCacheTime, String oidcUserInfoMapperJSON,
-			String tokenRequestParametersJSON)
+			String authServerWellKnownURI, String customClaimsJSON,
+			String infoJSON, long metadataCacheTime,
+			String oidcUserInfoMapperJSON, String tokenRequestParametersJSON)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -86,6 +86,10 @@ public class OAuthClientEntryLocalServiceImpl
 		}
 		else {
 			_validateAuthRequestParametersJSON(authRequestParametersJSON);
+		}
+
+		if (customClaimsJSON == null) {
+			customClaimsJSON = "{}";
 		}
 
 		if (Validator.isNull(tokenRequestParametersJSON)) {
@@ -115,6 +119,7 @@ public class OAuthClientEntryLocalServiceImpl
 			authRequestParametersJSON);
 		oAuthClientEntry.setAuthServerWellKnownURI(authServerWellKnownURI);
 		oAuthClientEntry.setClientId(clientId);
+		oAuthClientEntry.setCustomClaimsJSON(customClaimsJSON);
 		oAuthClientEntry.setInfoJSON(clientInformationJSONObject.toString());
 		oAuthClientEntry.setMetadataCacheTime(metadataCacheTime);
 		oAuthClientEntry.setOIDCUserInfoMapperJSON(oidcUserInfoMapperJSON);
@@ -219,9 +224,9 @@ public class OAuthClientEntryLocalServiceImpl
 	@Override
 	public OAuthClientEntry updateOAuthClientEntry(
 			long oAuthClientEntryId, String authRequestParametersJSON,
-			String authServerWellKnownURI, String infoJSON,
-			long metadataCacheTime, String oidcUserInfoMapperJSON,
-			String tokenRequestParametersJSON)
+			String authServerWellKnownURI, String customClaimsJSON,
+			String infoJSON, long metadataCacheTime,
+			String oidcUserInfoMapperJSON, String tokenRequestParametersJSON)
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
@@ -248,6 +253,10 @@ public class OAuthClientEntryLocalServiceImpl
 		}
 		else {
 			_validateAuthRequestParametersJSON(authRequestParametersJSON);
+		}
+
+		if (customClaimsJSON != null) {
+			oAuthClientEntry.setCustomClaimsJSON(customClaimsJSON);
 		}
 
 		if (Validator.isNull(tokenRequestParametersJSON)) {

@@ -59,8 +59,8 @@ public class TermsSetQueryImpl extends BaseQueryImpl implements TermsSetQuery {
 	}
 
 	@Override
-	public String setMinimumShouldMatchField(String minimumShouldMatchField) {
-		return _minimumShouldMatchField = minimumShouldMatchField;
+	public void setMinimumShouldMatchField(String minimumShouldMatchField) {
+		_minimumShouldMatchField = minimumShouldMatchField;
 	}
 
 	@Override

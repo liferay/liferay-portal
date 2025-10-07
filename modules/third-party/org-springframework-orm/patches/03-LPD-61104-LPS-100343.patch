@@ -1,0 +1,22 @@
+diff --git a/org/springframework/orm/hibernate5/SpringSessionSynchronization.java b/org/springframework/orm/hibernate5/SpringSessionSynchronization.java
+index 1b06ecad25ee9..117bbb383bd54 100644
+--- a/org/springframework/orm/hibernate5/SpringSessionSynchronization.java
++++ b/org/springframework/orm/hibernate5/SpringSessionSynchronization.java
+@@ -69,11 +69,6 @@ public class SpringSessionSynchronization implements TransactionSynchronization,
+ 	public void suspend() {
+ 		if (this.holderActive) {
+ 			TransactionSynchronizationManager.unbindResource(this.sessionFactory);
+-			// Eagerly disconnect the Session here, to make release mode "on_close" work on JBoss.
+-			Session session = getCurrentSession();
+-			if (session instanceof SessionImplementor sessionImpl) {
+-				sessionImpl.getJdbcCoordinator().getLogicalConnection().manualDisconnect();
+-			}
+ 		}
+ 	}
+ 
+@@ -146,3 +141,4 @@ public class SpringSessionSynchronization implements TransactionSynchronization,
+ 	}
+ 
+ }
++/* @generated */
+\ No newline at end of file

@@ -383,7 +383,7 @@ public class ServiceBuilderArgs {
 	private String _modelHintsFileName = "src/META-INF/portal-model-hints.xml";
 	private boolean _osgiModule;
 	private String _pluginName;
-	private String _propsUtil = "com.liferay.portal.util.PropsUtil";
+	private String _propsUtil = "com.liferay.portal.kernel.util.PropsUtil";
 	private String[] _readOnlyPrefixes = READ_ONLY_PREFIXES;
 	private boolean _readOnlyPrefixesSet;
 	private String[] _resourceActionsConfigs = RESOURCE_ACTION_CONFIGS;

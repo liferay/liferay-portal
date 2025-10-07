@@ -37,6 +37,7 @@ import com.liferay.info.item.provider.RelatedInfoItemProvider;
 import com.liferay.info.item.provider.RepeatableFieldsInfoItemFormProvider;
 import com.liferay.info.item.provider.filter.InfoItemServiceFilter;
 import com.liferay.info.item.provider.filter.OptionalPropertyInfoItemServiceFilter;
+import com.liferay.info.item.provider.filter.PropertyInfoItemServiceFilter;
 import com.liferay.info.item.renderer.InfoItemRenderer;
 import com.liferay.info.item.translator.InfoItemIdentifierTranslator;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
@@ -71,6 +72,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -107,18 +109,54 @@ public class InfoItemServiceRegistryImpl implements InfoItemServiceRegistry {
 			infoItemServiceTrackerMap.getService(itemClassName);
 
 		if (serviceReferenceServiceTuples != null) {
-			serviceReferenceServiceTuples =
-				_filterServiceReferenceServiceTuples(
+			PropertyInfoItemServiceFilter
+				companyIdPropertyInfoItemServiceFilter =
 					new OptionalPropertyInfoItemServiceFilter(
 						"company.id",
-						String.valueOf(CompanyThreadLocal.getCompanyId())),
-					serviceReferenceServiceTuples);
+						String.valueOf(CompanyThreadLocal.getCompanyId()));
 
 			if (infoItemServiceFilter != null) {
+				if (infoItemServiceFilter instanceof
+						PropertyInfoItemServiceFilter) {
+
+					PropertyInfoItemServiceFilter
+						propertyInfoItemServiceFilter =
+							(PropertyInfoItemServiceFilter)
+								infoItemServiceFilter;
+
+					serviceReferenceServiceTuples = ListUtil.filter(
+						serviceReferenceServiceTuples,
+						serviceReferenceServiceTuple -> {
+							ServiceReference<?> serviceReference =
+								serviceReferenceServiceTuple.
+									getServiceReference();
+
+							if (companyIdPropertyInfoItemServiceFilter.match(
+									serviceReference) &&
+								propertyInfoItemServiceFilter.match(
+									serviceReference)) {
+
+								return true;
+							}
+
+							return false;
+						});
+
+					return ListUtil.toList(
+						serviceReferenceServiceTuples,
+						ServiceReferenceServiceTuple::getService);
+				}
+
 				serviceReferenceServiceTuples =
 					_filterServiceReferenceServiceTuples(
 						infoItemServiceFilter, serviceReferenceServiceTuples);
 			}
+
+			serviceReferenceServiceTuples = ListUtil.filter(
+				serviceReferenceServiceTuples,
+				serviceReferenceServiceTuple ->
+					companyIdPropertyInfoItemServiceFilter.match(
+						serviceReferenceServiceTuple.getServiceReference()));
 
 			return ListUtil.toList(
 				serviceReferenceServiceTuples,

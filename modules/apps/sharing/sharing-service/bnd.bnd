@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Sharing Service
 Bundle-SymbolicName: com.liferay.sharing.service
-Bundle-Version: 3.0.57
+Bundle-Version: 3.0.61
 Liferay-Require-SchemaVersion: 1.2.0
 Liferay-Service: true
 -dsannotations-options: inherit

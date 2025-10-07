@@ -70,16 +70,16 @@ test('LPD-24824 User only sees the organizations they have permission to view', 
 
 	const newPageEditUserPage = new EditUserPage(newPage);
 	await newPageEditUserPage.organizationsLink.click();
-	await newPageEditUserPage.selectOrganizationButton.click();
+	await newPageEditUserPage.myOrganizationsSelectOrganizationButton.click();
 
 	await expect(
-		newPageEditUserPage.selectOrganizationsTable.getByText(
+		newPageEditUserPage.myOrganizationsSelectOrganizationsTable.getByText(
 			`${organization2.name}`
 		)
 	).toBeHidden();
 	await expect(
 		(
-			await newPageEditUserPage.selectOrganizationsTableRow(
+			await newPageEditUserPage.myOrganizationsSelectOrganizationsTableRow(
 				1,
 				organization1.name,
 				true

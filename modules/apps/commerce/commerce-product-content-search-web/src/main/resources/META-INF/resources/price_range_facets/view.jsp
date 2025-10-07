@@ -62,7 +62,7 @@ CPPriceRangeFacetsDisplayContext cpPriceRangeFacetsDisplayContext = (CPPriceRang
 						%>
 
 						<c:if test="<%= !termCollectors.isEmpty() %>">
-							<aui:form method="post" name='<%= "assetEntriesFacetForm_" + facet.getFieldName() %>'>
+							<aui:form action="#" method="post" name='<%= "fm_" + facet.getFieldName() %>'>
 								<aui:input cssClass="facet-parameter-name" name="facet-parameter-name" type="hidden" value="<%= facet.getFieldName() %>" />
 								<aui:input cssClass="start-parameter-name" name="start-parameter-name" type="hidden" value="<%= cpPriceRangeFacetsDisplayContext.getPaginationStartParameterName() %>" />
 
@@ -88,6 +88,7 @@ CPPriceRangeFacetsDisplayContext cpPriceRangeFacetsDisplayContext = (CPPriceRang
 														<input
 															class="custom-control-input facet-term"
 															data-term-id="<%= HtmlUtil.escapeAttribute(termCollector.getTerm()) %>"
+															disabled
 															id="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
 															name="<portlet:namespace />term_<%= facet.getFieldName() + i %>"
 															onChange="Liferay.Search.FacetUtil.changeSelection(event);"
@@ -143,6 +144,11 @@ CPPriceRangeFacetsDisplayContext cpPriceRangeFacetsDisplayContext = (CPPriceRang
 </c:choose>
 
 <liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"namespace", liferayPortletResponse.getNamespace()
+		).build()
+	%>'
 	module="{FacetUtil} from portal-search-web"
 />
 

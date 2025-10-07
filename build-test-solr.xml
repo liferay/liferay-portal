@@ -46,7 +46,8 @@ CATALINA_OPTS=&quot;${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${solr.dir}/serv
 "com.liferay.portal.search.tuning.synonyms.api",\
 "com.liferay.portal.search.tuning.synonyms.web",\
 "com.liferay.portal.search.tuning.web",\
-"com.liferay.portal.search.tuning.web.api"\
+"com.liferay.portal.search.tuning.web.api",\
+"com.liferay.search.experiences.rest.impl"\
 ]</echo>
 				</else>
 			</if>

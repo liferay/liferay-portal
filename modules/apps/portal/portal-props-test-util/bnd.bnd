@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Props Test Utilities
 Bundle-SymbolicName: com.liferay.portal.props.test.util
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Export-Package: com.liferay.portal.props.test.util

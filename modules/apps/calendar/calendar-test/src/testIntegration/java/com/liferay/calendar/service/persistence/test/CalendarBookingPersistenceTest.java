@@ -6,6 +6,7 @@
 package com.liferay.calendar.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.calendar.exception.DuplicateCalendarBookingExternalReferenceCodeException;
 import com.liferay.calendar.exception.NoSuchBookingException;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.service.CalendarBookingLocalServiceUtil;
@@ -121,6 +122,9 @@ public class CalendarBookingPersistenceTest {
 
 		newCalendarBooking.setUuid(RandomTestUtil.randomString());
 
+		newCalendarBooking.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newCalendarBooking.setGroupId(RandomTestUtil.nextLong());
 
 		newCalendarBooking.setCompanyId(RandomTestUtil.nextLong());
@@ -190,6 +194,9 @@ public class CalendarBookingPersistenceTest {
 			newCalendarBooking.getCtCollectionId());
 		Assert.assertEquals(
 			existingCalendarBooking.getUuid(), newCalendarBooking.getUuid());
+		Assert.assertEquals(
+			existingCalendarBooking.getExternalReferenceCode(),
+			newCalendarBooking.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingCalendarBooking.getCalendarBookingId(),
 			newCalendarBooking.getCalendarBookingId());
@@ -273,6 +280,28 @@ public class CalendarBookingPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingCalendarBooking.getStatusDate()),
 			Time.getShortTimestamp(newCalendarBooking.getStatusDate()));
+	}
+
+	@Test(
+		expected = DuplicateCalendarBookingExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		CalendarBooking calendarBooking = addCalendarBooking();
+
+		CalendarBooking newCalendarBooking = addCalendarBooking();
+
+		newCalendarBooking.setGroupId(calendarBooking.getGroupId());
+
+		newCalendarBooking = _persistence.update(newCalendarBooking);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newCalendarBooking);
+
+		newCalendarBooking.setExternalReferenceCode(
+			calendarBooking.getExternalReferenceCode());
+
+		_persistence.update(newCalendarBooking);
 	}
 
 	@Test
@@ -371,6 +400,15 @@ public class CalendarBookingPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_G() throws Exception {
+		_persistence.countByERC_G("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G("null", 0L);
+
+		_persistence.countByERC_G((String)null, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		CalendarBooking newCalendarBooking = addCalendarBooking();
 
@@ -396,17 +434,17 @@ public class CalendarBookingPersistenceTest {
 	protected OrderByComparator<CalendarBooking> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"CalendarBooking", "mvccVersion", true, "ctCollectionId", true,
-			"uuid", true, "calendarBookingId", true, "groupId", true,
-			"companyId", true, "userId", true, "userName", true, "createDate",
-			true, "modifiedDate", true, "calendarId", true,
-			"calendarResourceId", true, "parentCalendarBookingId", true,
-			"recurringCalendarBookingId", true, "vEventUid", true, "title",
-			true, "location", true, "startTime", true, "endTime", true,
-			"allDay", true, "recurrence", true, "firstReminder", true,
-			"firstReminderType", true, "secondReminder", true,
-			"secondReminderType", true, "lastPublishDate", true, "status", true,
-			"statusByUserId", true, "statusByUserName", true, "statusDate",
-			true);
+			"uuid", true, "externalReferenceCode", true, "calendarBookingId",
+			true, "groupId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true,
+			"calendarId", true, "calendarResourceId", true,
+			"parentCalendarBookingId", true, "recurringCalendarBookingId", true,
+			"vEventUid", true, "title", true, "location", true, "startTime",
+			true, "endTime", true, "allDay", true, "recurrence", true,
+			"firstReminder", true, "firstReminderType", true, "secondReminder",
+			true, "secondReminderType", true, "lastPublishDate", true, "status",
+			true, "statusByUserId", true, "statusByUserName", true,
+			"statusDate", true);
 	}
 
 	@Test
@@ -708,6 +746,17 @@ public class CalendarBookingPersistenceTest {
 			ReflectionTestUtil.invoke(
 				calendarBooking, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "vEventUid"));
+
+		Assert.assertEquals(
+			calendarBooking.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				calendarBooking, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(calendarBooking.getGroupId()),
+			ReflectionTestUtil.<Long>invoke(
+				calendarBooking, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "groupId"));
 	}
 
 	protected CalendarBooking addCalendarBooking() throws Exception {
@@ -720,6 +769,8 @@ public class CalendarBookingPersistenceTest {
 		calendarBooking.setCtCollectionId(RandomTestUtil.nextLong());
 
 		calendarBooking.setUuid(RandomTestUtil.randomString());
+
+		calendarBooking.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		calendarBooking.setGroupId(RandomTestUtil.nextLong());
 

@@ -66,6 +66,7 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 					<aui:model-context bean="<%= cpDefinitionInventory %>" model="<%= CPDefinitionInventory.class %>" />
 
 					<liferay-ui:error exception="<%= CPConfigurationEntryQuantityException.class %>" message="please-enter-a-valid-quantity" />
+					<liferay-ui:error exception="<%= CPDefinitionInventoryAllowedOrderQuantitiesException.class %>" message="please-enter-valid-allowed-order-quantities" />
 					<liferay-ui:error exception="<%= CPDefinitionInventoryQuantityException.class %>" message="please-enter-a-valid-quantity" />
 
 					<div class="col-6">
@@ -110,15 +111,19 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 						}
 						%>
 
-						<aui:input ignoreRequestValue="<%= true %>" min="0.0000001" name="minOrderQuantity" required="<%= true %>" step="0.0000001" type="number" value="<%= minOrderQuantity.doubleValue() %>">
-							<aui:validator name="min">0.0000001</aui:validator>
+						<aui:input ignoreRequestValue="<%= true %>" min="0.000001" name="minOrderQuantity" required="<%= true %>" step="0.000001" type="number" value="<%= minOrderQuantity.doubleValue() %>">
+							<aui:validator name="min">0.000001</aui:validator>
 							<aui:validator name="number" />
 						</aui:input>
 
-						<aui:input helpMessage="separate-values-with-a-comma-period-or-space" name="allowedOrderQuantities">
-							<aui:validator errorMessage="separate-values-with-a-comma-period-or-space" name="custom">
+						<%
+						String allowedOrderQuantitiesHelpMessage = LanguageUtil.format(request, "separate-values-with-a-space-following-the-x-format", "###,##0.00", false);
+						%>
+
+						<aui:input helpMessage="<%= allowedOrderQuantitiesHelpMessage %>" name="allowedOrderQuantities">
+							<aui:validator errorMessage="<%= allowedOrderQuantitiesHelpMessage %>" name="custom">
 								function(val) {
-									const pattern = /^[0-9]+([.,][0-9]+)?([,\s*][0-9]+([.,\s*][0-9]+)?)*$/;
+									const pattern = /^(\d{1,3}(,\d{3})*(\.\d{1,2})?)(\s\d{1,3}(,\d{3})*(\.\d{1,2})?)*$/;
 
 									return pattern.test(val);
 								}
@@ -168,8 +173,8 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 						}
 						%>
 
-						<aui:input ignoreRequestValue="<%= true %>" min="0.0000001" name="maxOrderQuantity" required="<%= true %>" type="number" value="<%= maxOrderQuantity.doubleValue() %>">
-							<aui:validator name="min">0.0000001</aui:validator>
+						<aui:input ignoreRequestValue="<%= true %>" min="0.000001" name="maxOrderQuantity" required="<%= true %>" type="number" value="<%= maxOrderQuantity.doubleValue() %>">
+							<aui:validator name="min">0.000001</aui:validator>
 							<aui:validator name="number" />
 						</aui:input>
 
@@ -181,8 +186,8 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 						}
 						%>
 
-						<aui:input ignoreRequestValue="<%= true %>" min="0.0000001" name="multipleOrderQuantity" required="<%= true %>" step="0.0000001" type="number" value="<%= multipleOrderQuantity.doubleValue() %>">
-							<aui:validator name="min">0.0000001</aui:validator>
+						<aui:input ignoreRequestValue="<%= true %>" min="0.000001" name="multipleOrderQuantity" required="<%= true %>" step="0.000001" type="number" value="<%= multipleOrderQuantity.doubleValue() %>">
+							<aui:validator name="min">0.000001</aui:validator>
 							<aui:validator name="number" />
 						</aui:input>
 					</div>
@@ -191,13 +196,11 @@ boolean shippable = BeanParamUtil.getBoolean(cpDefinition, request, "shippable",
 		</div>
 
 		<div class="col-4">
-			<c:if test='<%= FeatureFlagManagerUtil.isEnabled(cpDefinition.getCompanyId(), "LPD-10889") %>'>
-				<commerce-ui:panel
-					title='<%= LanguageUtil.get(request, "base-settings") %>'
-				>
-					<aui:input checked="<%= cpDefinitionConfigurationDisplayContext.isPurchasable() %>" data-qa-id="purchasableInput" inlineField="<%= true %>" name="purchasable" type="toggle-switch" />
-				</commerce-ui:panel>
-			</c:if>
+			<commerce-ui:panel
+				title='<%= LanguageUtil.get(request, "base-settings") %>'
+			>
+				<aui:input checked="<%= cpDefinitionConfigurationDisplayContext.isPurchasable() %>" data-qa-id="purchasableInput" inlineField="<%= true %>" name="purchasable" type="toggle-switch" />
+			</commerce-ui:panel>
 
 			<commerce-ui:panel
 				title='<%= LanguageUtil.get(request, "shipping") %>'

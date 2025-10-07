@@ -42,11 +42,7 @@ public class DatabaseUtil {
 	}
 
 	public static boolean isPostgreSQL(String jdbcURL) {
-		if (jdbcURL.indexOf("postgresql") != -1) {
-			return true;
-		}
-
-		return false;
+		return jdbcURL.contains("postgresql");
 	}
 
 	public static String replaceSchemaName(String jdbcURL, String schemaName) {

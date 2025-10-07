@@ -78,8 +78,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanGetRelationshipDetailsInNestedFieldsWithoutRelatedEntries {
-		property portal.acceptance = "true";
-
 		task ("When I call userAccount object GET endpoint with nestedFields=usersFoundations") {
 			var response = UserAccountAPI.getSystemObjectsWithNestedField(
 				parameter = "nestedFields",
@@ -99,8 +97,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanNotGetRelationshipDetailsInNestedFieldsAfterRelationshipIsDeleted {
-		property portal.acceptance = "true";
-
 		task ("And Given I relate the foundation entry with the userAccount entry through the userAccount PUT endpoint") {
 			UserAccountAPI.relateObjectEntries(
 				customObjectId = ${staticObjectEntryId1},

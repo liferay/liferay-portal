@@ -18,12 +18,8 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.RepositoryEntryLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-
-import java.util.Collections;
 
 import org.apache.chemistry.opencmis.commons.enums.CapabilityQuery;
 
@@ -48,11 +44,6 @@ public class BaseCmisSearchQueryBuilderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		setUpPropsUtil();
-
-		PropsTestUtil.setProps(
-			PropsKeys.INDEX_DATE_FORMAT_PATTERN, "yyyyMMddHHmmss");
-
 		_cmisSearchQueryBuilder = new BaseCmisSearchQueryBuilder(
 			createRepositoryEntryLocalService(),
 			Mockito.mock(UserLocalService.class));
@@ -440,10 +431,6 @@ public class BaseCmisSearchQueryBuilderTest {
 		queryConfig.setScoreEnabled(true);
 
 		return searchContext;
-	}
-
-	protected void setUpPropsUtil() {
-		PropsTestUtil.setProps(Collections.emptyMap());
 	}
 
 	private static final long _DL_FOLDER_ID = RandomTestUtil.randomLong();

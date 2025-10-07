@@ -6,5 +6,7 @@
 	</checkstyle>
 	<source-check>
 		<suppress checks="JavaAPISignatureCheck" files="object-api/src/main/java/com/liferay/object/scope/ObjectScopeProvider\.java" />
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="object-service/src/main/java/com/liferay/object/service/impl/ObjectEntryLocalServiceImpl\.java" />
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="object-service/src/main/java/com/liferay/object/service/impl/ObjectStateTransitionLocalServiceImpl\.java" />
 	</source-check>
 </suppressions>

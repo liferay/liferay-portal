@@ -19,6 +19,9 @@ SegmentsExperiment segmentsExperiment = (SegmentsExperiment)request.getAttribute
 			'[id^=analytics-targetable-collection]'
 		);
 
+		var externalReferenceCode =
+			'<%= (String)request.getAttribute(SegmentsExperimentWebKeys.SEGMENTS_ANALYTICS_EXTERNAL_REFERENCE_CODE) %>';
+
 		if (targetableCollectionElements.length) {
 			targetableCollectionElements.forEach((element, index) => {
 				if ('#' + element.id === '<%= segmentsExperiment.getGoalTarget() %>') {
@@ -36,7 +39,10 @@ SegmentsExperiment segmentsExperiment = (SegmentsExperiment)request.getAttribute
 			elements.forEach((element) => {
 				element.addEventListener('click', () => {
 					if (window.Analytics) {
-						Analytics.send('ctaClicked', 'Page', {elementId: element.id});
+						Analytics.send('ctaClicked', 'Page', {
+							elementId: element.id,
+							externalReferenceCode,
+						});
 					}
 				});
 			});

@@ -266,7 +266,8 @@ public class LayoutPublishedSearchTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), draftLayout.getPlid(),
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				draftLayout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
 				layoutStructure.toString());
@@ -363,8 +364,8 @@ public class LayoutPublishedSearchTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), plid, segmentsExperienceId,
-				layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(), plid,
+				segmentsExperienceId, layoutStructure.toString());
 	}
 
 	private void _addFragmentEntryLinkWithInlineContentToLayout(

@@ -93,7 +93,7 @@ public class Entity implements Comparable<Entity> {
 			null, null, false, false, null, false, true, true, null, null, null,
 			null, null, true, false, false, false, false, false, null, false,
 			null, null, false, null, null, null, null, null, null, null, null,
-			null, null, false);
+			null, null, null, false);
 	}
 
 	public Entity(
@@ -114,7 +114,9 @@ public class Entity implements Comparable<Entity> {
 		List<EntityColumn> blobEntityColumns,
 		List<EntityColumn> collectionEntityColumns,
 		List<EntityColumn> entityColumns, EntityOrder entityOrder,
-		List<EntityFinder> entityFinders, List<Entity> referenceEntities,
+		List<EntityFinder> entityFinders,
+		List<EntityFinder> indexOnlyEntityFinders,
+		List<Entity> referenceEntities,
 		List<String> unresolvedReferenceEntityNames,
 		List<String> txRequiredMethodNames, boolean resourceActionModel) {
 
@@ -169,6 +171,7 @@ public class Entity implements Comparable<Entity> {
 		_entityColumns = entityColumns;
 		_entityOrder = entityOrder;
 		_entityFinders = entityFinders;
+		_indexOnlyEntityFinders = indexOnlyEntityFinders;
 		_referenceEntities = referenceEntities;
 		_unresolvedReferenceEntityNames = unresolvedReferenceEntityNames;
 		_txRequiredMethodNames = txRequiredMethodNames;
@@ -368,6 +371,10 @@ public class Entity implements Comparable<Entity> {
 
 	public String getHumanName() {
 		return _humanName;
+	}
+
+	public List<EntityFinder> getIndexOnlyEntityFinders() {
+		return _indexOnlyEntityFinders;
 	}
 
 	public Entity getLocalizedEntity() {
@@ -1308,6 +1315,7 @@ public class Entity implements Comparable<Entity> {
 	private final String _finderClassName;
 	private final List<EntityColumn> _finderEntityColumns;
 	private final String _humanName;
+	private final List<EntityFinder> _indexOnlyEntityFinders;
 	private final boolean _jsonEnabled;
 	private Entity _localizedEntity;
 	private List<EntityColumn> _localizedEntityColumns;

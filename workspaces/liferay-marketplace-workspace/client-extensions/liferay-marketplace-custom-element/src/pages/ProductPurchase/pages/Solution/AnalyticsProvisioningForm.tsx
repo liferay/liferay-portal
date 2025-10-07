@@ -42,7 +42,7 @@ const AnalyticsProvisioning = () => {
 	const navigate = useNavigate();
 	const {handlePurchase, product, selectedAccount} =
 		useProductPurchaseOutletContext();
-	const {channel, properties} = useMarketplaceContext();
+	const {properties} = useMarketplaceContext();
 	const [allowedEmailDomainsText, setAllowedEmailDomainsText] = useState('');
 	const [incidentReportContactsText, setIncidentReportContactsText] =
 		useState('');
@@ -83,7 +83,6 @@ const AnalyticsProvisioning = () => {
 	) => {
 		const productPurchase = new ProductPurchaseAnalytics(
 			selectedAccount,
-			channel,
 			product
 		);
 

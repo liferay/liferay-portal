@@ -13,12 +13,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Carolina Barbosa
@@ -54,28 +50,12 @@ public class DefaultEmailProvider implements EmailProvider {
 				notificationContext.getSiteDefaultLocale());
 		}
 
-		String content = NotificationTypeUtil.evaluateTerms(
-			valueString, notificationContext,
-			_notificationTermEvaluatorTracker);
-
-		if (Validator.isNull(content)) {
-			return StringPool.BLANK;
-		}
-
-		Set<String> emailAddresses = new HashSet<>();
-
-		Matcher matcher = _emailAddressPattern.matcher(content);
-
-		while (matcher.find()) {
-			emailAddresses.add(matcher.group());
-		}
-
-		return StringUtil.merge(emailAddresses);
+		return StringUtil.merge(
+			NotificationTypeUtil.getEmailAddresses(
+				NotificationTypeUtil.evaluateTerms(
+					valueString, notificationContext,
+					_notificationTermEvaluatorTracker)));
 	}
-
-	private static final Pattern _emailAddressPattern = Pattern.compile(
-		"[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@" +
-			"(?:\\w(?:[\\w-]*\\w)?\\.)+(\\w(?:[\\w-]*\\w))");
 
 	private final NotificationTermEvaluatorTracker
 		_notificationTermEvaluatorTracker;

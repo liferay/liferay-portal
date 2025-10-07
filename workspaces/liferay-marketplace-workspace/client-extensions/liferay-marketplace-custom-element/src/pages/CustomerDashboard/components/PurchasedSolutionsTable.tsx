@@ -133,7 +133,7 @@ const PurchasedSolutionsTable: React.FC<PurchasedSolutionsTableProps> = ({
 					key: 'status',
 					render: (_, {customFields, id}) => {
 						const virtualHost =
-							customFields[OrderCustomFields.VIRTUAL_HOST];
+							customFields[OrderCustomFields.TRIAL_VIRTUAL_HOST];
 
 						return (
 							<div onClick={(event) => event.stopPropagation()}>

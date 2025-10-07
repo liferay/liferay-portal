@@ -34,6 +34,7 @@ import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
 import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.util.FaroThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -42,9 +43,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.Date;
@@ -399,13 +397,9 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 				faroProject, "UpdateDynamicMembershipsNanite",
 				HashMapBuilder.<String, Object>put(
 					"dateModified",
-					() -> {
-						DateFormat dateFormat = new SimpleDateFormat(
-							"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-						return dateFormat.format(
-							new Date(System.currentTimeMillis() - Time.MONTH));
-					}
+					() -> DateUtil.formatDate(
+						new Date(System.currentTimeMillis() - Time.MONTH),
+						DateUtil.PATTERN_DATE_TIME)
 				).put(
 					"individualSegmentJSONObject",
 					HashMapBuilder.<String, Object>put(

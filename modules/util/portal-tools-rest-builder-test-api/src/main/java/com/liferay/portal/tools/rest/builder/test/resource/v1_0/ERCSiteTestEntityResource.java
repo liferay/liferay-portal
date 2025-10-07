@@ -50,8 +50,8 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ERCSiteTestEntityResource {
 
 	public void deleteSiteERCSiteTestEntity(
-			String ercSiteTestEntityExternalReferenceCode,
-			String siteExternalReferenceCode)
+			String siteExternalReferenceCode,
+			String ercSiteTestEntityExternalReferenceCode)
 		throws Exception;
 
 	public Page<ERCSiteTestEntity> getSiteERCSiteTestEntitiesPage(
@@ -59,8 +59,14 @@ public interface ERCSiteTestEntityResource {
 		throws Exception;
 
 	public ERCSiteTestEntity getSiteERCSiteTestEntity(
-			String ercSiteTestEntityExternalReferenceCode,
-			String siteExternalReferenceCode)
+			String siteExternalReferenceCode,
+			String ercSiteTestEntityExternalReferenceCode)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getSiteERCSiteTestEntityPermissionsPage(
+				String siteExternalReferenceCode,
+				String ercSiteTestEntityExternalReferenceCode, String roleNames)
 		throws Exception;
 
 	public Response postSiteERCSiteTestEntitiesPageExportBatch(
@@ -78,9 +84,16 @@ public interface ERCSiteTestEntityResource {
 		throws Exception;
 
 	public ERCSiteTestEntity putSiteERCSiteTestEntity(
-			String ercSiteTestEntityExternalReferenceCode,
 			String siteExternalReferenceCode,
+			String ercSiteTestEntityExternalReferenceCode,
 			ERCSiteTestEntity ercSiteTestEntity)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putSiteERCSiteTestEntityPermissionsPage(
+				String siteExternalReferenceCode,
+				String ercSiteTestEntityExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

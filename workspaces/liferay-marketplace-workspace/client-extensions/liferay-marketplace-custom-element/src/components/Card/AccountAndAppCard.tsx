@@ -23,7 +23,12 @@ export function AccountAndAppCard({
 	return (
 		<div className={classNames('card-container', className)}>
 			<div className="card-logo">
-				<img alt="logo" className="card-logo-image" src={logo} />
+				<img
+					alt="logo"
+					className="card-logo-image"
+					draggable="false"
+					src={logo}
+				/>
 			</div>
 
 			<div className="card-info">

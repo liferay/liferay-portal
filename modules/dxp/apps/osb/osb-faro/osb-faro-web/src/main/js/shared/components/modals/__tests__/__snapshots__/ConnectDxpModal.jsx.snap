@@ -118,7 +118,7 @@ exports[`ConnectDXPModal renders 1`] = `
           >
             <a
               class=""
-              href="https://learn.liferay.com/analytics-cloud/latest/en/connecting-data-sources/connecting-liferay-dxp-to-analytics-cloud.html"
+              href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/getting-started/connecting-liferay-dxp-to-analytics-cloud"
               rel="noreferrer noopener"
               target="_blank"
             >

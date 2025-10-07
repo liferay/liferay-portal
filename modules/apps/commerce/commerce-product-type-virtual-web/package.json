@@ -1,0 +1,12 @@
+{
+	"dependencies": {
+	},
+	"main": "js/index.js",
+	"name": "@liferay/commerce-product-type-virtual-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format"
+	},
+	"version": "4.0.59"
+}

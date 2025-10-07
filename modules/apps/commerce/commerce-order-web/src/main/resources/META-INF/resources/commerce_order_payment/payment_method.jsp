@@ -30,10 +30,10 @@ long commerceOrderId = commerceOrder.getCommerceOrderId();
 			).build()
 		%>'
 		dataProviderKey="<%= CommerceOrderFDSNames.PAYMENT_METHODS %>"
+		defaultSelectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getCommercePaymentMethodKey())) %>"
 		formName="fm"
 		id="<%= CommerceOrderFDSNames.PAYMENT_METHODS %>"
 		itemsPerPage="<%= 10 %>"
-		selectedItems="<%= Collections.singletonList(String.valueOf(commerceOrder.getCommercePaymentMethodKey())) %>"
 		selectedItemsKey="paymentMethodKey"
 		selectionType="single"
 	/>

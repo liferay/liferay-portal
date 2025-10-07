@@ -13,6 +13,7 @@ import com.liferay.project.templates.extensions.util.ProjectTemplatesUtil;
 import com.liferay.project.templates.extensions.util.Validator;
 import com.liferay.project.templates.extensions.util.VersionUtil;
 import com.liferay.project.templates.extensions.util.WorkspaceUtil;
+import com.liferay.project.templates.internal.util.JakartaCompatabilityUtil;
 
 import java.io.File;
 
@@ -159,6 +160,11 @@ public class ProjectGenerator {
 			projectTemplateCustomizer.onAfterGenerateProject(
 				projectTemplatesArgs, destinationDir,
 				archetypeGenerationResult);
+		}
+
+		if (VersionUtil.isJakartaCompatibleVersion(liferayVersion)) {
+			JakartaCompatabilityUtil.updateForJakarta(
+				new File(destinationDir, artifactId));
 		}
 
 		return archetypeGenerationResult;

@@ -54,7 +54,7 @@ definition {
 			value1 = ${name});
 
 		Type(
-			inputFieldId = "primaryRecipients",
+			inputFieldId = "to",
 			locator1 = "TextInput#INPUT_ID",
 			value1 = ${entryTo});
 
@@ -75,14 +75,14 @@ definition {
 
 		if (isSet(bcc)) {
 			Type(
-				inputFieldId = "secondaryRecipientsBCC",
+				inputFieldId = "bcc",
 				locator1 = "TextInput#INPUT_ID",
 				value1 = ${bcc});
 		}
 
 		if (isSet(cc)) {
 			Type(
-				inputFieldId = "secondaryRecipientsCC",
+				inputFieldId = "cc",
 				locator1 = "TextInput#INPUT_ID",
 				value1 = ${cc});
 		}

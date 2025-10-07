@@ -39,7 +39,8 @@
 	flex: 1;
 	overflow-y: auto;
 
-	&::-webkit-scrollbar {
+	&::-webkit-scrollbar,
+	.inline-scroller::-webkit-scrollbar {
 		width: 5px;
 
 		&-track {

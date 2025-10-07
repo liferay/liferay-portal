@@ -7,7 +7,7 @@
 }
 
 .public-footer h3 {
-	color: #00318f;
+	color: #282934;
 }
 
 .public-footer .contact-container {
@@ -22,7 +22,7 @@
 
 .public-footer .footer-content {
 	border-radius: 16px;
-	max-width: 1358px;
+	max-width: 1366px;
 }
 
 .public-footer .footer-copyright {
@@ -43,7 +43,7 @@
 }
 
 .public-footer .max-nav {
-	max-width: 1294px;
+	max-width: 1366px;
 }
 
 .public-footer .social-icons {

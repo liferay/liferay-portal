@@ -16,8 +16,10 @@ import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.info.item.updater.InfoItemFieldValuesUpdater;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
@@ -237,7 +239,11 @@ public class TranslationEntryLocalServiceImpl
 		try {
 			return _xliffTranslationInfoItemFieldValuesImporter.
 				importInfoItemFieldValues(
-					groupId, new InfoItemReference(className, classPK),
+					groupId,
+					new InfoItemReference(
+						StringUtil.replace(
+							className, CharPool.UNDERLINE, CharPool.POUND),
+						classPK),
 					new ByteArrayInputStream(content.getBytes()));
 		}
 		catch (IOException ioException) {

@@ -5,8 +5,10 @@
 
 package com.liferay.object.rest.internal.resource.v1_0;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.internal.security.permission.LiberalPermissionChecker;
 import com.liferay.object.rest.resource.v1_0.CollaboratorResource;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -40,6 +42,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -56,6 +59,7 @@ public class CollaboratorResourceFactoryImpl
 		ExpressionConvert<Filter> expressionConvert,
 		FilterParserProvider filterParserProvider,
 		GroupLocalService groupLocalService,
+		Map<Long, ObjectDefinition> objectDefinitions,
 		ResourceActionLocalService resourceActionLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
@@ -68,6 +72,7 @@ public class CollaboratorResourceFactoryImpl
 		_expressionConvert = expressionConvert;
 		_filterParserProvider = filterParserProvider;
 		_groupLocalService = groupLocalService;
+		_objectDefinitions = objectDefinitions;
 		_resourceActionLocalService = resourceActionLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_roleLocalService = roleLocalService;
@@ -214,8 +219,9 @@ public class CollaboratorResourceFactoryImpl
 		collaboratorResourceImpl.setContextAcceptLanguage(
 			new AcceptLanguageImpl(httpServletRequest, preferredLocale, user));
 
-		collaboratorResourceImpl.setContextCompany(
-			_companyLocalService.getCompany(user.getCompanyId()));
+		Company company = _companyLocalService.getCompany(user.getCompanyId());
+
+		collaboratorResourceImpl.setContextCompany(company);
 
 		collaboratorResourceImpl.setContextHttpServletRequest(
 			httpServletRequest);
@@ -226,6 +232,8 @@ public class CollaboratorResourceFactoryImpl
 		collaboratorResourceImpl.setExpressionConvert(_expressionConvert);
 		collaboratorResourceImpl.setFilterParserProvider(_filterParserProvider);
 		collaboratorResourceImpl.setGroupLocalService(_groupLocalService);
+		collaboratorResourceImpl.setObjectDefinition(
+			_objectDefinitions.get(company.getCompanyId()));
 		collaboratorResourceImpl.setResourceActionLocalService(
 			_resourceActionLocalService);
 		collaboratorResourceImpl.setResourcePermissionLocalService(
@@ -253,6 +261,7 @@ public class CollaboratorResourceFactoryImpl
 	private final ExpressionConvert<Filter> _expressionConvert;
 	private final FilterParserProvider _filterParserProvider;
 	private final GroupLocalService _groupLocalService;
+	private final Map<Long, ObjectDefinition> _objectDefinitions;
 	private final ResourceActionLocalService _resourceActionLocalService;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;

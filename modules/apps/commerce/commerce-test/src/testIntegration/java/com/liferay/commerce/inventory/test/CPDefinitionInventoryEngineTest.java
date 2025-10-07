@@ -80,7 +80,7 @@ public class CPDefinitionInventoryEngineTest {
 				_commerceCatalog.getGroupId(),
 				masterCPConfigurationList.getCPConfigurationListId(), false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
-				0, true);
+				0, true, new ServiceContext());
 
 		_cpInstance = CPTestUtil.addCPInstanceFromCatalog(
 			_commerceCatalog.getGroupId());
@@ -91,10 +91,10 @@ public class CPDefinitionInventoryEngineTest {
 				_cpConfigurationList.getGroupId(),
 				_portal.getClassNameId(CPDefinition.class),
 				_cpInstance.getCPDefinitionId(),
-				_cpConfigurationList.getCPConfigurationListId(), 0, "1234",
+				_cpConfigurationList.getCPConfigurationListId(), 0, "1,234.00",
 				true, 0, "cpde", 1.0, true, true, true, 1.0, "lowstoc",
 				BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ONE, BigDecimal.ONE,
-				true, true, 1.0, true, true, true, 1.0, 1.0);
+				true, true, 1.0, true, true, 1.0, 1.0);
 	}
 
 	@Test

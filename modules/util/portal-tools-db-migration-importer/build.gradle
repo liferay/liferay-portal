@@ -1,0 +1,59 @@
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+	compileInclude group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileInclude group: "com.mysql", name: "mysql-connector-j", version: "8.3.0"
+	compileInclude group: "com.zaxxer", name: "HikariCP", version: "4.0.3"
+	compileInclude group: "commons-cli", name: "commons-cli", version: "1.4"
+	compileInclude group: "org.mariadb.jdbc", name: "mariadb-java-client", version: "3.2.0"
+	compileInclude group: "org.postgresql", name: "postgresql", version: "42.4.4"
+	compileInclude group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
+	compileInclude group: "org.slf4j", name: "slf4j-simple", version: "1.7.10"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.lang", version: "5.2.0"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.string", version: "5.3.0"
+	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	compileOnly group: "org.springframework", name: "spring-jdbc", version: "6.2.9"
+	compileOnly project(":core:petra:petra-concurrent")
+	compileOnly project(":core:petra:petra-reflect")
+}
+
+deploy {
+	doLast {
+		File libDir = new File("${destinationDir}", "lib")
+
+		libDir.mkdirs()
+	}
+
+	from "scripts"
+}
+
+distZip {
+	filesMatching("**/*.jar") {
+		it.path = it.name
+	}
+}
+
+distributions {
+	main {
+		contents {
+			from "scripts"
+			into "/"
+		}
+	}
+}
+
+jar {
+	archiveFileName = archiveBaseName.get() + ".jar"
+}
+
+liferayOSGi {
+	expandCompileInclude = true
+}
+
+startScripts {
+	onlyIf {
+		false
+	}
+}

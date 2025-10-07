@@ -46,6 +46,7 @@ import com.liferay.source.formatter.processor.HTMLSourceProcessor;
 import com.liferay.source.formatter.processor.JSONSourceProcessor;
 import com.liferay.source.formatter.processor.JSPSourceProcessor;
 import com.liferay.source.formatter.processor.JSSourceProcessor;
+import com.liferay.source.formatter.processor.JakartaTransformSourceProcessor;
 import com.liferay.source.formatter.processor.JavaSourceProcessor;
 import com.liferay.source.formatter.processor.LDIFSourceProcessor;
 import com.liferay.source.formatter.processor.LFRBuildSourceProcessor;
@@ -362,6 +363,7 @@ public class SourceFormatter {
 		_sourceProcessors.add(new GradleSourceProcessor());
 		_sourceProcessors.add(new GroovySourceProcessor());
 		_sourceProcessors.add(new HTMLSourceProcessor());
+		_sourceProcessors.add(new JakartaTransformSourceProcessor());
 		_sourceProcessors.add(new JavaSourceProcessor());
 		_sourceProcessors.add(new JSONSourceProcessor());
 		_sourceProcessors.add(new JSPSourceProcessor());
@@ -1344,8 +1346,8 @@ public class SourceFormatter {
 		for (String commitMessage : commitMessages) {
 			String[] parts = commitMessage.split(":", 2);
 
-			if ((parts[1].startsWith("Reapply \"") &&
-				 (parts[1].indexOf("This reverts commit") != -1)) ||
+			if ((parts[1].contains("This reverts commit") &&
+				 parts[1].startsWith("Reapply \"")) ||
 				parts[1].startsWith("Revert \"Revert")) {
 
 				throw new Exception(
@@ -1368,7 +1370,7 @@ public class SourceFormatter {
 							"Found formatting issue in SHA ", parts[0], ":\n",
 							"The commit message contains the word \"", keyword,
 							"\", which could reveal potential security ",
-							"vulnerablities. Please see the vulnerability ",
+							"vulnerabilities. Please see the vulnerability ",
 							"keywords that are specified in source-formatter.",
 							"properties in the liferay-portal repository."));
 				}

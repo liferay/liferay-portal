@@ -8,6 +8,7 @@ package com.liferay.object.internal.upgrade.v10_0_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -26,6 +27,7 @@ import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -60,6 +62,31 @@ public class ObjectDefinitionUpgradeProcessTest {
 
 		_assertObjectDefinitionPKObjectFieldPrefix(objectDefinition2, "c_");
 
+		String pkObjectFieldDBColumnName = StringUtil.randomId();
+		String pkObjectFieldName = StringUtil.randomId();
+
+		ObjectDefinition objectDefinition3 =
+			ObjectDefinitionTestUtil.addModifiableSystemObjectDefinition(
+				TestPropsValues.getUserId(), null, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"FDSEntry", pkObjectFieldDBColumnName, pkObjectFieldName,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
+				List.of(
+					new TextObjectFieldBuilder(
+					).userId(
+						TestPropsValues.getUserId()
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"a" + RandomTestUtil.randomString()
+					).build()));
+
+		objectDefinition3 =
+			_objectDefinitionLocalService.publishSystemObjectDefinition(
+				TestPropsValues.getUserId(),
+				objectDefinition3.getObjectDefinitionId());
+
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				_CLASS_NAME, LoggerTestUtil.OFF)) {
 
@@ -79,6 +106,12 @@ public class ObjectDefinitionUpgradeProcessTest {
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectDefinition2.getObjectDefinitionId()),
 			"l_");
+
+		Assert.assertEquals(
+			pkObjectFieldDBColumnName,
+			objectDefinition3.getPKObjectFieldDBColumnName());
+		Assert.assertEquals(
+			pkObjectFieldName, objectDefinition3.getPKObjectFieldName());
 	}
 
 	private ObjectDefinition _addModifiableSystemObjectDefinition()
@@ -87,9 +120,9 @@ public class ObjectDefinitionUpgradeProcessTest {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addModifiableSystemObjectDefinition(
 				TestPropsValues.getUserId(), null, false,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				RandomTestUtil.randomLocaleStringMap(),
 				"Test" + RandomTestUtil.randomString(), null, null,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				RandomTestUtil.randomLocaleStringMap(),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
 				Collections.singletonList(
 					ObjectFieldUtil.createObjectField(

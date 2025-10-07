@@ -25,10 +25,6 @@
 		font-size: 16px;
 		margin-bottom: 10;
 	}
-
-	.minium-news-image {
-		background-image: url(${imageURL})
-	}
 </style>
 
 <div class="panel">
@@ -36,11 +32,19 @@
 		<div class="row">
 			<#if entries?has_content>
 				<#list entries as curEntry>
+					<#assign imageURL = curEntry.getCoverImageURL(themeDisplay) />
+
 					<div class="col-12 col-md-3 minium-news">
-						<#assign imageURL = curEntry.getCoverImageURL(themeDisplay) />
 						<#if imageURL??>
+							<style ${nonceAttribute}>
+								#minium-news-image-${curEntry?index} {
+									background-image: url(${imageURL})
+								}
+							</style>
+
 							<div
-								class="thumbnail aspect-ratio-bg-cover cover-image minium-news-image"
+								class="thumbnail aspect-ratio-bg-cover cover-image"
+								id="minium-news-image-${curEntry?index}"
 							>
 							</div>
 						</#if>

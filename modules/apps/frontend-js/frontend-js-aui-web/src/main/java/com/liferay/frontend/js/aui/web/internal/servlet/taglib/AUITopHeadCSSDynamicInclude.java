@@ -18,8 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -44,8 +42,8 @@ public class AUITopHeadCSSDynamicInclude extends BaseDynamicInclude {
 				httpServletRequest);
 
 		printWriter.print(
-			absolutePortalURLBuilder.forBundleStylesheet(
-				_bundleContext.getBundle(), "alloy_ui.css"
+			absolutePortalURLBuilder.forWebContextStylesheet(
+				"frontend-js-aui-web", "/alloy_ui.css"
 			).build());
 
 		printWriter.write(StringPool.QUOTE);
@@ -61,14 +59,7 @@ public class AUITopHeadCSSDynamicInclude extends BaseDynamicInclude {
 			"/html/common/themes/top_head.jsp#post");
 	}
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
-	}
-
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
-
-	private volatile BundleContext _bundleContext;
 
 }

@@ -356,6 +356,12 @@ public class CommerceShipmentItemLocalServiceImpl
 			commerceShipmentId, commerceOrderItemId);
 	}
 
+	@Override
+	public int getValidCommerceShipmentItemsCount(long commerceShipmentId) {
+		return commerceShipmentItemPersistence.countByC_NotC_GteQ(
+			commerceShipmentId, 0L, BigDecimal.ONE);
+	}
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceShipmentItem updateCommerceShipmentItem(

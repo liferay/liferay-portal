@@ -18,7 +18,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -30,6 +29,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UniqueUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -66,6 +68,7 @@ import org.osgi.service.component.annotations.Reference;
 public class LayoutUtilityPageEntryLocalServiceImpl
 	extends LayoutUtilityPageEntryLocalServiceBaseImpl {
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public LayoutUtilityPageEntry addLayoutUtilityPageEntry(
 			String externalReferenceCode, long userId, long groupId, long plid,
@@ -144,9 +147,20 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 			layoutUtilityPageEntryPersistence.findByPrimaryKey(
 				sourceLayoutUtilityPageEntryId);
 
-		String name = _getUniqueCopyName(
-			groupId, sourceLayoutUtilityPageEntry.getName(),
-			sourceLayoutUtilityPageEntry.getType());
+		String name = UniqueUtil.getCopyValue(
+			copyValue -> {
+				LayoutUtilityPageEntry layoutUtilityPageEntry =
+					layoutUtilityPageEntryPersistence.fetchByG_N_T(
+						groupId, copyValue,
+						sourceLayoutUtilityPageEntry.getType());
+
+				if (layoutUtilityPageEntry == null) {
+					return true;
+				}
+
+				return false;
+			},
+			sourceLayoutUtilityPageEntry.getName());
 
 		long masterLayoutPlid = 0;
 
@@ -178,6 +192,7 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		return targetLayoutUtilityPageEntry;
 	}
 
+	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public LayoutUtilityPageEntry deleteLayoutUtilityPageEntry(
@@ -383,6 +398,7 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		return layoutUtilityPageEntryPersistence.update(layoutUtilityPageEntry);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public LayoutUtilityPageEntry updateLayoutUtilityPageEntry(
 			long layoutUtilityPageEntryId, String name)
@@ -568,29 +584,6 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 		}
 	}
 
-	private String _getUniqueCopyName(
-		long groupId, String sourceName, String type) {
-
-		String copy = _language.get(LocaleUtil.getSiteDefault(), "copy");
-
-		String name = StringUtil.appendParentheticalSuffix(sourceName, copy);
-
-		for (int i = 1;; i++) {
-			LayoutUtilityPageEntry layoutUtilityPageEntry =
-				layoutUtilityPageEntryPersistence.fetchByG_N_T(
-					groupId, name, type);
-
-			if (layoutUtilityPageEntry == null) {
-				break;
-			}
-
-			name = StringUtil.appendParentheticalSuffix(
-				sourceName, copy + StringPool.SPACE + i);
-		}
-
-		return name;
-	}
-
 	private void _validateName(
 			long groupId, long layoutUtilityPageEntryId, String name,
 			String type)
@@ -633,9 +626,6 @@ public class LayoutUtilityPageEntryLocalServiceImpl
 
 	@Reference
 	private File _file;
-
-	@Reference
-	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

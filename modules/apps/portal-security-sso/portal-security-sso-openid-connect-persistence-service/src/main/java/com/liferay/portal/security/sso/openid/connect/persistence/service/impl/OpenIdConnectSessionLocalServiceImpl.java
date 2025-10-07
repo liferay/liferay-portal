@@ -6,8 +6,15 @@
 package com.liferay.portal.security.sso.openid.connect.persistence.service.impl;
 
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.security.sso.openid.connect.constants.OpenIdConnectWebKeys;
 import com.liferay.portal.security.sso.openid.connect.persistence.model.OpenIdConnectSession;
 import com.liferay.portal.security.sso.openid.connect.persistence.service.base.OpenIdConnectSessionLocalServiceBaseImpl;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.Date;
 import java.util.List;
@@ -35,6 +42,33 @@ public class OpenIdConnectSessionLocalServiceImpl
 
 		openIdConnectSessionPersistence.removeByC_A_C(
 			companyId, authServerWellKnownURI, clientId);
+	}
+
+	@Override
+	public OpenIdConnectSession fetchCurrentOpenIdConnectSession() {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext == null) {
+			return null;
+		}
+
+		HttpServletRequest httpServletRequest = serviceContext.getRequest();
+
+		if (httpServletRequest == null) {
+			return null;
+		}
+
+		HttpSession httpSession = httpServletRequest.getSession(false);
+
+		if (httpSession == null) {
+			return null;
+		}
+
+		return openIdConnectSessionPersistence.fetchByPrimaryKey(
+			GetterUtil.getLong(
+				httpSession.getAttribute(
+					OpenIdConnectWebKeys.OPEN_ID_CONNECT_SESSION_ID)));
 	}
 
 	@Override

@@ -99,13 +99,13 @@ public class PageSettingsSerDes {
 				String.valueOf(pageSettings.getHiddenFromNavigation()));
 		}
 
-		if (pageSettings.getNavigationMenuSettings() == null) {
-			map.put("navigationMenuSettings", null);
+		if (pageSettings.getNavigationSettings() == null) {
+			map.put("navigationSettings", null);
 		}
 		else {
 			map.put(
-				"navigationMenuSettings",
-				String.valueOf(pageSettings.getNavigationMenuSettings()));
+				"navigationSettings",
+				String.valueOf(pageSettings.getNavigationSettings()));
 		}
 
 		if (pageSettings.getOpenGraphSettings() == null) {
@@ -115,6 +115,21 @@ public class PageSettingsSerDes {
 			map.put(
 				"openGraphSettings",
 				String.valueOf(pageSettings.getOpenGraphSettings()));
+		}
+
+		if (pageSettings.getPriority() == null) {
+			map.put("priority", null);
+		}
+		else {
+			map.put("priority", String.valueOf(pageSettings.getPriority()));
+		}
+
+		if (pageSettings.getQueryString() == null) {
+			map.put("queryString", null);
+		}
+		else {
+			map.put(
+				"queryString", String.valueOf(pageSettings.getQueryString()));
 		}
 
 		if (pageSettings.getSeoSettings() == null) {
@@ -159,11 +174,17 @@ public class PageSettingsSerDes {
 				return false;
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "navigationMenuSettings")) {
+						jsonParserFieldName, "navigationSettings")) {
 
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "openGraphSettings")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "priority")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "queryString")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "seoSettings")) {
@@ -231,11 +252,11 @@ public class PageSettingsSerDes {
 				}
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "navigationMenuSettings")) {
+						jsonParserFieldName, "navigationSettings")) {
 
 				if (jsonParserFieldValue != null) {
-					pageSettings.setNavigationMenuSettings(
-						NavigationMenuSettingsSerDes.toDTO(
+					pageSettings.setNavigationSettings(
+						NavigationSettingsSerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -244,6 +265,17 @@ public class PageSettingsSerDes {
 					pageSettings.setOpenGraphSettings(
 						OpenGraphSettingsSerDes.toDTO(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "priority")) {
+				if (jsonParserFieldValue != null) {
+					pageSettings.setPriority(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "queryString")) {
+				if (jsonParserFieldValue != null) {
+					pageSettings.setQueryString((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "seoSettings")) {

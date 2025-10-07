@@ -251,6 +251,13 @@ export class DisplayPageTemplatesPage {
 			await this.page.getByRole('link', {name: folderName}).click();
 
 			await this.page.getByText(folderName, {exact: true}).waitFor();
+
+			await clickAndExpectToBeVisible({
+				target: this.page
+					.locator('.breadcrumb-item')
+					.getByText(folderName),
+				trigger: this.page.getByRole('link', {name: folderName}),
+			});
 		}
 
 		await clickAndExpectToBeVisible({

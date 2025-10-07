@@ -14,11 +14,11 @@ import com.liferay.portal.kernel.json.JSONObject;
  */
 public interface FragmentEntryValidator {
 
-	public void validateConfiguration(String configuration)
+	public void validateConfiguration(JSONObject configurationJSONObject)
 		throws FragmentEntryConfigurationException;
 
 	public default void validateConfigurationValues(
-			String configuration, JSONObject valuesJSONObject)
+			JSONObject configurationJSONObject, JSONObject valuesJSONObject)
 		throws FragmentEntryConfigurationException {
 	}
 

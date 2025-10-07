@@ -5,7 +5,7 @@
 
 package com.liferay.portal.search.web.internal.display.context;
 
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 /**
  * @author André de Oliveira

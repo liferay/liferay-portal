@@ -52,14 +52,18 @@ public class AssetLibraryTestEntitySerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
-		if (assetLibraryTestEntity.getAssetLibraryId() != null) {
+		if (assetLibraryTestEntity.getAssetLibraryKey() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"assetLibraryId\": ");
+			sb.append("\"assetLibraryKey\": ");
 
-			sb.append(assetLibraryTestEntity.getAssetLibraryId());
+			sb.append("\"");
+
+			sb.append(_escape(assetLibraryTestEntity.getAssetLibraryKey()));
+
+			sb.append("\"");
 		}
 
 		if (assetLibraryTestEntity.getDateCreated() != null) {
@@ -169,13 +173,13 @@ public class AssetLibraryTestEntitySerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
-		if (assetLibraryTestEntity.getAssetLibraryId() == null) {
-			map.put("assetLibraryId", null);
+		if (assetLibraryTestEntity.getAssetLibraryKey() == null) {
+			map.put("assetLibraryKey", null);
 		}
 		else {
 			map.put(
-				"assetLibraryId",
-				String.valueOf(assetLibraryTestEntity.getAssetLibraryId()));
+				"assetLibraryKey",
+				String.valueOf(assetLibraryTestEntity.getAssetLibraryKey()));
 		}
 
 		if (assetLibraryTestEntity.getDateCreated() == null) {
@@ -244,7 +248,7 @@ public class AssetLibraryTestEntitySerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "assetLibraryId")) {
+			if (Objects.equals(jsonParserFieldName, "assetLibraryKey")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -273,10 +277,10 @@ public class AssetLibraryTestEntitySerDes {
 			AssetLibraryTestEntity assetLibraryTestEntity,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "assetLibraryId")) {
+			if (Objects.equals(jsonParserFieldName, "assetLibraryKey")) {
 				if (jsonParserFieldValue != null) {
-					assetLibraryTestEntity.setAssetLibraryId(
-						Long.valueOf((String)jsonParserFieldValue));
+					assetLibraryTestEntity.setAssetLibraryKey(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {

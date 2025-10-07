@@ -60,14 +60,6 @@ export function ObjectRelationshipInheritanceCheckbox({
 					{Liferay.Language.get(
 						'enable-inheritance-to-share-settings-between-related-data-models'
 					)}
-					&nbsp;
-					<LearnResourcesContext.Provider value={learnResources}>
-						<LearnMessage
-							className="alert-link"
-							resource="object-web"
-							resourceKey="relationships"
-						/>
-					</LearnResourcesContext.Provider>
 				</ClayPopover>
 			</div>
 
@@ -76,8 +68,16 @@ export function ObjectRelationshipInheritanceCheckbox({
 				title={`${Liferay.Language.get('info')}:`}
 			>
 				{Liferay.Language.get(
-					'when-enabled,-permissions-and-workflow-are-inherited,-all-api-endpoints-are-grouped-under-the-parent,-and-the-relationship-field-is-always-mandatory'
+					'when-enabled-and-the-relationship-field-is-filled-permissions-are-inherited'
 				)}
+				&nbsp;
+				<LearnResourcesContext.Provider value={learnResources}>
+					<LearnMessage
+						className="alert-link"
+						resource="object-web"
+						resourceKey="inheritance-relationships"
+					/>
+				</LearnResourcesContext.Provider>
 			</ClayAlert>
 		</>
 	);

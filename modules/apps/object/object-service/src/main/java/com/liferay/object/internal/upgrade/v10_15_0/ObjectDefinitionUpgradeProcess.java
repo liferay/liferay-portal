@@ -41,8 +41,8 @@ public class ObjectDefinitionUpgradeProcess extends UpgradeProcess {
 				SQLTransformer.transform(
 					StringBundler.concat(
 						"select companyId, objectDefinitionId from ",
-						"ObjectDefinition where modifiable = [$TRUE$] and ",
-						"storageType ='",
+						"ObjectDefinition where friendlyURLSeparator is null ",
+						"and modifiable = [$TRUE$] and storageType ='",
 						ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT, "'")));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				"update ObjectDefinition set friendlyURLSeparator = ? where " +

@@ -66,8 +66,8 @@ public class CPConfigurationEntryLocalServiceUtil {
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
 
 		return getService().addCPConfigurationEntry(
@@ -78,7 +78,7 @@ public class CPConfigurationEntryLocalServiceUtil {
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	/**
@@ -333,13 +333,6 @@ public class CPConfigurationEntryLocalServiceUtil {
 		return getService().getCPConfigurationEntries(classNameId, classPK);
 	}
 
-	public static List<CPConfigurationEntry> getCPConfigurationEntries(
-		long classNameId, long classPK, boolean visible) {
-
-		return getService().getCPConfigurationEntries(
-			classNameId, classPK, visible);
-	}
-
 	/**
 	 * Returns all the cp configuration entries matching the UUID and company.
 	 *
@@ -491,8 +484,8 @@ public class CPConfigurationEntryLocalServiceUtil {
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws PortalException {
 
 		return getService().updateCPConfigurationEntry(
@@ -502,7 +495,7 @@ public class CPConfigurationEntryLocalServiceUtil {
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	public static CPConfigurationEntryLocalService getService() {

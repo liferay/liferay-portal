@@ -30,8 +30,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -51,6 +52,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -142,13 +144,18 @@ public class AnalyticsCloudClient {
 	}
 
 	public AnalyticsDataSource disconnectAnalyticsDataSource(
-			AnalyticsConfiguration analyticsConfiguration)
+			AnalyticsConfiguration analyticsConfiguration, Company company)
 		throws Exception {
 
 		try {
 			Http.Options options = _getOptions(analyticsConfiguration);
 
-			options.addHeader(HttpHeaders.CONTENT_LENGTH, "0");
+			options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
+			options.setBody(
+				JSONUtil.put(
+					"url", company.getPortalURL(0)
+				).toString(),
+				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
 			options.setLocation(
 				String.format(
 					"%s/api/1.0/data-sources/%s/disconnect",
@@ -478,7 +485,21 @@ public class AnalyticsCloudClient {
 				}
 
 				return JSONUtil.put(
-					"id", String.valueOf(group.getClassPK())
+					"id",
+					() -> {
+						if (!Objects.equals(
+								group.getClassNameId(),
+								PortalUtil.getClassNameId(Group.class)) &&
+							!Objects.equals(
+								group.getClassNameId(),
+								PortalUtil.getClassNameId(
+									Organization.class))) {
+
+							return String.valueOf(group.getClassPK());
+						}
+
+						return String.valueOf(group.getGroupId());
+					}
 				).put(
 					"name",
 					() -> {

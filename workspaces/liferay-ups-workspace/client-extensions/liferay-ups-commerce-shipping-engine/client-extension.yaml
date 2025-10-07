@@ -3,7 +3,7 @@ assemble:
 liferay-ups-commerce-shipping-engine:
     key: liferay-ups-commerce-shipping-engine
     name: Liferay UPS Commerce Shipping Engine
-    oAuth2ApplicationExternalReferenceCode: liferay-ups-commerce-shipping-engine-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-ups-commerce-shipping-engine-oaua
     shippingEngineTypeSettings:
         clientId:
         clientSecret:
@@ -18,7 +18,7 @@ liferay-ups-commerce-shipping-engine:
         shipperPostalCode:
         simpleRateCode:
     type: commerceShippingEngine
-liferay-ups-commerce-shipping-engine-oauth-application-user-agent:
+liferay-ups-commerce-shipping-engine-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay UPS Commerce Shipping Engine OAuth Application User Agent

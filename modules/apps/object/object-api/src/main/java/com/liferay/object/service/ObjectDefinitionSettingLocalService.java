@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -283,6 +284,10 @@ public interface ObjectDefinitionSettingLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getObjectDefinitionSettingsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, ObjectDefinitionSetting> getObjectDefinitionSettingsMap(
+		long companyId, String name);
 
 	/**
 	 * Returns the OSGi service identifier.

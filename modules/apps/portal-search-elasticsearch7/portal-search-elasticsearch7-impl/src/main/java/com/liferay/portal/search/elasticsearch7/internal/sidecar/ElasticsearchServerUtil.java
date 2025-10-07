@@ -5,11 +5,20 @@
 
 package com.liferay.portal.search.elasticsearch7.internal.sidecar;
 
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
+import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.process.ProcessException;
 import com.liferay.petra.reflect.ReflectionUtil;
 
+import java.io.InputStream;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -20,12 +29,53 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.elasticsearch.cli.ExitCodes;
-import org.elasticsearch.node.Node;
+import org.elasticsearch.common.hash.MessageDigests;
+import org.elasticsearch.common.io.stream.OutputStreamStreamOutput;
+import org.elasticsearch.common.io.stream.StreamOutput;
+import org.elasticsearch.common.logging.LogConfigurator;
+import org.elasticsearch.common.settings.KeyStoreWrapper;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.BoundTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.http.HttpServerTransport;
+import org.elasticsearch.xcontent.XContentType;
 
 /**
  * @author Tina Tian
  */
 public class ElasticsearchServerUtil {
+
+	public static String getAddress() throws ProcessException {
+		try {
+			ClassLoader classLoader =
+				ElasticsearchServerUtil.class.getClassLoader();
+
+			Method getInstanceMethod = ReflectionUtil.getDeclaredMethod(
+				classLoader.loadClass(
+					"org.elasticsearch.injection.guice.Injector"),
+				"getInstance", Class.class);
+			Method injectorMethod = ReflectionUtil.getDeclaredMethod(
+				classLoader.loadClass("org.elasticsearch.node.Node"),
+				"injector");
+
+			HttpServerTransport httpServerTransport =
+				(HttpServerTransport)getInstanceMethod.invoke(
+					injectorMethod.invoke(
+						_nodeField.get(_instanceField.get(null))),
+					HttpServerTransport.class);
+
+			BoundTransportAddress boundTransportAddress =
+				httpServerTransport.boundAddress();
+
+			TransportAddress publishAddress =
+				boundTransportAddress.publishAddress();
+
+			return publishAddress.toString();
+		}
+		catch (Exception exception) {
+			throw new ProcessException(exception);
+		}
+	}
 
 	public static void shutdown() {
 		try {
@@ -42,20 +92,26 @@ public class ElasticsearchServerUtil {
 		_shutdownCountDownLatch.countDown();
 	}
 
-	public static Node start(String[] arguments) throws ProcessException {
-		try {
-			_mainMethod.invoke(null, new Object[] {arguments});
+	public static void start() throws ProcessException {
+		InputStream originalSystemInInputStream = System.in;
+
+		try (UnsyncByteArrayInputStream unsyncByteArrayInputStream =
+				new UnsyncByteArrayInputStream(_getSidecarServerArgs())) {
+
+			System.setIn(unsyncByteArrayInputStream);
+
+			_mainMethod.invoke(null, (Object)null);
 
 			System.setSecurityManager(null);
 
 			_addShutdownHook();
-
-			return (Node)_nodeField.get(_instanceField.get(null));
 		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
+		catch (Exception exception) {
 			throw new ProcessException(
-				"Unable to start elasticsearch server",
-				reflectiveOperationException);
+				"Unable to start Elasticsearch server", exception);
+		}
+		finally {
+			System.setIn(originalSystemInInputStream);
 		}
 	}
 
@@ -114,6 +170,66 @@ public class ElasticsearchServerUtil {
 		}
 	}
 
+	private static byte[] _getSidecarServerArgs() {
+		try (UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+				new UnsyncByteArrayOutputStream();
+			StreamOutput streamOutput = new OutputStreamStreamOutput(
+				unsyncByteArrayOutputStream)) {
+
+			streamOutput.writeBoolean(false);
+			streamOutput.writeBoolean(false);
+			streamOutput.writeOptionalString(null);
+			streamOutput.writeString(KeyStoreWrapper.class.getName());
+
+			try (KeyStoreWrapper keyStoreWrapper = KeyStoreWrapper.create()) {
+				streamOutput.writeInt(keyStoreWrapper.getFormatVersion());
+				streamOutput.writeBoolean(keyStoreWrapper.hasPassword());
+				streamOutput.writeBoolean(false);
+				streamOutput.writeVInt(1);
+				streamOutput.writeString(KeyStoreWrapper.SEED_SETTING.getKey());
+
+				ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(
+					ElasticsearchServerUtil.class.getSimpleName());
+
+				byte[] bytes = byteBuffer.array();
+
+				MessageDigest messageDigest = MessageDigests.sha256();
+
+				streamOutput.writeByteArray(bytes);
+				streamOutput.writeByteArray(messageDigest.digest(bytes));
+				streamOutput.writeBoolean(false);
+			}
+
+			Method method = ReflectionUtil.getDeclaredMethod(
+				LogConfigurator.class, "configureESLogging");
+
+			method.invoke(null);
+
+			Settings.Builder builder = Settings.builder();
+
+			builder.loadFromSource(
+				System.getProperty("sidecar.settings"), XContentType.YAML);
+
+			Settings settings = builder.build();
+
+			method = ReflectionUtil.getDeclaredMethod(
+				Settings.class, "writeTo", new Class<?>[] {StreamOutput.class});
+
+			method.invoke(settings, streamOutput);
+
+			streamOutput.writeString(System.getProperty("es.path.conf"));
+			streamOutput.writeString(settings.get("path.logs"));
+
+			streamOutput.flush();
+
+			return unsyncByteArrayOutputStream.toByteArray();
+		}
+		catch (Exception exception) {
+			throw new IllegalStateException(
+				"Unable to prepare sidecar server arguments", exception);
+		}
+	}
+
 	private static final Logger _logger = LogManager.getLogger(
 		ElasticsearchServerUtil.class);
 
@@ -134,22 +250,17 @@ public class ElasticsearchServerUtil {
 				classLoader.loadClass("java.lang.ApplicationShutdownHooks"),
 				"hooks");
 
-			_mainMethod = ReflectionUtil.getDeclaredMethod(
-				classLoader.loadClass(
-					"org.elasticsearch.bootstrap.Elasticsearch"),
-				"main", String[].class);
-
-			Class<?> bootstrapClass = classLoader.loadClass(
-				"org.elasticsearch.bootstrap.Bootstrap");
+			Class<?> elasticsearchClass = classLoader.loadClass(
+				"org.elasticsearch.bootstrap.Elasticsearch");
 
 			_instanceField = ReflectionUtil.getDeclaredField(
-				bootstrapClass, "INSTANCE");
-
+				elasticsearchClass, "INSTANCE");
+			_mainMethod = ReflectionUtil.getDeclaredMethod(
+				elasticsearchClass, "main", String[].class);
 			_nodeField = ReflectionUtil.getDeclaredField(
-				bootstrapClass, "node");
-
+				elasticsearchClass, "node");
 			_stopMethod = ReflectionUtil.getDeclaredMethod(
-				bootstrapClass, "stop");
+				elasticsearchClass, "shutdown");
 		}
 		catch (Exception exception) {
 			throw new ExceptionInInitializerError(exception);

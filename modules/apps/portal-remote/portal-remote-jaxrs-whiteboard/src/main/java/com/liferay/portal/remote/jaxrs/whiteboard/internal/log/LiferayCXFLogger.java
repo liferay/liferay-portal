@@ -18,7 +18,6 @@ import org.apache.cxf.common.logging.AbstractDelegatingLogger;
  * Log}.
  *
  * @author Tomas Polesovsky
- * @see    com.liferay.portal.kernel.log.Jdk14LogImpl
  * @review
  */
 public class LiferayCXFLogger extends AbstractDelegatingLogger {

@@ -8,7 +8,7 @@ package com.liferay.journal.web.internal.frontend.taglib.form.navigator;
 import com.liferay.frontend.taglib.form.navigator.FormNavigatorEntry;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import jakarta.servlet.ServletContext;
 

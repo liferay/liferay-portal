@@ -232,8 +232,7 @@ public class DB2DB extends BaseDB {
 	@Override
 	public String getRecreateSQL(String databaseName) {
 		return StringBundler.concat(
-			"drop database ", databaseName, ";\n", "create database ",
-			databaseName,
+			"drop database ", databaseName, ";\ncreate database ", databaseName,
 			" pagesize 32768 temporary tablespace managed by automatic ",
 			"storage;\n");
 	}
@@ -655,8 +654,8 @@ public class DB2DB extends BaseDB {
 	private static final String[] _DB2 = {
 		"--", "1", "0", "'1970-01-01-00.00.00.000000'", "current timestamp",
 		" blob", " blob", " decimal(30, 16)", " smallint", " timestamp",
-		" double", " integer", " bigint", " varchar(4000)", " clob", " varchar",
-		" generated always as identity", "commit"
+		" double", " integer", " bigint", " varchar(4000)", " clob(2G)",
+		" varchar", " generated always as identity", "commit"
 	};
 
 	private static final int _SQL_STRING_SIZE = 4000;

@@ -31,10 +31,18 @@ export default function main({
 		modalUtils.isSubmitting();
 
 		const formattedData = {...productData, defaultSku, name: {}};
+		const nameInput = document.getElementById(`${namespace}name`).value;
 
-		formattedData.name[defaultLanguageId] = document.getElementById(
-			`${namespace}name`
-		).value;
+		formattedData.name[defaultLanguageId] = nameInput;
+
+		if (
+			defaultLanguageId === Liferay.ThemeDisplay.getDefaultLanguageId() &&
+			Liferay.ThemeDisplay.getLanguageId() !==
+				Liferay.ThemeDisplay.getDefaultLanguageId()
+		) {
+			formattedData.name[Liferay.ThemeDisplay.getLanguageId()] =
+				nameInput;
+		}
 
 		AdminCatalogResource.createProduct(formattedData)
 			.then((cpDefinition) => {

@@ -16,9 +16,9 @@ import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.model.impl.BaseModelImpl;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -54,16 +54,6 @@ public class FinderCacheImplTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		_properties = HashMapBuilder.<String, Object>put(
-			PropsKeys.VALUE_OBJECT_ENTITY_CACHE_ENABLED, "true"
-		).put(
-			PropsKeys.VALUE_OBJECT_FINDER_CACHE_ENABLED, "true"
-		).put(
-			PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD, "-1"
-		).put(
-			PropsKeys.VALUE_OBJECT_MVCC_ENTITY_CACHE_ENABLED, "true"
-		).build();
-
 		_serializedMultiVMPool = (MultiVMPool)ProxyUtil.newProxyInstance(
 			_classLoader, new Class<?>[] {MultiVMPool.class},
 			new MultiVMPoolInvocationHandler(_classLoader, true));
@@ -157,8 +147,7 @@ public class FinderCacheImplTest {
 
 	@Test
 	public void testThreshold() {
-		_properties.put(
-			PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD, "2");
+		PropsUtil.set(PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD, "2");
 
 		FinderCache finderCache = _activateFinderCache(
 			_notSerializedMultiVMPool);
@@ -194,8 +183,6 @@ public class FinderCacheImplTest {
 
 		ReflectionTestUtil.setFieldValue(
 			finderCacheImpl, "_multiVMPool", multiVMPool);
-		ReflectionTestUtil.setFieldValue(
-			finderCacheImpl, "_props", PropsTestUtil.setProps(_properties));
 
 		finderCacheImpl.activate(
 			(BundleContext)ProxyUtil.newProxyInstance(
@@ -239,7 +226,6 @@ public class FinderCacheImplTest {
 	private static final ClassLoader _classLoader =
 		FinderCacheImplTest.class.getClassLoader();
 	private static MultiVMPool _notSerializedMultiVMPool;
-	private static Map<String, Object> _properties;
 	private static MultiVMPool _serializedMultiVMPool;
 
 	private FinderPath _finderPath;

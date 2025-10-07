@@ -1,0 +1,10 @@
+{
+	"name": "Liferay Cloud Infrastructure",
+	"name_i18n": {
+		"en_US": "Liferay Cloud Infrastructure",
+		"es-ES": "Infraestructura de Liferay Cloud",
+		"ja-JP": "Liferay クラウドインフラストラクチャ",
+		"pt-BR": "Infraestrutura do Liferay Cloud"
+	},
+	"viewableBy": "Anyone"
+}

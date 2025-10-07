@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 
+import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
+
 /**
  * @author Michael Cavalcanti
  */

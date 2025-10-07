@@ -6,6 +6,7 @@
 import React, {Suspense} from 'react';
 
 import Loading from './components/Loading';
+import {MarketplaceProperties} from './utils/attributes';
 
 const lazyRoutes = {
 	'administrator-dashboard': React.lazy(
@@ -13,6 +14,9 @@ const lazyRoutes = {
 			import(
 				'./pages/AdministratorDashboard/AdministratorDashboardRouter'
 			)
+	),
+	'finance-dashboard': React.lazy(
+		() => import('./pages/FinanceDashboard/FinanceDashboardRouter')
 	),
 	'get-app': React.lazy(() => import('./pages/GetApp/GetAppRouter')),
 	'license-agreement': React.lazy(
@@ -34,17 +38,22 @@ const lazyRoutes = {
 	'purchased-apps': React.lazy(
 		() => import('./pages/CustomerDashboard/CustomerDashboardRouter')
 	),
+	'ssa-dashboard': React.lazy(
+		() => import('./pages/SSADashboard/SSADashboardRouter')
+	),
 } as const;
 
 export type RouteType = keyof typeof lazyRoutes;
 
 type AppRoutesProps = {
 	path: RouteType;
-	properties: DefaultProperties;
+	properties: MarketplaceProperties;
 };
 
 export default function Routes({path, properties}: AppRoutesProps) {
-	const Route = lazyRoutes[path] as React.FC<{properties: DefaultProperties}>;
+	const Route = lazyRoutes[path] as React.FC<{
+		properties: MarketplaceProperties;
+	}>;
 
 	if (!Route) {
 		return <h1>Page not found</h1>;

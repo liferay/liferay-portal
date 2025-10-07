@@ -24,6 +24,8 @@ import com.liferay.segments.configuration.SegmentsCompanyConfiguration;
 import com.liferay.segments.configuration.SegmentsConfiguration;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -184,6 +186,9 @@ public class SegmentsConfigurationProviderTest {
 								"roleSegmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				Assert.assertTrue(
 					_segmentsConfigurationProvider.isRoleSegmentationEnabled(
 						TestPropsValues.getCompanyId()));
@@ -223,6 +228,9 @@ public class SegmentsConfigurationProviderTest {
 								"roleSegmentationEnabled", false
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				Assert.assertFalse(
 					_segmentsConfigurationProvider.isRoleSegmentationEnabled(
 						TestPropsValues.getCompanyId()));
@@ -252,6 +260,9 @@ public class SegmentsConfigurationProviderTest {
 							HashMapDictionaryBuilder.<String, Object>put(
 								"roleSegmentationEnabled", true
 							).build())) {
+
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
 
 				Assert.assertTrue(
 					_segmentsConfigurationProvider.isRoleSegmentationEnabled(
@@ -325,6 +336,9 @@ public class SegmentsConfigurationProviderTest {
 								"segmentationEnabled", true
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				Assert.assertTrue(
 					_segmentsConfigurationProvider.isSegmentationEnabled(
 						TestPropsValues.getCompanyId()));
@@ -364,6 +378,9 @@ public class SegmentsConfigurationProviderTest {
 								"segmentationEnabled", false
 							).build())) {
 
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
+
 				Assert.assertFalse(
 					_segmentsConfigurationProvider.isSegmentationEnabled(
 						TestPropsValues.getCompanyId()));
@@ -393,6 +410,9 @@ public class SegmentsConfigurationProviderTest {
 							HashMapDictionaryBuilder.<String, Object>put(
 								"segmentationEnabled", true
 							).build())) {
+
+				_segmentsConfigurationProvider.
+					clearSegmentsCompanyConfigurations();
 
 				Assert.assertTrue(
 					_segmentsConfigurationProvider.isSegmentationEnabled(
@@ -468,25 +488,38 @@ public class SegmentsConfigurationProviderTest {
 						"segmentationEnabled", false
 					).build())) {
 
-			Configuration configuration =
-				_configurationAdmin.createFactoryConfiguration(
-					SegmentsCompanyConfiguration.class.getName() + ".scoped",
-					StringPool.QUESTION);
+			_segmentsConfigurationProvider.updateSegmentsCompanyConfiguration(
+				TestPropsValues.getCompanyId(),
+				new SegmentsCompanyConfiguration() {
 
-			configuration.update(
-				HashMapDictionaryBuilder.<String, Object>put(
-					"companyId", TestPropsValues.getCompanyId()
-				).put(
-					"segmentationEnabled", true
-				).build());
+					@Override
+					public boolean roleSegmentationEnabled() {
+						return false;
+					}
+
+					@Override
+					public boolean segmentationEnabled() {
+						return true;
+					}
+
+				});
+
+			Configuration[] configurations =
+				_configurationAdmin.listConfigurations(
+					"(service.pid=" +
+						SegmentsCompanyConfiguration.class.getName() + "*)");
+
+			Assert.assertEquals(
+				Arrays.toString(configurations), 1, configurations.length);
 
 			_segmentsConfigurationProvider.resetSegmentsCompanyConfiguration(
 				TestPropsValues.getCompanyId());
 
-			Assert.assertFalse(
-				_segmentsConfigurationProvider.
-					isSegmentsCompanyConfigurationDefined(
-						TestPropsValues.getCompanyId()));
+			configurations = _configurationAdmin.listConfigurations(
+				"(service.pid=" + SegmentsCompanyConfiguration.class.getName() +
+					"*)");
+
+			Assert.assertNull(configurations);
 		}
 	}
 

@@ -25,9 +25,6 @@ import com.liferay.layout.list.retriever.SegmentsEntryLayoutListRetriever;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 
@@ -66,19 +63,6 @@ public class AssetEntryListLayoutListRetriever
 				classedModelListObjectReference.getClassPK());
 
 		if (assetListEntry == null) {
-			return InfoPage.of(
-				Collections.emptyList(),
-				layoutListRetrieverContext.getPagination(), 0);
-		}
-
-		if (!StringUtil.equals(
-				assetListEntry.getAssetEntryType(),
-				classedModelListObjectReference.getItemType())) {
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("Asset entry type does not equal item type");
-			}
-
 			return InfoPage.of(
 				Collections.emptyList(),
 				layoutListRetrieverContext.getPagination(), 0);
@@ -196,9 +180,6 @@ public class AssetEntryListLayoutListRetriever
 				return assetRenderer.getAssetObject();
 			});
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetEntryListLayoutListRetriever.class.getName());
 
 	private static final List<InfoFilter> _supportedInfoFilters = Arrays.asList(
 		new CategoriesInfoFilter(), new KeywordsInfoFilter(),

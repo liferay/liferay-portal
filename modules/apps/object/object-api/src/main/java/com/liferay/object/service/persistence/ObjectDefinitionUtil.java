@@ -1394,6 +1394,64 @@ public class ObjectDefinitionUtil {
 	}
 
 	/**
+	 * Returns the object definition where className = &#63; or throws a <code>NoSuchObjectDefinitionException</code> if it could not be found.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition
+	 * @throws NoSuchObjectDefinitionException if a matching object definition could not be found
+	 */
+	public static ObjectDefinition findByClassName(String className)
+		throws com.liferay.object.exception.NoSuchObjectDefinitionException {
+
+		return getPersistence().findByClassName(className);
+	}
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	public static ObjectDefinition fetchByClassName(String className) {
+		return getPersistence().fetchByClassName(className);
+	}
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param className the class name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	public static ObjectDefinition fetchByClassName(
+		String className, boolean useFinderCache) {
+
+		return getPersistence().fetchByClassName(className, useFinderCache);
+	}
+
+	/**
+	 * Removes the object definition where className = &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @return the object definition that was removed
+	 */
+	public static ObjectDefinition removeByClassName(String className)
+		throws com.liferay.object.exception.NoSuchObjectDefinitionException {
+
+		return getPersistence().removeByClassName(className);
+	}
+
+	/**
+	 * Returns the number of object definitions where className = &#63;.
+	 *
+	 * @param className the class name
+	 * @return the number of matching object definitions
+	 */
+	public static int countByClassName(String className) {
+		return getPersistence().countByClassName(className);
+	}
+
+	/**
 	 * Returns all the object definitions where system = &#63;.
 	 *
 	 * @param system the system

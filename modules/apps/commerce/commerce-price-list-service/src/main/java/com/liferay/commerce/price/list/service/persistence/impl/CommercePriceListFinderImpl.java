@@ -104,8 +104,7 @@ public class CommercePriceListFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceList.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceList.commercePriceListId");
 			}
 
 			String[] keywords = _customSQL.keywords(name, true);
@@ -176,8 +175,7 @@ public class CommercePriceListFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceEntry.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceEntry.commercePriceListId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
@@ -354,8 +352,7 @@ public class CommercePriceListFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceList.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceList.commercePriceListId");
 			}
 
 			if (Validator.isNotNull(name)) {
@@ -418,8 +415,7 @@ public class CommercePriceListFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceEntry.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceEntry.commercePriceListId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);

@@ -489,13 +489,14 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 			'<%= randomNamespace %>dynamicInlineScroll',
 			new Liferay.Util.DynamicInlineScroll(
 				{
+					applyNamespaceToCurParam: <%= Validator.isNotNull(namespace) %>,
 					cur: '<%= cur %>',
 					curParam: '<%= curParam %>',
 					forcePost: <%= forcePost %>,
 					formName: '<%= formName %>',
 					initialPages: '<%= initialPages %>',
 					jsCall: '<%= jsCall %>',
-					namespace: '<%= Validator.isNotNull(namespace) ? namespace : id %>',
+					namespace: '<%= namespace %>',
 					pages: '<%= pages %>',
 					randomNamespace: '<%= randomNamespace %>',
 					url: '<%= HtmlUtil.escapeJS(HttpComponentsUtil.removeParameter(url, namespace + curParam)) %>',

@@ -1,0 +1,10 @@
+{
+	"name": "Administration",
+	"name_i18n": {
+		"en_US": "Administration",
+		"es-ES": "Admnistración",
+		"ja-JP": "管理部門",
+		"pt-BR": "Administração"
+	},
+	"viewableBy": "Anyone"
+}

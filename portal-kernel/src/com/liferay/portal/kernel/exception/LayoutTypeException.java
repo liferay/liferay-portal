@@ -10,6 +10,8 @@ package com.liferay.portal.kernel.exception;
  */
 public class LayoutTypeException extends PortalException {
 
+	public static final int EMPTY = 5;
+
 	public static final int FIRST_LAYOUT = 2;
 
 	public static final int FIRST_LAYOUT_PERMISSION = 3;

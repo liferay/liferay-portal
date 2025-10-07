@@ -46,8 +46,9 @@ public class DynamicObjectDefinitionTable
 				continue;
 			}
 
-			_createColumn(
-				objectField.getDBColumnName(), objectField.getDBType());
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				_createColumn(dbColumnName, objectField.getDBType());
+			}
 
 			if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
@@ -88,9 +89,11 @@ public class DynamicObjectDefinitionTable
 				continue;
 			}
 
-			_append(
-				sb, objectField.getBusinessType(),
-				objectField.getDBColumnName(), objectField.getDBType());
+			for (String dbColumnName : objectField.getDBColumnNames()) {
+				_append(
+					sb, objectField.getBusinessType(), dbColumnName,
+					objectField.getDBType());
+			}
 
 			if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {

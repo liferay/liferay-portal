@@ -5,14 +5,19 @@
 
 package com.liferay.document.library.video.internal.servlet.filter;
 
+import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFileVersionException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.video.internal.constants.DLVideoPortletKeys;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.events.EventsProcessorUtil;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -27,6 +32,7 @@ import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.friendly.url.resolver.FileEntryFriendlyURLResolver;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -34,22 +40,21 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.portlet.PortletURL;
 import jakarta.portlet.WindowStateException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
 
 import java.util.List;
 
@@ -73,7 +78,13 @@ public class DLVideoEmbedFilter extends BasePortalFilter {
 	protected void processFilter(
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, FilterChain filterChain)
-		throws IOException, ServletException {
+		throws Exception {
+
+		User user = PortalUtil.getUser(httpServletRequest);
+
+		if (user != null) {
+			PrincipalThreadLocal.setName(user.getUserId());
+		}
 
 		boolean videoEmbed = ParamUtil.getBoolean(
 			httpServletRequest, "videoEmbed");
@@ -91,8 +102,39 @@ public class DLVideoEmbedFilter extends BasePortalFilter {
 				}
 			}
 
-			httpServletResponse.sendRedirect(
-				_getEmbedVideoURL(httpServletRequest));
+			long previewCTCollectionId = ParamUtil.getLong(
+				httpServletRequest, "previewCTCollectionId");
+
+			CTCollection ctCollection =
+				_ctCollectionLocalService.fetchCTCollection(
+					previewCTCollectionId);
+
+			if ((ctCollection != null) &&
+				(ctCollection.getStatus() ==
+					WorkflowConstants.STATUS_APPROVED)) {
+
+				previewCTCollectionId = CTConstants.CT_COLLECTION_ID_PRODUCTION;
+			}
+
+			if (previewCTCollectionId !=
+					CTConstants.CT_COLLECTION_ID_PRODUCTION) {
+
+				try (SafeCloseable safeCloseable =
+						CTCollectionThreadLocal.
+							setCTCollectionIdWithSafeCloseable(
+								previewCTCollectionId)) {
+
+					String embedVideoURL = HttpComponentsUtil.addParameter(
+						_getEmbedVideoURL(httpServletRequest),
+						"previewCTCollectionId", previewCTCollectionId);
+
+					httpServletResponse.sendRedirect(embedVideoURL);
+				}
+			}
+			else {
+				httpServletResponse.sendRedirect(
+					_getEmbedVideoURL(httpServletRequest));
+			}
 		}
 		else {
 			filterChain.doFilter(httpServletRequest, httpServletResponse);
@@ -264,6 +306,9 @@ public class DLVideoEmbedFilter extends BasePortalFilter {
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

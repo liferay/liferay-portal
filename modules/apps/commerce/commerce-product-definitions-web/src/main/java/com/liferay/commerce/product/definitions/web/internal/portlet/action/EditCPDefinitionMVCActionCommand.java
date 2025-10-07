@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.exception.AssetCategoryException;
 import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.commerce.exception.CPDefinitionInventoryAllowedOrderQuantitiesException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMaxOrderQuantityException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMinOrderQuantityException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMultipleOrderQuantityException;
@@ -20,6 +21,7 @@ import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.commerce.product.exception.CPConfigurationEntryAllowedOrderQuantitiesException;
 import com.liferay.commerce.product.exception.CPConfigurationEntryQuantityException;
 import com.liferay.commerce.product.exception.CPDefinitionExpirationDateException;
 import com.liferay.commerce.product.exception.CPDefinitionMetaDescriptionException;
@@ -48,7 +50,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -232,8 +233,12 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			else if (throwable instanceof AssetCategoryException ||
 					 throwable instanceof AssetTagException ||
 					 throwable instanceof
+						 CPConfigurationEntryAllowedOrderQuantitiesException ||
+					 throwable instanceof
 						 CPConfigurationEntryQuantityException ||
 					 throwable instanceof CPDefinitionExpirationDateException ||
+					 throwable instanceof
+						 CPDefinitionInventoryAllowedOrderQuantitiesException ||
 					 throwable instanceof
 						 CPDefinitionInventoryMaxOrderQuantityException ||
 					 throwable instanceof
@@ -769,8 +774,7 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				depth, displayAvailability, displayStockQuantity, freeShipping,
 				height, lowStockActivity, maxOrderQuantity, minOrderQuantity,
 				minStockQuantity, multipleOrderQuantity, purchasable, shippable,
-				shippingExtraPrice, shipSeparately, taxExempt, true, weight,
-				width);
+				shippingExtraPrice, shipSeparately, taxExempt, weight, width);
 		}
 		else {
 			_cpConfigurationEntryService.updateCPConfigurationEntry(
@@ -781,23 +785,18 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 				depth, displayAvailability, displayStockQuantity, freeShipping,
 				height, lowStockActivity, maxOrderQuantity, minOrderQuantity,
 				minStockQuantity, multipleOrderQuantity, purchasable, shippable,
-				shippingExtraPrice, shipSeparately, taxExempt,
-				cpConfigurationEntry.isVisible(), weight, width);
+				shippingExtraPrice, shipSeparately, taxExempt, weight, width);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				cpDefinition.getCompanyId(), "LPD-10889")) {
+		List<CPInstance> cpInstances =
+			_cpInstanceLocalService.getCPDefinitionInstances(
+				cpDefinitionId, WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
 
-			List<CPInstance> cpInstances =
-				_cpInstanceLocalService.getCPDefinitionInstances(
-					cpDefinitionId, WorkflowConstants.STATUS_ANY,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		for (CPInstance cpInstance : cpInstances) {
+			cpInstance.setPurchasable(purchasable);
 
-			for (CPInstance cpInstance : cpInstances) {
-				cpInstance.setPurchasable(purchasable);
-
-				_cpInstanceLocalService.updateCPInstance(cpInstance);
-			}
+			_cpInstanceLocalService.updateCPInstance(cpInstance);
 		}
 	}
 

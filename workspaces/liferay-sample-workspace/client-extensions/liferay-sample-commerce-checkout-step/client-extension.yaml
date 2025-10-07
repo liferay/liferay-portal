@@ -8,13 +8,13 @@ liferay-sample-commerce-checkout-step:
     checkoutStepName: liferay-sample-commerce-checkout-step-name
     checkoutStepOrder: 25
     name: Liferay Sample Commerce Checkout Step
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-checkout-step-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-checkout-step-oaua
     order: true
     sennaDisabled: true
     showControls: true
     type: commerceCheckoutStep
     visible: true
-liferay-sample-commerce-checkout-step-oauth-application-user-agent:
+liferay-sample-commerce-checkout-step-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Sample Commerce Checkout Step OAuth Application User Agent

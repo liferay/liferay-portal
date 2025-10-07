@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -262,16 +263,81 @@ public class BatchEngineExportTaskExecutorTest
 	}
 
 	@Test
+	@TestInfo("LPD-65748")
+	public void testExportBlogPostingsWithMaxItems() throws Throwable {
+		List<BlogsEntry> blogsEntries = addBlogsEntries();
+
+		_batchEngineExportTask =
+			_batchEngineExportTaskLocalService.createBatchEngineExportTask(
+				RandomTestUtil.randomLong(), null, user.getCompanyId(),
+				user.getUserId(), null, BlogPosting.class.getName(), "JSON",
+				BatchEngineTaskExecuteStatus.INITIAL.name(), null, _parameters,
+				null);
+
+		int maxItems = Math.floorDiv(ROWS_COUNT, 2);
+
+		TransactionInvokerUtil.invoke(
+			TransactionConfig.Factory.create(
+				Propagation.REQUIRED, new Class<?>[] {Exception.class}),
+			() -> {
+				BatchEngineExportTaskExecutor.Result result =
+					_batchEngineExportTaskExecutor.execute(
+						_batchEngineExportTask,
+						new BatchEngineExportTaskExecutor.Settings() {
+
+							@Override
+							public int getMaxItems() {
+								return maxItems;
+							}
+
+							@Override
+							public boolean isCompressContent() {
+								return false;
+							}
+
+							@Override
+							public boolean isPersist() {
+								return false;
+							}
+
+						});
+
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
+					StringUtil.read(result.getInputStream()));
+
+				Assert.assertEquals(maxItems, jsonArray.length());
+
+				BatchEngineExportTask resultBatchEngineExportTask =
+					result.getBatchEngineExportTask();
+
+				Assert.assertEquals(
+					BatchEngineTaskExecuteStatus.COMPLETED.toString(),
+					resultBatchEngineExportTask.getExecuteStatus());
+				Assert.assertEquals(
+					maxItems,
+					resultBatchEngineExportTask.getProcessedItemsCount());
+				Assert.assertEquals(
+					blogsEntries.size(),
+					resultBatchEngineExportTask.getTotalItemsCount());
+
+				return null;
+			});
+	}
+
+	@Test
 	@TestInfo("LPD-50699")
 	public void testExportBlogPostingsWithoutPersistingContent()
 		throws Throwable {
 
 		List<BlogsEntry> blogsEntries = addBlogsEntries();
 
+		int batchEngineExportTasksCount =
+			_batchEngineExportTaskLocalService.getBatchEngineExportTasksCount();
+
 		_batchEngineExportTask =
-			_batchEngineExportTaskLocalService.addBatchEngineExportTask(
-				null, user.getCompanyId(), user.getUserId(), null,
-				BlogPosting.class.getName(), "JSON",
+			_batchEngineExportTaskLocalService.createBatchEngineExportTask(
+				RandomTestUtil.randomLong(), null, user.getCompanyId(),
+				user.getUserId(), null, BlogPosting.class.getName(), "JSON",
 				BatchEngineTaskExecuteStatus.INITIAL.name(), null, _parameters,
 				null);
 
@@ -290,7 +356,7 @@ public class BatchEngineExportTaskExecutorTest
 							}
 
 							@Override
-							public boolean isPersistContent() {
+							public boolean isPersist() {
 								return false;
 							}
 
@@ -301,34 +367,27 @@ public class BatchEngineExportTaskExecutorTest
 
 				Assert.assertTrue(jsonArray.length() >= blogsEntries.size());
 
-				_batchEngineExportTask =
-					_batchEngineExportTaskLocalService.getBatchEngineExportTask(
-						_batchEngineExportTask.getBatchEngineExportTaskId());
+				Assert.assertEquals(
+					batchEngineExportTasksCount,
+					_batchEngineExportTaskLocalService.
+						getBatchEngineExportTasksCount());
 
 				BatchEngineExportTask resultBatchEngineExportTask =
 					result.getBatchEngineExportTask();
 
 				Assert.assertEquals(
-					_batchEngineExportTask, resultBatchEngineExportTask);
-				Assert.assertEquals(
-					_batchEngineExportTask.getMvccVersion(),
-					resultBatchEngineExportTask.getMvccVersion());
-
-				Assert.assertEquals(
 					BatchEngineTaskExecuteStatus.COMPLETED.toString(),
-					_batchEngineExportTask.getExecuteStatus());
+					resultBatchEngineExportTask.getExecuteStatus());
 				Assert.assertEquals(
 					blogsEntries.size(),
-					_batchEngineExportTask.getProcessedItemsCount());
+					resultBatchEngineExportTask.getProcessedItemsCount());
 				Assert.assertEquals(
 					blogsEntries.size(),
-					_batchEngineExportTask.getTotalItemsCount());
+					resultBatchEngineExportTask.getTotalItemsCount());
 
-				Blob content = _batchEngineExportTask.getContent();
+				Blob content = resultBatchEngineExportTask.getContent();
 
-				if (content != null) {
-					Assert.assertEquals(0, content.length());
-				}
+				Assert.assertEquals(0, content.length());
 
 				return null;
 			});
@@ -353,7 +412,7 @@ public class BatchEngineExportTaskExecutorTest
 					}
 
 					@Override
-					public boolean isPersistContent() {
+					public boolean isPersist() {
 						return true;
 					}
 

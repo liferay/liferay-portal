@@ -117,7 +117,7 @@ test(
 
 		await page.getByRole('button', {name: 'Done'}).click();
 
-		await page.locator('input[name="lemonSize"]').fill('Small');
+		await page.locator('input[name="ObjectField_lemonSize"]').fill('Small');
 
 		await page.getByRole('button', {name: 'Submit'}).click();
 

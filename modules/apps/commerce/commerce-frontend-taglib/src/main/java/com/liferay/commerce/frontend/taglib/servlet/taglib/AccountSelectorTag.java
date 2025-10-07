@@ -8,6 +8,7 @@ package com.liferay.commerce.frontend.taglib.servlet.taglib;
 import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
+import com.liferay.commerce.configuration.CommerceOrderConfiguration;
 import com.liferay.commerce.configuration.CommerceOrderFieldsConfiguration;
 import com.liferay.commerce.constants.CommerceCheckoutWebKeys;
 import com.liferay.commerce.constants.CommerceConstants;
@@ -100,6 +101,7 @@ public class AccountSelectorTag extends IncludeTag {
 			_currencyCode = commerceCurrency.getCode();
 
 			_editOrderURL = _getEditOrderURL(httpServletRequest);
+			_orderSelectionDisabled = _isOrderSelectionDisabled();
 			_setCurrentAccountURL =
 				PortalUtil.getPortalURL(httpServletRequest) +
 					PortalUtil.getPathContext() +
@@ -180,6 +182,7 @@ public class AccountSelectorTag extends IncludeTag {
 		_cssClasses = StringPool.BLANK;
 		_currencyCode = StringPool.BLANK;
 		_editOrderURL = StringPool.BLANK;
+		_orderSelectionDisabled = false;
 		_setCurrentAccountURL = StringPool.BLANK;
 		_spritemap = StringPool.BLANK;
 		_themeDisplay = null;
@@ -258,6 +261,9 @@ public class AccountSelectorTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			"liferay-commerce:account-selector:hasManageAccountsPermission",
 			_hasManageAccountsPermission());
+		httpServletRequest.setAttribute(
+			"liferay-commerce:account-selector:orderSelectionDisabled",
+			_orderSelectionDisabled);
 		httpServletRequest.setAttribute(
 			"liferay-commerce:account-selector:selectOrderURL", _editOrderURL);
 		httpServletRequest.setAttribute(
@@ -417,6 +423,21 @@ public class AccountSelectorTag extends IncludeTag {
 		return false;
 	}
 
+	private boolean _isOrderSelectionDisabled() throws PortalException {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-58472")) {
+			CommerceOrderConfiguration commerceOrderConfiguration =
+				_configurationProvider.getConfiguration(
+					CommerceOrderConfiguration.class,
+					new GroupServiceSettingsLocator(
+						_commerceChannelGroupId,
+						CommerceConstants.SERVICE_NAME_COMMERCE_ORDER));
+
+			return commerceOrderConfiguration.orderSelectionDisabled();
+		}
+
+		return false;
+	}
+
 	private static final String _PAGE = "/account_selector/page.jsp";
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -442,6 +463,7 @@ public class AccountSelectorTag extends IncludeTag {
 	private String _cssClasses = StringPool.BLANK;
 	private String _currencyCode = StringPool.BLANK;
 	private String _editOrderURL = StringPool.BLANK;
+	private boolean _orderSelectionDisabled;
 	private String _setCurrentAccountURL = StringPool.BLANK;
 	private String _spritemap = StringPool.BLANK;
 	private ThemeDisplay _themeDisplay;

@@ -1,0 +1,21 @@
+{
+	"cpu": 1,
+	"id": "mockmock",
+	"kind": "Deployment",
+	"loadBalancer": {
+		"targetPort": 8282
+	},
+	"memory": 512,
+	"ports": [
+		{
+			"external": true,
+			"port": 2525,
+			"targetPort": 2525
+		},
+		{
+			"external": true,
+			"port": 8282,
+			"targetPort": 8282
+		}
+	]
+}

@@ -46,6 +46,15 @@ public class ListTypeEntryServiceWrapper
 	}
 
 	@Override
+	public com.liferay.list.type.model.ListTypeEntry fetchListTypeEntry(
+			long listTypeDefinitionId, String key)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _listTypeEntryService.fetchListTypeEntry(
+			listTypeDefinitionId, key);
+	}
+
+	@Override
 	public java.util.List<com.liferay.list.type.model.ListTypeEntry>
 			getListTypeEntries(long listTypeDefinitionId, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -79,6 +88,15 @@ public class ListTypeEntryServiceWrapper
 
 		return _listTypeEntryService.getListTypeEntryByExternalReferenceCode(
 			externalReferenceCode, companyId, listTypeDefinitionId);
+	}
+
+	@Override
+	public com.liferay.list.type.model.ListTypeEntry getOrAddEmptyListTypeEntry(
+			long userId, long listTypeDefinitionId, String key)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _listTypeEntryService.getOrAddEmptyListTypeEntry(
+			userId, listTypeDefinitionId, key);
 	}
 
 	/**

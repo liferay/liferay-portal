@@ -1,3 +1,12 @@
+create table SamlIbSloMessage (
+	samlIbSloMessageId LONG not null primary key,
+	companyId LONG,
+	createDate DATE null,
+	samlIdpEntityId VARCHAR(1024) null,
+	logoutRequestXml TEXT null,
+	samlIdpSessionIndex VARCHAR(200) null
+);
+
 create table SamlIdpSpConnection (
 	samlIdpSpConnectionId LONG not null primary key,
 	companyId LONG,
@@ -5,19 +14,19 @@ create table SamlIdpSpConnection (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	samlSpEntityId VARCHAR(1024) null,
 	assertionLifetime INTEGER,
 	attributeNames STRING null,
 	attributesEnabled BOOLEAN,
 	attributesNamespaceEnabled BOOLEAN,
 	enabled BOOLEAN,
 	encryptionForced BOOLEAN,
+	metadataUpdatedDate DATE null,
 	metadataUrl VARCHAR(1024) null,
 	metadataXml TEXT null,
-	metadataUpdatedDate DATE null,
 	name VARCHAR(75) null,
 	nameIdAttribute VARCHAR(1024) null,
-	nameIdFormat VARCHAR(1024) null,
-	samlSpEntityId VARCHAR(1024) null
+	nameIdFormat VARCHAR(1024) null
 );
 
 create table SamlIdpSpSession (
@@ -44,16 +53,16 @@ create table SamlIdpSsoSession (
 create table SamlPeerBinding (
 	samlPeerBindingId LONG not null primary key,
 	companyId LONG,
-	createDate DATE null,
 	userId LONG,
 	userName VARCHAR(75) null,
+	createDate DATE null,
+	samlPeerEntityId VARCHAR(1024) null,
 	deleted BOOLEAN,
 	samlNameIdFormat VARCHAR(128) null,
 	samlNameIdNameQualifier VARCHAR(1024) null,
 	samlNameIdSpNameQualifier VARCHAR(75) null,
 	samlNameIdSpProvidedId VARCHAR(75) null,
-	samlNameIdValue VARCHAR(1024) null,
-	samlPeerEntityId VARCHAR(1024) null
+	samlNameIdValue VARCHAR(1024) null
 );
 
 create table SamlSpAuthRequest (
@@ -72,6 +81,7 @@ create table SamlSpIdpConnection (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	samlIdpEntityId VARCHAR(1024) null,
 	assertionSignatureRequired BOOLEAN,
 	clockSkew LONG,
 	enabled BOOLEAN,
@@ -82,7 +92,6 @@ create table SamlSpIdpConnection (
 	metadataXml TEXT null,
 	name VARCHAR(75) null,
 	nameIdFormat VARCHAR(1024) null,
-	samlIdpEntityId VARCHAR(1024) null,
 	signAuthnRequest BOOLEAN,
 	unknownUsersAreStrangers BOOLEAN,
 	userAttributeMappings STRING null,
@@ -94,8 +103,8 @@ create table SamlSpMessage (
 	companyId LONG,
 	createDate DATE null,
 	samlIdpEntityId VARCHAR(1024) null,
-	samlIdpResponseKey VARCHAR(75) null,
-	expirationDate DATE null
+	expirationDate DATE null,
+	samlIdpResponseKey VARCHAR(75) null
 );
 
 create table SamlSpSession (

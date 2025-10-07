@@ -3,10 +3,10 @@ liferay-recaptcha-etc-spring-boot:
     captchaResponseParameterName: g-recaptcha-response
     customElementExternalReferenceCode: LXC:liferay-recaptcha-custom-element
     name: Liferay reCAPTCHA Etc Spring Boot
-    oAuth2ApplicationExternalReferenceCode: liferay-recaptcha-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-recaptcha-etc-spring-boot-oaua
     resourcePath: /validation
     type: captcha
-liferay-recaptcha-etc-spring-boot-oauth-application-user-agent:
+liferay-recaptcha-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay reCAPTCHA Etc Spring Boot OAuth Application User Agent

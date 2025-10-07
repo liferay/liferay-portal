@@ -158,7 +158,21 @@ public class ViewObjectEntriesDisplayContext {
 				_getPermissionsURL(), "password-policies", "permissions",
 				LanguageUtil.get(
 					_objectRequestHelper.getRequest(), "permissions"),
-				"get", "permissions", "modal-permissions"));
+				"get", "permissions", "modal-permissions"),
+			new FDSActionDropdownItem(
+				getByExternalReferenceCodePath() +
+					"/{externalReferenceCode}/subscribe",
+				"bell-on", "subscribe",
+				LanguageUtil.get(
+					_objectRequestHelper.getRequest(), "subscribe"),
+				"post", "subscribe", "async"),
+			new FDSActionDropdownItem(
+				getByExternalReferenceCodePath() +
+					"/{externalReferenceCode}/unsubscribe",
+				"bell-off", "unsubscribe",
+				LanguageUtil.get(
+					_objectRequestHelper.getRequest(), "unsubscribe"),
+				"post", "unsubscribe", "async"));
 
 		ObjectDefinition objectDefinition = getObjectDefinition();
 

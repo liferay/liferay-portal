@@ -73,25 +73,25 @@ test('COMMERCE-5839 As a system admin i want to be able to create / update and d
 		commerceAdminCurrenciesPage.firstRowCurrencyCellName(currencyName)
 	).toBeVisible();
 
-	await commerceAdminCurrenciesPage.filterButton.click();
-	await commerceAdminCurrenciesPage.activeMenuItem.click();
-	await commerceAdminCurrenciesPage.activeFilter('Yes').check();
-	await commerceAdminCurrenciesPage.addFilterButton.click();
+	await commerceAdminCurrenciesPage.addDataSetFilter('Active', 'Yes', false);
 
 	await expect(
 		commerceAdminCurrenciesPage.currencyNameLink(currencyName)
 	).toHaveCount(0);
 
-	await commerceAdminCurrenciesPage.resetFilterButton.click();
-	await commerceAdminCurrenciesPage.filterButton.click();
-	await commerceAdminCurrenciesPage.activeFilter('No').check();
-	await commerceAdminCurrenciesPage.addFilterButton.click();
+	await commerceAdminCurrenciesPage.resetFiltersButton.click();
+	await commerceAdminCurrenciesPage.addDataSetFilter(
+		'Active',
+		'No',
+		false,
+		true
+	);
 
 	await expect(
 		commerceAdminCurrenciesPage.currencyNameLink(currencyName)
 	).toBeVisible();
 
-	await commerceAdminCurrenciesPage.resetFilterButton.click();
+	await commerceAdminCurrenciesPage.resetFiltersButton.click();
 	await commerceAdminCurrenciesPage.search.click();
 	await commerceAdminCurrenciesPage.search.fill(getRandomString());
 	await commerceAdminCurrenciesPage.searchButton.click();

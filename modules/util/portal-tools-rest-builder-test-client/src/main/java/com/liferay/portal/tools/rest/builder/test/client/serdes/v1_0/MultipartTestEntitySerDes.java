@@ -46,6 +46,16 @@ public class MultipartTestEntitySerDes {
 
 		sb.append("{");
 
+		if (multipartTestEntity.getId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"id\": ");
+
+			sb.append(multipartTestEntity.getId());
+		}
+
 		if (multipartTestEntity.getName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -81,6 +91,13 @@ public class MultipartTestEntitySerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (multipartTestEntity.getId() == null) {
+			map.put("id", null);
+		}
+		else {
+			map.put("id", String.valueOf(multipartTestEntity.getId()));
+		}
+
 		if (multipartTestEntity.getName() == null) {
 			map.put("name", null);
 		}
@@ -106,7 +123,10 @@ public class MultipartTestEntitySerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "name")) {
+			if (Objects.equals(jsonParserFieldName, "id")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
 
@@ -118,7 +138,13 @@ public class MultipartTestEntitySerDes {
 			MultipartTestEntity multipartTestEntity, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "name")) {
+			if (Objects.equals(jsonParserFieldName, "id")) {
+				if (jsonParserFieldValue != null) {
+					multipartTestEntity.setId(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "name")) {
 				if (jsonParserFieldValue != null) {
 					multipartTestEntity.setName((String)jsonParserFieldValue);
 				}

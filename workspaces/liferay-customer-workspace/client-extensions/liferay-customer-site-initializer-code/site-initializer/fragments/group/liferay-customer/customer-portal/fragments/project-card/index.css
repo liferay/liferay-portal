@@ -1,0 +1,63 @@
+.project-card {
+	background-color: var(--color-brand-primary);
+	background-image: url('[resources:project_card_background.png]');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: var(--border-radius-lg);
+	color: var(--color-neutral-0);
+	padding: var(--spacer-4) var(--spacer-4);
+
+	&:hover {
+		cursor: pointer;
+	}
+	
+	.product-title {
+		width: var(--container-width-sm);
+	}
+
+	.project-card-status-container {
+		padding: var(--spacer-2) 0;
+	}
+	
+	.status-badge {
+		align-items: center;
+		border: 2px solid;
+		border-radius: var(--border-radius-pill);
+		color: var(--color-neutral-0);
+		display: inline-flex;
+		padding: var(--spacer-2) var(--spacer-3);
+
+		&.status-active {
+			border-color: var(--color-state-success);
+
+			.status-dot {
+				background-color: var(--color-state-success);
+			}
+		}
+
+		&.status-expired {
+			border-color: var(--color-state-error);
+
+			.status-dot {
+				background-color:var(--color-state-error);
+			}
+		}
+
+		&.status-future {
+			border-color: var(--color-state-info);
+
+			.status-dot {
+				background-color: var(--color-state-info);
+			}
+		}
+	}
+
+	.status-dot {
+		border-radius: 50%;
+		display: inline-block;
+		height: 0.5rem;
+		margin-right: var(--spacer-1);
+		width: 0.5rem;
+	}
+}

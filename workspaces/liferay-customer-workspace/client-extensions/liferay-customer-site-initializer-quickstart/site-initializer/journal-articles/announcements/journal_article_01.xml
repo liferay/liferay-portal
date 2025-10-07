@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="content" index-type="text" instance-id="gqbh9t0c" name="content" type="rich_text">
+		<dynamic-content language-id="en_US">
+			<![CDATA[<p>Amazon Web Services (AWS) customers will now have access to Liferay's digital experience platform directly within AWS Marketplace. This listing provides AWS customers with the ability to streamline the purchase and management of Liferay within their AWS Marketplace account.&nbsp;&nbsp;<br> "We are excited to offer Liferay DXP in AWS Marketplace,” said&nbsp;Igor Arouca, Chief Technology Officer at Liferay.&nbsp;“This availability makes it easier for our customers to get started with Liferay DXP and quickly deliver exceptional digital experiences.”&nbsp;&nbsp;<br> Liferay DXP integrates content management, commerce, and workflow automation to build unified sites for both digital purchase and customer service. Its low-code features and scalable design allow businesses to streamline operations and digitize processes on a dependable foundation.<br> This platform also enables organizations to modernize their digital presence and leverage user data across customer portals, intranets, and public websites through AI-driven personalization and digital transformation tools.<br> In launching availability in AWS Marketplace, Liferay simplifies the buying process for AWS customers, making it easier to adopt, deploy, and manage Liferay directly within AWS Marketplace.<br> View Liferay’s listing on AWS Marketplace&nbsp;here. To learn more about Liferay DXP, visit&nbsp;liferay.com.</p>]]>
+		</dynamic-content>
+	</dynamic-element>
+	<dynamic-element field-reference="button" index-type="" instance-id="DZONz9v5" name="button" type="fieldset">
+		<dynamic-element field-reference="buttonText" index-type="keyword" instance-id="ja9yNRNa" name="buttonText" type="text">
+			<dynamic-content language-id="en_US">
+				<![CDATA[]]>
+			</dynamic-content>
+		</dynamic-element>
+		<dynamic-element field-reference="buttonURL" index-type="keyword" instance-id="75aiQpQC" name="buttonURL" type="text">
+			<dynamic-content language-id="en_US">
+				<![CDATA[]]>
+			</dynamic-content>
+		</dynamic-element>
+	</dynamic-element>
+</root>

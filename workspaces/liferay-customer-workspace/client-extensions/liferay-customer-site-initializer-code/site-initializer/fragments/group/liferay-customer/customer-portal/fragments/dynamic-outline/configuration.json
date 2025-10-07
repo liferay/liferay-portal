@@ -1,0 +1,17 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "dynamic-outline-target-wrapper",
+					"description": "CSS class name of target wrapper.",
+					"label": "Target Wrapper",
+					"localizable": true,
+					"name": "targetWrapper",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

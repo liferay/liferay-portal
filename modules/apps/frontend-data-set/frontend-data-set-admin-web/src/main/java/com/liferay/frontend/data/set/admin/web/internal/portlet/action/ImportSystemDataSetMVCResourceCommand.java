@@ -245,7 +245,9 @@ public class ImportSystemDataSetMVCResourceCommand
 			values.put("defaultVisualizationMode", "cards");
 
 			_objectEntryService.updateObjectEntry(
-				objectEntry.getObjectEntryId(), values, new ServiceContext());
+				objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(), values,
+				new ServiceContext());
 		}
 	}
 
@@ -297,7 +299,9 @@ public class ImportSystemDataSetMVCResourceCommand
 			values.put("defaultVisualizationMode", "list");
 
 			_objectEntryService.updateObjectEntry(
-				objectEntry.getObjectEntryId(), values, new ServiceContext());
+				objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(), values,
+				new ServiceContext());
 		}
 	}
 
@@ -396,7 +400,9 @@ public class ImportSystemDataSetMVCResourceCommand
 			values.put("defaultVisualizationMode", "table");
 
 			_objectEntryService.updateObjectEntry(
-				objectEntry.getObjectEntryId(), values, new ServiceContext());
+				objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(), values,
+				new ServiceContext());
 		}
 	}
 

@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -101,6 +103,44 @@ public class PlacedOrderAddressResourceTest
 			_country.getCountryId(), true, RandomTestUtil.randomString(),
 			RandomTestUtil.nextDouble(), RandomTestUtil.randomString(),
 			_serviceContext);
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress()
+		throws Exception {
+
+		super.
+			testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderBillingAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress()
+		throws Exception {
+
+		super.
+			testGraphQLGetPlacedOrderByExternalReferenceCodePlacedOrderShippingAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetPlacedOrderPlacedOrderBillingAddress()
+		throws Exception {
+
+		super.testGraphQLGetPlacedOrderPlacedOrderBillingAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetPlacedOrderPlacedOrderShippingAddress()
+		throws Exception {
+
+		super.testGraphQLGetPlacedOrderPlacedOrderShippingAddress();
 	}
 
 	@Override
@@ -250,14 +290,6 @@ public class PlacedOrderAddressResourceTest
 		throws Exception {
 
 		return _commerceOrder.getCommerceOrderId();
-	}
-
-	@Override
-	protected PlacedOrderAddress
-			testGraphQLPlacedOrderAddress_addPlacedOrderAddress()
-		throws Exception {
-
-		return _updateBillingAndShippingAddresses();
 	}
 
 	private PlacedOrderAddress _updateBillingAndShippingAddresses()

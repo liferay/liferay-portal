@@ -628,6 +628,15 @@ public class LayoutServiceUtil {
 		return getService().getLayoutsCount(groupId, type);
 	}
 
+	public static Layout getOrAddEmptyLayout(
+			String externalReferenceCode, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return getService().getOrAddEmptyLayout(
+			externalReferenceCode, groupId, serviceContext);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *

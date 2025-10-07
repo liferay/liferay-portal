@@ -314,7 +314,7 @@ public interface ListTypeEntryLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ListTypeEntry getOrAddIncompleteListTypeEntry(
+	public ListTypeEntry getOrAddEmptyListTypeEntry(
 			long userId, long listTypeDefinitionId, String key)
 		throws PortalException;
 

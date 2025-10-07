@@ -374,6 +374,11 @@ public class FileEntryProxyBean
 	}
 
 	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_fileEntry.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	@Override
 	public void setGroupId(long groupId) {
 		_fileEntry.setGroupId(groupId);
 	}

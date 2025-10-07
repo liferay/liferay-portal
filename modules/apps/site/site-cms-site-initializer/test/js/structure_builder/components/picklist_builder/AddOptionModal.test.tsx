@@ -8,9 +8,9 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import {Option} from '../../../../../src/main/resources/META-INF/resources/js/common/types/Picklist';
 import AddOptionModal from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/components/picklist_builder/AddOptionModal';
 import * as PicklistContext from '../../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/PicklistBuilderContext';
-import {Option} from '../../../../../src/main/resources/META-INF/resources/js/types/Picklist';
 import {MockStateProvider} from '../../mocks/MockPicklistStateProvider';
 
 const onCloseModal = jest.fn();
@@ -30,24 +30,18 @@ const renderComponent = async (
 };
 
 describe('AddOptionModal', () => {
-	beforeEach(() => {
-		(global as any).Liferay.Language.direction = {
-			en_US: 'rtl',
-		};
-	});
-
 	it('Generates random values if no option exists', async () => {
 		renderComponent(null);
 
 		await waitFor(() => {
 			expect(screen.getByText('add-option')).toBeInTheDocument();
 			expect(screen.getByLabelText('picklist-name')).toHaveValue(
-				'Option'
+				'option'
 			);
 
 			const keyInput = screen.getByLabelText('key') as HTMLInputElement;
 
-			expect(keyInput.value).toMatch(/^Option\d{6}$/);
+			expect(keyInput.value).toMatch(/^option\d{6}$/);
 			expect(screen.getByLabelText('key')).not.toBeDisabled();
 
 			const ercInput = screen.getByLabelText('erc') as HTMLInputElement;

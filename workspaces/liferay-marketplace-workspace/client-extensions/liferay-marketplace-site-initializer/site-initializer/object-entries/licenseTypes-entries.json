@@ -1,9 +1,0 @@
-{
-	"object-entries": [
-		{
-			"developer": "Limited to 5 unique addresses and should not be used for full scale production deployments.",
-			"standard": "Covers the following DXP environments: production, non-production (UAT) and backup (DR) for both standalone and virtual cluster servers."
-		}
-	],
-	"objectDefinitionName": "LicenseTypesDescription"
-}

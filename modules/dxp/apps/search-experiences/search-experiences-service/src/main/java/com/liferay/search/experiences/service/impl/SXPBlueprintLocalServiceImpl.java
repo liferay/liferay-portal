@@ -7,6 +7,7 @@ package com.liferay.search.experiences.service.impl;
 
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.knowledge.base.model.KBArticle;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.asset.AssetSubtypeIdentifier;
 import com.liferay.portal.search.asset.AssetSubtypeIdentifierBuilder;
+import com.liferay.search.experiences.constants.SXPBlueprintConstants;
 import com.liferay.search.experiences.exception.SXPBlueprintTitleException;
 import com.liferay.search.experiences.model.SXPBlueprint;
 import com.liferay.search.experiences.rest.dto.v1_0.Configuration;
@@ -232,7 +234,10 @@ public class SXPBlueprintLocalServiceImpl
 				(JSONArray)generalConfigurationJSONObject.get(
 					"searchableAssetTypes");
 
-			if (searchableAssetTypesJSONArray == null) {
+			if ((searchableAssetTypesJSONArray == null) ||
+				generalConfigurationJSONObject.getBoolean(
+					"legacyAssetCollectionProvider")) {
+
 				return _setCollectionProviderType(
 					configurationJSONObject, generalConfigurationJSONObject,
 					AssetEntry.class.getName());
@@ -312,7 +317,7 @@ public class SXPBlueprintLocalServiceImpl
 			return sxpBlueprint;
 		}
 
-		sxpBlueprint.setSchemaVersion("1.1");
+		sxpBlueprint.setSchemaVersion(SXPBlueprintConstants.SCHEMA_VERSION);
 
 		Configuration configuration = ConfigurationUtil.toConfiguration(
 			sxpBlueprint.getConfigurationJSON());
@@ -362,8 +367,9 @@ public class SXPBlueprintLocalServiceImpl
 
 	private final List<String> _collectionProviderTypes = new ArrayList<>(
 		Arrays.asList(
-			BlogsEntry.class.getName(), DLFileEntry.class.getName(),
-			JournalArticle.class.getName(), KBArticle.class.getName()));
+			BlogsEntry.class.getName(), CalendarBooking.class.getName(),
+			DLFileEntry.class.getName(), JournalArticle.class.getName(),
+			KBArticle.class.getName()));
 
 	@Reference
 	private JSONFactory _jsonFactory;

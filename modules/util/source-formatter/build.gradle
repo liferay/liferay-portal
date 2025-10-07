@@ -43,6 +43,7 @@ dependencies {
 	api group: "org.reflections", name: "reflections", version: "0.10.2"
 	api group: "xerces", name: "xercesImpl", version: "2.12.2"
 
+	compileInclude group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.function", version: "5.5.0"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.io", version: "5.0.6"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.lang", version: "1.0.0"
@@ -53,7 +54,6 @@ dependencies {
 	compileInclude group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileInclude group: "org.codehaus.groovy", name: "groovy", version: "2.4.21"
 
-	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.concurrent", version: "1.1.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.memory", version: "1.0.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.reflect", version: "7.1.0"
@@ -117,7 +117,7 @@ test {
 }
 
 updateFileVersions {
-	match(/<artifactId>com\.liferay\.source\.formatter<\/artifactId>\s+<version>(.+)<\/version>/, "../../etl/talend/pom.xml")
+	match(/<artifactId>com\.liferay\.source\.formatter<\/artifactId>\s+<version>(.+)<\/version>/, "../../integrations/talend/pom.xml")
 	match(/\t\t<dependency name="com.liferay.source.formatter" org="com.liferay" rev="(\d.+)" \/>/, "../../../tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml")
 	match(/\t\t\t\t<version>(\d.+)<\/version>/, "samples/pom.xml")
 	match(/com\.liferay\.source\.formatter=(\d.+)/, "../../sdk/gradle-plugins/src/main/resources/com/liferay/gradle/plugins/dependencies/portal-tools.properties")

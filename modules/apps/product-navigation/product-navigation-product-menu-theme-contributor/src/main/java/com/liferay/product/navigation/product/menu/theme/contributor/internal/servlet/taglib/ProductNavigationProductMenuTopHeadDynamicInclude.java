@@ -59,8 +59,9 @@ public class ProductNavigationProductMenuTopHeadDynamicInclude
 				httpServletRequest);
 
 		sb.append(
-			absolutePortalURLBuilder.forBundleStylesheet(
-				_bundle, "/product_navigation_product_menu.css"
+			absolutePortalURLBuilder.forWebContextStylesheet(
+				"product-navigation-product-menu-theme-contributor",
+				"/product_navigation_product_menu.css"
 			).build());
 
 		sb.append(StringPool.QUOTE);

@@ -137,7 +137,7 @@ public abstract class
 
 		return ListUtil.filter(
 			fragmentEntryConfigurationParser.getFragmentConfigurationFields(
-				fragmentEntryLink.getConfiguration()),
+				fragmentEntryLink.getConfigurationJSONObject()),
 			fragmentConfigurationField -> Objects.equals(
 				fragmentConfigurationField.getType(), getConfigurationType()));
 	}

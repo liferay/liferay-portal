@@ -6,7 +6,6 @@
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
 import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLink;
-import com.liferay.headless.admin.site.client.dto.v1_0.FragmentLinkValue;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -47,14 +46,28 @@ public class FragmentLinkSerDes {
 
 		sb.append("{");
 
-		if (fragmentLink.getValue_i18n() != null) {
+		if (fragmentLink.getTarget() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"value_i18n\": ");
+			sb.append("\"target\": ");
 
-			sb.append(_toJSON(fragmentLink.getValue_i18n()));
+			sb.append("\"");
+
+			sb.append(fragmentLink.getTarget());
+
+			sb.append("\"");
+		}
+
+		if (fragmentLink.getValue() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"value\": ");
+
+			sb.append(String.valueOf(fragmentLink.getValue()));
 		}
 
 		sb.append("}");
@@ -76,11 +89,18 @@ public class FragmentLinkSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (fragmentLink.getValue_i18n() == null) {
-			map.put("value_i18n", null);
+		if (fragmentLink.getTarget() == null) {
+			map.put("target", null);
 		}
 		else {
-			map.put("value_i18n", String.valueOf(fragmentLink.getValue_i18n()));
+			map.put("target", String.valueOf(fragmentLink.getTarget()));
+		}
+
+		if (fragmentLink.getValue() == null) {
+			map.put("value", null);
+		}
+		else {
+			map.put("value", String.valueOf(fragmentLink.getValue()));
 		}
 
 		return map;
@@ -101,8 +121,11 @@ public class FragmentLinkSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "value_i18n")) {
-				return true;
+			if (Objects.equals(jsonParserFieldName, "target")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "value")) {
+				return false;
 			}
 
 			return false;
@@ -113,10 +136,18 @@ public class FragmentLinkSerDes {
 			FragmentLink fragmentLink, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "value_i18n")) {
+			if (Objects.equals(jsonParserFieldName, "target")) {
 				if (jsonParserFieldValue != null) {
-					fragmentLink.setValue_i18n(
-						(Map<String, FragmentLinkValue>)jsonParserFieldValue);
+					fragmentLink.setTarget(
+						FragmentLink.Target.create(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "value")) {
+				if (jsonParserFieldValue != null) {
+					fragmentLink.setValue(
+						FragmentLinkValueSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}

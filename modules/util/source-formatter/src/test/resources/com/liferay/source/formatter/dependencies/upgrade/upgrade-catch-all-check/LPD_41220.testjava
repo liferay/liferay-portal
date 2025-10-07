@@ -15,11 +15,8 @@ public class LPD_41220 {
 	public void method(String name, String type) {
 		ListTypeLocalServiceUtil.getListType("test123", type);
 		ListTypeLocalServiceUtil.getListType(name, type);
-		ListTypeServiceUtil.getListType("test123", type);
 		ListTypeServiceUtil.getListType(name, type);
-		_listTypeLocalService.getListType("test123", type);
 		_listTypeLocalService.getListType(name, type);
-		_listTypeService.getListType("test123", type);
 		_listTypeService.getListType(name, type);
 	}
 

@@ -285,7 +285,7 @@ definition {
 	@description = "Document is not able to delete in an asset library by nonexistent erc"
 	@priority = 3
 	test DocumentDeletionImpossibleByAssetLibraryIdAndNonexistentErc {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Given a document with a custom erc is created with a POST request in asset library") {
 			var filePath = TestCase.getDependenciesDirPath(fileName = "Document_1.txt");

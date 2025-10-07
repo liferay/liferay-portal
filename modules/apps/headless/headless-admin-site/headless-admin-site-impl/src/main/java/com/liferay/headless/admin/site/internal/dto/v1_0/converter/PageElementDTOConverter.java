@@ -77,7 +77,8 @@ public class PageElementDTOConverter
 			{
 				setExternalReferenceCode(layoutStructureItem::getItemId);
 				setPageElementDefinition(
-					() -> _getPageElementDefinition(layoutStructureItem));
+					() -> _getPageElementDefinition(
+						dtoConverterContext, layoutStructureItem));
 				setPageElements(
 					() -> _getPageElements(
 						dtoConverterContext, layoutStructure,
@@ -110,6 +111,7 @@ public class PageElementDTOConverter
 	}
 
 	private PageElementDefinition _getPageElementDefinition(
+			DTOConverterContext dtoConverterContext,
 			LayoutStructureItem layoutStructureItem)
 		throws Exception {
 
@@ -148,6 +150,7 @@ public class PageElementDTOConverter
 				LayoutDataItemTypeConstants.TYPE_CONTAINER)) {
 
 			return _containerPageElementDefinitionDTOConverter.toDTO(
+				dtoConverterContext,
 				(ContainerStyledLayoutStructureItem)layoutStructureItem);
 		}
 

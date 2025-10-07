@@ -19,12 +19,12 @@ import com.liferay.portal.kernel.service.ImageLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Locale;
 
@@ -71,8 +71,8 @@ public class DDMTemplateImpl extends DDMTemplateBaseImpl {
 			_resourceClassName = PortalUtil.getClassName(
 				getResourceClassNameId());
 
-			resourceClassNameUpdateEntityCacheConsumer.accept(
-				_resourceClassName);
+			resourceClassNameUpdateEntityCacheBiConsumer.accept(
+				this, _resourceClassName);
 		}
 
 		return _resourceClassName;

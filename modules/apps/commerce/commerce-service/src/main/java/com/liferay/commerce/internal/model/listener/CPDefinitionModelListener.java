@@ -82,7 +82,6 @@ public class CPDefinitionModelListener extends BaseModelListener<CPDefinition> {
 					templateCPConfigurationEntry.getShippingExtraPrice(),
 					templateCPConfigurationEntry.isShipSeparately(),
 					templateCPConfigurationEntry.isTaxExempt(),
-					templateCPConfigurationEntry.isVisible(),
 					templateCPConfigurationEntry.getWeight(),
 					templateCPConfigurationEntry.getWidth());
 

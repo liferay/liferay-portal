@@ -31,4 +31,7 @@ public class FDSSampleFDSNames {
 	public static final String REACT =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-react";
 
+	public static final String SINGLE_SELECTION =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-singleSelection";
+
 }

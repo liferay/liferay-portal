@@ -26,13 +26,17 @@ import com.liferay.commerce.product.model.CommerceChannelRelTable;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationListLocalServiceBaseImpl;
+import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.FromStep;
 import com.liferay.petra.sql.dsl.query.GroupByStep;
 import com.liferay.petra.sql.dsl.query.JoinStep;
+import com.liferay.petra.sql.dsl.query.sort.OrderByExpression;
+import com.liferay.petra.sql.dsl.spi.expression.Scalar;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -44,6 +48,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.Portal;
@@ -52,6 +57,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -80,7 +86,8 @@ public class CPConfigurationListLocalServiceImpl
 			int displayDateYear, int displayDateHour, int displayDateMinute,
 			int expirationDateMonth, int expirationDateDay,
 			int expirationDateYear, int expirationDateHour,
-			int expirationDateMinute, boolean neverExpire)
+			int expirationDateMinute, boolean neverExpire,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -104,6 +111,8 @@ public class CPConfigurationListLocalServiceImpl
 		CPConfigurationList cpConfigurationList =
 			cpConfigurationListPersistence.create(
 				counterLocalService.increment());
+
+		cpConfigurationList.setExpandoBridgeAttributes(serviceContext);
 
 		cpConfigurationList.setExternalReferenceCode(externalReferenceCode);
 		cpConfigurationList.setGroupId(groupId);
@@ -203,7 +212,7 @@ public class CPConfigurationListLocalServiceImpl
 				CPDefinitionInventoryConstants.DEFAULT_MIN_ORDER_QUANTITY,
 				BigDecimal.ZERO,
 				CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY,
-				true, true, 0, false, false, true, 0, 0);
+				true, true, 0, false, false, 0, 0);
 		}
 
 		return cpConfigurationList;
@@ -219,7 +228,7 @@ public class CPConfigurationListLocalServiceImpl
 			int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire)
+			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
 		if (Validator.isNotNull(externalReferenceCode)) {
@@ -231,13 +240,13 @@ public class CPConfigurationListLocalServiceImpl
 				return cpConfigurationListLocalService.
 					updateCPConfigurationList(
 						externalReferenceCode,
-						cpConfigurationList.getCPConfigurationListId(), groupId,
-						userId, parentCPConfigurationListId, master, name,
+						cpConfigurationList.getCPConfigurationListId(), userId,
+						groupId, parentCPConfigurationListId, master, name,
 						priority, displayDateMonth, displayDateDay,
 						displayDateYear, displayDateHour, displayDateMinute,
 						expirationDateMonth, expirationDateDay,
 						expirationDateYear, expirationDateHour,
-						expirationDateMinute, neverExpire);
+						expirationDateMinute, neverExpire, serviceContext);
 			}
 		}
 
@@ -246,7 +255,8 @@ public class CPConfigurationListLocalServiceImpl
 			master, name, priority, displayDateMonth, displayDateDay,
 			displayDateYear, displayDateHour, displayDateMinute,
 			expirationDateMonth, expirationDateDay, expirationDateYear,
-			expirationDateHour, expirationDateMinute, neverExpire);
+			expirationDateHour, expirationDateMinute, neverExpire,
+			serviceContext);
 	}
 
 	@Override
@@ -269,6 +279,9 @@ public class CPConfigurationListLocalServiceImpl
 		}
 
 		_cpConfigurationEntryLocalService.deleteCPConfigurationEntries(
+			cpConfigurationList.getCPConfigurationListId());
+
+		_expandoRowLocalService.deleteRows(
 			cpConfigurationList.getCPConfigurationListId());
 
 		return super.deleteCPConfigurationList(cpConfigurationList);
@@ -326,7 +339,78 @@ public class CPConfigurationListLocalServiceImpl
 				commerceChannelId, commerceOrderTypeId,
 				DSLQueryFactoryUtil.select(CPConfigurationListTable.INSTANCE)
 			).orderBy(
-				CPConfigurationListTable.INSTANCE.priority.ascending()
+				orderByStep -> {
+					List<OrderByExpression> orderByExpressions =
+						new ArrayList<>();
+
+					orderByExpressions.add(
+						CPConfigurationListTable.INSTANCE.priority.ascending());
+
+					if (accountEntryId > 0) {
+						CPConfigurationListRelTable
+							accountEntryCPConfigurationListRel =
+								CPConfigurationListRelTable.INSTANCE.as(
+									"accountEntryCPConfigurationListRel");
+
+						orderByExpressions.add(
+							DSLFunctionFactoryUtil.caseWhenThen(
+								accountEntryCPConfigurationListRel.classPK.
+									isNull(),
+								DSLFunctionFactoryUtil.castText(new Scalar<>(0))
+							).elseEnd(
+								DSLFunctionFactoryUtil.castText(new Scalar<>(1))
+							).descending());
+					}
+
+					if (accountGroupIds.length > 0) {
+						CPConfigurationListRelTable
+							accountGroupCPConfigurationListRel =
+								CPConfigurationListRelTable.INSTANCE.as(
+									"accountGroupCPConfigurationListRel");
+
+						orderByExpressions.add(
+							DSLFunctionFactoryUtil.caseWhenThen(
+								accountGroupCPConfigurationListRel.classPK.
+									isNull(),
+								DSLFunctionFactoryUtil.castText(new Scalar<>(0))
+							).elseEnd(
+								DSLFunctionFactoryUtil.castText(new Scalar<>(1))
+							).descending());
+					}
+
+					if (commerceChannelId > 0) {
+						CommerceChannelRelTable commerceChannelRel =
+							CommerceChannelRelTable.INSTANCE.as(
+								"CommerceChannelRel");
+
+						orderByExpressions.add(
+							DSLFunctionFactoryUtil.caseWhenThen(
+								commerceChannelRel.commerceChannelId.isNull(),
+								DSLFunctionFactoryUtil.castText(new Scalar<>(0))
+							).elseEnd(
+								DSLFunctionFactoryUtil.castText(new Scalar<>(1))
+							).descending());
+					}
+
+					if (commerceOrderTypeId > 0) {
+						CPConfigurationListRelTable
+							commerceOrderTypeCPConfigurationListRel =
+								CPConfigurationListRelTable.INSTANCE.as(
+									"commerceOrderTypeCPConfigurationListRel");
+
+						orderByExpressions.add(
+							DSLFunctionFactoryUtil.caseWhenThen(
+								commerceOrderTypeCPConfigurationListRel.classPK.
+									isNull(),
+								DSLFunctionFactoryUtil.castText(new Scalar<>(0))
+							).elseEnd(
+								DSLFunctionFactoryUtil.castText(new Scalar<>(1))
+							).descending());
+					}
+
+					return orderByStep.orderBy(
+						orderByExpressions.toArray(new OrderByExpression[0]));
+				}
 			));
 	}
 
@@ -347,7 +431,7 @@ public class CPConfigurationListLocalServiceImpl
 			int displayDateMinute, int expirationDateMonth,
 			int expirationDateDay, int expirationDateYear,
 			int expirationDateHour, int expirationDateMinute,
-			boolean neverExpire)
+			boolean neverExpire, ServiceContext serviceContext)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -373,6 +457,8 @@ public class CPConfigurationListLocalServiceImpl
 		CPConfigurationList cpConfigurationList =
 			cpConfigurationListPersistence.findByPrimaryKey(
 				cpConfigurationListId);
+
+		cpConfigurationList.setExpandoBridgeAttributes(serviceContext);
 
 		cpConfigurationList.setExternalReferenceCode(externalReferenceCode);
 		cpConfigurationList.setGroupId(groupId);
@@ -569,6 +655,9 @@ public class CPConfigurationListLocalServiceImpl
 	@Reference
 	private CPConfigurationEntrySettingLocalService
 		_cpConfigurationEntrySettingLocalService;
+
+	@Reference
+	private ExpandoRowLocalService _expandoRowLocalService;
 
 	@Reference
 	private Portal _portal;

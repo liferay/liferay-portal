@@ -1,5 +1,9 @@
 Bundle-Name: Liferay Portal Search Solr 8 API
 Bundle-SymbolicName: com.liferay.portal.search.solr8.api
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.4
 Export-Package: com.liferay.portal.search.solr8.configuration
+Import-Package:\
+	com.liferay.portal.kernel.exception;version="[0.0.0,9999.0.0)",\
+	\
+	*
 -dsannotations-options: inherit

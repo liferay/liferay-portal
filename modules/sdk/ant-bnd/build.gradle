@@ -21,5 +21,6 @@ liferay {
 }
 
 updateFileVersions {
+	match(/com\.liferay:com\.liferay\.ant\.bnd:(\d.+),/, "../../../source-formatter.properties")
 	match(/com\.liferay\.ant\.bnd=com\.liferay:com\.liferay\.ant\.bnd:(\d.+)/, "../../../lib/development/dependencies.properties")
 }

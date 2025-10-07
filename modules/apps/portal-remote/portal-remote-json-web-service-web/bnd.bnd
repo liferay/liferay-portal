@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Remote JSON Web Service Web
 Bundle-SymbolicName: com.liferay.portal.remote.json.web.service.web
-Bundle-Version: 1.0.37
+Bundle-Version: 1.0.40
 Web-ContextPath: /portal-remote-json-web-service-web

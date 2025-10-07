@@ -82,6 +82,7 @@ export function AttachmentProperties({
 			<Input
 				error={errors.maximumFileSize}
 				feedbackMessage={Liferay.Language.get('maximum-file-size-help')}
+				id="maximumFileSize"
 				label={Liferay.Language.get('maximum-file-size')}
 				min={0}
 				onBlur={(event) => {

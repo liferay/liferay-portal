@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.liferay.change.tracking.sample.model.CTSChild">
+		<field name="mvccVersion" type="long" />
+		<field name="ctCollectionId" type="long" />
+		<field name="ctsChildId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="ctsGrandParentId" type="long" />
+		<field name="parentCTSChildId" type="long" />
+		<field name="ctsParentName" type="String" />
+		<field name="name" type="String" />
+	</model>
+	<model name="com.liferay.change.tracking.sample.model.CTSGrandParent">
+		<field name="mvccVersion" type="long" />
+		<field name="ctsGrandParentId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="parentCTSGrandParentId" type="long" />
+		<field name="name" type="String" />
+	</model>
+	<model name="com.liferay.change.tracking.sample.model.CTSParent">
+		<field name="mvccVersion" type="long" />
+		<field name="ctCollectionId" type="long" />
+		<field name="ctsParentId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="ctsGrandParentId" type="long" />
+		<field name="name" type="String" />
+	</model>
+</model-hints>

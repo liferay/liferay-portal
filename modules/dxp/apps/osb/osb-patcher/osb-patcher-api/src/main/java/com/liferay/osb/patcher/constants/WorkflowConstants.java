@@ -190,6 +190,8 @@ public class WorkflowConstants
 
 	public static final int STATUS_BUILD_RELEASED = 226;
 
+	public static final int STATUS_BUILD_TIMEOUT = 230;
+
 	public static final int STATUS_FIX_ADDING = 101;
 
 	public static final int STATUS_FIX_COMPLETE = 100;
@@ -221,6 +223,8 @@ public class WorkflowConstants
 	public static final int STATUS_FIX_REBASE_CONFLICT = 111;
 
 	public static final int STATUS_FIX_REBASING = 112;
+
+	public static final int STATUS_FIX_TIMEOUT = 231;
 
 	public static String getStatusLabel(int status) {
 		if (status == STATUS_BUILD_COMPILING) {

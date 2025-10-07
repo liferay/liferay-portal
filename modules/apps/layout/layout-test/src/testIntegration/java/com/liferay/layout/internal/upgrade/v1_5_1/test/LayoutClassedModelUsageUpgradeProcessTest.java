@@ -17,7 +17,6 @@ import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -42,6 +41,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -110,8 +111,8 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 				_group, TestPropsValues.getUserId());
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(), _journalArticleClassNameId,
-			_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+			_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+			_journalArticleClassNameId, _journalArticle.getResourcePrimKey(),
 			String.valueOf(deletedDraftFragmentEntryLinkId),
 			_fragmentEntryLinkClassNameId, _draftLayout.getPlid(),
 			serviceContext);
@@ -122,8 +123,8 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 		long deletedPublishedFragmentEntryLinkId = RandomTestUtil.randomLong();
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(), _journalArticleClassNameId,
-			_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+			_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+			_journalArticleClassNameId, _journalArticle.getResourcePrimKey(),
 			String.valueOf(deletedPublishedFragmentEntryLinkId),
 			_fragmentEntryLinkClassNameId, _layout.getPlid(), serviceContext);
 
@@ -141,14 +142,16 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 
 		Assert.assertNull(
 			_layoutClassedModelUsageLocalService.fetchLayoutClassedModelUsage(
-				_group.getGroupId(), _journalArticleClassNameId,
-				_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+				_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId,
+				_journalArticle.getResourcePrimKey(),
 				String.valueOf(deletedDraftFragmentEntryLinkId),
 				_fragmentEntryLinkClassNameId, _draftLayout.getPlid()));
 		Assert.assertNull(
 			_layoutClassedModelUsageLocalService.fetchLayoutClassedModelUsage(
-				_group.getGroupId(), _journalArticleClassNameId,
-				_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+				_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId,
+				_journalArticle.getResourcePrimKey(),
 				String.valueOf(deletedPublishedFragmentEntryLinkId),
 				_fragmentEntryLinkClassNameId, _layout.getPlid()));
 	}
@@ -159,8 +162,9 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 
 		return _layoutClassedModelUsageLocalService.
 			fetchLayoutClassedModelUsage(
-				_group.getGroupId(), _journalArticleClassNameId,
-				_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+				_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId,
+				_journalArticle.getResourcePrimKey(),
 				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
 				_fragmentEntryLinkClassNameId, fragmentEntryLink.getPlid());
 	}
@@ -194,8 +198,11 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 		_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			fragmentEntryLink);
 
-		return _layoutClassedModelUsageLocalService.
-			updateLayoutClassedModelUsage(layoutClassedModelUsage);
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			_layoutClassedModelUsageLocalService.
+				getLayoutClassedModelUsagesByPlid(_draftLayout.getPlid());
+
+		return layoutClassedModelUsages.get(0);
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink() throws Exception {
@@ -233,8 +240,9 @@ public class LayoutClassedModelUsageUpgradeProcessTest
 
 		LayoutClassedModelUsage layoutClassedModelUsage =
 			_layoutClassedModelUsageLocalService.fetchLayoutClassedModelUsage(
-				_group.getGroupId(), _journalArticleClassNameId,
-				_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+				_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId,
+				_journalArticle.getResourcePrimKey(),
 				String.valueOf(fragmentEntryLinkId),
 				_fragmentEntryLinkClassNameId, plid);
 

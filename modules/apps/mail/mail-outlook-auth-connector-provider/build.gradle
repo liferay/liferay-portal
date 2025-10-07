@@ -4,7 +4,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.nimbusds", name: "content-type", version: "2.3"
 	compileOnly group: "com.nimbusds", name: "lang-tag", version: "1.7"
-	compileOnly group: "com.nimbusds", name: "nimbus-jose-jwt", version: "9.40"
+	compileOnly group: "com.nimbusds", name: "nimbus-jose-jwt", version: "10.4"
 	compileOnly group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
 	compileOnly group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"

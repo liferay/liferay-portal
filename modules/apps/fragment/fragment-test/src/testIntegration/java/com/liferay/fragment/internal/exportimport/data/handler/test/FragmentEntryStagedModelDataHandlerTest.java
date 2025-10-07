@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -464,8 +463,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 
 		for (String string : strings) {
 			Assert.assertTrue(
-				html + " not contains " + string,
-				StringUtil.contains(content, string, StringPool.BLANK));
+				html + " not contains " + string, content.contains(string));
 
 			content = content.substring(content.indexOf(string));
 		}

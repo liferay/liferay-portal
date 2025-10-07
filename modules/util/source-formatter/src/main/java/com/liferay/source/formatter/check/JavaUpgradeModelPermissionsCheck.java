@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaTerm;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -61,24 +62,18 @@ public class JavaUpgradeModelPermissionsCheck extends BaseJavaTermCheck {
 			return content;
 		}
 
-		if (!importNames.contains(
-				"com.liferay.portal.kernel.service.permission." +
-					"ModelPermissions")) {
+		String imports = "";
 
-			content = StringBundler.concat(
-				"import com.liferay.portal.kernel.service.permission.",
-				"ModelPermissions;\n\n", content);
+		for (String newImportName : _newImportNames) {
+			if (importNames.contains(newImportName)) {
+				continue;
+			}
+
+			imports = StringBundler.concat(
+				imports, "import ", newImportName, ";\n\n");
 		}
 
-		if (!importNames.contains(
-				"com.liferay.portal.kernel.model.role.RoleConstants")) {
-
-			content = StringBundler.concat(
-				"import com.liferay.portal.kernel.model.role.",
-				"RoleConstants;\n\n", content);
-		}
-
-		return content;
+		return imports + content;
 	}
 
 	private String _formatMethod(
@@ -221,6 +216,10 @@ public class JavaUpgradeModelPermissionsCheck extends BaseJavaTermCheck {
 		return Objects.equals(variableTypeName, "ServiceContext");
 	}
 
+	private static final List<String> _newImportNames = Arrays.asList(
+		"com.liferay.portal.kernel.model.role.RoleConstants",
+		"com.liferay.portal.kernel.service.permission.ModelPermissions",
+		"com.liferay.portal.kernel.service.permission.ModelPermissionsFactory");
 	private static final Pattern _setGroupPermissionsPattern = Pattern.compile(
 		"\\t*(\\w+)\\.setGroupPermissions\\(\\s*(\\w+)\\s*\\);");
 	private static final Pattern _setGuestPermissionsPattern = Pattern.compile(

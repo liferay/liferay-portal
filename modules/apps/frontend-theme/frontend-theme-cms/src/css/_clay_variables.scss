@@ -1,18 +1,43 @@
 @import 'clay/atlas/variables/_globals';
 
-$border-radius: 0.5rem !default;
-$border-radius-lg: 0.5rem !default;
-$border-radius-sm: 0.5rem !default;
+$border-radius: 0.5rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.5rem;
 
-$breadcrumb-divider-svg-icon: clay-icon(slash, $gray-600) !default;
-$breadcrumb-divider-svg-icon-height: 0.9em !default;
+$breadcrumb-divider-svg-icon: clay-icon(slash, $gray-600);
+$breadcrumb-divider-svg-icon-height: 15px;
+$breadcrumb-font-size: 18px !default;
 
-$label-border-radius: 0.25rem !default;
+$btn-xs-border-radius: 0.25rem;
 
-$sticker-border-radius: 0.25rem !default;
+$custom-checkbox-indicator-border-radius: 0.25rem;
 
-$label-font-size: 0.75rem !default;
-$label-text-transform: capitalize !default;
+$label-border-radius: 0.25rem;
+
+$nav-divider-color: $secondary-l1;
+
+$sticker-sm-border-radius: 0.25rem;
+
+$label-font-size: 0.75rem;
+$label-text-transform: capitalize;
+
+$btn-sizes: () !default;
+$btn-sizes: map-deep-merge(
+	(
+		btn-xs: (
+			border-radius: $btn-xs-border-radius,
+		),
+	),
+	$btn-sizes
+);
+
+$label-lg: () !default;
+$label-lg: map-deep-merge(
+	(
+		border-radius: $border-radius-lg,
+	),
+	$label-lg
+);
 
 $label-primary-close: () !default;
 $label-primary-close: map-deep-merge(
@@ -252,6 +277,24 @@ $label-danger: map-deep-merge(
 		close: $label-danger-close,
 	),
 	$label-danger
+);
+
+$sticker-sizes: () !default;
+$sticker-sizes: map-deep-merge(
+	(
+		sticker-xs: (
+			border-radius: $sticker-sm-border-radius,
+		),
+	),
+	$sticker-sizes
+);
+
+$sticker-sm: () !default;
+$sticker-sm: map-deep-merge(
+	(
+		border-radius: $sticker-sm-border-radius,
+	),
+	$sticker-sm
 );
 
 $sticker-outline-1: () !default;

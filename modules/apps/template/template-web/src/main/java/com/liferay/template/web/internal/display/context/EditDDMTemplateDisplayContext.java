@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -293,7 +294,7 @@ public class EditDDMTemplateDisplayContext {
 			script = scriptContent;
 		}
 
-		_script = script;
+		_script = HtmlUtil.escape(script);
 
 		return _script;
 	}

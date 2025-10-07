@@ -21,7 +21,6 @@ import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -180,8 +179,9 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 
 		return _layoutClassedModelUsageLocalService.
 			fetchLayoutClassedModelUsage(
-				_group.getGroupId(), _journalArticleClassNameId,
-				_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+				_group.getGroupId(), _journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId,
+				_journalArticle.getResourcePrimKey(),
 				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
 				_fragmentEntryLinkClassNameId, fragmentEntryLink.getPlid());
 	}
@@ -217,8 +217,11 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 		_fragmentEntryLinkLocalService.updateFragmentEntryLink(
 			fragmentEntryLink);
 
-		return _layoutClassedModelUsageLocalService.
-			updateLayoutClassedModelUsage(layoutClassedModelUsage);
+		List<LayoutClassedModelUsage> layoutClassedModelUsages =
+			_layoutClassedModelUsageLocalService.
+				getLayoutClassedModelUsagesByPlid(_draftLayout.getPlid());
+
+		return layoutClassedModelUsages.get(0);
 	}
 
 	private FragmentEntryLink _addFragmentEntryLink(
@@ -242,6 +245,9 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 								"classPK",
 								String.valueOf(
 									journalArticle.getResourcePrimKey())
+							).put(
+								"externalReferenceCode",
+								_journalArticle.getExternalReferenceCode()
 							));
 					}
 
@@ -264,8 +270,9 @@ public class LayoutClassedModelUsageCTUpgradeProcessTest
 
 		LayoutClassedModelUsage layoutClassedModelUsage =
 			_layoutClassedModelUsageLocalService.fetchLayoutClassedModelUsage(
-				fragmentEntryLink.getGroupId(), _journalArticleClassNameId,
-				classPK, StringPool.BLANK,
+				fragmentEntryLink.getGroupId(),
+				_journalArticle.getExternalReferenceCode(),
+				_journalArticleClassNameId, classPK,
 				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
 				_fragmentEntryLinkClassNameId, fragmentEntryLink.getPlid());
 

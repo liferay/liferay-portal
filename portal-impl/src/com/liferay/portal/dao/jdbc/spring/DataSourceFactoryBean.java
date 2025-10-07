@@ -7,7 +7,7 @@ package com.liferay.portal.dao.jdbc.spring;
 
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
 import com.liferay.portal.kernel.util.PropertiesUtil;
-import com.liferay.portal.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.Properties;
 

@@ -32,9 +32,7 @@ describe('The WorkflowStatus should', () => {
 	});
 
 	it('render as not Linked Label', () => {
-		render(
-			<StatusLabel {...{...INITIAL_PROPS, showInstanceTracker: false}} />
-		);
+		render(<StatusLabel {...INITIAL_PROPS} showInstanceTracker={false} />);
 
 		const hasLink = document.querySelector('a');
 

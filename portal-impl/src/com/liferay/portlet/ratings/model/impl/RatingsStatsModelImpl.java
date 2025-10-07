@@ -139,7 +139,7 @@ public class RatingsStatsModelImpl
 	public static final long STATSID_COLUMN_BITMASK = 4L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.ratings.kernel.model.RatingsStats"));
 
 	public RatingsStatsModelImpl() {

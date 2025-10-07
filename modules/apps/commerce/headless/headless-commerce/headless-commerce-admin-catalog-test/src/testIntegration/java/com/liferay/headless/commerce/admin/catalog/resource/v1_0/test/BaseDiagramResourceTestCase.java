@@ -32,12 +32,12 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -329,7 +329,7 @@ public abstract class BaseDiagramResourceTestCase {
 			testGraphQLGetProductByExternalReferenceCodeDiagram_addDiagram()
 		throws Exception {
 
-		return testGraphQLDiagram_addDiagram();
+		return testGraphQLProductDiagram_addDiagram();
 	}
 
 	@Test
@@ -457,7 +457,7 @@ public abstract class BaseDiagramResourceTestCase {
 	protected Diagram testGraphQLGetProductIdDiagram_addDiagram()
 		throws Exception {
 
-		return testGraphQLDiagram_addDiagram();
+		return testGraphQLProductDiagram_addDiagram();
 	}
 
 	@Test
@@ -510,7 +510,7 @@ public abstract class BaseDiagramResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
-	protected Diagram testGraphQLDiagram_addDiagram() throws Exception {
+	protected Diagram testGraphQLProductDiagram_addDiagram() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
@@ -710,6 +710,8 @@ public abstract class BaseDiagramResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

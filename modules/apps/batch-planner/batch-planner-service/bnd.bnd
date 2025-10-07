@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Batch Planner Service
 Bundle-SymbolicName: com.liferay.batch.planner.service
-Bundle-Version: 1.0.68
+Bundle-Version: 1.0.69
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit

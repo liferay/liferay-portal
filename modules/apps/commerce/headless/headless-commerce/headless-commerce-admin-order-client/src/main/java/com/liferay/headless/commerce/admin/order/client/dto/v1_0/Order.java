@@ -139,6 +139,27 @@ public class Order implements Cloneable, Serializable {
 
 	protected String advanceStatus;
 
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public void setAuthor(
+		UnsafeSupplier<String, Exception> authorUnsafeSupplier) {
+
+		try {
+			author = authorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String author;
+
 	public BillingAddress getBillingAddress() {
 		return billingAddress;
 	}

@@ -36,6 +36,13 @@ public class NotificationRecipientLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.notification.service.impl.NotificationRecipientLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static NotificationRecipient addNotificationRecipient(
+			long userId, long classNameId, long classPK)
+		throws PortalException {
+
+		return getService().addNotificationRecipient(
+			userId, classNameId, classPK);
+	}
 
 	/**
 	 * Adds the notification recipient to the database. Also notifies the appropriate model listeners.

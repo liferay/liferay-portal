@@ -20,11 +20,14 @@ const handleActionClick = ({
 	event,
 	executeAsyncItemAction,
 	highlightItems,
+	infoPanelOpen,
 	itemData,
 	itemId,
+	items,
 	loadData,
 	onActionDropdownItemClick,
 	onInfoPanelToggleButtonClick,
+	onItemSelectionChange,
 	openModal,
 	openSidePanel,
 	setLoading,
@@ -35,11 +38,14 @@ const handleActionClick = ({
 	event: Event;
 	executeAsyncItemAction: Function;
 	highlightItems: Function;
+	infoPanelOpen?: boolean;
 	itemData: any;
 	itemId: string | number;
+	items: any[];
 	loadData: Function;
 	onActionDropdownItemClick: Function;
 	onInfoPanelToggleButtonClick?: Function;
+	onItemSelectionChange?: Function;
 	openModal: Function;
 	openSidePanel: Function;
 	setLoading?: Function;
@@ -62,7 +68,9 @@ const handleActionClick = ({
 
 	const doAction = ({defaultPrevented}: {defaultPrevented: boolean}) => {
 		if (target === INFO_PANEL && onInfoPanelToggleButtonClick) {
-			onInfoPanelToggleButtonClick();
+			onItemSelectionChange?.(itemData);
+
+			!infoPanelOpen && onInfoPanelToggleButtonClick();
 		}
 		else if (target?.includes('modal')) {
 			event.preventDefault();
@@ -120,6 +128,7 @@ const handleActionClick = ({
 			action,
 			event,
 			itemData,
+			items,
 			loadData,
 			openSidePanel,
 		};

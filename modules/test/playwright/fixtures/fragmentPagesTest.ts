@@ -7,16 +7,21 @@ import {test} from '@playwright/test';
 
 import {FragmentEditorPage} from '../pages/fragment-web/FragmentEditorPage';
 import {FragmentsPage} from '../pages/fragment-web/FragmentsPage';
+import {LocalizationSelectPage} from '../pages/fragment-web/LocalizationSelectPage';
 
 const fragmentsPagesTest = test.extend<{
 	fragmentEditorPage: FragmentEditorPage;
 	fragmentsPage: FragmentsPage;
+	localizationSelectPage: LocalizationSelectPage;
 }>({
 	fragmentEditorPage: async ({page}, use) => {
 		await use(new FragmentEditorPage(page));
 	},
 	fragmentsPage: async ({page}, use) => {
 		await use(new FragmentsPage(page));
+	},
+	localizationSelectPage: async ({page}, use) => {
+		await use(new LocalizationSelectPage(page));
 	},
 });
 

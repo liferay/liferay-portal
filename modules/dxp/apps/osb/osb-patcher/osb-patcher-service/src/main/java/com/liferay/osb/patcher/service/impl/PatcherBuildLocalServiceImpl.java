@@ -5,21 +5,28 @@
 
 package com.liferay.osb.patcher.service.impl;
 
+import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
 import com.liferay.osb.patcher.service.base.PatcherBuildLocalServiceBaseImpl;
+import com.liferay.osb.patcher.util.EmailUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildSupportTicketVersionComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.Date;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -160,6 +167,20 @@ public class PatcherBuildLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public PatcherBuild updateComments(long patcherBuildId, String comments)
+		throws PortalException {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setComments(comments);
+
+		return patcherBuildPersistence.update(patcherBuild);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public PatcherBuild updateNotified(long patcherBuildId, boolean notified)
 		throws PortalException {
 
@@ -188,5 +209,251 @@ public class PatcherBuildLocalServiceImpl
 
 		return patcherBuildPersistence.update(patcherBuild);
 	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, int qaStatus,
+			String supportTicket, int type)
+		throws Exception {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		int oldQaStatus = patcherBuild.getQaStatus();
+		int oldStatus = patcherBuild.getStatus();
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setQaStatus(qaStatus);
+		patcherBuild.setSupportTicket(supportTicket);
+		patcherBuild.setType(type);
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherBuild.setStatusByUserId(user.getUserId());
+		patcherBuild.setStatusByUserName(user.getFullName());
+
+		patcherBuild = patcherBuildPersistence.update(patcherBuild);
+
+		_sendEmail(patcherBuild, oldQaStatus, oldStatus, userId);
+
+		return patcherBuild;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, String fileName, int qaStatus,
+			String sourceName, int status)
+		throws Exception {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		int oldQaStatus = patcherBuild.getQaStatus();
+		int oldStatus = patcherBuild.getStatus();
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setFileName(fileName);
+		patcherBuild.setQaStatus(qaStatus);
+		patcherBuild.setSourceName(sourceName);
+		patcherBuild.setStatus(status);
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherBuild.setStatusByUserId(user.getUserId());
+		patcherBuild.setStatusByUserName(user.getFullName());
+
+		patcherBuild = patcherBuildPersistence.update(patcherBuild);
+
+		_sendEmail(patcherBuild, oldQaStatus, oldStatus, userId);
+
+		return patcherBuild;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updatePatcherBuild(PatcherBuild patcherBuild) {
+		PatcherBuild oldPatcherBuild =
+			patcherBuildPersistence.fetchByPrimaryKey(
+				patcherBuild.getPatcherBuildId());
+
+		patcherBuild = super.updatePatcherBuild(patcherBuild);
+
+		if (oldPatcherBuild == null) {
+			return patcherBuild;
+		}
+
+		try {
+			_sendEmail(
+				patcherBuild, oldPatcherBuild.getQaStatus(),
+				oldPatcherBuild.getStatus(), patcherBuild.getUserId());
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return patcherBuild;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updatePatcherFixId(
+			long patcherBuildId, long patcherFixId)
+		throws PortalException {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setPatcherFixId(patcherFixId);
+
+		return patcherBuildPersistence.update(patcherBuild);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updateQaFields(
+			long userId, long patcherBuildId, String qaComments, int qaStatus)
+		throws Exception {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		int oldQaStatus = patcherBuild.getQaStatus();
+		int oldStatus = patcherBuild.getStatus();
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setQaComments(qaComments);
+		patcherBuild.setQaStatus(qaStatus);
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherBuild.setStatusByUserId(user.getUserId());
+		patcherBuild.setStatusByUserName(user.getFullName());
+
+		patcherBuild = patcherBuildPersistence.update(patcherBuild);
+
+		_sendEmail(patcherBuild, oldQaStatus, oldStatus, userId);
+
+		return patcherBuild;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updateQaStatus(
+			long userId, long patcherBuildId, int qaStatus)
+		throws Exception {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		int oldQaStatus = patcherBuild.getQaStatus();
+		int oldStatus = patcherBuild.getStatus();
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setQaStatus(qaStatus);
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherBuild.setStatusByUserId(user.getUserId());
+		patcherBuild.setStatusByUserName(user.getFullName());
+
+		patcherBuild = patcherBuildPersistence.update(patcherBuild);
+
+		_sendEmail(patcherBuild, oldQaStatus, oldStatus, userId);
+
+		return patcherBuild;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updateRequestKey(long patcherBuildId, String requestKey)
+		throws PortalException {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setRequestKey(requestKey);
+
+		return patcherBuildPersistence.update(patcherBuild);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public PatcherBuild updateStatus(
+			long userId, long patcherBuildId, int status)
+		throws Exception {
+
+		PatcherBuild patcherBuild = patcherBuildPersistence.findByPrimaryKey(
+			patcherBuildId);
+
+		int oldQaStatus = patcherBuild.getQaStatus();
+		int oldStatus = patcherBuild.getStatus();
+
+		patcherBuild.setModifiedDate(new Date());
+		patcherBuild.setStatus(status);
+
+		User user = _userLocalService.getUser(userId);
+
+		patcherBuild.setStatusByUserId(user.getUserId());
+		patcherBuild.setStatusByUserName(user.getFullName());
+
+		patcherBuild = patcherBuildPersistence.update(patcherBuild);
+
+		_sendEmail(patcherBuild, oldQaStatus, oldStatus, userId);
+
+		return patcherBuild;
+	}
+
+	private void _sendEmail(
+			PatcherBuild patcherBuild, int oldQaStatus, int oldStatus,
+			long userId)
+		throws Exception {
+
+		User user = _userLocalService.getUser(userId);
+
+		if (oldStatus != patcherBuild.getStatus()) {
+			EmailUtil.sendPatcherEmail(
+				patcherBuild, patcherBuild.getStatus(), user);
+		}
+
+		if (oldQaStatus != patcherBuild.getQaStatus()) {
+			if ((patcherBuild.getQaStatus() ==
+					WorkflowConstants.STATUS_BUILD_QA_ANALYSIS_STARTED) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.
+						STATUS_BUILD_QA_ANALYSIS_STARTED_SMOKE_ONLY) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_STARTED) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.
+						STATUS_BUILD_QA_AUTOMATION_STARTED_SMOKE_ONLY) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.
+						STATUS_BUILD_QA_TESTING_SKIPPED_SMOKE_ONLY) ||
+				(patcherBuild.getQaStatus() ==
+					WorkflowConstants.STATUS_PENDING)) {
+
+				return;
+			}
+
+			EmailUtil.sendPatcherEmail(
+				patcherBuild, patcherBuild.getQaStatus(), user);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		PatcherBuildLocalServiceImpl.class);
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

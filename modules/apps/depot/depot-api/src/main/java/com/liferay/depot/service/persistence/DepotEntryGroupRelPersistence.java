@@ -1032,6 +1032,161 @@ public interface DepotEntryGroupRelPersistence
 	public int countByS_TGI(boolean searchable, long toGroupId);
 
 	/**
+	 * Returns all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @return the matching depot entry group rels
+	 */
+	public java.util.List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type);
+
+	/**
+	 * Returns a range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @return the range of matching depot entry group rels
+	 */
+	public java.util.List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching depot entry group rels
+	 */
+	public java.util.List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DepotEntryGroupRelModelImpl</code>.
+	 * </p>
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param start the lower bound of the range of depot entry group rels
+	 * @param end the upper bound of the range of depot entry group rels (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching depot entry group rels
+	 */
+	public java.util.List<DepotEntryGroupRel> findByTGI_T(
+		long toGroupId, int type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a matching depot entry group rel could not be found
+	 */
+	public DepotEntryGroupRel findByTGI_T_First(
+			long toGroupId, int type,
+			com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+				orderByComparator)
+		throws NoSuchEntryGroupRelException;
+
+	/**
+	 * Returns the first depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching depot entry group rel, or <code>null</code> if a matching depot entry group rel could not be found
+	 */
+	public DepotEntryGroupRel fetchByTGI_T_First(
+		long toGroupId, int type,
+		com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+			orderByComparator);
+
+	/**
+	 * Returns the last depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a matching depot entry group rel could not be found
+	 */
+	public DepotEntryGroupRel findByTGI_T_Last(
+			long toGroupId, int type,
+			com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+				orderByComparator)
+		throws NoSuchEntryGroupRelException;
+
+	/**
+	 * Returns the last depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching depot entry group rel, or <code>null</code> if a matching depot entry group rel could not be found
+	 */
+	public DepotEntryGroupRel fetchByTGI_T_Last(
+		long toGroupId, int type,
+		com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+			orderByComparator);
+
+	/**
+	 * Returns the depot entry group rels before and after the current depot entry group rel in the ordered set where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param depotEntryGroupRelId the primary key of the current depot entry group rel
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next depot entry group rel
+	 * @throws NoSuchEntryGroupRelException if a depot entry group rel with the primary key could not be found
+	 */
+	public DepotEntryGroupRel[] findByTGI_T_PrevAndNext(
+			long depotEntryGroupRelId, long toGroupId, int type,
+			com.liferay.portal.kernel.util.OrderByComparator<DepotEntryGroupRel>
+				orderByComparator)
+		throws NoSuchEntryGroupRelException;
+
+	/**
+	 * Removes all the depot entry group rels where toGroupId = &#63; and type = &#63; from the database.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 */
+	public void removeByTGI_T(long toGroupId, int type);
+
+	/**
+	 * Returns the number of depot entry group rels where toGroupId = &#63; and type = &#63;.
+	 *
+	 * @param toGroupId the to group ID
+	 * @param type the type
+	 * @return the number of matching depot entry group rels
+	 */
+	public int countByTGI_T(long toGroupId, int type);
+
+	/**
 	 * Caches the depot entry group rel in the entity cache if it is enabled.
 	 *
 	 * @param depotEntryGroupRel the depot entry group rel

@@ -75,10 +75,8 @@ public class CTScoreLocalServiceUtil {
 		return getService().createPersistedModel(primaryKeyObj);
 	}
 
-	public static CTScore decrementScore(
-		long ctCollectionId, long modelClassNameId) {
-
-		return getService().decrementScore(ctCollectionId, modelClassNameId);
+	public static CTScore decrementScore(long ctCollectionId, int score) {
+		return getService().decrementScore(ctCollectionId, score);
 	}
 
 	/**
@@ -279,10 +277,8 @@ public class CTScoreLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static CTScore incrementScore(
-		long ctCollectionId, long modelClassNameId) {
-
-		return getService().incrementScore(ctCollectionId, modelClassNameId);
+	public static CTScore incrementScore(long ctCollectionId, int score) {
+		return getService().incrementScore(ctCollectionId, score);
 	}
 
 	/**

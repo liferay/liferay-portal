@@ -20,7 +20,7 @@ export const test = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: false, system: true},
+		'LPD-35914': {enabled: false},
 	}),
 	loginTest(),
 	productMenuPageTest,
@@ -32,7 +32,7 @@ export const testWithExportImportAtInstanceLevelFF = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: true, system: true},
+		'LPD-35914': {enabled: true},
 	}),
 	loginTest()
 );

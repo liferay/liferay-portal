@@ -48,7 +48,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -569,16 +568,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 			return null;
 		}
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
-			cpInstance.getCPDefinitionId());
-
-		if (!_commerceProductViewPermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
-				cpDefinition.getCPDefinitionId())) {
-
-			return null;
-		}
-
 		JSONArray jsonArray = CPJSONUtil.toJSONArray(
 			_cpDefinitionOptionRelLocalService.
 				getCPDefinitionOptionRelKeysCPDefinitionOptionValueRelKeys(
@@ -601,6 +590,10 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 					return fileEntry.getFileVersion();
 				}
 			}
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.getCPDefinition(
+					cpInstance.getCPDefinitionId());
 
 			FileEntry fileEntry =
 				_commerceMediaProvider.getDefaultImageFileEntry(
@@ -654,7 +647,7 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 
 		return _commerceMediaResolver.getThumbnailURL(
 			commerceAccountId,
-			cpAttachmentFileEntry.getCPAttachmentFileEntryId());
+			cpAttachmentFileEntry.getCPAttachmentFileEntryId(), false);
 	}
 
 	@Override
@@ -936,10 +929,6 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 			long accountEntryId, long commerceChannelGroupId,
 			long commerceOrderTypeId, CPInstance cpInstance)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			return 0;
-		}
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannelByGroupId(

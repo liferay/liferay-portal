@@ -25,6 +25,21 @@
 		</permissions>
 	</model-resource>
 	<model-resource>
+		<model-name>com.liferay.object.entry.folder</model-name>
+		<portlet-ref>
+			<portlet-name>com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet</portlet-name>
+		</portlet-ref>
+		<weight>1</weight>
+		<permissions>
+			<supports>
+				<action-key>ADD_OBJECT_ENTRY_FOLDER</action-key>
+			</supports>
+			<guest-unsupported>
+				<action-key>ADD_OBJECT_ENTRY_FOLDER</action-key>
+			</guest-unsupported>
+		</permissions>
+	</model-resource>
+	<model-resource>
 		<model-name>com.liferay.object.model.ObjectDefinition</model-name>
 		<portlet-ref>
 			<portlet-name>com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet</portlet-name>
@@ -53,18 +68,19 @@
 		<permissions>
 			<supports>
 				<action-key>ADD_ENTRY</action-key>
-				<action-key>ADD_FOLDER</action-key>
 				<action-key>DELETE</action-key>
+				<action-key>SUBSCRIBE</action-key>
 				<action-key>UPDATE</action-key>
 				<action-key>VIEW</action-key>
 			</supports>
 			<site-member-defaults>
+				<action-key>SUBSCRIBE</action-key>
 				<action-key>VIEW</action-key>
 			</site-member-defaults>
 			<guest-unsupported>
 				<action-key>ADD_ENTRY</action-key>
-				<action-key>ADD_FOLDER</action-key>
 				<action-key>DELETE</action-key>
+				<action-key>SUBSCRIBE</action-key>
 				<action-key>UPDATE</action-key>
 			</guest-unsupported>
 		</permissions>

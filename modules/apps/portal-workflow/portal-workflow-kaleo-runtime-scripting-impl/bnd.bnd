@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Runtime Scripting Implementation
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.runtime.scripting.impl
-Bundle-Version: 5.0.25
+Bundle-Version: 5.0.26
 DynamicImport-Package: *
 -dsannotations-options: inherit

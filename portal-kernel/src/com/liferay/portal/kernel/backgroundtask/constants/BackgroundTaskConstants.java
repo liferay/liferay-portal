@@ -13,7 +13,7 @@ import com.liferay.petra.string.StringPool;
  */
 public class BackgroundTaskConstants {
 
-	public static final String BACKGROUND_TASK_ID = "backgroundTaskId";
+	public static final int GROUP_ID_DEFAULT = 0;
 
 	public static final int ISOLATION_LEVEL_CLASS = 1;
 
@@ -38,6 +38,9 @@ public class BackgroundTaskConstants {
 	public static final String LABEL_QUEUED = "queued";
 
 	public static final String LABEL_SUCCESSFUL = "successful";
+
+	public static final String MESSAGE_KEY_BACKGROUND_TASK_ID =
+		"backgroundTaskId";
 
 	public static final int STATUS_CANCELLED = 5;
 

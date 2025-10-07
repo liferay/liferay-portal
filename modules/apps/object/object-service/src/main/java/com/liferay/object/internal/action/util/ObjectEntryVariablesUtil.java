@@ -16,6 +16,7 @@ import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.system.JaxRsApplicationDescriptor;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -189,6 +190,16 @@ public class ObjectEntryVariablesUtil {
 
 			if (objectEntryId != null) {
 				allowedVariables.put("id", objectEntryId);
+			}
+
+			Object objectEntryFolderId = variables.get("objectEntryFolderId");
+
+			if (FeatureFlagManagerUtil.isEnabled(
+					objectDefinition.getCompanyId(), "LPD-17564") &&
+				(objectEntryFolderId != null)) {
+
+				allowedVariables.put(
+					"objectEntryFolderId", objectEntryFolderId);
 			}
 		}
 

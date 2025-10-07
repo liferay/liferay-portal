@@ -16,25 +16,25 @@
 		"type": 1
 	},
 	{
+		"name": "Knowledge Article Approver",
+		"name_i18n": {
+			"en-US": "Knowledge Article Approver"
+		},
+		"scope": 4,
+		"type": 1
+	},
+	{
+		"name": "Knowledge Article Creator",
+		"name_i18n": {
+			"en-US": "Knowledge Article Creator"
+		},
+		"scope": 4,
+		"type": 1
+	},
+	{
 		"name": "Partner",
 		"name_i18n": {
 			"en-US": "Partner"
-		},
-		"scope": 4,
-		"type": 1
-	},
-	{
-		"name": "Recipe Approver",
-		"name_i18n": {
-			"en-US": "Recipe Approver"
-		},
-		"scope": 4,
-		"type": 1
-	},
-	{
-		"name": "Recipe Creator",
-		"name_i18n": {
-			"en-US": "Recipe Creator"
 		},
 		"scope": 4,
 		"type": 1

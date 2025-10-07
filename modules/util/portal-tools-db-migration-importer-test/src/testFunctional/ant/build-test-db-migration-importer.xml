@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<project basedir="." name="portal-tools-db-migration-importer" xmlns:antelope="antlib:ise.antelope.tasks">
+	<import file="../../../../../../build-test.xml" />
+
+	<macrodef name="clean-logs">
+		<sequential>
+			<delete failonerror="false" file="${project.dir}/modules/util/portal-tools-db-migration-importer-test/src/testFunctional/ant/db-migration-importer.log" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="copy-drivers">
+		<sequential>
+			<get-database-property property.name="database.version" />
+
+			<get-test-app-server-lib-portal-dir />
+
+			<if>
+				<and>
+					<equals arg1="${database.type}" arg2="db2" />
+				</and>
+				<then>
+					<for list="${jdbc.db2.driver}" param="jdbc.driver">
+						<sequential>
+							<move
+								file="${test.app.server.lib.portal.dir}/@{jdbc.driver}"
+								tofile="${liferay.home}/tools/portal-tools-db-migration-importer/lib/@{jdbc.driver}"
+							/>
+						</sequential>
+					</for>
+				</then>
+				<elseif>
+					<and>
+						<equals arg1="${database.type}" arg2="oracle" />
+					</and>
+					<then>
+						<copy
+							file="${test.app.server.lib.portal.dir}/${jdbc.oracle.driver}"
+							todir="${liferay.home}/tools/portal-tools-db-migration-importer/lib"
+						/>
+					</then>
+				</elseif>
+				<elseif>
+					<equals arg1="${database.type}" arg2="sqlserver" />
+					<then>
+						<copy
+							file="${test.app.server.lib.portal.dir}/${jdbc.sqlserver.driver}"
+							todir="${liferay.home}/tools/portal-tools-db-migration-importer/lib"
+						/>
+					</then>
+				</elseif>
+			</if>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="run-script-db-migration-importer">
+		<attribute default="" name="source.jdbc.url" />
+		<attribute default="" name="source.password" />
+		<attribute default="" name="source.user" />
+		<attribute default="" name="target.jdbc.url" />
+		<attribute default="" name="target.password" />
+		<attribute default="" name="target.user" />
+		<attribute default="" name="path" />
+
+		<sequential>
+			<copy-drivers />
+
+			<exec dir="${liferay.home}/tools/portal-tools-db-migration-importer" executable="/bin/bash" failonerror="false" output="db-migration-importer.log">
+				<arg value="${liferay.home}/tools/portal-tools-db-migration-importer/db_migration_importer.sh" />
+				<arg value="--source-jdbc-url" />
+				<arg value="${source.jdbc.url}" />
+				<arg value="--source-password" />
+				<arg value="${source.password}" />
+				<arg value="--source-user" />
+				<arg value="${source.user}" />
+				<arg value="--target-jdbc-url" />
+				<arg value="${target.jdbc.url}" />
+				<arg value="--target-password" />
+				<arg value="${target.password}" />
+				<arg value="--target-user" />
+				<arg value="${target.user}" />
+				<arg value="--path" />
+				<arg value="${path}" />
+			</exec>
+
+			<print-file file.name="modules/util/portal-tools-db-migration-importer-test/src/testFunctional/ant/db-migration-importer.log" />
+		</sequential>
+	</macrodef>
+
+	<target name="clean-db-migration-importer-tool">
+		<clean-logs />
+	</target>
+
+	<target name="import-database">
+		<run-script-db-migration-importer path="${path}" source.jdbc.url="${source.jdbc.url}" source.password="${source.password}" source.user="${source.user}" target.jdbc.url="${target.jdbc.url}" target.password="${target.password}" target.user="${target.user}" />
+	</target>
+</project>

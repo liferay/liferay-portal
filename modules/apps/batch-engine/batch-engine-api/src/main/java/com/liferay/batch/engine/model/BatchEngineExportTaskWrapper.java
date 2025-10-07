@@ -54,8 +54,8 @@ public class BatchEngineExportTaskWrapper
 		attributes.put("contentType", getContentType());
 		attributes.put("endTime", getEndTime());
 		attributes.put("errorMessage", getErrorMessage());
-		attributes.put("fieldNames", getFieldNames());
 		attributes.put("executeStatus", getExecuteStatus());
+		attributes.put("fieldNames", getFieldNames());
 		attributes.put("parameters", getParameters());
 		attributes.put("processedItemsCount", getProcessedItemsCount());
 		attributes.put("startTime", getStartTime());
@@ -153,16 +153,16 @@ public class BatchEngineExportTaskWrapper
 			setErrorMessage(errorMessage);
 		}
 
-		String fieldNames = (String)attributes.get("fieldNames");
-
-		if (fieldNames != null) {
-			setFieldNames(fieldNames);
-		}
-
 		String executeStatus = (String)attributes.get("executeStatus");
 
 		if (executeStatus != null) {
 			setExecuteStatus(executeStatus);
+		}
+
+		String fieldNames = (String)attributes.get("fieldNames");
+
+		if (fieldNames != null) {
+			setFieldNames(fieldNames);
 		}
 
 		Map<String, Serializable> parameters =

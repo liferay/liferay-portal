@@ -258,6 +258,8 @@ test(
 			channel.id
 		);
 
+		await page.waitForLoadState('networkidle');
+
 		await page.goto(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${cart.id}`
@@ -562,6 +564,8 @@ test(
 			channel.id
 		);
 
+		await page.waitForLoadState('networkidle');
+
 		await page.goto(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${cart.id}`
@@ -700,6 +704,8 @@ test(
 			channel.id
 		);
 
+		await page.waitForLoadState('networkidle');
+
 		await page.goto(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${cart.id}`
@@ -798,8 +804,6 @@ test(
 		pageEditorPage,
 		site,
 	}) => {
-		test.setTimeout(180000);
-
 		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
 
 		const displayPageTemplateName = getRandomString();
@@ -889,7 +893,8 @@ test(
 
 		await page.goto(
 			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart.id}`
+				`/web/${site.name}/order/${cart.id}`,
+			{waitUntil: 'networkidle'}
 		);
 
 		await expect(
@@ -922,7 +927,8 @@ test(
 
 		await page.goto(
 			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart.id}`
+				`/web/${site.name}/order/${cart.id}`,
+			{waitUntil: 'networkidle'}
 		);
 
 		await expect(
@@ -950,6 +956,7 @@ test(
 		).toBeChecked();
 
 		await commerceLayoutsPage.saveButton.click();
+		await page.waitForLoadState('load');
 
 		await expect(
 			commerceLayoutsPage.infoBoxValue(paymentMethod2)
@@ -1234,298 +1241,409 @@ test(
 	}) => {
 		test.setTimeout(180000);
 
-		const {catalog, channel, site} = await classicCommerceSetUp(apiHelpers);
+		let account;
+		let cart1;
+		let cart2;
+		let catalog;
+		let channel;
+		let orderActionsFragmentId;
+		let product;
+		let site;
+		let sku;
+		let user;
 
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'business',
+		await test.step('Initialize Commerce Classic Site', async () => {
+			const {
+				catalog: catalogSetup,
+				channel: channelSetup,
+				site: siteSetup,
+			} = await classicCommerceSetUp(apiHelpers, getRandomString());
+
+			catalog = catalogSetup;
+			channel = channelSetup;
+			site = siteSetup;
 		});
 
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			['demo.unprivileged@liferay.com']
-		);
-		const user =
-			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-				'demo.unprivileged@liferay.com'
-			);
-
-		const siteRole =
-			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
-
-		const rolesResponse =
-			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
-
-		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
-			return role.name === 'Buyer';
-		});
-
-		await apiHelpers.headlessAdminUser.assignAccountRoles(
-			account.externalReferenceCode,
-			accountRoleBuyer[0].id,
-			user.emailAddress
-		);
-		await apiHelpers.headlessAdminUser.assignUserToSite(
-			siteRole.id,
-			site.id,
-			user.id
-		);
-
-		const product =
-			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-				catalogId: catalog.id,
+		await test.step('Create an Account and a Buyer user', async () => {
+			account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'business',
 			});
 
-		const sku = product.skus[0];
+			user =
+				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+					'demo.unprivileged@liferay.com'
+				);
+			const rolesResponse =
+				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
 
-		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
-		await displayPageTemplatesPage.editTemplate('Order');
+			const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+				return role.name === 'Buyer';
+			});
 
-		const orderActionsFragmentId =
-			await pageEditorPage.getFragmentId('Order Actions');
+			await apiHelpers.headlessAdminUser.assignAccountRoles(
+				account.externalReferenceCode,
+				accountRoleBuyer[0].id,
+				user.emailAddress
+			);
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				['demo.unprivileged@liferay.com']
+			);
 
-		await pageEditorPage.changeFragmentConfiguration({
-			fieldLabel: 'Enable Import from CSV',
-			fragmentId: orderActionsFragmentId,
-			tab: 'General',
-			value: false,
+			const siteRole =
+				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+			await apiHelpers.headlessAdminUser.assignUserToSite(
+				siteRole.id,
+				site.id,
+				user.id
+			);
 		});
 
-		await pageEditorPage.waitForChangesSaved();
+		await test.step('Create a Product', async () => {
+			product = await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+				{
+					catalogId: catalog.id,
+				}
+			);
 
-		await displayPageTemplatesPage.publishTemplate();
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
-
-		const cart1 = await apiHelpers.headlessCommerceDeliveryCart.postCart(
-			{
-				accountId: account.id,
-				cartItems: [
-					{
-						quantity: 1,
-						skuId: sku.id,
-					},
-				],
-			},
-			channel.id
-		);
-
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart1.id}`
-		);
-
-		await expect(
-			page.getByRole('heading', {name: String(cart1.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.orderActionDropDownButton.click();
-
-		await expect(
-			page.getByRole('menuitem', {name: 'Import from CSV'})
-		).toBeHidden();
-
-		await expect(
-			page.getByRole('menuitem', {name: 'Import from Orders'})
-		).toBeVisible();
-
-		await expect(
-			page.getByRole('menuitem', {name: 'Import from Wish List'})
-		).toBeVisible();
-
-		await commerceLayoutsPage.orderActionDropDownButton.click();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			checkoutCount: 1,
-			submitCount: 1,
-		});
-		await commerceLayoutsPage.orderActionsButton('Checkout').click();
-
-		await checkoutPage.performCheckout({
-			shippingAddress: {
-				city: 'testCity',
-				countryLabel: 'United States',
-				name: user.name,
-				regionLabel: 'Florida',
-				street: 'testStreet',
-				zip: '12345',
-			},
+			sku = product.skus[0];
 		});
 
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart1.id}`
-		);
+		await test.step('Change fragment configuration of order actions fragment disabling import from CSV', async () => {
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+			await displayPageTemplatesPage.editTemplate('Order');
 
-		await expect(
-			page.getByRole('heading', {name: String(cart1.id)}).first()
-		).toBeVisible();
+			orderActionsFragmentId =
+				await pageEditorPage.getFragmentId('Order Actions');
 
-		await commerceLayoutsPage.expectOrderActionButtons({
-			reorderCount: 1,
-			submitCount: 1,
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Enable Import from CSV',
+				fragmentId: orderActionsFragmentId,
+				tab: 'General',
+				value: false,
+			});
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await displayPageTemplatesPage.publishTemplate();
 		});
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
+		await test.step('As Buyer create a cart and navigate to order and assert that order actions buttons are correctly displayed', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
-		await commerceAdminChannelsPage.changeCommerceChannelBuyerOrderApprovalWorkflow(
-			'Single Approver (Version 1)',
-			channel.name
-		);
-		await commerceAdminChannelsPage.changeCommerceChannelSellerOrderAcceptanceWorkflow(
-			'Single Approver (Version 1)',
-			channel.name,
-			true
-		);
+			cart1 = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							quantity: 1,
+							skuId: sku.id,
+						},
+					],
+				},
+				channel.id
+			);
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart1.id}`
+			);
 
-		const cart2 = await apiHelpers.headlessCommerceDeliveryCart.postCart(
-			{
-				accountId: account.id,
-				cartItems: [
-					{
-						quantity: 1,
-						skuId: sku.id,
-					},
-				],
-			},
-			channel.id
-		);
+			await expect(
+				page.getByRole('heading', {name: String(cart1.id)}).first()
+			).toBeVisible();
 
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart2.id}`
-		);
+			await commerceLayoutsPage.orderActionDropDownButton.click();
 
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
+			await expect(
+				page.getByRole('menuitem', {name: 'Import from CSV'})
+			).toBeHidden();
 
-		await commerceLayoutsPage.expectOrderActionButtons({submitCount: 1});
-		await commerceLayoutsPage.orderActionsButton('Submit').click();
+			await expect(
+				page.getByRole('menuitem', {name: 'Import from Orders'})
+			).toBeVisible();
 
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({});
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
-
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart2.id}`
-		);
-
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			approveCount: 1,
-			rejectCount: 1,
+			await expect(
+				page.getByRole('menuitem', {name: 'Import from Wish List'})
+			).toBeVisible();
 		});
-		await commerceLayoutsPage.orderActionsButton('Approve').click();
 
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
+		await test.step('Change fragment configuration of order actions fragment enabling import from CSV', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
 
-		await commerceLayoutsPage.expectOrderActionButtons({checkoutCount: 1});
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+			await displayPageTemplatesPage.editTemplate('Order');
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+			await pageEditorPage.changeFragmentConfiguration({
+				fieldLabel: 'Enable Import from CSV',
+				fragmentId: orderActionsFragmentId,
+				tab: 'General',
+				value: true,
+			});
 
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart2.id}`
-		);
+			await pageEditorPage.waitForChangesSaved();
 
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			checkoutCount: 1,
-			submitCount: 1,
+			await displayPageTemplatesPage.publishTemplate();
 		});
-		await commerceLayoutsPage.orderActionsButton('Checkout').click();
 
-		await checkoutPage.performCheckout(
-			{
+		await test.step('As Buyer navigate to order, click import from CSV and download CSV template', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart1.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart1.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.orderActionDropDownButton.click();
+
+			await page.getByRole('menuitem', {name: 'Import from CSV'}).click();
+
+			const downloadPromise = page.waitForEvent('download');
+
+			await commerceLayoutsPage.downloadCsvTemplateButton.click();
+
+			const download = await downloadPromise;
+			expect(download.suggestedFilename()).toEqual('csv_template.csv');
+
+			await commerceLayoutsPage.closeFrameButton.click();
+		});
+
+		await test.step('As Buyer perform checkout and assert that order actions buttons are correctly displayed', async () => {
+			await commerceLayoutsPage.expectOrderActionButtons({
+				checkoutCount: 1,
+				submitCount: 1,
+			});
+			await commerceLayoutsPage.orderActionsButton('Checkout').click();
+
+			await checkoutPage.performCheckout({
 				shippingAddress: {
 					city: 'testCity',
 					countryLabel: 'United States',
 					name: user.name,
-					regionLabel: 'California',
+					regionLabel: 'Florida',
 					street: 'testStreet',
 					zip: '12345',
 				},
-			},
-			async (activeStep: string) => {
-				if (activeStep.includes('Order Confirmation')) {
-					await page.waitForTimeout(1000);
+			});
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart1.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart1.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				reorderCount: 1,
+				submitCount: 1,
+			});
+		});
+
+		await test.step('Change Buyer and Seller order approval workflows', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceAdminChannelsPage.changeCommerceChannelBuyerOrderApprovalWorkflow(
+				'Single Approver (Version 1)',
+				channel.name
+			);
+			await commerceAdminChannelsPage.changeCommerceChannelSellerOrderAcceptanceWorkflow(
+				'Single Approver (Version 1)',
+				channel.name,
+				true
+			);
+		});
+
+		await test.step('As Buyer create a cart, navigate to order and submit it', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			cart2 = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							quantity: 1,
+							skuId: sku.id,
+						},
+					],
+				},
+				channel.id
+			);
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart2.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				submitCount: 1,
+			});
+			await commerceLayoutsPage.orderActionsButton('Submit').click();
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({});
+		});
+
+		await test.step('As Admin approve the order and assert that order actions buttons are correctly displayed', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart2.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				approveCount: 1,
+				rejectCount: 1,
+			});
+			await commerceLayoutsPage.orderActionsButton('Approve').click();
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				checkoutCount: 1,
+			});
+		});
+
+		await test.step('As Buyer create a cart, navigate to order and perform checkout', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart2.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				checkoutCount: 1,
+				submitCount: 1,
+			});
+			await commerceLayoutsPage.orderActionsButton('Checkout').click();
+
+			await checkoutPage.performCheckout(
+				{
+					shippingAddress: {
+						city: 'testCity',
+						countryLabel: 'United States',
+						name: user.name,
+						regionLabel: 'California',
+						street: 'testStreet',
+						zip: '12345',
+					},
+				},
+				async (activeStep: string) => {
+					if (activeStep.includes('Order Confirmation')) {
+						await page.waitForTimeout(1000);
+					}
+				}
+			);
+		});
+
+		await test.step('As Admin approve the order and assert that order actions buttons are correctly displayed', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart2.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				approveCount: 1,
+				rejectCount: 1,
+				reorderCount: 1,
+				submitCount: 1,
+			});
+			await commerceLayoutsPage.orderActionsButton('Approve').click();
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				reorderCount: 1,
+				submitCount: 1,
+			});
+		});
+
+		await test.step('As Buyer navigate to order and assert that order actions buttons are correctly displayed', async () => {
+			await performLogout(page);
+			await performLogin(page, 'demo.unprivileged');
+
+			await page.goto(
+				liferayConfig.environment.baseUrl +
+					`/web/${site.name}/order/${cart2.id}`
+			);
+
+			await expect(
+				page.getByRole('heading', {name: String(cart2.id)}).first()
+			).toBeVisible();
+
+			await commerceLayoutsPage.expectOrderActionButtons({
+				reorderCount: 1,
+				submitCount: 1,
+			});
+			try {
+				await commerceLayoutsPage.orderActionsButton('Reorder').click();
+
+				await expect(
+					page.getByRole('heading', {name: String(cart2.id)})
+				).toHaveCount(0);
+
+				await commerceLayoutsPage.expectOrderActionButtons({
+					submitCount: 1,
+				});
+			}
+			finally {
+				await performLogout(page);
+				await performLoginViaApi({page, screenName: 'test'});
+
+				const orders =
+					await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+
+				if (orders && orders.items) {
+					for (const order of orders.items) {
+						await apiHelpers.headlessCommerceAdminOrder.deleteOrder(
+							order.id
+						);
+					}
 				}
 			}
-		);
-
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
-
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart2.id}`
-		);
-
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			approveCount: 1,
-			rejectCount: 1,
-			reorderCount: 1,
-			submitCount: 1,
 		});
-		await commerceLayoutsPage.orderActionsButton('Approve').click();
-
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			reorderCount: 1,
-			submitCount: 1,
-		});
-
-		await performLogout(page);
-		await performLogin(page, 'demo.unprivileged');
-
-		await page.goto(
-			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart2.id}`
-		);
-
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)}).first()
-		).toBeVisible();
-
-		await commerceLayoutsPage.expectOrderActionButtons({
-			reorderCount: 1,
-			submitCount: 1,
-		});
-		await commerceLayoutsPage.orderActionsButton('Reorder').click();
-
-		await expect(
-			page.getByRole('heading', {name: String(cart2.id)})
-		).toHaveCount(0);
-
-		await commerceLayoutsPage.expectOrderActionButtons({submitCount: 1});
 	}
 );
 
@@ -1623,6 +1741,8 @@ test(
 			},
 			channel.id
 		);
+
+		await page.waitForLoadState('networkidle');
 
 		await page.goto(
 			liferayConfig.environment.baseUrl +
@@ -1807,6 +1927,8 @@ test(
 			channel.id
 		);
 
+		await page.waitForLoadState('networkidle');
+
 		await page.goto(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${cart.id}`
@@ -1989,7 +2111,8 @@ test(
 
 		await page.goto(
 			liferayConfig.environment.baseUrl +
-				`/web/${site.name}/order/${cart.id}`
+				`/web/${site.name}/order/${cart.id}`,
+			{waitUntil: 'networkidle'}
 		);
 
 		await expect(
@@ -2203,6 +2326,8 @@ test(
 			channel.id
 		);
 
+		await page.waitForLoadState('networkidle');
+
 		await page.goto(
 			liferayConfig.environment.baseUrl +
 				`/web/${site.name}/order/${cart.id}`
@@ -2350,6 +2475,8 @@ test(
 			},
 			channel.id
 		);
+
+		await page.waitForLoadState('networkidle');
 
 		await page.goto(
 			liferayConfig.environment.baseUrl +

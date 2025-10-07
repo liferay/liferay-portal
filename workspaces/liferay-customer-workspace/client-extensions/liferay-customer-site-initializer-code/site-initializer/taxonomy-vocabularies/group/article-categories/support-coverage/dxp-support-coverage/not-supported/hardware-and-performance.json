@@ -1,0 +1,10 @@
+{
+	"name": "Hardware and Performance",
+	"name_i18n": {
+		"en_US": "Hardware and Performance",
+		"es-ES": "Hardware y rendimiento",
+		"ja-JP": "ハードウェアとパフォーマンス",
+		"pt-BR": "Hardware e Desempenho"
+	},
+	"viewableBy": "Anyone"
+}

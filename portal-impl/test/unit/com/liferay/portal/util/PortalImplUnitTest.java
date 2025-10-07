@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LayoutTypePortletFactoryUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -62,7 +63,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -645,8 +645,8 @@ public class PortalImplUnitTest {
 
 		Assert.assertFalse(_portalImpl.isValidResourceId(sb.toString()));
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				HttpComponentsUtil.class.getName(), Level.OFF)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				HttpComponentsUtil.class.getName(), LoggerTestUtil.OFF)) {
 
 			Assert.assertFalse(_portalImpl.isValidResourceId("%view.jsp"));
 		}

@@ -16,6 +16,13 @@
 		}
 	}
 
+	&-mandatory-toggle {
+		align-items: center;
+		color: #6b6c7e;
+		display: flex;
+		gap: 0.5rem;
+	}
+
 	&-object-field-type-option {
 		display: flex;
 		flex-direction: column;

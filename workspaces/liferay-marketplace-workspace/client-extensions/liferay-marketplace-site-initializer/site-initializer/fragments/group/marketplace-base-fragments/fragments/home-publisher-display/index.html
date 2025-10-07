@@ -1,0 +1,89 @@
+<div class="section-container">
+	<div>
+		<div class="d-flex flex-row justify-content-between w-100">
+			<h1 class="mb-1">${configuration.sectionTitle}</h1>
+
+			<button class="btn btn-link d-none font-weight-bold" type="button">
+				<span class="language-caret-icon">
+					<span>
+						${languageUtil.get(locale, "view-more")}
+					</span>
+					<span>[@clay["icon"] symbol="order-arrow-right" /]</span>
+				</span>
+			</button>
+		</div>
+
+		<p class="text-black-50 mb-4">${configuration.sectionDescription}</p>
+	</div>
+
+	[#if configuration.publisherDetailsObjectId?has_content]
+		[#assign channel = restClient.get("/headless-commerce-delivery-catalog/v1.0/channels?accountId=-1") /]
+
+		[#if channel?has_content]
+			[#assign channelId = channel.items[0].id /]
+		[/#if]
+
+		[#if channelId?has_content]
+			[#assign response =
+				restClient.get("/headless-commerce-delivery-catalog/v1.0/channels/${channelId}/products?accountId=-1&images.accountId=-1&nestedFields=categories,productSpecifications,images")
+			/]
+		[/#if]
+
+		[#assign
+			publisherdetailsesPage = restClient.get("/c/publisherdetailses?pageSize=4")
+			publishers = publisherdetailsesPage.items![]
+		/]
+
+		<div class="container-gap d-flex flex-row flex-wrap mb-5">
+			[#list publishers as publisher]
+				[#assign publisherApps = restClient.get("/headless-commerce-delivery-catalog/v1.0/channels/"
+					+ channelId
+					+ "/products?accountId=-1&nestedFields=totalCount&filter=catalogId eq "
+					+ publisher.catalogId)
+				/]
+
+				<a class="bg-white border-radius-medium catalog-card d-flex flex-column justify-content-between mb-0 text-dark text-decoration-none" href="/e/publisher-details/${configuration.publisherDetailsObjectId}/${publisher.id}" target="_self">
+					<div>
+						<div class="align-items-center catalog-card-header d-flex">
+							<div class="image-container mr-2 rounded">
+								<img class="catalog-image" height="56" src="${publisher.publisherProfileImage}" width="56" />
+							</div>
+
+							<div class="catalog-card-name font-weight-bold mb-1">
+								${publisher.publisherName}
+							</div>
+						</div>
+
+						<div class="d-flex flex-column font-size-paragraph justify-content-between">
+							<div class="catalog-card-description font-weight-normal mb-2 mt-2">
+								${stringUtil.shorten(htmlUtil.stripHtml(publisher.description!""), 140, "...")}
+							</div>
+						</div>
+					</div>
+
+					<div class="d-flex flex-row justify-content-start">
+						<p class="m-0 mr-2">
+							<span class="mr-1">${publisherApps.totalCount}</span>
+							<span>${languageUtil.get(locale, "apps")}</span>
+						</p>
+
+						[#if configuration.hideRatingInfo == false]
+						<div class="align-items-center d-flex justify-content-center ml-3">
+							<span class="stars">
+								[@clay["icon"] symbol="star" /]
+							</span>
+
+							<p class="ml-1 m-0">4.85</p>
+						</div>
+
+						<div class="align-items-center d-flex justify-content-center ml-3">
+							<span>[@clay["icon"] symbol="download" /]</span>
+							<span class="ml-1">85k</span>
+						</div>
+						[/#if]
+					</div>
+				</a>
+			[/#list]
+		</div>
+	[/#if]
+</div>

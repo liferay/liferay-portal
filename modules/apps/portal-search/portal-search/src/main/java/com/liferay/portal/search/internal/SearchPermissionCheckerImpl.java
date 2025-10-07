@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.internal;
 
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -316,6 +317,8 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			return null;
 		}
 
+		Role assetLibraryMemberRole = _roleLocalService.getRole(
+			companyId, DepotRolesConstants.ASSET_LIBRARY_MEMBER);
 		Role organizationUserRole = _roleLocalService.getRole(
 			companyId, RoleConstants.ORGANIZATION_USER);
 		Role siteMemberRole = _roleLocalService.getRole(
@@ -332,11 +335,18 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 			while (iterator.hasNext()) {
 				Role groupRole = iterator.next();
 
-				if ((groupRole.getType() != RoleConstants.TYPE_ORGANIZATION) &&
+				if ((groupRole.getType() != RoleConstants.TYPE_DEPOT) &&
+					(groupRole.getType() != RoleConstants.TYPE_ORGANIZATION) &&
 					(groupRole.getType() != RoleConstants.TYPE_SITE)) {
 
 					iterator.remove();
 				}
+			}
+
+			if (group.isDepot() &&
+				!groupRoles.contains(assetLibraryMemberRole)) {
+
+				groupRoles.add(assetLibraryMemberRole);
 			}
 
 			if (group.isOrganization() &&

@@ -31,10 +31,14 @@ class MarketplaceOAuth2 extends MarketplaceSpringBootOAuth2 {
 		await downloadFile('orders.csv', response);
 	}
 
-	async getMarketplaceProjectsKPI() {
-		return this.get<{[key: string]: any[]}>('/projects/kpi').catch(
-			() => ({})
+	async taxCalculate(orderId: number): Promise<Order> {
+		const order = await this.post<Order>(
+			`/tax-calculate/${orderId}`,
+			{},
+			{earlyReturn: true}
 		);
+
+		return order;
 	}
 }
 

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal OData Implementation
 Bundle-SymbolicName: com.liferay.portal.odata.impl
-Bundle-Version: 4.0.39
+Bundle-Version: 4.0.40
 Import-Package:\
 	!javax.servlet.*,\
 	\

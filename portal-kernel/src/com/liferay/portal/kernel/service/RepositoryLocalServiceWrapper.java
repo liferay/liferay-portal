@@ -351,6 +351,11 @@ public class RepositoryLocalServiceWrapper
 		return _repositoryLocalService.getRepositories(start, end);
 	}
 
+	@Override
+	public java.util.List<Repository> getRepositories(String portletId) {
+		return _repositoryLocalService.getRepositories(portletId);
+	}
+
 	/**
 	 * Returns all the repositories matching the UUID and company.
 	 *

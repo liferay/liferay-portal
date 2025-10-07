@@ -74,7 +74,9 @@ public class UserAccountEntityModel implements EntityModel {
 				new StringEntityField(
 					"jobTitle",
 					locale -> Field.getSortableFieldName("jobTitle")),
-				new StringEntityField("name", locale -> Field.USER_NAME)));
+				new StringEntityField(
+					"name",
+					locale -> Field.getSortableFieldName(Field.USER_NAME))));
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-36010")) {
 			entityFieldList.add(

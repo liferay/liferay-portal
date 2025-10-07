@@ -8,6 +8,8 @@ package com.liferay.portal.osgi.web.http.servlet.internal.servlet;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.osgi.web.http.servlet.internal.HttpServletEndpointController;
+import com.liferay.portal.osgi.web.http.servlet.internal.context.LiferayDispatchTargets;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -16,10 +18,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-
-import org.eclipse.equinox.http.servlet.internal.HttpServletEndpointController;
-import org.eclipse.equinox.http.servlet.internal.context.DispatchTargets;
-import org.eclipse.equinox.http.servlet.internal.servlet.HttpServletRequestWrapperImpl;
 
 /**
  * @author Dante Wang
@@ -50,18 +48,18 @@ public class HttpServletEndpointServlet extends HttpServlet {
 		throws IOException, ServletException {
 
 		String dispatchPathInfo =
-			HttpServletRequestWrapperImpl.getDispatchPathInfo(
+			LiferayHttpServletRequestWrapper.getDispatchPathInfo(
 				httpServletRequest);
 
 		if (dispatchPathInfo == null) {
 			dispatchPathInfo = StringPool.SLASH;
 		}
 
-		DispatchTargets dispatchTargets =
+		LiferayDispatchTargets liferayDispatchTargets =
 			_httpServletEndpointController.getDispatchTargets(dispatchPathInfo);
 
-		if ((dispatchTargets != null) &&
-			dispatchTargets.doDispatch(
+		if ((liferayDispatchTargets != null) &&
+			liferayDispatchTargets.doDispatch(
 				httpServletRequest, httpServletResponse, dispatchPathInfo,
 				httpServletRequest.getDispatcherType())) {
 

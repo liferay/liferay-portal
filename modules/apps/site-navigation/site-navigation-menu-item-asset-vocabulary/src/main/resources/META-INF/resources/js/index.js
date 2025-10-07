@@ -358,6 +358,12 @@ function FormValues({
 				value={selectedVocabulary.groupId || ''}
 			/>
 			<input
+				name={getFieldName(namespace, 'externalReferenceCode')}
+				readOnly
+				type="hidden"
+				value={selectedVocabulary.externalReferenceCode || ''}
+			/>
+			<input
 				name={getFieldName(namespace, 'title')}
 				readOnly
 				type="hidden"

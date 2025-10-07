@@ -16,7 +16,7 @@ export class CommerceAdminWarehousesPage {
 
 	constructor(page: Page) {
 		this.addButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.modalFrameLocator = page.frameLocator('.fds-modal-body iframe');

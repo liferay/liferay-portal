@@ -51,9 +51,7 @@ public class ObjectEntryLayoutDisplayPageProviderTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetObjectEntryLayoutDisplayPageObjectProvider()
-		throws Exception {
-
+	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
 		String objectFieldName = StringUtil.randomId();
 
 		ObjectDefinition objectDefinition1 = _publishCustomObjectDefinition(

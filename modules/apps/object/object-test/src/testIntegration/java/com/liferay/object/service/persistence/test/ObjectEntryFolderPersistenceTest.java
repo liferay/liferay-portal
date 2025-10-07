@@ -146,6 +146,8 @@ public class ObjectEntryFolderPersistenceTest {
 
 		newObjectEntryFolder.setTreePath(RandomTestUtil.randomString());
 
+		newObjectEntryFolder.setStatus(RandomTestUtil.nextInt());
+
 		_objectEntryFolders.add(_persistence.update(newObjectEntryFolder));
 
 		ObjectEntryFolder existingObjectEntryFolder =
@@ -196,6 +198,9 @@ public class ObjectEntryFolderPersistenceTest {
 		Assert.assertEquals(
 			existingObjectEntryFolder.getTreePath(),
 			newObjectEntryFolder.getTreePath());
+		Assert.assertEquals(
+			existingObjectEntryFolder.getStatus(),
+			newObjectEntryFolder.getStatus());
 	}
 
 	@Test
@@ -295,7 +300,7 @@ public class ObjectEntryFolderPersistenceTest {
 			"groupId", true, "companyId", true, "userId", true, "userName",
 			true, "createDate", true, "modifiedDate", true,
 			"parentObjectEntryFolderId", true, "description", true, "label",
-			true, "name", true, "treePath", true);
+			true, "name", true, "treePath", true, "status", true);
 	}
 
 	@Test
@@ -654,6 +659,8 @@ public class ObjectEntryFolderPersistenceTest {
 		objectEntryFolder.setName(RandomTestUtil.randomString());
 
 		objectEntryFolder.setTreePath(RandomTestUtil.randomString());
+
+		objectEntryFolder.setStatus(RandomTestUtil.nextInt());
 
 		_objectEntryFolders.add(_persistence.update(objectEntryFolder));
 

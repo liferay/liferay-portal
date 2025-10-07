@@ -6,89 +6,74 @@
 import {useCallback, useState} from 'react';
 
 interface IParams {
-	sessionURL: string;
+	gcsSessionURL: string;
 	totalSize: number;
 }
 
 interface IProps {
 	error: Error | null;
-	getUploadOffset: (params: IParams) => Promise<void>;
+	getUploadOffset: (params: IParams) => Promise<number>;
 	loading: boolean;
-	offset: number | null;
 }
 
 const useGCSGetUploadOffset = (): IProps => {
 	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
-	const [offset, setOffset] = useState<number | null>(null);
 
-	const getUploadOffset = useCallback(async (params: IParams) => {
-		setLoading(true);
-		setError(null);
-		setOffset(null);
+	const getUploadOffset = useCallback(
+		async (params: IParams): Promise<number> => {
+			setLoading(true);
+			setError(null);
 
-		const {sessionURL, totalSize} = params;
+			const {gcsSessionURL, totalSize} = params;
 
-		try {
-			const response = await fetch(sessionURL, {
-				headers: {
-					'Content-Length': '0',
-					'Range': `bytes */${totalSize}`,
-				},
-				method: 'PUT',
-			});
+			try {
+				const response = await fetch(gcsSessionURL, {
+					headers: {
+						'Content-Length': '0',
+						'Content-Range': `bytes */${totalSize}`,
+					},
+					method: 'PUT',
+				});
 
-			let calculatedOffset: number | undefined = undefined;
+				if (response.status === 200 || response.status === 201) {
+					return totalSize;
+				}
+				else if (response.status === 308) {
+					const rangeHeader = response.headers.get('Range');
 
-			if (response.status === 200 || response.status === 201) {
-				calculatedOffset = totalSize;
-			}
-			else if (response.status === 308) {
-				const rangeHeader = response.headers.get('Range');
+					if (!rangeHeader) {
+						return 0;
+					}
 
-				if (rangeHeader) {
-					const match = rangeHeader.match(/bytes=0-(\d+)/);
+					const match = rangeHeader?.match(/bytes=0-(\d+)/);
 
 					if (match && match[1]) {
-						calculatedOffset = parseInt(match[1], 10) + 1;
-					}
-					else {
-						throw new Error(
-							`Received status 308 but Range header was malformed: ${rangeHeader}`
-						);
+						return parseInt(match[1], 10) + 1;
 					}
 				}
-				else {
-					throw new Error(
-						'Received status 308 but Range header was missing.'
-					);
-				}
+
+				return 0;
 			}
-			else {
-				throw new Error(
-					`Failed to get upload offset: ${response.text()}`
+			catch (offsetError) {
+				console.error('Error getting upload offset:', offsetError);
+
+				setError(
+					offsetError instanceof Error
+						? offsetError
+						: new Error(String(offsetError))
 				);
+
+				return 0;
 			}
+			finally {
+				setLoading(false);
+			}
+		},
+		[]
+	);
 
-			setOffset(calculatedOffset);
-		}
-		catch (offsetError) {
-			console.error('Error getting upload offset:', offsetError);
-
-			setError(
-				offsetError instanceof Error
-					? offsetError
-					: new Error(String(offsetError))
-			);
-
-			setOffset(null);
-		}
-		finally {
-			setLoading(false);
-		}
-	}, []);
-
-	return {error, getUploadOffset, loading, offset};
+	return {error, getUploadOffset, loading};
 };
 
 export default useGCSGetUploadOffset;

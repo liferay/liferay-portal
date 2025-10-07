@@ -295,7 +295,7 @@ public interface DepotEntryGroupRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DepotEntryGroupRel> getDepotEntryGroupRels(
-		long groupId, int start, int end);
+		long groupId, int type, int start, int end);
 
 	/**
 	 * Returns all the depot entry group rels matching the UUID and company.
@@ -335,7 +335,7 @@ public interface DepotEntryGroupRelLocalService
 	public int getDepotEntryGroupRelsCount(DepotEntry depotEntry);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDepotEntryGroupRelsCount(long groupId);
+	public int getDepotEntryGroupRelsCount(long groupId, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(

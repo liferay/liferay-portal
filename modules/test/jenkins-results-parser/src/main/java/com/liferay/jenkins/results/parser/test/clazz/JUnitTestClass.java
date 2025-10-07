@@ -5,14 +5,18 @@
 
 package com.liferay.jenkins.results.parser.test.clazz;
 
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JUnitBatchTestClassGroup;
 
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +26,57 @@ import org.json.JSONObject;
  * @author Michael Hashimoto
  */
 public class JUnitTestClass extends BaseTestClass {
+
+	public DownstreamBuildReport getCachedDownstreamBuildReport() {
+		if (isBuildCachingEnabled() && !_cachedTestReportSearched) {
+			getCachedTestClassReports();
+		}
+
+		return _cachedDownstreamBuildReport;
+	}
+
+	public List<TestClassReport> getCachedTestClassReports() {
+		if (!isBuildCachingEnabled() || _cachedTestReportSearched) {
+			return _cachedTestClassReports;
+		}
+
+		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
+
+		String testClassName = getTestClassName();
+
+		List<TestClassReport> cachedTestClassReports = new ArrayList<>();
+
+		TestClassReport testClassReport =
+			batchTestClassGroup.getCachedTestClassReport(testClassName);
+
+		if (testClassReport != null) {
+			cachedTestClassReports.add(
+				batchTestClassGroup.getCachedTestClassReport(testClassName));
+		}
+
+		cachedTestClassReports.addAll(
+			batchTestClassGroup.getCachedTestClassReportByPrefix(
+				testClassName + "$"));
+
+		if ((cachedTestClassReports != null) &&
+			!cachedTestClassReports.isEmpty()) {
+
+			_cachedTestClassReports = cachedTestClassReports;
+
+			for (TestClassReport cachedTestClassReport :
+					cachedTestClassReports) {
+
+				_cachedDownstreamBuildReport =
+					cachedTestClassReport.getDownstreamBuildReport();
+
+				break;
+			}
+
+			_cachedTestReportSearched = true;
+		}
+
+		return _cachedTestClassReports;
+	}
 
 	@Override
 	public JSONObject getJSONObject() {
@@ -41,6 +96,21 @@ public class JUnitTestClass extends BaseTestClass {
 		return jsonObject;
 	}
 
+	@Override
+	public long getSharedWeight() {
+		return getAverageTestTaskDuration();
+	}
+
+	@Override
+	public String getSharedWeightName() {
+		return getTestTaskName();
+	}
+
+	public List<String> getTestClassMethodNames() {
+		return _testClassMethodNames;
+	}
+
+	@Override
 	public String getTestClassName() {
 		return JenkinsResultsParserUtil.combine(
 			_getPackageName(), ".", _getClassName());
@@ -109,6 +179,64 @@ public class JUnitTestClass extends BaseTestClass {
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
+		}
+	}
+
+	protected JUnitTestClass(
+		BatchTestClassGroup batchTestClassGroup, File testClassFile,
+		List<String> testClassMethodNames) {
+
+		super(batchTestClassGroup, testClassFile);
+
+		File modulesBaseDir = _getPortalModulesBaseDir();
+
+		if ((modulesBaseDir != null) && modulesBaseDir.exists()) {
+			_modulesBaseDir = modulesBaseDir;
+		}
+		else {
+			_modulesBaseDir = new File(".");
+		}
+
+		File testPropertiesBaseDir = getTestPropertiesBaseDir(
+			getTestClassFile());
+
+		if ((testPropertiesBaseDir != null) && testPropertiesBaseDir.exists()) {
+			_testPropertiesFile = new File(
+				testPropertiesBaseDir, "test.properties");
+
+			String testrayMainComponentName =
+				JenkinsResultsParserUtil.getProperty(
+					JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
+					"testray.main.component.name");
+
+			if ((testrayMainComponentName == null) &&
+				_modulesBaseDir.exists()) {
+
+				testrayMainComponentName = JenkinsResultsParserUtil.getProperty(
+					JenkinsResultsParserUtil.getProperties(
+						_getParentTestPropertiesFile(testPropertiesBaseDir)),
+					"testray.main.component.name");
+			}
+
+			_testrayMainComponentName = testrayMainComponentName;
+		}
+		else {
+			_testPropertiesFile = null;
+			_testrayMainComponentName = null;
+		}
+
+		String testClassFileName = testClassFile.getName();
+
+		if (!testClassFileName.endsWith(".java")) {
+			return;
+		}
+
+		boolean methodIgnored = false;
+
+		for (String testClassMethodName : testClassMethodNames) {
+			_testClassMethodNames.add(testClassMethodName);
+
+			addTestClassMethod(methodIgnored, testClassMethodName);
 		}
 	}
 
@@ -314,7 +442,25 @@ public class JUnitTestClass extends BaseTestClass {
 			if (annotations.contains("@Test")) {
 				String methodName = methodHeaderMatcher.group("methodName");
 
-				addTestClassMethod(methodIgnored, methodName);
+				if (annotations.contains("@TestInfo")) {
+					List<String> issuesList = new ArrayList<>();
+
+					String testInfo = annotations.substring(
+						annotations.indexOf("@TestInfo"));
+
+					Matcher matcher = _issuesPattern.matcher(testInfo);
+
+					while (matcher.find()) {
+						issuesList.add(matcher.group());
+					}
+
+					addTestClassMethod(
+						methodIgnored, methodName,
+						String.join(", ", issuesList));
+				}
+				else {
+					addTestClassMethod(methodIgnored, methodName);
+				}
 			}
 		}
 
@@ -356,13 +502,19 @@ public class JUnitTestClass extends BaseTestClass {
 		JenkinsResultsParserUtil.combine(
 			"\\*/(?<annotations>[^/]*)public\\s+class\\s+",
 			"(?<className>[^\\(\\s]+)"));
+	private static final Pattern _issuesPattern = Pattern.compile(
+		"[A-Z]+-\\d+");
 	private static final Pattern _methodHeaderPattern = Pattern.compile(
 		JenkinsResultsParserUtil.combine(
 			"\\t(?<annotations>(@[\\s\\S]+?))public\\s+void\\s+",
 			"(?<methodName>[^\\(\\s]+)"));
 
+	private DownstreamBuildReport _cachedDownstreamBuildReport;
+	private List<TestClassReport> _cachedTestClassReports;
+	private boolean _cachedTestReportSearched;
 	private boolean _classIgnored;
 	private final File _modulesBaseDir;
+	private final List<String> _testClassMethodNames = new ArrayList<>();
 	private final File _testPropertiesFile;
 	private final String _testrayMainComponentName;
 

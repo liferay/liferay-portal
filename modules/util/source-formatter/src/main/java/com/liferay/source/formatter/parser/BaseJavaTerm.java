@@ -84,6 +84,11 @@ public abstract class BaseJavaTerm implements JavaTerm {
 	}
 
 	@Override
+	public JavaMethod getParentJavaMethod() {
+		return _parentJavaMethod;
+	}
+
+	@Override
 	public JavaSignature getSignature() {
 		return null;
 	}
@@ -205,6 +210,11 @@ public abstract class BaseJavaTerm implements JavaTerm {
 		_parentJavaClass = javaClass;
 	}
 
+	@Override
+	public void setParentJavaMethod(JavaMethod javaMethod) {
+		_parentJavaMethod = javaMethod;
+	}
+
 	private final String _accessModifier;
 	private final String _content;
 	private final boolean _isAbstract;
@@ -213,5 +223,6 @@ public abstract class BaseJavaTerm implements JavaTerm {
 	private final int _lineNumber;
 	private final String _name;
 	private JavaClass _parentJavaClass;
+	private JavaMethod _parentJavaMethod;
 
 }

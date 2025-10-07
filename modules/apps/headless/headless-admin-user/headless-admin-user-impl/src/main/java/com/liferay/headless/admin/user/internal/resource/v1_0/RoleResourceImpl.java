@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.dto.v1_0.RolePermission;
 import com.liferay.headless.admin.user.internal.odata.entity.v1_0.RoleEntityModel;
@@ -44,6 +45,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.roles.admin.constants.RolesAdminPortletKeys;
 import com.liferay.roles.admin.role.type.contributor.RoleTypeContributor;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 
@@ -63,9 +65,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/role.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = RoleResource.class
 )
-public class RoleResourceImpl extends BaseRoleResourceImpl {
+public class RoleResourceImpl
+	extends BaseRoleResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Role> {
 
 	@Override
 	public void
@@ -161,6 +166,28 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		throws Exception {
 
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor getExportImportDescriptor() {
+		return new ExportImportDescriptor() {
+
+			@Override
+			public String getItemClassName() {
+				return com.liferay.portal.kernel.model.Role.class.getName();
+			}
+
+			@Override
+			public String getPortletId() {
+				return RolesAdminPortletKeys.ROLES_ADMIN;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+		};
 	}
 
 	@Override
@@ -585,7 +612,7 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 			Role role, com.liferay.portal.kernel.model.Role serviceBuilderRole)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return serviceBuilderRole;
 		}
 
@@ -595,10 +622,10 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 			_roleService, _roleTypeContributorProvider);
 	}
 
+	private static final EntityModel _entityModel = new RoleEntityModel();
+
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
-
-	private final EntityModel _entityModel = new RoleEntityModel();
 
 	@Reference
 	private OrganizationService _organizationService;

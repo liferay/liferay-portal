@@ -1,0 +1,13 @@
+[#if themeDisplay.isSignedIn()]
+	<a class="navigation-account-cta navigation-account-cta-dashboard" href="${htmlUtil.escape(themeDisplay.getURLPortal())}/user-dashboard">
+		<span>
+			${languageUtil.get(locale, "dashboard")}
+		</span>
+	</a>
+[#else]
+	<a class="navigation-account-cta navigation-account-cta-sign-in" href="${htmlUtil.escape(themeDisplay.getURLSignIn())}">
+		<span>
+			${languageUtil.get(locale, "sign-in")}
+		</span>
+	</a>
+[/#if]

@@ -5,6 +5,7 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -33,6 +34,7 @@ public class StringMethodsCheck extends BaseFileCheck {
 			String fileName, String absolutePath, String content)
 		throws ReflectiveOperationException {
 
+		content = _checkStringUtilContainsCalls(fileName, content);
 		content = _checkStringUtilReplaceCalls(fileName, content);
 
 		if (isExcludedPath(RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath)) {
@@ -108,8 +110,8 @@ public class StringMethodsCheck extends BaseFileCheck {
 				content.substring(matcher.start()));
 
 			if ((parameterList.size() != 2) ||
-				!_isSingleLenghtString(parameterList.get(0)) ||
-				!_isSingleLenghtString(parameterList.get(1))) {
+				!_isSingleLengthString(parameterList.get(0)) ||
+				!_isSingleLengthString(parameterList.get(1))) {
 
 				continue;
 			}
@@ -125,6 +127,63 @@ public class StringMethodsCheck extends BaseFileCheck {
 			addMessage(
 				fileName, sb.toString(),
 				getLineNumber(content, matcher.start()));
+		}
+	}
+
+	private String _checkStringUtilContainsCalls(
+		String fileName, String content) {
+
+		int x = -1;
+
+		while (true) {
+			x = content.indexOf("StringUtil.contains(", x + 1);
+
+			if (x == -1) {
+				return content;
+			}
+
+			char c = content.charAt(x - 1);
+
+			if (c == CharPool.QUOTE) {
+				continue;
+			}
+
+			String methodCall = JavaSourceUtil.getMethodCall(content, x);
+
+			List<String> parameterList = JavaSourceUtil.getParameterList(
+				methodCall);
+
+			if (parameterList.size() != 3) {
+				continue;
+			}
+
+			String lastParameter = parameterList.get(2);
+
+			if (!lastParameter.equals("\"\"") &&
+				!lastParameter.equals("StringPool.BLANK")) {
+
+				x = x + methodCall.length();
+
+				continue;
+			}
+
+			String firstParameter = parameterList.get(0);
+
+			if (firstParameter.contains("(")) {
+				addMessage(
+					fileName,
+					"No need to use \"StringUtil.contains\" when the last " +
+						"parameter is an empty string",
+					getLineNumber(content, x));
+
+				continue;
+			}
+
+			String newMethodCall = StringBundler.concat(
+				parameterList.get(0), ".contains(", parameterList.get(1), ")");
+
+			return StringUtil.replaceFirst(
+				content, methodCall, newMethodCall, x);
 		}
 	}
 
@@ -165,7 +224,7 @@ public class StringMethodsCheck extends BaseFileCheck {
 				}
 			}
 
-			if (!_isSingleLenghtString(parameterList.get(1))) {
+			if (!_isSingleLengthString(parameterList.get(1))) {
 				continue;
 			}
 
@@ -209,7 +268,7 @@ public class StringMethodsCheck extends BaseFileCheck {
 		}
 	}
 
-	private boolean _isSingleLenghtString(String s)
+	private boolean _isSingleLengthString(String s)
 		throws ReflectiveOperationException {
 
 		Matcher singleLengthMatcher = _singleLengthStringPattern.matcher(s);

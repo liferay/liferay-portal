@@ -8,6 +8,14 @@
 			&[aria-pressed='true'] {
 				.on {
 					animation-name: thumbs-on;
+
+					.c-prefers-reduced-motion & {
+						animation: none;
+					}
+
+					@media (prefers-reduced-motion: reduce) {
+						animation: none;
+					}
 				}
 
 				&.btn-thumbs-up .on {
@@ -18,12 +26,6 @@
 					transform-origin: top right;
 				}
 			}
-		}
-	}
-
-	.ratings & {
-		.btn + .btn {
-			margin-left: 0.5rem;
 		}
 	}
 }

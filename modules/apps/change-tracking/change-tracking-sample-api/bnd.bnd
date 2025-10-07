@@ -1,0 +1,8 @@
+Bundle-Name: Liferay Change Tracking Sample API
+Bundle-SymbolicName: com.liferay.change.tracking.sample.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.change.tracking.sample.exception,\
+	com.liferay.change.tracking.sample.model,\
+	com.liferay.change.tracking.sample.service,\
+	com.liferay.change.tracking.sample.service.persistence

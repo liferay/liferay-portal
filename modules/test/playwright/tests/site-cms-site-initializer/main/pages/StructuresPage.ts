@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
+import {Page, expect} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {DataSetPage} from './DataSetPage';
@@ -18,8 +18,11 @@ export class StructuresPage {
 	}
 
 	async goto() {
-		await this.page.goto(PORTLET_URLS.cmsStructures);
-		await this.page.getByRole('heading', {name: 'Structures'}).waitFor();
+		await expect(async () => {
+			await this.page.goto(PORTLET_URLS.cmsStructures);
+
+			await this.page.locator('.fds').waitFor({timeout: 3000});
+		}).toPass();
 	}
 
 	getItem(filter: string) {

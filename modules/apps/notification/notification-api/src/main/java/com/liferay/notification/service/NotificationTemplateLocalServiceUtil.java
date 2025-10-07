@@ -68,6 +68,14 @@ public class NotificationTemplateLocalServiceUtil {
 			externalReferenceCode, userId, type);
 	}
 
+	public static NotificationTemplate addSubscriptionNotificationTemplate(
+			String externalReferenceCode, long userId)
+		throws PortalException {
+
+		return getService().addSubscriptionNotificationTemplate(
+			externalReferenceCode, userId);
+	}
+
 	/**
 	 * Creates a new notification template with the primary key. Does not add the notification template to the database.
 	 *

@@ -6,12 +6,11 @@
 package com.liferay.portal.scheduler.internal.verify;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.scheduler.internal.configuration.SchedulerEngineHelperConfiguration;
 import com.liferay.portal.scheduler.internal.upgrade.v1_0_0.SchedulerEngineHelperConfigurationUpgradeProcess;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.Collections;
 import java.util.Dictionary;
 
 import org.junit.Assert;
@@ -46,8 +45,7 @@ public class SchedulerEngineHelperConfigurationUpgradeProcessTest {
 		SchedulerEngineHelperConfigurationUpgradeProcess
 			schedulerEngineHelperConfigurationUpgradeProcess =
 				new SchedulerEngineHelperConfigurationUpgradeProcess(
-					configurationAdmin,
-					PropsTestUtil.setProps(Collections.emptyMap()));
+					configurationAdmin);
 
 		Mockito.when(
 			configurationAdmin.getConfiguration(
@@ -75,12 +73,12 @@ public class SchedulerEngineHelperConfigurationUpgradeProcessTest {
 		ConfigurationAdmin configurationAdmin = Mockito.mock(
 			ConfigurationAdmin.class);
 
+		PropsUtil.set(_LEGACY_AUDIT_MESSAGE_SCHEDULER_JOB, "true");
+
 		SchedulerEngineHelperConfigurationUpgradeProcess
 			schedulerEngineHelperConfigurationUpgradeProcess =
 				new SchedulerEngineHelperConfigurationUpgradeProcess(
-					configurationAdmin,
-					PropsTestUtil.setProps(
-						_LEGACY_AUDIT_MESSAGE_SCHEDULER_JOB, "true"));
+					configurationAdmin);
 
 		Configuration configuration = Mockito.mock(Configuration.class);
 

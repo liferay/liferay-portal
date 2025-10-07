@@ -60,11 +60,11 @@ PortalUtil.addPortletBreadcrumbEntry(request, editContactInformationDisplayConte
 
 				<liferay-ui:error exception="<%= PhoneNumberException.class %>" message="please-enter-a-valid-phone-number" />
 
-				<aui:input fieldParam="phoneNumber" id="phoneNumber" name="number" required="<%= true %>" />
+				<aui:input fieldParam="phoneNumber" id="phoneNumber" label="phone-number" name="number" required="<%= true %>" />
 
 				<liferay-ui:error exception="<%= PhoneNumberExtensionException.class %>" message="please-enter-a-valid-phone-number-extension" />
 
-				<aui:input fieldParam="phoneExtension" id="phoneExtension" name="extension">
+				<aui:input fieldParam="phoneExtension" id="phoneExtension" label="phone-extension" name="extension">
 					<aui:validator name="digits" />
 				</aui:input>
 			</clay:sheet-section>

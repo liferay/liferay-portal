@@ -14,6 +14,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -100,7 +101,9 @@ public class DDMStructureClassType implements ClassType {
 				return new ClassTypeField(
 					ddmStructure.getStructureId(),
 					ddmFormField.getFieldReference(),
-					label.getString(LocaleUtil.fromLanguageId(_languageId)),
+					HtmlUtil.escape(
+						label.getString(
+							LocaleUtil.fromLanguageId(_languageId))),
 					ddmFormField.getName(), type);
 			});
 	}

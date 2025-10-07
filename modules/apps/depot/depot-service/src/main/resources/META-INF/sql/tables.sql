@@ -20,6 +20,7 @@ create table DepotEntry (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	type_ INTEGER,
 	primary key (depotEntryId, ctCollectionId)
 );
 
@@ -38,6 +39,7 @@ create table DepotEntryGroupRel (
 	depotEntryId LONG,
 	searchable BOOLEAN,
 	toGroupId LONG,
+	type_ INTEGER,
 	lastPublishDate DATE null,
 	primary key (depotEntryGroupRelId, ctCollectionId)
 );

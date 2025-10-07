@@ -46,7 +46,7 @@ exports[`Modal renders markup based on given configuration 1`] = `
               </span>
             </h1>
             <button
-              aria-label="close"
+              aria-label="Close"
               class="close btn btn-unstyled"
               type="button"
             >

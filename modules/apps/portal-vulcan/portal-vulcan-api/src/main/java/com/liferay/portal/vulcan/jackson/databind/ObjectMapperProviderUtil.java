@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.vulcan.jaxrs.serializer.JSONArrayStdSerializer;
 import com.liferay.portal.vulcan.jaxrs.serializer.JSONObjectStdSerializer;
 import com.liferay.portal.vulcan.jaxrs.serializer.UnsafeSupplierJsonSerializer;

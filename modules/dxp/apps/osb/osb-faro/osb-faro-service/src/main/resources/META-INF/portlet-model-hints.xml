@@ -86,6 +86,19 @@
 		<field name="faroProjectId" type="long" />
 		<field name="emailDomain" type="String" />
 	</model>
+	<model name="com.liferay.osb.faro.model.FaroProjectUsage">
+		<field name="mvccVersion" type="long" />
+		<field name="faroProjectUsageId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createTime" type="long" />
+		<field name="modifiedTime" type="long" />
+		<field name="faroProjectId" type="long" />
+		<field name="knownIndividualsCount" type="long" />
+		<field name="monthDateKey" type="String" />
+		<field name="pageViewsCount" type="long" />
+		<field name="usageTime" type="long" />
+	</model>
 	<model name="com.liferay.osb.faro.model.FaroUser">
 		<field name="mvccVersion" type="long" />
 		<field name="faroUserId" type="long" />

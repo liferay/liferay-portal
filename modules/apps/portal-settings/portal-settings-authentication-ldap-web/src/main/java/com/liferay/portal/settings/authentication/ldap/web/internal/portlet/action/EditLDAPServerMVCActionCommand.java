@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -22,7 +21,6 @@ import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.ldap.DuplicateLDAPServerNameException;
 import com.liferay.portal.security.ldap.LDAPServerNameException;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
@@ -50,6 +48,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
+		"jakarta.portlet.name=" + ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
 		"mvc.command.name=/portal_settings_authentication_ldap/edit_ldap_server"
 	},
 	service = MVCActionCommand.class
@@ -64,11 +63,13 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		try {
+			long companyId = ActionUtil.getCompanyId(actionRequest);
+
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				_updateLDAPServer(actionRequest);
+				_updateLDAPServer(actionRequest, companyId);
 			}
 			else if (cmd.equals(Constants.DELETE)) {
-				_deleteLDAPServer(actionRequest);
+				_deleteLDAPServer(actionRequest, companyId);
 			}
 
 			sendRedirect(actionRequest, actionResponse);
@@ -112,16 +113,12 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private void _deleteLDAPServer(ActionRequest actionRequest)
+	private void _deleteLDAPServer(ActionRequest actionRequest, long companyId)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		long ldapServerId = ParamUtil.getLong(actionRequest, "ldapServerId");
 
-		_ldapServerConfigurationProvider.delete(
-			themeDisplay.getCompanyId(), ldapServerId);
+		_ldapServerConfigurationProvider.delete(companyId, ldapServerId);
 	}
 
 	private void _splitStringArrays(
@@ -140,11 +137,8 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private void _updateLDAPServer(ActionRequest actionRequest)
+	private void _updateLDAPServer(ActionRequest actionRequest, long companyId)
 		throws Exception {
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 
 		long ldapServerId = ParamUtil.getLong(
 			actionRequest, LDAPConstants.LDAP_SERVER_ID);
@@ -152,8 +146,7 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		UnicodeProperties unicodeProperties = PropertiesParamUtil.getProperties(
 			actionRequest, "ldap--");
 
-		_validateLDAPServerName(
-			ldapServerId, themeDisplay.getCompanyId(), unicodeProperties);
+		_validateLDAPServerName(ldapServerId, companyId, unicodeProperties);
 
 		_validateSearchFilters(actionRequest);
 
@@ -167,7 +160,7 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		else {
 			dictionary =
 				_ldapServerConfigurationProvider.getConfigurationProperties(
-					themeDisplay.getCompanyId(), ldapServerId);
+					companyId, ldapServerId);
 		}
 
 		for (Map.Entry<String, String> entry : unicodeProperties.entrySet()) {
@@ -190,7 +183,7 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 		_splitStringArrays(dictionary, LDAPConstants.USER_MAPPINGS);
 
 		_ldapServerConfigurationProvider.updateProperties(
-			themeDisplay.getCompanyId(), ldapServerId, dictionary);
+			companyId, ldapServerId, dictionary);
 	}
 
 	private void _validateLDAPServerName(

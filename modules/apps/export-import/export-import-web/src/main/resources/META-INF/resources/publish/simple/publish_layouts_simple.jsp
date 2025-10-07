@@ -133,7 +133,7 @@ Map<String, String[]> parameterMap = (Map<String, String[]>)settingsMap.get("par
 										for (Portlet portlet : dataSiteLevelPortlets) {
 											PortletDataHandler portletDataHandler = portlet.getPortletDataHandlerInstance();
 
-											if (!portletDataHandler.isEnabled(company.getCompanyId())) {
+											if (portletDataHandler.isBatch() || !portletDataHandler.isEnabled(company.getCompanyId())) {
 												continue;
 											}
 

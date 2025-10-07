@@ -17,9 +17,9 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.security.script.management.configuration.ScriptManagementConfiguration;
 import com.liferay.portal.security.script.management.configuration.helper.ScriptManagementConfigurationHelper;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.portlet.PortletMode;
 import jakarta.portlet.WindowState;

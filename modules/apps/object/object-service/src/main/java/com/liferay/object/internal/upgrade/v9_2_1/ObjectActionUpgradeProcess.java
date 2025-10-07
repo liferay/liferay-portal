@@ -64,11 +64,12 @@ public class ObjectActionUpgradeProcess extends UpgradeProcess {
 					).build();
 
 				NotificationTemplate notificationTemplate =
-					_notificationTemplateLocalService.getNotificationTemplate(
+					_notificationTemplateLocalService.fetchNotificationTemplate(
 						GetterUtil.getLong(
 							unicodeProperties.get("notificationTemplateId")));
 
-				if (!Objects.equals(
+				if ((notificationTemplate == null) ||
+					!Objects.equals(
 						notificationTemplate.getType(),
 						NotificationConstants.TYPE_EMAIL)) {
 

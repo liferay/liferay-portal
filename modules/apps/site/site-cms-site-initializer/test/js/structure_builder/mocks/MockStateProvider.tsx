@@ -10,37 +10,53 @@ import {
 	State,
 	StateContext,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
+import {Structure} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 
-const DEFAULT_STATE: State = {
+const DEFAULT_STRUCTURE: Structure = {
+	children: new Map(),
 	erc: 'default-erc',
-	error: null,
-	fields: new Map(),
-	history: {deletedFields: false},
-	id: null,
-	invalids: new Map(),
 	label: 'untitled-structure' as any,
 	name: 'UntitledStructure',
-	publishedFields: new Set(),
-	selection: [],
 	spaces: [],
 	status: 'new',
-	unsavedChanges: false,
 	uuid: getUuid(),
+	workflows: {},
+};
+
+const DEFAULT_STATE: State = {
+	error: null,
+	history: {deletedChildren: false},
+	invalids: new Map(),
+	publishedChildren: new Set(),
+	selection: [],
+	structure: DEFAULT_STRUCTURE,
+	unsavedChanges: false,
+};
+
+export type MockState = Omit<Partial<State>, 'structure'> & {
+	structure?: Partial<State['structure']>;
 };
 
 export function MockStateProvider({
 	children,
-	state = DEFAULT_STATE,
 	dispatch = jest.fn(),
+	state = DEFAULT_STATE,
 }: {
 	children: ReactNode;
 	dispatch?: React.Dispatch<Action>;
-	state?: Partial<State>;
+	state?: MockState;
 }) {
 	return (
 		<StateContext.Provider
-			value={{dispatch, state: {...DEFAULT_STATE, ...state}}}
+			value={{
+				dispatch,
+				state: {
+					...DEFAULT_STATE,
+					...state,
+					structure: {...DEFAULT_STRUCTURE, ...state.structure},
+				},
+			}}
 		>
 			{children}
 		</StateContext.Provider>

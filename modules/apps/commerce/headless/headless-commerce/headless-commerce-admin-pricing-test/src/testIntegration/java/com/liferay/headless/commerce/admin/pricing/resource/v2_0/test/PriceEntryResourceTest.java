@@ -124,6 +124,15 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLDeletePriceEntryByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLDeletePriceEntryByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetPriceEntry() throws Exception {
 		super.testGraphQLGetPriceEntry();
 	}

@@ -15,12 +15,12 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.service.builder.test.model.DataLimitEntry;
 import com.liferay.portal.tools.service.builder.test.service.DataLimitEntryLocalService;
 import com.liferay.portal.tools.service.builder.test.service.persistence.DataLimitEntryPersistence;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.Date;
 

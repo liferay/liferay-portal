@@ -573,6 +573,15 @@ public class OAuthClientEntryPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -931,6 +940,15 @@ public class OAuthClientEntryPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientEntry> oAuthClientEntries = findByCompanyId(
+				companyId);
+
+			oAuthClientEntries = InlineSQLHelperUtil.filter(oAuthClientEntries);
+
+			return oAuthClientEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1454,6 +1472,15 @@ public class OAuthClientEntryPersistenceImpl
 			return findByUserId(userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUserId(
+					userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1812,6 +1839,14 @@ public class OAuthClientEntryPersistenceImpl
 	public int filterCountByUserId(long userId) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUserId(userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientEntry> oAuthClientEntries = findByUserId(userId);
+
+			oAuthClientEntries = InlineSQLHelperUtil.filter(oAuthClientEntries);
+
+			return oAuthClientEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -2413,6 +2448,15 @@ public class OAuthClientEntryPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A(
+					companyId, authServerWellKnownURI, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		authServerWellKnownURI = Objects.toString(authServerWellKnownURI, "");
 
 		StringBundler sb = null;
@@ -2832,6 +2876,15 @@ public class OAuthClientEntryPersistenceImpl
 	public int filterCountByC_A(long companyId, String authServerWellKnownURI) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_A(companyId, authServerWellKnownURI);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<OAuthClientEntry> oAuthClientEntries = findByC_A(
+				companyId, authServerWellKnownURI);
+
+			oAuthClientEntries = InlineSQLHelperUtil.filter(oAuthClientEntries);
+
+			return oAuthClientEntries.size();
 		}
 
 		authServerWellKnownURI = Objects.toString(authServerWellKnownURI, "");

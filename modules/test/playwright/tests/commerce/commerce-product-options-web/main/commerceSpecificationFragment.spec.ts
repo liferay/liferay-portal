@@ -38,7 +38,6 @@ test(
 		site,
 	}) => {
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: 'Specification Fragment Channel',
 			siteGroupId: site.id,
 		});
 

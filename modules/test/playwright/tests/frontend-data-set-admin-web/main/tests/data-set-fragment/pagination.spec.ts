@@ -113,7 +113,7 @@ test.describe('Data Set Pagination configuration in the fragment', () => {
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['Label', 'Id', '']);
+			).toEqual(['Label', 'Id', 'Manage Columns Visibility']);
 		});
 	};
 

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Repository CMIS API
 Bundle-SymbolicName: com.liferay.document.library.repository.cmis.api
-Bundle-Version: 10.0.4
+Bundle-Version: 10.0.5
 Export-Package:\
 	com.liferay.document.library.repository.cmis,\
 	com.liferay.document.library.repository.cmis.configuration,\

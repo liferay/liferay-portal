@@ -105,7 +105,7 @@ public class JSPSourceProcessorTest extends BaseSourceProcessorTestCase {
 		test(
 			"MissingTaglibAttributes.testjsp",
 			"When using <clay:dropdown-actions>, always specify one of the " +
-				"follwing attributes: \"aria-label\", \"aria-labelledby\", " +
+				"following attributes: \"aria-label\", \"aria-labelledby\", " +
 					"\"title\"",
 			10);
 	}

@@ -28,6 +28,7 @@ export const test = mergeTests(
 	visualizationModesPageTest,
 	featureFlagsTest({
 		'LPS-164563': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest()
 );
@@ -267,7 +268,7 @@ test(
 				.locator('tr')
 				.filter({hasText: 'System Action'});
 
-			await expect(itemActionRows).toHaveCount(13);
+			await expect(itemActionRows).toHaveCount(14);
 
 			for (const itemActionRow of await itemActionRows.all()) {
 				await expect(
@@ -425,9 +426,9 @@ test(
 				'date': buildTableRowSpec('false', 'Date and Time'),
 				'description': buildTableRowSpec('false', 'Default'),
 				'id': buildTableRowSpec('true', 'Action Link'),
-				'size': buildTableRowSpec('false', 'Default'),
+				'size': buildTableRowSpec('false', ''),
 				'status': buildTableRowSpec('false', 'Status'),
-				'title': buildTableRowSpec('true', 'Default'),
+				'title': buildTableRowSpec('true', 'Action Link'),
 			});
 
 			await page.getByTitle('Back').click();
@@ -535,6 +536,7 @@ test(
 
 			await assertFilterEntries('Advanced Sample', [
 				['Client Extension', 'id', 'Client Extension Filter', true],
+				['Invalid', 'invalid', 'Client Extension Filter', true],
 				['Date Range', 'date', 'Date Filter', true],
 				['Color', 'color', 'System Filter', false],
 				['Size', 'size', 'System Filter', false],

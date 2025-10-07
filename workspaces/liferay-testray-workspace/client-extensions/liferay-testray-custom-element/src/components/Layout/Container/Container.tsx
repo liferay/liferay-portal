@@ -11,6 +11,7 @@ type ContainerProps = {
 	children: ReactNode;
 	className?: string;
 	collapsable?: boolean;
+	imgSrc?: string;
 	title?: string;
 };
 
@@ -18,9 +19,25 @@ const Container: React.FC<ContainerProps> = ({
 	children,
 	className,
 	collapsable = false,
+	imgSrc,
 	title,
 }) => {
-	const containerTitle = <div>{title && <h5>{title}</h5>}</div>;
+	const containerTitle = !imgSrc ? (
+		<div>{title && <h5>{title}</h5>}</div>
+	) : (
+		<div className="align-items-center d-flex">
+			<img
+				alt="img"
+				src={imgSrc}
+				style={{
+					height: 16,
+					marginRight: 8,
+					width: 16,
+				}}
+			/>
+			<h5 className="mb-0">{title}</h5>
+		</div>
+	);
 
 	if (collapsable) {
 		return (

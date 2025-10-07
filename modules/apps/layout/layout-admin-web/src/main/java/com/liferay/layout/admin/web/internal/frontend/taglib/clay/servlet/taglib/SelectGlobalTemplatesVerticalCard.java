@@ -10,6 +10,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -49,28 +51,7 @@ public class SelectGlobalTemplatesVerticalCard implements VerticalCard {
 		Map<String, String> data = new HashMap<>();
 
 		try {
-			data.put(
-				"data-add-layout-url",
-				PortletURLBuilder.createRenderURL(
-					_renderResponse
-				).setMVCRenderCommandName(
-					"/layout_admin/add_layout"
-				).setBackURL(
-					ParamUtil.getString(_renderRequest, "redirect")
-				).setParameter(
-					"layoutPageTemplateEntryId",
-					_layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
-				).setParameter(
-					"layoutPrototypeId",
-					_layoutPageTemplateEntry.getLayoutPrototypeId()
-				).setParameter(
-					"privateLayout",
-					ParamUtil.getBoolean(_renderRequest, "privateLayout")
-				).setParameter(
-					"selPlid", ParamUtil.getLong(_renderRequest, "selPlid")
-				).setWindowState(
-					LiferayWindowState.POP_UP
-				).buildString());
+			data.put("data-add-layout-url", _getAddLayoutURL());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -107,6 +88,45 @@ public class SelectGlobalTemplatesVerticalCard implements VerticalCard {
 	@Override
 	public boolean isSelectable() {
 		return false;
+	}
+
+	private String _getAddLayoutURL() {
+		long selPlid = ParamUtil.getLong(_renderRequest, "selPlid");
+
+		PortletURL addLayoutURL = PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/layout_admin/add_layout"
+		).setBackURL(
+			ParamUtil.getString(_renderRequest, "redirect")
+		).setParameter(
+			"layoutPageTemplateEntryId",
+			_layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
+		).setParameter(
+			"layoutPrototypeId", _layoutPageTemplateEntry.getLayoutPrototypeId()
+		).setParameter(
+			"privateLayout",
+			ParamUtil.getBoolean(_renderRequest, "privateLayout")
+		).setParameter(
+			"selPlid", selPlid
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildPortletURL();
+
+		if (selPlid != LayoutConstants.DEFAULT_PLID) {
+			Layout layout = LayoutLocalServiceUtil.fetchLayout(selPlid);
+
+			if ((layout != null) && layout.isTypeEmpty()) {
+				addLayoutURL.setParameter(
+					"emptyLayout",
+					String.valueOf(
+						ParamUtil.getBoolean(_renderRequest, "emptyLayout")));
+				addLayoutURL.setParameter(
+					"externalReferenceCode", layout.getExternalReferenceCode());
+			}
+		}
+
+		return addLayoutURL.toString();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

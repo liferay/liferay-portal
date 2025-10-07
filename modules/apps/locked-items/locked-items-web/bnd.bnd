@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Locked Items Web
 Bundle-SymbolicName: com.liferay.locked.items.web
-Bundle-Version: 1.0.16
+Bundle-Version: 1.0.17
 Web-ContextPath: /locked-items-web

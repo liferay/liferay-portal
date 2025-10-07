@@ -239,15 +239,37 @@ describe('ColorPicker', () => {
 			expect(input).toHaveValue('#444444');
 		});
 
-		it('takes a 6-digit hexcolor even if the input value has more digits', async () => {
+		it('takes a 6-digit hexcolor if the input value has 7 digits', async () => {
 			const {baseElement} = renderColorPicker({
 				value: '#444444',
 			});
 			const input = baseElement.querySelector('input')!;
 
+			await onTypeValue(input, '#123456A');
+
+			expect(input).toHaveValue('#123456');
+		});
+
+		it('takes an 8-digit hexcolor', async () => {
+			const {baseElement} = renderColorPicker({
+				value: '#44444444',
+			});
+			const input = baseElement.querySelector('input')!;
+
+			await onTypeValue(input, '#AABBCCDD');
+
+			expect(input).toHaveValue('#AABBCCDD');
+		});
+
+		it('takes an 8-digit hexcolor even if the input value has more digits', async () => {
+			const {baseElement} = renderColorPicker({
+				value: '#44444444',
+			});
+			const input = baseElement.querySelector('input')!;
+
 			await onTypeValue(input, '#55555555555');
 
-			expect(input).toHaveValue('#555555');
+			expect(input).toHaveValue('#55555555');
 		});
 
 		it('converts the 3-digit hexcolor to a 6-digit hexcolor', async () => {
@@ -259,6 +281,17 @@ describe('ColorPicker', () => {
 			await onTypeValue(input, '#abc');
 
 			expect(input).toHaveValue('#AABBCC');
+		});
+
+		it('converts the 4-digit hexcolor to an 8-digit hexcolor', async () => {
+			const {baseElement} = renderColorPicker({
+				value: '#444444',
+			});
+			const input = baseElement.querySelector('input')!;
+
+			await onTypeValue(input, '#abcd');
+
+			expect(input).toHaveValue('#AABBCCDD');
 		});
 
 		describe('Input errors', () => {

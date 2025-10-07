@@ -1,4 +1,4 @@
 Bundle-Activator: com.liferay.osgi.log.service.extender.internal.activator.OSGiLogServiceExtenderBundleActivator
 Bundle-Name: Liferay OSGi Log Service Extender
 Bundle-SymbolicName: com.liferay.osgi.log.service.extender
-Bundle-Version: 5.0.16
+Bundle-Version: 5.0.17

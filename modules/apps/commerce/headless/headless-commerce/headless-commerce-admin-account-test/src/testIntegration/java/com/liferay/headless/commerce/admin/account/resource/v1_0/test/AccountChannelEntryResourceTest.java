@@ -54,6 +54,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -161,6 +163,70 @@ public class AccountChannelEntryResourceTest
 
 		UserLocalServiceUtil.addRoleUser(
 			role.getRoleId(), _commerceUser.getUserId());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelCurrencyId() throws Exception {
+		super.testGraphQLDeleteAccountChannelCurrencyId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelDeliveryTermId()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountChannelDeliveryTermId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelDiscountId() throws Exception {
+		super.testGraphQLDeleteAccountChannelDiscountId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelPaymentMethodId()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountChannelPaymentMethodId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelPaymentTermId()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountChannelPaymentTermId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelPriceListId() throws Exception {
+		super.testGraphQLDeleteAccountChannelPriceListId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelShippingAddressId()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountChannelShippingAddressId();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountChannelUserId() throws Exception {
+		super.testGraphQLDeleteAccountChannelUserId();
 	}
 
 	@Override
@@ -726,6 +792,14 @@ public class AccountChannelEntryResourceTest
 		throws Exception {
 
 		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected AccountChannelEntry
+			testGraphQLAccountChannelEntry_addAccountChannelEntry()
+		throws Exception {
+
+		return _postAccountChannelEntryBillingAddress();
 	}
 
 	@Override

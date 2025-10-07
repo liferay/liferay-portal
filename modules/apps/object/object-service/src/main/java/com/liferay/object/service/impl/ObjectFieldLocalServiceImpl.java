@@ -91,10 +91,10 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.Serializable;
 
@@ -364,6 +364,15 @@ public class ObjectFieldLocalServiceImpl
 	}
 
 	@Override
+	public ObjectField fetchObjectFieldByBusinessType(
+		long objectDefinitionId, String businessType,
+		OrderByComparator<ObjectField> orderByComparator) {
+
+		return objectFieldPersistence.fetchByODI_BT_First(
+			objectDefinitionId, businessType, orderByComparator);
+	}
+
+	@Override
 	public List<ObjectField> getActiveObjectFields(
 			List<ObjectField> objectFields)
 		throws PortalException {
@@ -453,6 +462,14 @@ public class ObjectFieldLocalServiceImpl
 	@Override
 	public List<ObjectField> getLocalizedObjectFields(long objectDefinitionId) {
 		return objectFieldPersistence.findByODI_L(objectDefinitionId, true);
+	}
+
+	@Override
+	public List<ObjectField> getLocalizedObjectFields(
+		long objectDefinitionId, boolean system) {
+
+		return objectFieldPersistence.findByODI_L_S(
+			objectDefinitionId, true, system);
 	}
 
 	@Override
@@ -578,7 +595,9 @@ public class ObjectFieldLocalServiceImpl
 		}
 
 		if (objectField.isLocalized()) {
-			if (objectDefinition.isUnmodifiableSystemObject()) {
+			if (objectDefinition.isUnmodifiableSystemObject() &&
+				objectField.isSystem()) {
+
 				return systemObjectDefinitionManager.getLocalizationTable();
 			}
 
@@ -775,16 +794,6 @@ public class ObjectFieldLocalServiceImpl
 				businessType,
 				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
-			ObjectRelationship objectRelationship =
-				_objectRelationshipPersistence.fetchByObjectFieldId2(
-					oldObjectField.getObjectFieldId());
-
-			if ((objectRelationship != null) && objectRelationship.isEdge() &&
-				!required) {
-
-				throw new ObjectFieldRequiredException();
-			}
-
 			_validateObjectRelationshipDeletionType(
 				oldObjectField.getObjectFieldId(), required);
 		}
@@ -945,10 +954,12 @@ public class ObjectFieldLocalServiceImpl
 	private void _addObjectFieldColumn(
 		String dbTableName, ObjectField objectField) {
 
-		runSQL(
-			DynamicObjectDefinitionTableUtil.getAlterTableAddColumnSQL(
-				dbTableName, objectField.getBusinessType(),
-				objectField.getDBColumnName(), objectField.getDBType()));
+		for (String dbColumnName : objectField.getDBColumnNames()) {
+			runSQL(
+				DynamicObjectDefinitionTableUtil.getAlterTableAddColumnSQL(
+					dbTableName, objectField.getBusinessType(), dbColumnName,
+					objectField.getDBType()));
+		}
 
 		if (objectField.compareBusinessType(
 				ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
@@ -1234,8 +1245,9 @@ public class ObjectFieldLocalServiceImpl
 			return objectField;
 		}
 
-		_alterTableDropColumn(
-			objectField.getDBTableName(), objectField.getDBColumnName());
+		for (String dbColumnName : objectField.getDBColumnNames()) {
+			_alterTableDropColumn(objectField.getDBTableName(), dbColumnName);
+		}
 
 		if (objectField.compareBusinessType(
 				ObjectFieldConstants.BUSINESS_TYPE_AUTO_INCREMENT)) {
@@ -1404,6 +1416,13 @@ public class ObjectFieldLocalServiceImpl
 			newObjectField.getObjectDefinitionId());
 
 		_validateListTypeDefinitionId(listTypeDefinitionId, businessType);
+
+		if (!oldObjectField.compareBusinessType(businessType)) {
+			_validateBusinessTypeAssignee(
+				newObjectField.getCompanyId(),
+				newObjectField.getObjectDefinitionId(), businessType);
+		}
+
 		_validateBusinessTypeEncrypted(
 			newObjectField.getObjectDefinitionId(), businessType);
 		_validateIndexed(
@@ -1426,16 +1445,7 @@ public class ObjectFieldLocalServiceImpl
 			businessType, objectDefinition.isApproved(), oldObjectField,
 			required);
 
-		if (Objects.equals(
-				businessType,
-				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
-			objectDefinition.isRootDescendantNode() &&
-			!Objects.equals(oldObjectField.getReadOnly(), readOnly)) {
-
-			throw new ObjectFieldReadOnlyException(
-				"An object field's read only setting is defined by the root " +
-					"object definition and cannot be changed");
-		}
+		_validateReadOnly(oldObjectField, readOnly);
 
 		if (Validator.isNotNull(newObjectField.getRelationshipType())) {
 			if (!Objects.equals(newObjectField.getDBType(), dbType) ||
@@ -1526,8 +1536,35 @@ public class ObjectFieldLocalServiceImpl
 					"attachment business types");
 		}
 
+		_validateBusinessTypeAssignee(
+			objectDefinition.getCompanyId(),
+			objectDefinition.getObjectDefinitionId(), businessType);
 		_validateBusinessTypeEncrypted(
 			objectDefinition.getObjectDefinitionId(), businessType);
+	}
+
+	private void _validateBusinessTypeAssignee(
+			long companyId, long objectDefinitionId, String businessType)
+		throws PortalException {
+
+		if (!Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
+
+			return;
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6233")) {
+			throw new UnsupportedOperationException();
+		}
+
+		int count = objectFieldPersistence.countByODI_BT(
+			objectDefinitionId, ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE);
+
+		if (count > 0) {
+			throw new ObjectFieldBusinessTypeException(
+				"An object definition can only have one assignee field",
+				"an-object-definition-can-only-have-one-assignee-field");
+		}
 	}
 
 	private void _validateBusinessTypeEncrypted(
@@ -1827,6 +1864,26 @@ public class ObjectFieldLocalServiceImpl
 		}
 	}
 
+	private void _validateReadOnly(ObjectField objectField, String readOnly)
+		throws PortalException {
+
+		if (Objects.equals(objectField.getReadOnly(), readOnly) ||
+			!objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+
+			return;
+		}
+
+		ObjectRelationship objectRelationship =
+			objectField.getObjectRelationship();
+
+		if (objectRelationship.isEdge()) {
+			throw new ObjectFieldReadOnlyException(
+				"An object field's read only setting is defined by the root " +
+					"object definition and cannot be changed");
+		}
+	}
+
 	private void _validateState(boolean required, boolean state)
 		throws PortalException {
 
@@ -1929,9 +1986,10 @@ public class ObjectFieldLocalServiceImpl
 	private final Set<String> _reservedNames = SetUtil.fromArray(
 		"actions", "companyid", "createdate", "creator", "currentdate",
 		"datecreated", "datemodified", "displaydate", "expirationdate",
-		"externalreferencecode", "groupid", "id", "lastpublishdate",
+		"externalreferencecode", "groupid", "id", "keywords", "lastpublishdate",
 		"modifieddate", "reviewdate", "status", "statusbyuserid",
-		"statusbyusername", "statusdate", "userid", "username");
+		"statusbyusername", "statusdate", "taxonomycategoryids", "userid",
+		"username");
 
 	@Reference
 	private SystemObjectDefinitionManagerRegistry

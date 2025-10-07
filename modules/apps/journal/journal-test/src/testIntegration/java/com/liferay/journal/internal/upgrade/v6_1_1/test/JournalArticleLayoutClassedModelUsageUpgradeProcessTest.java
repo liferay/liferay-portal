@@ -126,8 +126,8 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 		_addPortletsToLayouts();
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_journalArticle.getGroupId(), _journalArticleClassNameId,
-			_journalArticle.getResourcePrimKey(), StringPool.BLANK,
+			_journalArticle.getGroupId(), StringPool.BLANK,
+			_journalArticleClassNameId, _journalArticle.getResourcePrimKey(),
 			StringPool.BLANK, 0, 0, new ServiceContext());
 
 		_runUpgrade();
@@ -450,9 +450,9 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 			LayoutClassedModelUsage layoutClassedModelUsage =
 				_layoutClassedModelUsageLocalService.
 					fetchLayoutClassedModelUsage(
-						layout.getGroupId(), _journalArticleClassNameId,
-						classPK, StringPool.BLANK, containerKey, containerType,
-						layout.getPlid());
+						layout.getGroupId(), StringPool.BLANK,
+						_journalArticleClassNameId, classPK, containerKey,
+						containerType, layout.getPlid());
 
 			Assert.assertNotNull(layoutClassedModelUsage);
 			Assert.assertEquals(

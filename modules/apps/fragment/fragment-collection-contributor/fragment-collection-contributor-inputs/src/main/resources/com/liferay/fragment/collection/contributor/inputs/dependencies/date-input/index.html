@@ -1,26 +1,26 @@
-<div class="date-input" data-localizable="${input.localizable?string('true', 'false')}">
+<div class="date-input">
 	<div class="form-group [#if input.errorMessage?has_content]has-error[/#if] mb-0">
-		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentEntryLinkNamespace}-date-input" id="${fragmentEntryLinkNamespace}-date-input-label">
-			<span class="[#if !input.showLabel || !input.label?has_content]sr-only [/#if]custom-control-label-text">
+		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentElementId}-date-input" id="${fragmentElementId}-date-input-label">
+			<span class="[#if !input.showLabel || !input.label?has_content]sr-only [/#if]">
 				${htmlUtil.escape(input.label)}
 
-				<span id="${fragmentEntryLinkNamespace}-date-read-only" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
+				<span id="${fragmentElementId}-date-read-only" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
 
 				[#if input.required][@clay["icon"] className="reference-mark" symbol="asterisk" /][/#if]
 			</span>
 		</label>
 
 		<div class="d-flex">
-			<input aria-describedby="${fragmentEntryLinkNamespace}-date-input-help-text" aria-labelledby="${fragmentEntryLinkNamespace}-date-input-label [#if input.errorMessage?has_content]${fragmentEntryLinkNamespace}-date-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentEntryLinkNamespace}-date-input" max="9999-12-31" name="${input.name}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="date" [#if input.value??]value="${input.value}"[/#if] />
+			<input aria-describedby="${fragmentElementId}-date-input-help-text" aria-labelledby="${fragmentElementId}-date-input-label [#if input.errorMessage?has_content]${fragmentElementId}-date-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-date-input" max="9999-12-31" name="${input.name}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="date" [#if input.value??]value="${input.value}"[/#if] />
 
 			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" tabindex="0">
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" tabindex="0">
 					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
 				</div>
 			[/#if]
 		</div>
 		[#if input.errorMessage?has_content]
-			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentEntryLinkNamespace}-date-input-error-message">
+			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentElementId}-date-input-error-message">
 				<svg class="lexicon-icon lexicon-icon-info-circle" focusable="false" role="presentation">
 					<use xlink:href="${siteSpritemap}#info-circle" />
 				</svg>
@@ -32,7 +32,7 @@
 		[/#if]
 
 		[#if input.showHelpText && input.helpText?has_content]
-			<p class="mb-0 mt-1 text-secondary" id="${fragmentEntryLinkNamespace}-date-input-help-text">${htmlUtil.escape(input.helpText)}</p>
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-date-input-help-text">${htmlUtil.escape(input.helpText)}</p>
 		[/#if]
 	</div>
 </div>

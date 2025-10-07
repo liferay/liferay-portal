@@ -425,6 +425,10 @@ public interface PatcherBuildLocalService
 		long patcherFixId, long[] patcherBuildIds);
 
 	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateComments(long patcherBuildId, String comments)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
 	public PatcherBuild updateNotified(long patcherBuildId, boolean notified)
 		throws PortalException;
 
@@ -433,6 +437,18 @@ public interface PatcherBuildLocalService
 			long patcherBuildId, boolean latestKeyBuild,
 			boolean latestSupportTicketBuild)
 		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, int qaStatus,
+			String supportTicket, int type)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updatePatcherBuild(
+			long userId, long patcherBuildId, String fileName, int qaStatus,
+			String sourceName, int status)
+		throws Exception;
 
 	/**
 	 * Updates the patcher build in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -446,5 +462,29 @@ public interface PatcherBuildLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PatcherBuild updatePatcherBuild(PatcherBuild patcherBuild);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updatePatcherFixId(
+			long patcherBuildId, long patcherFixId)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateQaFields(
+			long userId, long patcherBuildId, String qaComments, int qaStatus)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateQaStatus(
+			long userId, long patcherBuildId, int qaStatus)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateRequestKey(long patcherBuildId, String requestKey)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherBuild updateStatus(
+			long userId, long patcherBuildId, int status)
+		throws Exception;
 
 }

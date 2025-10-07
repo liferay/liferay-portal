@@ -68,6 +68,11 @@ public class DateTimeObjectFieldBusinessType
 	}
 
 	@Override
+	public String getDDMFormFieldTypeName(boolean localized) {
+		return DDMFormFieldTypeConstants.DATE_TIME;
+	}
+
+	@Override
 	public String getDescription(Locale locale) {
 		return _language.get(locale, "add-date-and-time-values");
 	}

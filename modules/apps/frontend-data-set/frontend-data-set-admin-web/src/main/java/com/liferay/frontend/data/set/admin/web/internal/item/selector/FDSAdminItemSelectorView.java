@@ -73,7 +73,9 @@ public class FDSAdminItemSelectorView
 		InfoItemItemSelectorCriterion infoItemSelectorCriterion,
 		ThemeDisplay themeDisplay) {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-164563")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPS-164563")) {
+
 			return false;
 		}
 

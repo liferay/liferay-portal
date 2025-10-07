@@ -6,17 +6,21 @@
 export enum OrderCustomFields {
 	ANALYTICS_GROUP_ID = 'analytics-group-id',
 	CLOUD_PROVISIONING = 'cloud-provisioning',
-	END_DATE = 'trial-end-date',
+	KORONEIKI_PROJECT = 'koroneiki-project',
 	PROJECT_NAME = 'project-name',
-	START_DATE = 'trial-start-date',
+	TRIAL_END_DATE = 'trial-end-date',
 	TRIAL_ERROR = 'trial-error',
 	TRIAL_SETTINGS = 'trial-settings',
-	VIRTUAL_HOST = 'trial-virtualhost',
+	TRIAL_START_DATE = 'trial-start-date',
+	TRIAL_VIRTUAL_HOST = 'trial-virtual-host',
 }
 
 export enum OrderStatus {
 	APPROVED = 'approved',
+	CANCELLED = 'cancelled',
 	COMPLETED = 'completed',
+	IN_PROGRESS = 'in-progress',
+	ON_HOLD = 'on-hold',
 	PENDING = 'pending',
 	PROCESSING = 'processing',
 }
@@ -31,6 +35,7 @@ export enum OrderTypes {
 	OTHER = 'OTHER',
 	SOLUTIONS7 = 'SOLUTIONS7',
 	SOLUTIONS30 = 'SOLUTIONS30',
+	SSA_SAAS = 'SSA_SAAS',
 }
 
 export enum OrderWorkflowStatusCode {
@@ -43,9 +48,11 @@ export enum OrderWorkflowStatusCode {
 }
 
 export enum PaymentStatus {
+	CANCELED = 8,
+	FAILED = 4,
 	PAID = 0,
-	PENDING = 1,
 	PAYMENT_PENDING = 2,
+	PENDING = 1,
 }
 
 export const orderTypeLabel = {
@@ -56,6 +63,7 @@ export const orderTypeLabel = {
 	[OrderTypes.DXPAPP]: 'DXP',
 	[OrderTypes.LOW_CODE_CONFIGURATION]: 'Low-Code Configuration',
 	[OrderTypes.OTHER]: 'Other',
+	[OrderTypes.SSA_SAAS]: 'SSA SaaS',
 	[OrderTypes.SOLUTIONS7]: 'Solutions 7',
 	[OrderTypes.SOLUTIONS30]: 'Solutions 30',
 } as const;

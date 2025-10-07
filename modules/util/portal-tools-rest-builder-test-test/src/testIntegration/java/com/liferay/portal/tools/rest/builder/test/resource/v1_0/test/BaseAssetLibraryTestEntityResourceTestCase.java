@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -42,7 +44,6 @@ import com.liferay.portal.tools.rest.builder.test.client.http.HttpInvoker;
 import com.liferay.portal.tools.rest.builder.test.client.pagination.Page;
 import com.liferay.portal.tools.rest.builder.test.client.resource.v1_0.AssetLibraryTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.AssetLibraryTestEntitySerDes;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -101,7 +102,7 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -112,7 +113,7 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -199,6 +200,7 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		AssetLibraryTestEntity assetLibraryTestEntity =
 			randomAssetLibraryTestEntity();
 
+		assetLibraryTestEntity.setAssetLibraryKey(regex);
 		assetLibraryTestEntity.setDescription(regex);
 		assetLibraryTestEntity.setExternalReferenceCode(regex);
 
@@ -209,6 +211,7 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 
 		assetLibraryTestEntity = AssetLibraryTestEntitySerDes.toDTO(json);
 
+		Assert.assertEquals(regex, assetLibraryTestEntity.getAssetLibraryKey());
 		Assert.assertEquals(regex, assetLibraryTestEntity.getDescription());
 		Assert.assertEquals(
 			regex, assetLibraryTestEntity.getExternalReferenceCode());
@@ -226,7 +229,7 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 			204,
 			assetLibraryTestEntityResource.
 				deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCodeHttpResponse(
-					assetLibraryTestEntity.getAssetLibraryId(),
+					testDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_getAssetLibraryId(),
 					assetLibraryTestEntity.getExternalReferenceCode()));
 	}
 
@@ -236,6 +239,89 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected Long
+			testDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		return testDepotEntry.getDepotEntryId();
+	}
+
+	@Test
+	public void testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		AssetLibraryTestEntity assetLibraryTestEntity1 =
+			testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_addAssetLibraryTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"assetLibraryId",
+									"\"" +
+										testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_getAssetLibraryId() +
+											"\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										assetLibraryTestEntity1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode"));
+
+		// Using the namespace test_v1_0
+
+		AssetLibraryTestEntity assetLibraryTestEntity2 =
+			testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_addAssetLibraryTestEntity();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"test_v1_0",
+						new GraphQLField(
+							"deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"assetLibraryId",
+										"\"" +
+											testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_getAssetLibraryId() +
+												"\"");
+									put(
+										"externalReferenceCode",
+										"\"" +
+											assetLibraryTestEntity2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/test_v1_0",
+				"Object/deleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode"));
+	}
+
+	protected Long
+			testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_getAssetLibraryId()
+		throws Exception {
+
+		return testDepotEntry.getDepotEntryId();
+	}
+
+	protected AssetLibraryTestEntity
+			testGraphQLDeleteAssetLibraryAssetLibraryTestEntityByExternalReferenceCode_addAssetLibraryTestEntity()
+		throws Exception {
+
+		return testGraphQLAssetLibraryAssetLibraryTestEntity_addAssetLibraryTestEntity();
 	}
 
 	@Test
@@ -340,6 +426,14 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
+	protected AssetLibraryTestEntity
+			testGraphQLAssetLibraryAssetLibraryTestEntity_addAssetLibraryTestEntity()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
 	protected void assertContains(
 		AssetLibraryTestEntity assetLibraryTestEntity,
 		List<AssetLibraryTestEntity> assetLibraryTestEntities) {
@@ -440,8 +534,8 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("assetLibraryId", additionalAssertFieldName)) {
-				if (assetLibraryTestEntity.getAssetLibraryId() == null) {
+			if (Objects.equals("assetLibraryKey", additionalAssertFieldName)) {
+				if (assetLibraryTestEntity.getAssetLibraryKey() == null) {
 					valid = false;
 				}
 
@@ -533,6 +627,8 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.portal.tools.rest.builder.test.dto.v1_0.
@@ -594,17 +690,6 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
-
-			if (Objects.equals("assetLibraryId", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						assetLibraryTestEntity1.getAssetLibraryId(),
-						assetLibraryTestEntity2.getAssetLibraryId())) {
-
-					return false;
-				}
-
-				continue;
-			}
 
 			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -771,9 +856,50 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
-		if (entityFieldName.equals("assetLibraryId")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
+		if (entityFieldName.equals("assetLibraryKey")) {
+			Object object = assetLibraryTestEntity.getAssetLibraryKey();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("dateCreated")) {
@@ -980,7 +1106,8 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 
 		return new AssetLibraryTestEntity() {
 			{
-				assetLibraryId = testDepotEntry.getDepotEntryId();
+				assetLibraryKey = String.valueOf(
+					testDepotEntry.getDepotEntryId());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				description = StringUtil.toLowerCase(
@@ -997,8 +1124,8 @@ public abstract class BaseAssetLibraryTestEntityResourceTestCase {
 		AssetLibraryTestEntity randomIrrelevantAssetLibraryTestEntity =
 			randomAssetLibraryTestEntity();
 
-		randomIrrelevantAssetLibraryTestEntity.setAssetLibraryId(
-			irrelevantDepotEntry.getGroupId());
+		randomIrrelevantAssetLibraryTestEntity.setAssetLibraryKey(
+			String.valueOf(irrelevantDepotEntry.getDepotEntryId()));
 
 		return randomIrrelevantAssetLibraryTestEntity;
 	}

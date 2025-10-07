@@ -104,10 +104,6 @@ export class IdentityProviderConnectionsPage {
 	}
 
 	async deleteIdentityProviderConnections() {
-		this.page.on('dialog', (dialog) => {
-			dialog.accept();
-		});
-
 		await this.page.waitForTimeout(1000);
 
 		const row = await this.identityProviderConnectionsTable
@@ -115,6 +111,10 @@ export class IdentityProviderConnectionsPage {
 			.last();
 
 		while (await row.isVisible()) {
+			this.page.once('dialog', (dialog) => {
+				dialog.accept();
+			});
+
 			await clickAndExpectToBeVisible({
 				autoClick: true,
 				target: this.page.getByRole('link', {name: 'Delete'}),

@@ -18,7 +18,6 @@ import com.liferay.layout.util.template.LayoutConverterRegistry;
 import com.liferay.layout.util.template.LayoutData;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -1046,8 +1045,8 @@ public class LayoutConverterTest {
 				for (FragmentEntryLink fragmentEntryLink :
 						fragmentEntryLinksInColumn) {
 
-					JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-						fragmentEntryLink.getEditableValues());
+					JSONObject jsonObject =
+						fragmentEntryLink.getEditableValuesJSONObject();
 
 					String portletId = jsonObject.getString("portletId");
 

@@ -6125,6 +6125,7 @@ public class KaleoDefinitionPersistenceImpl
 		ctMergeColumnNames.add("scope");
 		ctMergeColumnNames.add("version");
 		ctMergeColumnNames.add("active_");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);

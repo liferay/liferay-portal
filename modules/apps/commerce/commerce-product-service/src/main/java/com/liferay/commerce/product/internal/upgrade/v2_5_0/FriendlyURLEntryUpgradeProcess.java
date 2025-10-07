@@ -47,8 +47,8 @@ public class FriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 		String insertFriendlyUREntryLocalizationSQL = StringBundler.concat(
 			"insert into FriendlyURLEntryLocalization (mvccVersion, ",
 			"friendlyURLEntryLocalizationId, companyId, friendlyURLEntryId, ",
-			"languageId, urlTitle, groupId, classNameId, classPK)",
-			"values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			"languageId, urlTitle, groupId, classNameId, classPK) values (?, ",
+			"?, ?, ?, ?, ?, ?, ?, ?)");
 
 		String selectCPFriendlyURLEntrySQL =
 			"select * from CPFriendlyURLEntry order by main desc";

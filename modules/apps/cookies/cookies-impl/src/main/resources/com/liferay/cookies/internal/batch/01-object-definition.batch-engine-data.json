@@ -12,7 +12,6 @@
 	},
 	"items": [
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_FUNCTIONAL_COOKIE_ENTRY",
 			"label": {
@@ -181,7 +180,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_NECESSARY_COOKIE_ENTRY",
 			"label": {
@@ -350,7 +348,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_PERFORMANCE_COOKIE_ENTRY",
 			"label": {
@@ -519,7 +516,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "L_PERSONALIZATION_COOKIE_ENTRY",
 			"label": {

@@ -49,12 +49,16 @@ public interface ObjectField extends ObjectFieldModel, PersistedModel {
 
 	public boolean compareBusinessType(String businessType);
 
+	public String[] getDBColumnNames();
+
 	public String getI18nObjectFieldName();
 
 	public ObjectDefinition getObjectDefinition()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public java.util.List<ObjectFieldSetting> getObjectFieldSettings();
+
+	public ObjectRelationship getObjectRelationship();
 
 	public String getSortableDBColumnName();
 

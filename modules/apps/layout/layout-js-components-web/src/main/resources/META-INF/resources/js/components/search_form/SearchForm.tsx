@@ -16,11 +16,15 @@ export default function SearchForm({
 	className,
 	label,
 	onChange,
+	placeholder = Liferay.Language.get('search'),
+	size,
 	variant = 'default',
 }: {
 	className?: string;
 	label?: string;
 	onChange: Function;
+	placeholder?: string;
+	size?: 'sm';
 	variant?: 'default' | 'white';
 }) {
 	const id = `pageEditorSearchFormInput${nextInputId++}`;
@@ -33,7 +37,7 @@ export default function SearchForm({
 				{label || Liferay.Language.get('search-form')}
 			</label>
 
-			<ClayInput.Group small>
+			<ClayInput.Group small={size === 'sm'}>
 				<ClayInput.GroupItem>
 					<ClayInput
 						className={classNames({
@@ -45,8 +49,8 @@ export default function SearchForm({
 							setSearchValue(value);
 							debounce(() => onChange(value), 100)();
 						}}
-						placeholder={`${Liferay.Language.get('search')}...`}
-						sizing="sm"
+						placeholder={`${placeholder}...`}
+						sizing={size}
 						spellCheck={false}
 						value={searchValue}
 					/>
@@ -70,7 +74,7 @@ export default function SearchForm({
 									setSearchValue('');
 									onChange('');
 								}}
-								size="sm"
+								size={size}
 								symbol={searchValue ? 'times' : 'search'}
 								title={Liferay.Language.get('clear-search')}
 							/>

@@ -38,6 +38,11 @@ public class SQLServerSQLTransformerLogicTest
 	}
 
 	@Override
+	protected String getBitwiseOrTransformedSQL() {
+		return "select (foo | bar) from Foo";
+	}
+
+	@Override
 	protected String getBooleanTransformedSQL() {
 		return "select * from Foo where foo = 0 and bar = 1";
 	}

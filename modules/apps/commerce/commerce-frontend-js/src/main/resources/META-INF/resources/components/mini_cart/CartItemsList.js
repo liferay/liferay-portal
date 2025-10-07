@@ -5,8 +5,9 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
-import React, {useContext} from 'react';
+import React, {useContext, useRef} from 'react';
 
+import InfiniteScroller from '../infinite_scroller/InfiniteScroller';
 import CartQuickAdd from './CartQuickAdd';
 import MiniCartContext from './MiniCartContext';
 import {ADD_PRODUCT} from './util/constants';
@@ -14,7 +15,9 @@ import {ADD_PRODUCT} from './util/constants';
 export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 	const {
 		CartViews,
+		cartItemsPagination,
 		cartState,
+		getCartItems,
 		isUpdating,
 		labels,
 		replacementSKUList,
@@ -25,6 +28,8 @@ export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 	const {accountId, cartItems = [], summary = {}} = cartState;
 
 	const showReplacementAlert = Boolean(replacementSKUList.length);
+
+	const cartItemsListRef = useRef(null);
 
 	return (
 		<div className="mini-cart-items-list">
@@ -59,33 +64,47 @@ export default function CartItemsList({showPriceOnApplicationInfo = false}) {
 				</div>
 			)}
 
-			{cartItems.length ? (
+			{summary?.itemsQuantity ? (
 				<>
-					<div className="mini-cart-cart-items">
-						{cartItems.map((currentCartItem, index) => {
-							const updateCartItem = (callback) => {
-								const updatedCartItem =
-									callback(currentCartItem);
+					<div
+						className="mini-cart-cart-items"
+						ref={cartItemsListRef}
+					>
+						<InfiniteScroller
+							maxHeight="100%"
+							onBottomTouched={getCartItems}
+							scrollCompleted={
+								cartItems.length === summary.itemsCount &&
+								cartItemsPagination.page >=
+									cartItemsPagination.lastPage
+							}
+							scrollingElementRef={cartItemsListRef}
+						>
+							{cartItems.map((currentCartItem, index) => {
+								const updateCartItem = (callback) => {
+									const updatedCartItem =
+										callback(currentCartItem);
 
-								setCartState((cartState) => ({
-									...cartState,
-									cartItems: cartItems.map((cartItem) =>
-										cartItem.id === currentCartItem.id
-											? updatedCartItem
-											: cartItem
-									),
-								}));
-							};
+									setCartState((cartState) => ({
+										...cartState,
+										cartItems: cartItems.map((cartItem) =>
+											cartItem.id === currentCartItem.id
+												? updatedCartItem
+												: cartItem
+										),
+									}));
+								};
 
-							return (
-								<CartViews.Item
-									index={index}
-									key={`${currentCartItem.id}`}
-									updateCartItem={updateCartItem}
-									{...currentCartItem}
-								/>
-							);
-						})}
+								return (
+									<CartViews.Item
+										index={index}
+										key={`${currentCartItem.id}`}
+										updateCartItem={updateCartItem}
+										{...currentCartItem}
+									/>
+								);
+							})}
+						</InfiniteScroller>
 					</div>
 
 					<CartViews.Summary

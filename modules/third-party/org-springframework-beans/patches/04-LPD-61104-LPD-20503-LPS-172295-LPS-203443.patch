@@ -1,0 +1,125 @@
+diff --git a/org/springframework/beans/StandardBeanInfoFactory.java b/org/springframework/beans/StandardBeanInfoFactory.java
+index d93d8d6a69058..a74f2636c3545 100644
+--- a/org/springframework/beans/StandardBeanInfoFactory.java
++++ b/org/springframework/beans/StandardBeanInfoFactory.java
+@@ -16,9 +16,16 @@
+ 
+ package org.springframework.beans;
+ 
++import java.beans.BeanDescriptor;
+ import java.beans.BeanInfo;
+ import java.beans.IntrospectionException;
+ import java.beans.Introspector;
++import java.beans.PropertyDescriptor;
++import java.beans.SimpleBeanInfo;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++import java.util.HashMap;
++import java.util.Map;
+ 
+ import org.springframework.core.Ordered;
+ import org.springframework.core.SpringProperties;
+@@ -68,9 +75,94 @@ public class StandardBeanInfoFactory implements BeanInfoFactory, Ordered {
+ 	@Override
+ 	@NonNull
+ 	public BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
+-		BeanInfo beanInfo = (shouldIntrospectorIgnoreBeaninfoClasses ?
+-				Introspector.getBeanInfo(beanClass, Introspector.IGNORE_ALL_BEANINFO) :
+-				Introspector.getBeanInfo(beanClass));
++		BeanInfo beanInfo = null;
++
++		if (!shouldIntrospectorIgnoreBeaninfoClasses) {
++			beanInfo = Introspector.getBeanInfo(beanClass);
++		}
++		else {
++			try {
++				Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<>();
++
++				for (Method method : beanClass.getMethods()) {
++					if (Modifier.isStatic(method.getModifiers())) {
++						continue;
++					}
++
++					String name = method.getName();
++
++					if (name.length() <= 3 && !name.startsWith("is")) {
++						continue;
++					}
++
++					int count = method.getParameterCount();
++
++					Class<?> returnType = method.getReturnType();
++
++					if (count > 1) {
++						continue;
++					}
++
++					if (count == 0) {
++						String propertyName = null;
++
++						if (name.startsWith("get")) {
++							propertyName = Introspector.decapitalize(name.substring(3));
++						}
++						else if ((returnType == boolean.class) && name.startsWith("is")) {
++							propertyName = Introspector.decapitalize(name.substring(2));
++						}
++
++						if (propertyName != null) {
++							PropertyDescriptor propertyDescriptor = propertyDescriptors.get(propertyName);
++
++							if (propertyDescriptor == null) {
++								propertyDescriptor = new PropertyDescriptor(propertyName, method, null);
++
++								propertyDescriptors.put(propertyName, propertyDescriptor);
++							}
++							else {
++								propertyDescriptor.setReadMethod(method);
++							}
++						}
++					}
++					else if ((returnType == void.class) && name.startsWith("set")) {
++						String propertyName = Introspector.decapitalize(name.substring(3));
++
++						PropertyDescriptor propertyDescriptor = propertyDescriptors.get(propertyName);
++
++						if (propertyDescriptor == null) {
++							propertyDescriptor = new PropertyDescriptor(propertyName, null, method);
++
++							propertyDescriptors.put(propertyName, propertyDescriptor);
++						}
++						else {
++							propertyDescriptor.setWriteMethod(method);
++						}
++					}
++				}
++
++				PropertyDescriptor[] propertyDescriptorArray =
++					propertyDescriptors.values().toArray(new PropertyDescriptor[0]);
++
++				beanInfo = new SimpleBeanInfo() {
++
++					@Override
++					public BeanDescriptor getBeanDescriptor() {
++						return new BeanDescriptor(beanClass, null);
++					}
++
++					@Override
++					public PropertyDescriptor[] getPropertyDescriptors() {
++						return propertyDescriptorArray;
++					}
++
++				};
++			}
++			catch (IntrospectionException introspectionException) {
++				beanInfo = Introspector.getBeanInfo(beanClass, Introspector.IGNORE_ALL_BEANINFO);
++			}
++		}
+ 
+ 		// Immediately remove class from Introspector cache to allow for proper garbage
+ 		// collection on class loader shutdown; we cache it in CachedIntrospectionResults
+@@ -91,3 +183,4 @@ public class StandardBeanInfoFactory implements BeanInfoFactory, Ordered {
+ 	}
+ 
+ }
++/* @generated */
+\ No newline at end of file

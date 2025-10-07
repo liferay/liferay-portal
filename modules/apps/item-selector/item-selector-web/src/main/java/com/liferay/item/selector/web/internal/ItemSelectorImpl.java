@@ -188,10 +188,9 @@ public class ItemSelectorImpl implements ItemSelector {
 				}
 
 				PortletURL portletURL = getPortletURL(
-					requestBackedPortletURLFactory,
-					itemSelectorView.getTitle(themeDisplay.getLocale()),
-					selectedTab, itemSelectedEventName,
-					itemSelectorCriteriaArray, themeDisplay);
+					itemSelectorCriteriaArray, itemSelectedEventName,
+					itemSelectorView, requestBackedPortletURLFactory,
+					selectedTab, themeDisplay);
 
 				itemSelectorViewRenderers.add(
 					_applyCustomizations(
@@ -336,14 +335,22 @@ public class ItemSelectorImpl implements ItemSelector {
 	}
 
 	protected PortletURL getPortletURL(
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory,
-		String title, String selectedTab, String itemSelectedEventName,
 		ItemSelectorCriterion[] itemSelectorCriteriaArray,
-		ThemeDisplay themeDisplay) {
+		String itemSelectedEventName, ItemSelectorView<?> itemSelectorView,
+		RequestBackedPortletURLFactory requestBackedPortletURLFactory,
+		String selectedTab, ThemeDisplay themeDisplay) {
 
 		PortletURL portletURL = null;
 
-		if (Validator.isNotNull(selectedTab) && selectedTab.equals(title)) {
+		Class<?> clazz = itemSelectorView.getClass();
+
+		String curSelectedTab = StringBundler.concat(
+			clazz.getName(), StringPool.UNDERLINE,
+			itemSelectorView.getTitle(themeDisplay.getLocale()));
+
+		if (Validator.isNotNull(selectedTab) &&
+			selectedTab.equals(curSelectedTab)) {
+
 			portletURL = getItemSelectorURL(
 				requestBackedPortletURLFactory, themeDisplay.getScopeGroup(),
 				themeDisplay.getRefererGroupId(), itemSelectedEventName,
@@ -361,7 +368,7 @@ public class ItemSelectorImpl implements ItemSelector {
 				itemSelectorCriteriaArray);
 		}
 
-		portletURL.setParameter(PARAMETER_SELECTED_TAB, title);
+		portletURL.setParameter(PARAMETER_SELECTED_TAB, curSelectedTab);
 
 		return portletURL;
 	}

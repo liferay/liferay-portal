@@ -50,6 +50,14 @@ public class CommerceDiscountRelServiceUtil {
 	}
 
 	public static CommerceDiscountRel fetchCommerceDiscountRel(
+			long commerceDiscountId, String className, long classPK)
+		throws PortalException {
+
+		return getService().fetchCommerceDiscountRel(
+			commerceDiscountId, className, classPK);
+	}
+
+	public static CommerceDiscountRel fetchCommerceDiscountRel(
 			String className, long classPK)
 		throws PortalException {
 

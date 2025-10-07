@@ -5,6 +5,7 @@
 
 import {useCallback, useState} from 'react';
 import {Liferay} from '~/services/liferay';
+import {IUpload} from '~/utils/types';
 
 interface IParams {
 	fileMd5: string;
@@ -14,26 +15,24 @@ interface IParams {
 }
 
 interface IResponse {
-	accountKey: string;
-	gcsSessionURL: string;
-	ticketAttachmentId: string;
+	success: boolean;
+	uploadProperties?: IUpload;
 }
 
 interface IProps {
-	error: Error | null;
+	gcsSessionURL: string;
 	initiateUpload: (params: IParams) => Promise<IResponse | null>;
 	loading: boolean;
 	ticketAttachmentId: string;
 }
 
 const useTicketAttachmentsInitiateUpload = (): IProps => {
-	const [error, setError] = useState<Error | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [gcsSessionURL, setGCSSessionURL] = useState('');
 	const [ticketAttachmentId, setTicketAttachmentId] = useState('');
 
 	const initiateUpload = useCallback(
 		async (params: IParams): Promise<IResponse | null> => {
-			setError(null);
 			setLoading(true);
 
 			const {fileMd5, fileName, fileSize, ticketId} = params;
@@ -49,36 +48,49 @@ const useTicketAttachmentsInitiateUpload = (): IProps => {
 							gcsSessionURL:
 								sessionStorage.getItem('gcsSessionURL'),
 							md5Checksum: fileMd5,
-							zendeskTicketId: ticketId,
+							ticketId,
 						}),
 						method: 'POST',
 					})) as unknown as Response;
 
-				if (!response.ok) {
-					throw new Error(
-						`Failed to initiate upload: ${response.text()}`
-					);
-				}
-
 				const responseJSON = await response.json();
 
+				sessionStorage.setItem(
+					'gcsSessionURL',
+					responseJSON.gcsSessionURL
+				);
+
+				setGCSSessionURL(responseJSON.gcsSessionURL);
 				setTicketAttachmentId(responseJSON.ticketAttachmentId);
 
 				return {
-					accountKey: responseJSON.accountKey,
-					gcsSessionURL: responseJSON.gcsSessionURL,
-					ticketAttachmentId: responseJSON.ticketAttachmentId,
+					success: true,
+					uploadProperties: {
+						accountKey: responseJSON.accountKey,
+						gcsSessionURL: responseJSON.gcsSessionURL,
+						ticketAttachmentId: responseJSON.ticketAttachmentId,
+					},
 				};
 			}
 			catch (uploadError) {
-				console.error('Initiate upload error:', uploadError);
-				setError(
-					uploadError instanceof Error
-						? uploadError
-						: new Error(String(uploadError))
-				);
+				if ((uploadError as any).status === 409) {
+					return {
+						success: false,
+						uploadProperties: {
+							attachmentName: fileName,
+							errorCode: 'ATTACHMENT_ALREADY_EXISTS',
+							ticketId,
+						},
+					};
+				}
 
-				return null;
+				return {
+					success: false,
+					uploadProperties: {
+						errorCode: 'UNEXPECTED_ERROR',
+						errorMessage: String(uploadError),
+					},
+				};
 			}
 			finally {
 				setLoading(false);
@@ -88,7 +100,7 @@ const useTicketAttachmentsInitiateUpload = (): IProps => {
 	);
 
 	return {
-		error,
+		gcsSessionURL,
 		initiateUpload,
 		loading,
 		ticketAttachmentId,

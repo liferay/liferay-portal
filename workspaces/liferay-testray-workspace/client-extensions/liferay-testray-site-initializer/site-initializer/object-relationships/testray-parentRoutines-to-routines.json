@@ -1,0 +1,12 @@
+{
+	"deletionType": "disassociate",
+	"label": {
+		"en_US": "Parent Routines"
+	},
+	"name": "parentRoutines",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:Routine$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:Routine$]",
+	"objectDefinitionName2": "Routine",
+	"system": false,
+	"type": "manyToMany"
+}

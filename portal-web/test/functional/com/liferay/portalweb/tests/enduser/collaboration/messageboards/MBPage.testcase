@@ -46,6 +46,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddCategoryWithDescription {
+		property portal.acceptance = "false";
+
 		Navigator.gotoPage(pageName = "Message Boards Page");
 
 		MessageboardsCategory.addPG(
@@ -62,6 +64,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddCategoryWithUTF8Characters {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
 			categoryName = "MB Catègory Name",
@@ -89,6 +93,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddMultipleCategories {
+		property portal.acceptance = "false";
+
 		for (var categoryName : list "MB Category1 Name,MB Category2 Name") {
 			JSONMBMessage.addCategory(
 				categoryDescription = "MB Category Description",
@@ -104,6 +110,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddThreadInCategoryAsQuestion {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
 			categoryName = "MB Category Name",
@@ -252,6 +260,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanReplyAfterDownloadingMBThreadAttachmentTwice {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "Message Boards Thread Body",
@@ -456,6 +466,7 @@ definition {
 	@refactordone
 	test CanViewMBThreadReplyViaMoreMessages {
 		property custom.properties = "discussion.comments.delta.value=5";
+		property portal.acceptance = "false";
 
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
@@ -654,6 +665,7 @@ definition {
 	@refactordone
 	test CanViewSubcategorySubscriptionViaMySubscriptionsPage {
 		property database.types = "oracle";
+		property portal.acceptance = "false";
 
 		JSONMBMessage.addCategory(
 			categoryDescription = "MB Category Description",
@@ -777,6 +789,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewThreadStatistics {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "MB Thread1 Message Body",
@@ -917,6 +931,8 @@ definition {
 	@description = "This test checks that the javascript in the user name will not be executed when viewing a thread on page."
 	@priority = 3
 	test XSSIsNotExecutedWhenViewingUsernameInThread {
+		property portal.acceptance = "false";
+
 		Navigator.openURL();
 
 		UserBar.gotoDropdownItem(dropdownItem = "Account Settings");

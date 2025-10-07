@@ -20,8 +20,8 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.generic.MatchAllQuery;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.elasticsearch7.configuration.DeepPaginationConfiguration;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchConnectionFixture;
@@ -270,17 +270,8 @@ public class ElasticsearchIndexSearcherSearchAfterTest {
 	}
 
 	private static void _setUpIndexSearchLimit() {
-		Props props = Mockito.mock(Props.class);
-
-		Mockito.doReturn(
-			String.valueOf(_INDEX_SEARCH_LIMIT)
-		).when(
-			props
-		).get(
-			PropsKeys.INDEX_SEARCH_LIMIT
-		);
-
-		ReflectionTestUtil.setFieldValue(_indexSearcher, "_props", props);
+		PropsUtil.set(
+			PropsKeys.INDEX_SEARCH_LIMIT, String.valueOf(_INDEX_SEARCH_LIMIT));
 	}
 
 	private static void _setUpSorts() {

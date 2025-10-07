@@ -23,11 +23,12 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		String updateLayout =
-			"update Layout set typeSettings = ? where layoutId = ?";
+			"update Layout set typeSettings = ? where ctCollectionId = ? and " +
+				"plid = ?";
 
 		String selectLayout = StringBundler.concat(
-			"select layoutId, typeSettings from Layout where typeSettings ",
-			"like '%", _PORTLET_ID, "%'");
+			"select ctCollectionId, plid, typeSettings from Layout where ",
+			"typeSettings like '%", _PORTLET_ID, "%'");
 
 		try (PreparedStatement preparedStatement =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
@@ -36,7 +37,8 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 			ResultSet resultSet = statement.executeQuery(selectLayout)) {
 
 			while (resultSet.next()) {
-				long layoutId = resultSet.getLong("layoutId");
+				long ctCollectionId = resultSet.getLong("ctCollectionId");
+				long plid = resultSet.getLong("plid");
 
 				String typeSettings = resultSet.getString("typeSettings");
 
@@ -46,7 +48,8 @@ public class CommerceAccountPortletUpgradeProcess extends UpgradeProcess {
 						typeSettings, _PORTLET_ID,
 						AccountPortletKeys.ACCOUNT_ENTRIES_MANAGEMENT));
 
-				preparedStatement.setLong(2, layoutId);
+				preparedStatement.setLong(2, ctCollectionId);
+				preparedStatement.setLong(3, plid);
 
 				preparedStatement.addBatch();
 			}

@@ -15,6 +15,7 @@ import React, {useEffect, useState} from 'react';
 import SelectSXPBlueprintModal from '../../../select_sxp_blueprint_modal/SelectSXPBlueprintModal';
 
 function SXPBlueprintSelectorInput({
+	index,
 	onBlur,
 	onSubmit,
 	sxpBlueprintExternalReferenceCode,
@@ -119,17 +120,20 @@ function SXPBlueprintSelectorInput({
 				})}
 			>
 				<ClayForm.Group className="c-mb-0 w-100">
-					<label>
-						{Liferay.Language.get('blueprint')}
+					<label htmlFor={`sxpBlueprint${index}`}>
+						<span>
+							{Liferay.Language.get('blueprint')}
 
-						<span className="reference-mark">
-							<ClayIcon symbol="asterisk" />
+							<span className="reference-mark">
+								<ClayIcon symbol="asterisk" />
+							</span>
 						</span>
 					</label>
 
 					<ClayInput.Group>
 						<ClayInput.GroupItem prepend>
 							<ClayInput
+								aria-label={Liferay.Language.get('blueprint')}
 								className="bg-transparent form-control input-group-inset input-group-inset-after"
 								onBlur={onBlur}
 								onChange={_handleChange}
@@ -160,6 +164,7 @@ function SXPBlueprintSelectorInput({
 						<ClayInput.GroupItem append shrink>
 							<ClayButton
 								displayType="secondary"
+								id={`sxpBlueprint${index}`}
 								onClick={_handleClickSelect}
 							>
 								{Liferay.Language.get('select')}

@@ -161,12 +161,11 @@ public class PatcherProjectVersionLocalServiceImpl
 	public PatcherProjectVersion updatePatcherProjectVersion(
 			long patcherProjectVersionId, long patcherProductVersionId,
 			boolean combinedBranch, String committish, String fixedIssues,
-			boolean hide, String name, String repositoryName)
+			boolean hide, String repositoryName)
 		throws PortalException {
 
 		_validateProductVersion(patcherProductVersionId);
 		_validateCommittish(committish);
-		_validateName(patcherProjectVersionId, name);
 		_validateRepositoryName(repositoryName);
 
 		PatcherProjectVersion patcherProjectVersion =
@@ -180,7 +179,6 @@ public class PatcherProjectVersionLocalServiceImpl
 		patcherProjectVersion.setCommittish(committish);
 		patcherProjectVersion.setFixedIssues(fixedIssues);
 		patcherProjectVersion.setHide(hide);
-		patcherProjectVersion.setName(name);
 		patcherProjectVersion.setRepositoryName(repositoryName);
 
 		return patcherProjectVersionPersistence.update(patcherProjectVersion);

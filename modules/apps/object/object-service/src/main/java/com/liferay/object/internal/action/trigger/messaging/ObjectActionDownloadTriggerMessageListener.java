@@ -7,6 +7,7 @@ package com.liferay.object.internal.action.trigger.messaging;
 
 import com.liferay.object.action.engine.ObjectActionEngine;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.internal.entry.util.ObjectEntryUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -23,6 +24,8 @@ import com.liferay.portal.kernel.messaging.DestinationFactory;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -83,16 +86,25 @@ public class ObjectActionDownloadTriggerMessageListener
 						"Object definition is null for external reference ",
 						"code ", objectDefinitionExternalReferenceCode,
 						" and company ", companyId));
-
-				return;
 			}
+
+			return;
 		}
 
 		String objectEntryExternalReferenceCode = message.getString(
 			"objectEntryExternalReferenceCode");
 
+		long groupId = ObjectDefinitionConstants.GROUP_ID_DEFAULT;
+
+		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+			message.getString("groupExternalReferenceCode"), companyId);
+
+		if (group != null) {
+			groupId = group.getGroupId();
+		}
+
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-			objectEntryExternalReferenceCode,
+			objectEntryExternalReferenceCode, groupId,
 			objectDefinition.getObjectDefinitionId());
 
 		if (objectEntry == null) {
@@ -100,12 +112,12 @@ public class ObjectActionDownloadTriggerMessageListener
 				_log.debug(
 					StringBundler.concat(
 						"Object entry is null for external reference code ",
-						objectEntryExternalReferenceCode,
-						" and object definition ",
+						objectEntryExternalReferenceCode, ", group ID ",
+						groupId, " and object definition ",
 						objectDefinitionExternalReferenceCode));
-
-				return;
 			}
+
+			return;
 		}
 
 		_objectActionEngine.executeObjectActions(
@@ -127,6 +139,9 @@ public class ObjectActionDownloadTriggerMessageListener
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;

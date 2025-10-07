@@ -30,6 +30,12 @@ public class NotificationContextBuilder {
 		return this;
 	}
 
+	public NotificationContextBuilder companyId(long companyId) {
+		_notificationContext.setCompanyId(companyId);
+
+		return this;
+	}
+
 	public NotificationContextBuilder externalReferenceCode(
 		String externalReferenceCode) {
 

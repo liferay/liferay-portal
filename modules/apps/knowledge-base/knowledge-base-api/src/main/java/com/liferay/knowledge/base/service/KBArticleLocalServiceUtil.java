@@ -348,6 +348,13 @@ public class KBArticleLocalServiceUtil {
 		return getService().fetchKBArticle(resourcePrimKey, groupId, version);
 	}
 
+	public static KBArticle fetchKBArticleByExternalReferenceCode(
+		long groupId, String externalReferenceCode, int version) {
+
+		return getService().fetchKBArticleByExternalReferenceCode(
+			groupId, externalReferenceCode, version);
+	}
+
 	public static KBArticle fetchKBArticleByUrlTitle(
 		long groupId, long kbFolderId, String urlTitle) {
 
@@ -392,6 +399,13 @@ public class KBArticleLocalServiceUtil {
 
 		return getService().fetchLatestKBArticleByExternalReferenceCode(
 			groupId, externalReferenceCode);
+	}
+
+	public static KBArticle fetchLatestKBArticleByExternalReferenceCode(
+		long groupId, String externalReferenceCode, int status) {
+
+		return getService().fetchLatestKBArticleByExternalReferenceCode(
+			groupId, externalReferenceCode, status);
 	}
 
 	public static KBArticle fetchLatestKBArticleByUrlTitle(

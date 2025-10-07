@@ -1,6 +1,6 @@
 Bundle-Name: ${manifest.bundle.name}
 Bundle-SymbolicName: ${manifest.bundle.symbolic.name}
-Bundle-Version: 113.1.1
+Bundle-Version: 118.0.1
 CPE-Name: ${cpe.name}
 Export-Package:\
 	com.liferay.portal.bean,\
@@ -9,7 +9,6 @@ Export-Package:\
 	com.liferay.portal.events,\
 	com.liferay.portal.format.util,\
 	com.liferay.portal.freemarker,\
-	com.liferay.portal.log4j,\
 	com.liferay.portal.minifier,\
 	com.liferay.portal.plugin,\
 	com.liferay.portal.security.auth,\

@@ -49,7 +49,7 @@ export class CommerceSpecificationsPage {
 		});
 		this.deleteModalButtonAction = (action: string) =>
 			page.getByRole('button', {exact: true, name: action});
-		this.goBack = page.getByRole('link', {name: 'Back'});
+		this.goBack = page.locator('span[title="Back"]');
 		this.goToSpecificationGroup = page.getByRole('link', {
 			name: 'Specification Groups',
 		});

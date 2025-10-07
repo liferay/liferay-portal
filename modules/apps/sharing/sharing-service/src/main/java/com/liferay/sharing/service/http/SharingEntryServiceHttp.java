@@ -352,7 +352,9 @@ public class SharingEntryServiceHttp {
 	public static java.util.List<com.liferay.sharing.model.SharingEntry>
 			getSharingEntries(
 				HttpPrincipal httpPrincipal, long classNameId, long classPK,
-				long groupId, int start, int end)
+				long groupId, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<com.liferay.sharing.model.SharingEntry> orderByComparator)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -361,7 +363,8 @@ public class SharingEntryServiceHttp {
 				_getSharingEntriesParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, classNameId, classPK, groupId, start, end);
+				methodKey, classNameId, classPK, groupId, start, end,
+				orderByComparator);
 
 			Object returnObj = null;
 
@@ -595,7 +598,10 @@ public class SharingEntryServiceHttp {
 			String.class, long.class
 		};
 	private static final Class<?>[] _getSharingEntriesParameterTypes7 =
-		new Class[] {long.class, long.class, long.class, int.class, int.class};
+		new Class[] {
+			long.class, long.class, long.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
 	private static final Class<?>[] _getSharingEntryParameterTypes8 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getSharingEntryParameterTypes9 =

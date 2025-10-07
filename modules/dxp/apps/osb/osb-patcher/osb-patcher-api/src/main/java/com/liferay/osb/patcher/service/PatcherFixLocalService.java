@@ -65,6 +65,12 @@ public interface PatcherFixLocalService
 	public boolean addPatcherBuildPatcherFixes(
 		long patcherBuildId, long[] patcherFixIds);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix addPatcherFix(
+			long userId, long patcherProjectVersionId, double keyVersion,
+			String name, int type, int status, List<Long> parentPatcherFixIds)
+		throws Exception;
+
 	/**
 	 * Adds the patcher fix to the database. Also notifies the appropriate model listeners.
 	 *
@@ -130,11 +136,12 @@ public interface PatcherFixLocalService
 	 *
 	 * @param patcherFixId the primary key of the patcher fix
 	 * @return the patcher fix that was removed
+	 * @throws Exception
 	 * @throws PortalException if a patcher fix with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public PatcherFix deletePatcherFix(long patcherFixId)
-		throws PortalException;
+		throws Exception, PortalException;
 
 	/**
 	 * Deletes the patcher fix from the database. Also notifies the appropriate model listeners.
@@ -393,6 +400,49 @@ public interface PatcherFixLocalService
 	public void setPatcherFixPackPatcherFixes(
 		long patcherFixPackId, long[] patcherFixIds);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateComments(long patcherFixId, String comments)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateJenkinsResult(
+			long patcherFixId, String jenkinsResults)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateLatestFix(long patcherFixId, boolean latestFix)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateNotified(long patcherFixId, boolean notified)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateObsolete(long patcherFixId, boolean obsolete)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long patcherFixId, boolean latestFix, int type)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long userId, long patcherFixId, String gitHash, int status)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long userId, long patcherFixId, String gitHash,
+			String jenkinsResults, int status)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updatePatcherFix(
+			long patcherFixId, String dependencies, int fixPackStatus,
+			String requirements)
+		throws PortalException;
+
 	/**
 	 * Updates the patcher fix in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -405,5 +455,17 @@ public interface PatcherFixLocalService
 	 */
 	@Indexable(type = IndexableType.REINDEX)
 	public PatcherFix updatePatcherFix(PatcherFix patcherFix);
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateRequestKey(long patcherFixId, String requestKey)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateStatus(long userId, long patcherFixId, int status)
+		throws Exception;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFix updateType(long patcherFixId, int type)
+		throws PortalException;
 
 }

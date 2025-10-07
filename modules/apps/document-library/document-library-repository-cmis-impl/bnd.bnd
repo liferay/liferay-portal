@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Repository CMIS Implementation
 Bundle-SymbolicName: com.liferay.document.library.repository.cmis.impl
-Bundle-Version: 6.0.46
+Bundle-Version: 6.0.47
 Import-Package:\
 	!com.sun.msv.*,\
 	!com.sun.tools.xjc.*,\

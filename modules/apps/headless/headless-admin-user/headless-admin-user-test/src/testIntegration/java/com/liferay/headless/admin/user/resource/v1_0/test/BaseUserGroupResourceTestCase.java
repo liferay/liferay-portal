@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -54,7 +57,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -87,6 +89,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -272,7 +275,7 @@ public abstract class BaseUserGroupResourceTestCase {
 							put("userGroupId", userGroup1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -307,7 +310,7 @@ public abstract class BaseUserGroupResourceTestCase {
 								put("userGroupId", userGroup2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -417,6 +420,102 @@ public abstract class BaseUserGroupResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteUserGroupByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		UserGroup userGroup1 =
+			testGraphQLDeleteUserGroupByExternalReferenceCode_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteUserGroupByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										userGroup1.getExternalReferenceCode() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteUserGroupByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"userGroupByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" + userGroup1.getExternalReferenceCode() +
+									"\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		UserGroup userGroup2 =
+			testGraphQLDeleteUserGroupByExternalReferenceCode_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteUserGroupByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											userGroup2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteUserGroupByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessAdminUser_v1_0",
+					new GraphQLField(
+						"userGroupByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										userGroup2.getExternalReferenceCode() +
+											"\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected UserGroup
+			testGraphQLDeleteUserGroupByExternalReferenceCode_addUserGroup()
+		throws Exception {
+
+		return testGraphQLUserGroup_addUserGroup();
+	}
+
+	@Test
 	public void testDeleteUserGroupByExternalReferenceCodeUsers()
 		throws Exception {
 
@@ -440,6 +539,65 @@ public abstract class BaseUserGroupResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteUserGroupByExternalReferenceCodeUsers()
+		throws Exception {
+
+		// No namespace
+
+		UserGroup userGroup1 =
+			testGraphQLDeleteUserGroupByExternalReferenceCodeUsers_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteUserGroupByExternalReferenceCodeUsers",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										userGroup1.getExternalReferenceCode() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteUserGroupByExternalReferenceCodeUsers"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		UserGroup userGroup2 =
+			testGraphQLDeleteUserGroupByExternalReferenceCodeUsers_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteUserGroupByExternalReferenceCodeUsers",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											userGroup2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteUserGroupByExternalReferenceCodeUsers"));
+	}
+
+	protected UserGroup
+			testGraphQLDeleteUserGroupByExternalReferenceCodeUsers_addUserGroup()
+		throws Exception {
+
+		return testGraphQLUserGroup_addUserGroup();
+	}
+
+	@Test
 	public void testDeleteUserGroupUsers() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		UserGroup userGroup = testDeleteUserGroupUsers_addUserGroup();
@@ -455,6 +613,51 @@ public abstract class BaseUserGroupResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteUserGroupUsers() throws Exception {
+
+		// No namespace
+
+		UserGroup userGroup1 = testGraphQLDeleteUserGroupUsers_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteUserGroupUsers",
+						new HashMap<String, Object>() {
+							{
+								put("userGroupId", userGroup1.getId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteUserGroupUsers"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		UserGroup userGroup2 = testGraphQLDeleteUserGroupUsers_addUserGroup();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteUserGroupUsers",
+							new HashMap<String, Object>() {
+								{
+									put("userGroupId", userGroup2.getId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteUserGroupUsers"));
+	}
+
+	protected UserGroup testGraphQLDeleteUserGroupUsers_addUserGroup()
+		throws Exception {
+
+		return testGraphQLUserGroup_addUserGroup();
 	}
 
 	@Test
@@ -1218,6 +1421,7 @@ public abstract class BaseUserGroupResourceTestCase {
 			"userGroups",
 			new HashMap<String, Object>() {
 				{
+					put("search", null);
 					put("page", 1);
 					put("pageSize", 10);
 				}
@@ -1233,8 +1437,11 @@ public abstract class BaseUserGroupResourceTestCase {
 
 		long totalCount = userGroupsJSONObject.getLong("totalCount");
 
-		UserGroup userGroup1 = testGraphQLGetUserGroupsPage_addUserGroup();
-		UserGroup userGroup2 = testGraphQLGetUserGroupsPage_addUserGroup();
+		UserGroup userGroup1 = testGraphQLUserGroup_addUserGroup(
+			randomUserGroup());
+
+		UserGroup userGroup2 = testGraphQLUserGroup_addUserGroup(
+			randomUserGroup());
 
 		userGroupsJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -1275,12 +1482,6 @@ public abstract class BaseUserGroupResourceTestCase {
 			Arrays.asList(
 				UserGroupSerDes.toDTOs(
 					userGroupsJSONObject.getString("items"))));
-	}
-
-	protected UserGroup testGraphQLGetUserGroupsPage_addUserGroup()
-		throws Exception {
-
-		return testGraphQLUserGroup_addUserGroup();
 	}
 
 	@Test
@@ -1433,6 +1634,16 @@ public abstract class BaseUserGroupResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostUserGroup() throws Exception {
+		UserGroup randomUserGroup = randomUserGroup();
+
+		UserGroup userGroup = testGraphQLUserGroup_addUserGroup(
+			randomUserGroup);
+
+		Assert.assertTrue(equals(randomUserGroup, userGroup));
 	}
 
 	@Test
@@ -1647,8 +1858,115 @@ public abstract class BaseUserGroupResourceTestCase {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected UserGroup testGraphQLUserGroup_addUserGroup() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGraphQLUserGroup_addUserGroup(randomUserGroup());
+	}
+
+	protected UserGroup testGraphQLUserGroup_addUserGroup(UserGroup userGroup)
+		throws Exception {
+
+		JSONDeserializer<UserGroup> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(UserGroup.class)) {
+
+			if (getGraphQLValue(field.get(userGroup)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(userGroup)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createUserGroup",
+						new HashMap<String, Object>() {
+							{
+								put("userGroup", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createUserGroup"),
+			UserGroup.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1867,6 +2185,10 @@ public abstract class BaseUserGroupResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

@@ -152,7 +152,7 @@ public class PublishLayoutMVCActionCommand
 			layout = _layoutLocalService.getLayout(layout.getPlid());
 
 			LayoutStructureUtil.deleteMarkedForDeletionItems(
-				draftLayout.getGroupId(), draftLayout.getPlid());
+				draftLayout.getGroupId(), draftLayout.getPlid(), userId);
 
 			draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
 

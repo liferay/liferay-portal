@@ -72,7 +72,7 @@ JSONArray availableDefinitionsJSONArray = JSONFactoryUtil.createJSONArray();
 				).put(
 					"definitionId", structure.getStructureId()
 				).put(
-					"definitionName", structure.getName(locale)
+					"definitionName", HtmlUtil.escapeAttribute(structure.getName(locale))
 				));
 			%>
 

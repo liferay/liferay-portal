@@ -1,0 +1,31 @@
+<CalendarNotificationTemplate>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>0</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>6d50eec8-8c08-0163-c92f-cbe5526e38c9</__uuid>
+  <__calendarNotificationTemplateId>36179</__calendarNotificationTemplateId>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:35:50.272</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 10:35:50.272</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__calendarId>36173</__calendarId>
+  <__notificationType>email</__notificationType>
+  <__notificationTypeSettings>from-address=test@liferay.com
+from-name=Test Test
+</__notificationTypeSettings>
+  <__notificationTemplateType>reminder</__notificationTemplateType>
+  <__subject>[$PORTLET_NAME$]: Event Reminder for &quot;[$EVENT_TITLE$]&quot;</__subject>
+  <__body>[$TO_NAME$],&lt;br /&gt;&lt;br /&gt;
+
+Your event with the title &lt;a href=&quot;[$EVENT_URL$]&quot;&gt;[$EVENT_TITLE$]&lt;/a&gt; will start on &lt;strong&gt;[$EVENT_START_DATE$]&lt;/strong&gt;.&lt;br /&gt;&lt;br /&gt;
+
+Sincerely,&lt;br /&gt;
+[$FROM_NAME$]&lt;br /&gt;
+[$FROM_ADDRESS$]&lt;br /&gt;
+[$PORTAL_URL$]</__body>
+  <__columnBitmask>0</__columnBitmask>
+</CalendarNotificationTemplate>

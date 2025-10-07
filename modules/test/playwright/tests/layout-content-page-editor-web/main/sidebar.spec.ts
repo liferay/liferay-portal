@@ -890,6 +890,10 @@ test.describe('Fragments Panel', () => {
 
 			await pageEditorPage.goToSidebarTab('Components');
 
+			await page
+				.getByLabel('Search Fragments and Widgets')
+				.fill('External Video');
+
 			const fragment = page
 				.locator('.page-editor__fragments-widgets__tab-list-item')
 				.filter({hasText: 'External Video'});
@@ -900,15 +904,17 @@ test.describe('Fragments Panel', () => {
 
 			const fragmentBox = await fragment.boundingBox();
 
-			await page.mouse.move(fragmentBox.x, fragmentBox.y);
+			await expect(async () => {
+				await page.mouse.move(fragmentBox.x, fragmentBox.y);
 
-			await page.mouse.down();
+				await page.mouse.down();
 
-			await page
-				.getByText('Drag and drop fragments or widgets here.')
-				.hover();
+				await page
+					.getByText('Drag and drop fragments or widgets here.')
+					.hover();
 
-			await expect(fragment).toHaveClass(/disabled/);
+				await expect(fragment).toHaveClass(/disabled/);
+			}).toPass();
 		}
 	);
 
@@ -1236,6 +1242,8 @@ test.describe('Page Contents Panel', () => {
 
 			const newTitle = getRandomString();
 
+			await journalPage.articleTitleInput.waitFor();
+
 			await journalPage.articleTitleInput.fill(newTitle);
 
 			await expect(async () => {
@@ -1364,7 +1372,7 @@ test.describe('Page Contents Panel', () => {
 				trigger: row.getByLabel('Show Actions', {exact: true}),
 			});
 
-			await page.getByRole('dialog').getByLabel('close').click();
+			await page.getByRole('dialog').getByLabel('Close').click();
 
 			// Go to page contents panel, click in add items and add a new item
 
@@ -1873,7 +1881,10 @@ test.describe('Page Contents Panel', () => {
 						.getByText('Guest')
 				).toBeVisible({timeout: 1000});
 
-				await page.getByLabel('close', {exact: true}).click();
+				await page
+					.locator('.modal-header')
+					.getByLabel('Close', {exact: true})
+					.click();
 			}).toPass();
 
 			// Assert content page editor can view usages

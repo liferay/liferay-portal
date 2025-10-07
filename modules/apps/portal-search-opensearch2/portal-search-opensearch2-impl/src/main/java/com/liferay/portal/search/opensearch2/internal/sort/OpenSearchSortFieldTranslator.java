@@ -7,6 +7,7 @@ package com.liferay.portal.search.opensearch2.internal.sort;
 
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.search.opensearch2.internal.geolocation.GeoTranslator;
+import com.liferay.portal.search.opensearch2.internal.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.script.ScriptTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.ConversionUtil;
 import com.liferay.portal.search.query.QueryTranslator;
@@ -29,17 +30,10 @@ import org.opensearch.client.opensearch._types.mapping.FieldType;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryVariant;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Michael C. Han
  * @author Petteri Karttunen
  */
-@Component(
-	property = "search.engine.impl=OpenSearch",
-	service = SortFieldTranslator.class
-)
 public class OpenSearchSortFieldTranslator
 	implements SortFieldTranslator<SortOptions>, SortVisitor<SortOptions> {
 
@@ -205,10 +199,8 @@ public class OpenSearchSortFieldTranslator
 	}
 
 	private final GeoTranslator _geoTranslator = new GeoTranslator();
-
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private QueryTranslator<QueryVariant> _queryTranslator;
-
+	private final QueryTranslator<QueryVariant> _queryTranslator =
+		new OpenSearchQueryTranslator();
 	private final ScriptTranslator _scriptTranslator = new ScriptTranslator();
 
 }

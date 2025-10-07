@@ -16,7 +16,7 @@ export default class HeadlessCommerceDeliveryOrder {
 		);
 	}
 
-	static async getPlacedOrder(orderId: string) {
+	static async getPlacedOrder(orderId: number | string) {
 		return fetcher<PlacedOrder>(
 			`o/headless-commerce-delivery-order/v1.0/placed-orders/${orderId}?nestedFields=placedOrderItems`
 		);

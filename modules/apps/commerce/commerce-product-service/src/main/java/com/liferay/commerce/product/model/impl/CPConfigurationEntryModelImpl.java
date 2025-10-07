@@ -91,8 +91,8 @@ public class CPConfigurationEntryModelImpl
 		{"multipleOrderQuantity", Types.DECIMAL},
 		{"purchasable", Types.BOOLEAN}, {"shippable", Types.BOOLEAN},
 		{"shippingExtraPrice", Types.DOUBLE}, {"shipSeparately", Types.BOOLEAN},
-		{"taxExempt", Types.BOOLEAN}, {"visible", Types.BOOLEAN},
-		{"weight", Types.DOUBLE}, {"width", Types.DOUBLE}
+		{"taxExempt", Types.BOOLEAN}, {"weight", Types.DOUBLE},
+		{"width", Types.DOUBLE}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -133,13 +133,12 @@ public class CPConfigurationEntryModelImpl
 		TABLE_COLUMNS_MAP.put("shippingExtraPrice", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("shipSeparately", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("taxExempt", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("visible", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("weight", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("width", Types.DOUBLE);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPConfigurationEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPConfigurationEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,CPConfigurationListId LONG,CPTaxCategoryId LONG,allowedOrderQuantities VARCHAR(75) null,backOrders BOOLEAN,commerceAvailabilityEstimateId LONG,CPDefinitionInventoryEngine VARCHAR(75) null,depth DOUBLE,displayAvailability BOOLEAN,displayStockQuantity BOOLEAN,freeShipping BOOLEAN,height DOUBLE,lowStockActivity VARCHAR(75) null,maxOrderQuantity BIGDECIMAL null,minOrderQuantity BIGDECIMAL null,minStockQuantity BIGDECIMAL null,multipleOrderQuantity BIGDECIMAL null,purchasable BOOLEAN,shippable BOOLEAN,shippingExtraPrice DOUBLE,shipSeparately BOOLEAN,taxExempt BOOLEAN,visible BOOLEAN,weight DOUBLE,width DOUBLE,primary key (CPConfigurationEntryId, ctCollectionId))";
+		"create table CPConfigurationEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPConfigurationEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,CPConfigurationListId LONG,CPTaxCategoryId LONG,allowedOrderQuantities VARCHAR(75) null,backOrders BOOLEAN,commerceAvailabilityEstimateId LONG,CPDefinitionInventoryEngine VARCHAR(75) null,depth DOUBLE,displayAvailability BOOLEAN,displayStockQuantity BOOLEAN,freeShipping BOOLEAN,height DOUBLE,lowStockActivity VARCHAR(75) null,maxOrderQuantity BIGDECIMAL null,minOrderQuantity BIGDECIMAL null,minStockQuantity BIGDECIMAL null,multipleOrderQuantity BIGDECIMAL null,purchasable BOOLEAN,shippable BOOLEAN,shippingExtraPrice DOUBLE,shipSeparately BOOLEAN,taxExempt BOOLEAN,weight DOUBLE,width DOUBLE,primary key (CPConfigurationEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPConfigurationEntry";
@@ -199,17 +198,11 @@ public class CPConfigurationEntryModelImpl
 	public static final long UUID_COLUMN_BITMASK = 64L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long VISIBLE_COLUMN_BITMASK = 128L;
-
-	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 256L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -399,8 +392,6 @@ public class CPConfigurationEntryModelImpl
 			attributeGetterFunctions.put(
 				"taxExempt", CPConfigurationEntry::getTaxExempt);
 			attributeGetterFunctions.put(
-				"visible", CPConfigurationEntry::getVisible);
-			attributeGetterFunctions.put(
 				"weight", CPConfigurationEntry::getWeight);
 			attributeGetterFunctions.put(
 				"width", CPConfigurationEntry::getWidth);
@@ -559,10 +550,6 @@ public class CPConfigurationEntryModelImpl
 				"taxExempt",
 				(BiConsumer<CPConfigurationEntry, Boolean>)
 					CPConfigurationEntry::setTaxExempt);
-			attributeSetterBiConsumers.put(
-				"visible",
-				(BiConsumer<CPConfigurationEntry, Boolean>)
-					CPConfigurationEntry::setVisible);
 			attributeSetterBiConsumers.put(
 				"weight",
 				(BiConsumer<CPConfigurationEntry, Double>)
@@ -1280,37 +1267,6 @@ public class CPConfigurationEntryModelImpl
 
 	@JSON
 	@Override
-	public boolean getVisible() {
-		return _visible;
-	}
-
-	@JSON
-	@Override
-	public boolean isVisible() {
-		return _visible;
-	}
-
-	@Override
-	public void setVisible(boolean visible) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_visible = visible;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public boolean getOriginalVisible() {
-		return GetterUtil.getBoolean(
-			this.<Boolean>getColumnOriginalValue("visible"));
-	}
-
-	@JSON
-	@Override
 	public double getWeight() {
 		return _weight;
 	}
@@ -1447,7 +1403,6 @@ public class CPConfigurationEntryModelImpl
 		cpConfigurationEntryImpl.setShippingExtraPrice(getShippingExtraPrice());
 		cpConfigurationEntryImpl.setShipSeparately(isShipSeparately());
 		cpConfigurationEntryImpl.setTaxExempt(isTaxExempt());
-		cpConfigurationEntryImpl.setVisible(isVisible());
 		cpConfigurationEntryImpl.setWeight(getWeight());
 		cpConfigurationEntryImpl.setWidth(getWidth());
 
@@ -1530,8 +1485,6 @@ public class CPConfigurationEntryModelImpl
 			this.<Boolean>getColumnOriginalValue("shipSeparately"));
 		cpConfigurationEntryImpl.setTaxExempt(
 			this.<Boolean>getColumnOriginalValue("taxExempt"));
-		cpConfigurationEntryImpl.setVisible(
-			this.<Boolean>getColumnOriginalValue("visible"));
 		cpConfigurationEntryImpl.setWeight(
 			this.<Double>getColumnOriginalValue("weight"));
 		cpConfigurationEntryImpl.setWidth(
@@ -1755,8 +1708,6 @@ public class CPConfigurationEntryModelImpl
 
 		cpConfigurationEntryCacheModel.taxExempt = isTaxExempt();
 
-		cpConfigurationEntryCacheModel.visible = isVisible();
-
 		cpConfigurationEntryCacheModel.weight = getWeight();
 
 		cpConfigurationEntryCacheModel.width = getWidth();
@@ -1858,7 +1809,6 @@ public class CPConfigurationEntryModelImpl
 	private double _shippingExtraPrice;
 	private boolean _shipSeparately;
 	private boolean _taxExempt;
-	private boolean _visible;
 	private double _weight;
 	private double _width;
 
@@ -1934,7 +1884,6 @@ public class CPConfigurationEntryModelImpl
 		_columnOriginalValues.put("shippingExtraPrice", _shippingExtraPrice);
 		_columnOriginalValues.put("shipSeparately", _shipSeparately);
 		_columnOriginalValues.put("taxExempt", _taxExempt);
-		_columnOriginalValues.put("visible", _visible);
 		_columnOriginalValues.put("weight", _weight);
 		_columnOriginalValues.put("width", _width);
 	}
@@ -2028,11 +1977,9 @@ public class CPConfigurationEntryModelImpl
 
 		columnBitmasks.put("taxExempt", 8589934592L);
 
-		columnBitmasks.put("visible", 17179869184L);
+		columnBitmasks.put("weight", 17179869184L);
 
-		columnBitmasks.put("weight", 34359738368L);
-
-		columnBitmasks.put("width", 68719476736L);
+		columnBitmasks.put("width", 34359738368L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

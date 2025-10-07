@@ -29,6 +29,15 @@ public class PatcherAccountLocalServiceWrapper
 		_patcherAccountLocalService = patcherAccountLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherAccount addPatcherAccount(
+			long userId, long accountEntryId, String accountEntryCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _patcherAccountLocalService.addPatcherAccount(
+			userId, accountEntryId, accountEntryCode);
+	}
+
 	/**
 	 * Adds the patcher account to the database. Also notifies the appropriate model listeners.
 	 *
@@ -399,6 +408,12 @@ public class PatcherAccountLocalServiceWrapper
 	@Override
 	public int getPatcherAccountsCount() {
 		return _patcherAccountLocalService.getPatcherAccountsCount();
+	}
+
+	@Override
+	public int getPatcherAccountsCount(long companyId, String keyword) {
+		return _patcherAccountLocalService.getPatcherAccountsCount(
+			companyId, keyword);
 	}
 
 	@Override

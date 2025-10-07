@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.ServerDetector;
-import com.liferay.portal.util.PropsImpl;
 import com.liferay.shielded.container.Ordered;
 import com.liferay.shielded.container.ShieldedContainerInitializer;
 import com.liferay.taglib.servlet.JspFactorySwapper;
@@ -85,8 +84,6 @@ public class JSPEngineShieldedContainerInitializer
 
 		ClassLoaderPool.register(
 			"ShieldedContainerClassLoader", servletContext.getClassLoader());
-
-		PropsUtil.setProps(new PropsImpl());
 
 		JarScanner jarScanner = new StandardJarScanner();
 

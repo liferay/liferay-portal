@@ -1,0 +1,54 @@
+<StagedGroup>
+  <model class="com.liferay.portal.model.impl.GroupImpl">
+    <__cachedModel>false</__cachedModel>
+    <__new>false</__new>
+    <__mvccVersion>4</__mvccVersion>
+    <__ctCollectionId>0</__ctCollectionId>
+    <__uuid>e9e641fc-9d5e-9a1c-ebbb-35fb1d1801e5</__uuid>
+    <__externalReferenceCode>e9e641fc-9d5e-9a1c-ebbb-35fb1d1801e5</__externalReferenceCode>
+    <__groupId>35791</__groupId>
+    <__companyId>27744324501275</__companyId>
+    <__creatorUserId>20132</__creatorUserId>
+    <__modifiedDate>2025-08-29 11:01:34.690 UTC</__modifiedDate>
+    <__setModifiedDate>false</__setModifiedDate>
+    <__classNameId>20031</__classNameId>
+    <__classPK>35791</__classPK>
+    <__parentGroupId>0</__parentGroupId>
+    <__liveGroupId>0</__liveGroupId>
+    <__treePath>/35791/</__treePath>
+    <__groupKey>Site Name</__groupKey>
+    <__name>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US&quot; default-locale=&quot;en_US&quot;&gt;&lt;Name language-id=&quot;en_US&quot;&gt;Site Name&lt;/Name&gt;&lt;/root&gt;</__name>
+    <__description></__description>
+    <__type>2</__type>
+    <__typeSettings>branchingPrivate=false
+branchingPublic=false
+contentSharingWithChildrenEnabled=-1
+locales=en_US,ar_SA,eu_ES,bg_BG,my_MM,km_KH,ca_AD,ca_ES,ca_ES_VALENCIA,zh_CN,zh_TW,hr_HR,hr_BA,cs_CZ,da_DK,nl_NL,nl_BE,en_AU,en_CA,en_IE,en_GB,et_EE,fi_FI,fr_FR,fr_BE,fr_CA,gl_ES,de_DE,de_AT,el_GR,he_IL,hi_IN,hu_HU,id_ID,it_IT,it_CH,ja_JP,kk_KZ,ko_KR,lo_LA,lt_LT,mk_MK,ms_MY,no_NO,nb_NO,fa_IR,pl_PL,pt_BR,pt_PT,ro_RO,ru_RU,sr_RS,sr_RS_latin,sk_SK,sl_SI,es_AR,es_CO,es_ES,es_MX,sv_SE,fr_CH,de_CH,ta_IN,th_TH,tr_TR,uk_UA,vi_VN
+staged=true
+staged-portlet_com_liferay_blogs_web_portlet_BlogsAdminPortlet=true
+staged-portlet_com_liferay_bookmarks_web_portlet_BookmarksAdminPortlet=true
+staged-portlet_com_liferay_calendar_web_portlet_CalendarAdminPortlet=true
+staged-portlet_com_liferay_document_library_web_portlet_DLAdminPortlet=true
+staged-portlet_com_liferay_dynamic_data_lists_web_portlet_DDLPortlet=true
+staged-portlet_com_liferay_dynamic_data_mapping_data_provider_web_portlet_DDMDataProviderPortlet=true
+staged-portlet_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormAdminPortlet=true
+staged-portlet_com_liferay_journal_web_portlet_JournalPortlet=true
+staged-portlet_com_liferay_knowledge_base_web_portlet_AdminPortlet=true
+staged-portlet_com_liferay_message_boards_web_portlet_MBAdminPortlet=true
+staged-portlet_com_liferay_portal_reports_engine_console_web_admin_portlet_AdminPortlet=true
+staged-portlet_com_liferay_segments_web_internal_portlet_SegmentsPortlet=true
+staged-portlet_com_liferay_template_web_internal_portlet_TemplatePortlet=true
+stagedRemotely=false
+trashEnabled=true
+</__typeSettings>
+    <__manualMembership>true</__manualMembership>
+    <__membershipRestriction>0</__membershipRestriction>
+    <__friendlyURL>/site-name</__friendlyURL>
+    <__site>true</__site>
+    <__remoteStagingGroupCount>0</__remoteStagingGroupCount>
+    <__inheritContent>false</__inheritContent>
+    <__active>true</__active>
+    <__columnBitmask>0</__columnBitmask>
+  </model>
+  <__group class="com.liferay.portal.model.impl.GroupImpl" reference="../model"/>
+</StagedGroup>

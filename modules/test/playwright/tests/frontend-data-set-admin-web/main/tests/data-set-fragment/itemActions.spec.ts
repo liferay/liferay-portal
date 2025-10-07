@@ -271,7 +271,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 				modalItemActionTitle
 			);
 
-			await dialog.getByRole('button', {name: 'close'}).click();
+			await dialog.getByRole('button', {name: 'Close'}).click();
 
 			await expect(dialog).not.toBeInViewport();
 		});
@@ -390,6 +390,12 @@ test.describe('Item Actions in Data Set fragment', () => {
 			await expect(
 				(await itemAction.getAttribute('href')).valueOf()
 			).toContain(`/detail/${itemId}`);
+
+			await itemAction.click();
+
+			await page.getByText('Not Found').isVisible();
+
+			await dataSetFragmentPage.goToPage({layout});
 		});
 
 		await test.step('Change visualization mode to List', async () => {
@@ -777,7 +783,7 @@ test.describe('Item Actions in Data Set fragment', () => {
 			});
 		});
 
-		await test.step('Checkt that the Item Actions is present in table row', async () => {
+		await test.step('Check that the Item Actions is present in table row', async () => {
 			const itemActionsCell =
 				dataSetFragmentPage.table.itemActionsCells.first();
 

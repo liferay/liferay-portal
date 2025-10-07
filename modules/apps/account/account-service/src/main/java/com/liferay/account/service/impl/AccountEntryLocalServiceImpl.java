@@ -22,7 +22,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.expando.kernel.util.ExpandoBridgeFactoryUtil;
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -229,7 +229,7 @@ public class AccountEntryLocalServiceImpl
 
 		// Workflow
 
-		if (!_incompleteModelManager.isIncompleteModel() &&
+		if (!_emptyModelManager.isEmptyModel() &&
 			_isWorkflowEnabled(accountEntry.getCompanyId())) {
 
 			_checkStatus(accountEntry.getStatus(), status);
@@ -238,8 +238,8 @@ public class AccountEntryLocalServiceImpl
 				userId, accountEntry, workflowServiceContext);
 		}
 		else {
-			if (_incompleteModelManager.isIncompleteModel()) {
-				status = WorkflowConstants.STATUS_INCOMPLETE;
+			if (_emptyModelManager.isEmptyModel()) {
+				status = WorkflowConstants.STATUS_EMPTY;
 			}
 
 			accountEntry = updateStatus(
@@ -482,22 +482,22 @@ public class AccountEntryLocalServiceImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public AccountEntry getOrAddIncompleteAccountEntry(
+	public AccountEntry getOrAddEmptyAccountEntry(
 			String externalReferenceCode, long companyId, long userId,
 			String name, String type)
-		throws Exception {
+		throws PortalException {
 
-		return _incompleteModelManager.getOrAddIncompleteModel(
-			AccountEntry.class, companyId, externalReferenceCode,
-			this::fetchAccountEntryByExternalReferenceCode,
-			this::getAccountEntryByExternalReferenceCode,
+		return _emptyModelManager.getOrAddEmptyModel(
+			AccountEntry.class, companyId,
 			() -> accountEntryLocalService.addAccountEntry(
 				externalReferenceCode, userId,
 				AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
 				GetterUtil.get(name, externalReferenceCode), StringPool.BLANK,
 				null, StringPool.BLANK, null, StringPool.BLANK, type,
-				WorkflowConstants.STATUS_INCOMPLETE, null));
+				WorkflowConstants.STATUS_EMPTY, null),
+			externalReferenceCode,
+			this::fetchAccountEntryByExternalReferenceCode,
+			this::getAccountEntryByExternalReferenceCode);
 	}
 
 	@Override
@@ -687,7 +687,7 @@ public class AccountEntryLocalServiceImpl
 				accountEntry = updateDomains(accountEntryId, domains);
 			}
 
-			if (status == WorkflowConstants.STATUS_INCOMPLETE) {
+			if (status == WorkflowConstants.STATUS_EMPTY) {
 				status = WorkflowConstants.STATUS_APPROVED;
 			}
 
@@ -1305,13 +1305,13 @@ public class AccountEntryLocalServiceImpl
 	private CustomSQL _customSQL;
 
 	@Reference
+	private EmptyModelManager _emptyModelManager;
+
+	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private IncompleteModelManager _incompleteModelManager;
 
 	@Reference
 	private OrganizationLocalService _organizationLocalService;

@@ -24,6 +24,10 @@ public class SSOImpl implements SSO {
 
 	@Override
 	public String getSignInURL(long companyId, String defaultSigninURL) {
+		if (_samlProviderConfigurationHelper.isEnabled()) {
+			return defaultSigninURL;
+		}
+
 		return null;
 	}
 

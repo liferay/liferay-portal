@@ -7,7 +7,6 @@ package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
-import com.liferay.portal.search.elasticsearch7.internal.document.ElasticsearchDocumentFactory;
 import com.liferay.portal.search.elasticsearch7.internal.legacy.query.ElasticsearchQueryTranslatorFixture;
 import com.liferay.portal.search.elasticsearch7.internal.query.ElasticsearchQueryTranslator;
 import com.liferay.portal.search.engine.adapter.document.DocumentRequestExecutor;
@@ -27,34 +26,13 @@ public class DocumentRequestExecutorFixture {
 
 	public void setUp() {
 		_documentRequestExecutor = _createDocumentRequestExecutor(
-			_elasticsearchClientResolver, _elasticsearchDocumentFactory);
+			_elasticsearchClientResolver);
 	}
 
 	protected void setElasticsearchClientResolver(
 		ElasticsearchClientResolver elasticsearchClientResolver) {
 
 		_elasticsearchClientResolver = elasticsearchClientResolver;
-	}
-
-	protected void setElasticsearchDocumentFactory(
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
-
-		_elasticsearchDocumentFactory = elasticsearchDocumentFactory;
-	}
-
-	private ElasticsearchBulkableDocumentRequestTranslator
-		_createBulkableDocumentRequestTranslator(
-			ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
-
-		ElasticsearchBulkableDocumentRequestTranslator
-			elasticsearchBulkableDocumentRequestTranslator =
-				new ElasticsearchBulkableDocumentRequestTranslatorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			elasticsearchBulkableDocumentRequestTranslator,
-			"_elasticsearchDocumentFactory", elasticsearchDocumentFactory);
-
-		return elasticsearchBulkableDocumentRequestTranslator;
 	}
 
 	private BulkDocumentRequestExecutor _createBulkDocumentRequestExecutor(
@@ -122,16 +100,14 @@ public class DocumentRequestExecutorFixture {
 	}
 
 	private DocumentRequestExecutor _createDocumentRequestExecutor(
-		ElasticsearchClientResolver elasticsearchClientResolver,
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
+		ElasticsearchClientResolver elasticsearchClientResolver) {
 
 		DocumentRequestExecutor documentRequestExecutor =
 			new ElasticsearchDocumentRequestExecutor();
 
 		ElasticsearchBulkableDocumentRequestTranslator
 			elasticsearchBulkableDocumentRequestTranslator =
-				_createBulkableDocumentRequestTranslator(
-					elasticsearchDocumentFactory);
+				new ElasticsearchBulkableDocumentRequestTranslatorImpl();
 
 		ReflectionTestUtil.setFieldValue(
 			documentRequestExecutor, "_bulkDocumentRequestExecutor",
@@ -265,6 +241,5 @@ public class DocumentRequestExecutorFixture {
 
 	private DocumentRequestExecutor _documentRequestExecutor;
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
-	private ElasticsearchDocumentFactory _elasticsearchDocumentFactory;
 
 }

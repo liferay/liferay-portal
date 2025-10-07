@@ -95,7 +95,7 @@ public class CollaboratorsUtil {
 
 		return JSONUtil.toJSONArray(
 			SharingEntryLocalServiceUtil.getSharingEntries(
-				classNameId, classPK, 0, 4),
+				classNameId, classPK, 0, 4, null),
 			sharingEntry -> {
 				User user = UserLocalServiceUtil.fetchUserById(
 					sharingEntry.getToUserId());

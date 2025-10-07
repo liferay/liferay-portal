@@ -6,17 +6,11 @@
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../../liferay.config';
 import {
-	ACTION_DATA_SET_RELATIONSHIP,
 	API_ENDPOINT_PATH,
-	CARDS_SECTION_DATA_SET_RELATIONSHIP,
-	CLIENT_EXTENSION_FILTER_DATA_SET_RELATIONSHIP,
-	DATE_FILTER_DATA_SET_RELATIONSHIP,
 	DEFAULT_LABEL,
-	LIST_SECTION_DATA_SET_RELATIONSHIP,
-	SELECTION_FILTER_DATA_SET_RELATIONSHIP,
-	SORT_DATA_SET_RELATIONSHIP,
-	TABLE_SECTION_DATA_SET_RELATIONSHIP,
+	OBJECT_RELATIONSHIP,
 } from '../utils/constants';
+import getDataSetResourceURL from '../utils/getDataSetResourceURL';
 import {
 	EActionType,
 	EAsyncActionMethod,
@@ -50,7 +44,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		restEndpoint?: string;
 		restSchema?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}`;
+		const url = getDataSetResourceURL({});
 
 		const data = {
 			additionalAPIURLParameters,
@@ -77,10 +71,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		fieldName?: string;
 		name?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/cards-sections`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
+		});
 
 		const data = {
-			[CARDS_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			name,
 		};
@@ -91,20 +87,22 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 	async createDataSetClientExtensionFilter({
 		active,
 		clientExtensionEntryERC,
-		dataSetId,
+		dataSetERC,
 		fieldName,
 		label_i18n = {en_US: 'Title'},
 	}: {
 		active?: boolean;
 		clientExtensionEntryERC: string;
-		dataSetId: string;
+		dataSetERC: string;
 		fieldName: string;
 		label_i18n?: {[key: string]: string};
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/client-extension-filters`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_CLIENT_EXTENSION_FILTERS,
+		});
 
 		const data = {
-			[CLIENT_EXTENSION_FILTER_DATA_SET_RELATIONSHIP]: dataSetId,
 			active,
 			clientExtensionEntryERC,
 			fieldName,
@@ -130,15 +128,17 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		icon?: string;
 		label_i18n?: {[key: string]: string};
 		modalSize?: EModalActionVariant;
-		permissionKey?;
+		permissionKey?: string;
 		target?: ECreationActionTarget;
 		title_i18n?: {[key: string]: string};
 		url?: string;
 	}) {
-		const endpointUrl = `${this.baseUrl}${API_ENDPOINT_PATH}/actions`;
+		const endpointURL = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_ACTIONS,
+		});
 
 		const data = {
-			[ACTION_DATA_SET_RELATIONSHIP]: dataSetERC,
 			active,
 			icon,
 			label_i18n,
@@ -150,7 +150,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			url,
 		};
 
-		return this.post(endpointUrl, {data});
+		return this.post(endpointURL, {data});
 	}
 
 	async createDataSetTableSection({
@@ -172,10 +172,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		sortable?: boolean;
 		type?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/table-sections`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
+		});
 
 		const data = {
-			[TABLE_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			label_i18n,
 			renderer,
@@ -205,10 +207,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		to?: string;
 		type: 'date' | 'date-time';
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/date-filters`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_DATE_FILTERS,
+		});
 
 		const data = {
-			[DATE_FILTER_DATA_SET_RELATIONSHIP]: dataSetERC,
 			active,
 			fieldName,
 			from,
@@ -245,10 +249,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		source: string;
 		sourceType: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/selection-filters`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTERS,
+		});
 
 		const data = {
-			[SELECTION_FILTER_DATA_SET_RELATIONSHIP]: dataSetERC,
 			active,
 			fieldName,
 			include,
@@ -297,10 +303,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		title_i18n?: {[key: string]: string};
 		url?: string;
 	}) {
-		const endpointUrl = `${this.baseUrl}${API_ENDPOINT_PATH}/actions`;
+		const endpointURL = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_ACTIONS,
+		});
 
 		const data = {
-			[ACTION_DATA_SET_RELATIONSHIP]: dataSetERC,
 			active,
 			confirmationMessage_i18n,
 			confirmationMessageType,
@@ -318,7 +326,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			url,
 		};
 
-		return this.post(endpointUrl, {data});
+		return this.post(endpointURL, {data});
 	}
 
 	async createDataSetSort({
@@ -336,10 +344,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		label_i18n?: {[key: string]: string};
 		orderType?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/sorts`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_SORTS,
+		});
 
 		const data = {
-			[SORT_DATA_SET_RELATIONSHIP]: dataSetERC,
 			active,
 			default: defaultValue,
 			fieldName,
@@ -359,10 +369,12 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		fieldName?: string;
 		name?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/list-sections`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTIONS,
+		});
 
 		const data = {
-			[LIST_SECTION_DATA_SET_RELATIONSHIP]: dataSetERC,
 			fieldName,
 			name,
 		};
@@ -371,7 +383,9 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 	}
 
 	async deleteDataSet({erc = DEFAULT_DATA_SET_ERC}: {erc?: string}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/by-external-reference-code/${erc}`;
+		const url = getDataSetResourceURL({
+			dataSetERC: erc,
+		});
 
 		return this.delete(url);
 	}
@@ -393,7 +407,9 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		label?: string;
 		listOfItemsPerPage?: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/by-external-reference-code/${erc}`;
+		const url = getDataSetResourceURL({
+			dataSetERC: erc,
+		});
 
 		const data = {
 			additionalAPIURLParameters,
@@ -409,7 +425,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 
 	async updateDataSetSelectionFilter({
 		active,
-		erc,
+		dataSetERC,
 		fieldName,
 		include,
 		itemKey,
@@ -417,9 +433,10 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		label_i18n,
 		multiple,
 		preselectedValues,
+		selectionFilterERC,
 	}: {
 		active?: boolean;
-		erc: string;
+		dataSetERC: string;
 		fieldName?: string;
 		include?: boolean;
 		itemKey?: string;
@@ -427,8 +444,13 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		label_i18n?: {[key: string]: string};
 		multiple?: boolean;
 		preselectedValues?: string;
+		selectionFilterERC: string;
 	}) {
-		const url = `${this.baseUrl}${API_ENDPOINT_PATH}/selection-filters/by-external-reference-code/${erc}`;
+		const url = getDataSetResourceURL({
+			dataSetERC,
+			relatedResourceERC: selectionFilterERC,
+			relationship: OBJECT_RELATIONSHIP.DATA_SET_SELECTION_FILTERS,
+		});
 
 		const data = {
 			active,

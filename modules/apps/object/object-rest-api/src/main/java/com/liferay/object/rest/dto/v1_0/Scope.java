@@ -218,7 +218,7 @@ public class Scope implements Serializable {
 	@GraphQLName("Type")
 	public static enum Type {
 
-		ASSET_LIBRARY("AssetLibrary"), SITE("Site");
+		ASSET_LIBRARY("AssetLibrary"), CMS("CMS"), SITE("Site");
 
 		@JsonCreator
 		public static Type create(String value) {

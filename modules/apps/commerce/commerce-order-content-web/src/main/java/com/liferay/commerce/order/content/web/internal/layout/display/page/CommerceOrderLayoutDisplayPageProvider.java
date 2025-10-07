@@ -6,8 +6,9 @@
 package com.liferay.commerce.order.content.web.internal.layout.display.page;
 
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.service.CommerceOrderService;
+import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.BaseLayoutDisplayPageProvider;
@@ -59,33 +60,12 @@ public class CommerceOrderLayoutDisplayPageProvider
 
 	@Override
 	public LayoutDisplayPageObjectProvider<CommerceOrder>
-		getLayoutDisplayPageObjectProvider(
-			InfoItemReference infoItemReference) {
-
-		InfoItemIdentifier infoItemIdentifier =
-			infoItemReference.getInfoItemIdentifier();
-
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
-			return null;
-		}
-
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)
-				infoItemReference.getInfoItemIdentifier();
+		getLayoutDisplayPageObjectProvider(long groupId, String urlTitle) {
 
 		try {
 			CommerceOrder commerceOrder =
-				_commerceOrderService.getCommerceOrder(
-					classPKInfoItemIdentifier.getClassPK());
-
-			long groupId = commerceOrder.getGroupId();
-
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			if (serviceContext != null) {
-				groupId = serviceContext.getScopeGroupId();
-			}
+				_commerceOrderLocalService.getCommerceOrder(
+					Long.valueOf(urlTitle));
 
 			return new CommerceOrderLayoutDisplayPageObjectProvider(
 				commerceOrder, groupId);
@@ -100,29 +80,52 @@ public class CommerceOrderLayoutDisplayPageProvider
 	}
 
 	@Override
-	public LayoutDisplayPageObjectProvider<CommerceOrder>
-		getLayoutDisplayPageObjectProvider(long groupId, String urlTitle) {
+	protected LayoutDisplayPageObjectProvider<CommerceOrder>
+		doGetLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
 
-		try {
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
+			return null;
+		}
+
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)
+					infoItemReference.getInfoItemIdentifier();
+
 			CommerceOrder commerceOrder =
-				_commerceOrderService.getCommerceOrder(Long.valueOf(urlTitle));
+				_commerceOrderLocalService.fetchCommerceOrder(
+					classPKInfoItemIdentifier.getClassPK());
 
 			return new CommerceOrderLayoutDisplayPageObjectProvider(
 				commerceOrder, groupId);
 		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
 
-		return null;
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.
+				fetchCommerceOrderByExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(),
+					serviceContext.getCompanyId());
+
+		return new CommerceOrderLayoutDisplayPageObjectProvider(
+			commerceOrder, commerceOrder.getGroupId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderLayoutDisplayPageProvider.class);
 
 	@Reference
-	private CommerceOrderService _commerceOrderService;
+	private CommerceOrderLocalService _commerceOrderLocalService;
 
 }

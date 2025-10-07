@@ -79,7 +79,7 @@ public class BatchEngineExportTaskExecutorImpl
 				}
 
 				@Override
-				public boolean isPersistContent() {
+				public boolean isPersist() {
 					return true;
 				}
 
@@ -90,9 +90,14 @@ public class BatchEngineExportTaskExecutorImpl
 	public Result execute(
 		BatchEngineExportTask batchEngineExportTask, Settings settings) {
 
-		if (settings.isPersistContent() && !settings.isCompressContent()) {
+		if (!settings.isCompressContent() && settings.isPersist()) {
 			throw new IllegalArgumentException(
 				"Uncompressed content cannot be stored in the database");
+		}
+
+		if (settings.getMaxItems() < 0) {
+			throw new IllegalArgumentException(
+				"The maximum number of items must be a positive number");
 		}
 
 		SafeCloseable safeCloseable =
@@ -105,8 +110,10 @@ public class BatchEngineExportTaskExecutorImpl
 				BatchEngineTaskExecuteStatus.STARTED.toString());
 			batchEngineExportTask.setStartTime(new Date());
 
-			_batchEngineExportTaskLocalService.updateBatchEngineExportTask(
-				batchEngineExportTask);
+			if (settings.isPersist()) {
+				_batchEngineExportTaskLocalService.updateBatchEngineExportTask(
+					batchEngineExportTask);
+			}
 
 			InputStream inputStream = BatchEngineTaskExecutorUtil.execute(
 				true, () -> _exportItems(batchEngineExportTask, settings),
@@ -114,7 +121,7 @@ public class BatchEngineExportTaskExecutorImpl
 
 			_updateBatchEngineExportTask(
 				BatchEngineTaskExecuteStatus.COMPLETED, batchEngineExportTask,
-				null);
+				null, settings.isPersist());
 
 			return new Result() {
 
@@ -136,19 +143,23 @@ public class BatchEngineExportTaskExecutorImpl
 					batchEngineExportTask,
 				throwable);
 
-			try {
-				BatchEngineExportTask currentBatchEngineExportTask =
-					_batchEngineExportTaskLocalService.getBatchEngineExportTask(
-						batchEngineExportTask.getPrimaryKey());
+			if (settings.isPersist()) {
+				try {
+					BatchEngineExportTask currentBatchEngineExportTask =
+						_batchEngineExportTaskLocalService.
+							getBatchEngineExportTask(
+								batchEngineExportTask.getPrimaryKey());
 
-				_updateBatchEngineExportTask(
-					BatchEngineTaskExecuteStatus.FAILED,
-					currentBatchEngineExportTask, throwable.getMessage());
-			}
-			catch (PortalException portalException) {
-				_log.error(
-					"Unable to update batch engine export task",
-					portalException);
+					_updateBatchEngineExportTask(
+						BatchEngineTaskExecuteStatus.FAILED,
+						currentBatchEngineExportTask, throwable.getMessage(),
+						settings.isPersist());
+				}
+				catch (PortalException portalException) {
+					_log.error(
+						"Unable to update batch engine export task",
+						portalException);
+				}
 			}
 		}
 		finally {
@@ -200,8 +211,11 @@ public class BatchEngineExportTaskExecutorImpl
 					NestedFieldsContextUtil.toList(
 						MapUtil.getString(parameters, "batchNestedFields"))));
 
-			int exportBatchSize = _getExportBatchSize(
-				batchEngineExportTask.getCompanyId());
+			int maxItems = settings.getMaxItems();
+
+			int exportBatchSize = Math.min(
+				maxItems,
+				_getExportBatchSize(batchEngineExportTask.getCompanyId()));
 
 			BatchEngineTaskItemDelegateExecutor
 				batchEngineTaskItemDelegateExecutor =
@@ -213,6 +227,8 @@ public class BatchEngineExportTaskExecutorImpl
 						parameters,
 						_userLocalService.getUser(
 							batchEngineExportTask.getUserId()));
+
+			batchEngineExportTask.setProcessedItemsCount(0);
 
 			Page<?> page = batchEngineTaskItemDelegateExecutor.getItems(
 				1, exportBatchSize);
@@ -229,15 +245,20 @@ public class BatchEngineExportTaskExecutorImpl
 					batchEngineExportTask.getProcessedItemsCount() +
 						items.size());
 
-				batchEngineExportTask =
-					_batchEngineExportTaskLocalService.
-						updateBatchEngineExportTask(batchEngineExportTask);
+				if (settings.isPersist()) {
+					batchEngineExportTask =
+						_batchEngineExportTaskLocalService.
+							updateBatchEngineExportTask(batchEngineExportTask);
+				}
 
 				if (Thread.interrupted()) {
 					throw new InterruptedException();
 				}
 
-				if (!page.hasNext()) {
+				if (!page.hasNext() ||
+					(batchEngineExportTask.getProcessedItemsCount() >=
+						maxItems)) {
+
 					break;
 				}
 
@@ -254,7 +275,7 @@ public class BatchEngineExportTaskExecutorImpl
 
 		byte[] content = unsyncByteArrayOutputStream.toByteArray();
 
-		if (settings.isPersistContent()) {
+		if (settings.isPersist()) {
 			batchEngineExportTask.setContent(
 				new OutputBlob(
 					new UnsyncByteArrayInputStream(content), content.length));
@@ -366,16 +387,19 @@ public class BatchEngineExportTaskExecutorImpl
 
 	private void _updateBatchEngineExportTask(
 		BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus,
-		BatchEngineExportTask batchEngineExportTask, String errorMessage) {
+		BatchEngineExportTask batchEngineExportTask, String errorMessage,
+		boolean persist) {
 
 		batchEngineExportTask.setEndTime(new Date());
 		batchEngineExportTask.setErrorMessage(errorMessage);
 		batchEngineExportTask.setExecuteStatus(
 			batchEngineTaskExecuteStatus.toString());
 
-		batchEngineExportTask =
-			_batchEngineExportTaskLocalService.updateBatchEngineExportTask(
-				batchEngineExportTask);
+		if (persist) {
+			batchEngineExportTask =
+				_batchEngineExportTaskLocalService.updateBatchEngineExportTask(
+					batchEngineExportTask);
+		}
 
 		BatchEngineTaskCallbackUtil.sendCallback(
 			batchEngineExportTask.getCallbackURL(),

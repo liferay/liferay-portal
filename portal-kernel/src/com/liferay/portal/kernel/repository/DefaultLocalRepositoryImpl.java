@@ -143,6 +143,11 @@ public class DefaultLocalRepositoryImpl implements LocalRepository {
 	}
 
 	@Override
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public FileEntry fetchFileEntry(long folderId, String title)
 		throws PortalException {
 

@@ -10,7 +10,6 @@ import useSWR from 'swr';
 import AppToolbar from '../../../../../components/AppPublish/Navbar';
 import Loading from '../../../../../components/Loading';
 import {AppFlowList} from '../../../../../components/NewAppFlowList/AppFlowList';
-import {useMarketplaceContext} from '../../../../../context/MarketplaceContext';
 import {MarketplaceTaxonomyVocabularies} from '../../../../../entity/MarketplaceTaxonomyVocabulary';
 import {
 	ProductTypeVocabulary,
@@ -46,7 +45,6 @@ type AppCreationFlowProps = {
 export function AppCreationFlow({catalogId}: AppCreationFlowProps) {
 	const [{appERC, appLogo, appName, appProductId, priceModel}] =
 		useAppContext();
-	const {properties} = useMarketplaceContext();
 	const [appFlowListItems, setAppFlowListItems] =
 		useState(initialFLowListItems);
 	const [currentFlow, setCurrentFlow] = useState('create');
@@ -57,11 +55,8 @@ export function AppCreationFlow({catalogId}: AppCreationFlowProps) {
 
 	const {data: {areas = [], categories = [], productType, tags = []} = {}} =
 		useSWR('/taxonomy-vocabularies', async () => {
-			const fn = properties.useSiteTaxonomyVocabularyQuery
-				? HeadlessAdminTaxonomy.getSiteTaxonomyVocabulariesWithCategories
-				: HeadlessAdminTaxonomy.getTaxonomyVocabulariesWithCategories;
-
-			const data = await fn();
+			const data =
+				await HeadlessAdminTaxonomy.getSiteTaxonomyVocabulariesWithCategories();
 
 			const marketplaceTaxonomyVocabularies =
 				new MarketplaceTaxonomyVocabularies(data.items);

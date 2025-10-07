@@ -302,7 +302,6 @@ public class OpenSearchSearchEngineInformation
 				sb.append(StringPool.OPEN_PARENTHESIS);
 				sb.append(nodeInformation.getVersion());
 				sb.append(StringPool.CLOSE_PARENTHESIS);
-
 				sb.append(StringPool.COMMA_AND_SPACE);
 			}
 

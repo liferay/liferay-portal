@@ -266,6 +266,40 @@ public abstract class ERCVersionedEntryLocalServiceBaseImpl
 			ercVersionedEntryId);
 	}
 
+	@Override
+	public ERCVersionedEntry fetchERCVersionedEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId) {
+
+		return ercVersionedEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public ERCVersionedEntry fetchERCVersionedEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId, boolean head) {
+
+		return ercVersionedEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
+	@Override
+	public ERCVersionedEntry getERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return ercVersionedEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public ERCVersionedEntry getERCVersionedEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head)
+		throws PortalException {
+
+		return ercVersionedEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
 	/**
 	 * Returns the erc versioned entry with the primary key.
 	 *

@@ -134,9 +134,8 @@ function Inputs({index, onInputSetItemChange, value}) {
 					<ClayTooltipProvider>
 						<span
 							className="c-ml-2"
-							data-title={Liferay.Language.get(
-								'indexed-field-help'
-							)}
+							tabIndex={0}
+							title={Liferay.Language.get('indexed-field-help')}
 						>
 							<ClayIcon symbol="question-circle-full" />
 						</span>

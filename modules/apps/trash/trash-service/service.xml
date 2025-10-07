@@ -46,11 +46,15 @@
 			<finder-column name="groupId" />
 			<finder-column comparator="&lt;" name="createDate" />
 		</finder>
-		<finder name="G_C" return-type="Collection">
+		<finder name="G_CN" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
 		</finder>
-		<finder name="C_C" return-type="TrashEntry" unique="true">
+		<finder name="C_CN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="CN_CPK" return-type="TrashEntry" unique="true">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
@@ -78,11 +82,11 @@
 		<finder name="EntryId" return-type="Collection">
 			<finder-column name="entryId" />
 		</finder>
-		<finder name="E_C" return-type="Collection">
+		<finder name="E_CN" return-type="Collection">
 			<finder-column name="entryId" />
 			<finder-column name="classNameId" />
 		</finder>
-		<finder name="C_C" return-type="TrashVersion" unique="true">
+		<finder name="CN_CPK" return-type="TrashVersion" unique="true">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>

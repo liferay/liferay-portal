@@ -505,11 +505,11 @@ public class AssetVocabularyLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static AssetVocabulary getOrAddIncompleteVocabulary(
+	public static AssetVocabulary getOrAddEmptyVocabulary(
 			String externalReferenceCode, long userId, long groupId)
 		throws PortalException {
 
-		return getService().getOrAddIncompleteVocabulary(
+		return getService().getOrAddEmptyVocabulary(
 			externalReferenceCode, userId, groupId);
 	}
 

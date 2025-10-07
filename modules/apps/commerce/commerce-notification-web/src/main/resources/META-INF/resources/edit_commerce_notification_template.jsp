@@ -91,7 +91,7 @@ if (commerceNotificationTemplate != null) {
 		>
 			<div class="row">
 				<div class="col-12">
-					<label for="<portlet:namespace />toFieldWrapper"><liferay-ui:message key="to" /></label>
+					<label for="<portlet:namespace />toFieldWrapper"><liferay-ui:message key="to[recipient]" /></label>
 
 					<aui:field-wrapper label="" name="toFieldWrapper">
 						<liferay-ui:input-localized

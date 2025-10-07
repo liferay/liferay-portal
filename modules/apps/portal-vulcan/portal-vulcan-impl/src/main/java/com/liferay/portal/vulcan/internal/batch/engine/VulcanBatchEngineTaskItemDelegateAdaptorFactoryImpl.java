@@ -8,6 +8,9 @@ package com.liferay.portal.vulcan.internal.batch.engine;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.vulcan.batch.engine.VulcanBatchEngineTaskItemDelegateAdaptorFactory;
 
@@ -28,7 +31,8 @@ public class VulcanBatchEngineTaskItemDelegateAdaptorFactoryImpl
 
 		return new VulcanBatchEngineTaskItemDelegateAdaptor<>(
 			_depotEntryLocalService, _groupLocalService,
-			vulcanBatchEngineTaskItemDelegate);
+			_resourceActionLocalService, _resourcePermissionLocalService,
+			_roleLocalService, vulcanBatchEngineTaskItemDelegate);
 	}
 
 	@Reference
@@ -36,5 +40,14 @@ public class VulcanBatchEngineTaskItemDelegateAdaptorFactoryImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 }

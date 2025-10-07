@@ -15,8 +15,10 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletRequest;
@@ -82,7 +85,7 @@ public class LayoutsAdminDisplayContextTest {
 
 	@Test
 	public void testGetEditOrViewLayoutURLEditURL() throws Exception {
-		Layout layout = _getContentLayout(true);
+		Layout layout = _getContentLayout(true, false);
 
 		Mockito.when(
 			_layoutActionsHelper.isShowConfigureAction(layout)
@@ -95,7 +98,7 @@ public class LayoutsAdminDisplayContextTest {
 
 	@Test
 	public void testGetEditOrViewLayoutURLViewURL() throws Exception {
-		Layout layout = _getContentLayout(true);
+		Layout layout = _getContentLayout(true, false);
 
 		Mockito.when(
 			_layoutActionsHelper.isShowViewLayoutAction(layout)
@@ -110,7 +113,7 @@ public class LayoutsAdminDisplayContextTest {
 	public void testGetEditOrViewLayoutURLViewURLWithLayoutUpdateableFalse()
 		throws Exception {
 
-		Layout layout = _getContentLayout(false);
+		Layout layout = _getContentLayout(false, false);
 
 		Mockito.when(
 			_layoutActionsHelper.isShowConfigureAction(layout)
@@ -125,6 +128,33 @@ public class LayoutsAdminDisplayContextTest {
 		);
 
 		_assertGetEditOrViewLayoutURL(layout, StringPool.BLANK);
+	}
+
+	@Test
+	public void testGetLayoutScreenNavigationPortletURL() {
+		_liferayPortletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, new ThemeDisplay());
+
+		LayoutsAdminDisplayContext layoutsAdminDisplayContext = Mockito.spy(
+			new LayoutsAdminDisplayContext(
+				null, _layoutActionsHelper, null, null, _liferayPortletRequest,
+				new MockLiferayPortletActionResponse()));
+
+		Mockito.doReturn(
+			true
+		).when(
+			layoutsAdminDisplayContext
+		).isPrivateLayout();
+
+		Layout layout = _getContentLayout(true, true);
+
+		String portletURL = String.valueOf(
+			layoutsAdminDisplayContext.getLayoutScreenNavigationPortletURL(
+				layout.getPlid()));
+
+		Assert.assertTrue(
+			portletURL,
+			StringUtil.contains(portletURL, "param_privateLayout=true", ";"));
 	}
 
 	private void _assertGetEditOrViewLayoutURL(Layout layout, String layoutMode)
@@ -170,7 +200,9 @@ public class LayoutsAdminDisplayContextTest {
 			HttpComponentsUtil.getParameter(url, "p_l_back_url_title", false));
 	}
 
-	private Layout _getContentLayout(boolean layoutUpdateable) {
+	private Layout _getContentLayout(
+		boolean layoutUpdateable, boolean privateLayout) {
+
 		Layout layout = Mockito.mock(Layout.class);
 
 		Layout draftLayout = Mockito.mock(Layout.class);
@@ -185,6 +217,12 @@ public class LayoutsAdminDisplayContextTest {
 			layout.getPlid()
 		).thenReturn(
 			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			layout.isPrivateLayout()
+		).thenReturn(
+			privateLayout
 		);
 
 		Mockito.when(

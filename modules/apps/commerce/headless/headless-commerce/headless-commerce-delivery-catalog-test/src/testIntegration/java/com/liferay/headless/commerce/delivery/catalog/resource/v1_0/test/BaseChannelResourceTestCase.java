@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -42,7 +43,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -496,84 +496,12 @@ public abstract class BaseChannelResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetChannelsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"channels",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject channelsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/channels");
-
-		long totalCount = channelsJSONObject.getLong("totalCount");
-
-		Channel channel1 = testGraphQLGetChannelsPage_addChannel();
-		Channel channel2 = testGraphQLGetChannelsPage_addChannel();
-
-		channelsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/channels");
-
-		Assert.assertEquals(
-			totalCount + 2, channelsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			channel1,
-			Arrays.asList(
-				ChannelSerDes.toDTOs(channelsJSONObject.getString("items"))));
-		assertContains(
-			channel2,
-			Arrays.asList(
-				ChannelSerDes.toDTOs(channelsJSONObject.getString("items"))));
-
-		// Using the namespace headlessCommerceDeliveryCatalog_v1_0
-
-		channelsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField(
-					"headlessCommerceDeliveryCatalog_v1_0", graphQLField)),
-			"JSONObject/data",
-			"JSONObject/headlessCommerceDeliveryCatalog_v1_0",
-			"JSONObject/channels");
-
-		Assert.assertEquals(
-			totalCount + 2, channelsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			channel1,
-			Arrays.asList(
-				ChannelSerDes.toDTOs(channelsJSONObject.getString("items"))));
-		assertContains(
-			channel2,
-			Arrays.asList(
-				ChannelSerDes.toDTOs(channelsJSONObject.getString("items"))));
-	}
-
-	protected Channel testGraphQLGetChannelsPage_addChannel() throws Exception {
-		return testGraphQLChannel_addChannel();
-	}
-
-	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
 	}
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	protected Channel testGraphQLChannel_addChannel() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
 
 	protected void assertContains(Channel channel, List<Channel> channels) {
 		boolean contains = false;
@@ -745,6 +673,10 @@ public abstract class BaseChannelResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

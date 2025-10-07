@@ -29,19 +29,9 @@ public class ObjectEntryFolderLayoutDisplayPageProvider
 	extends BaseLayoutDisplayPageProvider<ObjectEntryFolder> {
 
 	@Override
-	public String getClassName() {
-		return ObjectEntryFolder.class.getName();
-	}
-
-	@Override
-	public String getDefaultURLSeparator() {
-		return FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY_FOLDER;
-	}
-
-	@Override
 	public LayoutDisplayPageObjectProvider<ObjectEntryFolder>
-		getLayoutDisplayPageObjectProvider(
-			InfoItemReference infoItemReference) {
+		doGetLayoutDisplayPageObjectProvider(
+			long groupId, InfoItemReference infoItemReference) {
 
 		InfoItemIdentifier infoItemIdentifier =
 			infoItemReference.getInfoItemIdentifier();
@@ -64,6 +54,16 @@ public class ObjectEntryFolderLayoutDisplayPageProvider
 
 		return new ObjectEntryFolderLayoutDisplayPageObjectProvider(
 			_infoItemFriendlyURLProvider, _language, objectEntryFolder);
+	}
+
+	@Override
+	public String getClassName() {
+		return ObjectEntryFolder.class.getName();
+	}
+
+	@Override
+	public String getDefaultURLSeparator() {
+		return FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY_FOLDER;
 	}
 
 	@Override

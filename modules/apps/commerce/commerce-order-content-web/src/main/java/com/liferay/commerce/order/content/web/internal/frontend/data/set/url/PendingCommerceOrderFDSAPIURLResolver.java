@@ -44,21 +44,38 @@ public class PendingCommerceOrderFDSAPIURLResolver
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
-		AccountEntry accountEntry = commerceContext.getAccountEntry();
-
-		if (accountEntry == null) {
-			return StringPool.BLANK;
-		}
-
-		CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
-
-		if (commerceOrder == null) {
+		if (commerceContext == null) {
 			return StringPool.BLANK;
 		}
 
 		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(
+			_commerceChannelLocalService.fetchCommerceChannel(
 				commerceContext.getCommerceChannelId());
+
+		if (commerceChannel == null) {
+			return StringPool.BLANK;
+		}
+
+		String accountExternalReferenceCode = StringPool.BLANK;
+		long accountId = 0;
+
+		AccountEntry accountEntry = commerceContext.getAccountEntry();
+
+		if (accountEntry != null) {
+			accountExternalReferenceCode =
+				accountEntry.getExternalReferenceCode();
+			accountId = accountEntry.getAccountEntryId();
+		}
+
+		long cartId = 0;
+		String externalReferenceCode = StringPool.BLANK;
+
+		CommerceOrder commerceOrder = commerceContext.getCommerceOrder();
+
+		if (commerceOrder != null) {
+			cartId = commerceOrder.getCommerceOrderId();
+			externalReferenceCode = commerceOrder.getExternalReferenceCode();
+		}
 
 		return StringUtil.replace(
 			baseURL,
@@ -68,12 +85,11 @@ public class PendingCommerceOrderFDSAPIURLResolver
 				"{externalReferenceCode}"
 			},
 			new String[] {
-				accountEntry.getExternalReferenceCode(),
-				String.valueOf(accountEntry.getAccountEntryId()),
-				String.valueOf(commerceOrder.getCommerceOrderId()),
+				accountExternalReferenceCode, String.valueOf(accountId),
+				String.valueOf(cartId),
 				commerceChannel.getExternalReferenceCode(),
-				String.valueOf(commerceContext.getCommerceChannelId()),
-				commerceOrder.getExternalReferenceCode()
+				String.valueOf(commerceChannel.getCommerceChannelId()),
+				externalReferenceCode
 			});
 	}
 

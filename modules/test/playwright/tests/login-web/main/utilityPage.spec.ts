@@ -136,7 +136,7 @@ test('LPD-6871 Render the default "Forgot Password" utility page if exists', asy
 
 	await expect(page.getByPlaceholder('Search')).toBeVisible();
 	await page.getByRole('button', {name: 'Sign In'}).click();
-	await page.getByRole('link', {name: 'Forgot Password'}).click();
+	await page.getByRole('menuitem', {name: 'Forgot Password'}).click();
 	await expect(page).toHaveTitle(title + ' - Liferay DXP');
 
 	await performLogin(page, 'test');

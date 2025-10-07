@@ -36,6 +36,12 @@ public class PatcherBuildRelLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherBuildRelLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static PatcherBuildRel addPatcherBuildRel(
+		long childPatcherBuildId, long parentPatcherBuildId) {
+
+		return getService().addPatcherBuildRel(
+			childPatcherBuildId, parentPatcherBuildId);
+	}
 
 	/**
 	 * Adds the patcher build rel to the database. Also notifies the appropriate model listeners.

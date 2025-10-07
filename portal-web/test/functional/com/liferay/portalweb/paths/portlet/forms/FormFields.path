@@ -731,6 +731,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TEXT_MULTILINE_FIELD_EXACT_MATCH</td>
+	<td>//div[@data-field-name='${key_fieldName}']//div[contains(@class,'form-group')]//textarea</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
@@ -983,7 +988,7 @@
 </tr>
 <tr>
 	<td>VALIDATION_ARGUMENT</td>
-	<td>//div[contains(@data-field-name, 'selectedValidation')]//button[@aria-labelledby='selectedValidation']</td>
+	<td>//div[contains(@data-field-name, 'selectedValidation')]//button</td>
 	<td></td>
 </tr>
 <tr>

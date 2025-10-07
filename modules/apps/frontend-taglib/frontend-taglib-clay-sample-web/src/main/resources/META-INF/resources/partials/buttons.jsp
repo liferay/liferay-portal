@@ -125,6 +125,7 @@
 		md="2"
 	>
 		<clay:button
+			aria-label="Monospaced Button"
 			displayType="secondary"
 			icon="indent-less"
 			monospaced="<%= true %>"
@@ -148,6 +149,7 @@
 		md="2"
 	>
 		<clay:button
+			aria-label="Plus Button"
 			displayType="secondary"
 			icon="plus"
 			monospaced="<%= true %>"
@@ -160,6 +162,7 @@
 		md="2"
 	>
 		<clay:button
+			aria-label="Action Button"
 			displayType="borderless"
 			icon="ellipsis-v"
 			monospaced="<%= true %>"

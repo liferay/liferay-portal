@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	MultiSelectItem,
-	MultiSelectItemChild,
-} from '@liferay/object-js-components-web';
+import {MultiSelectItem} from '@liferay/object-js-components-web';
 import {createResourceURL, fetch} from 'frontend-js-web';
 
 import {HEADERS} from '../../util/constants';
@@ -76,20 +73,6 @@ export async function getRoles() {
 	return ((await response.json()) as Roles).items;
 }
 
-export function uncheckMultiSelectItemChildrens(items: MultiSelectItem[]) {
-	return items.map((item) => {
-		return {
-			...item,
-			children: item.children.map((child) => {
-				return {
-					...child,
-					checked: false,
-				};
-			}),
-		};
-	});
-}
-
 export function getUserNotificationRoles(
 	rolesItems: Role[],
 	recipients: {roleName: string}[]
@@ -113,36 +96,4 @@ export function getUserNotificationRoles(
 	} as MultiSelectItem;
 
 	return roles;
-}
-
-export function getCheckedChildren(
-	rolesNamesList: EmailNotificationRecipients[],
-	children: MultiSelectItemChild[]
-) {
-	const rolesNames = rolesNamesList.map(({roleName}) => roleName);
-
-	return children.map((child) => {
-		return {
-			...child,
-			checked: rolesNames.includes(child.value),
-		};
-	});
-}
-
-export function handleMultiSelectRoleItemsChange(
-	itemsGroup: MultiSelectItem[]
-) {
-	const newRecipients: EmailNotificationRecipients[] = [];
-
-	if (itemsGroup.length) {
-		itemsGroup.forEach((itemGroup) => {
-			itemGroup.children.forEach((child) => {
-				if (child.checked) {
-					newRecipients.push({['roleName']: child.value});
-				}
-			});
-		});
-	}
-
-	return newRecipients;
 }

@@ -1,0 +1,254 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"dataType": "string",
+				"editorConfig": null,
+				"fieldNamespace": "",
+				"fieldReference": "content",
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"en_US": ""
+			},
+			"fieldType": "rich_text",
+			"indexType": "text",
+			"indexable": true,
+			"label": {
+				"en_US": "Content"
+			},
+			"localizable": true,
+			"name": "content",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			}
+		},
+		{
+			"customProperties": {
+				"collapsible": true,
+				"ddmStructureId": "",
+				"ddmStructureKey": "",
+				"ddmStructureLayoutId": "",
+				"externalReferenceCode": "",
+				"fieldReference": "button",
+				"labelAtStructureLevel": true,
+				"normalizedStructure": false,
+				"rows": [
+					{
+						"columns": [
+							{
+								"fields": [
+									"buttonText"
+								],
+								"size": 12
+							}
+						]
+					},
+					{
+						"columns": [
+							{
+								"fields": [
+									"buttonURL"
+								],
+								"size": 12
+							}
+						]
+					}
+				],
+				"upgradedStructure": false
+			},
+			"defaultValue": {
+				"en_US": ""
+			},
+			"fieldType": "fieldset",
+			"indexable": false,
+			"label": {
+				"en_US": "Button"
+			},
+			"localizable": false,
+			"name": "button",
+			"nestedDataDefinitionFields": [
+				{
+					"customProperties": {
+						"confirmationErrorMessage": {
+							"en_US": ""
+						},
+						"confirmationLabel": {
+							"en_US": ""
+						},
+						"dataType": "string",
+						"direction": [
+							"vertical"
+						],
+						"displayStyle": "singleline",
+						"fieldNamespace": "",
+						"fieldReference": "buttonText",
+						"hideField": false,
+						"htmlAutocompleteAttribute": "",
+						"labelAtStructureLevel": true,
+						"nativeField": false,
+						"objectFieldName": "",
+						"options": {
+						},
+						"placeholder": {
+							"en_US": ""
+						},
+						"requireConfirmation": false,
+						"requiredErrorMessage": {
+							"en_US": ""
+						},
+						"tooltip": {
+							"en_US": ""
+						},
+						"visibilityExpression": ""
+					},
+					"defaultValue": {
+						"en_US": ""
+					},
+					"fieldType": "text",
+					"indexType": "keyword",
+					"indexable": true,
+					"label": {
+						"en_US": "Button Text"
+					},
+					"localizable": true,
+					"name": "buttonText",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					}
+				},
+				{
+					"customProperties": {
+						"confirmationErrorMessage": {
+							"en_US": ""
+						},
+						"confirmationLabel": {
+							"en_US": ""
+						},
+						"dataType": "string",
+						"direction": [
+							"vertical"
+						],
+						"displayStyle": "singleline",
+						"fieldNamespace": "",
+						"fieldReference": "buttonURL",
+						"hideField": false,
+						"htmlAutocompleteAttribute": "",
+						"labelAtStructureLevel": true,
+						"nativeField": false,
+						"objectFieldName": "",
+						"options": {
+						},
+						"placeholder": {
+							"en_US": ""
+						},
+						"requireConfirmation": false,
+						"requiredErrorMessage": {
+							"en_US": ""
+						},
+						"tooltip": {
+							"en_US": ""
+						},
+						"visibilityExpression": ""
+					},
+					"defaultValue": {
+						"en_US": ""
+					},
+					"fieldType": "text",
+					"indexType": "keyword",
+					"indexable": true,
+					"label": {
+						"en_US": "Button URL"
+					},
+					"localizable": true,
+					"name": "buttonURL",
+					"nestedDataDefinitionFields": [
+					],
+					"readOnly": false,
+					"repeatable": false,
+					"required": false,
+					"showLabel": true,
+					"tip": {
+						"en_US": ""
+					}
+				}
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			}
+		}
+	],
+	"dataDefinitionKey": "ANNOUNCEMENT",
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"content"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"button"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": ""
+				},
+				"title": {
+					"en_US": ""
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+			"en_US": "Announcement"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"description": {
+	},
+	"externalReferenceCode": "a05af329-1ac7-bc3e-b251-490bae54d768",
+	"name": {
+		"en_US": "Announcement"
+	},
+	"storageType": "default"
+}

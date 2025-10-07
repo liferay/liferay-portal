@@ -53,45 +53,41 @@ public class Layout implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Layout.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The container's type (fixed or fluid)."
-	)
-	@JsonGetter("containerType")
+	@io.swagger.v3.oas.annotations.media.Schema
+	@JsonGetter("align")
 	@Valid
-	public ContainerType getContainerType() {
-		if (_containerTypeSupplier != null) {
-			containerType = _containerTypeSupplier.get();
+	public Align getAlign() {
+		if (_alignSupplier != null) {
+			align = _alignSupplier.get();
 
-			_containerTypeSupplier = null;
+			_alignSupplier = null;
 		}
 
-		return containerType;
+		return align;
 	}
 
 	@JsonIgnore
-	public String getContainerTypeAsString() {
-		ContainerType containerType = getContainerType();
+	public String getAlignAsString() {
+		Align align = getAlign();
 
-		if (containerType == null) {
+		if (align == null) {
 			return null;
 		}
 
-		return containerType.toString();
+		return align.toString();
 	}
 
-	public void setContainerType(ContainerType containerType) {
-		this.containerType = containerType;
+	public void setAlign(Align align) {
+		this.align = align;
 
-		_containerTypeSupplier = null;
+		_alignSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setContainerType(
-		UnsafeSupplier<ContainerType, Exception> containerTypeUnsafeSupplier) {
-
-		_containerTypeSupplier = () -> {
+	public void setAlign(UnsafeSupplier<Align, Exception> alignUnsafeSupplier) {
+		_alignSupplier = () -> {
 			try {
-				return containerTypeUnsafeSupplier.get();
+				return alignUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -102,12 +98,67 @@ public class Layout implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The container's type (fixed or fluid).")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected ContainerType containerType;
+	protected Align align;
 
 	@JsonIgnore
-	private Supplier<ContainerType> _containerTypeSupplier;
+	private Supplier<Align> _alignSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@JsonGetter("contentDisplay")
+	@Valid
+	public ContentDisplay getContentDisplay() {
+		if (_contentDisplaySupplier != null) {
+			contentDisplay = _contentDisplaySupplier.get();
+
+			_contentDisplaySupplier = null;
+		}
+
+		return contentDisplay;
+	}
+
+	@JsonIgnore
+	public String getContentDisplayAsString() {
+		ContentDisplay contentDisplay = getContentDisplay();
+
+		if (contentDisplay == null) {
+			return null;
+		}
+
+		return contentDisplay.toString();
+	}
+
+	public void setContentDisplay(ContentDisplay contentDisplay) {
+		this.contentDisplay = contentDisplay;
+
+		_contentDisplaySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setContentDisplay(
+		UnsafeSupplier<ContentDisplay, Exception>
+			contentDisplayUnsafeSupplier) {
+
+		_contentDisplaySupplier = () -> {
+			try {
+				return contentDisplayUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ContentDisplay contentDisplay;
+
+	@JsonIgnore
+	private Supplier<ContentDisplay> _contentDisplaySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@JsonGetter("flexWrap")
@@ -163,9 +214,61 @@ public class Layout implements Serializable {
 	@JsonIgnore
 	private Supplier<FlexWrap> _flexWrapSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The width's type (fixed or fluid)."
-	)
+	@io.swagger.v3.oas.annotations.media.Schema
+	@JsonGetter("justify")
+	@Valid
+	public Justify getJustify() {
+		if (_justifySupplier != null) {
+			justify = _justifySupplier.get();
+
+			_justifySupplier = null;
+		}
+
+		return justify;
+	}
+
+	@JsonIgnore
+	public String getJustifyAsString() {
+		Justify justify = getJustify();
+
+		if (justify == null) {
+			return null;
+		}
+
+		return justify.toString();
+	}
+
+	public void setJustify(Justify justify) {
+		this.justify = justify;
+
+		_justifySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setJustify(
+		UnsafeSupplier<Justify, Exception> justifyUnsafeSupplier) {
+
+		_justifySupplier = () -> {
+			try {
+				return justifyUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Justify justify;
+
+	@JsonIgnore
+	private Supplier<Justify> _justifySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	@JsonGetter("widthType")
 	@Valid
 	public WidthType getWidthType() {
@@ -212,7 +315,7 @@ public class Layout implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The width's type (fixed or fluid).")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected WidthType widthType;
 
@@ -246,18 +349,34 @@ public class Layout implements Serializable {
 
 		sb.append("{");
 
-		ContainerType containerType = getContainerType();
+		Align align = getAlign();
 
-		if (containerType != null) {
+		if (align != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"containerType\": ");
+			sb.append("\"align\": ");
 
 			sb.append("\"");
 
-			sb.append(containerType);
+			sb.append(align);
+
+			sb.append("\"");
+		}
+
+		ContentDisplay contentDisplay = getContentDisplay();
+
+		if (contentDisplay != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"contentDisplay\": ");
+
+			sb.append("\"");
+
+			sb.append(contentDisplay);
 
 			sb.append("\"");
 		}
@@ -274,6 +393,22 @@ public class Layout implements Serializable {
 			sb.append("\"");
 
 			sb.append(flexWrap);
+
+			sb.append("\"");
+		}
+
+		Justify justify = getJustify();
+
+		if (justify != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"justify\": ");
+
+			sb.append("\"");
+
+			sb.append(justify);
 
 			sb.append("\"");
 		}
@@ -306,20 +441,21 @@ public class Layout implements Serializable {
 	)
 	public String xClassName;
 
-	@GraphQLName("ContainerType")
-	public static enum ContainerType {
+	@GraphQLName("Align")
+	public static enum Align {
 
-		FIXED("Fixed"), FLUID("Fluid");
+		BASELINE("Baseline"), CENTER("Center"), END("End"), NONE("None"),
+		START("Start"), STRETCH("Stretch");
 
 		@JsonCreator
-		public static ContainerType create(String value) {
+		public static Align create(String value) {
 			if ((value == null) || value.equals("")) {
 				return null;
 			}
 
-			for (ContainerType containerType : values()) {
-				if (Objects.equals(containerType.getValue(), value)) {
-					return containerType;
+			for (Align align : values()) {
+				if (Objects.equals(align.getValue(), value)) {
+					return align;
 				}
 			}
 
@@ -336,7 +472,45 @@ public class Layout implements Serializable {
 			return _value;
 		}
 
-		private ContainerType(String value) {
+		private Align(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
+	@GraphQLName("ContentDisplay")
+	public static enum ContentDisplay {
+
+		BLOCK("Block"), FLEX_COLUMN("FlexColumn"), FLEX_ROW("FlexRow");
+
+		@JsonCreator
+		public static ContentDisplay create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (ContentDisplay contentDisplay : values()) {
+				if (Objects.equals(contentDisplay.getValue(), value)) {
+					return contentDisplay;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private ContentDisplay(String value) {
 			_value = value;
 		}
 
@@ -375,6 +549,45 @@ public class Layout implements Serializable {
 		}
 
 		private FlexWrap(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
+	@GraphQLName("Justify")
+	public static enum Justify {
+
+		CENTER("Center"), END("End"), NONE("None"), SPACE_AROUND("SpaceAround"),
+		SPACE_BETWEEN("SpaceBetween"), START("Start");
+
+		@JsonCreator
+		public static Justify create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Justify justify : values()) {
+				if (Objects.equals(justify.getValue(), value)) {
+					return justify;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Justify(String value) {
 			_value = value;
 		}
 

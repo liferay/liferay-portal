@@ -19,6 +19,8 @@ import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriteri
 import com.liferay.object.configuration.ObjectConfiguration;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
+import com.liferay.object.field.attachment.AttachmentManager;
+import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -37,7 +39,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -68,8 +69,16 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
-		int maximumFileSize = _getMaximumFileSize(
-			ddmFormField, ddmFormFieldRenderingContext.getHttpServletRequest());
+		HttpServletRequest httpServletRequest =
+			ddmFormFieldRenderingContext.getHttpServletRequest();
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		long maximumFileSize = _attachmentManager.getMaximumFileSize(
+			GetterUtil.getLong(ddmFormField.getProperty("objectFieldId")),
+			themeDisplay.isSignedIn());
 
 		Map<String, Object> parameters = HashMapBuilder.<String, Object>put(
 			"acceptedFileExtensions",
@@ -86,7 +95,7 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 
 				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 					RequestBackedPortletURLFactoryUtil.create(
-						ddmFormFieldRenderingContext.getHttpServletRequest());
+						httpServletRequest);
 
 				return PortletURLBuilder.create(
 					requestBackedPortletURLFactory.createActionURL(
@@ -101,19 +110,24 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 		).put(
 			"maximumFileSize", maximumFileSize
 		).put(
+			"objectFieldId",
+			GetterUtil.getLong(ddmFormField.getProperty("objectFieldId"))
+		).put(
 			"overallMaximumUploadRequestSize",
 			_uploadServletRequestConfigurationProvider.getMaxSize()
 		).put(
 			"tip",
 			_language.format(
-				ddmFormFieldRenderingContext.getLocale(),
-				"upload-a-x-no-larger-than-x-mb",
+				themeDisplay.getLocale(), "upload-a-x-no-larger-than-x",
 				new Object[] {
 					ddmFormField.getProperty("acceptedFileExtensions"),
-					maximumFileSize
+					_language.formatStorageSize(
+						maximumFileSize, themeDisplay.getLocale())
 				})
 		).put(
-			"url", _getURL(ddmFormField, ddmFormFieldRenderingContext)
+			"url",
+			_getURL(
+				ddmFormField, ddmFormFieldRenderingContext, httpServletRequest)
 		).build();
 
 		if (FeatureFlagManagerUtil.isEnabled("LPD-32050")) {
@@ -124,7 +138,7 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 				"fileEntryProperties",
 				_getFileEntryProperties(
 					ddmFormField, ddmFormFieldRenderingContext,
-					localizedObjectField));
+					localizedObjectField, themeDisplay));
 			parameters.put("localizedObjectField", localizedObjectField);
 			parameters.put(
 				"value",
@@ -140,8 +154,7 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 		else {
 			parameters.putAll(
 				_getFileEntryProperties(
-					ddmFormField,
-					ddmFormFieldRenderingContext.getHttpServletRequest(),
+					ddmFormField, themeDisplay,
 					GetterUtil.getLong(
 						ddmFormFieldRenderingContext.getValue())));
 		}
@@ -159,7 +172,7 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 	private Object _getFileEntryProperties(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
-		boolean localizedObjectField) {
+		boolean localizedObjectField, ThemeDisplay themeDisplay) {
 
 		if (localizedObjectField) {
 			JSONObject localizedValueJSONObject =
@@ -173,8 +186,7 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 				localizedValue.put(
 					entry.getKey(),
 					_getFileEntryProperties(
-						ddmFormField,
-						ddmFormFieldRenderingContext.getHttpServletRequest(),
+						ddmFormField, themeDisplay,
 						GetterUtil.getLong(entry.getValue())));
 			}
 
@@ -182,20 +194,15 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 		}
 
 		return _getFileEntryProperties(
-			ddmFormField, ddmFormFieldRenderingContext.getHttpServletRequest(),
+			ddmFormField, themeDisplay,
 			GetterUtil.getLong(ddmFormFieldRenderingContext.getValue()));
 	}
 
 	private Map<String, String> _getFileEntryProperties(
-		DDMFormField ddmFormField, HttpServletRequest httpServletRequest,
-		long value) {
+		DDMFormField ddmFormField, ThemeDisplay themeDisplay, long value) {
 
 		try {
 			FileEntry fileEntry = _dlAppLocalService.getFileEntry(value);
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
 
 			return HashMapBuilder.put(
 				"contentURL",
@@ -207,22 +214,16 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 						return url;
 					}
 
-					url = _dlURLHelper.getDownloadURL(
-						fileEntry, fileEntry.getFileVersion(), themeDisplay,
-						StringPool.BLANK);
-
-					url = HttpComponentsUtil.addParameter(
-						url, "objectDefinitionExternalReferenceCode",
+					return ObjectFieldUtil.getAttachmentDownloadURL(
+						_dlURLHelper, fileEntry,
+						GetterUtil.getLong(ddmFormField.getProperty("groupId")),
 						GetterUtil.getString(
 							ddmFormField.getProperty(
-								"objectDefinitionExternalReferenceCode")));
-					url = HttpComponentsUtil.addParameter(
-						url, "objectEntryExternalReferenceCode",
+								"objectDefinitionExternalReferenceCode")),
 						GetterUtil.getString(
 							ddmFormField.getProperty(
-								"objectEntryExternalReferenceCode")));
-
-					return url;
+								"objectEntryExternalReferenceCode")),
+						themeDisplay);
 				}
 			).put(
 				"title", fileEntry.getFileName()
@@ -239,7 +240,8 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 
 	private long _getGroupId(
 		DDMFormField ddmFormField,
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
+		HttpServletRequest httpServletRequest) {
 
 		if (GetterUtil.getBoolean(ddmFormField.getProperty("groupAware"))) {
 			long groupId = GetterUtil.getLong(
@@ -249,9 +251,6 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 				return groupId;
 			}
 		}
-
-		HttpServletRequest httpServletRequest =
-			ddmFormFieldRenderingContext.getHttpServletRequest();
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -278,29 +277,10 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 				fileItemSelectorCriterion));
 	}
 
-	private int _getMaximumFileSize(
-		DDMFormField ddmFormField, HttpServletRequest httpServletRequest) {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		int maximumFileSize = GetterUtil.getInteger(
-			ddmFormField.getProperty("maximumFileSize"));
-
-		if (themeDisplay.isSignedIn() ||
-			(maximumFileSize <
-				_objectConfiguration.maximumFileSizeForGuestUsers())) {
-
-			return maximumFileSize;
-		}
-
-		return _objectConfiguration.maximumFileSizeForGuestUsers();
-	}
-
 	private String _getURL(
 		DDMFormField ddmFormField,
-		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
+		HttpServletRequest httpServletRequest) {
 
 		String url = GetterUtil.getString(ddmFormField.getProperty("url"));
 
@@ -312,12 +292,13 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 			ddmFormField.getProperty("fileSource"));
 
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				ddmFormFieldRenderingContext.getHttpServletRequest());
+			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
 
 		if (Objects.equals(fileSource, "documentsAndMedia")) {
 			return _getItemSelectorURL(
-				_getGroupId(ddmFormField, ddmFormFieldRenderingContext),
+				_getGroupId(
+					ddmFormField, ddmFormFieldRenderingContext,
+					httpServletRequest),
 				ddmFormFieldRenderingContext.getPortletNamespace(),
 				requestBackedPortletURLFactory);
 		}
@@ -350,6 +331,9 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AttachmentDDMFormFieldTemplateContextContributor.class);
+
+	@Reference
+	private AttachmentManager _attachmentManager;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

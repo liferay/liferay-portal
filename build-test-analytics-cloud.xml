@@ -11,6 +11,8 @@
 					<echo>Skipping build-analytics-cloud-images due to staging</echo>
 				</then>
 				<else>
+					<lstopwatch action="start" name="build-analytics-cloud-asah-images" />
+
 					<loadproperties srcfile="${project.dir}/.gradle/gradle.properties" />
 
 					<echo append="true" file="${analytics.cloud.asah.dir}/gradle.properties">&#10;systemProp.repository.private.password=${systemProp.repository.private.password}</echo>
@@ -31,7 +33,7 @@
 								analytics.cloud.repository.dir="${analytics.cloud.asah.dir}"
 							/>
 
-							<execute-analytics-cloud dir="${analytics.cloud.asah.dir}" timeout="600000">
+							<execute-analytics-cloud dir="${analytics.cloud.asah.dir}" timeout="${analytics.cloud.asah.timeout}">
 								./gradlew jar -Dliferay.ci=true
 
 								./gradlew clean assemble -Dliferay.ci=true
@@ -96,6 +98,10 @@
 							</execute>
 						</else>
 					</if>
+
+					<lstopwatch action="total" name="build-analytics-cloud-asah-images" />
+
+					<lstopwatch action="start" name="build-analytics-cloud-faro-images" />
 
 					<if>
 						<available file="${project.dir}/dist/liferay-docker-faro.tar" />
@@ -186,7 +192,7 @@
 								replace="\1"
 							/>
 
-							<execute-analytics-cloud dir="${analytics.cloud.faro.dir}" timeout="600000">
+							<execute-analytics-cloud dir="${analytics.cloud.faro.dir}" timeout="${analytics.cloud.faro.timeout}">
 								${portal.gradlew} prepareAppDockerImageInputDir -Pcom.liferay.osb.faro.environment.name=local -Dliferay.ci=true
 
 								cp -R ${app.server.parent.dir} ./build/docker/bundles
@@ -207,6 +213,8 @@
 							</execute-analytics-cloud>
 						</else>
 					</if>
+
+					<lstopwatch action="total" name="build-analytics-cloud-faro-images" />
 				</else>
 			</if>
 		</sequential>
@@ -802,11 +810,11 @@ OSB_FARO_FRONTEND_URL=${analytics.cloud.faro.frontend.url}</echo>
 
 										docker system prune --volumes -f
 
-										docker-compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} up --detach --scale osbfarofrontend=0
+										docker compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} up --detach --scale osbfarofrontend=0
 
 										sleep 30
 
-										docker-compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} up --detach osbfarofrontend
+										docker compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} up --detach osbfarofrontend
 
 										while [[ -n $(docker ps | grep "health: starting") ]] || [[ -n $(docker ps | grep "unhealthy") ]]
 										do
@@ -895,7 +903,7 @@ networks:
 			/>
 
 			<execute dir="${analytics.cloud.asah.dir}">
-				docker-compose -f docker-compose.integration-test.yml up -d
+				docker compose -f docker-compose.integration-test.yml up -d
 
 				docker ps
 			</execute>
@@ -972,7 +980,7 @@ if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 
 						touch local.env
 
-						docker-compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} down --volumes
+						docker compose --file=${analytics.cloud.docker.test.yaml} --project-name=${analytics.cloud.project.name} down --volumes
 
 						docker system df
 					</execute>
@@ -988,7 +996,7 @@ if (Os.isFamily(Os.FAMILY_WINDOWS)) {
 			<execute dir="${analytics.cloud.asah.dir}">
 				docker ps -a
 
-				docker-compose -f docker-compose.integration-test.yml down --volumes
+				docker compose -f docker-compose.integration-test.yml down --volumes
 
 				docker system df
 			</execute>

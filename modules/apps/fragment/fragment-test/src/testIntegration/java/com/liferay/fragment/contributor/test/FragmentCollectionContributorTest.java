@@ -16,7 +16,6 @@ import com.liferay.fragment.service.FragmentEntryLocalServiceUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -129,8 +128,8 @@ public class FragmentCollectionContributorTest {
 			Assert.assertEquals(
 				modifiedHtml, persistedFragmentEntryLink.getHtml());
 
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				persistedFragmentEntryLink.getEditableValues());
+			JSONObject jsonObject =
+				persistedFragmentEntryLink.getEditableValuesJSONObject();
 
 			JSONObject editableFragmentEntryProcessorJSONObject =
 				jsonObject.getJSONObject(

@@ -1936,6 +1936,16 @@ public class SavedContentEntryPersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2300,6 +2310,16 @@ public class SavedContentEntryPersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SavedContentEntry> savedContentEntries = findByGroupId(
+				groupId);
+
+			savedContentEntries = InlineSQLHelperUtil.filter(
+				savedContentEntries, groupId);
+
+			return savedContentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3374,6 +3394,16 @@ public class SavedContentEntryPersistenceImpl
 			return findByG_U(groupId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_U(
+					groupId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3757,6 +3787,16 @@ public class SavedContentEntryPersistenceImpl
 	public int filterCountByG_U(long groupId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_U(groupId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SavedContentEntry> savedContentEntries = findByG_U(
+				groupId, userId);
+
+			savedContentEntries = InlineSQLHelperUtil.filter(
+				savedContentEntries, groupId);
+
+			return savedContentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -4335,6 +4375,16 @@ public class SavedContentEntryPersistenceImpl
 				groupId, classNameId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_CN(
+					groupId, classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4719,6 +4769,16 @@ public class SavedContentEntryPersistenceImpl
 	public int filterCountByG_CN(long groupId, long classNameId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_CN(groupId, classNameId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SavedContentEntry> savedContentEntries = findByG_CN(
+				groupId, classNameId);
+
+			savedContentEntries = InlineSQLHelperUtil.filter(
+				savedContentEntries, groupId);
+
+			return savedContentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5884,6 +5944,16 @@ public class SavedContentEntryPersistenceImpl
 				groupId, classNameId, classPK, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_C(
+					groupId, classNameId, classPK, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -6288,6 +6358,16 @@ public class SavedContentEntryPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_C(groupId, classNameId, classPK);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<SavedContentEntry> savedContentEntries = findByG_C_C(
+				groupId, classNameId, classPK);
+
+			savedContentEntries = InlineSQLHelperUtil.filter(
+				savedContentEntries, groupId);
+
+			return savedContentEntries.size();
 		}
 
 		StringBundler sb = new StringBundler(4);

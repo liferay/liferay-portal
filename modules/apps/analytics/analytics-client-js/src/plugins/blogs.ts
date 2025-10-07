@@ -35,10 +35,10 @@ function getBlogPayload({dataset}: AnalyticsType.HTMLElement) {
 		Object.assign(payload, {type: dataset.analyticsAssetType.trim()});
 	}
 
-	if (dataset.analyticsAssetExternalReferenceCode) {
+	if (dataset.analyticsExternalReferenceCode) {
 		Object.assign(payload, {
 			externalReferenceCode:
-				dataset.analyticsAssetExternalReferenceCode.trim(),
+				dataset.analyticsExternalReferenceCode.trim(),
 		});
 	}
 

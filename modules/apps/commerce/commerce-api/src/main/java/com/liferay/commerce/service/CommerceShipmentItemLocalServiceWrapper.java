@@ -581,6 +581,12 @@ public class CommerceShipmentItemLocalServiceWrapper
 			primaryKeyObj);
 	}
 
+	@Override
+	public int getValidCommerceShipmentItemsCount(long commerceShipmentId) {
+		return _commerceShipmentItemLocalService.
+			getValidCommerceShipmentItemsCount(commerceShipmentId);
+	}
+
 	/**
 	 * Updates the commerce shipment item in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

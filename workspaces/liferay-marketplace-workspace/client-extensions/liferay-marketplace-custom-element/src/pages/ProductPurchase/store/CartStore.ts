@@ -5,7 +5,7 @@
 
 import {createStore} from '@xstate/store';
 
-import headlessCommerceDeliveryCart from '../../../services/rest/HeadlessCommerceDeliveryCart';
+import HeadlessCommerceDeliveryCart from '../../../services/rest/HeadlessCommerceDeliveryCart';
 
 const context = {
 	cart: {} as Cart,
@@ -47,7 +47,7 @@ export const cartStore = createStore({
 });
 
 cartStore.on('update:cart-items', async ({cartId, cartItems}) => {
-	const cart = await headlessCommerceDeliveryCart.updateCart(cartId, {
+	const cart = await HeadlessCommerceDeliveryCart.updateCart(cartId, {
 		cartItems,
 	});
 

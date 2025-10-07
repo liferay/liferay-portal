@@ -16,6 +16,8 @@ import com.liferay.analytics.reports.rest.resource.v1_0.AssetMetricResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -335,6 +337,10 @@ public class Query {
 		assetAppearsOnHistogramMetricResource.setContextUser(_user);
 		assetAppearsOnHistogramMetricResource.setGroupLocalService(
 			_groupLocalService);
+		assetAppearsOnHistogramMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		assetAppearsOnHistogramMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		assetAppearsOnHistogramMetricResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -352,6 +358,10 @@ public class Query {
 		assetDeviceMetricResource.setContextUriInfo(_uriInfo);
 		assetDeviceMetricResource.setContextUser(_user);
 		assetDeviceMetricResource.setGroupLocalService(_groupLocalService);
+		assetDeviceMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		assetDeviceMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		assetDeviceMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -368,6 +378,10 @@ public class Query {
 		assetHistogramMetricResource.setContextUriInfo(_uriInfo);
 		assetHistogramMetricResource.setContextUser(_user);
 		assetHistogramMetricResource.setGroupLocalService(_groupLocalService);
+		assetHistogramMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		assetHistogramMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		assetHistogramMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -382,6 +396,10 @@ public class Query {
 		assetMetricResource.setContextUriInfo(_uriInfo);
 		assetMetricResource.setContextUser(_user);
 		assetMetricResource.setGroupLocalService(_groupLocalService);
+		assetMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		assetMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		assetMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -403,6 +421,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

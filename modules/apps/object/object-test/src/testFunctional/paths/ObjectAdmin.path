@@ -452,7 +452,7 @@
 	</tr>
 	<tr>
 		<td>KEBAB_MENU_OPTION</td>
-		<td>//*[@class='dropdown-menu show']//*[(@class='dropdown-item' and @role='menuitem') and contains(text(),'${key_kebabOption}')]</td>
+		<td>//button[@role='menuitem' and contains(normalize-space(.), '${key_kebabOption}')]</td>
 		<td></td>
 	</tr>
 	<tr>

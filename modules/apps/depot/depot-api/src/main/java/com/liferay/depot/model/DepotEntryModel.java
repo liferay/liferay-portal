@@ -231,6 +231,20 @@ public interface DepotEntryModel
 	@Override
 	public void setModifiedDate(Date modifiedDate);
 
+	/**
+	 * Returns the type of this depot entry.
+	 *
+	 * @return the type of this depot entry
+	 */
+	public int getType();
+
+	/**
+	 * Sets the type of this depot entry.
+	 *
+	 * @param type the type of this depot entry
+	 */
+	public void setType(int type);
+
 	@Override
 	public DepotEntry cloneWithOriginalValues();
 

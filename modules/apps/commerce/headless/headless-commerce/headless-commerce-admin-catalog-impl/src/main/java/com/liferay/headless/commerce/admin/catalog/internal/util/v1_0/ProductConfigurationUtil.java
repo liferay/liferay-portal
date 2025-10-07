@@ -10,6 +10,7 @@ import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -29,7 +30,7 @@ public class ProductConfigurationUtil {
 		String defaultAllowedOrderQuantities) {
 
 		if (allowedOrderQuantities != null) {
-			return StringUtil.merge(allowedOrderQuantities);
+			return StringUtil.merge(allowedOrderQuantities, StringPool.SPACE);
 		}
 
 		if (Validator.isNull(defaultAllowedOrderQuantities)) {

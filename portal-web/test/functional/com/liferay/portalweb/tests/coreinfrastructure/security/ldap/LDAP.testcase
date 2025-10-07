@@ -29,7 +29,7 @@ definition {
 	@priority = 3
 	test AssertLDAPCredentialsDoesNotExposeInURL {
 		property apacheds.multiple.users.enabled = "true";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -184,7 +184,7 @@ definition {
 		property app.server.types = "tomcat";
 		property database.types = "db2,hypersonic,mariadb,mysql,oracle,postgresql,sqlserver";
 		property environment.acceptance = "false";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

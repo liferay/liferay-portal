@@ -60,6 +60,7 @@ export function RightSidebarObjectFieldDetails() {
 			forbiddenLastChars,
 			forbiddenNames,
 			initialValues: objectFieldInitialValues,
+			objectFields: objectDefinitionNodeData.objectFields,
 			onSubmit: () => {},
 		});
 
@@ -212,9 +213,7 @@ export function RightSidebarObjectFieldDetails() {
 							isRootDescendantNode={isRootDescendantNode}
 							learnResources={learnResourceContext}
 							modelBuilder
-							objectDefinitionExternalReferenceCode={
-								objectDefinitionNodeData.externalReferenceCode
-							}
+							objectDefinition={objectDefinitionNodeData}
 							objectFieldId={selectedObjectField.id}
 							onSubmit={onSubmit}
 							readOnly={

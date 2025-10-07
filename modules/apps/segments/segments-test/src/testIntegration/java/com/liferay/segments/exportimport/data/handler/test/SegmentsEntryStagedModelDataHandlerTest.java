@@ -48,7 +48,6 @@ import com.liferay.segments.test.util.SegmentsTestUtil;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -80,22 +79,6 @@ public class SegmentsEntryStagedModelDataHandlerTest
 			(StagedModelRepository<StagedExpandoColumn>)
 				StagedModelRepositoryRegistryUtil.getStagedModelRepository(
 					StagedExpandoColumn.class.getName());
-	}
-
-	@After
-	@Override
-	public void tearDown() throws Exception {
-		super.tearDown();
-
-		if (_importedSegmentsEntry != null) {
-			_segmentsEntryLocalService.deleteSegmentsEntry(
-				_importedSegmentsEntry.getSegmentsEntryId());
-		}
-
-		if (_segmentsEntry != null) {
-			_segmentsEntryLocalService.deleteSegmentsEntry(
-				_segmentsEntry.getSegmentsEntryId());
-		}
 	}
 
 	@Test

@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<GroupPagesPortletDataHandler self-path="/group/35791/portlet/com_liferay_layout_admin_web_portlet_GroupPagesPortlet/35791/portlet-data.xml" group-id="35791">
+	<LayoutUtilityPageEntry>
+		<staged-model group-id="35791" uuid="2e42f8ff-66fc-ed11-9b27-b8bcdd375838" path="/group/35791/com.liferay.layout.utility.page.model.LayoutUtilityPageEntry/35827.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.portal.kernel.model.Layout" class-pk="101" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="49c233a2-9cc4-57b3-80f4-1144dac33c0c" company-id="27744324501275" layout-id="4" private-layout="false" missing="false"/>
+				<reference class-name="com.liferay.portal.kernel.model.Layout" class-pk="100" attached-class-name="" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="0080f74f-f640-35e4-957a-ed420b7cc314" company-id="27744324501275" layout-id="3" private-layout="false" missing="false"/>
+			</references>
+		</staged-model>
+	</LayoutUtilityPageEntry>
+	<Layout>
+		<staged-model group-id="35791" uuid="49c233a2-9cc4-57b3-80f4-1144dac33c0c" layout-uuid="49c233a2-9cc4-57b3-80f4-1144dac33c0c" layout-id="4" layout-parent-layout-id="0" layout-priority="2147483647" action="add" path="/group/35791/com.liferay.portal.kernel.model.Layout/101.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.portal.kernel.model.LayoutFriendlyURL" class-pk="35838" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="7c64f218-976f-aa1c-33e6-68a4a82b5cc5" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="35840" attached-class-name="com.liferay.portal.kernel.model.Layout-false" type="dependency" uuid="8f437a2a-1952-52ed-3fff-efd5da506364" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.layout.seo.model.LayoutSEOSite" class-pk="35793" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="5d19d045-e414-86e3-9a4c-6d3c6424ca3d" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.layout.page.template.model.LayoutPageTemplateStructure" class-pk="35849" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="e8535edc-bde4-ae11-fe09-b8e0933614e0" company-id="27744324501275" missing="false"/>
+			</references>
+			<portlets/>
+		</staged-model>
+		<staged-model group-id="35791" uuid="0080f74f-f640-35e4-957a-ed420b7cc314" layout-uuid="0080f74f-f640-35e4-957a-ed420b7cc314" layout-id="3" layout-parent-layout-id="0" layout-priority="2147483647" action="add" draft-layout-uuid="49c233a2-9cc4-57b3-80f4-1144dac33c0c" draft-layout-id="4" draft-layout-plid="101" path="/group/35791/com.liferay.portal.kernel.model.Layout/100.xml" attached-class-name="" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.portal.kernel.model.Layout" class-pk="101" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="parent" uuid="49c233a2-9cc4-57b3-80f4-1144dac33c0c" company-id="27744324501275" layout-id="4" private-layout="false" missing="false"/>
+				<reference class-name="com.liferay.portal.kernel.model.LayoutFriendlyURL" class-pk="35831" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="a1a6a09d-1d1d-05c2-5d18-507346f4345a" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.friendly.url.model.FriendlyURLEntry" class-pk="35833" attached-class-name="com.liferay.portal.kernel.model.Layout-false" type="dependency" uuid="8c784d19-c901-d371-1ca3-7cd0c49d639c" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.layout.seo.model.LayoutSEOSite" class-pk="35793" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="5d19d045-e414-86e3-9a4c-6d3c6424ca3d" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.layout.page.template.model.LayoutPageTemplateStructure" class-pk="35858" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="1b00720c-6c5c-6aaa-e7ea-847b27f859da" company-id="27744324501275" missing="false"/>
+			</references>
+			<portlets/>
+		</staged-model>
+	</Layout>
+	<LayoutFriendlyURL>
+		<staged-model group-id="35791" uuid="7c64f218-976f-aa1c-33e6-68a4a82b5cc5" path="/group/35791/com.liferay.portal.kernel.model.LayoutFriendlyURL/35838.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="a1a6a09d-1d1d-05c2-5d18-507346f4345a" path="/group/35791/com.liferay.portal.kernel.model.LayoutFriendlyURL/35831.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+	</LayoutFriendlyURL>
+	<FriendlyURLEntry>
+		<staged-model uuid="8f437a2a-1952-52ed-3fff-efd5da506364" resource-class-name="com.liferay.portal.kernel.model.Layout-false" mainEntry="true" path="/company/27744324501275/com.liferay.friendly.url.model.FriendlyURLEntry/35840.xml" attached-class-name="com.liferay.portal.kernel.model.Layout-false" asset-entry-priority="0.0"/>
+		<staged-model uuid="8c784d19-c901-d371-1ca3-7cd0c49d639c" resource-class-name="com.liferay.portal.kernel.model.Layout-false" mainEntry="true" path="/company/27744324501275/com.liferay.friendly.url.model.FriendlyURLEntry/35833.xml" attached-class-name="com.liferay.portal.kernel.model.Layout-false" asset-entry-priority="0.0"/>
+	</FriendlyURLEntry>
+	<LayoutSEOSite>
+		<staged-model group-id="35791" uuid="5d19d045-e414-86e3-9a4c-6d3c6424ca3d" path="/company/27744324501275/com.liferay.layout.seo.model.LayoutSEOSite/35793.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+	</LayoutSEOSite>
+	<LayoutPageTemplateStructure>
+		<staged-model group-id="35791" uuid="e8535edc-bde4-ae11-fe09-b8e0933614e0" path="/company/27744324501275/com.liferay.layout.page.template.model.LayoutPageTemplateStructure/35849.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel" class-pk="35850" group-id="35791" group-key="Site Name" live-group-id="35791" type="child" uuid="e4aecfe8-1bc4-e0c6-5b89-dc40d30b6b00" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="35791" uuid="1b00720c-6c5c-6aaa-e7ea-847b27f859da" path="/company/27744324501275/com.liferay.layout.page.template.model.LayoutPageTemplateStructure/35858.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel" class-pk="35859" group-id="35791" group-key="Site Name" live-group-id="35791" type="child" uuid="6f7c7b11-ee16-d300-7099-78ab915264fb" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+	</LayoutPageTemplateStructure>
+	<LayoutPageTemplateStructureRel>
+		<staged-model group-id="35791" uuid="e4aecfe8-1bc4-e0c6-5b89-dc40d30b6b00" path="/group/35791/com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel/35850.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.segments.model.SegmentsExperience" class-pk="35835" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="d1fb2242-72c4-0d9b-d53c-2443681b83c0" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35842" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="97f647a2-d6fd-dd9d-bfe1-d9ef838fc658" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35845" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="82190c56-256a-f065-6620-1f2b52e80f82" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35843" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="7b750703-d79c-4f0b-f7cd-496c5c252aa4" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35846" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="a8b0e9b3-ba1d-5a8b-b36a-e9b7e4825a2d" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35844" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="dc9abf34-1833-fa4d-a12e-4438ba45e9e2" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="35791" uuid="6f7c7b11-ee16-d300-7099-78ab915264fb" path="/group/35791/com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel/35859.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.segments.model.SegmentsExperience" class-pk="35828" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="ec06329e-c5e0-c731-152b-8c2df01b6469" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35851" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="b7d3d32d-ed8a-32eb-0ada-3993346ab66a" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35854" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="b2c75b9f-d73d-d3e5-117d-245e32ed7d6e" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35852" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="fa5c7e46-666c-6f88-d6e7-dff13b782132" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35855" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="5489890b-2e11-bed9-0fee-928e51455a20" company-id="27744324501275" missing="false"/>
+				<reference class-name="com.liferay.fragment.model.FragmentEntryLink" class-pk="35853" attached-class-name="com.liferay.portal.kernel.model.Layout" group-id="35791" group-key="Site Name" live-group-id="35791" type="dependency" uuid="f4fabacd-7964-2093-764e-777e67afbc1c" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+	</LayoutPageTemplateStructureRel>
+	<SegmentsExperience>
+		<staged-model group-id="35791" uuid="d1fb2242-72c4-0d9b-d53c-2443681b83c0" path="/group/35791/com.liferay.segments.model.SegmentsExperience/35835.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="ec06329e-c5e0-c731-152b-8c2df01b6469" path="/group/35791/com.liferay.segments.model.SegmentsExperience/35828.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+	</SegmentsExperience>
+	<FragmentEntryLink>
+		<staged-model group-id="35791" uuid="97f647a2-d6fd-dd9d-bfe1-d9ef838fc658" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35842.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="82190c56-256a-f065-6620-1f2b52e80f82" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35845.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="7b750703-d79c-4f0b-f7cd-496c5c252aa4" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35843.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="a8b0e9b3-ba1d-5a8b-b36a-e9b7e4825a2d" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35846.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="dc9abf34-1833-fa4d-a12e-4438ba45e9e2" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35844.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="b7d3d32d-ed8a-32eb-0ada-3993346ab66a" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35851.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="b2c75b9f-d73d-d3e5-117d-245e32ed7d6e" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35854.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="fa5c7e46-666c-6f88-d6e7-dff13b782132" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35852.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="5489890b-2e11-bed9-0fee-928e51455a20" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35855.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+		<staged-model group-id="35791" uuid="f4fabacd-7964-2093-764e-777e67afbc1c" path="/group/35791/com.liferay.fragment.model.FragmentEntryLink/35853.xml" attached-class-name="com.liferay.portal.kernel.model.Layout" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0"/>
+	</FragmentEntryLink>
+</GroupPagesPortletDataHandler>

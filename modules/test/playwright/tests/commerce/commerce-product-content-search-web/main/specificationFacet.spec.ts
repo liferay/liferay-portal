@@ -34,7 +34,6 @@ test(
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: getRandomString(),
 			siteGroupId: site.id,
 		});
 
@@ -157,7 +156,6 @@ test(
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: getRandomString(),
 			siteGroupId: site.id,
 		});
 
@@ -305,7 +303,6 @@ test(
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: getRandomString(),
 			siteGroupId: site.id,
 		});
 

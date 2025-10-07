@@ -331,12 +331,12 @@ public class AccountRoleLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static AccountRole getOrAddIncompleteAccountRole(
+	public static AccountRole getOrAddEmptyAccountRole(
 			String externalReferenceCode, long companyId, long userId,
 			long accountEntryId, String name)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteAccountRole(
+		return getService().getOrAddEmptyAccountRole(
 			externalReferenceCode, companyId, userId, accountEntryId, name);
 	}
 

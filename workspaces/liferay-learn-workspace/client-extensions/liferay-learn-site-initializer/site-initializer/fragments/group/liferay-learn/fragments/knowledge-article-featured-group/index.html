@@ -1,0 +1,83 @@
+[#setting url_escaping_charset='UTF-8']
+
+<div class="article-section-container">
+	<div class="article-section-banner">
+		<div class="article-section-banner-title" data-lfr-editable-id="banner-title" data-lfr-editable-type="text">
+		</div>
+
+		<div class="article-section-banner-image">
+			<svg fill="none" height="80" viewBox="0 0 253 80" width="253" xmlns="http://www.w3.org/2000/svg">
+				<g clip-path="url(#clip0_1740_6367)">
+					<path d="M56.6089 49.1652C-8.67365 117.432 -24.2892 220.123 56.1881 303.619C136.665 387.116 232.222 337.998 294.238 273.147C359.521 204.881 353.535 99.3754 285.02 33.8534C216.505 -31.6687 121.891 -19.1012 56.6089 49.1652Z" fill="url(#paint0_linear_1740_6367)" />
+					<path d="M339.71 43.5945C255.985 -80.0316 100.828 -35.6328 64.6676 37.3855C27.0151 113.425 73.6868 296.88 172.313 355.502C294.233 427.969 423.575 167.419 339.71 43.5903L339.71 43.5945Z" fill="url(#paint1_linear_1740_6367)" />
+				</g>
+
+				<defs>
+					<linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1740_6367" x1="-4.87692" x2="179.537" y1="-15.5409" y2="177.968">
+						<stop stop-color="white" stop-opacity="0.7" />
+						<stop offset="0.11" stop-color="white" stop-opacity="0.55" />
+						<stop offset="0.25" stop-color="white" stop-opacity="0.38" />
+						<stop offset="0.39" stop-color="white" stop-opacity="0.24" />
+						<stop offset="0.53" stop-color="white" stop-opacity="0.14" />
+						<stop offset="0.67" stop-color="white" stop-opacity="0.06" />
+						<stop offset="0.81" stop-color="white" stop-opacity="0.01" />
+						<stop offset="0.96" stop-color="white" stop-opacity="0" />
+					</linearGradient>
+
+					<linearGradient gradientUnits="userSpaceOnUse" id="paint1_linear_1740_6367" x1="72.4602" x2="313.899" y1="-150.435" y2="358.691">
+						<stop stop-color="white" stop-opacity="0.25" />
+						<stop offset="0.52" stop-color="white" stop-opacity="0.08" />
+						<stop offset="0.81" stop-color="white" stop-opacity="0" />
+					</linearGradient>
+
+					<clipPath id="clip0_1740_6367">
+						<rect fill="white" height="283.824" transform="translate(0.117676 -85.9308) rotate(-0.596045)" width="283.824" />
+					</clipPath>
+				</defs>
+			</svg>
+		</div>
+	</div>
+
+	<div>
+		[#if configuration.mostRecentArticleGroup]
+			[#assign
+				queryParams = {
+					"fields": "description,id,title",
+					"filter": "(status eq 0) and (title ne '')",
+					"page": "1",
+					"pageSize": "5",
+					"sort": "dateModified:desc"
+				}
+				queryParts = []
+			/]
+
+			[#list queryParams?keys as key]
+				[#assign
+					queryParam = queryParams[key]
+
+					queryParts = queryParts + ["${key?url}=${queryParam?url}"]
+				/]
+			[/#list]
+
+			[#assign knowledgeArticles = restClient.get("/c/p2s3knowledgearticles/?" + queryParts?join('&')) /]
+
+			[#if (knowledgeArticles.totalCount)?has_content]
+				[#list knowledgeArticles.items as knowledgeArticle]
+					<a class="article-entry" href="${themeDisplay.getCDNBaseURL()}/l/${knowledgeArticle.id}">
+						<div class="article-entry-title">
+							${knowledgeArticle.title}
+						</div>
+
+						[#if knowledgeArticle.description?has_content]
+							<div class="article-entry-description">
+								${knowledgeArticle.description}
+							</div>
+						[/#if]
+					</a>
+				[/#list]
+			[/#if]
+		[#else]
+			<lfr-drop-zone></lfr-drop-zone>
+		[/#if]
+	</div>
+</div>

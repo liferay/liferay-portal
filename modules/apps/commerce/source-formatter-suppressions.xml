@@ -16,6 +16,8 @@
 		<suppress checks="BNDExportsCheck" files="commerce-shipping-web/bnd\.bnd" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="commerce-service/src/main/resources/com/liferay/commerce/internal/notification/term/evaluator/dependencies/commerce_order_order_items\.ftl" />
 		<suppress checks="JavaConfigurationCategoryCheck" files=".*" />
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="commerce-product-service/src/main/java/com/liferay/commerce/product/service/impl/CPDefinitionOptionRelLocalServiceImpl\.java" />
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="commerce-product-service/src/main/java/com/liferay/commerce/product/service/impl/CPDefinitionOptionValueRelLocalServiceImpl\.java" />
 		<suppress checks="JavaUpgradeVersionCheck" files="commerce-product-type-virtual-service/src/main/java/com/liferay/commerce/product/type/virtual/internal/upgrade/registry/CommerceProductTypeVirtualServiceUpgradeStepRegistrator\.java" />
 		<suppress checks="JavaUpgradeVersionCheck" files="commerce-shipping-engine-fixed-service/src/main/java/com/liferay/commerce/shipping/engine/fixed/internal/upgrade/registry/CommerceShippingEngineFixedServiceUpgradeStepRegistrator\.java" />
 		<suppress checks="JavaVariableTypeCheck" files="commerce-product-api/src/main/java/com/liferay/commerce/product/option/CommerceOptionValue\.java" />

@@ -15,7 +15,6 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -198,7 +197,7 @@ public class SegmentsExperienceUtil {
 
 		LayoutPageTemplateStructureLocalServiceUtil.
 			updateLayoutPageTemplateStructureData(
-				groupId, layout.getPlid(),
+				userId, groupId, layout.getPlid(),
 				targetSegmentsExperience.getSegmentsExperienceId(),
 				dataJSONObject.toString());
 	}
@@ -357,8 +356,7 @@ public class SegmentsExperienceUtil {
 			String newNamespace = StringUtil.randomId();
 
 			JSONObject editableValuesJSONObject =
-				JSONFactoryUtil.createJSONObject(
-					fragmentEntryLink.getEditableValues());
+				fragmentEntryLink.getEditableValuesJSONObject();
 
 			SegmentsExperiment segmentsExperiment =
 				SegmentsExperimentLocalServiceUtil.fetchSegmentsExperiment(

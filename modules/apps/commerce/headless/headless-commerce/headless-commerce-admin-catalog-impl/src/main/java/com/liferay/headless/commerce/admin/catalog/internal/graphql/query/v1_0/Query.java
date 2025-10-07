@@ -88,6 +88,8 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SpecificationRe
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1395,7 +1397,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeConfiguration(externalReferenceCode: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable, visible}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeConfiguration(externalReferenceCode: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfiguration productByExternalReferenceCodeConfiguration(
@@ -1414,7 +1416,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable, visible}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfiguration productConfiguration(@GraphQLName("id") Long id)
@@ -1430,7 +1432,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationByExternalReferenceCode(externalReferenceCode: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable, visible}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationByExternalReferenceCode(externalReferenceCode: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfiguration productConfigurationByExternalReferenceCode(
@@ -1512,7 +1514,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable, visible}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdConfiguration(id: ___){actions, allowBackOrder, allowedOrderQuantities, availabilityEstimateId, availabilityEstimateName, differences, displayAvailability, displayStockQuantity, entityExternalReferenceCode, entityId, entityName, entityType, externalReferenceCode, id, inventoryEngine, lowStockAction, maxOrderQuantity, minOrderQuantity, minStockQuantity, multipleOrderQuantity, productShippingConfiguration, productTaxConfiguration, purchasable}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfiguration productIdConfiguration(
@@ -1529,7 +1531,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationList(id: ___){actions, catalogExternalReferenceCode, catalogId, createDate, displayDate, expirationDate, externalReferenceCode, id, master, name, neverExpire, parentProductConfigurationListId, priority, productConfigurations}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationList(id: ___){actions, catalogExternalReferenceCode, catalogId, createDate, customFields, displayDate, expirationDate, externalReferenceCode, id, master, name, neverExpire, parentProductConfigurationListId, priority, productConfigurations}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfigurationList productConfigurationList(
@@ -1547,7 +1549,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCode(externalReferenceCode: ___){actions, catalogExternalReferenceCode, catalogId, createDate, displayDate, expirationDate, externalReferenceCode, id, master, name, neverExpire, parentProductConfigurationListId, priority, productConfigurations}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productConfigurationListByExternalReferenceCode(externalReferenceCode: ___){actions, catalogExternalReferenceCode, catalogId, createDate, customFields, displayDate, expirationDate, externalReferenceCode, id, master, name, neverExpire, parentProductConfigurationListId, priority, productConfigurations}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ProductConfigurationList
@@ -5333,6 +5335,10 @@ public class Query {
 		attachmentResource.setContextUriInfo(_uriInfo);
 		attachmentResource.setContextUser(_user);
 		attachmentResource.setGroupLocalService(_groupLocalService);
+		attachmentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		attachmentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		attachmentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5346,6 +5352,10 @@ public class Query {
 		catalogResource.setContextUriInfo(_uriInfo);
 		catalogResource.setContextUser(_user);
 		catalogResource.setGroupLocalService(_groupLocalService);
+		catalogResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		catalogResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		catalogResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5359,6 +5369,10 @@ public class Query {
 		categoryResource.setContextUriInfo(_uriInfo);
 		categoryResource.setContextUser(_user);
 		categoryResource.setGroupLocalService(_groupLocalService);
+		categoryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		categoryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		categoryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5372,6 +5386,10 @@ public class Query {
 		currencyResource.setContextUriInfo(_uriInfo);
 		currencyResource.setContextUser(_user);
 		currencyResource.setGroupLocalService(_groupLocalService);
+		currencyResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		currencyResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		currencyResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5385,6 +5403,10 @@ public class Query {
 		diagramResource.setContextUriInfo(_uriInfo);
 		diagramResource.setContextUser(_user);
 		diagramResource.setGroupLocalService(_groupLocalService);
+		diagramResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		diagramResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		diagramResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5401,6 +5423,10 @@ public class Query {
 		groupedProductResource.setContextUriInfo(_uriInfo);
 		groupedProductResource.setContextUser(_user);
 		groupedProductResource.setGroupLocalService(_groupLocalService);
+		groupedProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		groupedProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		groupedProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5416,6 +5442,10 @@ public class Query {
 		linkedProductResource.setContextUriInfo(_uriInfo);
 		linkedProductResource.setContextUser(_user);
 		linkedProductResource.setGroupLocalService(_groupLocalService);
+		linkedProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		linkedProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		linkedProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5432,6 +5462,10 @@ public class Query {
 		listTypeDefinitionResource.setContextUriInfo(_uriInfo);
 		listTypeDefinitionResource.setContextUser(_user);
 		listTypeDefinitionResource.setGroupLocalService(_groupLocalService);
+		listTypeDefinitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		listTypeDefinitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		listTypeDefinitionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5448,6 +5482,10 @@ public class Query {
 		lowStockActionResource.setContextUriInfo(_uriInfo);
 		lowStockActionResource.setContextUser(_user);
 		lowStockActionResource.setGroupLocalService(_groupLocalService);
+		lowStockActionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		lowStockActionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		lowStockActionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5463,6 +5501,10 @@ public class Query {
 		mappedProductResource.setContextUriInfo(_uriInfo);
 		mappedProductResource.setContextUser(_user);
 		mappedProductResource.setGroupLocalService(_groupLocalService);
+		mappedProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		mappedProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		mappedProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5476,6 +5518,10 @@ public class Query {
 		optionResource.setContextUriInfo(_uriInfo);
 		optionResource.setContextUser(_user);
 		optionResource.setGroupLocalService(_groupLocalService);
+		optionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		optionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		optionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5492,6 +5538,10 @@ public class Query {
 		optionCategoryResource.setContextUriInfo(_uriInfo);
 		optionCategoryResource.setContextUser(_user);
 		optionCategoryResource.setGroupLocalService(_groupLocalService);
+		optionCategoryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		optionCategoryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		optionCategoryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5506,6 +5556,10 @@ public class Query {
 		optionValueResource.setContextUriInfo(_uriInfo);
 		optionValueResource.setContextUser(_user);
 		optionValueResource.setGroupLocalService(_groupLocalService);
+		optionValueResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		optionValueResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		optionValueResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5519,6 +5573,9 @@ public class Query {
 		pinResource.setContextUriInfo(_uriInfo);
 		pinResource.setContextUser(_user);
 		pinResource.setGroupLocalService(_groupLocalService);
+		pinResource.setResourceActionLocalService(_resourceActionLocalService);
+		pinResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		pinResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5532,6 +5589,10 @@ public class Query {
 		productResource.setContextUriInfo(_uriInfo);
 		productResource.setContextUser(_user);
 		productResource.setGroupLocalService(_groupLocalService);
+		productResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5548,6 +5609,10 @@ public class Query {
 		productAccountGroupResource.setContextUriInfo(_uriInfo);
 		productAccountGroupResource.setContextUser(_user);
 		productAccountGroupResource.setGroupLocalService(_groupLocalService);
+		productAccountGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productAccountGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productAccountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5564,6 +5629,10 @@ public class Query {
 		productChannelResource.setContextUriInfo(_uriInfo);
 		productChannelResource.setContextUser(_user);
 		productChannelResource.setGroupLocalService(_groupLocalService);
+		productChannelResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productChannelResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productChannelResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5580,6 +5649,10 @@ public class Query {
 		productConfigurationResource.setContextUriInfo(_uriInfo);
 		productConfigurationResource.setContextUser(_user);
 		productConfigurationResource.setGroupLocalService(_groupLocalService);
+		productConfigurationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productConfigurationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productConfigurationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5598,6 +5671,10 @@ public class Query {
 		productConfigurationListResource.setContextUser(_user);
 		productConfigurationListResource.setGroupLocalService(
 			_groupLocalService);
+		productConfigurationListResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productConfigurationListResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productConfigurationListResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5617,6 +5694,10 @@ public class Query {
 		productConfigurationListAccountResource.setContextUser(_user);
 		productConfigurationListAccountResource.setGroupLocalService(
 			_groupLocalService);
+		productConfigurationListAccountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productConfigurationListAccountResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productConfigurationListAccountResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5639,6 +5720,10 @@ public class Query {
 		productConfigurationListAccountGroupResource.setContextUser(_user);
 		productConfigurationListAccountGroupResource.setGroupLocalService(
 			_groupLocalService);
+		productConfigurationListAccountGroupResource.
+			setResourceActionLocalService(_resourceActionLocalService);
+		productConfigurationListAccountGroupResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productConfigurationListAccountGroupResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5659,6 +5744,10 @@ public class Query {
 		productConfigurationListChannelResource.setContextUser(_user);
 		productConfigurationListChannelResource.setGroupLocalService(
 			_groupLocalService);
+		productConfigurationListChannelResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productConfigurationListChannelResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productConfigurationListChannelResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5679,6 +5768,10 @@ public class Query {
 		productConfigurationListOrderTypeResource.setContextUser(_user);
 		productConfigurationListOrderTypeResource.setGroupLocalService(
 			_groupLocalService);
+		productConfigurationListOrderTypeResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productConfigurationListOrderTypeResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productConfigurationListOrderTypeResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5695,6 +5788,10 @@ public class Query {
 		productGroupResource.setContextUriInfo(_uriInfo);
 		productGroupResource.setContextUser(_user);
 		productGroupResource.setGroupLocalService(_groupLocalService);
+		productGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5711,6 +5808,10 @@ public class Query {
 		productGroupProductResource.setContextUriInfo(_uriInfo);
 		productGroupProductResource.setContextUser(_user);
 		productGroupProductResource.setGroupLocalService(_groupLocalService);
+		productGroupProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productGroupProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productGroupProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5726,6 +5827,10 @@ public class Query {
 		productOptionResource.setContextUriInfo(_uriInfo);
 		productOptionResource.setContextUser(_user);
 		productOptionResource.setGroupLocalService(_groupLocalService);
+		productOptionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productOptionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productOptionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5742,6 +5847,10 @@ public class Query {
 		productOptionValueResource.setContextUriInfo(_uriInfo);
 		productOptionValueResource.setContextUser(_user);
 		productOptionValueResource.setGroupLocalService(_groupLocalService);
+		productOptionValueResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productOptionValueResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productOptionValueResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5761,6 +5870,10 @@ public class Query {
 		productShippingConfigurationResource.setContextUser(_user);
 		productShippingConfigurationResource.setGroupLocalService(
 			_groupLocalService);
+		productShippingConfigurationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productShippingConfigurationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productShippingConfigurationResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5778,6 +5891,10 @@ public class Query {
 		productSpecificationResource.setContextUriInfo(_uriInfo);
 		productSpecificationResource.setContextUser(_user);
 		productSpecificationResource.setGroupLocalService(_groupLocalService);
+		productSpecificationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productSpecificationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productSpecificationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5797,6 +5914,10 @@ public class Query {
 		productSubscriptionConfigurationResource.setContextUser(_user);
 		productSubscriptionConfigurationResource.setGroupLocalService(
 			_groupLocalService);
+		productSubscriptionConfigurationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productSubscriptionConfigurationResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productSubscriptionConfigurationResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5816,6 +5937,10 @@ public class Query {
 		productTaxConfigurationResource.setContextUser(_user);
 		productTaxConfigurationResource.setGroupLocalService(
 			_groupLocalService);
+		productTaxConfigurationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productTaxConfigurationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productTaxConfigurationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5833,6 +5958,10 @@ public class Query {
 		productVirtualSettingsResource.setContextUriInfo(_uriInfo);
 		productVirtualSettingsResource.setContextUser(_user);
 		productVirtualSettingsResource.setGroupLocalService(_groupLocalService);
+		productVirtualSettingsResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productVirtualSettingsResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		productVirtualSettingsResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5852,6 +5981,10 @@ public class Query {
 		productVirtualSettingsFileEntryResource.setContextUser(_user);
 		productVirtualSettingsFileEntryResource.setGroupLocalService(
 			_groupLocalService);
+		productVirtualSettingsFileEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productVirtualSettingsFileEntryResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
 		productVirtualSettingsFileEntryResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5869,6 +6002,10 @@ public class Query {
 		relatedProductResource.setContextUriInfo(_uriInfo);
 		relatedProductResource.setContextUser(_user);
 		relatedProductResource.setGroupLocalService(_groupLocalService);
+		relatedProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		relatedProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		relatedProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5882,6 +6019,9 @@ public class Query {
 		skuResource.setContextUriInfo(_uriInfo);
 		skuResource.setContextUser(_user);
 		skuResource.setGroupLocalService(_groupLocalService);
+		skuResource.setResourceActionLocalService(_resourceActionLocalService);
+		skuResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		skuResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5901,6 +6041,10 @@ public class Query {
 		skuSubscriptionConfigurationResource.setContextUser(_user);
 		skuSubscriptionConfigurationResource.setGroupLocalService(
 			_groupLocalService);
+		skuSubscriptionConfigurationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		skuSubscriptionConfigurationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		skuSubscriptionConfigurationResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5918,6 +6062,10 @@ public class Query {
 		skuUnitOfMeasureResource.setContextUriInfo(_uriInfo);
 		skuUnitOfMeasureResource.setContextUser(_user);
 		skuUnitOfMeasureResource.setGroupLocalService(_groupLocalService);
+		skuUnitOfMeasureResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		skuUnitOfMeasureResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		skuUnitOfMeasureResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5934,6 +6082,10 @@ public class Query {
 		skuVirtualSettingsResource.setContextUriInfo(_uriInfo);
 		skuVirtualSettingsResource.setContextUser(_user);
 		skuVirtualSettingsResource.setGroupLocalService(_groupLocalService);
+		skuVirtualSettingsResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		skuVirtualSettingsResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		skuVirtualSettingsResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -5953,6 +6105,10 @@ public class Query {
 		skuVirtualSettingsFileEntryResource.setContextUser(_user);
 		skuVirtualSettingsFileEntryResource.setGroupLocalService(
 			_groupLocalService);
+		skuVirtualSettingsFileEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		skuVirtualSettingsFileEntryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		skuVirtualSettingsFileEntryResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -5969,6 +6125,10 @@ public class Query {
 		specificationResource.setContextUriInfo(_uriInfo);
 		specificationResource.setContextUser(_user);
 		specificationResource.setGroupLocalService(_groupLocalService);
+		specificationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		specificationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		specificationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -6067,6 +6227,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

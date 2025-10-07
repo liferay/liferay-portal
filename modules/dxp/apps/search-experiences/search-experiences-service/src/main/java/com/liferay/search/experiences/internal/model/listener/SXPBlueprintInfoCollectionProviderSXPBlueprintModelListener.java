@@ -9,6 +9,8 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.calendar.model.CalendarBooking;
+import com.liferay.calendar.service.CalendarBookingLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
@@ -33,6 +35,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.search.experiences.internal.info.collection.provider.AssetEntrySXPBlueprintInfoCollectionProvider;
 import com.liferay.search.experiences.internal.info.collection.provider.BlogsEntrySXPBlueprintInfoCollectionProvider;
+import com.liferay.search.experiences.internal.info.collection.provider.CalendarBookingSXPBlueprintInfoCollectionProvider;
 import com.liferay.search.experiences.internal.info.collection.provider.FileEntrySXPBlueprintInfoCollectionProvider;
 import com.liferay.search.experiences.internal.info.collection.provider.JournalArticleSXPBlueprintInfoCollectionProvider;
 import com.liferay.search.experiences.internal.info.collection.provider.KBArticleSXPBlueprintInfoCollectionProvider;
@@ -55,6 +58,7 @@ public class SXPBlueprintInfoCollectionProviderSXPBlueprintModelListener
 		AssetSubtypeIdentifierBuilder assetSubtypeIdentifierBuilder,
 		BlogsEntryLocalService blogsEntryLocalService,
 		BundleContext bundleContext,
+		CalendarBookingLocalService calendarBookingLocalService,
 		ClassNameLocalService classNameLocalService,
 		CompanyLocalService companyLocalService,
 		DDMStructureService ddmStructureService,
@@ -72,6 +76,7 @@ public class SXPBlueprintInfoCollectionProviderSXPBlueprintModelListener
 		_assetHelper = assetHelper;
 		_assetSubtypeIdentifierBuilder = assetSubtypeIdentifierBuilder;
 		_blogsEntryLocalService = blogsEntryLocalService;
+		_calendarBookingLocalService = calendarBookingLocalService;
 		_classNameLocalService = classNameLocalService;
 		_ddmStructureService = ddmStructureService;
 		_dlFileEntryTypeLocalService = dlFileEntryTypeLocalService;
@@ -106,6 +111,12 @@ public class SXPBlueprintInfoCollectionProviderSXPBlueprintModelListener
 		if (_className.equals(BlogsEntry.class.getName())) {
 			return new BlogsEntrySXPBlueprintInfoCollectionProvider(
 				_assetHelper, _blogsEntryLocalService, _searcher,
+				_searchRequestBuilderFactory, sxpBlueprint);
+		}
+
+		if (_className.equals(CalendarBooking.class.getName())) {
+			return new CalendarBookingSXPBlueprintInfoCollectionProvider(
+				_assetHelper, _calendarBookingLocalService, _searcher,
 				_searchRequestBuilderFactory, sxpBlueprint);
 		}
 
@@ -191,6 +202,7 @@ public class SXPBlueprintInfoCollectionProviderSXPBlueprintModelListener
 	private final AssetHelper _assetHelper;
 	private final AssetSubtypeIdentifierBuilder _assetSubtypeIdentifierBuilder;
 	private final BlogsEntryLocalService _blogsEntryLocalService;
+	private final CalendarBookingLocalService _calendarBookingLocalService;
 	private String _className = AssetEntry.class.getName();
 	private final ClassNameLocalService _classNameLocalService;
 	private final DDMStructureService _ddmStructureService;

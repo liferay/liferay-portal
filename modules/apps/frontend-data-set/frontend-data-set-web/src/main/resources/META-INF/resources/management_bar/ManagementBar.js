@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {getObjectValueFromPath} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -13,6 +14,7 @@ import ActiveFiltersBar from './controls/filters/ActiveFiltersBar';
 function ManagementBar({
 	bulkActions,
 	creationMenu,
+	dataLoading,
 	deselectItems,
 	fluid,
 	items,
@@ -23,27 +25,38 @@ function ManagementBar({
 	selectedItemsKey,
 	selectedItemsValue,
 	selectionType,
+	showNavBarWhenSelected = false,
 	showSearch,
 	showSelectAll,
 	total,
 }) {
 	const pageSelectedItemsValue = selectedItemsValue.filter((id) =>
-		items.some((item) => item.id === id)
+		items.some(
+			(item) =>
+				getObjectValueFromPath({
+					object: item,
+					path: selectedItemsKey,
+				}) === id
+		)
 	);
 
 	function handleCheckboxClick() {
-		const itemKeys = items.map((item) => item[selectedItemsKey]);
+		if (pageSelectedItemsValue.length) {
+			deselectItems(pageSelectedItemsValue);
 
-		if (pageSelectedItemsValue.length === items.length) {
-			return deselectItems(itemKeys);
+			return;
 		}
 
-		return selectItems(itemKeys);
+		selectItems(
+			items.map((item) =>
+				getObjectValueFromPath({object: item, path: selectedItemsKey})
+			)
+		);
 	}
 
 	return (
 		<>
-			{selectionType === 'multiple' && (
+			{selectionType === 'multiple' && !showNavBarWhenSelected && (
 				<BulkActions
 					bulkActions={bulkActions}
 					deselectItems={deselectItems}
@@ -62,16 +75,23 @@ function ManagementBar({
 				/>
 			)}
 
-			{(!selectedItemsValue.length || selectionType === 'single') && (
+			{(selectionType === 'single' ||
+				!selectedItemsValue.length ||
+				(!!selectedItemsValue.length && showNavBarWhenSelected)) && (
 				<NavBar
 					creationMenu={creationMenu}
 					handleCheckboxClick={handleCheckboxClick}
 					items={items}
+					pageSelectedItemsValue={pageSelectedItemsValue}
 					showSearch={showSearch}
 				/>
 			)}
 
-			<ActiveFiltersBar disabled={!!selectedItemsValue.length} />
+			<ActiveFiltersBar
+				dataLoading={dataLoading}
+				disabled={!!selectedItemsValue.length}
+				total={total}
+			/>
 		</>
 	);
 }

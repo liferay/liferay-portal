@@ -44,6 +44,7 @@ public class CPDefinitionLocalizationWrapper
 		attributes.put("companyId", getCompanyId());
 		attributes.put("CPDefinitionId", getCPDefinitionId());
 		attributes.put("languageId", getLanguageId());
+		attributes.put("CProductId", getCProductId());
 		attributes.put("name", getName());
 		attributes.put("shortDescription", getShortDescription());
 		attributes.put("description", getDescription());
@@ -91,6 +92,12 @@ public class CPDefinitionLocalizationWrapper
 
 		if (languageId != null) {
 			setLanguageId(languageId);
+		}
+
+		Long CProductId = (Long)attributes.get("CProductId");
+
+		if (CProductId != null) {
+			setCProductId(CProductId);
 		}
 
 		String name = (String)attributes.get("name");
@@ -163,6 +170,16 @@ public class CPDefinitionLocalizationWrapper
 	@Override
 	public long getCpDefinitionLocalizationId() {
 		return model.getCpDefinitionLocalizationId();
+	}
+
+	/**
+	 * Returns the c product ID of this cp definition localization.
+	 *
+	 * @return the c product ID of this cp definition localization
+	 */
+	@Override
+	public long getCProductId() {
+		return model.getCProductId();
 	}
 
 	/**
@@ -293,6 +310,16 @@ public class CPDefinitionLocalizationWrapper
 	@Override
 	public void setCpDefinitionLocalizationId(long cpDefinitionLocalizationId) {
 		model.setCpDefinitionLocalizationId(cpDefinitionLocalizationId);
+	}
+
+	/**
+	 * Sets the c product ID of this cp definition localization.
+	 *
+	 * @param CProductId the c product ID of this cp definition localization
+	 */
+	@Override
+	public void setCProductId(long CProductId) {
+		model.setCProductId(CProductId);
 	}
 
 	/**

@@ -1,11 +1,12 @@
 [
 	{
 		"ddmFormFieldTypeName": "radio",
-		"description": "Specifies if a acquision of an app.",
-		"externalReferenceCode": "MKT-OPTION-DXP-USAGE",
+		"description": "Apps that are not DXP or Cloud can be licensed using this base type.",
+		"externalReferenceCode": "MKT-OPTION-BASE-LICENSE-USAGE",
 		"facetable": false,
-		"key": "dxp-license-usage-type",
-		"name": "DXP License Usage Type",
+		"fieldType": "radio",
+		"key": "base-license-usage-type",
+		"name": "Base License Usage Type",
 		"required": true,
 		"skuContributor": true,
 		"values": [
@@ -20,12 +21,6 @@
 				"key": "developer",
 				"name": "Developer",
 				"priority": 1
-			},
-			{
-				"externalReferenceCode": "TRIAL",
-				"key": "trial",
-				"name": "Trial",
-				"priority": 2
 			}
 		]
 	},
@@ -55,12 +50,11 @@
 	},
 	{
 		"ddmFormFieldTypeName": "radio",
-		"description": "Apps that are not DXP or Cloud can be licensed using this base type.",
-		"externalReferenceCode": "MKT-OPTION-BASE-LICENSE-USAGE",
+		"description": "Specifies if a acquision of an app.",
+		"externalReferenceCode": "MKT-OPTION-DXP-USAGE",
 		"facetable": false,
-		"fieldType": "radio",
-		"key": "base-license-usage-type",
-		"name": "Base License Usage Type",
+		"key": "dxp-license-usage-type",
+		"name": "DXP License Usage Type",
 		"required": true,
 		"skuContributor": true,
 		"values": [
@@ -75,6 +69,12 @@
 				"key": "developer",
 				"name": "Developer",
 				"priority": 1
+			},
+			{
+				"externalReferenceCode": "TRIAL",
+				"key": "trial",
+				"name": "Trial",
+				"priority": 2
 			}
 		]
 	}

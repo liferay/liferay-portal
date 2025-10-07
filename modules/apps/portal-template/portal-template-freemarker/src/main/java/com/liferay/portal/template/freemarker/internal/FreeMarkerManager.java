@@ -513,9 +513,12 @@ public class FreeMarkerManager extends BaseTemplateManager {
 			(templateException, environment) -> {
 			});
 		_configuration.setDefaultEncoding(StringPool.UTF8);
+		_configuration.setLazyAutoImports(Boolean.TRUE);
+		_configuration.setLazyImports(true);
 		_configuration.setLocalizedLookup(
 			_freeMarkerEngineConfiguration.localizedLookup());
 		_configuration.setNewBuiltinClassResolver(_templateClassResolver);
+		_configuration.setNumberFormat("computer");
 
 		try {
 			_configuration.setLogTemplateExceptions(

@@ -5,8 +5,10 @@
 			{
 				"definition": {
 					"fragmentStyle": {
-						"paddingBottom": "6",
-						"paddingTop": "6"
+						"paddingBottom": "40px",
+						"paddingLeft": "12px",
+						"paddingRight": "12px",
+						"paddingTop": "40px"
 					},
 					"indexed": true,
 					"layout": {
@@ -85,7 +87,7 @@
 									{
 										"definition": {
 											"fragment": {
-												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceListComponentSectionFragmentRenderer"
+												"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpacesComponentSectionFragmentRenderer"
 											},
 											"fragmentConfig": {
 											},

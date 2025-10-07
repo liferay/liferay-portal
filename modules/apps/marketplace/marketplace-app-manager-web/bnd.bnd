@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Marketplace App Manager Web
 Bundle-SymbolicName: com.liferay.marketplace.app.manager.web
-Bundle-Version: 5.0.53
+Bundle-Version: 5.0.54
 Web-ContextPath: /marketplace-app-manager-web

@@ -15,7 +15,7 @@ import org.jsoup.nodes.Document;
 public interface DefaultEditableValuesFragmentEntryProcessor {
 
 	public JSONObject getDefaultEditableValuesJSONObject(
-		String configuration, Document document);
+		JSONObject configurationJSONObject, Document document);
 
 	public String getKey();
 

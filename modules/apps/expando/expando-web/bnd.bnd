@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Expando Web
 Bundle-SymbolicName: com.liferay.expando.web
-Bundle-Version: 5.0.60
+Bundle-Version: 5.0.61
 Web-ContextPath: /expando-web

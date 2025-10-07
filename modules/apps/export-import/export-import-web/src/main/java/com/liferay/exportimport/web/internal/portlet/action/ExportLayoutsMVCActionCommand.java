@@ -135,7 +135,9 @@ public class ExportLayoutsMVCActionCommand extends BaseMVCActionCommand {
 		String taskName = ParamUtil.getString(actionRequest, "name");
 
 		if (Validator.isNull(taskName)) {
-			if (FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
+			if (FeatureFlagManagerUtil.isEnabled(
+					themeDisplay.getCompanyId(), "LPD-35914")) {
+
 				taskName = _language.get(actionRequest.getLocale(), "export");
 			}
 			else {

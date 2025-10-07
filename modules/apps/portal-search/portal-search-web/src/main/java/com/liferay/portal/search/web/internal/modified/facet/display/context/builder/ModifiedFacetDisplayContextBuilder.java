@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.web.internal.facet.display.context.BucketDisplayContext;
@@ -308,7 +309,7 @@ public class ModifiedFacetDisplayContextBuilder implements Serializable {
 
 	private String _getCustomRangeURL() {
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyy-MM-dd");
+			"yyyy-MM-dd", LocaleUtil.US);
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar(_timeZone);
 

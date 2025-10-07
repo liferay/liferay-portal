@@ -307,9 +307,6 @@ public class ProductConfigurationResourceImpl
 				GetterUtil.getBoolean(
 					!_isTaxable(productTaxConfiguration),
 					cpConfigurationEntry.isTaxExempt()),
-				GetterUtil.getBoolean(
-					productConfiguration.getVisible(),
-					cpConfigurationEntry.isVisible()),
 				GetterUtil.getDouble(
 					productShippingConfiguration.getWeight(),
 					cpConfigurationEntry.getWeight()),
@@ -426,9 +423,6 @@ public class ProductConfigurationResourceImpl
 				GetterUtil.getBoolean(
 					!_isTaxable(productTaxConfiguration),
 					masterCPConfigurationEntry.isTaxExempt()),
-				GetterUtil.getBoolean(
-					productConfiguration.getVisible(),
-					masterCPConfigurationEntry.isVisible()),
 				GetterUtil.getDouble(
 					productShippingConfiguration.getWeight(),
 					masterCPConfigurationEntry.getWeight()),
@@ -552,7 +546,6 @@ public class ProductConfigurationResourceImpl
 					productShippingConfiguration.getShippingSeparately(), true),
 				!GetterUtil.getBoolean(
 					productTaxConfiguration.getTaxable(), true),
-				GetterUtil.getBoolean(productConfiguration.getVisible(), true),
 				GetterUtil.getDouble(productShippingConfiguration.getWeight()),
 				GetterUtil.getDouble(productShippingConfiguration.getWidth())),
 			false);

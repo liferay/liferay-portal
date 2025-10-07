@@ -1,14 +1,17 @@
 {
 	"dependencies": {
 		"@ckeditor/ckeditor5-react": "9.3.1",
-		"@clayui/loading-indicator": "3.128.0",
+		"@clayui/loading-indicator": "3.144.1",
 		"@liferay/cookies-banner-web": "*",
+		"@liferay/frontend-data-set-web": "*",
+		"@liferay/frontend-js-item-selector-web": "*",
+		"@liferay/frontend-js-state-web": "*",
 		"ckeditor4": "4.22.1",
 		"ckeditor4-react": "1.4.2",
-		"ckeditor5": "44.3.0",
+		"ckeditor5": "46.0.2",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"liferay-ckeditor": "4.21.0-liferay.12",
+		"liferay-ckeditor": "4.21.0-liferay.13",
 		"prop-types": "15.7.2",
 		"react": "18.2.0"
 	},
@@ -19,5 +22,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "5.0.114"
+	"version": "5.0.121"
 }

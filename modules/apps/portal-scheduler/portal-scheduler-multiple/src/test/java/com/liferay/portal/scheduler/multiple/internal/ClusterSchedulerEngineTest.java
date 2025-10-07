@@ -36,13 +36,12 @@ import com.liferay.portal.kernel.scheduler.TriggerState;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.servlet.PluginContextLifecycleThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.ObjectValuePair;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -338,8 +337,8 @@ public class ClusterSchedulerEngineTest {
 
 		Assert.assertTrue(_memoryClusteredJobs.isEmpty());
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				ClusterSchedulerEngine.class.getName(), Level.OFF)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ClusterSchedulerEngine.class.getName(), LoggerTestUtil.OFF)) {
 
 			_mockClusterMasterExecutor.reset(false, 4, 2);
 
@@ -861,8 +860,8 @@ public class ClusterSchedulerEngineTest {
 			_TEST_JOB_NAME_0, _MEMORY_CLUSTER_TEST_GROUP_NAME,
 			StorageType.MEMORY_CLUSTERED);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				ClusterSchedulerEngine.class.getName(), Level.OFF)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				ClusterSchedulerEngine.class.getName(), LoggerTestUtil.OFF)) {
 
 			_mockClusterMasterExecutor.reset(true, 0, 0);
 
@@ -1202,15 +1201,13 @@ public class ClusterSchedulerEngineTest {
 
 		_clusterSchedulerEngine.setClusterMasterExecutor(
 			_mockClusterMasterExecutor);
-		_clusterSchedulerEngine.setProps(_props);
 
 		_memoryClusteredJobs = ReflectionTestUtil.getFieldValue(
 			_clusterSchedulerEngine, "_memoryClusteredJobs");
 	}
 
 	private void _setUpPropsUtil() {
-		_props = PropsTestUtil.setProps(
-			PropsKeys.CLUSTERABLE_ADVICE_CALL_MASTER_TIMEOUT, "100");
+		PropsUtil.set(PropsKeys.CLUSTERABLE_ADVICE_CALL_MASTER_TIMEOUT, "100");
 	}
 
 	private void _setUpSchedulerEngineHelperUtil() {
@@ -1277,7 +1274,6 @@ public class ClusterSchedulerEngineTest {
 	private final MockClusterMasterExecutor _mockClusterMasterExecutor =
 		new MockClusterMasterExecutor();
 	private MockSchedulerEngine _mockSchedulerEngine;
-	private Props _props;
 	private ServiceRegistration<?> _serviceRegistration;
 
 	private static class MockClusterExecutor implements ClusterExecutor {

@@ -7,6 +7,8 @@ package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
+import com.liferay.headless.admin.site.dto.v1_0.WidgetPageSpecification;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -47,6 +49,32 @@ public class PageSpecificationUtil {
 		}
 
 		return WorkflowConstants.STATUS_DRAFT;
+	}
+
+	public static WidgetPageSpecification getWidgetPageSpecification(
+		PageSpecification[] pageSpecifications) {
+
+		if (ArrayUtil.isEmpty(pageSpecifications)) {
+			return null;
+		}
+
+		if ((pageSpecifications.length != 1) ||
+			!(pageSpecifications[0] instanceof WidgetPageSpecification)) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		WidgetPageSpecification widgetPageSpecification =
+			(WidgetPageSpecification)pageSpecifications[0];
+
+		if (!Objects.equals(
+				widgetPageSpecification.getStatus(),
+				WidgetPageSpecification.Status.APPROVED)) {
+
+			throw new UnsupportedOperationException();
+		}
+
+		return widgetPageSpecification;
 	}
 
 }

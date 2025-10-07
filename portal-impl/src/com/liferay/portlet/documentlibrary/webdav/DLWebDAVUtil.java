@@ -7,9 +7,9 @@ package com.liferay.portlet.documentlibrary.webdav;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
-import com.liferay.portal.util.PropsValues;
 
 /**
  * @author Iván Zaera

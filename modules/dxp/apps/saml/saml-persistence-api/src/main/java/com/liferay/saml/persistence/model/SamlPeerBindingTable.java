@@ -29,12 +29,16 @@ public class SamlPeerBindingTable extends BaseTable<SamlPeerBindingTable> {
 			"samlPeerBindingId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<SamlPeerBindingTable, Long> companyId = createColumn(
 		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<SamlPeerBindingTable, Date> createDate = createColumn(
-		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<SamlPeerBindingTable, Long> userId = createColumn(
 		"userId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<SamlPeerBindingTable, String> userName = createColumn(
 		"userName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<SamlPeerBindingTable, Date> createDate = createColumn(
+		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<SamlPeerBindingTable, String> samlPeerEntityId =
+		createColumn(
+			"samlPeerEntityId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<SamlPeerBindingTable, Boolean> deleted = createColumn(
 		"deleted", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<SamlPeerBindingTable, String> samlNameIdFormat =
@@ -56,10 +60,6 @@ public class SamlPeerBindingTable extends BaseTable<SamlPeerBindingTable> {
 	public final Column<SamlPeerBindingTable, String> samlNameIdValue =
 		createColumn(
 			"samlNameIdValue", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
-	public final Column<SamlPeerBindingTable, String> samlPeerEntityId =
-		createColumn(
-			"samlPeerEntityId", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
 
 	private SamlPeerBindingTable() {

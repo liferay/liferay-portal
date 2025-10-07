@@ -686,6 +686,175 @@ public class RepositoryUtil {
 	}
 
 	/**
+	 * Returns all the repositories where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @return the matching repositories
+	 */
+	public static List<Repository> findByPortletId(String portletId) {
+		return getPersistence().findByPortletId(portletId);
+	}
+
+	/**
+	 * Returns a range of all the repositories where portletId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RepositoryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portletId the portlet ID
+	 * @param start the lower bound of the range of repositories
+	 * @param end the upper bound of the range of repositories (not inclusive)
+	 * @return the range of matching repositories
+	 */
+	public static List<Repository> findByPortletId(
+		String portletId, int start, int end) {
+
+		return getPersistence().findByPortletId(portletId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the repositories where portletId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RepositoryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portletId the portlet ID
+	 * @param start the lower bound of the range of repositories
+	 * @param end the upper bound of the range of repositories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching repositories
+	 */
+	public static List<Repository> findByPortletId(
+		String portletId, int start, int end,
+		OrderByComparator<Repository> orderByComparator) {
+
+		return getPersistence().findByPortletId(
+			portletId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the repositories where portletId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>RepositoryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param portletId the portlet ID
+	 * @param start the lower bound of the range of repositories
+	 * @param end the upper bound of the range of repositories (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching repositories
+	 */
+	public static List<Repository> findByPortletId(
+		String portletId, int start, int end,
+		OrderByComparator<Repository> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByPortletId(
+			portletId, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first repository in the ordered set where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching repository
+	 * @throws NoSuchRepositoryException if a matching repository could not be found
+	 */
+	public static Repository findByPortletId_First(
+			String portletId, OrderByComparator<Repository> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchRepositoryException {
+
+		return getPersistence().findByPortletId_First(
+			portletId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first repository in the ordered set where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching repository, or <code>null</code> if a matching repository could not be found
+	 */
+	public static Repository fetchByPortletId_First(
+		String portletId, OrderByComparator<Repository> orderByComparator) {
+
+		return getPersistence().fetchByPortletId_First(
+			portletId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last repository in the ordered set where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching repository
+	 * @throws NoSuchRepositoryException if a matching repository could not be found
+	 */
+	public static Repository findByPortletId_Last(
+			String portletId, OrderByComparator<Repository> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchRepositoryException {
+
+		return getPersistence().findByPortletId_Last(
+			portletId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last repository in the ordered set where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching repository, or <code>null</code> if a matching repository could not be found
+	 */
+	public static Repository fetchByPortletId_Last(
+		String portletId, OrderByComparator<Repository> orderByComparator) {
+
+		return getPersistence().fetchByPortletId_Last(
+			portletId, orderByComparator);
+	}
+
+	/**
+	 * Returns the repositories before and after the current repository in the ordered set where portletId = &#63;.
+	 *
+	 * @param repositoryId the primary key of the current repository
+	 * @param portletId the portlet ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next repository
+	 * @throws NoSuchRepositoryException if a repository with the primary key could not be found
+	 */
+	public static Repository[] findByPortletId_PrevAndNext(
+			long repositoryId, String portletId,
+			OrderByComparator<Repository> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchRepositoryException {
+
+		return getPersistence().findByPortletId_PrevAndNext(
+			repositoryId, portletId, orderByComparator);
+	}
+
+	/**
+	 * Removes all the repositories where portletId = &#63; from the database.
+	 *
+	 * @param portletId the portlet ID
+	 */
+	public static void removeByPortletId(String portletId) {
+		getPersistence().removeByPortletId(portletId);
+	}
+
+	/**
+	 * Returns the number of repositories where portletId = &#63;.
+	 *
+	 * @param portletId the portlet ID
+	 * @return the number of matching repositories
+	 */
+	public static int countByPortletId(String portletId) {
+		return getPersistence().countByPortletId(portletId);
+	}
+
+	/**
 	 * Returns the repository where groupId = &#63; and name = &#63; and portletId = &#63; or throws a <code>NoSuchRepositoryException</code> if it could not be found.
 	 *
 	 * @param groupId the group ID

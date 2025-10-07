@@ -139,6 +139,10 @@ public abstract class StyledLayoutStructureItem extends LayoutStructureItem {
 		return StringUtil.merge(getCssClasses(), StringPool.SPACE);
 	}
 
+	public JSONObject getStylesJSONObject() {
+		return stylesJSONObject;
+	}
+
 	public String getUniqueCssClass() {
 		return LAYOUT_STRUCTURE_ITEM_CSS_CLASS_PREFIX + getItemId();
 	}

@@ -2,7 +2,6 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property custom.properties = "feature.flag.LPS-134060=true";
 	property portal.release = "false";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Content Security Policy";

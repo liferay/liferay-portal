@@ -15,7 +15,6 @@ import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalS
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -62,10 +61,7 @@ public class CPDefinitionModelPreFilterContributor
 		_filterByStatuses(booleanFilter, searchContext);
 		_filterBySubscriptionEnabled(booleanFilter, searchContext);
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			_filterByCPConfigurationListIds(booleanFilter, searchContext);
-		}
-		else if (GetterUtil.getBoolean(searchContext.getAttribute("secure"))) {
+		if (GetterUtil.getBoolean(searchContext.getAttribute("secure"))) {
 			_filterByAccountGroupIds(booleanFilter, searchContext);
 			_filterByCommerceChannelId(booleanFilter, searchContext);
 		}
@@ -248,32 +244,6 @@ public class CPDefinitionModelPreFilterContributor
 
 		booleanFilter.add(
 			commerceChannelBooleanFilter, BooleanClauseOccur.MUST);
-	}
-
-	private void _filterByCPConfigurationListIds(
-		BooleanFilter booleanFilter, SearchContext searchContext) {
-
-		long[] cpConfigurationListIds = GetterUtil.getLongValues(
-			searchContext.getAttribute(CPField.CP_CONFIGURATION_LIST_IDS),
-			null);
-
-		if ((cpConfigurationListIds != null) &&
-			(cpConfigurationListIds.length > 0)) {
-
-			BooleanFilter cpConfigurationListIdsBooleanFilter =
-				new BooleanFilter();
-
-			for (long cpConfigurationListId : cpConfigurationListIds) {
-				cpConfigurationListIdsBooleanFilter.add(
-					new TermFilter(
-						CPField.CP_CONFIGURATION_LIST_IDS,
-						String.valueOf(cpConfigurationListId)),
-					BooleanClauseOccur.SHOULD);
-			}
-
-			booleanFilter.add(
-				cpConfigurationListIdsBooleanFilter, BooleanClauseOccur.MUST);
-		}
 	}
 
 	private void _filterByDefinitionLinks(

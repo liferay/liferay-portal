@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portlet Configuration Icon Minimize
 Bundle-SymbolicName: com.liferay.portlet.configuration.icon.minimize
-Bundle-Version: 6.0.15
+Bundle-Version: 6.0.16
 Web-ContextPath: /portlet-configuration-icon-minimize

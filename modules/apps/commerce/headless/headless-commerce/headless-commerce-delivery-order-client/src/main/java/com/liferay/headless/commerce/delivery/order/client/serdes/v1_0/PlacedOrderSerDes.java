@@ -114,6 +114,16 @@ public class PlacedOrderSerDes {
 			sb.append("\"");
 		}
 
+		if (placedOrder.getAuthorId() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"authorId\": ");
+
+			sb.append(placedOrder.getAuthorId());
+		}
+
 		if (placedOrder.getChannelId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -696,6 +706,13 @@ public class PlacedOrderSerDes {
 			map.put("author", String.valueOf(placedOrder.getAuthor()));
 		}
 
+		if (placedOrder.getAuthorId() == null) {
+			map.put("authorId", null);
+		}
+		else {
+			map.put("authorId", String.valueOf(placedOrder.getAuthorId()));
+		}
+
 		if (placedOrder.getChannelId() == null) {
 			map.put("channelId", null);
 		}
@@ -1062,6 +1079,9 @@ public class PlacedOrderSerDes {
 			else if (Objects.equals(jsonParserFieldName, "author")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "authorId")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "channelId")) {
 				return false;
 			}
@@ -1250,6 +1270,12 @@ public class PlacedOrderSerDes {
 			else if (Objects.equals(jsonParserFieldName, "author")) {
 				if (jsonParserFieldValue != null) {
 					placedOrder.setAuthor((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "authorId")) {
+				if (jsonParserFieldValue != null) {
+					placedOrder.setAuthorId(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "channelId")) {

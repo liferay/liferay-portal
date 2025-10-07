@@ -10,8 +10,6 @@ import com.liferay.commerce.stock.activity.CommerceLowStockActivity;
 import com.liferay.commerce.stock.activity.CommerceLowStockActivityRegistry;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.LowStockAction;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.List;
@@ -41,26 +39,6 @@ public class LowStockActionResourceTest
 			commerceLowStockActivities.size());
 
 		assertValid(page);
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetLowStockActionsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"lowStockActions", new GraphQLField("page"),
-			new GraphQLField("totalCount"));
-
-		JSONObject lowStockActionsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/lowStockActions");
-
-		List<CommerceLowStockActivity> commerceLowStockActivities =
-			_commerceLowStockActivityRegistry.getCommerceLowStockActivities();
-
-		Assert.assertEquals(
-			commerceLowStockActivities.toString(),
-			lowStockActionsJSONObject.get("totalCount"),
-			commerceLowStockActivities.size());
 	}
 
 	@Inject

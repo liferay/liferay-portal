@@ -20,7 +20,7 @@ import './TranslationOptionsContainer.scss';
 interface TranslationOptionsContainerProps {
 	learnResources: ILearnResourceContext;
 	modelBuilder?: boolean;
-	objectDefinition?: ObjectDefinition;
+	objectDefinition?: ObjectDefinition | ObjectDefinitionNodeData;
 	onSubmit?: () => void;
 	published: boolean;
 	setValues: (values: Partial<ObjectField>) => void;

@@ -23,6 +23,7 @@ import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -69,7 +70,8 @@ public class ObjectDefinitionDTOConverter
 				_objectValidationRuleLocalService, _objectViewDTOConverter,
 				_objectViewLocalService, _portal,
 				serviceBuilderObjectDefinition,
-				_systemObjectDefinitionManagerRegistry, _userLocalService);
+				_systemObjectDefinitionManagerRegistry, _userLocalService,
+				_workflowDefinitionLinkLocalService);
 
 		objectDefinition.setActions(dtoConverterContext::getActions);
 
@@ -133,5 +135,9 @@ public class ObjectDefinitionDTOConverter
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }

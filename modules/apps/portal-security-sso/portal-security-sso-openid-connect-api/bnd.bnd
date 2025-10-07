@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security SSO OpenID Connect API
 Bundle-SymbolicName: com.liferay.portal.security.sso.openid.connect.api
-Bundle-Version: 13.0.1
+Bundle-Version: 13.0.2
 Export-Package:\
 	com.liferay.portal.security.sso.openid.connect,\
 	com.liferay.portal.security.sso.openid.connect.configuration,\

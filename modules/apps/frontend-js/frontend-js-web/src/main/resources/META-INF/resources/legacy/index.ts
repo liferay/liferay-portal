@@ -4,6 +4,7 @@
  */
 
 export {checkAll} from './checkAll';
+export {checkAllBox} from './checkAllBox';
 
 // @ts-ignore
 

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {FirstDayOfWeek} from '@clayui/date-picker';
+
 // @ts-ignore
 
 import moment from 'moment/min/moment-with-locales';
@@ -31,6 +33,16 @@ export interface Date {
 	};
 }
 
+export type DateConfig = {
+	clayFormat: string;
+	firstDayOfWeek: FirstDayOfWeek;
+	isDateTime: boolean;
+	momentFormat: string;
+	placeholder: string;
+	serverFormat: string;
+	use12Hours: boolean;
+};
+
 interface GenerateDateConfigurationsProps {
 	defaultLanguageId: Liferay.Language.Locale;
 	locale?: Liferay.Language.Locale;
@@ -50,7 +62,7 @@ export function generateDateConfigurations({
 	defaultLanguageId,
 	locale,
 	type,
-}: GenerateDateConfigurationsProps) {
+}: GenerateDateConfigurationsProps): DateConfig {
 	let use12Hours = false;
 
 	const isDateTime = type === 'date_time' || type === 'DateTime';

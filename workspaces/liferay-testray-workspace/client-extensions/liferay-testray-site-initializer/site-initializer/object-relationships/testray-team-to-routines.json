@@ -1,0 +1,12 @@
+{
+	"deletionType": "disassociate",
+	"label": {
+		"en_US": "Testray Routines"
+	},
+	"name": "teamToRoutines",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:Team$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:Routine$]",
+	"objectDefinitionName2": "Routine",
+	"system": false,
+	"type": "oneToMany"
+}

@@ -637,8 +637,8 @@ public class TrashEntryUtil {
 	 * @param classNameId the class name ID
 	 * @return the matching trash entries
 	 */
-	public static List<TrashEntry> findByG_C(long groupId, long classNameId) {
-		return getPersistence().findByG_C(groupId, classNameId);
+	public static List<TrashEntry> findByG_CN(long groupId, long classNameId) {
+		return getPersistence().findByG_CN(groupId, classNameId);
 	}
 
 	/**
@@ -654,10 +654,10 @@ public class TrashEntryUtil {
 	 * @param end the upper bound of the range of trash entries (not inclusive)
 	 * @return the range of matching trash entries
 	 */
-	public static List<TrashEntry> findByG_C(
+	public static List<TrashEntry> findByG_CN(
 		long groupId, long classNameId, int start, int end) {
 
-		return getPersistence().findByG_C(groupId, classNameId, start, end);
+		return getPersistence().findByG_CN(groupId, classNameId, start, end);
 	}
 
 	/**
@@ -674,11 +674,11 @@ public class TrashEntryUtil {
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching trash entries
 	 */
-	public static List<TrashEntry> findByG_C(
+	public static List<TrashEntry> findByG_CN(
 		long groupId, long classNameId, int start, int end,
 		OrderByComparator<TrashEntry> orderByComparator) {
 
-		return getPersistence().findByG_C(
+		return getPersistence().findByG_CN(
 			groupId, classNameId, start, end, orderByComparator);
 	}
 
@@ -697,12 +697,12 @@ public class TrashEntryUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching trash entries
 	 */
-	public static List<TrashEntry> findByG_C(
+	public static List<TrashEntry> findByG_CN(
 		long groupId, long classNameId, int start, int end,
 		OrderByComparator<TrashEntry> orderByComparator,
 		boolean useFinderCache) {
 
-		return getPersistence().findByG_C(
+		return getPersistence().findByG_CN(
 			groupId, classNameId, start, end, orderByComparator,
 			useFinderCache);
 	}
@@ -716,12 +716,12 @@ public class TrashEntryUtil {
 	 * @return the first matching trash entry
 	 * @throws NoSuchEntryException if a matching trash entry could not be found
 	 */
-	public static TrashEntry findByG_C_First(
+	public static TrashEntry findByG_CN_First(
 			long groupId, long classNameId,
 			OrderByComparator<TrashEntry> orderByComparator)
 		throws com.liferay.trash.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_C_First(
+		return getPersistence().findByG_CN_First(
 			groupId, classNameId, orderByComparator);
 	}
 
@@ -733,11 +733,11 @@ public class TrashEntryUtil {
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching trash entry, or <code>null</code> if a matching trash entry could not be found
 	 */
-	public static TrashEntry fetchByG_C_First(
+	public static TrashEntry fetchByG_CN_First(
 		long groupId, long classNameId,
 		OrderByComparator<TrashEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_C_First(
+		return getPersistence().fetchByG_CN_First(
 			groupId, classNameId, orderByComparator);
 	}
 
@@ -750,12 +750,12 @@ public class TrashEntryUtil {
 	 * @return the last matching trash entry
 	 * @throws NoSuchEntryException if a matching trash entry could not be found
 	 */
-	public static TrashEntry findByG_C_Last(
+	public static TrashEntry findByG_CN_Last(
 			long groupId, long classNameId,
 			OrderByComparator<TrashEntry> orderByComparator)
 		throws com.liferay.trash.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_C_Last(
+		return getPersistence().findByG_CN_Last(
 			groupId, classNameId, orderByComparator);
 	}
 
@@ -767,11 +767,11 @@ public class TrashEntryUtil {
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching trash entry, or <code>null</code> if a matching trash entry could not be found
 	 */
-	public static TrashEntry fetchByG_C_Last(
+	public static TrashEntry fetchByG_CN_Last(
 		long groupId, long classNameId,
 		OrderByComparator<TrashEntry> orderByComparator) {
 
-		return getPersistence().fetchByG_C_Last(
+		return getPersistence().fetchByG_CN_Last(
 			groupId, classNameId, orderByComparator);
 	}
 
@@ -785,12 +785,12 @@ public class TrashEntryUtil {
 	 * @return the previous, current, and next trash entry
 	 * @throws NoSuchEntryException if a trash entry with the primary key could not be found
 	 */
-	public static TrashEntry[] findByG_C_PrevAndNext(
+	public static TrashEntry[] findByG_CN_PrevAndNext(
 			long entryId, long groupId, long classNameId,
 			OrderByComparator<TrashEntry> orderByComparator)
 		throws com.liferay.trash.exception.NoSuchEntryException {
 
-		return getPersistence().findByG_C_PrevAndNext(
+		return getPersistence().findByG_CN_PrevAndNext(
 			entryId, groupId, classNameId, orderByComparator);
 	}
 
@@ -800,8 +800,8 @@ public class TrashEntryUtil {
 	 * @param groupId the group ID
 	 * @param classNameId the class name ID
 	 */
-	public static void removeByG_C(long groupId, long classNameId) {
-		getPersistence().removeByG_C(groupId, classNameId);
+	public static void removeByG_CN(long groupId, long classNameId) {
+		getPersistence().removeByG_CN(groupId, classNameId);
 	}
 
 	/**
@@ -811,8 +811,195 @@ public class TrashEntryUtil {
 	 * @param classNameId the class name ID
 	 * @return the number of matching trash entries
 	 */
-	public static int countByG_C(long groupId, long classNameId) {
-		return getPersistence().countByG_C(groupId, classNameId);
+	public static int countByG_CN(long groupId, long classNameId) {
+		return getPersistence().countByG_CN(groupId, classNameId);
+	}
+
+	/**
+	 * Returns all the trash entries where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @return the matching trash entries
+	 */
+	public static List<TrashEntry> findByC_CN(
+		long companyId, long classNameId) {
+
+		return getPersistence().findByC_CN(companyId, classNameId);
+	}
+
+	/**
+	 * Returns a range of all the trash entries where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>TrashEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param start the lower bound of the range of trash entries
+	 * @param end the upper bound of the range of trash entries (not inclusive)
+	 * @return the range of matching trash entries
+	 */
+	public static List<TrashEntry> findByC_CN(
+		long companyId, long classNameId, int start, int end) {
+
+		return getPersistence().findByC_CN(companyId, classNameId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the trash entries where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>TrashEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param start the lower bound of the range of trash entries
+	 * @param end the upper bound of the range of trash entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching trash entries
+	 */
+	public static List<TrashEntry> findByC_CN(
+		long companyId, long classNameId, int start, int end,
+		OrderByComparator<TrashEntry> orderByComparator) {
+
+		return getPersistence().findByC_CN(
+			companyId, classNameId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the trash entries where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>TrashEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param start the lower bound of the range of trash entries
+	 * @param end the upper bound of the range of trash entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching trash entries
+	 */
+	public static List<TrashEntry> findByC_CN(
+		long companyId, long classNameId, int start, int end,
+		OrderByComparator<TrashEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findByC_CN(
+			companyId, classNameId, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first trash entry in the ordered set where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching trash entry
+	 * @throws NoSuchEntryException if a matching trash entry could not be found
+	 */
+	public static TrashEntry findByC_CN_First(
+			long companyId, long classNameId,
+			OrderByComparator<TrashEntry> orderByComparator)
+		throws com.liferay.trash.exception.NoSuchEntryException {
+
+		return getPersistence().findByC_CN_First(
+			companyId, classNameId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first trash entry in the ordered set where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching trash entry, or <code>null</code> if a matching trash entry could not be found
+	 */
+	public static TrashEntry fetchByC_CN_First(
+		long companyId, long classNameId,
+		OrderByComparator<TrashEntry> orderByComparator) {
+
+		return getPersistence().fetchByC_CN_First(
+			companyId, classNameId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last trash entry in the ordered set where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching trash entry
+	 * @throws NoSuchEntryException if a matching trash entry could not be found
+	 */
+	public static TrashEntry findByC_CN_Last(
+			long companyId, long classNameId,
+			OrderByComparator<TrashEntry> orderByComparator)
+		throws com.liferay.trash.exception.NoSuchEntryException {
+
+		return getPersistence().findByC_CN_Last(
+			companyId, classNameId, orderByComparator);
+	}
+
+	/**
+	 * Returns the last trash entry in the ordered set where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching trash entry, or <code>null</code> if a matching trash entry could not be found
+	 */
+	public static TrashEntry fetchByC_CN_Last(
+		long companyId, long classNameId,
+		OrderByComparator<TrashEntry> orderByComparator) {
+
+		return getPersistence().fetchByC_CN_Last(
+			companyId, classNameId, orderByComparator);
+	}
+
+	/**
+	 * Returns the trash entries before and after the current trash entry in the ordered set where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param entryId the primary key of the current trash entry
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next trash entry
+	 * @throws NoSuchEntryException if a trash entry with the primary key could not be found
+	 */
+	public static TrashEntry[] findByC_CN_PrevAndNext(
+			long entryId, long companyId, long classNameId,
+			OrderByComparator<TrashEntry> orderByComparator)
+		throws com.liferay.trash.exception.NoSuchEntryException {
+
+		return getPersistence().findByC_CN_PrevAndNext(
+			entryId, companyId, classNameId, orderByComparator);
+	}
+
+	/**
+	 * Removes all the trash entries where companyId = &#63; and classNameId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 */
+	public static void removeByC_CN(long companyId, long classNameId) {
+		getPersistence().removeByC_CN(companyId, classNameId);
+	}
+
+	/**
+	 * Returns the number of trash entries where companyId = &#63; and classNameId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param classNameId the class name ID
+	 * @return the number of matching trash entries
+	 */
+	public static int countByC_CN(long companyId, long classNameId) {
+		return getPersistence().countByC_CN(companyId, classNameId);
 	}
 
 	/**
@@ -823,10 +1010,10 @@ public class TrashEntryUtil {
 	 * @return the matching trash entry
 	 * @throws NoSuchEntryException if a matching trash entry could not be found
 	 */
-	public static TrashEntry findByC_C(long classNameId, long classPK)
+	public static TrashEntry findByCN_CPK(long classNameId, long classPK)
 		throws com.liferay.trash.exception.NoSuchEntryException {
 
-		return getPersistence().findByC_C(classNameId, classPK);
+		return getPersistence().findByCN_CPK(classNameId, classPK);
 	}
 
 	/**
@@ -836,8 +1023,8 @@ public class TrashEntryUtil {
 	 * @param classPK the class pk
 	 * @return the matching trash entry, or <code>null</code> if a matching trash entry could not be found
 	 */
-	public static TrashEntry fetchByC_C(long classNameId, long classPK) {
-		return getPersistence().fetchByC_C(classNameId, classPK);
+	public static TrashEntry fetchByCN_CPK(long classNameId, long classPK) {
+		return getPersistence().fetchByCN_CPK(classNameId, classPK);
 	}
 
 	/**
@@ -848,10 +1035,10 @@ public class TrashEntryUtil {
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching trash entry, or <code>null</code> if a matching trash entry could not be found
 	 */
-	public static TrashEntry fetchByC_C(
+	public static TrashEntry fetchByCN_CPK(
 		long classNameId, long classPK, boolean useFinderCache) {
 
-		return getPersistence().fetchByC_C(
+		return getPersistence().fetchByCN_CPK(
 			classNameId, classPK, useFinderCache);
 	}
 
@@ -862,10 +1049,10 @@ public class TrashEntryUtil {
 	 * @param classPK the class pk
 	 * @return the trash entry that was removed
 	 */
-	public static TrashEntry removeByC_C(long classNameId, long classPK)
+	public static TrashEntry removeByCN_CPK(long classNameId, long classPK)
 		throws com.liferay.trash.exception.NoSuchEntryException {
 
-		return getPersistence().removeByC_C(classNameId, classPK);
+		return getPersistence().removeByCN_CPK(classNameId, classPK);
 	}
 
 	/**
@@ -875,8 +1062,8 @@ public class TrashEntryUtil {
 	 * @param classPK the class pk
 	 * @return the number of matching trash entries
 	 */
-	public static int countByC_C(long classNameId, long classPK) {
-		return getPersistence().countByC_C(classNameId, classPK);
+	public static int countByCN_CPK(long classNameId, long classPK) {
+		return getPersistence().countByCN_CPK(classNameId, classPK);
 	}
 
 	/**

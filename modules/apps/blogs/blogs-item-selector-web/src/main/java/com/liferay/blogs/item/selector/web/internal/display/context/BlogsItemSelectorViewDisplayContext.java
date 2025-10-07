@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 import jakarta.portlet.PortletException;
@@ -125,7 +126,7 @@ public class BlogsItemSelectorViewDisplayContext {
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(_portletURL, liferayPortletResponse)
 		).setParameter(
-			"selectedTab", getTitle(httpServletRequest.getLocale())
+			"selectedTab", _getSelectedTab()
 		).buildPortletURL();
 	}
 
@@ -172,6 +173,16 @@ public class BlogsItemSelectorViewDisplayContext {
 		return _blogsFileUploadsConfiguration;
 	}
 
+	private String _getSelectedTab() {
+		if (_selectedTab != null) {
+			return _selectedTab;
+		}
+
+		_selectedTab = ParamUtil.getString(_httpServletRequest, "selectedTab");
+
+		return _selectedTab;
+	}
+
 	private final BlogsEntryLocalService _blogsEntryLocalService;
 	private BlogsFileUploadsConfiguration _blogsFileUploadsConfiguration;
 	private final BlogsItemSelectorCriterion _blogsItemSelectorCriterion;
@@ -183,5 +194,6 @@ public class BlogsItemSelectorViewDisplayContext {
 	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
+	private String _selectedTab;
 
 }

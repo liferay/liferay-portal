@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<CalendarAdminPortletDataHandler self-path="/group/35791/portlet/com_liferay_calendar_web_portlet_CalendarAdminPortlet/35791/portlet-data.xml">
+	<Calendar>
+		<staged-model group-id="35791" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" path="/group/35791/com.liferay.calendar.model.Calendar/36173.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.CalendarResource" class-pk="36176" attached-class-name="com.liferay.portal.kernel.model.Group" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="191e7eeb-2e10-1e20-2d1b-0ab066fe2052" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+	</Calendar>
+	<CalendarResource>
+		<staged-model group-id="35791" uuid="191e7eeb-2e10-1e20-2d1b-0ab066fe2052" path="/group/35791/com.liferay.calendar.model.CalendarResource/36176.xml" attached-class-name="com.liferay.portal.kernel.model.Group" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.Calendar" class-pk="36173" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+	</CalendarResource>
+	<CalendarNotificationTemplate>
+		<staged-model group-id="35791" uuid="38427a69-8ef5-f7f0-8357-12215b48cc67" path="/group/35791/com.liferay.calendar.model.CalendarNotificationTemplate/36174.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.Calendar" class-pk="36173" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="35791" uuid="42280e90-e56f-612f-ccac-821d2e9d2ba5" path="/group/35791/com.liferay.calendar.model.CalendarNotificationTemplate/36175.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.Calendar" class-pk="36173" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="35791" uuid="ef9c78e5-f117-3bb1-b97e-cbed496223a4" path="/group/35791/com.liferay.calendar.model.CalendarNotificationTemplate/36178.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.Calendar" class-pk="36173" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+		<staged-model group-id="35791" uuid="6d50eec8-8c08-0163-c92f-cbe5526e38c9" path="/group/35791/com.liferay.calendar.model.CalendarNotificationTemplate/36179.xml" user-uuid="14278c55-68a2-2768-c037-34dbba5044c3" asset-entry-priority="0.0">
+			<references>
+				<reference class-name="com.liferay.calendar.model.Calendar" class-pk="36173" group-id="35791" group-key="Site Name" live-group-id="35791" type="strong" uuid="6fd1050d-0a17-aa3f-889d-13889fed9dad" company-id="27744324501275" missing="false"/>
+			</references>
+		</staged-model>
+	</CalendarNotificationTemplate>
+</CalendarAdminPortletDataHandler>

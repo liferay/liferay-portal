@@ -4,7 +4,10 @@
  */
 
 export enum AccountRoleType {
+	ADMINISTRATOR = 'Administrator',
 	SOLUTION_PUBLISHER = 'Solution Publisher',
+	SSA = 'SSA',
+	SSA_ADMIN = 'SSA Admin',
 }
 
 export enum AccountType {

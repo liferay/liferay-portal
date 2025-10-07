@@ -196,7 +196,7 @@ public class TextEmbeddingRetrieverImpl implements TextEmbeddingRetriever {
 					_removeTextEmbeddingProvider("vertexAI");
 				}
 			},
-			MapUtil.singletonDictionary("featureFlagKey", "LPD-31789"));
+			MapUtil.singletonDictionary("feature.flag.key", "LPD-31789"));
 	}
 
 	@Deactivate

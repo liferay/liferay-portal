@@ -165,7 +165,7 @@ public class RepositoryEntryModelImpl
 	public static final long REPOSITORYENTRYID_COLUMN_BITMASK = 32L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.RepositoryEntry"));
 
 	public RepositoryEntryModelImpl() {

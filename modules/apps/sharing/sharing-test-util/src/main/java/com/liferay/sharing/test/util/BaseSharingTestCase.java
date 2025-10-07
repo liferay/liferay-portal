@@ -308,7 +308,7 @@ public abstract class BaseSharingTestCase<T extends ClassedModel> {
 						model.getModelClassName()),
 					"))"),
 				permissionSQLContributor.getPermissionSQL(
-					model.getModelClassName(), "1234", null, null, null));
+					model.getModelClassName(), "1234", null, null));
 		}
 		finally {
 			_userGroupLocalService.deleteUserUserGroup(

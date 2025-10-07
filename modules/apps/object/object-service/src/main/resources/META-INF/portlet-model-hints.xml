@@ -56,11 +56,14 @@
 		</field>
 		<field name="enableCategorization" type="boolean" />
 		<field name="enableComments" type="boolean" />
+		<field name="enableFormContainer" type="boolean" />
 		<field name="enableFriendlyURLCustomization" type="boolean" />
 		<field name="enableIndexSearch" type="boolean" />
 		<field name="enableLocalization" type="boolean" />
 		<field name="enableObjectEntryDraft" type="boolean" />
 		<field name="enableObjectEntryHistory" type="boolean" />
+		<field name="enableObjectEntrySchedule" type="boolean" />
+		<field name="enableObjectEntrySubscription" type="boolean" />
 		<field name="enableObjectEntryVersioning" type="boolean" />
 		<field name="friendlyURLSeparator" type="String" />
 		<field localized="true" name="label" type="String">
@@ -110,6 +113,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="headObjectEntryId" type="long" />
 		<field name="objectDefinitionId" type="long" />
 		<field name="objectEntryFolderId" type="long" />
 		<field name="rootObjectEntryId" type="long" />
@@ -147,6 +151,7 @@
 		<field name="treePath" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.object.model.ObjectEntryVersion">
 		<field name="mvccVersion" type="long" />

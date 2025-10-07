@@ -6,7 +6,7 @@
 package com.liferay.journal.web.internal.display.context;
 
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalServiceUtil;
 import com.liferay.depot.model.DepotEntryGroupRel;
@@ -199,15 +199,15 @@ public class JournalEditArticleDisplayContext {
 		).put(
 			"selectAssetDisplayPageURL",
 			() -> {
-				AssetDisplayPageSelectorCriterion
-					assetDisplayPageSelectorCriterion =
-						new AssetDisplayPageSelectorCriterion();
+				AssetDisplayPageItemSelectorCriterion
+					assetDisplayPageItemSelectorCriterion =
+						new AssetDisplayPageItemSelectorCriterion();
 
-				assetDisplayPageSelectorCriterion.setClassNameId(
+				assetDisplayPageItemSelectorCriterion.setClassNameId(
 					PortalUtil.getClassNameId(JournalArticle.class));
-				assetDisplayPageSelectorCriterion.setClassTypeId(
+				assetDisplayPageItemSelectorCriterion.setClassTypeId(
 					getDDMStructureId());
-				assetDisplayPageSelectorCriterion.
+				assetDisplayPageItemSelectorCriterion.
 					setDesiredItemSelectorReturnTypes(
 						new UUIDItemSelectorReturnType());
 
@@ -216,7 +216,7 @@ public class JournalEditArticleDisplayContext {
 						RequestBackedPortletURLFactoryUtil.create(
 							_httpServletRequest),
 						selectAssetDisplayPageEventName,
-						assetDisplayPageSelectorCriterion)
+						assetDisplayPageItemSelectorCriterion)
 				).buildString();
 			}
 		).put(
@@ -1642,16 +1642,18 @@ public class JournalEditArticleDisplayContext {
 
 		List<ItemSelectorCriterion> itemSelectorCriteria = new ArrayList<>();
 
-		AssetDisplayPageSelectorCriterion assetDisplayPageSelectorCriterion =
-			new AssetDisplayPageSelectorCriterion();
+		AssetDisplayPageItemSelectorCriterion
+			assetDisplayPageItemSelectorCriterion =
+				new AssetDisplayPageItemSelectorCriterion();
 
-		assetDisplayPageSelectorCriterion.setClassNameId(
+		assetDisplayPageItemSelectorCriterion.setClassNameId(
 			PortalUtil.getClassNameId(JournalArticle.class));
-		assetDisplayPageSelectorCriterion.setClassTypeId(getDDMStructureId());
-		assetDisplayPageSelectorCriterion.setDesiredItemSelectorReturnTypes(
+		assetDisplayPageItemSelectorCriterion.setClassTypeId(
+			getDDMStructureId());
+		assetDisplayPageItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new UUIDItemSelectorReturnType());
 
-		itemSelectorCriteria.add(assetDisplayPageSelectorCriterion);
+		itemSelectorCriteria.add(assetDisplayPageItemSelectorCriterion);
 
 		if (showPortletLayouts) {
 			LayoutItemSelectorCriterion layoutItemSelectorCriterion =

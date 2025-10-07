@@ -77,8 +77,6 @@ public class RenderPortletAction implements Action {
 			httpServletRequest, "p_p_static");
 
 		if (staticPortlet) {
-			portlet = (Portlet)portlet.clone();
-
 			portlet.setStatic(true);
 
 			boolean staticStartPortlet = ParamUtil.getBoolean(

@@ -66,7 +66,7 @@ public class OrganizationVerticalCard extends BaseVerticalCard {
 
 	@Override
 	public List<LabelItem> getLabels() {
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return LabelItemListBuilder.add(
 				labelItem -> labelItem.setStatus(_organization.getStatus())
 			).build();
@@ -77,7 +77,7 @@ public class OrganizationVerticalCard extends BaseVerticalCard {
 
 	@Override
 	public Map<String, String> getLabelStylesMap() {
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return HashMapBuilder.put(
 				"labelStylesMap",
 				WorkflowConstants.getStatusStyle(_organization.getStatus())

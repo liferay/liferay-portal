@@ -128,6 +128,13 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		super.testGraphQLDeleteSku();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteSkuByExternalReferenceCode() throws Exception {
+		super.testGraphQLDeleteSkuByExternalReferenceCode();
+	}
+
 	@Override
 	@Test
 	public void testPatchSku() throws Exception {

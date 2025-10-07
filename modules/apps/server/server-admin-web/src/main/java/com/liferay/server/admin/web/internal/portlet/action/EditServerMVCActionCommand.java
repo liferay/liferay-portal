@@ -20,8 +20,6 @@ import com.liferay.document.library.kernel.store.Store;
 import com.liferay.document.library.preview.processor.BasePreviewableDLProcessor;
 import com.liferay.image.Ghostscript;
 import com.liferay.image.ImageMagick;
-import com.liferay.mail.kernel.model.Account;
-import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -47,6 +45,7 @@ import com.liferay.portal.kernel.io.unsync.UnsyncPrintWriter;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.log.SanitizerLogWrapper;
+import com.liferay.portal.kernel.log4j.Log4JUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
@@ -97,6 +96,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.ThreadUtil;
@@ -104,12 +104,10 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.log4j.Log4JUtil;
 import com.liferay.portal.security.membershippolicy.RoleMembershipPolicyFactoryUtil;
 import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.security.membershippolicy.UserGroupMembershipPolicyFactoryUtil;
 import com.liferay.portal.util.MaintenanceUtil;
-import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.ShutdownUtil;
 import com.liferay.server.admin.web.internal.constants.ImageMagickResourceLimitConstants;
 import com.liferay.server.admin.web.internal.scripting.util.ServerScriptingUtil;
@@ -163,23 +161,8 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-		String redirect = ParamUtil.getString(actionRequest, "redirect");
-
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
-
-		PortletPreferences portletPreferences = _prefsProps.getPreferences(
-			ParamUtil.getLong(actionRequest, "preferencesCompanyId"));
-
-		if (permissionChecker.isCompanyAdmin() && cmd.equals("updateMail")) {
-			_updateMail(actionRequest, portletPreferences);
-
-			sendRedirect(actionRequest, actionResponse, redirect);
-
-			return;
-		}
 
 		if (!permissionChecker.isOmniadmin()) {
 			SessionErrors.add(
@@ -190,6 +173,10 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 
 			return;
 		}
+
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
 
 		if (!cmd.equals("addLogLevel") &&
 			!cmd.equals("dlGenerateAudioPreviews") &&
@@ -281,13 +268,13 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 			_threadDump();
 		}
 		else if (cmd.equals("updateExternalServices")) {
+			PortletPreferences portletPreferences = _prefsProps.getPreferences(
+				ParamUtil.getLong(actionRequest, "preferencesCompanyId"));
+
 			_updateExternalServices(actionRequest, portletPreferences);
 		}
 		else if (cmd.equals("updateLogLevels")) {
 			_updateLogLevels(actionRequest);
-		}
-		else if (cmd.equals("updateMail")) {
-			_updateMail(actionRequest, portletPreferences);
 		}
 		else if (cmd.equals("updatePortalProperties")) {
 			_updatePortalProperties(actionRequest);
@@ -815,85 +802,6 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		_updateLogLevels(logLevels);
 	}
 
-	private void _updateMail(
-			ActionRequest actionRequest, PortletPreferences portletPreferences)
-		throws Exception {
-
-		String advancedProperties = ParamUtil.getString(
-			actionRequest, "advancedProperties");
-		String pop3Host = ParamUtil.getString(actionRequest, "pop3Host");
-		String pop3Password = ParamUtil.getString(
-			actionRequest, "pop3Password");
-		int pop3Port = ParamUtil.getInteger(actionRequest, "pop3Port");
-		boolean pop3Secure = ParamUtil.getBoolean(actionRequest, "pop3Secure");
-		String pop3User = ParamUtil.getString(actionRequest, "pop3User");
-		boolean popServerNotificationsEnabled = ParamUtil.getBoolean(
-			actionRequest, "popServerNotificationsEnabled");
-		String smtpHost = ParamUtil.getString(actionRequest, "smtpHost");
-		String smtpPassword = ParamUtil.getString(
-			actionRequest, "smtpPassword");
-		int smtpPort = ParamUtil.getInteger(actionRequest, "smtpPort");
-		boolean smtpSecure = ParamUtil.getBoolean(actionRequest, "smtpSecure");
-		boolean smtpStartTLSEnable = ParamUtil.getBoolean(
-			actionRequest, "smtpStartTLSEnable");
-		String smtpUser = ParamUtil.getString(actionRequest, "smtpUser");
-
-		String storeProtocol = Account.PROTOCOL_POP;
-
-		if (pop3Secure) {
-			storeProtocol = Account.PROTOCOL_POPS;
-		}
-
-		String transportProtocol = Account.PROTOCOL_SMTP;
-
-		if (smtpSecure) {
-			transportProtocol = Account.PROTOCOL_SMTPS;
-		}
-
-		portletPreferences.setValue(PropsKeys.MAIL_SESSION_MAIL, "true");
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_ADVANCED_PROPERTIES,
-			advancedProperties);
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_POP3_HOST, pop3Host);
-
-		if (!pop3Password.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
-			portletPreferences.setValue(
-				PropsKeys.MAIL_SESSION_MAIL_POP3_PASSWORD, pop3Password);
-		}
-
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_POP3_PORT, String.valueOf(pop3Port));
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_POP3_USER, pop3User);
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_SMTP_HOST, smtpHost);
-
-		if (!smtpPassword.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
-			portletPreferences.setValue(
-				PropsKeys.MAIL_SESSION_MAIL_SMTP_PASSWORD, smtpPassword);
-		}
-
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_SMTP_PORT, String.valueOf(smtpPort));
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_SMTP_STARTTLS_ENABLE,
-			String.valueOf(smtpStartTLSEnable));
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_SMTP_USER, smtpUser);
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_STORE_PROTOCOL, storeProtocol);
-		portletPreferences.setValue(
-			PropsKeys.MAIL_SESSION_MAIL_TRANSPORT_PROTOCOL, transportProtocol);
-		portletPreferences.setValue(
-			PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED,
-			String.valueOf(popServerNotificationsEnabled));
-
-		portletPreferences.store();
-
-		_mailService.clearSession();
-	}
-
 	private void _updatePortalProperties(ActionRequest actionRequest) {
 		Enumeration<String> enumeration = actionRequest.getParameterNames();
 
@@ -979,9 +887,6 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private LayoutRevisionLocalService _layoutRevisionLocalService;
-
-	@Reference
-	private MailService _mailService;
 
 	@Reference
 	private MessageBus _messageBus;

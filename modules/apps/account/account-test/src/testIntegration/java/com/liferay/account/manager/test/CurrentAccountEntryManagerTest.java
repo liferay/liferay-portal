@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.manager.CurrentAccountEntryManager;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.role.AccountRolePermissionThreadLocal;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
@@ -35,6 +36,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -58,6 +60,11 @@ public class CurrentAccountEntryManagerTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 		_user = UserTestUtil.addUser();
+	}
+
+	@After
+	public void tearDown() {
+		AccountRolePermissionThreadLocal.setAccountEntryIdWithSafeCloseable(0L);
 	}
 
 	@Test
@@ -255,6 +262,8 @@ public class CurrentAccountEntryManagerTest {
 
 		ConfigurationTestUtil.saveConfiguration(
 			RandomTestUtil.randomString(), null);
+
+		AccountRolePermissionThreadLocal.setAccountEntryIdWithSafeCloseable(0L);
 	}
 
 	@Inject

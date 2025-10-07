@@ -16,6 +16,8 @@ import com.liferay.change.tracking.rest.resource.v1_0.CTRemoteResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -635,6 +637,10 @@ public class Query {
 		ctCollectionResource.setContextUriInfo(_uriInfo);
 		ctCollectionResource.setContextUser(_user);
 		ctCollectionResource.setGroupLocalService(_groupLocalService);
+		ctCollectionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		ctCollectionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		ctCollectionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -648,6 +654,10 @@ public class Query {
 		ctEntryResource.setContextUriInfo(_uriInfo);
 		ctEntryResource.setContextUser(_user);
 		ctEntryResource.setGroupLocalService(_groupLocalService);
+		ctEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		ctEntryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		ctEntryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -661,6 +671,10 @@ public class Query {
 		ctProcessResource.setContextUriInfo(_uriInfo);
 		ctProcessResource.setContextUser(_user);
 		ctProcessResource.setGroupLocalService(_groupLocalService);
+		ctProcessResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		ctProcessResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		ctProcessResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -674,6 +688,10 @@ public class Query {
 		ctRemoteResource.setContextUriInfo(_uriInfo);
 		ctRemoteResource.setContextUser(_user);
 		ctRemoteResource.setGroupLocalService(_groupLocalService);
+		ctRemoteResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		ctRemoteResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		ctRemoteResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -694,6 +712,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

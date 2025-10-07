@@ -16,11 +16,13 @@ export const DEFAULT_MINI_CART_CONTEXT_VALUE = {
 	CartViews: {},
 	accountId: 0,
 	actionURLs: {},
+	cartItemsPagination: {},
 	cartState: {},
 	closeCart: () => {},
 	displayDiscountLevels: false,
 	displayTotalItemsQuantity: false,
 	editedItem: null,
+	getCartItems: () => {},
 	guestOrderEnabled: false,
 	isOpen: false,
 	isUpdating: false,
@@ -34,6 +36,7 @@ export const DEFAULT_MINI_CART_CONTEXT_VALUE = {
 	setReplacementSKUList: () => {},
 	summaryDataMapper: () => {},
 	toggleable: true,
+	undoCartItemDeletionDisabled: true,
 	updateCartModel: () => {},
 };
 

@@ -65,10 +65,12 @@ export async function navigateToDXPandDeleteSite({
 }
 
 export async function navigateToSitePage({
+	layout,
 	page,
 	pageName,
 	siteName,
 }: {
+	layout?: Layout;
 	page: Page;
 	pageName: string;
 	siteName?: string;
@@ -78,10 +80,18 @@ export async function navigateToSitePage({
 	if (siteName) {
 		const siteNameURL = siteName.replace(/ /g, '-').toLowerCase();
 
-		await page.goto(
-			`${liferayConfig.environment.baseUrl}/web/${siteNameURL}/` +
-				`${pageNameURL}`
-		);
+		if (layout) {
+			await page.goto(
+				`${liferayConfig.environment.baseUrl}/web/${siteNameURL}/` +
+					`${pageNameURL}?p_l_mode=edit`
+			);
+		}
+		else {
+			await page.goto(
+				`${liferayConfig.environment.baseUrl}/web/${siteNameURL}/` +
+					`${pageNameURL}`
+			);
+		}
 	}
 	else {
 		await page.goto(

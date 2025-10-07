@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.UserGroupGroupRole;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
@@ -48,6 +49,11 @@ public class UserGroupDTOConverter
 				setExternalReferenceCode(userGroup::getExternalReferenceCode);
 				setId(userGroup::getUserGroupId);
 				setName(userGroup::getName);
+				setNumberOfUserAccounts(
+					() -> NestedFieldsSupplier.supply(
+						"numberOfUserAccounts",
+						nestedField -> _userLocalService.getUserGroupUsersCount(
+							userGroup.getUserGroupId())));
 				setRoles(
 					() -> NestedFieldsSupplier.supply(
 						"roles",
@@ -82,5 +88,8 @@ public class UserGroupDTOConverter
 
 	@Reference
 	private UserGroupLocalService _userGroupLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

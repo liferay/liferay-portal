@@ -8,6 +8,7 @@ package com.liferay.object.web.internal.asset.model;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.display.context.ObjectEntryDisplayContextFactory;
 import com.liferay.object.model.ObjectDefinition;
@@ -32,6 +33,7 @@ public class ObjectEntryAssetRendererFactory
 
 	public ObjectEntryAssetRendererFactory(
 		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
+		DepotEntryLocalService depotEntryLocalService,
 		ObjectDefinition objectDefinition,
 		ObjectEntryDisplayContextFactory objectEntryDisplayContextFactory,
 		ObjectEntryLocalService objectEntryLocalService,
@@ -43,6 +45,7 @@ public class ObjectEntryAssetRendererFactory
 
 		_assetDisplayPageFriendlyURLProvider =
 			assetDisplayPageFriendlyURLProvider;
+		_depotEntryLocalService = depotEntryLocalService;
 		_objectDefinition = objectDefinition;
 		_objectEntryDisplayContextFactory = objectEntryDisplayContextFactory;
 		_objectEntryLocalService = objectEntryLocalService;
@@ -60,7 +63,8 @@ public class ObjectEntryAssetRendererFactory
 
 		ObjectEntryAssetRenderer objectEntryAssetRenderer =
 			new ObjectEntryAssetRenderer(
-				_assetDisplayPageFriendlyURLProvider, _objectDefinition,
+				_assetDisplayPageFriendlyURLProvider, _depotEntryLocalService,
+				_objectDefinition,
 				_objectEntryLocalService.getObjectEntry(classPK),
 				_objectEntryDisplayContextFactory, _objectEntryService);
 
@@ -119,6 +123,7 @@ public class ObjectEntryAssetRendererFactory
 
 	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+	private final DepotEntryLocalService _depotEntryLocalService;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryDisplayContextFactory
 		_objectEntryDisplayContextFactory;

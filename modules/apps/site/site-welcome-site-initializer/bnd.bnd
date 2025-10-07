@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Welcome Site Initializer
 Bundle-SymbolicName: com.liferay.site.welcome.site.initializer
-Bundle-Version: 1.0.36
+Bundle-Version: 1.0.37
 Web-ContextPath: /site-welcome-site-initializer

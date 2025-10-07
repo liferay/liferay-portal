@@ -68,12 +68,14 @@ public class CSDiagramEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", ctCollectionId=");
 		sb.append(ctCollectionId);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", CSDiagramEntryId=");
 		sb.append(CSDiagramEntryId);
 		sb.append(", companyId=");
@@ -111,6 +113,14 @@ public class CSDiagramEntryCacheModel
 
 		csDiagramEntryImpl.setMvccVersion(mvccVersion);
 		csDiagramEntryImpl.setCtCollectionId(ctCollectionId);
+
+		if (externalReferenceCode == null) {
+			csDiagramEntryImpl.setExternalReferenceCode("");
+		}
+		else {
+			csDiagramEntryImpl.setExternalReferenceCode(externalReferenceCode);
+		}
+
 		csDiagramEntryImpl.setCSDiagramEntryId(CSDiagramEntryId);
 		csDiagramEntryImpl.setCompanyId(companyId);
 		csDiagramEntryImpl.setUserId(userId);
@@ -166,6 +176,7 @@ public class CSDiagramEntryCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
+		externalReferenceCode = objectInput.readUTF();
 
 		CSDiagramEntryId = objectInput.readLong();
 
@@ -194,6 +205,13 @@ public class CSDiagramEntryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		objectOutput.writeLong(ctCollectionId);
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
+		}
 
 		objectOutput.writeLong(CSDiagramEntryId);
 
@@ -238,6 +256,7 @@ public class CSDiagramEntryCacheModel
 
 	public long mvccVersion;
 	public long ctCollectionId;
+	public String externalReferenceCode;
 	public long CSDiagramEntryId;
 	public long companyId;
 	public long userId;

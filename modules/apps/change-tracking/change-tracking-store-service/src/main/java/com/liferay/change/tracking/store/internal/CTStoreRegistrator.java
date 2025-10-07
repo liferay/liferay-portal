@@ -9,8 +9,8 @@ import com.liferay.document.library.kernel.store.Store;
 import com.liferay.portal.change.tracking.store.CTStoreFactory;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.documentlibrary.store.DLStoreImpl;
 
 import org.osgi.framework.BundleContext;

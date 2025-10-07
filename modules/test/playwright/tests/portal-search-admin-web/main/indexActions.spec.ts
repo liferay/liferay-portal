@@ -40,6 +40,6 @@ test('should have a human-readable label for every index action', async ({
 			searchAdminPage.indexActionsReindexActionItems
 				.nth(i)
 				.locator('.list-group-title')
-		).toHaveText(/^[\w\s]+ \([\w.]+\)$/);
+		).toHaveText(/^[\w\s]+ \([\w.]+(#[\w\d]+)*\)$/);
 	}
 });

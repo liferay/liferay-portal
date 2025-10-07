@@ -1,10 +1,12 @@
 @component-name = "portal-analytics-cloud"
 definition {
 
-	property ci.retries.disabled = "true";
+	property analytics.cloud.release = "true";
+	property analytics.cloud.upstream = "true";
 	property custom.properties = "jsonws.web.service.paths.excludes=";
 	property portal.release = "true";
 	property portal.upstream = "true";
+	property property.group = "analytics.cloud.profile";
 	property testray.main.component.name = "Segmentation";
 
 	setUp {
@@ -34,170 +36,11 @@ definition {
 			type = "content");
 	}
 
-	@description = "LPS-130344: Segment member preview count shows the correct number of users when segments are combined"
-	@priority = 5
-	test AddNewExperienceBasedOtherSegmentsSegment {
-		property portal.acceptance = "true";
-
-		task ("Add user via JSONWS") {
-			JSONUser.addUser(
-				userEmailAddress = "userea2@liferay.com",
-				userFirstName = "userfn2",
-				userLastName = "userln2",
-				userScreenName = "usersn2");
-
-			JSONUser.setFirstPassword(
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "userea2@liferay.com");
-		}
-
-		task ("Add two segments via JSONWS") {
-			var segmentId1 = JSONSegmentsentry.addSegment(
-				fieldName = "Last Name",
-				groupName = "Test Site Name",
-				operator = "equals",
-				segmentName = "Segment With User1",
-				text = "userln1");
-			var segmentId2 = JSONSegmentsentry.addSegment(
-				fieldName = "Last Name",
-				groupName = "Test Site Name",
-				operator = "equals",
-				segmentName = "Segment With User2",
-				text = "userln2");
-		}
-
-		task ("Add a segment with two conditions via JSONWS") {
-			JSONSegmentsentry.addSegment(
-				conditionType = "Segments",
-				fieldName = "Segment",
-				firstSegmentId = ${segmentId1},
-				groupName = "Test Site Name",
-				operator = "Or",
-				secondSegmentId = ${segmentId2},
-				segmentName = "Segment Title");
-		}
-
-		task ("Navigate to page editor") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Experience Content Page",
-				siteName = "Test Site Name");
-		}
-
-		task ("Add a heading fragment to page") {
-			PageEditor.addFragment(
-				collectionName = "Basic Components",
-				fragmentName = "Heading");
-		}
-
-		task ("Add a experience to page") {
-			PageEditor.addExperience(
-				experienceName = "New Experience",
-				segmentName = "Segment Title");
-		}
-
-		task ("Modify the experience created") {
-			PageEditor.editFragmentText(
-				fragmentName = "Heading",
-				id = "element-text",
-				text = "User1 and User2 will see this heading");
-		}
-
-		task ("Priotitize the experience created") {
-			PageEditor.prioritizeExperience(experienceName = "New Experience");
-
-			PageEditor.publish();
-		}
-
-		task ("Log in with both users and check the experience dispalyed") {
-			for (var num : list "1,2") {
-				User.logoutAndLoginPG(
-					freeLogin = "true",
-					userLoginEmailAddress = "userea${num}@liferay.com",
-					userLoginFullName = "userfn${num} userln${num}");
-
-				Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/experience-content-page");
-
-				AssertTextEquals(
-					locator1 = "Experience#FRAGMENT_HEADING",
-					value1 = "User1 and User2 will see this heading");
-			}
-		}
-	}
-
-	@description = "LPS-163095 Bug: SegmentRequestContentContributor are not propertly registered"
-	@priority = 4
-	test AddNewExperienceSessionIPGeocoderCountry {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Add a session IP Geocoder Country segment") {
-			JSONSegmentsentry.addSegment(
-				conditionType = "Session",
-				fieldName = "IP Geocoder Country",
-				groupName = "Test Site Name",
-				operator = "equals",
-				segmentName = "IP Geocoder Country Segment",
-				selectedOption = "Spain");
-		}
-
-		task ("Navigate to page editor") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Experience Content Page",
-				siteName = "Test Site Name");
-		}
-
-		task ("Add a heading fragment to page") {
-			PageEditor.addFragment(
-				collectionName = "Basic Components",
-				fragmentName = "Heading");
-
-			PageEditor.editFragmentText(
-				fragmentName = "Heading",
-				id = "element-text",
-				text = "Default");
-
-			Button.clickPublish();
-		}
-
-		task ("Add a experience to page") {
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Experience Content Page",
-				siteName = "Test Site Name");
-
-			PageEditor.addExperience(
-				experienceName = "IP Geocoder Country Experience",
-				segmentName = "IP Geocoder Country Segment");
-		}
-
-		task ("Modify the experience created") {
-			PageEditor.editFragmentText(
-				fragmentName = "Heading",
-				id = "element-text",
-				text = "Spanish Segment Heading");
-		}
-
-		task ("Priotitize the experience created") {
-			PageEditor.prioritizeExperience(experienceName = "IP Geocoder Country Experience");
-
-			Button.clickPublish();
-		}
-
-		task ("Check that correct experience is displayed using an spanish IP address") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/experience-content-page?mockIPGeocoderRemoteAddr=57.78.128.0");
-
-			AssertTextEquals(
-				locator1 = "Experience#FRAGMENT_HEADING",
-				value1 = "Spanish Segment Heading");
-		}
-	}
-
 	@description = "LPS-125710 When a user, that Belongs To two or more different segments with experiences for them and these experiences are below of any other Anyone-targeted experience, lands on the page, the Anyone-targeted experience labeled as active will be shown"
 	@priority = 3
 	@uitest
 	test AddTwoExperiencesBelowDefault {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Add segment for the user created") {
 			JSONSegmentsentry.addSegment(
@@ -270,7 +113,7 @@ definition {
 	@priority = 3
 	@uitest
 	test AddTwoExperiencesOverDefault {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Add segment for the user created") {
 			JSONSegmentsentry.addSegment(

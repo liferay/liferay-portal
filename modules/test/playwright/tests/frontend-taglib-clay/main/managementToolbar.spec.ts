@@ -5,37 +5,20 @@
 
 import {Locator, expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../fixtures/loginTest';
 import {claySamplePageTest} from './fixtures/claySamplePageTest';
+import {TabName} from './pages/ClaySamplePage';
 
 export const test = mergeTests(
-	apiHelpersTest,
 	claySamplePageTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
-	}),
-	isolatedSiteTest,
-	loginTest()
+	})
 );
 
-test.beforeEach(
-	'Setup site and Clay Sample widget',
-	async ({apiHelpers, claySamplePage, page, site}) => {
-		await test.step('Create a content site and the clay sample widget', async () => {
-			await claySamplePage.setupClaySampleWidget({apiHelpers, site});
-		});
-
-		await test.step('Select Management Toolbars tab', async () => {
-			await claySamplePage.selectTab(
-				'Management Toolbars',
-				page.getByRole('heading', {name: 'DEFAULT STATE'})
-			);
-		});
-	}
-);
+test.beforeEach('Select Management Toolbars tab', async ({claySamplePage}) => {
+	await claySamplePage.selectTab(TabName.MANAGEMENT_TOOLBARS);
+});
 
 test.describe('Management Toolbar Default State', () => {
 	test(
@@ -336,7 +319,7 @@ test.describe('Management Toolbar Active State', () => {
 });
 
 test.describe('Management Toolbar Using Display Context', () => {
-	test.skip(
+	test(
 		'Assert the order button can display the correct icons',
 		{tag: '@LPS-144536'},
 		async ({claySamplePage, page}) => {
@@ -368,10 +351,7 @@ test.describe('Management Toolbar Using Display Context', () => {
 			});
 
 			await test.step('Navigate to management toolbar tab', async () => {
-				await page
-					.getByRole('tablist')
-					.getByText('Management Toolbars')
-					.click();
+				await claySamplePage.selectTab(TabName.MANAGEMENT_TOOLBARS);
 			});
 
 			await test.step('Open the order dropdown', async () => {

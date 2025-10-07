@@ -1945,13 +1945,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewRevisionHistoryFieldsPresent() {
-		AssertVisible(
-			key_fieldOption = "Current Version",
-			locator1 = "ProcessBuilderKaleoDesignerReact#DETAILS_FIELDS");
-	}
-
-	@summary = "Default summary"
 	macro viewRevisionHistoryVersion(number = null) {
 		AssertVisible(
 			key_number = ${number},

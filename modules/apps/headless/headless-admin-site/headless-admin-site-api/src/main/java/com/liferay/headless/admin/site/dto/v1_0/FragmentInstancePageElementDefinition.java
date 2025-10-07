@@ -5,13 +5,15 @@
 
 package com.liferay.headless.admin.site.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -60,6 +62,90 @@ public class FragmentInstancePageElementDefinition
 		return ObjectMapperUtil.unsafeReadValue(
 			FragmentInstancePageElementDefinition.class, json);
 	}
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment instance's configuration."
+	)
+	public String getConfiguration() {
+		if (_configurationSupplier != null) {
+			configuration = _configurationSupplier.get();
+
+			_configurationSupplier = null;
+		}
+
+		return configuration;
+	}
+
+	public void setConfiguration(String configuration) {
+		this.configuration = configuration;
+
+		_configurationSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setConfiguration(
+		UnsafeSupplier<String, Exception> configurationUnsafeSupplier) {
+
+		_configurationSupplier = () -> {
+			try {
+				return configurationUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment instance's configuration.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String configuration;
+
+	@JsonIgnore
+	private Supplier<String> _configurationSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment instance's CSS."
+	)
+	public String getCss() {
+		if (_cssSupplier != null) {
+			css = _cssSupplier.get();
+
+			_cssSupplier = null;
+		}
+
+		return css;
+	}
+
+	public void setCss(String css) {
+		this.css = css;
+
+		_cssSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCss(UnsafeSupplier<String, Exception> cssUnsafeSupplier) {
+		_cssSupplier = () -> {
+			try {
+				return cssUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment instance's CSS.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String css;
+
+	@JsonIgnore
+	private Supplier<String> _cssSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "A list of CSS classes that are applied to the fragment instance."
@@ -244,81 +330,36 @@ public class FragmentInstancePageElementDefinition
 	private Supplier<Date> _datePropagatedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The fragment instance's most recent publication date."
+		description = "The external reference code of the corresponding fragment instance in the draft of the page. Available only in the published page specification."
 	)
-	public Date getDatePublished() {
-		if (_datePublishedSupplier != null) {
-			datePublished = _datePublishedSupplier.get();
+	public String getDraftFragmentInstanceExternalReferenceCode() {
+		if (_draftFragmentInstanceExternalReferenceCodeSupplier != null) {
+			draftFragmentInstanceExternalReferenceCode =
+				_draftFragmentInstanceExternalReferenceCodeSupplier.get();
 
-			_datePublishedSupplier = null;
+			_draftFragmentInstanceExternalReferenceCodeSupplier = null;
 		}
 
-		return datePublished;
+		return draftFragmentInstanceExternalReferenceCode;
 	}
 
-	public void setDatePublished(Date datePublished) {
-		this.datePublished = datePublished;
+	public void setDraftFragmentInstanceExternalReferenceCode(
+		String draftFragmentInstanceExternalReferenceCode) {
 
-		_datePublishedSupplier = null;
-	}
+		this.draftFragmentInstanceExternalReferenceCode =
+			draftFragmentInstanceExternalReferenceCode;
 
-	@JsonIgnore
-	public void setDatePublished(
-		UnsafeSupplier<Date, Exception> datePublishedUnsafeSupplier) {
-
-		_datePublishedSupplier = () -> {
-			try {
-				return datePublishedUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The fragment instance's most recent publication date."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Date datePublished;
-
-	@JsonIgnore
-	private Supplier<Date> _datePublishedSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The external reference code of the corresponding page element in the draft of the page. Available only in the published page specification."
-	)
-	public String getDraftPageElementExternalReferenceCode() {
-		if (_draftPageElementExternalReferenceCodeSupplier != null) {
-			draftPageElementExternalReferenceCode =
-				_draftPageElementExternalReferenceCodeSupplier.get();
-
-			_draftPageElementExternalReferenceCodeSupplier = null;
-		}
-
-		return draftPageElementExternalReferenceCode;
-	}
-
-	public void setDraftPageElementExternalReferenceCode(
-		String draftPageElementExternalReferenceCode) {
-
-		this.draftPageElementExternalReferenceCode =
-			draftPageElementExternalReferenceCode;
-
-		_draftPageElementExternalReferenceCodeSupplier = null;
+		_draftFragmentInstanceExternalReferenceCodeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setDraftPageElementExternalReferenceCode(
+	public void setDraftFragmentInstanceExternalReferenceCode(
 		UnsafeSupplier<String, Exception>
-			draftPageElementExternalReferenceCodeUnsafeSupplier) {
+			draftFragmentInstanceExternalReferenceCodeUnsafeSupplier) {
 
-		_draftPageElementExternalReferenceCodeSupplier = () -> {
+		_draftFragmentInstanceExternalReferenceCodeSupplier = () -> {
 			try {
-				return draftPageElementExternalReferenceCodeUnsafeSupplier.
+				return draftFragmentInstanceExternalReferenceCodeUnsafeSupplier.
 					get();
 			}
 			catch (RuntimeException runtimeException) {
@@ -331,13 +372,14 @@ public class FragmentInstancePageElementDefinition
 	}
 
 	@GraphQLField(
-		description = "The external reference code of the corresponding page element in the draft of the page. Available only in the published page specification."
+		description = "The external reference code of the corresponding fragment instance in the draft of the page. Available only in the published page specification."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String draftPageElementExternalReferenceCode;
+	protected String draftFragmentInstanceExternalReferenceCode;
 
 	@JsonIgnore
-	private Supplier<String> _draftPageElementExternalReferenceCodeSupplier;
+	private Supplier<String>
+		_draftFragmentInstanceExternalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The configuration values of the fragment instance."
@@ -434,10 +476,61 @@ public class FragmentInstancePageElementDefinition
 	private Supplier<FragmentField[]> _fragmentFieldsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "An external reference to the fragment."
+		description = "The fragment instance's external reference code."
+	)
+	public String getFragmentInstanceExternalReferenceCode() {
+		if (_fragmentInstanceExternalReferenceCodeSupplier != null) {
+			fragmentInstanceExternalReferenceCode =
+				_fragmentInstanceExternalReferenceCodeSupplier.get();
+
+			_fragmentInstanceExternalReferenceCodeSupplier = null;
+		}
+
+		return fragmentInstanceExternalReferenceCode;
+	}
+
+	public void setFragmentInstanceExternalReferenceCode(
+		String fragmentInstanceExternalReferenceCode) {
+
+		this.fragmentInstanceExternalReferenceCode =
+			fragmentInstanceExternalReferenceCode;
+
+		_fragmentInstanceExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFragmentInstanceExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			fragmentInstanceExternalReferenceCodeUnsafeSupplier) {
+
+		_fragmentInstanceExternalReferenceCodeSupplier = () -> {
+			try {
+				return fragmentInstanceExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The fragment instance's external reference code."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String fragmentInstanceExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _fragmentInstanceExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment reference of the fragment instance."
 	)
 	@Valid
-	public Object getFragmentReference() {
+	public FragmentReference getFragmentReference() {
 		if (_fragmentReferenceSupplier != null) {
 			fragmentReference = _fragmentReferenceSupplier.get();
 
@@ -447,7 +540,7 @@ public class FragmentInstancePageElementDefinition
 		return fragmentReference;
 	}
 
-	public void setFragmentReference(Object fragmentReference) {
+	public void setFragmentReference(FragmentReference fragmentReference) {
 		this.fragmentReference = fragmentReference;
 
 		_fragmentReferenceSupplier = null;
@@ -455,7 +548,8 @@ public class FragmentInstancePageElementDefinition
 
 	@JsonIgnore
 	public void setFragmentReference(
-		UnsafeSupplier<Object, Exception> fragmentReferenceUnsafeSupplier) {
+		UnsafeSupplier<FragmentReference, Exception>
+			fragmentReferenceUnsafeSupplier) {
 
 		_fragmentReferenceSupplier = () -> {
 			try {
@@ -470,12 +564,14 @@ public class FragmentInstancePageElementDefinition
 		};
 	}
 
-	@GraphQLField(description = "An external reference to the fragment.")
+	@GraphQLField(
+		description = "The fragment reference of the fragment instance."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Object fragmentReference;
+	protected FragmentReference fragmentReference;
 
 	@JsonIgnore
-	private Supplier<Object> _fragmentReferenceSupplier;
+	private Supplier<FragmentReference> _fragmentReferenceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The fragment style of the fragment instance page element."
@@ -522,6 +618,62 @@ public class FragmentInstancePageElementDefinition
 
 	@JsonIgnore
 	private Supplier<FragmentStyle> _fragmentStyleSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment instance's type (basic, form)."
+	)
+	@JsonGetter("fragmentType")
+	@Valid
+	public FragmentType getFragmentType() {
+		if (_fragmentTypeSupplier != null) {
+			fragmentType = _fragmentTypeSupplier.get();
+
+			_fragmentTypeSupplier = null;
+		}
+
+		return fragmentType;
+	}
+
+	@JsonIgnore
+	public String getFragmentTypeAsString() {
+		FragmentType fragmentType = getFragmentType();
+
+		if (fragmentType == null) {
+			return null;
+		}
+
+		return fragmentType.toString();
+	}
+
+	public void setFragmentType(FragmentType fragmentType) {
+		this.fragmentType = fragmentType;
+
+		_fragmentTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFragmentType(
+		UnsafeSupplier<FragmentType, Exception> fragmentTypeUnsafeSupplier) {
+
+		_fragmentTypeSupplier = () -> {
+			try {
+				return fragmentTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment instance's type (basic, form).")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected FragmentType fragmentType;
+
+	@JsonIgnore
+	private Supplier<FragmentType> _fragmentTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "A list of fragment viewports of the fragment instance page element."
@@ -571,6 +723,47 @@ public class FragmentInstancePageElementDefinition
 	private Supplier<FragmentViewport[]> _fragmentViewportsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment instance's HTML."
+	)
+	public String getHtml() {
+		if (_htmlSupplier != null) {
+			html = _htmlSupplier.get();
+
+			_htmlSupplier = null;
+		}
+
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
+
+		_htmlSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setHtml(UnsafeSupplier<String, Exception> htmlUnsafeSupplier) {
+		_htmlSupplier = () -> {
+			try {
+				return htmlUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment instance's HTML.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String html;
+
+	@JsonIgnore
+	private Supplier<String> _htmlSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "A flag that indicates whether the fragment instance page element is indexed or not."
 	)
 	public Boolean getIndexed() {
@@ -614,6 +807,47 @@ public class FragmentInstancePageElementDefinition
 
 	@JsonIgnore
 	private Supplier<Boolean> _indexedSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment instance's JS."
+	)
+	public String getJs() {
+		if (_jsSupplier != null) {
+			js = _jsSupplier.get();
+
+			_jsSupplier = null;
+		}
+
+		return js;
+	}
+
+	public void setJs(String js) {
+		this.js = js;
+
+		_jsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setJs(UnsafeSupplier<String, Exception> jsUnsafeSupplier) {
+		_jsSupplier = () -> {
+			try {
+				return jsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment instance's JS.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String js;
+
+	@JsonIgnore
+	private Supplier<String> _jsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The custom name of a fragment instance page element."
@@ -826,6 +1060,38 @@ public class FragmentInstancePageElementDefinition
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+		String configuration = getConfiguration();
+
+		if (configuration != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"configuration\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(configuration));
+
+			sb.append("\"");
+		}
+
+		String css = getCss();
+
+		if (css != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"css\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(css));
+
+			sb.append("\"");
+		}
+
 		String[] cssClasses = getCssClasses();
 
 		if (cssClasses != null) {
@@ -906,35 +1172,19 @@ public class FragmentInstancePageElementDefinition
 			sb.append("\"");
 		}
 
-		Date datePublished = getDatePublished();
+		String draftFragmentInstanceExternalReferenceCode =
+			getDraftFragmentInstanceExternalReferenceCode();
 
-		if (datePublished != null) {
+		if (draftFragmentInstanceExternalReferenceCode != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"datePublished\": ");
+			sb.append("\"draftFragmentInstanceExternalReferenceCode\": ");
 
 			sb.append("\"");
 
-			sb.append(liferayToJSONDateFormat.format(datePublished));
-
-			sb.append("\"");
-		}
-
-		String draftPageElementExternalReferenceCode =
-			getDraftPageElementExternalReferenceCode();
-
-		if (draftPageElementExternalReferenceCode != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"draftPageElementExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(draftPageElementExternalReferenceCode));
+			sb.append(_escape(draftFragmentInstanceExternalReferenceCode));
 
 			sb.append("\"");
 		}
@@ -973,7 +1223,24 @@ public class FragmentInstancePageElementDefinition
 			sb.append("]");
 		}
 
-		Object fragmentReference = getFragmentReference();
+		String fragmentInstanceExternalReferenceCode =
+			getFragmentInstanceExternalReferenceCode();
+
+		if (fragmentInstanceExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentInstanceExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(fragmentInstanceExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		FragmentReference fragmentReference = getFragmentReference();
 
 		if (fragmentReference != null) {
 			if (sb.length() > 1) {
@@ -982,19 +1249,7 @@ public class FragmentInstancePageElementDefinition
 
 			sb.append("\"fragmentReference\": ");
 
-			if (fragmentReference instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject(
-						(Map<?, ?>)fragmentReference));
-			}
-			else if (fragmentReference instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)fragmentReference));
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentReference);
-			}
+			sb.append(String.valueOf(fragmentReference));
 		}
 
 		FragmentStyle fragmentStyle = getFragmentStyle();
@@ -1007,6 +1262,22 @@ public class FragmentInstancePageElementDefinition
 			sb.append("\"fragmentStyle\": ");
 
 			sb.append(String.valueOf(fragmentStyle));
+		}
+
+		FragmentType fragmentType = getFragmentType();
+
+		if (fragmentType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentType\": ");
+
+			sb.append("\"");
+
+			sb.append(fragmentType);
+
+			sb.append("\"");
 		}
 
 		FragmentViewport[] fragmentViewports = getFragmentViewports();
@@ -1031,6 +1302,22 @@ public class FragmentInstancePageElementDefinition
 			sb.append("]");
 		}
 
+		String html = getHtml();
+
+		if (html != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"html\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(html));
+
+			sb.append("\"");
+		}
+
 		Boolean indexed = getIndexed();
 
 		if (indexed != null) {
@@ -1041,6 +1328,22 @@ public class FragmentInstancePageElementDefinition
 			sb.append("\"indexed\": ");
 
 			sb.append(indexed);
+		}
+
+		String js = getJs();
+
+		if (js != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"js\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(js));
+
+			sb.append("\"");
 		}
 
 		String name = getName();
@@ -1140,6 +1443,44 @@ public class FragmentInstancePageElementDefinition
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("FragmentType")
+	public static enum FragmentType {
+
+		BASIC("Basic"), FORM("Form");
+
+		@JsonCreator
+		public static FragmentType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (FragmentType fragmentType : values()) {
+				if (Objects.equals(fragmentType.getValue(), value)) {
+					return fragmentType;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private FragmentType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(

@@ -1,0 +1,51 @@
+<Layout>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>6</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>ff18afd8-ed8c-69b4-e1ae-4e71f121e6e7</__uuid>
+  <__externalReferenceCode>ff18afd8-ed8c-69b4-e1ae-4e71f121e6e7</__externalReferenceCode>
+  <__plid>113</__plid>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName></__userName>
+  <__createDate>2023-04-11 01:46:55.425 UTC</__createDate>
+  <__modifiedDate>2025-08-29 10:36:35.216 UTC</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__parentPlid>0</__parentPlid>
+  <__privateLayout>false</__privateLayout>
+  <__layoutId>8</__layoutId>
+  <__parentLayoutId>0</__parentLayoutId>
+  <__classNameId>0</__classNameId>
+  <__classPK>0</__classPK>
+  <__name>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US&quot; default-locale=&quot;en_US&quot;&gt;&lt;Name language-id=&quot;en_US&quot;&gt;Staging Test Page&lt;/Name&gt;&lt;/root&gt;</__name>
+  <__title></__title>
+  <__description></__description>
+  <__keywords></__keywords>
+  <__robots></__robots>
+  <__type>portlet</__type>
+  <__typeSettings>last-import-date=1756463795186
+last-import-user-name=Test Test
+last-import-user-uuid=14278c55-68a2-2768-c037-34dbba5044c3
+layout-template-id=2_columns_ii
+</__typeSettings>
+  <__hidden>false</__hidden>
+  <__system>false</__system>
+  <__friendlyURL>/staging-test-page</__friendlyURL>
+  <__iconImageId>0</__iconImageId>
+  <__themeId></__themeId>
+  <__colorSchemeId></__colorSchemeId>
+  <__styleBookEntryId>0</__styleBookEntryId>
+  <__css></__css>
+  <__priority>1</__priority>
+  <__faviconFileEntryId>0</__faviconFileEntryId>
+  <__masterLayoutPlid>0</__masterLayoutPlid>
+  <__layoutPrototypeUuid></__layoutPrototypeUuid>
+  <__layoutPrototypeLinkEnabled>false</__layoutPrototypeLinkEnabled>
+  <__layoutSetPrototypeLayoutERC></__layoutSetPrototypeLayoutERC>
+  <__status>0</__status>
+  <__statusByUserId>0</__statusByUserId>
+  <__statusByUserName></__statusByUserName>
+  <__columnBitmask>0</__columnBitmask>
+</Layout>

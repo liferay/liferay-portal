@@ -18,8 +18,10 @@ import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -78,18 +80,9 @@ public class ObjectEntryLayoutDisplayPageObjectProviderTest {
 				objectDefinition.getObjectDefinitionId(),
 				objectField.getObjectFieldId());
 
-		Map<String, String> localizedValues = HashMapBuilder.put(
-			"en_US", RandomTestUtil.randomString()
-		).put(
-			"pt_BR", RandomTestUtil.randomString()
-		).build();
-
 		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
 			0, objectDefinition.getObjectDefinitionId(),
-			HashMapBuilder.<String, Serializable>put(
-				objectField.getI18nObjectFieldName(),
-				(Serializable)localizedValues
-			).build());
+			ServiceContextTestUtil.getServiceContext(), Collections.emptyMap());
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 			layoutDisplayPageProviderRegistry.
@@ -97,6 +90,34 @@ public class ObjectEntryLayoutDisplayPageObjectProviderTest {
 					FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY);
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				0, String.valueOf(objectEntry.getObjectEntryId()));
+
+		Assert.assertEquals(
+			objectDefinition.getLabel(LocaleUtil.getDefault()),
+			layoutDisplayPageObjectProvider.getTitle(LocaleUtil.getDefault()));
+
+		Map<String, String> localizedValues = HashMapBuilder.put(
+			"en_US", RandomTestUtil.randomString()
+		).put(
+			"pt_BR", RandomTestUtil.randomString()
+		).build();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		String[] assetTagNames = {"tag1", "tag2"};
+
+		serviceContext.setAssetTagNames(assetTagNames);
+
+		objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(), serviceContext,
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getI18nObjectFieldName(),
+				(Serializable)localizedValues
+			).build());
+
+		layoutDisplayPageObjectProvider =
 			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
 				0, String.valueOf(objectEntry.getObjectEntryId()));
 
@@ -109,6 +130,10 @@ public class ObjectEntryLayoutDisplayPageObjectProviderTest {
 		Assert.assertEquals(
 			localizedValues.get("pt_BR"),
 			layoutDisplayPageObjectProvider.getTitle(LocaleUtil.BRAZIL));
+
+		Assert.assertEquals(
+			StringUtil.merge(assetTagNames),
+			layoutDisplayPageObjectProvider.getKeywords(LocaleUtil.US));
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}

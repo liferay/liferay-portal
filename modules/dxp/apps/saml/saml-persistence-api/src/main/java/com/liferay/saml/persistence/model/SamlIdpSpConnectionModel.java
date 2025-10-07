@@ -161,6 +161,21 @@ public interface SamlIdpSpConnectionModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the saml sp entity ID of this saml idp sp connection.
+	 *
+	 * @return the saml sp entity ID of this saml idp sp connection
+	 */
+	@AutoEscape
+	public String getSamlSpEntityId();
+
+	/**
+	 * Sets the saml sp entity ID of this saml idp sp connection.
+	 *
+	 * @param samlSpEntityId the saml sp entity ID of this saml idp sp connection
+	 */
+	public void setSamlSpEntityId(String samlSpEntityId);
+
+	/**
 	 * Returns the assertion lifetime of this saml idp sp connection.
 	 *
 	 * @return the assertion lifetime of this saml idp sp connection
@@ -275,6 +290,20 @@ public interface SamlIdpSpConnectionModel
 	public void setEncryptionForced(boolean encryptionForced);
 
 	/**
+	 * Returns the metadata updated date of this saml idp sp connection.
+	 *
+	 * @return the metadata updated date of this saml idp sp connection
+	 */
+	public Date getMetadataUpdatedDate();
+
+	/**
+	 * Sets the metadata updated date of this saml idp sp connection.
+	 *
+	 * @param metadataUpdatedDate the metadata updated date of this saml idp sp connection
+	 */
+	public void setMetadataUpdatedDate(Date metadataUpdatedDate);
+
+	/**
 	 * Returns the metadata url of this saml idp sp connection.
 	 *
 	 * @return the metadata url of this saml idp sp connection
@@ -303,20 +332,6 @@ public interface SamlIdpSpConnectionModel
 	 * @param metadataXml the metadata xml of this saml idp sp connection
 	 */
 	public void setMetadataXml(String metadataXml);
-
-	/**
-	 * Returns the metadata updated date of this saml idp sp connection.
-	 *
-	 * @return the metadata updated date of this saml idp sp connection
-	 */
-	public Date getMetadataUpdatedDate();
-
-	/**
-	 * Sets the metadata updated date of this saml idp sp connection.
-	 *
-	 * @param metadataUpdatedDate the metadata updated date of this saml idp sp connection
-	 */
-	public void setMetadataUpdatedDate(Date metadataUpdatedDate);
 
 	/**
 	 * Returns the name of this saml idp sp connection.
@@ -362,21 +377,6 @@ public interface SamlIdpSpConnectionModel
 	 * @param nameIdFormat the name ID format of this saml idp sp connection
 	 */
 	public void setNameIdFormat(String nameIdFormat);
-
-	/**
-	 * Returns the saml sp entity ID of this saml idp sp connection.
-	 *
-	 * @return the saml sp entity ID of this saml idp sp connection
-	 */
-	@AutoEscape
-	public String getSamlSpEntityId();
-
-	/**
-	 * Sets the saml sp entity ID of this saml idp sp connection.
-	 *
-	 * @param samlSpEntityId the saml sp entity ID of this saml idp sp connection
-	 */
-	public void setSamlSpEntityId(String samlSpEntityId);
 
 	@Override
 	public SamlIdpSpConnection cloneWithOriginalValues();

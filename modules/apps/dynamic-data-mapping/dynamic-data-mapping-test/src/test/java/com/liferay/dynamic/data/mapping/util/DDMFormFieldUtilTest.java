@@ -76,6 +76,56 @@ public class DDMFormFieldUtilTest {
 			ddmFormField, new String[] {"Field1", "Field2", "Field3"});
 	}
 
+	@Test
+	public void testSortNestedDDMFormFieldsWithDeletedField() throws Exception {
+		DDMFormField ddmFormField = new DDMFormField(
+			DDMFormFieldTypeConstants.FIELDSET,
+			DDMFormFieldTypeConstants.FIELDSET);
+
+		DDMFormTestUtil.addNestedTextDDMFormFields(
+			ddmFormField, "Field3", "Field1");
+
+		ddmFormField.setProperty(
+			"rows",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"columns",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"fields", JSONUtil.putAll("Field1")
+						).put(
+							"size", 12
+						))),
+				JSONUtil.put(
+					"columns",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"fields", JSONUtil.putAll("Field2")
+						).put(
+							"size", 12
+						))),
+				JSONUtil.put(
+					"columns",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"fields", JSONUtil.putAll("Field3")
+						).put(
+							"size", 12
+						)))));
+
+		DDMFormFieldUtil.sortNestedDDMFormFields(
+			Collections.singletonList(ddmFormField));
+
+		List<DDMFormField> nestedDDMFormFields =
+			ddmFormField.getNestedDDMFormFields();
+
+		Assert.assertEquals(
+			nestedDDMFormFields.toString(), 2, nestedDDMFormFields.size());
+
+		_assertNestedDDMFormFieldsWithDeletedField(
+			ddmFormField, new String[] {"Field1", "Field3"});
+	}
+
 	private void _assertNestedDDMFormFields(
 		DDMFormField ddmFormField, String[] nestedDDMFormFieldNames) {
 
@@ -91,6 +141,20 @@ public class DDMFormFieldUtilTest {
 		Assert.assertEquals(
 			nestedDDMFormFieldNames[2],
 			_getDDMFormFieldName(nestedDDMFormFields.get(2)));
+	}
+
+	private void _assertNestedDDMFormFieldsWithDeletedField(
+		DDMFormField ddmFormField, String[] nestedDDMFormFieldNames) {
+
+		List<DDMFormField> nestedDDMFormFields =
+			ddmFormField.getNestedDDMFormFields();
+
+		Assert.assertEquals(
+			nestedDDMFormFieldNames[0],
+			_getDDMFormFieldName(nestedDDMFormFields.get(0)));
+		Assert.assertEquals(
+			nestedDDMFormFieldNames[1],
+			_getDDMFormFieldName(nestedDDMFormFields.get(1)));
 	}
 
 	private String _getDDMFormFieldName(DDMFormField ddmFormField) {

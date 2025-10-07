@@ -10,7 +10,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.ToolsUtil;
 import com.liferay.source.formatter.parser.JavaClass;
-import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaMethod;
 import com.liferay.source.formatter.parser.JavaParameter;
 import com.liferay.source.formatter.parser.JavaSignature;
@@ -37,50 +36,49 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 			String fileContent)
 		throws Exception {
 
-		String content = javaTerm.getContent();
+		JavaClass javaClass = (JavaClass)javaTerm;
 
-		List<JavaClass> anonymousClasses =
-			JavaClassParser.parseAnonymousClasses(content);
-
-		if (anonymousClasses.isEmpty()) {
-			return content;
+		if (!javaClass.isAnonymous()) {
+			return javaTerm.getContent();
 		}
 
-		for (JavaClass anonymousClass : anonymousClasses) {
-			content = _convertToLambda(
-				fileName, content, anonymousClass, javaTerm,
-				"ActionableDynamicQuery.AddCriteriaMethod", false);
-			content = _convertToLambda(
-				fileName, content, anonymousClass, javaTerm,
-				"ActionableDynamicQuery.PerformActionMethod", true);
+		JavaMethod parentJavaMethod = javaTerm.getParentJavaMethod();
+
+		if (parentJavaMethod == null) {
+			return javaTerm.getContent();
 		}
 
-		return content;
+		String anonymousClassContent = javaTerm.getContent();
+
+		anonymousClassContent = _convertToLambda(
+			fileName, anonymousClassContent, javaClass, parentJavaMethod,
+			"ActionableDynamicQuery.AddCriteriaMethod", false);
+
+		return _convertToLambda(
+			fileName, anonymousClassContent, javaClass, parentJavaMethod,
+			"ActionableDynamicQuery.PerformActionMethod", true);
 	}
 
 	@Override
 	protected String[] getCheckableJavaTermNames() {
-		return new String[] {JAVA_CONSTRUCTOR, JAVA_METHOD};
+		return new String[] {JAVA_CLASS};
 	}
 
 	private String _convertToLambda(
-			String fileName, String content, JavaClass anonymousClass,
-			JavaTerm javaTerm, String className, boolean useParameterType)
-		throws Exception {
-
-		String anonymousClassContent = anonymousClass.getContent();
+		String fileName, String anonymousClassContent, JavaClass anonymousClass,
+		JavaTerm javaTerm, String className, boolean useParameterType) {
 
 		if (!StringUtil.startsWith(
 				StringUtil.removeChars(anonymousClassContent, '\n', '\t'),
 				"new " + className)) {
 
-			return content;
+			return anonymousClassContent;
 		}
 
 		List<JavaTerm> javaTerms = anonymousClass.getChildJavaTerms();
 
 		if (javaTerms.size() != 1) {
-			return content;
+			return anonymousClassContent;
 		}
 
 		JavaTerm anonymousClassJavaTerm = javaTerms.get(0);
@@ -88,7 +86,7 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 		if (!anonymousClassJavaTerm.hasAnnotation("Override") ||
 			!(anonymousClassJavaTerm instanceof JavaMethod)) {
 
-			return content;
+			return anonymousClassContent;
 		}
 
 		JavaMethod anonymousClassJavaMethod =
@@ -98,7 +96,7 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 				fileName, anonymousClassContent, anonymousClassJavaMethod,
 				javaTerm)) {
 
-			return content;
+			return anonymousClassContent;
 		}
 
 		int x = anonymousClassContent.indexOf("{\n");
@@ -111,14 +109,14 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 			anonymousClassJavaMethod.getContent(), "\n", lastLine);
 
 		if (!expectedContent.equals(anonymousClassContent)) {
-			return content;
+			return anonymousClassContent;
 		}
 
 		String methodBody = _getMethodBody(
 			anonymousClassJavaMethod.getContent());
 
 		if (methodBody == null) {
-			return content;
+			return anonymousClassContent;
 		}
 
 		StringBundler sb = new StringBundler(5);
@@ -131,8 +129,7 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 		sb.append("\n");
 		sb.append(lastLine);
 
-		return StringUtil.replace(
-			content, anonymousClassContent, sb.toString());
+		return sb.toString();
 	}
 
 	private String _getLambdaSignature(
@@ -224,7 +221,9 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 		int x = javaTermContent.indexOf(anonymousClassContent);
 
 		for (String variableName : variableNames) {
-			if (!_isDuplicateName(javaTerm, variableName, x)) {
+			if (!_isDuplicateName(
+					anonymousClassJavaMethod, javaTerm, variableName, x)) {
+
 				continue;
 			}
 
@@ -240,7 +239,9 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 		}
 
 		for (String parameterName : parameterNames) {
-			if (!_isDuplicateName(javaTerm, parameterName, x)) {
+			if (!_isDuplicateName(
+					anonymousClassJavaMethod, javaTerm, parameterName, x)) {
+
 				continue;
 			}
 
@@ -259,7 +260,28 @@ public class JavaAnonymousInnerClassCheck extends BaseJavaTermCheck {
 	}
 
 	private boolean _isDuplicateName(
-		JavaTerm javaTerm, String variableName, int end) {
+		JavaMethod anonymousClassJavaMethod, JavaTerm javaTerm,
+		String variableName, int end) {
+
+		JavaClass javaClass = anonymousClassJavaMethod.getParentJavaClass();
+
+		while (true) {
+			JavaClass parentJavaClass = javaClass.getParentJavaClass();
+
+			if (parentJavaClass == null) {
+				break;
+			}
+
+			javaClass = parentJavaClass;
+		}
+
+		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
+			if (childJavaTerm.getLineNumber() == javaTerm.getLineNumber()) {
+				javaTerm = childJavaTerm;
+
+				break;
+			}
+		}
 
 		JavaSignature signature = javaTerm.getSignature();
 

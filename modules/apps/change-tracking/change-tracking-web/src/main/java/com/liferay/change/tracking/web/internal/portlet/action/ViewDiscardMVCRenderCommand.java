@@ -45,6 +45,8 @@ public class ViewDiscardMVCRenderCommand implements MVCRenderCommand {
 				renderResponse, _userLocalService);
 
 		renderRequest.setAttribute(
+			CTWebKeys.VIEW_RELATED_ENTRIES_ACTION_TYPE, "discard");
+		renderRequest.setAttribute(
 			CTWebKeys.VIEW_RELATED_ENTRIES_DISPLAY_CONTEXT,
 			viewRelatedEntriesDisplayContext);
 

@@ -29,7 +29,7 @@ public interface TermsSetQuery extends Query {
 
 	public void setCached(Boolean cached);
 
-	public String setMinimumShouldMatchField(String minimumShouldMatchField);
+	public void setMinimumShouldMatchField(String minimumShouldMatchField);
 
 	public void setMinimumShouldMatchScript(Script minimumShouldMatchScript);
 

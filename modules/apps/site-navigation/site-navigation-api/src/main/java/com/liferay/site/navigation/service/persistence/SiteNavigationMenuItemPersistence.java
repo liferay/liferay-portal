@@ -823,6 +823,149 @@ public interface SiteNavigationMenuItemPersistence
 		long parentSiteNavigationMenuItemId);
 
 	/**
+	 * Returns all the site navigation menu items where type = &#63;.
+	 *
+	 * @param type the type
+	 * @return the matching site navigation menu items
+	 */
+	public java.util.List<SiteNavigationMenuItem> findByType(String type);
+
+	/**
+	 * Returns a range of all the site navigation menu items where type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SiteNavigationMenuItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param type the type
+	 * @param start the lower bound of the range of site navigation menu items
+	 * @param end the upper bound of the range of site navigation menu items (not inclusive)
+	 * @return the range of matching site navigation menu items
+	 */
+	public java.util.List<SiteNavigationMenuItem> findByType(
+		String type, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the site navigation menu items where type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SiteNavigationMenuItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param type the type
+	 * @param start the lower bound of the range of site navigation menu items
+	 * @param end the upper bound of the range of site navigation menu items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching site navigation menu items
+	 */
+	public java.util.List<SiteNavigationMenuItem> findByType(
+		String type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SiteNavigationMenuItem>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the site navigation menu items where type = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SiteNavigationMenuItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param type the type
+	 * @param start the lower bound of the range of site navigation menu items
+	 * @param end the upper bound of the range of site navigation menu items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching site navigation menu items
+	 */
+	public java.util.List<SiteNavigationMenuItem> findByType(
+		String type, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<SiteNavigationMenuItem>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first site navigation menu item in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching site navigation menu item
+	 * @throws NoSuchMenuItemException if a matching site navigation menu item could not be found
+	 */
+	public SiteNavigationMenuItem findByType_First(
+			String type,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<SiteNavigationMenuItem> orderByComparator)
+		throws NoSuchMenuItemException;
+
+	/**
+	 * Returns the first site navigation menu item in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching site navigation menu item, or <code>null</code> if a matching site navigation menu item could not be found
+	 */
+	public SiteNavigationMenuItem fetchByType_First(
+		String type,
+		com.liferay.portal.kernel.util.OrderByComparator<SiteNavigationMenuItem>
+			orderByComparator);
+
+	/**
+	 * Returns the last site navigation menu item in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching site navigation menu item
+	 * @throws NoSuchMenuItemException if a matching site navigation menu item could not be found
+	 */
+	public SiteNavigationMenuItem findByType_Last(
+			String type,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<SiteNavigationMenuItem> orderByComparator)
+		throws NoSuchMenuItemException;
+
+	/**
+	 * Returns the last site navigation menu item in the ordered set where type = &#63;.
+	 *
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching site navigation menu item, or <code>null</code> if a matching site navigation menu item could not be found
+	 */
+	public SiteNavigationMenuItem fetchByType_Last(
+		String type,
+		com.liferay.portal.kernel.util.OrderByComparator<SiteNavigationMenuItem>
+			orderByComparator);
+
+	/**
+	 * Returns the site navigation menu items before and after the current site navigation menu item in the ordered set where type = &#63;.
+	 *
+	 * @param siteNavigationMenuItemId the primary key of the current site navigation menu item
+	 * @param type the type
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next site navigation menu item
+	 * @throws NoSuchMenuItemException if a site navigation menu item with the primary key could not be found
+	 */
+	public SiteNavigationMenuItem[] findByType_PrevAndNext(
+			long siteNavigationMenuItemId, String type,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<SiteNavigationMenuItem> orderByComparator)
+		throws NoSuchMenuItemException;
+
+	/**
+	 * Removes all the site navigation menu items where type = &#63; from the database.
+	 *
+	 * @param type the type
+	 */
+	public void removeByType(String type);
+
+	/**
+	 * Returns the number of site navigation menu items where type = &#63;.
+	 *
+	 * @param type the type
+	 * @return the number of matching site navigation menu items
+	 */
+	public int countByType(String type);
+
+	/**
 	 * Returns all the site navigation menu items where siteNavigationMenuId = &#63; and parentSiteNavigationMenuItemId = &#63;.
 	 *
 	 * @param siteNavigationMenuId the site navigation menu ID

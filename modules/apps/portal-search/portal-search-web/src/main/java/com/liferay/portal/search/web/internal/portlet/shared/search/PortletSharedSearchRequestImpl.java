@@ -12,7 +12,6 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -306,8 +305,7 @@ public class PortletSharedSearchRequestImpl
 
 			try {
 				JSONObject editableValuesJSONObject =
-					_jsonFactory.createJSONObject(
-						fragmentEntryLink.getEditableValues());
+					fragmentEntryLink.getEditableValuesJSONObject();
 
 				String portletId = editableValuesJSONObject.getString(
 					"portletId");
@@ -354,9 +352,6 @@ public class PortletSharedSearchRequestImpl
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

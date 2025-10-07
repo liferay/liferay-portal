@@ -232,6 +232,7 @@ ClaySampleImageCard claySampleImageCard = new ClaySampleImageCard();
 	>
 		<clay:image-card
 			actionDropdownItems="<%= claySampleImageCard.getActionDropdownItems() %>"
+			imageAlt="<%= claySampleImageCard.getTitle() %>"
 			imageSrc="https://images.unsplash.com/photo-1525151212033-377d12acc381"
 			labels="<%= claySampleImageCard.getLabels() %>"
 			selectable="<%= true %>"
@@ -669,6 +670,7 @@ ClaySampleVerticalCard claySampleVerticalCard = new ClaySampleVerticalCard();
 	>
 
 		<%
+		claySampleVerticalCard.setImageAlt(claySampleVerticalCard.getTitle());
 		claySampleVerticalCard.setImageSrc("https://images.unsplash.com/photo-1554939437-ecc492c67b78");
 		claySampleVerticalCard.setSelectable(true);
 		claySampleVerticalCard.setStickerLabel("MAD");

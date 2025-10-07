@@ -584,8 +584,6 @@ definition {
 
 	@priority = 3
 	test ContentCannotBeCreatedOnLive {
-		property portal.acceptance = "true";
-
 		task ("When: User open tags admin panel on live site") {
 			Tag.openTagsAdmin(siteURLKey = "site-name");
 		}
@@ -811,7 +809,6 @@ definition {
 
 	@priority = 3
 	test ImportLARsOnStagedSite {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1505,8 +1502,6 @@ definition {
 	@description = "This is a use case for LPS-84418 and LPS-117578."
 	@priority = 3
 	test PublishWithImpossibleDateRange {
-		property portal.acceptance = "true";
-
 		task ("When: User open staging site") {
 			Navigator.openStagingSiteURL(siteName = "Site Name");
 		}

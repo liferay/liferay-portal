@@ -41,6 +41,7 @@ import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
 import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.RoleDescriptor;
 import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
@@ -407,6 +408,22 @@ public class SamlUtil {
 		}
 
 		return null;
+	}
+
+	public static SingleLogoutService resolveSingleLogoutService(
+		RoleDescriptor roleDescriptor, String preferredBinding) {
+
+		if (roleDescriptor instanceof IDPSSODescriptor) {
+			return resolveSingleLogoutService(
+				(IDPSSODescriptor)roleDescriptor, preferredBinding);
+		}
+		else if (roleDescriptor instanceof SSODescriptor) {
+			return resolveSingleLogoutService(
+				(SPSSODescriptor)roleDescriptor, preferredBinding);
+		}
+
+		throw new UnsupportedOperationException(
+			"Invalid role descriptor " + roleDescriptor);
 	}
 
 	public static SingleLogoutService resolveSingleLogoutService(

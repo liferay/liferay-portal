@@ -50,10 +50,10 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.StAXReaderUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.portletconfiguration.util.ConfigurationPortletRequest;
 
 import jakarta.portlet.PortletPreferences;

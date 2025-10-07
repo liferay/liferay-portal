@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {checkAccessibility} from '../../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
@@ -21,8 +22,8 @@ const test = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-11232': {enabled: true},
 		'LPD-17564': {enabled: true},
+		'LPS-179669': {enabled: true},
 	}),
 	loginTest(),
 	isolatedSiteTest
@@ -62,6 +63,12 @@ test.describe('Category tests that focus on creation', () => {
 			await editCategoryPage.fillName(categoryName1);
 			await editCategoryPage.fillDescription(getRandomString());
 
+			await checkAccessibility({
+				page: editCategoryPage.page,
+				selectors: ['.cms-section'],
+				selectorsToExclude: ['.control-menu-container'],
+			});
+
 			await editCategoryPage.clickSaveAndAddAnother();
 
 			const categoryName2: string = getRandomString();
@@ -72,6 +79,17 @@ test.describe('Category tests that focus on creation', () => {
 			await editCategoryPage.clickSave();
 
 			await categoriesPage.assertBreadcrumbItemText(0, 'Categorization');
+
+			await checkAccessibility({
+				page: categoriesPage.page,
+				selectors: ['.content'],
+				selectorsToExclude: [
+					'.control-menu-container',
+					'.fds',
+					'.sidebar-container',
+					'.top-bar',
+				],
+			});
 
 			await expect(categoriesPage.getItem(categoryName1)).toBeVisible();
 			await expect(categoriesPage.getItem(categoryName2)).toBeVisible();
@@ -251,6 +269,12 @@ test.describe("Category tests that don't focus on creation", () => {
 
 			await expect(page.getByText(`Edit ${categoryName}`)).toBeVisible();
 
+			await checkAccessibility({
+				page: editCategoryPage.page,
+				selectors: ['.categorization-section'],
+				selectorsToExclude: ['.control-menu-container'],
+			});
+
 			await editCategoryPage.clickSidebarTab('Properties');
 
 			await editCategoryPage.fillProperties([
@@ -283,6 +307,15 @@ test.describe("Category tests that don't focus on creation", () => {
 			]);
 
 			await page.waitForTimeout(2000);
+
+			await checkAccessibility({
+				page: editCategoryPage.page,
+				selectors: ['.cms-section'],
+				selectorsToExclude: [
+					'categorization-vertical-nav',
+					'.control-menu-container',
+				],
+			});
 
 			await editCategoryPage.clickSave();
 			await editCategoryPage.handleEditConfirmationModal(true);
@@ -337,9 +370,38 @@ test.describe("Category tests that don't focus on creation", () => {
 
 			const dataSetPage = new DataSetPage(page);
 
+			await checkAccessibility({
+				page: dataSetPage.page,
+				selectors: ['.content'],
+				selectorsToExclude: [
+					'.control-menu-container',
+					'.sidebar-container',
+					'.top-bar',
+				],
+			});
+
 			await expect(
 				dataSetPage.getRow(basicWebContentObjectEntry.title)
 			).toBeVisible();
+		}
+	);
+
+	test(
+		'Validate that a UI error appears when attempting to create a category with an existing name',
+		{tag: '@LPD-57497'},
+		async ({editCategoryPage, page}) => {
+			await editCategoryPage.gotoCreateCategory(vocabularyId);
+
+			await editCategoryPage.fillName(categoryName);
+
+			await editCategoryPage.clickSave();
+
+			await clickAndExpectToBeVisible({
+				target: page.getByText(
+					'Please enter a unique name. This one is already in use.'
+				),
+				trigger: editCategoryPage.saveButton,
+			});
 		}
 	);
 });
@@ -383,6 +445,11 @@ test.describe('Move category tests', () => {
 				.locator('span')
 				.nth(1)
 				.click();
+
+			await checkAccessibility({
+				page,
+				selectors: ['.category-selector-modal'],
+			});
 
 			await page.getByRole('button', {name: 'move'}).click();
 

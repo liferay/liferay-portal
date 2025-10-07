@@ -123,77 +123,60 @@ AUI.add(
 					const host = instance.get(STR_HOST);
 					const strings = instance.get(STRINGS);
 
-					let fullScreenDialog = instance._fullScreenDialog;
 					let fullScreenEditor = instance._fullScreenEditor;
 
-					if (fullScreenDialog) {
-						fullScreenEditor.set('value', host.getHTML());
-
-						fullScreenDialog.show();
-					}
-					else {
-						Liferay.Util.openModal({
-							buttons: [
-								{
-									label: strings.cancel,
-									onClick: () => {
-										fullScreenDialog.hide();
-									},
+					Liferay.Util.openModal({
+						bodyHTML: '<div id="fullScreenEditorBody"></div>',
+						buttons: [
+							{
+								label: strings.cancel,
+								onClick: ({processClose}) => {
+									processClose();
 								},
-								{
-									displayType: 'primary',
-									label: strings.done,
-									onClick: () => {
-										fullScreenDialog.hide();
-										instance._switchMode({
-											content:
-												fullScreenEditor.get('value'),
-										});
-									},
-								},
-							],
-							className:
-								'lfr-fulscreen-source-editor-dialog modal-full-screen',
-							containerProps: {},
-							onOpen: ({container}) => {
-								fullScreenDialog = container;
-
-								Liferay.Util.getTop()
-									.AUI()
-									.use(
-										'liferay-fullscreen-source-editor',
-										(A) => {
-											fullScreenEditor =
-												new A.LiferayFullScreenSourceEditor(
-													{
-														boundingBox: container
-															.getStdModNode(
-																A.WidgetStdMod
-																	.BODY
-															)
-															.appendChild(
-																'<div></div>'
-															),
-														dataProcessor:
-															host.getNativeEditor()
-																.dataProcessor,
-														previewCssClass:
-															'alloy-editor alloy-editor-placeholder',
-														value: host.getHTML(),
-													}
-												).render();
-
-											instance._fullScreenDialog =
-												fullScreenDialog;
-
-											instance._fullScreenEditor =
-												fullScreenEditor;
-										}
-									);
 							},
-							title: strings.editContent,
-						});
-					}
+							{
+								displayType: 'primary',
+								label: strings.done,
+								onClick: ({processClose}) => {
+									processClose();
+									instance._switchMode({
+										content: fullScreenEditor.get('value'),
+									});
+								},
+							},
+						],
+						className:
+							'lfr-fullscreen-source-editor-dialog modal-full-screen',
+						containerProps: {},
+						onOpen: () => {
+							Liferay.Util.getTop()
+								.AUI()
+								.use(
+									'liferay-fullscreen-source-editor',
+									(A) => {
+										fullScreenEditor =
+											new A.LiferayFullScreenSourceEditor(
+												{
+													boundingBox:
+														document.getElementById(
+															'fullScreenEditorBody'
+														),
+													dataProcessor:
+														host.getNativeEditor()
+															.dataProcessor,
+													previewCssClass:
+														'alloy-editor alloy-editor-placeholder',
+													value: host.getHTML(),
+												}
+											).render();
+
+										instance._fullScreenEditor =
+											fullScreenEditor;
+									}
+								);
+						},
+						title: strings.editContent,
+					});
 				},
 
 				_onSwitchBlur() {
@@ -279,12 +262,14 @@ AUI.add(
 				_toggleEditorModeUI() {
 					const instance = this;
 
+					const editorContent = instance._editorContent;
 					const editorFullscreen = instance._editorFullscreen;
 					const editorSwitch = instance._editorSwitch;
 					const editorSwitchContainer = editorSwitch.ancestor();
 					const editorSwitchTheme = instance._editorSwitchTheme;
 					const editorWrapper = instance._editorWrapper;
 
+					editorContent.toggleClass('hide');
 					editorWrapper.toggleClass(CSS_SHOW_SOURCE);
 					editorSwitchContainer.toggleClass(CSS_SHOW_SOURCE);
 					editorFullscreen.toggleClass('hide');
@@ -340,12 +325,6 @@ AUI.add(
 						fullScreenEditor.destroy();
 					}
 
-					const fullScreenDialog = instance._fullScreenDialog;
-
-					if (fullScreenDialog) {
-						fullScreenDialog.destroy();
-					}
-
 					new A.EventHandle(instance._eventHandles).detach();
 				},
 
@@ -354,6 +333,7 @@ AUI.add(
 
 					const host = instance.get(STR_HOST);
 
+					instance._editorContent = host._srcNode;
 					instance._editorFullscreen = host.one('#Fullscreen');
 					instance._editorSource = host.one('#Source');
 					instance._editorSwitch = host.one('#Switch');

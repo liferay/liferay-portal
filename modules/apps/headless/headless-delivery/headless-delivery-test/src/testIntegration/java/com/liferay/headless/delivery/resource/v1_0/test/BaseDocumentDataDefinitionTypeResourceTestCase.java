@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
@@ -49,9 +50,11 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -60,7 +63,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -93,6 +95,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -136,7 +139,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -147,7 +150,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -333,7 +336,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 								documentDataDefinitionType1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -373,7 +376,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 									documentDataDefinitionType2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -946,6 +949,96 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 		throws Exception {
 
 		return irrelevantDepotEntry.getDepotEntryId();
+	}
+
+	@Test
+	public void testGraphQLGetAssetLibraryDocumentDataDefinitionTypesPage()
+		throws Exception {
+
+		Long assetLibraryId =
+			testGetAssetLibraryDocumentDataDefinitionTypesPage_getAssetLibraryId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"assetLibraryDocumentDataDefinitionTypes",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject assetLibraryDocumentDataDefinitionTypesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/assetLibraryDocumentDataDefinitionTypes");
+
+		long totalCount =
+			assetLibraryDocumentDataDefinitionTypesJSONObject.getLong(
+				"totalCount");
+
+		DocumentDataDefinitionType documentDataDefinitionType1 =
+			testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				assetLibraryId, randomDocumentDataDefinitionType());
+
+		DocumentDataDefinitionType documentDataDefinitionType2 =
+			testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				assetLibraryId, randomDocumentDataDefinitionType());
+
+		assetLibraryDocumentDataDefinitionTypesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/assetLibraryDocumentDataDefinitionTypes");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			assetLibraryDocumentDataDefinitionTypesJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			documentDataDefinitionType1,
+			Arrays.asList(
+				DocumentDataDefinitionTypeSerDes.toDTOs(
+					assetLibraryDocumentDataDefinitionTypesJSONObject.getString(
+						"items"))));
+		assertContains(
+			documentDataDefinitionType2,
+			Arrays.asList(
+				DocumentDataDefinitionTypeSerDes.toDTOs(
+					assetLibraryDocumentDataDefinitionTypesJSONObject.getString(
+						"items"))));
+
+		// Using the namespace headlessDelivery_v1_0
+
+		assetLibraryDocumentDataDefinitionTypesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("headlessDelivery_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
+				"JSONObject/assetLibraryDocumentDataDefinitionTypes");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			assetLibraryDocumentDataDefinitionTypesJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			documentDataDefinitionType1,
+			Arrays.asList(
+				DocumentDataDefinitionTypeSerDes.toDTOs(
+					assetLibraryDocumentDataDefinitionTypesJSONObject.getString(
+						"items"))));
+		assertContains(
+			documentDataDefinitionType2,
+			Arrays.asList(
+				DocumentDataDefinitionTypeSerDes.toDTOs(
+					assetLibraryDocumentDataDefinitionTypesJSONObject.getString(
+						"items"))));
 	}
 
 	@Test
@@ -1787,10 +1880,10 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			"documentDataDefinitionTypes",
 			new HashMap<String, Object>() {
 				{
+					put("siteKey", "\"" + siteId + "\"");
+					put("search", null);
 					put("page", 1);
 					put("pageSize", 10);
-
-					put("siteKey", "\"" + siteId + "\"");
 				}
 			},
 			new GraphQLField("items", getGraphQLFields()),
@@ -1807,9 +1900,12 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			"totalCount");
 
 		DocumentDataDefinitionType documentDataDefinitionType1 =
-			testGraphQLGetSiteDocumentDataDefinitionTypesPage_addDocumentDataDefinitionType();
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				siteId, randomDocumentDataDefinitionType());
+
 		DocumentDataDefinitionType documentDataDefinitionType2 =
-			testGraphQLGetSiteDocumentDataDefinitionTypesPage_addDocumentDataDefinitionType();
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				siteId, randomDocumentDataDefinitionType());
 
 		documentDataDefinitionTypesJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -1854,13 +1950,6 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 					documentDataDefinitionTypesJSONObject.getString("items"))));
 	}
 
-	protected DocumentDataDefinitionType
-			testGraphQLGetSiteDocumentDataDefinitionTypesPage_addDocumentDataDefinitionType()
-		throws Exception {
-
-		return testGraphQLDocumentDataDefinitionType_addDocumentDataDefinitionType();
-	}
-
 	@Test
 	public void testPostAssetLibraryDocumentDataDefinitionType()
 		throws Exception {
@@ -1886,6 +1975,23 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			postAssetLibraryDocumentDataDefinitionType(
 				testGetAssetLibraryDocumentDataDefinitionTypesPage_getAssetLibraryId(),
 				documentDataDefinitionType);
+	}
+
+	@Test
+	public void testGraphQLPostAssetLibraryDocumentDataDefinitionType()
+		throws Exception {
+
+		DocumentDataDefinitionType randomDocumentDataDefinitionType =
+			randomDocumentDataDefinitionType();
+
+		DocumentDataDefinitionType documentDataDefinitionType =
+			testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				testDepotEntry.getDepotEntryId(),
+				randomDocumentDataDefinitionType);
+
+		Assert.assertTrue(
+			equals(
+				randomDocumentDataDefinitionType, documentDataDefinitionType));
 	}
 
 	@Test
@@ -1921,8 +2027,8 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 			randomDocumentDataDefinitionType();
 
 		DocumentDataDefinitionType documentDataDefinitionType =
-			testGraphQLDocumentDataDefinitionType_addDocumentDataDefinitionType(
-				randomDocumentDataDefinitionType);
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				testGroup.getGroupId(), randomDocumentDataDefinitionType);
 
 		Assert.assertTrue(
 			equals(
@@ -1990,61 +2096,17 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
-	protected void appendGraphQLFieldValue(StringBuilder sb, Object value)
-		throws Exception {
-
-		if (value instanceof Object[]) {
-			StringBuilder arraySB = new StringBuilder("[");
-
-			for (Object object : (Object[])value) {
-				if (arraySB.length() > 1) {
-					arraySB.append(", ");
-				}
-
-				arraySB.append("{");
-
-				Class<?> clazz = object.getClass();
-
-				for (java.lang.reflect.Field field :
-						getDeclaredFields(clazz.getSuperclass())) {
-
-					arraySB.append(field.getName());
-					arraySB.append(": ");
-
-					appendGraphQLFieldValue(arraySB, field.get(object));
-
-					arraySB.append(", ");
-				}
-
-				arraySB.setLength(arraySB.length() - 2);
-
-				arraySB.append("}");
-			}
-
-			arraySB.append("]");
-
-			sb.append(arraySB.toString());
-		}
-		else if (value instanceof String) {
-			sb.append("\"");
-			sb.append(value);
-			sb.append("\"");
-		}
-		else {
-			sb.append(value);
-		}
-	}
-
 	protected DocumentDataDefinitionType
 			testGraphQLDocumentDataDefinitionType_addDocumentDataDefinitionType()
 		throws Exception {
 
 		return testGraphQLDocumentDataDefinitionType_addDocumentDataDefinitionType(
-			randomDocumentDataDefinitionType());
+			testGroup.getGroupId(), randomDocumentDataDefinitionType());
 	}
 
 	protected DocumentDataDefinitionType
 			testGraphQLDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				Long siteId,
 				DocumentDataDefinitionType documentDataDefinitionType)
 		throws Exception {
 
@@ -2056,29 +2118,23 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(DocumentDataDefinitionType.class)) {
 
-			if (!ArrayUtil.contains(
-					getAdditionalAssertFieldNames(), field.getName())) {
+			if (getGraphQLValue(field.get(documentDataDefinitionType)) !=
+					null) {
 
-				continue;
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(
+					getGraphQLValue(field.get(documentDataDefinitionType)));
 			}
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append(field.getName());
-			sb.append(": ");
-
-			appendGraphQLFieldValue(sb, field.get(documentDataDefinitionType));
 		}
 
 		sb.append("}");
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
-
-		graphQLFields.add(new GraphQLField("externalReferenceCode"));
-
-		graphQLFields.add(new GraphQLField("id"));
 
 		return jsonDeserializer.deserialize(
 			JSONUtil.getValueAsString(
@@ -2087,9 +2143,7 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 						"createSiteDocumentDataDefinitionType",
 						new HashMap<String, Object>() {
 							{
-								put(
-									"siteKey",
-									"\"" + testGroup.getGroupId() + "\"");
+								put("siteKey", "\"" + siteId + "\"");
 								put(
 									"documentDataDefinitionType",
 									sb.toString());
@@ -2099,6 +2153,194 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 				"JSONObject/data",
 				"JSONObject/createSiteDocumentDataDefinitionType"),
 			DocumentDataDefinitionType.class);
+	}
+
+	protected DocumentDataDefinitionType
+			testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType()
+		throws Exception {
+
+		return testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType(
+			testDepotEntry.getDepotEntryId(),
+			randomDocumentDataDefinitionType());
+	}
+
+	protected DocumentDataDefinitionType
+			testGraphQLAssetLibraryDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				Long assetLibraryId,
+				DocumentDataDefinitionType documentDataDefinitionType)
+		throws Exception {
+
+		JSONDeserializer<DocumentDataDefinitionType> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(DocumentDataDefinitionType.class)) {
+
+			if (getGraphQLValue(field.get(documentDataDefinitionType)) !=
+					null) {
+
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(
+					getGraphQLValue(field.get(documentDataDefinitionType)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createAssetLibraryDocumentDataDefinitionType",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"assetLibraryId",
+									"\"" + assetLibraryId + "\"");
+								put(
+									"documentDataDefinitionType",
+									sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createAssetLibraryDocumentDataDefinitionType"),
+			DocumentDataDefinitionType.class);
+	}
+
+	protected DocumentDataDefinitionType
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType()
+		throws Exception {
+
+		return testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+			testGroup.getGroupId(), randomDocumentDataDefinitionType());
+	}
+
+	protected DocumentDataDefinitionType
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				Long siteId,
+				DocumentDataDefinitionType documentDataDefinitionType)
+		throws Exception {
+
+		JSONDeserializer<DocumentDataDefinitionType> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(DocumentDataDefinitionType.class)) {
+
+			if (getGraphQLValue(field.get(documentDataDefinitionType)) !=
+					null) {
+
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(
+					getGraphQLValue(field.get(documentDataDefinitionType)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createSiteDocumentDataDefinitionType",
+						new HashMap<String, Object>() {
+							{
+								put("siteKey", "\"" + siteId + "\"");
+								put(
+									"documentDataDefinitionType",
+									sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createSiteDocumentDataDefinitionType"),
+			DocumentDataDefinitionType.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -2400,6 +2642,10 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 
@@ -3102,8 +3348,8 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 
 		return new DocumentDataDefinitionType() {
 			{
-				assetLibraryKey = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				assetLibraryKey = String.valueOf(
+					testDepotEntry.getDepotEntryId());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				description = StringUtil.toLowerCase(
@@ -3123,6 +3369,9 @@ public abstract class BaseDocumentDataDefinitionTypeResourceTestCase {
 
 		DocumentDataDefinitionType randomIrrelevantDocumentDataDefinitionType =
 			randomDocumentDataDefinitionType();
+
+		randomIrrelevantDocumentDataDefinitionType.setAssetLibraryKey(
+			String.valueOf(irrelevantDepotEntry.getDepotEntryId()));
 
 		randomIrrelevantDocumentDataDefinitionType.setSiteId(
 			irrelevantGroup.getGroupId());

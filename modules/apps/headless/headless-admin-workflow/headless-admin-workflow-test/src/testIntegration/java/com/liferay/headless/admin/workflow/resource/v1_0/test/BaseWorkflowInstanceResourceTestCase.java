@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -52,7 +53,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -281,7 +281,7 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 								workflowInstance1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -321,7 +321,7 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 									workflowInstance2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -838,80 +838,6 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetWorkflowInstancesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"workflowInstances",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject workflowInstancesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/workflowInstances");
-
-		long totalCount = workflowInstancesJSONObject.getLong("totalCount");
-
-		WorkflowInstance workflowInstance1 =
-			testGraphQLGetWorkflowInstancesPage_addWorkflowInstance();
-		WorkflowInstance workflowInstance2 =
-			testGraphQLGetWorkflowInstancesPage_addWorkflowInstance();
-
-		workflowInstancesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/workflowInstances");
-
-		Assert.assertEquals(
-			totalCount + 2, workflowInstancesJSONObject.getLong("totalCount"));
-
-		assertContains(
-			workflowInstance1,
-			Arrays.asList(
-				WorkflowInstanceSerDes.toDTOs(
-					workflowInstancesJSONObject.getString("items"))));
-		assertContains(
-			workflowInstance2,
-			Arrays.asList(
-				WorkflowInstanceSerDes.toDTOs(
-					workflowInstancesJSONObject.getString("items"))));
-
-		// Using the namespace headlessAdminWorkflow_v1_0
-
-		workflowInstancesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField("headlessAdminWorkflow_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/headlessAdminWorkflow_v1_0",
-			"JSONObject/workflowInstances");
-
-		Assert.assertEquals(
-			totalCount + 2, workflowInstancesJSONObject.getLong("totalCount"));
-
-		assertContains(
-			workflowInstance1,
-			Arrays.asList(
-				WorkflowInstanceSerDes.toDTOs(
-					workflowInstancesJSONObject.getString("items"))));
-		assertContains(
-			workflowInstance2,
-			Arrays.asList(
-				WorkflowInstanceSerDes.toDTOs(
-					workflowInstancesJSONObject.getString("items"))));
-	}
-
-	protected WorkflowInstance
-			testGraphQLGetWorkflowInstancesPage_addWorkflowInstance()
-		throws Exception {
-
-		return testGraphQLWorkflowInstance_addWorkflowInstance();
-	}
-
-	@Test
 	public void testPostWorkflowInstanceChangeTransition() throws Exception {
 		WorkflowInstance randomWorkflowInstance = randomWorkflowInstance();
 
@@ -1225,6 +1151,8 @@ public abstract class BaseWorkflowInstanceResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

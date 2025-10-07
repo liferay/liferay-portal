@@ -100,12 +100,12 @@ public class AssetCategoryServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteCategory() throws Exception {
+	public void testGetOrAddEmptyCategory() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_assetCategoryService.getOrAddIncompleteCategory(
+			_assetCategoryService.getOrAddEmptyCategory(
 				RandomTestUtil.randomString(), _group.getGroupId());
 
 			Assert.fail();
@@ -122,7 +122,7 @@ public class AssetCategoryServiceTest {
 			// With permissions
 
 			AssetCategory assetCategory =
-				_assetCategoryService.getOrAddIncompleteCategory(
+				_assetCategoryService.getOrAddEmptyCategory(
 					RandomTestUtil.randomString(), _group.getGroupId());
 
 			Assert.assertNotNull(assetCategory);
@@ -138,7 +138,7 @@ public class AssetCategoryServiceTest {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, permissionChecker)) {
 
-				_assetCategoryService.getOrAddIncompleteCategory(
+				_assetCategoryService.getOrAddEmptyCategory(
 					RandomTestUtil.randomString(), user.getGroupId());
 
 				Assert.fail();
@@ -161,7 +161,7 @@ public class AssetCategoryServiceTest {
 					LocaleUtil.US, RandomTestUtil.randomString()),
 				_assetVocabulary.getVocabularyId(), null, new ServiceContext());
 
-			assetCategory = _assetCategoryService.getOrAddIncompleteCategory(
+			assetCategory = _assetCategoryService.getOrAddEmptyCategory(
 				externalReferenceCode, _group.getGroupId());
 
 			Assert.assertNotNull(assetCategory);

@@ -1,0 +1,13 @@
+{
+	"dependencies": {
+	},
+	"main": "js/index.js",
+	"name": "@liferay/layout-type-controller-embedded",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format",
+		"test": "node-scripts test"
+	},
+	"version": "2.0.24"
+}

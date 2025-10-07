@@ -17,6 +17,7 @@ const KEYCODES = {
 };
 
 const Radio = ({
+	displayErrors,
 	editingLanguageId,
 	inline,
 	name,
@@ -35,6 +36,7 @@ const Radio = ({
 	],
 	predefinedValue,
 	readOnly: disabled,
+	valid,
 	value: initialValue,
 	...otherProps
 }) => {
@@ -42,6 +44,7 @@ const Radio = ({
 		...((otherProps.errorMessage || otherProps.tip) && {
 			'aria-describedby': `${otherProps.id ?? name}_fieldFeedback`,
 		}),
+		...(displayErrors && !valid && {'aria-invalid': true}),
 		'aria-required': otherProps.required,
 	};
 
@@ -67,7 +70,13 @@ const Radio = ({
 	);
 
 	return (
-		<FieldBase {...otherProps} name={name} readOnly={disabled}>
+		<FieldBase
+			{...otherProps}
+			displayErrors={displayErrors}
+			name={name}
+			readOnly={disabled}
+			valid={valid}
+		>
 			<div className="ddm__radio" onBlur={onBlur} onFocus={onFocus}>
 				<ClayRadioGroup
 					inline={inline}

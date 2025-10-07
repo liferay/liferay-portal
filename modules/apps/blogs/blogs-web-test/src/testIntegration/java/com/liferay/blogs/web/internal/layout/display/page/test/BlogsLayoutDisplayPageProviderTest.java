@@ -12,10 +12,16 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -46,6 +52,52 @@ public class BlogsLayoutDisplayPageProviderTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Test
+	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
+		BlogsEntry blogsEntry = _addBlogsEntry(
+			ServiceContextTestUtil.getServiceContext());
+
+		LayoutDisplayPageObjectProvider layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				blogsEntry.getGroupId(),
+				new InfoItemReference(
+					BlogsEntry.class.getName(),
+					new ERCInfoItemIdentifier(
+						blogsEntry.getExternalReferenceCode())));
+
+		Assert.assertEquals(
+			blogsEntry, layoutDisplayPageObjectProvider.getDisplayObject());
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		Group companyGroup = company.getGroup();
+
+		Group group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
+
+		layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				companyGroup.getGroupId(),
+				new InfoItemReference(
+					BlogsEntry.class.getName(),
+					new ERCInfoItemIdentifier(
+						blogsEntry.getExternalReferenceCode(),
+						group.getExternalReferenceCode())));
+
+		Assert.assertEquals(
+			blogsEntry, layoutDisplayPageObjectProvider.getDisplayObject());
+
+		layoutDisplayPageObjectProvider =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				companyGroup.getGroupId(),
+				new InfoItemReference(
+					BlogsEntry.class.getName(),
+					new ERCInfoItemIdentifier(
+						blogsEntry.getExternalReferenceCode())));
+
+		Assert.assertNull(layoutDisplayPageObjectProvider);
+	}
 
 	@Test
 	public void testGetLayoutDisplayPageObjectProviderLatestUrlTitle()
@@ -180,6 +232,12 @@ public class BlogsLayoutDisplayPageProviderTest {
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.blogs.web.internal.layout.display.page.BlogsLayoutDisplayPageProvider"

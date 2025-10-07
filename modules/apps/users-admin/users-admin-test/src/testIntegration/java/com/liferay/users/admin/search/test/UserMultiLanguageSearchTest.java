@@ -6,6 +6,7 @@
 package com.liferay.users.admin.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.search.test.util.FieldValuesAssert;
@@ -110,6 +112,15 @@ public class UserMultiLanguageSearchTest {
 		Map<String, String> map = _getMapResult(keywords);
 
 		assertFieldValues(_PREFIX, locale, map, keywords);
+
+		String localizedName = "abc_123_ユーザー管理者";
+
+		userSearchFixture.addUser(
+			null, localizedName, RandomTestUtil.randomString(), locale, group);
+
+		map = _getMapResult(localizedName);
+
+		assertFieldValues(_PREFIX, locale, map, "\"ユーザー管理者\"");
 	}
 
 	@Rule
@@ -156,11 +167,26 @@ public class UserMultiLanguageSearchTest {
 	protected UserSearchFixture userSearchFixture;
 
 	private Map<String, String> _getMapResult(String keywords) {
-		return HashMapBuilder.put(
+		Map<String, String> map = HashMapBuilder.put(
 			_PREFIX, keywords
 		).put(
 			_PREFIX + "_sortable", keywords
 		).build();
+
+		_populateLocalizedNameFieldValues(map, keywords);
+
+		return map;
+	}
+
+	private void _populateLocalizedNameFieldValues(
+		Map<String, String> map, String name) {
+
+		for (Locale locale : LanguageUtil.getAvailableLocales()) {
+			map.put(
+				LocalizationUtil.getLocalizedName(
+					_PREFIX, LocaleUtil.toLanguageId(locale)),
+				name);
+		}
 	}
 
 	private static final String _PREFIX = "firstName";

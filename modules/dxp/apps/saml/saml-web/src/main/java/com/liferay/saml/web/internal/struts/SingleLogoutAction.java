@@ -28,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 public class SingleLogoutAction extends BaseSamlStrutsAction {
 
 	@Override
-	public boolean isEnabled() {
+	public boolean isEnabled(HttpServletRequest httpServletRequest) {
 		return _samlProviderConfigurationHelper.isEnabled();
 	}
 
@@ -40,7 +40,7 @@ public class SingleLogoutAction extends BaseSamlStrutsAction {
 
 		String requestURI = httpServletRequest.getRequestURI();
 
-		if (_samlProviderConfigurationHelper.isRoleIdp() &&
+		if (!_samlProviderConfigurationHelper.isRoleSp() &&
 			requestURI.endsWith("/slo_logout")) {
 
 			_singleLogoutProfile.processIdpLogout(

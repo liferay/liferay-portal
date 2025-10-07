@@ -6,5 +6,5 @@
 import {State} from '../contexts/StateContext';
 
 export default function selectStructureUuid(state: State) {
-	return state.uuid;
+	return state.structure.uuid;
 }

@@ -14,6 +14,7 @@ interface ObjectManagementToolbarProps {
 	isRootDescendantNode: boolean;
 	isRootNode: boolean;
 	label: string;
+	loading: boolean;
 	objectDefinitionExternalReferenceCode: string;
 	objectDefinitionId: number;
 	onSubmit: (draft: boolean) => void;
@@ -30,6 +31,7 @@ export default function ObjectManagementToolbar({
 	isRootDescendantNode,
 	isRootNode,
 	label,
+	loading,
 	objectDefinitionExternalReferenceCode,
 	objectDefinitionId,
 	onSubmit,
@@ -69,6 +71,7 @@ export default function ObjectManagementToolbar({
 			isApproved={isApproved}
 			isRootDescendantNode={isRootDescendantNode}
 			label={label}
+			loading={loading}
 			objectDefinitionExternalReferenceCode={
 				objectDefinitionExternalReferenceCode
 			}

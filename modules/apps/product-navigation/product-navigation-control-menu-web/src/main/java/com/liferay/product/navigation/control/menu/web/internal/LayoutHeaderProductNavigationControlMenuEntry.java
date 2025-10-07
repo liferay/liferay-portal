@@ -29,9 +29,9 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
@@ -80,7 +80,7 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 
 		Writer writer = httpServletResponse.getWriter();
 
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(34);
 
 		sb.append("<div class=\"control-menu-nav-item\"><span ");
 		sb.append("class=\"align-items-center control-menu-level-1-heading ");
@@ -173,6 +173,14 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 			sb.append("label-inverse-secondary ml-3 mr-0\">");
 			sb.append("<span class=\"label-item label-item-expand\">");
 			sb.append(_language.get(httpServletRequest, "draft"));
+			sb.append("</span></span>");
+		}
+
+		if (layout.isTypeEmpty()) {
+			sb.append("<span class=\"bg-transparent flex-shrink-0 label ");
+			sb.append("label-warning ml-3 mr-0\">");
+			sb.append("<span class=\"label-item label-item-expand\">");
+			sb.append(_language.get(httpServletRequest, "empty"));
 			sb.append("</span></span>");
 		}
 

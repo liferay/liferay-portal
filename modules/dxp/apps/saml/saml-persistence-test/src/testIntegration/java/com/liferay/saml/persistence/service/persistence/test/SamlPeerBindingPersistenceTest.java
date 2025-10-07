@@ -115,11 +115,13 @@ public class SamlPeerBindingPersistenceTest {
 
 		newSamlPeerBinding.setCompanyId(RandomTestUtil.nextLong());
 
-		newSamlPeerBinding.setCreateDate(RandomTestUtil.nextDate());
-
 		newSamlPeerBinding.setUserId(RandomTestUtil.nextLong());
 
 		newSamlPeerBinding.setUserName(RandomTestUtil.randomString());
+
+		newSamlPeerBinding.setCreateDate(RandomTestUtil.nextDate());
+
+		newSamlPeerBinding.setSamlPeerEntityId(RandomTestUtil.randomString());
 
 		newSamlPeerBinding.setDeleted(RandomTestUtil.randomBoolean());
 
@@ -136,8 +138,6 @@ public class SamlPeerBindingPersistenceTest {
 
 		newSamlPeerBinding.setSamlNameIdValue(RandomTestUtil.randomString());
 
-		newSamlPeerBinding.setSamlPeerEntityId(RandomTestUtil.randomString());
-
 		_samlPeerBindings.add(_persistence.update(newSamlPeerBinding));
 
 		SamlPeerBinding existingSamlPeerBinding = _persistence.findByPrimaryKey(
@@ -150,14 +150,17 @@ public class SamlPeerBindingPersistenceTest {
 			existingSamlPeerBinding.getCompanyId(),
 			newSamlPeerBinding.getCompanyId());
 		Assert.assertEquals(
-			Time.getShortTimestamp(existingSamlPeerBinding.getCreateDate()),
-			Time.getShortTimestamp(newSamlPeerBinding.getCreateDate()));
-		Assert.assertEquals(
 			existingSamlPeerBinding.getUserId(),
 			newSamlPeerBinding.getUserId());
 		Assert.assertEquals(
 			existingSamlPeerBinding.getUserName(),
 			newSamlPeerBinding.getUserName());
+		Assert.assertEquals(
+			Time.getShortTimestamp(existingSamlPeerBinding.getCreateDate()),
+			Time.getShortTimestamp(newSamlPeerBinding.getCreateDate()));
+		Assert.assertEquals(
+			existingSamlPeerBinding.getSamlPeerEntityId(),
+			newSamlPeerBinding.getSamlPeerEntityId());
 		Assert.assertEquals(
 			existingSamlPeerBinding.isDeleted(),
 			newSamlPeerBinding.isDeleted());
@@ -176,9 +179,6 @@ public class SamlPeerBindingPersistenceTest {
 		Assert.assertEquals(
 			existingSamlPeerBinding.getSamlNameIdValue(),
 			newSamlPeerBinding.getSamlNameIdValue());
-		Assert.assertEquals(
-			existingSamlPeerBinding.getSamlPeerEntityId(),
-			newSamlPeerBinding.getSamlPeerEntityId());
 	}
 
 	@Test
@@ -194,16 +194,16 @@ public class SamlPeerBindingPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U_D_SPEI() throws Exception {
-		_persistence.countByC_U_D_SPEI(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.randomBoolean(), "");
+	public void testCountByC_U_SPEI_D() throws Exception {
+		_persistence.countByC_U_SPEI_D(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(), "",
+			RandomTestUtil.randomBoolean());
 
-		_persistence.countByC_U_D_SPEI(
-			0L, 0L, RandomTestUtil.randomBoolean(), "null");
+		_persistence.countByC_U_SPEI_D(
+			0L, 0L, "null", RandomTestUtil.randomBoolean());
 
-		_persistence.countByC_U_D_SPEI(
-			0L, 0L, RandomTestUtil.randomBoolean(), (String)null);
+		_persistence.countByC_U_SPEI_D(
+			0L, 0L, (String)null, RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -232,10 +232,10 @@ public class SamlPeerBindingPersistenceTest {
 	protected OrderByComparator<SamlPeerBinding> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"SamlPeerBinding", "samlPeerBindingId", true, "companyId", true,
-			"createDate", true, "userId", true, "userName", true, "deleted",
-			true, "samlNameIdFormat", true, "samlNameIdNameQualifier", true,
-			"samlNameIdSpNameQualifier", true, "samlNameIdSpProvidedId", true,
-			"samlNameIdValue", true, "samlPeerEntityId", true);
+			"userId", true, "userName", true, "createDate", true,
+			"samlPeerEntityId", true, "deleted", true, "samlNameIdFormat", true,
+			"samlNameIdNameQualifier", true, "samlNameIdSpNameQualifier", true,
+			"samlNameIdSpProvidedId", true, "samlNameIdValue", true);
 	}
 
 	@Test
@@ -460,11 +460,13 @@ public class SamlPeerBindingPersistenceTest {
 
 		samlPeerBinding.setCompanyId(RandomTestUtil.nextLong());
 
-		samlPeerBinding.setCreateDate(RandomTestUtil.nextDate());
-
 		samlPeerBinding.setUserId(RandomTestUtil.nextLong());
 
 		samlPeerBinding.setUserName(RandomTestUtil.randomString());
+
+		samlPeerBinding.setCreateDate(RandomTestUtil.nextDate());
+
+		samlPeerBinding.setSamlPeerEntityId(RandomTestUtil.randomString());
 
 		samlPeerBinding.setDeleted(RandomTestUtil.randomBoolean());
 
@@ -480,8 +482,6 @@ public class SamlPeerBindingPersistenceTest {
 			RandomTestUtil.randomString());
 
 		samlPeerBinding.setSamlNameIdValue(RandomTestUtil.randomString());
-
-		samlPeerBinding.setSamlPeerEntityId(RandomTestUtil.randomString());
 
 		_samlPeerBindings.add(_persistence.update(samlPeerBinding));
 

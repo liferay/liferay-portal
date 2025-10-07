@@ -6,10 +6,10 @@
 	src: url(./fonts/SourceSansPro-Regular.ttf) format('truetype');
 }
 
-a {
+a, .card-actionable {
 	border-radius: var(--border-radius-lg);
 
-	> .card-flat {
+	&.card-flat, > .card-flat {
 		&:active, &:focus, &:hover {
 			outline: 2px solid var(--color-action-primary-hover);
 			outline-offset: 2px;
@@ -22,6 +22,14 @@ a {
 		&:focus {
 			outline-color: var(--color-action-primary-focus);
 		}
+	}
+}
+
+input[type="radio"] {
+	accent-color: var(--color-action-primary-default);
+
+	&:active, &:focus, &:hover {
+		accent-color: var(--color-action-primary-active);
 	}
 }
 

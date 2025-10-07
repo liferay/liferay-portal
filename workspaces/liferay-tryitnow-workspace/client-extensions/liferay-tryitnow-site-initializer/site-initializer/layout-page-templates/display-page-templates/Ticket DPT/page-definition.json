@@ -59,7 +59,7 @@
 								"definition": {
 									"customCSS": ".[$FRAGMENT_CLASS$] a:hover{\n    text-decoration : none;\n}",
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -119,7 +119,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -155,7 +155,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -294,7 +294,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-button",
+														"key": "dialect-button",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -401,7 +401,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -456,7 +456,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -486,7 +486,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -541,7 +541,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -572,7 +572,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -607,7 +607,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -639,7 +639,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -674,7 +674,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -732,7 +732,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -809,7 +809,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "dialect-dialect-text",
+																		"key": "dialect-text",
 																		"siteKey": "mysol"
 																	},
 																	"fragmentConfig": {

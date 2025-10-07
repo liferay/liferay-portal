@@ -1,0 +1,14 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "label",
+					"localizable": true,
+					"name": "label",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

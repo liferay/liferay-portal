@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Payment Web
 Bundle-SymbolicName: com.liferay.commerce.payment.web
-Bundle-Version: 4.0.71
+Bundle-Version: 4.0.72
 Web-ContextPath: /commerce-payment-web
 -dsannotations-options: inherit

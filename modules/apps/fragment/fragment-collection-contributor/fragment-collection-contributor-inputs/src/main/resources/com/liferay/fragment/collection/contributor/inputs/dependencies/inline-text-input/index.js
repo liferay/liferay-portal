@@ -1,19 +1,19 @@
 const currentLength = document.getElementById(
-	`${fragmentNamespace}-current-length`
+	`${fragmentElementId}-current-length`
 );
 const errorMessage = document.getElementById(
-	`${fragmentNamespace}-inline-text-input-error-message`
+	`${fragmentElementId}-inline-text-input-error-message`
 );
-const formGroup = document.getElementById(`${fragmentNamespace}-form-group`);
+const formGroup = document.getElementById(`${fragmentElementId}-form-group`);
 const inputElement = document.getElementById(
-	`${fragmentNamespace}-inline-text-input`
+	`${fragmentElementId}-inline-text-input`
 );
-const lengthInfo = document.getElementById(`${fragmentNamespace}-length-info`);
+const lengthInfo = document.getElementById(`${fragmentElementId}-length-info`);
 const lengthWarning = document.getElementById(
-	`${fragmentNamespace}-length-warning`
+	`${fragmentElementId}-length-warning`
 );
 const lengthWarningText = document.getElementById(
-	`${fragmentNamespace}-length-warning-text`
+	`${fragmentElementId}-length-warning-text`
 );
 
 function main() {
@@ -67,7 +67,7 @@ function main() {
 						inputElement,
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
-						namespace: fragmentNamespace,
+						namespace: fragmentElementId,
 					});
 
 					inputElement.addEventListener('change', (event) => {
@@ -79,12 +79,12 @@ function main() {
 						defaultLanguageId,
 						inputElement,
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-inline-text-input-readonly`
+							`${fragmentElementId}-inline-text-input-readonly`
 						),
 						unlocalizedFieldsState:
 							input.attributes.unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

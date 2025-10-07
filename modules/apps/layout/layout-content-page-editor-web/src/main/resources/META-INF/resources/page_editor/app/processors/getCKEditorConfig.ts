@@ -12,6 +12,7 @@ import {openSelectionModal} from 'frontend-js-components-web';
 
 import BlockButtonCustomization from './plugins/BlockButtonCustomization';
 import EmptyAltImagePlugin from './plugins/EmptyAltImagePlugin';
+import RemoveOuterParagraph from './plugins/RemoveOuterParagraph';
 
 export type EditorConfig = LiferayEditorConfig & {
 	documentBrowseLinkCallback?: (
@@ -28,11 +29,13 @@ export default function getCKEditorConfig({
 	editorName,
 	initialData,
 	itemSelectorEventName,
+	removeOuterParagraph,
 }: {
 	editorConfig: EditorConfig;
 	editorName?: string;
 	initialData: string;
 	itemSelectorEventName?: string;
+	removeOuterParagraph?: boolean;
 }) {
 	let config = initialConfig;
 
@@ -48,6 +51,10 @@ export default function getCKEditorConfig({
 
 	if (blockToolbarItems?.includes('imageSelector')) {
 		extraPlugins.push(EmptyAltImagePlugin);
+	}
+
+	if (removeOuterParagraph) {
+		extraPlugins.push(RemoveOuterParagraph);
 	}
 
 	if (editorName && config.preset === EEditorConfigPreset.ADVANCED) {

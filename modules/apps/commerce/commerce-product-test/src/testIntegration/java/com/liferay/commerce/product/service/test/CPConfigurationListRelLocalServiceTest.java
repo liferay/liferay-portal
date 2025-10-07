@@ -112,7 +112,8 @@ public class CPConfigurationListRelLocalServiceTest {
 				RandomTestUtil.randomString(), 0D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 	}
 
 	@After

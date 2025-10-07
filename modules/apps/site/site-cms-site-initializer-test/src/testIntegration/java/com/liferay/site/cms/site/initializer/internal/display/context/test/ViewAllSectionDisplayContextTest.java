@@ -7,19 +7,14 @@ package com.liferay.site.cms.site.initializer.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectFolder;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -31,9 +26,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -45,7 +38,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 @RunWith(Arquillian.class)
 @Sync
 public class ViewAllSectionDisplayContextTest
-	extends BaseDisplayContextTestCase {
+	extends BaseFilesSectionDisplayContextTestCase {
 
 	@ClassRule
 	@Rule
@@ -54,90 +47,55 @@ public class ViewAllSectionDisplayContextTest
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Ignore
-	@Test
-	@TestInfo("LPD-50664")
-	public void testGetCreationMenu() throws Exception {
-		Map<String, String> expectedResultMap = LinkedHashMapBuilder.put(
-			"Basic Document",
-			getHref(
-				objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_BASIC_DOCUMENT", TestPropsValues.getCompanyId()))
+	@Override
+	protected Map<String, String> getExpectedCreationMenuItems()
+		throws PortalException {
+
+		return LinkedHashMapBuilder.put(
+			"basic-content",
+			getRedirect(
+				"L_BASIC_WEB_CONTENT",
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)
 		).put(
-			"Basic Web Content",
-			getHref(
-				objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId()))
+			"single-file",
+			getRedirect(
+				"L_BASIC_DOCUMENT",
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)
+		).put(
+			"multiple-files", StringPool.BLANK
+		).put(
+			"blog",
+			getRedirect(
+				"L_BLOG",
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)
+		).put(
+			"external-video-shortcut",
+			getRedirect(
+				"L_EXTERNAL_VIDEO",
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)
 		).build();
-
-		testGetCreationMenu(
-			ReflectionTestUtil.invoke(
-				_getViewAllSectionDisplayContext(getMockHttpServletRequest()),
-				"getCreationMenu", new Class<?>[0]),
-			expectedResultMap);
-
-		ObjectFolder cmsContentStructuresObjectFolder =
-			objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-				TestPropsValues.getCompanyId());
-
-		ObjectDefinition cmsContentStructuresObjectDefinition =
-			addCustomObjectDefinition(
-				cmsContentStructuresObjectFolder.getObjectFolderId(), true,
-				true, ObjectDefinitionConstants.SCOPE_SITE,
-				WorkflowConstants.STATUS_APPROVED);
-
-		ObjectFolder cmsFileTypesObjectFolder =
-			objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
-				TestPropsValues.getCompanyId());
-
-		ObjectDefinition cmsFileTypesObjectDefinition =
-			addCustomObjectDefinition(
-				cmsFileTypesObjectFolder.getObjectFolderId(), true, true,
-				ObjectDefinitionConstants.SCOPE_SITE,
-				WorkflowConstants.STATUS_APPROVED);
-
-		expectedResultMap.put(
-			cmsFileTypesObjectDefinition.getLabel(LocaleUtil.US),
-			getHref(cmsFileTypesObjectDefinition));
-
-		expectedResultMap.put(
-			cmsContentStructuresObjectDefinition.getLabel(LocaleUtil.US),
-			getHref(cmsContentStructuresObjectDefinition));
-
-		addCustomObjectDefinition(
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			false, true, ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			cmsContentStructuresObjectFolder.getObjectFolderId(), false, true,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			cmsContentStructuresObjectFolder.getObjectFolderId(), true, false,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			cmsContentStructuresObjectFolder.getObjectFolderId(), true, true,
-			ObjectDefinitionConstants.SCOPE_COMPANY,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			cmsContentStructuresObjectFolder.getObjectFolderId(), true, true,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_DRAFT);
-
-		testGetCreationMenu(
-			ReflectionTestUtil.invoke(
-				_getViewAllSectionDisplayContext(getMockHttpServletRequest()),
-				"getCreationMenu", new Class<?>[0]),
-			expectedResultMap);
 	}
 
-	private Object _getViewAllSectionDisplayContext(
+	@Override
+	protected String getObjectFolderExternalReferenceCode() {
+		if (RandomTestUtil.randomBoolean()) {
+			return ObjectFolderConstants.
+				EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES;
+		}
+
+		return ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES;
+	}
+
+	@Override
+	protected String[] getObjectFolderExternalReferenceCodes() {
+		return new String[] {
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES
+		};
+	}
+
+	@Override
+	protected Object getSectionDisplayContext(
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 

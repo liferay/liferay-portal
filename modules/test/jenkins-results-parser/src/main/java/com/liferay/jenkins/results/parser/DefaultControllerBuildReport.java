@@ -13,6 +13,12 @@ import org.json.JSONObject;
 public class DefaultControllerBuildReport extends BaseControllerBuildReport {
 
 	protected DefaultControllerBuildReport(
+		Build controllerBuild, TopLevelBuildReport topLevelBuildReport) {
+
+		super(controllerBuild, topLevelBuildReport);
+	}
+
+	protected DefaultControllerBuildReport(
 		JSONObject buildReportJSONObject,
 		TopLevelBuildReport topLevelBuildReport) {
 

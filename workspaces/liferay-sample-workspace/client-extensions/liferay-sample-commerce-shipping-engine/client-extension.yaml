@@ -3,7 +3,7 @@ assemble:
 liferay-sample-commerce-shipping-engine:
     key: liferay-sample-commerce-shipping-engine
     name: Liferay Sample Commerce Shipping Engine
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-shipping-engine-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-shipping-engine-oaua
     shippingEngineTypeSettings:
         key1: value1
         key2: value2
@@ -11,7 +11,7 @@ liferay-sample-commerce-shipping-engine:
         key4: value4
         key5: value5
     type: commerceShippingEngine
-liferay-sample-commerce-shipping-engine-oauth-application-user-agent:
+liferay-sample-commerce-shipping-engine-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Sample Commerce Shipping Engine OAuth Application User Agent

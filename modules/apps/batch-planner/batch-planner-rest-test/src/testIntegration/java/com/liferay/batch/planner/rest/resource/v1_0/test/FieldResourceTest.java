@@ -136,6 +136,7 @@ public class FieldResourceTest extends BaseFieldResourceTestCase {
 					"string", null),
 				_toField(null, "objectEntryFolderId", false, "integer", null),
 				_toField(null, "permissions", false, "array", null),
+				_toField(null, "removedBy", false, null, null),
 				_toField(null, "reviewDate", false, "string", null),
 				_toField(null, "taxonomyCategoryIds", false, "array", "CSV"),
 				_toField(null, fieldName, false, "string", null),

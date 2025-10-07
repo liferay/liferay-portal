@@ -20,7 +20,13 @@ import SelectionCheckbox from './SelectionCheckbox';
 import SortDropdown from './SortDropdown';
 import FiltersDropdown from './filters/FiltersDropdown';
 
-function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
+function NavBar({
+	creationMenu,
+	handleCheckboxClick,
+	items,
+	pageSelectedItemsValue,
+	showSearch,
+}) {
 	const {selectable, selectionType, showInfoPanel} = useContext(
 		FrontendDataSetContext
 	);
@@ -43,7 +49,7 @@ function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
 							<SelectionCheckbox
 								handleCheckboxClick={handleCheckboxClick}
 								items={items}
-								selectedItemsValue={[]}
+								selectedItemsValue={pageSelectedItemsValue}
 							/>
 						</ManagementToolbar.Item>
 					)}
@@ -108,7 +114,7 @@ function NavBar({creationMenu, handleCheckboxClick, items, showSearch}) {
 
 				{showInfoPanel && (
 					<ManagementToolbar.Item>
-						<InfoPanelToggleButton symbol="info-panel-closed" />
+						<InfoPanelToggleButton symbol="info-circle-open" />
 					</ManagementToolbar.Item>
 				)}
 			</ManagementToolbar.ItemList>

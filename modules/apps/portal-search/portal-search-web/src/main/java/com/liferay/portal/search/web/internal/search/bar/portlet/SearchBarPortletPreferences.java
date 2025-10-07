@@ -20,6 +20,9 @@ public interface SearchBarPortletPreferences {
 	public static final String PREFERENCE_KEY_INCLUDE_ATTACHMENTS =
 		"includeAttachments";
 
+	public static final String PREFERENCE_KEY_INPUT_PLACEHOLDER =
+		"inputPlaceholder";
+
 	public static final String PREFERENCE_KEY_INVISIBLE = "invisible";
 
 	public static final String PREFERENCE_KEY_KEYWORDS_PARAMETER_NAME =
@@ -49,6 +52,8 @@ public interface SearchBarPortletPreferences {
 	public String getDestination();
 
 	public String getFederatedSearchKey();
+
+	public String getInputPlaceholder();
 
 	public String getKeywordsParameterName();
 

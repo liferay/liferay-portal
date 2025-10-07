@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
@@ -73,8 +72,6 @@ public class SelectDDMFormFieldTemplateContextContributorTest
 		_setUpDDMFormInstanceLocalService();
 		_setUpJSONFactory();
 		_setUpLocaleThreadLocal();
-
-		PropsTestUtil.setProps("collator.rules", "<<<");
 
 		ReflectionTestUtil.setFieldValue(
 			_selectDDMFormFieldTemplateContextContributor, "_language",

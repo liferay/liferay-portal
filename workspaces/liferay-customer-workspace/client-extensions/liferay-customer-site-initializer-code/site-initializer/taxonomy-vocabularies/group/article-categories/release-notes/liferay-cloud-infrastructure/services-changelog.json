@@ -1,0 +1,10 @@
+{
+	"name": "Services Changelog",
+	"name_i18n": {
+		"en_US": "Services Changelog",
+		"es-ES": "Registro de cambios en los servicios",
+		"ja-JP": "サービスチェンジログ",
+		"pt-BR": "Registro de Alterações dos Serviços"
+	},
+	"viewableBy": "Anyone"
+}

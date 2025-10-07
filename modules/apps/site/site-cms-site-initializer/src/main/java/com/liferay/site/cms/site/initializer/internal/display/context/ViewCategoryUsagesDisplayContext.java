@@ -28,23 +28,22 @@ public class ViewCategoryUsagesDisplayContext {
 	}
 
 	public String getAPIURL() {
-		StringBundler sb = new StringBundler(4);
-
-		sb.append("/o/search/v1.0/search?emptySearch=true&");
-		sb.append("filter=taxonomyCategoryIds in (");
-		sb.append(ParamUtil.getLong(_httpServletRequest, "categoryId"));
-		sb.append(")&nestedFields=embedded");
-
-		return sb.toString();
+		return StringBundler.concat(
+			"/o/search/v1.0/search?emptySearch=true&",
+			"filter=taxonomyCategoryIds in (",
+			ParamUtil.getLong(_httpServletRequest, "categoryId"),
+			")&nestedFields=embedded");
 	}
 
-	public Map<String, Object> getBreadcrumbReactData() throws Exception {
+	public Map<String, Object> getBreadcrumbProps() throws Exception {
 		return HashMapBuilder.<String, Object>put(
 			"breadcrumbItems",
 			CategorizationBreadcrumbUtil.getUsagesBreadcrumbsJSONArray(
 				ParamUtil.getLong(_httpServletRequest, "categoryId"),
 				(ThemeDisplay)_httpServletRequest.getAttribute(
 					WebKeys.THEME_DISPLAY))
+		).put(
+			"hideSpace", true
 		).build();
 	}
 

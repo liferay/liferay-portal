@@ -66,7 +66,7 @@ definition {
 	@priority = 5
 	test DefaultPortalLandingPageSetByProperty {
 		property custom.properties = "company.default.home.url=${line.separator}default.landing.page.path=/web/guest/landing";
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -144,7 +144,7 @@ definition {
 	@description = "This is a use case for LPS-72398. Users could login to Portal when the default language is not English."
 	@priority = 5
 	test LoginWithSpanishOnlyEnabledLocale {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

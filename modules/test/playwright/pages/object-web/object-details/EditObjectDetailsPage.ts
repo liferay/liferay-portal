@@ -10,6 +10,7 @@ import {ViewObjectDefinitionsPage} from '../ViewObjectDefinitionsPage';
 export class EditObjectDetailsPage {
 	readonly accountRestrictionToggle: Locator;
 	readonly detailsTabItem: Locator;
+	readonly friendlyURLSeparator: Locator;
 	readonly page: Page;
 	readonly publishButton: Locator;
 	readonly saveButton: Locator;
@@ -21,6 +22,10 @@ export class EditObjectDetailsPage {
 			{exact: true}
 		);
 		this.detailsTabItem = page.getByRole('link', {name: 'Details'});
+		this.friendlyURLSeparator = page.getByLabel(
+			'Object Entry URL Separator',
+			{exact: true}
+		);
 		this.page = page;
 		this.publishButton = page.getByRole('button', {
 			exact: true,

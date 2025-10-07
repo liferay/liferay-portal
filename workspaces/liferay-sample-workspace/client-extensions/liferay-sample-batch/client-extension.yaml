@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-sample-batch:
     name: Liferay Sample Batch
-    oAuthApplicationHeadlessServer: liferay-sample-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-sample-batch-oahs
     type: batch
-liferay-sample-batch-oauth-application-headless-server:
+liferay-sample-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Sample OAuth Application Headless Server

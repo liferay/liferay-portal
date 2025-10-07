@@ -1,0 +1,188 @@
+[#function getProperty props key]
+	[#list props as prop]
+		[#if prop.key == key]
+			[#return prop.value /]
+		[/#if]
+	[/#list]
+
+	[#return "" /]
+[/#function]
+
+[#macro renderNavNode item]
+	[#if item.type == "category"]
+		[#assign category = item.data /]
+
+		[#assign isVisibleInNav = getProperty(category.taxonomyCategoryProperties, "visibleInNav") /]
+
+		[#if isVisibleInNav == "false"]
+			[#return /]
+		[/#if]
+
+		[#assign childNavItems = [] /]
+
+		[#if configuration.showCategories]
+			[#attempt]
+				[#assign childCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + category.id + "/taxonomy-categories") /]
+
+				[#if childCategories.items?has_content]
+					[#list childCategories.items as childCategory]
+						[#assign childNavItems = childNavItems + [{"data": childCategory, "name": childCategory.name, "type": "category"}] /]
+					[/#list]
+				[/#if]
+			[#recover]
+			[/#attempt]
+		[/#if]
+
+		[#if configuration.showArticles]
+			[#attempt]
+				[#assign articles = restClient.get("/headless-delivery/v1.0/sites/${themeDisplay.getScopeGroupId()}/structured-contents?search=${category.id}&flatten=true") /]
+
+				[#if articles?has_content && articles.items?has_content]
+					[#list articles.items as article]
+						[#assign childNavItems = childNavItems + [{"data": article, "name": article.title, "type": "article"}] /]
+					[/#list]
+				[/#if]
+			[#recover]
+			[/#attempt]
+		[/#if]
+
+		[#assign isActive = category.id?string == currentCategoryId?string /]
+		[#assign isAncestor = false /]
+
+		[#assign categoryPathIds = (category.treePath!"")?split("/")?filter(id -> id?has_content) + [currentCategoryId?string] /]
+
+		[#list categoryPathIds as pathId]
+			[#if pathId == category.id?string]
+				[#assign isAncestor = true /]
+				[#break /]
+			[/#if]
+		[/#list]
+
+		[#if childNavItems?has_content]
+			[@liferay_ui.panel
+				collapsible=true
+				cssClass="bg-transparent ${(!articleId?has_content && isActive)?then('active', '')}"
+				extended=isAncestor
+				title='${htmlUtil.escape(category.name)}'
+			]
+				<ul class="cp-article-side-panel-list list-unstyled m-0">
+					[#list childNavItems?sort_by("name") as childItem]
+						<li>
+							[@renderNavNode item=childItem /]
+						</li>
+					[/#list]
+				</ul>
+			[/@]
+		[#else]
+			<a class="cp-article-side-panel-item cp-article-side-panel-link ${(!articleId?has_content && isActive)?then('active', '')}" href="${baseURL}/v/${category.id}">
+				${htmlUtil.escape(category.name)}
+			</a>
+		[/#if]
+	[#elseif item.type == "article"]
+		[#assign article = item.data /]
+		[#assign isCurrent = (articleId?has_content && article.id?string == displayObject.resourcePrimKey?string) /]
+
+		<a class="cp-article-side-panel-article cp-article-side-panel-item cp-article-side-panel-link ${isCurrent?then('active', '')}" href="${baseURL}/w/${article.friendlyUrlPath}">
+			${htmlUtil.escape(article.title)}
+		</a>
+	[/#if]
+[/#macro]
+
+[#assign displayObject = (request.getAttribute("LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER").getDisplayObject())!{} /]
+
+[#if displayObject?has_content]
+	[#assign
+		articleId = displayObject.articleId!""
+		baseURL = themeDisplay.getURLCurrent()?replace('/[wv]/.*', '', 'r')
+		categoryId = displayObject.categoryId!""
+		currentCategoryId = displayObject.categoryId!""
+		parentCategoryId = ""
+		navItems = []
+	/]
+
+	[#if articleId?has_content]
+		[#assign restArticle = (restClient.get("/headless-delivery/v1.0/structured-contents/${displayObject.resourcePrimKey}?fields=contentFields"))!{} /]
+
+		[#list restArticle.contentFields as field]
+			[#if field.name == "category"]
+				[#assign parentCategoryId = field.contentFieldValue.data]
+				[#break /]
+			[/#if]
+		[/#list]
+	[/#if]
+
+	[#if currentCategoryId?has_content]
+		[#attempt]
+			[#assign currentCategory = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + currentCategoryId) /]
+
+			[#if currentCategory.parentTaxonomyCategory??]
+				[#assign parentCategoryId = currentCategory.parentTaxonomyCategory.id!"" /]
+			[/#if]
+		[#recover]
+		[/#attempt]
+	[/#if]
+
+	[#if configuration.showCategories && parentCategoryId?has_content]
+		[#attempt]
+			[#assign siblingCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + parentCategoryId + "/taxonomy-categories") /]
+
+			[#if siblingCategories.items?has_content]
+				[#list siblingCategories.items as siblingCategory]
+					[#assign navItems = navItems + [{"data": siblingCategory, "name": siblingCategory.name, "type": "category", "url": "${baseURL}/v/${siblingCategory.id}"}] /]
+				[/#list]
+			[/#if]
+		[#recover]
+		[/#attempt]
+	[/#if]
+
+	[#if configuration.showArticles]
+		[#assign articleFetchCategoryId = "" /]
+
+		[#if configuration.showCategories && parentCategoryId?has_content]
+			[#assign articleFetchCategoryId = parentCategoryId /]
+		[#elseif currentCategoryId?has_content]
+			[#assign articleFetchCategoryId = currentCategoryId /]
+		[/#if]
+
+		[#if articleFetchCategoryId?has_content]
+			[#attempt]
+				[#assign articles = restClient.get("/headless-delivery/v1.0/sites/${themeDisplay.getScopeGroupId()}/structured-contents?flatten=true&search=${articleFetchCategoryId}&page=1&pageSize=100") /]
+
+				[#if articles.items?has_content]
+					[#list articles.items as article]
+						[#assign navItems = navItems + [{"data": article, "name": article.title, "type": "article", "url": "${baseURL}/w/${article.friendlyUrlPath}"}] /]
+					[/#list]
+				[/#if]
+			[#recover]
+			[/#attempt]
+		[/#if]
+	[/#if]
+
+	<div class="cp-article-side-panel">
+		[#if configuration.showParentCategory && parentCategoryId?has_content]
+
+			[#assign parentCategory = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + parentCategoryId) /]
+
+			[#if parentCategory?has_content]
+				<a class="border border-neutral-3 border-radius-lg cp-article-side-panel-back-link cp-article-side-panel-item cp-article-side-panel-link mb-0 p-3" href="${baseURL}/v/${parentCategory.id}">
+					[@clay["icon"] symbol="angle-left-small" /]
+					<span>${languageUtil.format(locale, "back-to-x", htmlUtil.escape(parentCategory.name))}</span>
+				</a>
+			[/#if]
+		[/#if]
+
+		<div class="p-2">
+			[@liferay_ui["panel-container"]]
+				[#if navItems?has_content]
+					<ul class="cp-article-side-panel-list list-unstyled m-0">
+						[#list navItems?sort_by("name") as item]
+							<li>
+								[@renderNavNode item=item /]
+							</li>
+						[/#list]
+					</ul>
+				[/#if]
+			[/@]
+		</div>
+	</div>
+[/#if]

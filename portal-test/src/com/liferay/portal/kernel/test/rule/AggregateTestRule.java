@@ -64,6 +64,7 @@ public class AggregateTestRule implements TestRule {
 		TimeoutTestRule.class.getName(), HeapDumpTestRule.class.getName(),
 		CodeCoverageAssertor.class.getName(), NewEnvTestRule.class.getName(),
 		AssumeTestRule.class.getName(),
+		"com.liferay.exportimport.test.rule.LazyReferencingTestRule",
 		"com.liferay.portal.test.rule.LiferayIntegrationTestRule",
 		LiferayUnitTestRule.class.getName(),
 		"com.liferay.portal.test.rule.PersistenceTestRule",

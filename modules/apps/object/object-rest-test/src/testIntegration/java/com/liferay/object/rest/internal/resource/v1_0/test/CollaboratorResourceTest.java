@@ -136,14 +136,16 @@ public class CollaboratorResourceTest {
 
 	@Test
 	public void testGetObjectEntryCollaboratorsPage() throws Exception {
-		JSONArray jsonArray = JSONUtil.putAll(
-			_getUserCollaboratorJSONObject(),
-			_getUserGroupCollaboratorJSONObject(),
-			_getUserCollaboratorJSONObject());
+		JSONObject collaboratorJSONObject1 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject2 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject3 = _getUserCollaboratorJSONObject();
 		ObjectEntry objectEntry = _addObjectEntry();
 
 		HTTPTestUtil.invokeToJSONObject(
-			jsonArray.toString(),
+			JSONUtil.putAll(
+				collaboratorJSONObject1, collaboratorJSONObject2,
+				collaboratorJSONObject3
+			).toString(),
 			StringBundler.concat(
 				_objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntry.getObjectEntryId(), "/collaborators"),
@@ -156,7 +158,11 @@ public class CollaboratorResourceTest {
 				objectEntry.getObjectEntryId(), "/collaborators"),
 			Http.Method.GET);
 
-		_assertEquals(jsonArray, jsonObject.getJSONArray("items"));
+		_assertEquals(
+			JSONUtil.putAll(
+				collaboratorJSONObject3, collaboratorJSONObject2,
+				collaboratorJSONObject1),
+			jsonObject.getJSONArray("items"));
 	}
 
 	@Test
@@ -180,13 +186,15 @@ public class CollaboratorResourceTest {
 	public void testGetScopeScopeKeyByExternalReferenceCodeCollaboratorsPage()
 		throws Exception {
 
-		JSONArray jsonArray = JSONUtil.putAll(
-			_getUserCollaboratorJSONObject(),
-			_getUserGroupCollaboratorJSONObject());
+		JSONObject collaboratorJSONObject1 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject2 =
+			_getUserGroupCollaboratorJSONObject();
 		ObjectEntry objectEntry = _addObjectEntry();
 
 		HTTPTestUtil.invokeToJSONObject(
-			jsonArray.toString(),
+			JSONUtil.putAll(
+				collaboratorJSONObject1, collaboratorJSONObject2
+			).toString(),
 			StringBundler.concat(
 				_objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntry.getObjectEntryId(), "/collaborators"),
@@ -200,47 +208,64 @@ public class CollaboratorResourceTest {
 				objectEntry.getExternalReferenceCode(), "/collaborators"),
 			Http.Method.GET);
 
-		_assertEquals(jsonArray, jsonObject.getJSONArray("items"));
+		_assertEquals(
+			JSONUtil.putAll(collaboratorJSONObject2, collaboratorJSONObject1),
+			jsonObject.getJSONArray("items"));
 	}
 
 	@Test
 	public void testPostObjectEntryCollaboratorsPage() throws Exception {
-		JSONArray jsonArray = JSONUtil.putAll(
-			_getUserCollaboratorJSONObject(),
-			_getUserGroupCollaboratorJSONObject(),
-			_getUserCollaboratorJSONObject());
+		JSONObject collaboratorJSONObject1 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject2 =
+			_getUserGroupCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject3 = _getUserCollaboratorJSONObject();
 		ObjectEntry objectEntry = _addObjectEntry();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			jsonArray.toString(),
+			JSONUtil.putAll(
+				collaboratorJSONObject1, collaboratorJSONObject2,
+				collaboratorJSONObject3
+			).toString(),
 			StringBundler.concat(
 				_objectDefinition.getRESTContextPath(), StringPool.SLASH,
 				objectEntry.getObjectEntryId(), "/collaborators"),
 			Http.Method.POST);
 
-		_assertEquals(jsonArray, jsonObject.getJSONArray("items"));
+		_assertEquals(
+			JSONUtil.putAll(
+				collaboratorJSONObject3, collaboratorJSONObject2,
+				collaboratorJSONObject1),
+			jsonObject.getJSONArray("items"));
 	}
 
 	@Test
 	public void testPostScopeScopeKeyByExternalReferenceCodeCollaboratorsPage()
 		throws Exception {
 
-		JSONArray jsonArray = JSONUtil.putAll(
-			_getUserCollaboratorJSONObject(),
-			_getUserGroupCollaboratorJSONObject(),
-			_getUserCollaboratorJSONObject(),
-			_getUserGroupCollaboratorJSONObject());
+		JSONObject collaboratorJSONObject1 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject2 =
+			_getUserGroupCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject3 = _getUserCollaboratorJSONObject();
+		JSONObject collaboratorJSONObject4 =
+			_getUserGroupCollaboratorJSONObject();
 		ObjectEntry objectEntry = _addObjectEntry();
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			jsonArray.toString(),
+			JSONUtil.putAll(
+				collaboratorJSONObject1, collaboratorJSONObject2,
+				collaboratorJSONObject3, collaboratorJSONObject4
+			).toString(),
 			StringBundler.concat(
 				_objectDefinition.getRESTContextPath(), "/scopes/",
 				_group.getGroupId(), "/by-external-reference-code/",
 				objectEntry.getExternalReferenceCode(), "/collaborators"),
 			Http.Method.POST);
 
-		_assertEquals(jsonArray, jsonObject.getJSONArray("items"));
+		_assertEquals(
+			JSONUtil.putAll(
+				collaboratorJSONObject4, collaboratorJSONObject3,
+				collaboratorJSONObject2, collaboratorJSONObject1),
+			jsonObject.getJSONArray("items"));
 	}
 
 	@Test
@@ -309,26 +334,8 @@ public class CollaboratorResourceTest {
 				_group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
-	private void _assertContains(
-		JSONArray actualJSONArray, JSONObject expectedJSONObject) {
-
-		boolean contains = false;
-
-		for (int i = 0; i < actualJSONArray.length(); i++) {
-			JSONObject actualJSONObject = actualJSONArray.getJSONObject(i);
-
-			if (_equals(actualJSONObject, expectedJSONObject)) {
-				contains = true;
-
-				break;
-			}
-		}
-
-		Assert.assertTrue(contains);
-	}
-
 	private void _assertDeleteObjectEntryCollaborator(
-			String endPoint, User user)
+			String endpoint, User user)
 		throws Exception {
 
 		JSONObject jsonObject1 = _getUserCollaboratorJSONObject(user);
@@ -336,12 +343,12 @@ public class CollaboratorResourceTest {
 		_assertEquals(
 			jsonObject1,
 			HTTPTestUtil.invokeToJSONObject(
-				jsonObject1.toString(), endPoint, Http.Method.PUT));
+				jsonObject1.toString(), endpoint, Http.Method.PUT));
 
-		HTTPTestUtil.invokeToJSONObject(null, endPoint, Http.Method.DELETE);
+		HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.DELETE);
 
 		JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
-			null, endPoint, Http.Method.GET);
+			null, endpoint, Http.Method.GET);
 
 		Assert.assertEquals("NOT_FOUND", jsonObject2.getString("status"));
 	}
@@ -353,8 +360,9 @@ public class CollaboratorResourceTest {
 			expectedJSONArray.length(), actualJSONArray.length());
 
 		for (int i = 0; i < expectedJSONArray.length(); i++) {
-			_assertContains(
-				actualJSONArray, expectedJSONArray.getJSONObject(i));
+			_assertEquals(
+				actualJSONArray.getJSONObject(i),
+				expectedJSONArray.getJSONObject(i));
 		}
 	}
 
@@ -376,17 +384,17 @@ public class CollaboratorResourceTest {
 	}
 
 	private void _assertPutObjectEntryCollaborator(
-			String endPoint, UserGroup userGroup)
+			String endpoint, UserGroup userGroup)
 		throws Exception {
 
 		JSONObject jsonObject = _getUserGroupCollaboratorJSONObject(userGroup);
 
 		HTTPTestUtil.invokeToJSONObject(
-			jsonObject.toString(), endPoint, Http.Method.PUT);
+			jsonObject.toString(), endpoint, Http.Method.PUT);
 
 		_assertEquals(
 			jsonObject,
-			HTTPTestUtil.invokeToJSONObject(null, endPoint, Http.Method.GET));
+			HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.GET));
 	}
 
 	private boolean _equals(JSONObject jsonObject1, JSONObject jsonObject2) {

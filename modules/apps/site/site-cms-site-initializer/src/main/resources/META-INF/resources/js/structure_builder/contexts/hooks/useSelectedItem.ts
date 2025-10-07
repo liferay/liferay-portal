@@ -4,28 +4,29 @@
  */
 
 import selectSelection from '../../selectors/selectSelection';
-import selectStructureFields from '../../selectors/selectStructureFields';
-import {ReferencedStructure, Structures} from '../../types/Structure';
+import selectStructureChildren from '../../selectors/selectStructureChildren';
+import {
+	ReferencedStructure,
+	RepeatableGroup,
+	Structure,
+} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
 import {Field} from '../../utils/field';
-import {useCache} from '../CacheContext';
 import {useSelector} from '../StateContext';
 
-type SelectedField =
-	| {field: Field; type: 'field'}
-	| {field: Field; type: 'referenced-field'}
-	| {referencedStructure: ReferencedStructure; type: 'referenced-structure'};
+type SelectedChild =
+	| {field: Field; referenced: boolean; type: 'field'}
+	| {referencedStructure: ReferencedStructure; type: 'referenced-structure'}
+	| {group: RepeatableGroup; referenced: boolean; type: 'repeatable-group'};
 
 type SelectedItem =
 	| {type: 'main-structure'}
 	| {type: 'multiselection'}
-	| SelectedField;
+	| SelectedChild;
 
 export default function useSelectedItem(): SelectedItem {
 	const selection = useSelector(selectSelection);
-	const fields = useSelector(selectStructureFields);
-
-	const {data: structures} = useCache('structures');
+	const children = useSelector(selectStructureChildren);
 
 	const [uuid] = selection;
 
@@ -37,54 +38,55 @@ export default function useSelectedItem(): SelectedItem {
 		return {type: 'multiselection'};
 	}
 
-	const field = findField(uuid, fields, structures);
+	const child = findSelectedChild(uuid, children);
 
-	if (field) {
-		return field;
+	if (child) {
+		return child;
 	}
 
 	return {type: 'main-structure'};
 }
 
-function findField(
+function findSelectedChild(
 	uuid: Uuid,
-	fields: (Field | ReferencedStructure)[],
-	structures: Structures,
-	parentType: SelectedItem['type'] = 'main-structure'
-): SelectedField | null {
-	for (const field of fields) {
-		if (field.uuid === uuid) {
-			if (field.type === 'referenced-structure') {
+	children: (ReferencedStructure | RepeatableGroup | Structure)['children'],
+	isReferenced: boolean = false
+): SelectedChild | null {
+	for (const child of children.values()) {
+		if (child.uuid === uuid) {
+			if (child.type === 'referenced-structure') {
 				return {
-					referencedStructure: field,
+					referencedStructure: child,
 					type: 'referenced-structure',
+				};
+			}
+			else if (child.type === 'repeatable-group') {
+				return {
+					group: child,
+					referenced: isReferenced,
+					type: 'repeatable-group',
 				};
 			}
 			else {
 				return {
-					field,
-					type:
-						parentType === 'main-structure'
-							? 'field'
-							: 'referenced-field',
+					field: child,
+					referenced: isReferenced,
+					type: 'field',
 				};
 			}
 		}
+		else if (
+			child.type === 'referenced-structure' ||
+			child.type === 'repeatable-group'
+		) {
+			const group = findSelectedChild(
+				uuid,
+				child.children,
+				isReferenced || child.type === 'referenced-structure'
+			);
 
-		if (field.type === 'referenced-structure') {
-			const structure = structures.get(field.erc);
-
-			if (structure) {
-				const child = findField(
-					uuid,
-					selectStructureFields(structure),
-					structures,
-					field.type
-				);
-
-				if (child) {
-					return child;
-				}
+			if (group) {
+				return group;
 			}
 		}
 	}

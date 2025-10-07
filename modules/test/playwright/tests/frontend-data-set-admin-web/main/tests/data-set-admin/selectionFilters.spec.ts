@@ -10,6 +10,7 @@ import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../../utils/getRandomString';
+import {waitForModal} from '../../../../../utils/waitFor';
 import {waitForAlert} from '../../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import {picklistApiHelpersTest} from '../../fixtures/picklistApiHelpersTest';
@@ -213,11 +214,15 @@ test('Can create and delete a selection filter from picklist source', async ({
 
 		await deleteButton.click();
 
-		const confirmDeleteButton = page.getByRole('button', {
+		const modalContainer = page.locator('.liferay-modal');
+
+		const confirmDeleteButton = modalContainer.getByRole('button', {
 			name: 'Delete',
 		});
 
-		await confirmDeleteButton.waitFor();
+		await waitForModal({
+			page,
+		});
 
 		await confirmDeleteButton.click();
 	});

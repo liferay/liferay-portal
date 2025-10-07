@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Layout Type Controller Embedded
 Bundle-SymbolicName: com.liferay.layout.type.controller.embedded
-Bundle-Version: 2.0.23
+Bundle-Version: 2.0.24
 Web-ContextPath: /layout-type-controller-embedded

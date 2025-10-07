@@ -101,18 +101,16 @@ public abstract class BaseCheck extends AbstractCheck {
 	}
 
 	protected boolean containsVariableName(
-		DetailAST detailAST, String variableName, DetailAST assignDetailAST) {
+		DetailAST detailAST, String variableName) {
 
 		List<DetailAST> identDetailASTList = getAllChildTokens(
 			detailAST, true, TokenTypes.IDENT);
 
-		return containsVariableName(
-			identDetailASTList, variableName, assignDetailAST);
+		return containsVariableName(identDetailASTList, variableName);
 	}
 
 	protected boolean containsVariableName(
-		List<DetailAST> identDetailASTList, String variableName,
-		DetailAST assignDetailAST) {
+		List<DetailAST> identDetailASTList, String variableName) {
 
 		if (variableName == null) {
 			return false;
@@ -127,18 +125,6 @@ public abstract class BaseCheck extends AbstractCheck {
 
 			if (parentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
 				return false;
-			}
-
-			if (assignDetailAST != null) {
-				DetailAST instanceInitDetailAST = getParentWithTokenType(
-					identDetailAST, TokenTypes.INSTANCE_INIT);
-
-				if ((instanceInitDetailAST != null) &&
-					(getEndLineNumber(assignDetailAST) < getStartLineNumber(
-						instanceInitDetailAST))) {
-
-					return false;
-				}
 			}
 
 			if (!isMethodNameDetailAST(identDetailAST)) {

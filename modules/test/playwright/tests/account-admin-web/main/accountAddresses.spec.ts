@@ -10,7 +10,6 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {applicationsMenuPageTest} from '../../../fixtures/applicationsMenuPageTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {listTypeDefinitionsPagesTest} from '../../../fixtures/listTypeDefinitionsPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {serverAdministrationPageTest} from '../../../fixtures/serverAdministrationPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
@@ -25,21 +24,11 @@ export const test = mergeTests(
 	applicationsMenuPageTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-47858': {enabled: true},
+		'LPD-35914': {enabled: true},
 	}),
 	loginTest(),
 	usersAndOrganizationsPagesTest,
 	serverAdministrationPageTest
-);
-
-export const testWithAddressSubtypeEnabled = mergeTests(
-	accountsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-43000': {enabled: true},
-	}),
-	listTypeDefinitionsPagesTest,
-	loginTest()
 );
 
 test(
@@ -86,9 +75,6 @@ test(
 		await expect(
 			accountAddressesPage.addressesTable.valueLink(address.name)
 		).toBeVisible();
-		await expect(
-			accountAddressesPage.addressesTable.cell('Subtype', false)
-		).toHaveCount(0);
 
 		await accountAddressesPage.addressesTable
 			.valueLink(address.name)
@@ -1094,7 +1080,7 @@ test(
 	}
 );
 
-testWithAddressSubtypeEnabled(
+test(
 	'Can add an address to an account with subtype',
 	{tag: '@LPD-51453'},
 	async ({

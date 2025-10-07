@@ -7,8 +7,8 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryProcessor;
 import com.liferay.jenkins.results.parser.metrics.BuildHistoryReport;
-import com.liferay.jenkins.results.parser.testray.TestrayS3Bucket;
-import com.liferay.jenkins.results.parser.testray.TestrayS3Object;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +86,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 
 	public enum Report {
 
+		AWS_BUILD_COMPARISON("AWS Build Comparison"),
 		BUILD_HISTORY("Build History"), CI_SYSTEM_HISTORY("CI System History"),
 		CI_SYSTEM_STATUS("CI System Status"),
 		PULL_REQUEST_HISTORY("Pull Request History"),
@@ -148,12 +149,11 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 	}
 
 	private void _copyArchivedBuildData(
-		long durationDays, String startDateString) {
+		File archivedDataDir, long durationDays, File outputDir,
+		String startDateString) {
 
 		String[] dateStrings = JenkinsResultsParserUtil.getDateStrings(
 			durationDays, LocalDate.parse(startDateString, _dateTimeFormatter));
-
-		File archivedDataDir = new File(_ARCHIVE_BASE_DIR_PATH + "/data");
 
 		List<Callable<Void>> callables = new ArrayList<>();
 
@@ -166,8 +166,7 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 						File archiveFile = new File(
 							archivedDataDir, dateString + ".tar.gz");
 
-						File unarchivedDir = new File(
-							_TMP_BASE_DIR_PATH, "/builds/" + dateString);
+						File unarchivedDir = new File(outputDir, dateString);
 
 						if (archiveFile.exists() && !unarchivedDir.exists()) {
 							System.out.println(
@@ -194,6 +193,14 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		catch (TimeoutException timeoutException) {
 			throw new RuntimeException(timeoutException);
 		}
+	}
+
+	private void _copyArchivedBuildData(
+		long durationDays, String startDateString) {
+
+		_copyArchivedBuildData(
+			new File(_ARCHIVE_BASE_DIR_PATH + "/data"), durationDays,
+			new File(_TMP_BASE_DIR_PATH + "/builds"), startDateString);
 	}
 
 	private void _copyArchivedNodeData(
@@ -287,7 +294,8 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 				DateTimeFormatter.ofPattern("yyyy-MM"));
 		}
 
-		TestrayS3Bucket testrayS3Bucket = TestrayS3Bucket.getInstance();
+		TestrayCloudBucket testrayCloudBucket =
+			TestrayCloudBucket.getInstance();
 
 		List<String> keys = new ArrayList<>();
 
@@ -311,12 +319,45 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 			File testrayResultsBucketLocalDir = new File(
 				_getBuildProperty("google.cloud.bucket.local.dir[testray]"));
 
-			testrayS3Bucket.downloadTestrayS3Objects(
+			testrayCloudBucket.downloadTestrayCloudObjects(
 				testrayResultsBucketLocalDir, keys);
 		}
 		catch (TimeoutException timeoutException) {
 			throw new RuntimeException(timeoutException);
 		}
+	}
+
+	private void _generateAWSBuildComparisonReport(String reportName)
+		throws IOException {
+
+		if (JenkinsResultsParserUtil.isCloudCINode()) {
+			return;
+		}
+
+		CloudBucketUtil.syncGCPFiles(
+			_ARCHIVE_BASE_DIR_PATH + "/aws/data",
+			CloudBucketUtil.GCP_BUCKET_PATH_JENKINS_CI_DATA + "/aws/data");
+
+		long reportDurationDays = _getReportDurationDays(reportName);
+		String startDateString = _getStartDateString(reportName);
+
+		_copyArchivedBuildData(reportDurationDays, startDateString);
+
+		_copyArchivedBuildData(
+			new File(_ARCHIVE_BASE_DIR_PATH + "/aws/data"), reportDurationDays,
+			new File(_TMP_BASE_DIR_PATH + "/aws/builds"), startDateString);
+
+		String filePath = _getReportFilePath(reportName);
+
+		BuildHistoryReport awsBuildComparisonReport =
+			BuildHistoryReport.newAWSBuildComparisonReport(
+				reportDurationDays, new File(filePath), startDateString);
+
+		awsBuildComparisonReport.write();
+
+		_updateReport(filePath);
+
+		_archiveReport(filePath);
 	}
 
 	private void _generateBuildHistoryReport(String reportName)
@@ -358,6 +399,8 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		throws IOException {
 
 		String filePath = _getReportFilePath(reportName);
+
+		CISystemStatusReportUtil.writeConfigJSFile(filePath);
 
 		CISystemStatusReportUtil.copyBaseReportFiles(filePath);
 
@@ -467,6 +510,10 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 
 		for (String reportName : reportNames) {
 			try {
+				if (reportName.equals(Report.AWS_BUILD_COMPARISON.toString())) {
+					_generateAWSBuildComparisonReport(reportName);
+				}
+
 				if (reportName.equals(Report.BUILD_HISTORY.toString())) {
 					_generateBuildHistoryReport(reportName);
 				}
@@ -648,12 +695,14 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 		sb.append(jobName);
 		sb.append("/");
 
-		TestrayS3Bucket testrayS3Bucket = TestrayS3Bucket.getInstance();
+		TestrayCloudBucket testrayCloudBucket =
+			TestrayCloudBucket.getInstance();
 
-		for (TestrayS3Object testrayS3Object :
-				testrayS3Bucket.getTestrayS3Objects(sb.toString())) {
+		for (TestrayCloudObject testrayCloudObject :
+				testrayCloudBucket.getTestrayCloudObjects(sb.toString())) {
 
-			String filePath = testrayS3Object.getKey() + "build-report.json.gz";
+			String filePath =
+				testrayCloudObject.getKey() + "build-report.json.gz";
 
 			filePaths.add(filePath);
 		}
@@ -872,6 +921,9 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 	private static final Map<String, String> _reportDirNames =
 		new HashMap<String, String>() {
 			{
+				put(
+					Report.AWS_BUILD_COMPARISON.toString(),
+					"aws-build-comparison-report");
 				put(Report.BUILD_HISTORY.toString(), "build-history-report");
 				put(Report.CI_SYSTEM_HISTORY.toString(), "ci-system-history");
 				put(Report.CI_SYSTEM_STATUS.toString(), "ci-system-status");
@@ -886,8 +938,8 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 	private static final Pattern _scriptElementPattern = Pattern.compile(
 		_SCRIPT_ELEMENT_REGEX);
 	private static final List<String> _validReportNames = Arrays.asList(
-		Report.BUILD_HISTORY.toString(), Report.CI_SYSTEM_HISTORY.toString(),
-		Report.CI_SYSTEM_STATUS.toString(),
+		Report.AWS_BUILD_COMPARISON.toString(), Report.BUILD_HISTORY.toString(),
+		Report.CI_SYSTEM_HISTORY.toString(), Report.CI_SYSTEM_STATUS.toString(),
 		Report.PULL_REQUEST_HISTORY.toString(),
 		Report.RELEASE_HISTORY.toString(), Report.UPSTREAM_HISTORY.toString(),
 		Report.UTILIZATION.toString());

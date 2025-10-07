@@ -9,7 +9,9 @@ import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.service.CalendarBookingLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.provider.BaseInfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 
 import org.osgi.service.component.annotations.Component;
@@ -21,28 +23,51 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
+		"item.class.name=com.liferay.calendar.model.CalendarBooking",
 		"service.ranking:Integer=100"
 	},
 	service = InfoItemObjectProvider.class
 )
 public class CalendarBookingInfoItemObjectProvider
-	implements InfoItemObjectProvider<CalendarBooking> {
+	extends BaseInfoItemObjectProvider<CalendarBooking> {
 
 	@Override
-	public CalendarBooking getInfoItem(InfoItemIdentifier infoItemIdentifier)
+	protected CalendarBooking doGetInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
-		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+
 			throw new NoSuchInfoItemException(
 				"Unsupported info item identifier " + infoItemIdentifier);
 		}
 
-		ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-			(ClassPKInfoItemIdentifier)infoItemIdentifier;
+		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+				(ClassPKInfoItemIdentifier)infoItemIdentifier;
+
+			CalendarBooking calendarBooking =
+				_calendarBookingLocalService.fetchCalendarBooking(
+					classPKInfoItemIdentifier.getClassPK());
+
+			if (calendarBooking == null) {
+				throw new NoSuchInfoItemException(
+					"Unable to get calendar booking with info item " +
+						"identifier " + infoItemIdentifier);
+			}
+
+			return calendarBooking;
+		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
 
 		CalendarBooking calendarBooking =
-			_calendarBookingLocalService.fetchCalendarBooking(
-				classPKInfoItemIdentifier.getClassPK());
+			_calendarBookingLocalService.
+				fetchCalendarBookingByExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(), groupId);
 
 		if (calendarBooking == null) {
 			throw new NoSuchInfoItemException(

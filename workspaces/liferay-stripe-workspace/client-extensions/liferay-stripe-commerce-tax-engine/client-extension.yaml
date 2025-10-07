@@ -3,11 +3,11 @@ assemble:
 liferay-stripe-commerce-tax-engine:
     key: liferay-stripe-commerce-tax-engine
     name: Liferay Stripe Commerce Tax Engine
-    oAuth2ApplicationExternalReferenceCode: liferay-stripe-commerce-tax-engine-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-stripe-commerce-tax-engine-oaua
     taxEngineTypeSettings:
         apiKey:
     type: commerceTaxEngine
-liferay-stripe-commerce-tax-engine-oauth-application-user-agent:
+liferay-stripe-commerce-tax-engine-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Stripe Commerce Tax Engine OAuth Application User Agent

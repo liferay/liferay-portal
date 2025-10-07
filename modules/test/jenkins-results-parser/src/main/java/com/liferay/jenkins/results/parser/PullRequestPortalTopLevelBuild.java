@@ -88,16 +88,22 @@ public class PullRequestPortalTopLevelBuild
 			return _pullRequest;
 		}
 
-		StringBuilder sb = new StringBuilder();
+		String pullRequestURL = getParameterValue("PULL_REQUEST_URL");
 
-		sb.append("https://github.com/");
-		sb.append(getParameterValue("GITHUB_RECEIVER_USERNAME"));
-		sb.append("/");
-		sb.append(getBaseGitRepositoryName());
-		sb.append("/pull/");
-		sb.append(getParameterValue("GITHUB_PULL_REQUEST_NUMBER"));
+		if (pullRequestURL == null) {
+			StringBuilder sb = new StringBuilder();
 
-		_pullRequest = PullRequestFactory.newPullRequest(sb.toString(), this);
+			sb.append("https://github.com/");
+			sb.append(getParameterValue("GITHUB_RECEIVER_USERNAME"));
+			sb.append("/");
+			sb.append(getBaseGitRepositoryName());
+			sb.append("/pull/");
+			sb.append(getParameterValue("GITHUB_PULL_REQUEST_NUMBER"));
+
+			pullRequestURL = sb.toString();
+		}
+
+		_pullRequest = PullRequestFactory.newPullRequest(pullRequestURL, this);
 
 		return _pullRequest;
 	}

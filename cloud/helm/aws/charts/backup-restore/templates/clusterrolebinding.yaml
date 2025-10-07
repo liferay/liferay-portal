@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+    labels:
+    {{- include "liferayAWSBackupRestore.labels" . | nindent 8 }}
+    name: {{ include "liferayAWSBackupRestore.name" . }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: {{ include "liferayAWSBackupRestore.name" . }}
+subjects:
+    -   kind: ServiceAccount
+        name: {{ include "liferayAWSBackupRestore.name" . }}
+        namespace: {{ .Release.Namespace }}

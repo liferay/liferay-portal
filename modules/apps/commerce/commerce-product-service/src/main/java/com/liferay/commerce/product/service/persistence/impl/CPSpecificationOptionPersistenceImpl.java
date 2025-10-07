@@ -623,6 +623,15 @@ public class CPSpecificationOptionPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -1027,6 +1036,16 @@ public class CPSpecificationOptionPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPSpecificationOption> cpSpecificationOptions = findByUuid(
+				uuid);
+
+			cpSpecificationOptions = InlineSQLHelperUtil.filter(
+				cpSpecificationOptions);
+
+			return cpSpecificationOptions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1647,6 +1666,15 @@ public class CPSpecificationOptionPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2072,6 +2100,16 @@ public class CPSpecificationOptionPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPSpecificationOption> cpSpecificationOptions = findByUuid_C(
+				uuid, companyId);
+
+			cpSpecificationOptions = InlineSQLHelperUtil.filter(
+				cpSpecificationOptions);
+
+			return cpSpecificationOptions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2639,6 +2677,15 @@ public class CPSpecificationOptionPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3008,6 +3055,16 @@ public class CPSpecificationOptionPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPSpecificationOption> cpSpecificationOptions =
+				findByCompanyId(companyId);
+
+			cpSpecificationOptions = InlineSQLHelperUtil.filter(
+				cpSpecificationOptions);
+
+			return cpSpecificationOptions.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3559,6 +3616,15 @@ public class CPSpecificationOptionPersistenceImpl
 				CPOptionCategoryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCPOptionCategoryId(
+					CPOptionCategoryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3930,6 +3996,16 @@ public class CPSpecificationOptionPersistenceImpl
 	public int filterCountByCPOptionCategoryId(long CPOptionCategoryId) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByCPOptionCategoryId(CPOptionCategoryId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPSpecificationOption> cpSpecificationOptions =
+				findByCPOptionCategoryId(CPOptionCategoryId);
+
+			cpSpecificationOptions = InlineSQLHelperUtil.filter(
+				cpSpecificationOptions);
+
+			return cpSpecificationOptions.size();
 		}
 
 		StringBundler sb = new StringBundler(2);

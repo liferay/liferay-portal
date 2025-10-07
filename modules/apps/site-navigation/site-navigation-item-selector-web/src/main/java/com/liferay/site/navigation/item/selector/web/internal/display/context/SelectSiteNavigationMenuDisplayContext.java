@@ -169,6 +169,23 @@ public class SelectSiteNavigationMenuDisplayContext {
 		return portletURL.toString();
 	}
 
+	public String getSiteNavigationMenuExternalReferenceCode() {
+		if (_siteNavigationMenuExternalReferenceCode != null) {
+			return _siteNavigationMenuExternalReferenceCode;
+		}
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuLocalServiceUtil.fetchSiteNavigationMenu(
+				getSiteNavigationMenuId());
+
+		if (siteNavigationMenu != null) {
+			_siteNavigationMenuExternalReferenceCode =
+				siteNavigationMenu.getExternalReferenceCode();
+		}
+
+		return _siteNavigationMenuExternalReferenceCode;
+	}
+
 	public long getSiteNavigationMenuId() {
 		if (_siteNavigationMenuId != null) {
 			return _siteNavigationMenuId;
@@ -535,6 +552,7 @@ public class SelectSiteNavigationMenuDisplayContext {
 	private Long _parentSiteNavigationMenuItemId;
 	private final PortletURL _portletURL;
 	private Boolean _privateLayout;
+	private String _siteNavigationMenuExternalReferenceCode;
 	private Long _siteNavigationMenuId;
 	private final SiteNavigationMenuItemTypeRegistry
 		_siteNavigationMenuItemTypeRegistry;

@@ -8,8 +8,6 @@ package com.liferay.captcha.internal.function.captcha;
 import com.liferay.osgi.util.configuration.ConfigurationFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 
 import java.util.Map;
@@ -37,14 +35,6 @@ public class FunctionCaptchaImplFactory {
 	protected void activate(
 		ComponentContext componentContext, Map<String, Object> properties) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				ConfigurationFactoryUtil.getCompanyId(
-					_companyLocalService, properties),
-				"LPD-36464")) {
-
-			return;
-		}
-
 		_componentInstance = _componentFactory.newInstance(
 			HashMapDictionaryBuilder.<String, Object>put(
 				"captcha.engine.impl",
@@ -65,9 +55,6 @@ public class FunctionCaptchaImplFactory {
 			_componentInstance.dispose();
 		}
 	}
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference(
 		target = "(component.factory=com.liferay.captcha.internal.function.captcha.FunctionCaptchaImpl)"

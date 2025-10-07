@@ -1,0 +1,24 @@
+<Calendar>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>1</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>6fd1050d-0a17-aa3f-889d-13889fed9dad</__uuid>
+  <__calendarId>36173</__calendarId>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:35:50.257</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 10:36:34.999</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__calendarResourceId>36176</__calendarResourceId>
+  <__name>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;root available-locales=&quot;en_US,sv_SE,pt_BR,ja_JP,fr_FR,hu_HU,de_DE,ca_ES,ar_SA,fi_FI,zh_CN,es_ES,nl_NL&quot; default-locale=&quot;en_US&quot;&gt;&lt;Name language-id=&quot;sv_SE&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;pt_BR&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;ja_JP&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;fr_FR&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;hu_HU&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;de_DE&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;ca_ES&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;ar_SA&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;fi_FI&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;en_US&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;zh_CN&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;es_ES&quot;&gt;Site Name&lt;/Name&gt;&lt;Name language-id=&quot;nl_NL&quot;&gt;Site Name&lt;/Name&gt;&lt;/root&gt;</__name>
+  <__description></__description>
+  <__timeZoneId>UTC</__timeZoneId>
+  <__color>14247526</__color>
+  <__defaultCalendar>true</__defaultCalendar>
+  <__enableComments>false</__enableComments>
+  <__enableRatings>false</__enableRatings>
+  <__columnBitmask>0</__columnBitmask>
+</Calendar>

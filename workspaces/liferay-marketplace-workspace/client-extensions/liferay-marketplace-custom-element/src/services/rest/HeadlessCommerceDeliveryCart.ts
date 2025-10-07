@@ -35,6 +35,12 @@ export default class HeadlessCommerceDeliveryCart {
 		);
 	}
 
+	static async getCart(id: number) {
+		return fetcher<Cart>(
+			`/o/headless-commerce-delivery-cart/v1.0/carts/${id}`
+		);
+	}
+
 	static async getCartItems(cartId: number) {
 		return fetcher<APIResponse<CartItem>>(
 			`o/headless-commerce-delivery-cart/v1.0/carts/${cartId}/items`

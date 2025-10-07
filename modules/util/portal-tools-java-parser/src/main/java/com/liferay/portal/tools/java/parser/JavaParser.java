@@ -193,11 +193,11 @@ public class JavaParser {
 		if (rcurlyDetailAST != null) {
 			JavaClosingBrace javaClosingBrace = new JavaClosingBrace();
 
-			String curlyExpecedIndent = _getExpectedIndent(
+			String curlyExpectedIndent = _getExpectedIndent(
 				rcurlyDetailAST, fileContents);
 
 			String content = javaClosingBrace.toString(
-				curlyExpecedIndent, StringPool.BLANK, maxLineLength);
+				curlyExpectedIndent, StringPool.BLANK, maxLineLength);
 
 			parsedJavaClass.addJavaTerm(
 				content, DetailASTUtil.getStartPosition(rcurlyDetailAST),
@@ -1344,10 +1344,10 @@ public class JavaParser {
 		}
 
 		public void addReplaceContent(
-			String content, int startlineNumber, int endLineNumber) {
+			String content, int startLineNumber, int endLineNumber) {
 
 			_replaceContentMap.put(
-				startlineNumber, new Tuple(content, endLineNumber));
+				startLineNumber, new Tuple(content, endLineNumber));
 		}
 
 		public Tuple getReplaceContentTuple(int lineNumber) {

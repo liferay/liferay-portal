@@ -9,7 +9,13 @@
 
 <%
 String clientId = (String)request.getAttribute("clientId");
-long orderId = (long)request.getAttribute("orderId");
+
+Long orderId = (Long)request.getAttribute("orderId");
+
+if (orderId == null) {
+	orderId = 0L;
+}
+
 String renderURL = (String)request.getAttribute(CommerceClientExtensionWebKeys.RENDER_URL);
 %>
 

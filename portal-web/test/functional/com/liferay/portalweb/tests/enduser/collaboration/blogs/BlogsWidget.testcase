@@ -60,6 +60,8 @@ definition {
 	@description = "This is a test for LPS-136766. It checks that comments can be disabled from the widget."
 	@priority = 3
 	test CanDisableComments {
+		property portal.acceptance = "false";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
@@ -91,6 +93,8 @@ definition {
 	@description = "This is a test for LPS-136767. It checks that related assets can be disabled from the widget."
 	@priority = 3
 	test CanDisableRelatedAssets {
+		property portal.acceptance = "false";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry1 Content",
 			entryTitle = "Blogs Entry1 Title");
@@ -230,6 +234,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanSearchForPendingEntry {
+		property portal.acceptance = "false";
+
 		ProductMenu.gotoPortlet(
 			category = "Configuration",
 			panel = "Site Administration",
@@ -260,6 +266,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewBlogWithAbstractDisplay {
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -305,6 +312,7 @@ definition {
 	@description = "This is a test for LPS-136809. It checks that a Blog entry can be viewed with the Menu Display configured."
 	@priority = 3
 	test CanViewBlogWithCardDisplay {
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -361,6 +369,7 @@ definition {
 	@refactorneeded
 	test CanViewBlogWithFutureDisplayDateViaBlogsAggregator {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
+		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -466,6 +475,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewBlogWithTitleDisplay {
+		property portal.acceptance = "false";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
@@ -590,6 +601,8 @@ definition {
 	@description = "This is a test for LPS-136810. It checks that a blog can be viewed with Quote Display in the Aggregator widget."
 	@priority = 3
 	test CanViewEntryInQuoteDisplayStyleViaAggregator {
+		property portal.acceptance = "false";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Aggregator Page");
@@ -622,6 +635,8 @@ definition {
 	@description = "This is a test for LPS-136811. It checks that a blog can be viewed through the Navigations Portlet."
 	@priority = 3
 	test CanViewEntryViaNavigationsPortlet {
+		property portal.acceptance = "false";
+
 		JSONCategory.addVocabulary(
 			groupName = "Guest",
 			title = "Vocabulary Name");
@@ -867,6 +882,8 @@ definition {
 	@ignore = "true"
 	@priority = 3
 	test WidgetsFollowAccessibilityStandards {
+		property portal.acceptance = "false";
+
 		for (var widgetName : list "Blogs Aggregator,Recent Bloggers") {
 			JSONLayout.addWidgetToPublicLayout(
 				column = 1,

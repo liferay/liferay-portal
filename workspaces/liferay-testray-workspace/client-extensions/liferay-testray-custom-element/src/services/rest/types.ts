@@ -11,7 +11,7 @@ export type ActionPermissionProperties = {
 	method: string;
 };
 
-type Facets = {
+export type Facets = {
 	facetCriteria: string;
 	facetValues: {
 		numberOfOccurrences: number;
@@ -106,6 +106,31 @@ export type UserRole = {
 	roles: number;
 	rolesBriefs: Role[];
 	userId: number;
+};
+
+export type TestrayJiraProject = {
+	actions?: ObjectActionsItems;
+	externalReferenceCode: string;
+	id: number;
+	name: string;
+	projectToJiraProjects?: TestrayProject;
+	r_projectToJiraProjects_c_projectId: number;
+	r_routineToJiraProject_c_routineId: number;
+	routineToJiraProject?: TestrayRoutine;
+};
+
+export type TestrayJiraIssue = {
+	actions?: ObjectActionsItems;
+	description: string;
+	epicERC: string;
+	externalReferenceCode: string;
+	id: number;
+	initiativeERC: string;
+	issueType: PickList;
+	parentIssueERC: string;
+	projectType: PickList;
+	storyERC: string;
+	title: string;
 };
 
 export type TestrayBuild = {
@@ -240,6 +265,14 @@ export type TestrayCaseType = {
 	id: number;
 	name: string;
 	status: string;
+};
+
+export type TestrayCaseDetail = {
+	buildToCaseDetail?: TestrayBuild;
+	dueStatus: PickList;
+	id: string;
+	name: string;
+	r_buildToCaseDetail_c_buildId: number;
 };
 
 export type TestrayDyspatchTrigger = {
@@ -483,6 +516,8 @@ export type TestrayRoutine = {
 	actions: ObjectActionsItems;
 	id: number;
 	name: string;
+	parentRoutines: TestrayRoutine[];
+	r_teamToRoutines_c_teamId?: number;
 	routineToBuilds: TestrayBuild[];
 	routineToProjects?: TestrayProject;
 	testrayBuildCPUUseTime?: string;

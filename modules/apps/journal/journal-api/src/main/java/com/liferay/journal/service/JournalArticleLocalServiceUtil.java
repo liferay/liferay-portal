@@ -2608,6 +2608,13 @@ public class JournalArticleLocalServiceUtil {
 		return getService().restoreArticleFromTrash(userId, article);
 	}
 
+	public static JournalArticle revertArticle(
+			long userId, long groupId, String articleId, double version)
+		throws PortalException {
+
+		return getService().revertArticle(userId, groupId, articleId, version);
+	}
+
 	public static void setTreePaths(
 			long folderId, String treePath, boolean reindex)
 		throws PortalException {

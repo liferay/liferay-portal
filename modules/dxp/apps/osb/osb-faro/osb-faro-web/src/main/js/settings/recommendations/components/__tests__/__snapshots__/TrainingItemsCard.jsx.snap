@@ -52,7 +52,7 @@ exports[`TrainingItemsCard should render 1`] = `
           <span
             class="rule-value"
           >
-            .*custom-assets
+            .*documents
           </span>
         </div>
       </div>

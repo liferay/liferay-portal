@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.model.impl.PortletFilterImpl;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.PortletFilterFactory;
 
 import jakarta.portlet.PortletContext;

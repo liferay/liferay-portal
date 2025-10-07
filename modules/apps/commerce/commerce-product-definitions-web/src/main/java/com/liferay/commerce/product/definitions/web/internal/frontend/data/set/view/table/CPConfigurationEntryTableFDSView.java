@@ -39,13 +39,6 @@ public class CPConfigurationEntryTableFDSView extends BaseTableFDSView {
 				true
 			)
 		).add(
-			"visible", "visible",
-			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"cpConfigurationEntryDataRenderer"
-			).setSortable(
-				true
-			)
-		).add(
 			"purchasable", "purchasable",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"cpConfigurationEntryDataRenderer"

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Journal Content Web
 Bundle-SymbolicName: com.liferay.journal.content.web
-Bundle-Version: 6.0.92
+Bundle-Version: 6.0.94
 Web-ContextPath: /journal-content-web

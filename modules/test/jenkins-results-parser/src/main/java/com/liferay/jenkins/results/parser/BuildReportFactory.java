@@ -7,8 +7,6 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
 
-import java.io.File;
-
 import java.net.URL;
 
 import java.util.HashMap;
@@ -20,6 +18,13 @@ import org.json.JSONObject;
  * @author Michael Hashimoto
  */
 public class BuildReportFactory {
+
+	public static ControllerBuildReport newControllerBuildReport(
+		Build controllerBuild, TopLevelBuildReport topLevelBuildReport) {
+
+		return new DefaultControllerBuildReport(
+			controllerBuild, topLevelBuildReport);
+	}
 
 	public static ControllerBuildReport newControllerBuildReport(
 		JSONObject buildReportJSONObject,
@@ -52,23 +57,13 @@ public class BuildReportFactory {
 	}
 
 	public static TopLevelBuildReport newTopLevelBuildReport(
-		File jenkinsConsoleFile) {
-
-		if ((jenkinsConsoleFile == null) || !jenkinsConsoleFile.exists()) {
-			return null;
-		}
-
-		return new FileTopLevelBuildReport(jenkinsConsoleFile);
-	}
-
-	public static TopLevelBuildReport newTopLevelBuildReport(
 		JSONObject buildReportJSONObject) {
 
 		if (buildReportJSONObject == null) {
 			return null;
 		}
 
-		return new FileTopLevelBuildReport(buildReportJSONObject);
+		return new JSONObjectTopLevelBuildReport(buildReportJSONObject);
 	}
 
 	public static TopLevelBuildReport newTopLevelBuildReport(
@@ -95,7 +90,8 @@ public class BuildReportFactory {
 			return null;
 		}
 
-		String buildURLString = String.valueOf(topLevelBuildURL);
+		String buildURLString = JenkinsResultsParserUtil.getRemoteURL(
+			String.valueOf(topLevelBuildURL));
 
 		if (!_topLevelBuildReports.containsKey(buildURLString)) {
 			_topLevelBuildReports.put(
@@ -108,23 +104,16 @@ public class BuildReportFactory {
 	public static TopLevelBuildReport newTopLevelBuildReport(
 		TopLevelBuild topLevelBuild) {
 
-		String buildURLString = topLevelBuild.getBuildURL();
-
-		if (!_topLevelBuildReports.containsKey(buildURLString)) {
-			_topLevelBuildReports.put(
-				buildURLString, new DefaultTopLevelBuildReport(topLevelBuild));
-		}
-
-		return _topLevelBuildReports.get(buildURLString);
+		return new DefaultTopLevelBuildReport(topLevelBuild);
 	}
 
 	public static TopLevelBuildReport newTopLevelBuildReport(URL buildURL) {
 		String buildURLString = JenkinsResultsParserUtil.getRemoteURL(
-			buildURL.toString());
+			String.valueOf(buildURL));
 
 		if (!_topLevelBuildReports.containsKey(buildURLString)) {
 			_topLevelBuildReports.put(
-				buildURLString, new URLTopLevelBuildReport(buildURL));
+				buildURLString, new URLTopLevelBuildReport(buildURLString));
 		}
 
 		return _topLevelBuildReports.get(buildURLString);

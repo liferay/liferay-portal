@@ -5,37 +5,25 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
-import {loginTest} from '../../../fixtures/loginTest';
 import {claySamplePageTest} from './fixtures/claySamplePageTest';
+import {TabName} from './pages/ClaySamplePage';
 
 export const test = mergeTests(
-	apiHelpersTest,
 	claySamplePageTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
-	}),
-	isolatedSiteTest,
-	loginTest()
+	})
 );
+
+test.beforeEach('Select Panel tab', async ({claySamplePage}) => {
+	await claySamplePage.selectTab(TabName.PANEL);
+});
 
 test(
 	'Check role and aria-orientation is removed',
 	{tag: '@LPD-30368'},
-	async ({apiHelpers, claySamplePage, page, site}) => {
-		await test.step('Create a content site and the clay sample widget', async () => {
-			await claySamplePage.setupClaySampleWidget({apiHelpers, site});
-		});
-
-		await test.step('Select Panel tab', async () => {
-			await claySamplePage.selectTab(
-				'Panel',
-				page.getByRole('heading', {name: 'DEFAULT PANEL'})
-			);
-		});
-
+	async ({page}) => {
 		await test.step('Check that role and aria-orientation is not present', async () => {
 			const panelGroup = page.getByRole('heading', {name: 'PANEL GROUP'});
 

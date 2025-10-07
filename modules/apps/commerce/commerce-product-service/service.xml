@@ -346,7 +346,6 @@
 		<column name="shippingExtraPrice" type="double" />
 		<column name="shipSeparately" type="boolean" />
 		<column name="taxExempt" type="boolean" />
-		<column name="visible" type="boolean" />
 		<column name="weight" type="double" />
 		<column name="width" type="double" />
 
@@ -372,11 +371,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 			<finder-column name="CPConfigurationListId" />
-		</finder>
-		<finder name="C_C_V" return-type="Collection">
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="visible" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="CPConfigurationEntrySetting" uuid="true">
@@ -592,6 +586,7 @@
 		<!-- Localized entity -->
 
 		<localized-entity>
+			<column name="CProductId" type="long" />
 			<localized-column name="name" />
 			<localized-column name="shortDescription" />
 			<localized-column name="description" />
@@ -1529,6 +1524,7 @@
 		<exception>CPAttachmentFileEntryName</exception>
 		<exception>CPAttachmentFileEntryProtocol</exception>
 		<exception>CPAttachmentFileEntrySize</exception>
+		<exception>CPConfigurationEntryAllowedOrderQuantities</exception>
 		<exception>CPConfigurationEntryQuantity</exception>
 		<exception>CPConfigurationListMaster</exception>
 		<exception>CPConfigurationListParentCPConfigurationListGroupId</exception>

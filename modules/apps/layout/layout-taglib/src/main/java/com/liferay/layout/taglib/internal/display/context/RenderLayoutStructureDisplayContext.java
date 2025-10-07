@@ -48,7 +48,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -128,11 +127,8 @@ public class RenderLayoutStructureDisplayContext {
 
 		StringBundler sb = new StringBundler(4);
 
-		JSONObject itemConfigJSONObject =
-			styledLayoutStructureItem.getItemConfigJSONObject();
-
-		JSONObject stylesJSONObject = itemConfigJSONObject.getJSONObject(
-			"styles");
+		JSONObject stylesJSONObject =
+			styledLayoutStructureItem.getStylesJSONObject();
 
 		String backgroundColorCssClass = stylesJSONObject.getString(
 			"backgroundColor");
@@ -699,8 +695,7 @@ public class RenderLayoutStructureDisplayContext {
 			return false;
 		}
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-			editableValues);
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject stylesFragmentEntryEntryProcessorJSONObject =
 			jsonObject.getJSONObject(
@@ -918,7 +913,7 @@ public class RenderLayoutStructureDisplayContext {
 
 			String inputFieldId = GetterUtil.getString(
 				fragmentEntryConfigurationParser.getFieldValue(
-					fragmentEntryLink.getEditableValues(),
+					fragmentEntryLink.getEditableValuesJSONObject(),
 					new FragmentConfigurationField(
 						"inputFieldId", "string", StringPool.BLANK, false,
 						"text"),
@@ -930,7 +925,7 @@ public class RenderLayoutStructureDisplayContext {
 
 			return GetterUtil.getString(
 				fragmentEntryConfigurationParser.getFieldValue(
-					fragmentEntryLink.getEditableValues(),
+					fragmentEntryLink.getEditableValuesJSONObject(),
 					new FragmentConfigurationField(
 						"inputLabel", "string", StringPool.BLANK, true, "text"),
 					_themeDisplay.getLocale()));
@@ -1133,9 +1128,15 @@ public class RenderLayoutStructureDisplayContext {
 			return StringPool.BLANK;
 		}
 
+		Object infoItemObject = _getInfoItem(infoItemReference);
+
+		if (infoItemObject == null) {
+			return StringPool.BLANK;
+		}
+
 		return _parseInfoFieldValue(
 			infoItemFieldValuesProvider.getInfoFieldValue(
-				_getInfoItem(infoItemReference), fieldId));
+				infoItemObject, fieldId));
 	}
 
 	private String _parseInfoFieldValue(InfoFieldValue<?> infoFieldValue) {

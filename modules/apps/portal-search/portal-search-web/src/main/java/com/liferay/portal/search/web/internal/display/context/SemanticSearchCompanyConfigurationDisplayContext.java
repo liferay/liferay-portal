@@ -76,8 +76,8 @@ public class SemanticSearchCompanyConfigurationDisplayContext {
 		_availableTextTruncationStrategies = availableTextTruncationStrategies;
 	}
 
-	public int setTextEmbeddingCacheTimeout(int textEmbeddingCacheTimeout) {
-		return _textEmbeddingCacheTimeout = textEmbeddingCacheTimeout;
+	public void setTextEmbeddingCacheTimeout(int textEmbeddingCacheTimeout) {
+		_textEmbeddingCacheTimeout = textEmbeddingCacheTimeout;
 	}
 
 	public void setTextEmbeddingProviderConfigurationJSONs(

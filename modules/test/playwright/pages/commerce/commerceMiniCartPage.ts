@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 export class CommerceMiniCartPage {
 	readonly cartItemActionsButton: Locator;
@@ -110,16 +110,18 @@ export class CommerceMiniCartPage {
 	}
 
 	async quickAddToCart(sku: string) {
-		await this.miniCartButton.click();
-		await this.searchProductsInput.fill(sku);
-		await this.quickAddToCartSku(sku).waitFor({state: 'visible'});
+		if (await this.searchProductsInput.isHidden()) {
+			await this.miniCartButton.click();
+		}
+
+		await expect(this.miniCartButtonClose).toBeVisible();
+
+		await expect(async () => {
+			await this.searchProductsInput.fill(sku);
+			await expect(this.quickAddToCartSku(sku)).toBeVisible();
+		}).toPass();
+
 		await this.quickAddToCartSku(sku).click();
 		await this.quickAddToCartButton.click();
-	}
-
-	async submitCart() {
-		this.miniCartButton.waitFor();
-		this.miniCartButton.click();
-		this.submitButton.click();
 	}
 }

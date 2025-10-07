@@ -38,7 +38,7 @@ public class ProjectTemplatesThemeTest implements BaseProjectTemplatesTestCase {
 		return Arrays.asList(
 			new Object[][] {
 				{"7.0.10.17"}, {"7.1.10.7"}, {"7.2.10.7"}, {"7.3.7"},
-				{"7.4.3.56"}, {"2024.q1.1"}
+				{"7.4.3.56"}, {"2024.q1.1"}, {"2025.q3.1"}
 			});
 	}
 

@@ -32,9 +32,9 @@ describe('Summary', () => {
 						initialValues={{
 							itemFilters: [
 								{
-									id: 'includeFilter - url ~ .*custom-assets',
+									id: 'includeFilter - url ~ .*documents',
 									name: 'includeFilter',
-									value: 'url ~ .*custom-assets'
+									value: 'url ~ .*documents'
 								}
 							],
 							name: 'Test Name',
@@ -76,9 +76,9 @@ describe('Summary', () => {
 							includePreviousPeriod: true,
 							itemFilters: [
 								{
-									id: 'includeFilter - url ~ .*custom-assets',
+									id: 'includeFilter - url ~ .*documents',
 									name: 'includeFilter',
-									value: 'url ~ .*custom-assets'
+									value: 'url ~ .*documents'
 								}
 							],
 							name: 'Test Name',

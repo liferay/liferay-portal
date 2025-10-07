@@ -21,11 +21,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ITEM_ENTRY_ADD_ICON</td>
-	<td>//div[contains(@class,'MenuItem')][.//p[contains(@class,'card-title')][normalize-space()='${key_itemName}']]//button[contains(@title,'Add item ${key_relationship}') or contains(@data-restore-title,'Add item ${key_relationship}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>ITEM_ENTRY_N</td>
 	<td>xpath=(//p[contains(@class,'card-title')])[${key_index}]</td>
 	<td></td>
@@ -63,11 +58,6 @@
 <tr>
 	<td>SIDEBAR_ITEM_NAME</td>
 	<td>//div[contains(@class,'sidebar-header')]//p[contains(@class,'component-title')]//span[normalize-space()='${key_itemName}']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MENU_ADD_NEW_PAGES</td>
-	<td>//*[@data-qa-id='row' and contains(.,'${key_rowEntry}')]/td[contains(@class,'lfr-add-new-pages') and contains(.,'${key_addNewPages}')]</td>
 	<td></td>
 </tr>
 <tr>

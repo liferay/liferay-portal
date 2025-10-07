@@ -235,8 +235,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				sourceLayout.getGroupId(), sourceLayout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), sourceLayout.getGroupId(),
+				sourceLayout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		Layout targetLayout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -415,8 +416,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				sourceLayout.getGroupId(), sourceLayout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), sourceLayout.getGroupId(),
+				sourceLayout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
 
@@ -471,8 +473,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				sourceLayout.getGroupId(), sourceLayout.getPlid(),
-				defaultSegmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), sourceLayout.getGroupId(),
+				sourceLayout.getPlid(), defaultSegmentsExperienceId,
+				layoutStructure.toString());
 
 		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
 
@@ -520,10 +523,10 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		Layout sourceLayout = LayoutTestUtil.addTypePortletLayout(_group);
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(), RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), StringPool.BLANK,
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-			sourceLayout.getPlid(), new ServiceContext());
+			_group.getGroupId(), StringPool.BLANK, RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong(), sourceLayout.getPlid(),
+			new ServiceContext());
 
 		Layout targetLayout = LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -540,10 +543,10 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		sourceLayout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(), RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), StringPool.BLANK,
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-			sourceLayout.getPlid(), new ServiceContext());
+			_group.getGroupId(), StringPool.BLANK, RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong(), sourceLayout.getPlid(),
+			new ServiceContext());
 
 		targetLayout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -1070,8 +1073,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			String content = _getLayoutContent(layout, locale);
 
 			for (String text : list) {
-				Assert.assertTrue(
-					StringUtil.contains(content, text, StringPool.BLANK));
+				Assert.assertTrue(content.contains(text));
 			}
 
 			map.put(layout.getPlid(), content);

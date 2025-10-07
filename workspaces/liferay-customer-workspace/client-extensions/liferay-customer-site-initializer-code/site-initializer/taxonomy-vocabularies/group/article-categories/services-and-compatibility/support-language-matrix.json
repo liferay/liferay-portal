@@ -1,0 +1,20 @@
+{
+	"name": "Support Language Matrix",
+	"name_i18n": {
+		"en_US": "Support Language Matrix",
+		"es-ES": "Matriz de soporte de idiomas",
+		"ja-JP": "サポート言語のマトリクス",
+		"pt-BR": "Matriz de Idiomas de Suporte"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "designated-languages-and-channels-for-liferay-support"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/support_language_matrix.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

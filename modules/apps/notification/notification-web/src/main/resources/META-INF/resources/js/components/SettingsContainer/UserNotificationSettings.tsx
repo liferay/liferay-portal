@@ -14,6 +14,7 @@ import React, {useEffect, useState} from 'react';
 
 import {HEADERS} from '../../util/constants';
 import {getRoles, getUserNotificationRoles} from './rolesUtil';
+import {getUserGroups} from './userGroupsUtil';
 
 interface User {
 	alternateName: string;
@@ -25,18 +26,49 @@ interface UserNotificationSettingsProps {
 	values: NotificationTemplate;
 }
 
-const RECIPIENT_OPTIONS = [
+const RECIPIENT_TYPE_DETAILS: {
+	[key: string]: {
+		label: string;
+		placeholder: string;
+		search?: boolean;
+		searchPlaceholder?: string;
+		selectAllOption?: boolean;
+	};
+} = {
+	'role': {
+		label: Liferay.Language.get('role'),
+		placeholder: Liferay.Language.get('enter-a-role'),
+		searchPlaceholder: Liferay.Language.get('search-for-a-role'),
+	},
+	'user': {
+		label: Liferay.Language.get('users'),
+		placeholder: Liferay.Language.get('enter-user-name'),
+	},
+	'user-group': {
+		label: Liferay.Language.get('user-group'),
+		placeholder: Liferay.Language.get('select-user-group'),
+		search: true,
+		searchPlaceholder: Liferay.Language.get('search-for-a-user-group'),
+		selectAllOption: true,
+	},
+};
+
+const RECIPIENT_TYPE_OPTIONS = [
 	{
 		label: Liferay.Language.get('definition-of-terms'),
 		value: 'term',
 	},
 	{
+		label: Liferay.Language.get('role'),
+		value: 'role',
+	},
+	{
 		label: Liferay.Language.get('user'),
 		value: 'user',
 	},
-	{
-		label: Liferay.Language.get('role'),
-		value: 'role',
+	Liferay.FeatureFlags['LPD-50091'] && {
+		label: Liferay.Language.get('user-group'),
+		value: 'user-group',
 	},
 ] as LabelValueObject[];
 
@@ -44,22 +76,27 @@ export function UserNotificationSettings({
 	setValues,
 	values,
 }: UserNotificationSettingsProps) {
-	const [rolesList, setRolesList] = useState<MultiSelectItem[]>([]);
+	const [selectItems, setSelectItems] = useState<MultiSelectItem[]>([]);
 	const [toTerms, setToTerms] = useState<string>('');
-	const [userList, setUserList] = useState<MultiSelectItem[]>([]);
+
+	const {recipientType, recipients} = values;
+
+	const showMultipleSelect =
+		recipientType === 'role' ||
+		recipientType === 'user' ||
+		(recipientType === 'user-group' && Liferay.FeatureFlags['LPD-50091']);
 
 	const getUserRoles = async () => {
 		const roles = getUserNotificationRoles(
 			await getRoles(),
-			values.recipients as {['roleName']: string}[]
+			recipients as {['roleName']: string}[]
 		);
 
-		setRolesList([roles]);
-		setUserList([]);
+		setSelectItems([roles]);
 	};
 
 	const getTerms = async () => {
-		const recipientList = values.recipients as UserNotificationRecipients[];
+		const recipientList = recipients as UserNotificationRecipients[];
 
 		setToTerms(recipientList.map(({term}) => term).join());
 	};
@@ -75,16 +112,16 @@ export function UserNotificationSettings({
 
 		const {items} = (await response.json()) as {items: User[]};
 
+		const selectedUser = new Set(
+			(recipients as Partial<UserNotificationRecipients>[]).map(
+				(recipient) => recipient.userScreenName
+			)
+		);
+
 		const users = {
 			children: items.map(({alternateName, givenName}) => {
-				const selectedUser = !!(
-					values.recipients as Partial<UserNotificationRecipients>[]
-				).find(
-					(recipient) => recipient['userScreenName'] === alternateName
-				);
-
 				return {
-					checked: selectedUser,
+					checked: selectedUser.has(alternateName),
 					label: givenName,
 					value: alternateName,
 				};
@@ -93,13 +130,18 @@ export function UserNotificationSettings({
 			value: 'usersList',
 		} as MultiSelectItem;
 
-		setUserList([users]);
-		setRolesList([]);
+		setSelectItems([users]);
 	};
 
 	const handleMultiSelectItemsChange = (items: MultiSelectItem[]) => {
-		const key =
-			values.recipientType === 'role' ? 'roleName' : 'userScreenName';
+		const keySet = {
+			'role': 'roleName',
+			'term': 'userScreenName',
+			'user': 'userScreenName',
+			'user-group': 'userGroupName',
+		} as {[key: string]: string};
+
+		const key = keySet[recipientType];
 
 		const newRecipients: UserNotificationRecipients[] = [];
 
@@ -121,20 +163,30 @@ export function UserNotificationSettings({
 
 	useEffect(() => {
 		const makeFetch = async () => {
-			if (values.recipientType === 'role') {
+			if (recipientType === 'role') {
 				await getUserRoles();
 
 				return;
 			}
 
-			if (values.recipientType === 'term') {
+			if (recipientType === 'term') {
 				await getTerms();
 
 				return;
 			}
 
-			if (values.recipientType === 'user') {
+			if (recipientType === 'user') {
 				await getUserAccounts();
+
+				return;
+			}
+
+			if (recipientType === 'user-group') {
+				const userGroups = await getUserGroups(
+					recipients as Partial<UserNotificationRecipients>[]
+				);
+
+				setSelectItems(userGroups);
 
 				return;
 			}
@@ -143,7 +195,7 @@ export function UserNotificationSettings({
 		makeFetch();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [values.recipientType]);
+	}, [recipientType]);
 
 	useEffect(() => {
 		const regex = /,/g;
@@ -174,9 +226,9 @@ export function UserNotificationSettings({
 		<>
 			<SingleSelect<LabelValueObject>
 				disabled={values.system}
-				items={RECIPIENT_OPTIONS}
+				items={RECIPIENT_TYPE_OPTIONS}
 				label={Liferay.Language.get('recipients')}
-				onSelectionChange={(value) => {
+				onSelectionChange={async (value) => {
 					setValues({
 						...values,
 						recipientType: value as string,
@@ -184,16 +236,23 @@ export function UserNotificationSettings({
 					});
 
 					if (value === 'role') {
-						getUserRoles();
+						await getUserRoles();
+					}
+					else if (value === 'user-group') {
+						const userGroups = await getUserGroups(
+							recipients as Partial<UserNotificationRecipients>[]
+						);
+
+						setSelectItems(userGroups);
 					}
 				}}
-				selectedKey={values.recipientType}
+				selectedKey={recipientType}
 			/>
 
-			{values.recipientType === 'term' && (
+			{recipientType === 'term' && (
 				<Input
 					component="textarea"
-					label={Liferay.Language.get('to')}
+					label={Liferay.Language.get('to[recipient]')}
 					onChange={({target}) => {
 						setToTerms(target.value);
 					}}
@@ -209,28 +268,13 @@ export function UserNotificationSettings({
 				/>
 			)}
 
-			{values.recipientType === 'role' && (
+			{showMultipleSelect && (
 				<MultipleSelect
-					disabled={values.system}
-					label={Liferay.Language.get('role')}
-					options={rolesList}
-					placeholder={Liferay.Language.get('enter-a-role')}
+					{...RECIPIENT_TYPE_DETAILS[recipientType]}
+					options={selectItems}
 					setOptions={(items) => {
 						handleMultiSelectItemsChange(items);
-						setRolesList(items);
-					}}
-				/>
-			)}
-
-			{values.recipientType === 'user' && (
-				<MultipleSelect
-					disabled={values.system}
-					label={Liferay.Language.get('users')}
-					options={userList}
-					placeholder={Liferay.Language.get('enter-user-name')}
-					setOptions={(items) => {
-						handleMultiSelectItemsChange(items);
-						setUserList(items);
+						setSelectItems(items);
 					}}
 				/>
 			)}

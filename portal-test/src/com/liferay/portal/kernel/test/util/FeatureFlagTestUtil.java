@@ -23,7 +23,7 @@ public class FeatureFlagTestUtil {
 				ServiceTrackerListFactory.open(
 					SystemBundleUtil.getBundleContext(),
 					FeatureFlagListener.class,
-					StringBundler.concat("(featureFlagKey=", key, ")"))) {
+					StringBundler.concat("(feature.flag.key=", key, ")"))) {
 
 			for (FeatureFlagListener featureFlagListener :
 					featureFlagListeners) {

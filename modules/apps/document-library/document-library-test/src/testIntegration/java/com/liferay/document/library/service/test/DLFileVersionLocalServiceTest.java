@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -93,6 +94,45 @@ public class DLFileVersionLocalServiceTest {
 			DLStoreUtil.hasFile(
 				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
 				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
+	}
+
+	@Test
+	public void testFetchLatestFileVersion() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		for (int i = 0; i < 11; i++) {
+			DLAppServiceUtil.updateFileEntry(
+				fileEntry.getFileEntryId(), null, ContentTypes.TEXT_PLAIN,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				StringPool.BLANK, StringPool.BLANK,
+				DLVersionNumberIncrease.MINOR, (byte[])null,
+				fileEntry.getDisplayDate(), fileEntry.getExpirationDate(),
+				fileEntry.getReviewDate(), serviceContext);
+		}
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
+			fileEntry.getFileEntryId());
+
+		DLFileVersion dlFileVersion =
+			_dlFileVersionLocalService.fetchLatestFileVersion(
+				dlFileEntry.getFileEntryId(), true);
+
+		Assert.assertEquals("1.11", dlFileVersion.getVersion());
+
+		dlFileVersion = _dlFileVersionLocalService.fetchLatestFileVersion(
+			dlFileEntry.getFileEntryId(), true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals("1.11", dlFileVersion.getVersion());
 	}
 
 	@Inject

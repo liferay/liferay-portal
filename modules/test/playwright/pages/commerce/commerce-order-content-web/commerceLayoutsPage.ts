@@ -19,6 +19,7 @@ export class CommerceLayoutsPage {
 	readonly backLink: Locator;
 	readonly cancelButton: Locator;
 	readonly changeCurrentThemeButton: Locator;
+	readonly closeFrameButton: Locator;
 	readonly closeProductMenuButton: Locator;
 	readonly configureMenuItem: Locator;
 	readonly createNewOrderButton: Locator;
@@ -34,6 +35,7 @@ export class CommerceLayoutsPage {
 	readonly displayPageTemplateCheckBox: (displayPageName: string) => Locator;
 	readonly displayPageTemplateLink: (name: string) => Locator;
 	readonly displayPageTemplatesLink: Locator;
+	readonly downloadCsvTemplateButton: Locator;
 	readonly editMenuItem: Locator;
 	readonly firstFragment: Locator;
 	readonly fragmentsAndWidgetsTab: Locator;
@@ -116,7 +118,7 @@ export class CommerceLayoutsPage {
 		this.availableThemesFrame = page.frameLocator(
 			'iframe[title="Available Themes"]'
 		);
-		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
+		this.backLink = page.locator('span[title="Back"]');
 		this.cancelButton = page.getByRole('button', {
 			exact: true,
 			name: 'Cancel',
@@ -125,6 +127,7 @@ export class CommerceLayoutsPage {
 			exact: true,
 			name: 'Change Current Theme',
 		});
+		this.closeFrameButton = page.getByLabel('Close', {exact: true});
 		this.closeProductMenuButton = page.getByRole('tab', {
 			exact: true,
 			name: 'Close Product Menu',
@@ -196,6 +199,9 @@ export class CommerceLayoutsPage {
 			name: 'Cancel',
 		});
 		this.iconLock = page.locator('.lexicon-icon-lock');
+		this.downloadCsvTemplateButton = page
+			.frameLocator('iframe[title="Import from CSV"]')
+			.getByRole('button', {name: 'Download Template'});
 		this.infoBoxDeletePurchaseOrderDocumentButton = page.getByTestId(
 			'purchaseOrderDocument-infoBoxDeleteButton'
 		);

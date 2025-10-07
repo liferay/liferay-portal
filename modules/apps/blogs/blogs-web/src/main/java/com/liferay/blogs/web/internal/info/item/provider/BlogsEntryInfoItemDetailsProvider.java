@@ -6,9 +6,10 @@
 package com.liferay.blogs.web.internal.info.item.provider;
 
 import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 
 import org.osgi.framework.Constants;
@@ -19,11 +20,14 @@ import org.osgi.service.component.annotations.Component;
  * @author Jorge Ferrer
  */
 @Component(
-	property = Constants.SERVICE_RANKING + ":Integer=10",
+	property = {
+		Constants.SERVICE_RANKING + ":Integer=10",
+		"item.class.name=com.liferay.blogs.model.BlogsEntry"
+	},
 	service = InfoItemDetailsProvider.class
 )
 public class BlogsEntryInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<BlogsEntry> {
+	extends BaseInfoItemDetailsProvider<BlogsEntry> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -31,11 +35,28 @@ public class BlogsEntryInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(BlogsEntry blogsEntry) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				BlogsEntry.class.getName(), blogsEntry.getEntryId()));
+	protected InfoItemIdentifierFactory<BlogsEntry>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				BlogsEntry blogsEntry) {
+
+				return new ClassPKInfoItemIdentifier(blogsEntry.getEntryId());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 }

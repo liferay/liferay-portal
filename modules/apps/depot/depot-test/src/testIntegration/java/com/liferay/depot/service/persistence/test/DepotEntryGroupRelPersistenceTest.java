@@ -143,6 +143,8 @@ public class DepotEntryGroupRelPersistenceTest {
 
 		newDepotEntryGroupRel.setToGroupId(RandomTestUtil.nextLong());
 
+		newDepotEntryGroupRel.setType(RandomTestUtil.nextInt());
+
 		newDepotEntryGroupRel.setLastPublishDate(RandomTestUtil.nextDate());
 
 		_depotEntryGroupRels.add(_persistence.update(newDepotEntryGroupRel));
@@ -194,6 +196,9 @@ public class DepotEntryGroupRelPersistenceTest {
 		Assert.assertEquals(
 			existingDepotEntryGroupRel.getToGroupId(),
 			newDepotEntryGroupRel.getToGroupId());
+		Assert.assertEquals(
+			existingDepotEntryGroupRel.getType(),
+			newDepotEntryGroupRel.getType());
 		Assert.assertEquals(
 			Time.getShortTimestamp(
 				existingDepotEntryGroupRel.getLastPublishDate()),
@@ -266,6 +271,14 @@ public class DepotEntryGroupRelPersistenceTest {
 	}
 
 	@Test
+	public void testCountByTGI_T() throws Exception {
+		_persistence.countByTGI_T(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
+
+		_persistence.countByTGI_T(0L, 0);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		DepotEntryGroupRel newDepotEntryGroupRel = addDepotEntryGroupRel();
 
@@ -295,8 +308,8 @@ public class DepotEntryGroupRelPersistenceTest {
 			"uuid", true, "depotEntryGroupRelId", true, "groupId", true,
 			"companyId", true, "userId", true, "userName", true, "createDate",
 			true, "modifiedDate", true, "ddmStructuresAvailable", true,
-			"depotEntryId", true, "searchable", true, "toGroupId", true,
-			"lastPublishDate", true);
+			"depotEntryId", true, "searchable", true, "toGroupId", true, "type",
+			true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -629,6 +642,8 @@ public class DepotEntryGroupRelPersistenceTest {
 		depotEntryGroupRel.setSearchable(RandomTestUtil.randomBoolean());
 
 		depotEntryGroupRel.setToGroupId(RandomTestUtil.nextLong());
+
+		depotEntryGroupRel.setType(RandomTestUtil.nextInt());
 
 		depotEntryGroupRel.setLastPublishDate(RandomTestUtil.nextDate());
 

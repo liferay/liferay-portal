@@ -5,6 +5,7 @@
 		<suppress checks="MethodNamingCheck" files="portal-osgi-web-servlet-jsp-compiler/src/main/java/com/liferay/portal/osgi/web/servlet/jsp/compiler/internal/JspServlet\.java" />
 	</checkstyle>
 	<source-check>
+		<suppress checks="JavaPackagePathCheck" files="portal-osgi-web-portlet-container-test/src/testIntegration/java/com/liferay/portal/osgi/web/portlet/container/embedded/test/TestEmbeddedPortletDisplayTemplateHandler\.java" />
 		<suppress checks="JavaXMLSecurityCheck" files="portal-osgi-web-servlet-context-helper-impl/src/main/java/com/liferay/portal/osgi/web/servlet/context/helper/internal/definition/WebXMLDefinitionLoader\.java" />
 	</source-check>
 </suppressions>

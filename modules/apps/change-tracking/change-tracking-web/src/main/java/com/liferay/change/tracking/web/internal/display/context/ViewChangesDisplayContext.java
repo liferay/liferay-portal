@@ -90,6 +90,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -104,7 +105,6 @@ import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.search.sort.SortOrder;
 import com.liferay.portal.search.sort.Sorts;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.PortletURL;
@@ -271,6 +271,9 @@ public class ViewChangesDisplayContext {
 						"delete", "view-discard", null));
 			}
 		}
+
+		bulkActionDropdownItems.forEach(
+			dropdownItem -> dropdownItem.putData("highlighted", "true"));
 
 		return bulkActionDropdownItems;
 	}
@@ -453,7 +456,8 @@ public class ViewChangesDisplayContext {
 			"itemsOverview", itemsOverviewJSONArray
 		).put(
 			"publicationSizeClassification",
-			_ctCollection.getScoreSizeClassification()
+			_language.get(
+				_httpServletRequest, _ctCollection.getScoreSizeClassification())
 		).build();
 	}
 

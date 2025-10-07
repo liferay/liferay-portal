@@ -301,6 +301,15 @@ public class CommerceShipmentItemPersistenceTest {
 	}
 
 	@Test
+	public void testCountByC_NotC_GteQ() throws Exception {
+		_persistence.countByC_NotC_GteQ(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			(BigDecimal)null);
+
+		_persistence.countByC_NotC_GteQ(0L, 0L, (BigDecimal)null);
+	}
+
+	@Test
 	public void testCountByERC_C() throws Exception {
 		_persistence.countByERC_C("", RandomTestUtil.nextLong());
 

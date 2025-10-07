@@ -575,6 +575,15 @@ public class BatchPlannerPlanPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -933,6 +942,15 @@ public class BatchPlannerPlanPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByCompanyId(
+				companyId);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1494,6 +1512,15 @@ public class BatchPlannerPlanPersistenceImpl
 			return findByC_U(companyId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1871,6 +1898,15 @@ public class BatchPlannerPlanPersistenceImpl
 	public int filterCountByC_U(long companyId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_U(companyId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByC_U(
+				companyId, userId);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -2441,6 +2477,15 @@ public class BatchPlannerPlanPersistenceImpl
 			return findByC_E(companyId, export, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_E(
+					companyId, export, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2818,6 +2863,15 @@ public class BatchPlannerPlanPersistenceImpl
 	public int filterCountByC_E(long companyId, boolean export) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_E(companyId, export);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByC_E(
+				companyId, export);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -3411,6 +3465,15 @@ public class BatchPlannerPlanPersistenceImpl
 			return findByC_N(companyId, name, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_N(
+					companyId, name, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		name = Objects.toString(name, "");
 
 		StringBundler sb = null;
@@ -3827,6 +3890,15 @@ public class BatchPlannerPlanPersistenceImpl
 	public int filterCountByC_N(long companyId, String name) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_N(companyId, name);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByC_N(
+				companyId, name);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		name = Objects.toString(name, "");
@@ -4414,6 +4486,15 @@ public class BatchPlannerPlanPersistenceImpl
 				companyId, template, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_T(
+					companyId, template, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4791,6 +4872,15 @@ public class BatchPlannerPlanPersistenceImpl
 	public int filterCountByC_T(long companyId, boolean template) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_T(companyId, template);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByC_T(
+				companyId, template);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5395,6 +5485,15 @@ public class BatchPlannerPlanPersistenceImpl
 				companyId, export, template, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_E_T(
+					companyId, export, template, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5795,6 +5894,15 @@ public class BatchPlannerPlanPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_E_T(companyId, export, template);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<BatchPlannerPlan> batchPlannerPlans = findByC_E_T(
+				companyId, export, template);
+
+			batchPlannerPlans = InlineSQLHelperUtil.filter(batchPlannerPlans);
+
+			return batchPlannerPlans.size();
 		}
 
 		StringBundler sb = new StringBundler(4);

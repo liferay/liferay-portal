@@ -5,7 +5,12 @@
 
 package com.liferay.dynamic.data.mapping.form.evaluator.internal.function;
 
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -23,31 +28,24 @@ public class IsEmptyFunctionTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testArray() {
+	public void testApply() {
 		IsEmptyFunction isEmptyFunction = new IsEmptyFunction();
 
-		Boolean result = isEmptyFunction.apply(
-			new String[] {"  ", "not empty "});
-
-		Assert.assertFalse(result);
-	}
-
-	@Test
-	public void testEmptyParameter() {
-		IsEmptyFunction isEmptyFunction = new IsEmptyFunction();
-
-		Boolean result = isEmptyFunction.apply(" ");
-
-		Assert.assertTrue(result);
-	}
-
-	@Test
-	public void testNullParameter() {
-		IsEmptyFunction isEmptyFunction = new IsEmptyFunction();
-
-		Boolean result = isEmptyFunction.apply(null);
-
-		Assert.assertTrue(result);
+		Assert.assertFalse(
+			isEmptyFunction.apply(new String[] {"  ", "not empty "}));
+		Assert.assertFalse(
+			isEmptyFunction.apply(
+				HashMapBuilder.put(
+					RandomTestUtil.randomString(), StringPool.BLANK
+				).put(
+					RandomTestUtil.randomString(), RandomTestUtil.randomString()
+				).build()));
+		Assert.assertTrue(isEmptyFunction.apply(" "));
+		Assert.assertTrue(isEmptyFunction.apply(null));
+		Assert.assertTrue(
+			isEmptyFunction.apply(
+				Collections.singletonMap(
+					RandomTestUtil.randomString(), StringPool.BLANK)));
 	}
 
 }

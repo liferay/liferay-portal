@@ -377,6 +377,10 @@ public class TestFileEntry implements FileEntry {
 	}
 
 	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+	}
+
+	@Override
 	public void setGroupId(long groupId) {
 		_groupId = groupId;
 	}

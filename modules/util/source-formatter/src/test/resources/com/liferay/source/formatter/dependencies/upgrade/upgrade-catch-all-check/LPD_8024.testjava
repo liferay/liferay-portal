@@ -10,9 +10,10 @@ package com.liferay.source.formatter.dependencies.upgrade;
  */
 public class LPD_8024 {
 
-	public method(
+	public void method(
 		String key, InfoLocalizedValue<String> labelInfoLocalizedValue) {
 
+		new InfoItemFormVariation(null, labelInfoLocalizedValue);
 		new InfoItemFormVariation(key, labelInfoLocalizedValue);
 	}
 

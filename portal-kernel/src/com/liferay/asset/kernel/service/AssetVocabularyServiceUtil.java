@@ -235,11 +235,11 @@ public class AssetVocabularyServiceUtil {
 			groupId, name, start, end, orderByComparator);
 	}
 
-	public static AssetVocabulary getOrAddIncompleteVocabulary(
+	public static AssetVocabulary getOrAddEmptyVocabulary(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		return getService().getOrAddIncompleteVocabulary(
+		return getService().getOrAddEmptyVocabulary(
 			externalReferenceCode, groupId);
 	}
 

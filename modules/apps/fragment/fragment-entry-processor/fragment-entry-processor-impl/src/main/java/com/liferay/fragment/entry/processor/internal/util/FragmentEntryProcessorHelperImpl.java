@@ -17,6 +17,7 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
+import com.liferay.info.field.type.LongTextInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.formatter.InfoCollectionTextFormatter;
@@ -262,21 +263,11 @@ public class FragmentEntryProcessorHelperImpl
 			String className = _infoSearchClassMapperRegistry.getClassName(
 				_portal.fetchClassName(
 					editableValueJSONObject.getLong("classNameId")));
-			String externalReferenceCode = editableValueJSONObject.getString(
-				"externalReferenceCode");
 
 			fieldName = editableValueJSONObject.getString("fieldId");
 
 			InfoItemIdentifier infoItemIdentifier = null;
-
-			if (Validator.isNotNull(externalReferenceCode)) {
-				infoItemIdentifier = new ERCInfoItemIdentifier(
-					externalReferenceCode);
-			}
-			else {
-				infoItemIdentifier = new ClassPKInfoItemIdentifier(
-					editableValueJSONObject.getLong("classPK"));
-			}
+			InfoItemObjectProvider<Object> infoItemObjectProvider = null;
 
 			if ((fragmentEntryProcessorContext.getPreviewClassPK() > 0) &&
 				(fragmentEntryProcessorContext.getPreviewClassPK() ==
@@ -291,12 +282,54 @@ public class FragmentEntryProcessorHelperImpl
 					infoItemIdentifier.setVersion(
 						fragmentEntryProcessorContext.getPreviewVersion());
 				}
+
+				infoItemObjectProvider =
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemObjectProvider.class, className,
+						ClassPKInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
+			}
+			else {
+				long classPK = editableValueJSONObject.getLong("classPK");
+
+				if (classPK > 0) {
+					infoItemIdentifier = new ClassPKInfoItemIdentifier(classPK);
+					infoItemObjectProvider =
+						_infoItemServiceRegistry.getFirstInfoItemService(
+							InfoItemObjectProvider.class, className,
+							ClassPKInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
+				}
+
+				String externalReferenceCode =
+					editableValueJSONObject.getString("externalReferenceCode");
+
+				if ((infoItemObjectProvider == null) &&
+					Validator.isNotNull(externalReferenceCode)) {
+
+					infoItemIdentifier = new ERCInfoItemIdentifier(
+						externalReferenceCode,
+						editableValueJSONObject.getString(
+							"scopeExternalReferenceCode", null));
+					infoItemObjectProvider =
+						_infoItemServiceRegistry.getFirstInfoItemService(
+							InfoItemObjectProvider.class, className,
+							ERCInfoItemIdentifier.INFO_ITEM_SERVICE_FILTER);
+				}
 			}
 
 			infoItemReference = new InfoItemReference(
 				className, infoItemIdentifier);
 
-			object = _getInfoItem(infoItemReference);
+			if (infoItemObjectProvider != null) {
+				try {
+					object = infoItemObjectProvider.getInfoItem(
+						infoItemIdentifier);
+				}
+				catch (NoSuchInfoItemException noSuchInfoItemException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(noSuchInfoItemException);
+					}
+				}
+			}
 		}
 		else if (isMappedCollection(editableValueJSONObject)) {
 			infoItemReference =
@@ -330,16 +363,27 @@ public class FragmentEntryProcessorHelperImpl
 
 			InfoItemIdentifier infoItemIdentifier = null;
 
-			if (Validator.isNotNull(
-					layoutDisplayPageObjectProvider.
-						getExternalReferenceCode())) {
-
-				infoItemIdentifier = new ERCInfoItemIdentifier(
-					layoutDisplayPageObjectProvider.getExternalReferenceCode());
-			}
-			else {
+			if (layoutDisplayPageObjectProvider.getClassPK() > 0) {
 				infoItemIdentifier = new ClassPKInfoItemIdentifier(
 					layoutDisplayPageObjectProvider.getClassPK());
+			}
+			else {
+				String scopeExternalReferenceCode = null;
+
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
+				if (themeDisplay != null) {
+					scopeExternalReferenceCode =
+						layoutDisplayPageObjectProvider.
+							getScopeExternalReferenceCode(
+								themeDisplay.getScopeGroupId());
+				}
+
+				infoItemIdentifier = new ERCInfoItemIdentifier(
+					layoutDisplayPageObjectProvider.getExternalReferenceCode(),
+					scopeExternalReferenceCode);
 			}
 
 			infoItemReference = new InfoItemReference(
@@ -544,7 +588,9 @@ public class FragmentEntryProcessorHelperImpl
 				}
 			}
 			else if (infoField.getInfoFieldType() instanceof
-						TextInfoFieldType) {
+						LongTextInfoFieldType ||
+					 infoField.getInfoFieldType() instanceof
+						 TextInfoFieldType) {
 
 				URI uri = null;
 

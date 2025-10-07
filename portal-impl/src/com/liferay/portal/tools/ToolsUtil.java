@@ -768,7 +768,7 @@ public class ToolsUtil {
 	}
 
 	/**
-	 * @see com.liferay.portal.configuration.ClassLoaderAggregatePropertiesUtil#_getCharPoolChars
+	 * @see com.liferay.portal.kernel.util.EnvPropertiesUtil#_getCharPoolChars
 	 */
 	private static final Map<Character, String> _charPoolChars =
 		new HashMap<Character, String>() {

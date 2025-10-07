@@ -14,7 +14,9 @@ import React, {useState} from 'react';
 import ChangeTrackingRenderView from './ChangeTrackingRenderView';
 
 export default function ChangeTrackingRelatedEntriesView({
+	actionType,
 	ctEntriesJSONArray,
+	showWarning,
 	spritemap,
 	typeNames,
 	userInfo,
@@ -223,6 +225,16 @@ export default function ChangeTrackingRelatedEntriesView({
 	return ctEntries.length ? (
 		<>
 			{renderViewModal()}
+
+			<div>
+				{showWarning && (
+					<ClayAlert displayType="warning" spritemap={spritemap}>
+						{actionType === 'discard'
+							? Liferay.Language.get('discard-changes-warning')
+							: Liferay.Language.get('move-changes-warning')}
+					</ClayAlert>
+				)}
+			</div>
 
 			<ClayTable className="publications-table" hover>
 				<ClayTable.Head>

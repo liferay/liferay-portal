@@ -5,7 +5,6 @@
 
 package com.liferay.portal.scheduler.internal.upgrade.registry;
 
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.scheduler.internal.upgrade.v1_0_0.SchedulerEngineHelperConfigurationUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
@@ -26,13 +25,10 @@ public class SchedulerUpgradeStepRegistrator implements UpgradeStepRegistrator {
 		registry.register(
 			"0.0.1", "1.0.0",
 			new SchedulerEngineHelperConfigurationUpgradeProcess(
-				_configurationAdmin, _props));
+				_configurationAdmin));
 	}
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
-
-	@Reference
-	private Props _props;
 
 }

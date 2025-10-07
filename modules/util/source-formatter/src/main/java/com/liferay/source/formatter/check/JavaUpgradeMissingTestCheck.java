@@ -36,7 +36,9 @@ public class JavaUpgradeMissingTestCheck extends BaseFileCheck {
 		String className = JavaSourceUtil.getClassName(fileName);
 
 		if (!absolutePath.contains("/upgrade/") ||
-			absolutePath.contains("-test/") || className.startsWith("Base") ||
+			absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/") ||
+			className.startsWith("Base") ||
 			!isUpgradeProcess(absolutePath, content)) {
 
 			return content;
@@ -77,6 +79,9 @@ public class JavaUpgradeMissingTestCheck extends BaseFileCheck {
 			JavaSourceUtil.getPackageName(content), ".test.", className,
 			"Test");
 
+		expectedTestClassName = StringUtil.replace(
+			expectedTestClassName, "kernel.upgrade.data.cleanup.test",
+			"upgrade.data.cleanup.test");
 		expectedTestClassName = StringUtil.replace(
 			expectedTestClassName, "kernel.upgrade.test", "upgrade.test");
 

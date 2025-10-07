@@ -8,15 +8,24 @@
 <%@ include file="/init.jsp" %>
 
 <%
+List<SiteNavigationMenu> autoSiteNavigationMenus = layoutsAdminDisplayContext.getAutoSiteNavigationMenus();
+boolean emptyLayout = ParamUtil.getBoolean(request, "emptyLayout");
 boolean copyPermissions = ParamUtil.getBoolean(request, "copyPermissions");
 long sourcePlid = ParamUtil.getLong(request, "sourcePlid");
 
-List<SiteNavigationMenu> autoSiteNavigationMenus = layoutsAdminDisplayContext.getAutoSiteNavigationMenus();
+String actionURL;
+
+if (emptyLayout) {
+	actionURL = layoutsAdminDisplayContext.getConvertEmptyLayoutURL();
+}
+else {
+	actionURL = (sourcePlid <= 0) ? layoutsAdminDisplayContext.getAddLayoutURL() : layoutsAdminDisplayContext.getCopyLayoutActionURL(copyPermissions, sourcePlid);
+}
 %>
 
 <clay:container-fluid>
 	<liferay-frontend:edit-form
-		action="<%= (sourcePlid <= 0) ? layoutsAdminDisplayContext.getAddLayoutURL() : layoutsAdminDisplayContext.getCopyLayoutActionURL(copyPermissions, sourcePlid) %>"
+		action="<%= actionURL %>"
 		cssClass="add-layout-form d-none"
 		method="post"
 		name="fm"
@@ -24,7 +33,14 @@ List<SiteNavigationMenu> autoSiteNavigationMenus = layoutsAdminDisplayContext.ge
 		validateOnBlur="<%= false %>"
 	>
 		<liferay-frontend:edit-form-body>
-			<aui:input data-qa-id="addPageNameInput" label="name" name="name" placeholder='<%= LanguageUtil.get(request, "add-page-name") %>' required="<%= true %>" />
+			<c:choose>
+				<c:when test="<%= emptyLayout %>">
+					<aui:input data-qa-id="addPageNameInput" label="name" name="name" required="<%= true %>" value='<%= ParamUtil.getString(request, "externalReferenceCode") %>' />
+				</c:when>
+				<c:otherwise>
+					<aui:input data-qa-id="addPageNameInput" label="name" name="name" placeholder='<%= LanguageUtil.get(request, "add-page-name") %>' required="<%= true %>" />
+				</c:otherwise>
+			</c:choose>
 
 			<c:choose>
 				<c:when test="<%= autoSiteNavigationMenus.size() > 1 %>">

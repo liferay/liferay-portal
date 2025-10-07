@@ -7,6 +7,11 @@ package com.liferay.info.item.provider.filter;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.GetterUtil;
+
+import java.util.Objects;
+
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Jorge Ferrer
@@ -32,6 +37,13 @@ public class PropertyInfoItemServiceFilter implements InfoItemServiceFilter {
 
 	public String getPropertyValue() {
 		return _propertyValue;
+	}
+
+	public boolean match(ServiceReference<?> serviceReference) {
+		return Objects.equals(
+			_propertyValue,
+			GetterUtil.getString(
+				serviceReference.getProperty(_propertyName), null));
 	}
 
 	private final String _propertyName;

@@ -29,7 +29,7 @@ declare type Props = {
 	selectable?: boolean;
 	selectedItemsKey: string;
 	selectedItemsValue: any;
-	selectionType?: string;
+	selectionType?: 'single' | 'multiple';
 };
 export declare function ClayTable({
 	fields,

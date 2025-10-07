@@ -5,7 +5,6 @@
 
 package com.liferay.headless.admin.site.client.serdes.v1_0;
 
-import com.liferay.headless.admin.site.client.dto.v1_0.WidgetLookAndFeelConfig;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPageWidgetInstance;
 import com.liferay.headless.admin.site.client.dto.v1_0.WidgetPermission;
 import com.liferay.headless.admin.site.client.json.BaseJSONParser;
@@ -139,27 +138,9 @@ public class WidgetPageWidgetInstanceSerDes {
 
 			sb.append("\"widgetLookAndFeelConfig\": ");
 
-			sb.append("[");
-
-			for (int i = 0;
-				 i <
-					 widgetPageWidgetInstance.
-						 getWidgetLookAndFeelConfig().length;
-				 i++) {
-
-				sb.append(
-					String.valueOf(
-						widgetPageWidgetInstance.getWidgetLookAndFeelConfig()
-							[i]));
-
-				if ((i + 1) < widgetPageWidgetInstance.
-						getWidgetLookAndFeelConfig().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
+			sb.append(
+				String.valueOf(
+					widgetPageWidgetInstance.getWidgetLookAndFeelConfig()));
 		}
 
 		if (widgetPageWidgetInstance.getWidgetName() != null) {
@@ -416,23 +397,9 @@ public class WidgetPageWidgetInstanceSerDes {
 						jsonParserFieldName, "widgetLookAndFeelConfig")) {
 
 				if (jsonParserFieldValue != null) {
-					Object[] jsonParserFieldValues =
-						(Object[])jsonParserFieldValue;
-
-					WidgetLookAndFeelConfig[] widgetLookAndFeelConfigArray =
-						new WidgetLookAndFeelConfig
-							[jsonParserFieldValues.length];
-
-					for (int i = 0; i < widgetLookAndFeelConfigArray.length;
-						 i++) {
-
-						widgetLookAndFeelConfigArray[i] =
-							WidgetLookAndFeelConfigSerDes.toDTO(
-								(String)jsonParserFieldValues[i]);
-					}
-
 					widgetPageWidgetInstance.setWidgetLookAndFeelConfig(
-						widgetLookAndFeelConfigArray);
+						WidgetLookAndFeelConfigSerDes.toDTO(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "widgetName")) {

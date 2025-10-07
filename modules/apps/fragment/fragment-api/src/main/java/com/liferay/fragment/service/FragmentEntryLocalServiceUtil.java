@@ -290,6 +290,13 @@ public class FragmentEntryLocalServiceUtil {
 			externalReferenceCode, groupId);
 	}
 
+	public static FragmentEntry fetchFragmentEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId, boolean head) {
+
+		return getService().fetchFragmentEntryByExternalReferenceCode(
+			externalReferenceCode, groupId, head);
+	}
+
 	public static FragmentEntry fetchFragmentEntryByUuidAndGroupId(
 		String uuid, long groupId) {
 
@@ -449,6 +456,22 @@ public class FragmentEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getFragmentEntry(fragmentEntryId);
+	}
+
+	public static FragmentEntry getFragmentEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return getService().getFragmentEntryByExternalReferenceCode(
+			externalReferenceCode, groupId);
+	}
+
+	public static FragmentEntry getFragmentEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head)
+		throws PortalException {
+
+		return getService().getFragmentEntryByExternalReferenceCode(
+			externalReferenceCode, groupId, head);
 	}
 
 	public static FragmentEntry getFragmentEntryByUuidAndGroupId(

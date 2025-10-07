@@ -16,7 +16,7 @@ describe('Connect Step', () => {
 		);
 
 		const connectStepDescription = getByText(
-			'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'
+			'use-the-token-generated-in-your-analytics-cloud-to-connect-this-workspace'
 		);
 
 		const connectStepTitleLang = getByText('connect-to-analytics-cloud');
@@ -36,7 +36,7 @@ describe('Connect Step', () => {
 		const wizardCardTitle = getByText('connect-to-analytics-cloud');
 
 		const wizardCardDescription = getByText(
-			'use-the-token-genereted-in-your-analytics-cloud-to-connect-this-workspace'
+			'use-the-token-generated-in-your-analytics-cloud-to-connect-this-workspace'
 		);
 
 		const wizardInputTitle = getByText('analytics-cloud-token');

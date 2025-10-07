@@ -5,25 +5,36 @@
 
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import './CodeMirrorKeyboardMessage.scss';
 
 interface IProps {
-	className?: string;
 	keyIsEnabled: boolean;
 }
 
+const REDUCE_TIMEOUT_MS = 4000;
+
 export default function CodeMirrorKeyboardMessage({
-	className,
 	keyIsEnabled = false,
 }: IProps) {
+	const [reduce, setReduce] = useState<boolean>(false);
+
+	useEffect(() => {
+		setReduce(false);
+
+		const time = setTimeout(() => {
+			setReduce(true);
+		}, REDUCE_TIMEOUT_MS);
+
+		return () => clearTimeout(time);
+	}, [keyIsEnabled]);
+
 	return (
 		<div
-			className={classNames(
-				className,
-				'keyboard-message popover px-2 py-1'
-			)}
+			className={classNames('keyboard-message popover', {
+				'd-reduce': reduce,
+			})}
 		>
 			<span className="c-kbd-sm">
 				{`${sub(

@@ -10,9 +10,7 @@ function Comic() {
 	const [comicData, setComicData] = React.useState(null);
 
 	React.useEffect(() => {
-		OAuth2.FromUserAgentApplication(
-			'liferay-sample-etc-node-oauth-application-user-agent'
-		)
+		OAuth2.FromUserAgentApplication('liferay-sample-etc-node-oaua')
 			.then((oAuth2Client) => {
 				oAuth2Client?.fetch('/comic').then((comic) => {
 					setComicData({

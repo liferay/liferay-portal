@@ -217,9 +217,8 @@ public class SCRReferenceDynamicGreedyTest {
 				bundleContext,
 				bundleContext.createFilter(
 					StringBundler.concat(
-						"(&(objectClass=",
-						DynamicGreedyComponent.class.getName(),
-						")(field.option=", fieldOption, "))")),
+						"(&(field.option=", fieldOption, ")(objectClass=",
+						DynamicGreedyComponent.class.getName(), "))")),
 				null);
 
 		serviceTracker.open();

@@ -212,11 +212,38 @@ public class ObjectViewResourceTest extends BaseObjectViewResourceTestCase {
 	}
 
 	@Override
+	protected ObjectView
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectViewsPageObjectDefinitionObjectView_addObjectView(
+				String externalReferenceCode, ObjectView objectView)
+		throws Exception {
+
+		return objectViewResource.
+			postObjectDefinitionByExternalReferenceCodeObjectView(
+				externalReferenceCode, objectView);
+	}
+
+	@Override
 	protected ObjectView testGraphQLObjectView_addObjectView()
 		throws Exception {
 
 		return objectViewResource.postObjectDefinitionObjectView(
 			_objectDefinition.getObjectDefinitionId(), randomObjectView());
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectView_getObjectDefinitionId(
+			ObjectView objectView) {
+
+		return objectView.getObjectDefinitionId();
+	}
+
+	@Override
+	protected Long
+		testGraphQLPostObjectDefinitionObjectView_getObjectDefinitionId(
+			ObjectView objectView) {
+
+		return objectView.getObjectDefinitionId();
 	}
 
 	@Override

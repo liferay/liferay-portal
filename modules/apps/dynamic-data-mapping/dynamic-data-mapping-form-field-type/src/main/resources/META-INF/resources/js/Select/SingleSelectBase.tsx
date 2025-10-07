@@ -20,6 +20,7 @@ interface SingleSelectBaseProps
 
 export default function SingleSelectBase({
 	className,
+	displayErrors,
 	errorMessage,
 	id,
 	label,
@@ -33,6 +34,7 @@ export default function SingleSelectBase({
 	selectedKey,
 	showEmptyOption,
 	tip,
+	valid,
 	viewMode,
 }: SingleSelectBaseProps) {
 	const {activeTabTitle} = useFormState();
@@ -73,11 +75,12 @@ export default function SingleSelectBase({
 
 	const accessibleProps = {
 		...(label && {
-			'aria-labelledby': `${id ?? name}`,
+			'aria-labelledby': `${id ?? name}_fieldLabel`,
 		}),
 		...((errorMessage || tip) && {
 			'aria-describedby': `${id ?? name}_fieldFeedback`,
 		}),
+		...(displayErrors && !valid && {'aria-invalid': true}),
 		'aria-required': required,
 	};
 

@@ -55,7 +55,7 @@ public class TestBatchFactory {
 		}
 
 		if (testBatch == null) {
-			throw new RuntimeException("Unsuppported batch");
+			throw new RuntimeException("Unsupported batch");
 		}
 
 		return (TestBatch)Proxy.newProxyInstance(

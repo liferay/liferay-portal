@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.workflow.client.serdes.v1_0;
 
 import com.liferay.headless.admin.workflow.client.dto.v1_0.Role;
+import com.liferay.headless.admin.workflow.client.dto.v1_0.WorkflowLog;
 import com.liferay.headless.admin.workflow.client.dto.v1_0.WorkflowTask;
 import com.liferay.headless.admin.workflow.client.json.BaseJSONParser;
 
@@ -259,6 +260,26 @@ public class WorkflowTaskSerDes {
 			sb.append(workflowTask.getWorkflowInstanceId());
 		}
 
+		if (workflowTask.getWorkflowLogs() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"workflowLogs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < workflowTask.getWorkflowLogs().length; i++) {
+				sb.append(String.valueOf(workflowTask.getWorkflowLogs()[i]));
+
+				if ((i + 1) < workflowTask.getWorkflowLogs().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -415,6 +436,14 @@ public class WorkflowTaskSerDes {
 				String.valueOf(workflowTask.getWorkflowInstanceId()));
 		}
 
+		if (workflowTask.getWorkflowLogs() == null) {
+			map.put("workflowLogs", null);
+		}
+		else {
+			map.put(
+				"workflowLogs", String.valueOf(workflowTask.getWorkflowLogs()));
+		}
+
 		return map;
 	}
 
@@ -487,6 +516,9 @@ public class WorkflowTaskSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "workflowInstanceId")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "workflowLogs")) {
 				return false;
 			}
 
@@ -607,6 +639,22 @@ public class WorkflowTaskSerDes {
 				if (jsonParserFieldValue != null) {
 					workflowTask.setWorkflowInstanceId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "workflowLogs")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					WorkflowLog[] workflowLogsArray =
+						new WorkflowLog[jsonParserFieldValues.length];
+
+					for (int i = 0; i < workflowLogsArray.length; i++) {
+						workflowLogsArray[i] = WorkflowLogSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					workflowTask.setWorkflowLogs(workflowLogsArray);
 				}
 			}
 		}

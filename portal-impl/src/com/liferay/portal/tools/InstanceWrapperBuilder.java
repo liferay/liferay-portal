@@ -131,7 +131,11 @@ public class InstanceWrapperBuilder {
 				sb.append(" <");
 
 				for (TypeVariable typeParameter : typeParameters) {
-					sb.append(typeParameter.getName());
+					String genericValue = typeParameter.getGenericValue();
+
+					sb.append(
+						genericValue.replaceAll("^<|>$", StringPool.BLANK));
+
 					sb.append(", ");
 				}
 

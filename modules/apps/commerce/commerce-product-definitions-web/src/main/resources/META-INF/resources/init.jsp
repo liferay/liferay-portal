@@ -13,6 +13,7 @@
 taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/commerce-ui" prefix="commerce-ui" %><%@
+taglib uri="http://liferay.com/tld/editor" prefix="liferay-editor" %><%@
 taglib uri="http://liferay.com/tld/expando" prefix="liferay-expando" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
@@ -30,6 +31,7 @@ page import="com.liferay.commerce.constants.CommercePriceConstants" %><%@
 page import="com.liferay.commerce.constants.CommerceWebKeys" %><%@
 page import="com.liferay.commerce.context.CommerceContext" %><%@
 page import="com.liferay.commerce.currency.model.CommerceCurrency" %><%@
+page import="com.liferay.commerce.exception.CPDefinitionInventoryAllowedOrderQuantitiesException" %><%@
 page import="com.liferay.commerce.exception.CPDefinitionInventoryQuantityException" %><%@
 page import="com.liferay.commerce.inventory.CPDefinitionInventoryEngine" %><%@
 page import="com.liferay.commerce.model.CPDAvailabilityEstimate" %><%@
@@ -59,6 +61,7 @@ page import="com.liferay.commerce.product.definitions.web.internal.display.conte
 page import="com.liferay.commerce.product.definitions.web.internal.display.context.CPInstanceUnitOfMeasureDisplayContext" %><%@
 page import="com.liferay.commerce.product.definitions.web.internal.security.permission.resource.CommerceCatalogPermission" %><%@
 page import="com.liferay.commerce.product.exception.CPAttachmentFileEntryExpirationDateException" %><%@
+page import="com.liferay.commerce.product.exception.CPConfigurationEntryAllowedOrderQuantitiesException" %><%@
 page import="com.liferay.commerce.product.exception.CPConfigurationEntryQuantityException" %><%@
 page import="com.liferay.commerce.product.exception.CPDefinitionExpirationDateException" %><%@
 page import="com.liferay.commerce.product.exception.CPDefinitionIgnoreSKUCombinationsException" %><%@

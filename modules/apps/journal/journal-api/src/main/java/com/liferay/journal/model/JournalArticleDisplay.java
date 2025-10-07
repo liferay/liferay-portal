@@ -33,6 +33,8 @@ public interface JournalArticleDisplay extends Serializable {
 
 	public String getDescription();
 
+	public String getExternalReferenceCode();
+
 	public long getGroupId();
 
 	public long getId();

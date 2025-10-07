@@ -16,22 +16,24 @@ import java.util.Objects;
  */
 public class PublicationsRegularRolesUtil {
 
-	public static final String[] PUBLICATIONS_REGULAR_ROLES = {
+	public static final String[] PUBLICATIONS_REGULAR_ROLE_NAMES = {
 		RoleConstants.PUBLICATIONS_ADMIN, RoleConstants.PUBLICATIONS_EDITOR,
 		RoleConstants.PUBLICATIONS_PUBLISHER, RoleConstants.PUBLICATIONS_VIEWER
 	};
 
-	public static String[] getModelResourceActions(String role) {
-		if (Objects.equals(role, RoleConstants.PUBLICATIONS_ADMIN)) {
+	public static String[] getModelResourceActions(String roleName) {
+		if (Objects.equals(roleName, RoleConstants.PUBLICATIONS_ADMIN)) {
 			return new String[] {
 				ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
 				ActionKeys.VIEW, CTActionKeys.INVITE_USERS, CTActionKeys.PUBLISH
 			};
 		}
-		else if (Objects.equals(role, RoleConstants.PUBLICATIONS_EDITOR)) {
+		else if (Objects.equals(roleName, RoleConstants.PUBLICATIONS_EDITOR)) {
 			return new String[] {ActionKeys.UPDATE, ActionKeys.VIEW};
 		}
-		else if (Objects.equals(role, RoleConstants.PUBLICATIONS_PUBLISHER)) {
+		else if (Objects.equals(
+					roleName, RoleConstants.PUBLICATIONS_PUBLISHER)) {
+
 			return new String[] {
 				ActionKeys.UPDATE, ActionKeys.VIEW, CTActionKeys.PUBLISH
 			};

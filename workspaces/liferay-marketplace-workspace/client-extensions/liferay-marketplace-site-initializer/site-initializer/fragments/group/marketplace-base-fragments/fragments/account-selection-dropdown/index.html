@@ -1,0 +1,35 @@
+[#if themeDisplay.isSignedIn()]
+	<div class="account-selection-dropdown d-none">
+		<div class="account-dropdown">
+			<button class="align-items-center btn btn-unstyled d-flex dropdown-trigger">
+				<div>
+					<div class="align-items-center d-flex justify-content-center" id="profillerContainer">
+						<img class="avatar mr-2" id="profile-account-image" src="/image/organization_logo" />
+
+						<span class="account-name font-weight-bold mb-0 text-nowrap" id="profile-account-name"></span>
+					</div>
+				</div>
+
+				<div class="dropdown-arrow">[@clay["icon"] symbol="caret-bottom" /]</div>
+			</button>
+
+			<div class="dropdown-menu-container">
+				<div class="dropdown-menu-inner">
+					<div class="m-3">
+						<h2>${languageUtil.get(locale, "accounts", "Accounts")}</h2>
+					</div>
+
+					<hr />
+
+					<div class="m-3">
+						<input class="form-control search-input" placeholder="Search" type="text" />
+					</div>
+
+					<hr id="divider" />
+
+					<ul class="account-list list-unstyled mb-0 mt-3" id="dropdownList"></ul>
+				</div>
+			</div>
+		</div>
+	</div>
+[/#if]

@@ -15,6 +15,7 @@ import CircularProgress from '../CircularProgress';
 type DocumentFileItemProps = {
 	isProcessing: boolean;
 	onDelete: (id: string, versionName?: string) => void;
+	removable?: boolean;
 	uploadedFile: UploadedFile;
 	versionName?: string;
 };
@@ -22,6 +23,7 @@ type DocumentFileItemProps = {
 export function DocumentFileItem({
 	isProcessing,
 	onDelete,
+	removable,
 	uploadedFile,
 	versionName,
 }: DocumentFileItemProps) {
@@ -88,7 +90,7 @@ export function DocumentFileItem({
 				</div>
 			</div>
 
-			{!isProcessing && (
+			{!isProcessing && removable && (
 				<button
 					className="document-file-list-item-button"
 					onClick={() => onDelete(uploadedFile?.id, versionName)}

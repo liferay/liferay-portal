@@ -380,8 +380,16 @@ public abstract class BaseTestPreparatorBundleActivator
 				scopeAliasesList, trustedApplication, new ServiceContext());
 
 		autoCloseables.add(
-			() -> oAuth2ApplicationLocalService.deleteOAuth2Application(
-				oAuth2Application.getOAuth2ApplicationId()));
+			() -> {
+				OAuth2Application fetchedOAuth2Application =
+					oAuth2ApplicationLocalService.fetchOAuth2Application(
+						oAuth2Application.getOAuth2ApplicationId());
+
+				if (fetchedOAuth2Application != null) {
+					oAuth2ApplicationLocalService.deleteOAuth2Application(
+						fetchedOAuth2Application);
+				}
+			});
 
 		return oAuth2Application;
 	}

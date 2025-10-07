@@ -2,15 +2,10 @@ import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import autobind from 'autobind-decorator';
 import BasePage from 'shared/components/base-page';
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
-import ClayLink from '@clayui/link';
-import ClayPopover from '@clayui/popover';
 import getCN from 'classnames';
 import Label from 'shared/components/Label';
 import omitDefinedProps from 'shared/util/omitDefinedProps';
 import React from 'react';
-import URLConstants from 'shared/util/url-constants';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {ChannelContext} from 'shared/context/channel';
@@ -19,7 +14,6 @@ import {connect} from 'react-redux';
 import {PropTypes} from 'prop-types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
 
 const MessageKeys = {
 	NameCannotBeBlank: 'name-cannot-be-blank',
@@ -51,8 +45,7 @@ export default WrappedComponent => {
 			history: PropTypes.object.isRequired,
 			id: PropTypes.string,
 			open: PropTypes.func.isRequired,
-			segment: PropTypes.instanceOf(Segment),
-			type: PropTypes.oneOf([SegmentTypes.Dynamic, SegmentTypes.Static])
+			segment: PropTypes.instanceOf(Segment)
 		};
 
 		state = {
@@ -142,14 +135,6 @@ export default WrappedComponent => {
 				: Liferay.Language.get('create-individuals-segment');
 		}
 
-		getPageTitleLabel() {
-			const {type} = this.props;
-
-			return type === SegmentTypes.Static
-				? Liferay.Language.get('static-segment')
-				: Liferay.Language.get('dynamic-segment');
-		}
-
 		@autobind
 		handleSubmit(form, formRef, submitFn) {
 			const {
@@ -224,7 +209,6 @@ export default WrappedComponent => {
 				groupId,
 				id,
 				segment,
-				type,
 				...otherProps
 			} = this.props;
 
@@ -283,54 +267,8 @@ export default WrappedComponent => {
 								title={this.getPageTitle()}
 							>
 								<Label display='secondary' size='lg' uppercase>
-									{this.getPageTitleLabel()}
+									{Liferay.Language.get('segment')}
 								</Label>
-
-								{type === SegmentTypes.Static && (
-									<ClayPopover
-										alignPosition='bottom'
-										closeOnClickOutside
-										header={Liferay.Language.get(
-											'deprecated-feature'
-										)}
-										trigger={
-											<ClayButton
-												data-tooltip
-												data-tooltip-align='top'
-												displayType='warning'
-												title={Liferay.Language.get(
-													'open-deprecated-definition'
-												)}
-												translucent
-											>
-												{Liferay.Language.get(
-													'deprecated'
-												).toUpperCase()}
-												<span className='inline-item inline-item-before pl-2'>
-													<ClayIcon symbol='warning-full' />
-												</span>
-											</ClayButton>
-										}
-									>
-										{Liferay.Language.get(
-											'this-feature-is-deprecated'
-										)}
-
-										<ClayLink
-											className='ml-1'
-											decoration='underline'
-											href={
-												URLConstants.MaintenanceModeAndDeprecationDocumentation
-											}
-											key='deprecated'
-											target='_blank'
-										>
-											{Liferay.Language.get(
-												'learn-more-about-deprecated-features'
-											)}
-										</ClayLink>
-									</ClayPopover>
-								)}
 							</BasePage.Header.TitleSection>
 
 							<BasePage.Header.Section>
@@ -356,7 +294,7 @@ export default WrappedComponent => {
 						</BasePage.Row>
 					</BasePage.Header>
 
-					<BasePage.Body pageContainer={type === SegmentTypes.Static}>
+					<BasePage.Body pageContainer={false}>
 						<WrappedComponent
 							{...omitDefinedProps(
 								otherProps,

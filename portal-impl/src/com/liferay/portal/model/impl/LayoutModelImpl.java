@@ -92,7 +92,7 @@ public class LayoutModelImpl
 		{"masterLayoutPlid", Types.BIGINT},
 		{"layoutPrototypeUuid", Types.VARCHAR},
 		{"layoutPrototypeLinkEnabled", Types.BOOLEAN},
-		{"sourcePrototypeLayoutUuid", Types.VARCHAR},
+		{"layoutSetPrototypeLayoutERC", Types.VARCHAR},
 		{"publishDate", Types.TIMESTAMP}, {"lastPublishDate", Types.TIMESTAMP},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
 		{"statusByUserName", Types.VARCHAR}, {"statusDate", Types.TIMESTAMP}
@@ -139,7 +139,7 @@ public class LayoutModelImpl
 		TABLE_COLUMNS_MAP.put("masterLayoutPlid", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("layoutPrototypeUuid", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("layoutPrototypeLinkEnabled", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("sourcePrototypeLayoutUuid", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("layoutSetPrototypeLayoutERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("publishDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
@@ -149,7 +149,7 @@ public class LayoutModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryId LONG,css TEXT null,priority INTEGER,faviconFileEntryId LONG,masterLayoutPlid LONG,layoutPrototypeUuid VARCHAR(75) null,layoutPrototypeLinkEnabled BOOLEAN,sourcePrototypeLayoutUuid VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
+		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryId LONG,css TEXT null,priority INTEGER,faviconFileEntryId LONG,masterLayoutPlid LONG,layoutPrototypeUuid VARCHAR(75) null,layoutPrototypeLinkEnabled BOOLEAN,layoutSetPrototypeLayoutERC VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Layout";
 
@@ -250,37 +250,37 @@ public class LayoutModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long MASTERLAYOUTPLID_COLUMN_BITMASK = 1024L;
+	public static final long LAYOUTSETPROTOTYPELAYOUTERC_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 2048L;
+	public static final long MASTERLAYOUTPLID_COLUMN_BITMASK = 2048L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTPLID_COLUMN_BITMASK = 4096L;
+	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 4096L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 8192L;
+	public static final long PARENTPLID_COLUMN_BITMASK = 8192L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 16384L;
+	public static final long PRIORITY_COLUMN_BITMASK = 16384L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SOURCEPROTOTYPELAYOUTUUID_COLUMN_BITMASK = 32768L;
+	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 32768L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
@@ -307,7 +307,7 @@ public class LayoutModelImpl
 	public static final long UUID_COLUMN_BITMASK = 524288L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.Layout"));
 
 	public LayoutModelImpl() {
@@ -451,8 +451,8 @@ public class LayoutModelImpl
 				"layoutPrototypeLinkEnabled",
 				Layout::getLayoutPrototypeLinkEnabled);
 			attributeGetterFunctions.put(
-				"sourcePrototypeLayoutUuid",
-				Layout::getSourcePrototypeLayoutUuid);
+				"layoutSetPrototypeLayoutERC",
+				Layout::getLayoutSetPrototypeLayoutERC);
 			attributeGetterFunctions.put("publishDate", Layout::getPublishDate);
 			attributeGetterFunctions.put(
 				"lastPublishDate", Layout::getLastPublishDate);
@@ -571,9 +571,9 @@ public class LayoutModelImpl
 				(BiConsumer<Layout, Boolean>)
 					Layout::setLayoutPrototypeLinkEnabled);
 			attributeSetterBiConsumers.put(
-				"sourcePrototypeLayoutUuid",
+				"layoutSetPrototypeLayoutERC",
 				(BiConsumer<Layout, String>)
-					Layout::setSourcePrototypeLayoutUuid);
+					Layout::setLayoutSetPrototypeLayoutERC);
 			attributeSetterBiConsumers.put(
 				"publishDate",
 				(BiConsumer<Layout, Date>)Layout::setPublishDate);
@@ -1920,22 +1920,24 @@ public class LayoutModelImpl
 
 	@JSON
 	@Override
-	public String getSourcePrototypeLayoutUuid() {
-		if (_sourcePrototypeLayoutUuid == null) {
+	public String getLayoutSetPrototypeLayoutERC() {
+		if (_layoutSetPrototypeLayoutERC == null) {
 			return "";
 		}
 		else {
-			return _sourcePrototypeLayoutUuid;
+			return _layoutSetPrototypeLayoutERC;
 		}
 	}
 
 	@Override
-	public void setSourcePrototypeLayoutUuid(String sourcePrototypeLayoutUuid) {
+	public void setLayoutSetPrototypeLayoutERC(
+		String layoutSetPrototypeLayoutERC) {
+
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_sourcePrototypeLayoutUuid = sourcePrototypeLayoutUuid;
+		_layoutSetPrototypeLayoutERC = layoutSetPrototypeLayoutERC;
 	}
 
 	/**
@@ -1943,8 +1945,8 @@ public class LayoutModelImpl
 	 *             #getColumnOriginalValue(String)}
 	 */
 	@Deprecated
-	public String getOriginalSourcePrototypeLayoutUuid() {
-		return getColumnOriginalValue("sourcePrototypeLayoutUuid");
+	public String getOriginalLayoutSetPrototypeLayoutERC() {
+		return getColumnOriginalValue("layoutSetPrototypeLayoutERC");
 	}
 
 	@JSON
@@ -2398,7 +2400,8 @@ public class LayoutModelImpl
 		layoutImpl.setLayoutPrototypeUuid(getLayoutPrototypeUuid());
 		layoutImpl.setLayoutPrototypeLinkEnabled(
 			isLayoutPrototypeLinkEnabled());
-		layoutImpl.setSourcePrototypeLayoutUuid(getSourcePrototypeLayoutUuid());
+		layoutImpl.setLayoutSetPrototypeLayoutERC(
+			getLayoutSetPrototypeLayoutERC());
 		layoutImpl.setPublishDate(getPublishDate());
 		layoutImpl.setLastPublishDate(getLastPublishDate());
 		layoutImpl.setStatus(getStatus());
@@ -2472,8 +2475,8 @@ public class LayoutModelImpl
 			this.<String>getColumnOriginalValue("layoutPrototypeUuid"));
 		layoutImpl.setLayoutPrototypeLinkEnabled(
 			this.<Boolean>getColumnOriginalValue("layoutPrototypeLinkEnabled"));
-		layoutImpl.setSourcePrototypeLayoutUuid(
-			this.<String>getColumnOriginalValue("sourcePrototypeLayoutUuid"));
+		layoutImpl.setLayoutSetPrototypeLayoutERC(
+			this.<String>getColumnOriginalValue("layoutSetPrototypeLayoutERC"));
 		layoutImpl.setPublishDate(
 			this.<Date>getColumnOriginalValue("publishDate"));
 		layoutImpl.setLastPublishDate(
@@ -2765,16 +2768,16 @@ public class LayoutModelImpl
 		layoutCacheModel.layoutPrototypeLinkEnabled =
 			isLayoutPrototypeLinkEnabled();
 
-		layoutCacheModel.sourcePrototypeLayoutUuid =
-			getSourcePrototypeLayoutUuid();
+		layoutCacheModel.layoutSetPrototypeLayoutERC =
+			getLayoutSetPrototypeLayoutERC();
 
-		String sourcePrototypeLayoutUuid =
-			layoutCacheModel.sourcePrototypeLayoutUuid;
+		String layoutSetPrototypeLayoutERC =
+			layoutCacheModel.layoutSetPrototypeLayoutERC;
 
-		if ((sourcePrototypeLayoutUuid != null) &&
-			(sourcePrototypeLayoutUuid.length() == 0)) {
+		if ((layoutSetPrototypeLayoutERC != null) &&
+			(layoutSetPrototypeLayoutERC.length() == 0)) {
 
-			layoutCacheModel.sourcePrototypeLayoutUuid = null;
+			layoutCacheModel.layoutSetPrototypeLayoutERC = null;
 		}
 
 		Date publishDate = getPublishDate();
@@ -2919,7 +2922,7 @@ public class LayoutModelImpl
 	private long _masterLayoutPlid;
 	private String _layoutPrototypeUuid;
 	private boolean _layoutPrototypeLinkEnabled;
-	private String _sourcePrototypeLayoutUuid;
+	private String _layoutSetPrototypeLayoutERC;
 	private Date _publishDate;
 	private Date _lastPublishDate;
 	private int _status;
@@ -2997,7 +3000,7 @@ public class LayoutModelImpl
 		_columnOriginalValues.put(
 			"layoutPrototypeLinkEnabled", _layoutPrototypeLinkEnabled);
 		_columnOriginalValues.put(
-			"sourcePrototypeLayoutUuid", _sourcePrototypeLayoutUuid);
+			"layoutSetPrototypeLayoutERC", _layoutSetPrototypeLayoutERC);
 		_columnOriginalValues.put("publishDate", _publishDate);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
 		_columnOriginalValues.put("status", _status);
@@ -3104,7 +3107,7 @@ public class LayoutModelImpl
 
 		columnBitmasks.put("layoutPrototypeLinkEnabled", 68719476736L);
 
-		columnBitmasks.put("sourcePrototypeLayoutUuid", 137438953472L);
+		columnBitmasks.put("layoutSetPrototypeLayoutERC", 137438953472L);
 
 		columnBitmasks.put("publishDate", 274877906944L);
 

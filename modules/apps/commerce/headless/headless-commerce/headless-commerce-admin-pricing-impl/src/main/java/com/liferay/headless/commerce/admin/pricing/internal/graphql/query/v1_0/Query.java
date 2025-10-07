@@ -26,6 +26,8 @@ import com.liferay.headless.commerce.admin.pricing.resource.v1_0.TierPriceResour
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1224,6 +1226,10 @@ public class Query {
 		discountResource.setContextUriInfo(_uriInfo);
 		discountResource.setContextUser(_user);
 		discountResource.setGroupLocalService(_groupLocalService);
+		discountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		discountResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		discountResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1240,6 +1246,10 @@ public class Query {
 		discountAccountGroupResource.setContextUriInfo(_uriInfo);
 		discountAccountGroupResource.setContextUser(_user);
 		discountAccountGroupResource.setGroupLocalService(_groupLocalService);
+		discountAccountGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		discountAccountGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		discountAccountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1256,6 +1266,10 @@ public class Query {
 		discountCategoryResource.setContextUriInfo(_uriInfo);
 		discountCategoryResource.setContextUser(_user);
 		discountCategoryResource.setGroupLocalService(_groupLocalService);
+		discountCategoryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		discountCategoryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		discountCategoryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1272,6 +1286,10 @@ public class Query {
 		discountProductResource.setContextUriInfo(_uriInfo);
 		discountProductResource.setContextUser(_user);
 		discountProductResource.setGroupLocalService(_groupLocalService);
+		discountProductResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		discountProductResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		discountProductResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1287,6 +1305,10 @@ public class Query {
 		discountRuleResource.setContextUriInfo(_uriInfo);
 		discountRuleResource.setContextUser(_user);
 		discountRuleResource.setGroupLocalService(_groupLocalService);
+		discountRuleResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		discountRuleResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		discountRuleResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1300,6 +1322,10 @@ public class Query {
 		priceEntryResource.setContextUriInfo(_uriInfo);
 		priceEntryResource.setContextUser(_user);
 		priceEntryResource.setGroupLocalService(_groupLocalService);
+		priceEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		priceEntryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		priceEntryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1313,6 +1339,10 @@ public class Query {
 		priceListResource.setContextUriInfo(_uriInfo);
 		priceListResource.setContextUser(_user);
 		priceListResource.setGroupLocalService(_groupLocalService);
+		priceListResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		priceListResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		priceListResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1329,6 +1359,10 @@ public class Query {
 		priceListAccountGroupResource.setContextUriInfo(_uriInfo);
 		priceListAccountGroupResource.setContextUser(_user);
 		priceListAccountGroupResource.setGroupLocalService(_groupLocalService);
+		priceListAccountGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		priceListAccountGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		priceListAccountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1342,6 +1376,10 @@ public class Query {
 		tierPriceResource.setContextUriInfo(_uriInfo);
 		tierPriceResource.setContextUser(_user);
 		tierPriceResource.setGroupLocalService(_groupLocalService);
+		tierPriceResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		tierPriceResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		tierPriceResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1372,6 +1410,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

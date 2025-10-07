@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.GroupSubscriptionCheckSubscriptionSender;
@@ -93,6 +94,7 @@ import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
@@ -103,7 +105,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.linkback.LinkbackProducerUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.ratings.kernel.service.RatingsStatsLocalService;
 import com.liferay.social.kernel.model.SocialActivityConstants;
 import com.liferay.subscription.service.SubscriptionLocalService;
@@ -558,17 +559,14 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	public void checkEntries() throws PortalException {
 		Date date = new Date();
 
-		int count = blogsEntryPersistence.countByLtD_S(
-			date, WorkflowConstants.STATUS_SCHEDULED);
-
-		if (count == 0) {
-			return;
-		}
-
 		List<BlogsEntry> blogsEntries = blogsEntryPersistence.findByLtD_S(
-			date, WorkflowConstants.STATUS_SCHEDULED);
+			DateUtil.getTomorrowDate(), WorkflowConstants.STATUS_SCHEDULED);
 
 		for (BlogsEntry blogsEntry : blogsEntries) {
+			if (date.before(blogsEntry.getDisplayDate())) {
+				continue;
+			}
+
 			ServiceContext serviceContext = new ServiceContext();
 
 			serviceContext.setAttribute(

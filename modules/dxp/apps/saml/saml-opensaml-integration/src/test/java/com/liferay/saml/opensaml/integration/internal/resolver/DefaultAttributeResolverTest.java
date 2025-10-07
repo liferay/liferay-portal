@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.saml.opensaml.integration.internal.BaseSamlTestCase;
 import com.liferay.saml.opensaml.integration.internal.util.SamlUtil;
@@ -726,6 +727,7 @@ public class DefaultAttributeResolverTest extends BaseSamlTestCase {
 			new String[] {"Role Test 1", "Role Test 2", "Org Role Test"});
 	}
 
+	@FeatureFlag("LPD-66611")
 	@Test
 	public void testResolveUserGroupsAttributes() throws Exception {
 		_attributeNamesAtomicReference.set(new String[] {"userGroups"});
@@ -767,6 +769,9 @@ public class DefaultAttributeResolverTest extends BaseSamlTestCase {
 
 		assertEquals(
 			attributePublisherImpl.getAttributes(), "membership:userGroups",
+			new String[] {"Test 1", "Test 2"});
+		assertEquals(
+			attributePublisherImpl.getAttributes(), "userGroups",
 			new String[] {"Test 1", "Test 2"});
 	}
 

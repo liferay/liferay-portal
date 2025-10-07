@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/loading-indicator": "3.128.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/icon": "3.144.1",
+		"@clayui/loading-indicator": "3.144.1",
 		"@liferay/marketplace-js-components-web": "*",
 		"commerce-frontend-js": "*",
 		"frontend-js-components-web": "*",
@@ -25,5 +25,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "4.0.95"
+	"version": "4.0.99"
 }

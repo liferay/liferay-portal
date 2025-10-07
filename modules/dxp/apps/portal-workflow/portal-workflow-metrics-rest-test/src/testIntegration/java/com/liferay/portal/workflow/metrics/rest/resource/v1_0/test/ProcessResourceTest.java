@@ -70,7 +70,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 	public void testGetProcessTitle() throws Exception {
 		Process process = randomProcess();
 
-		testGetProcessesPage_addProcess(process);
+		_addProcess(process);
 
 		String title = processResource.getProcessTitle(process.getId());
 
@@ -92,7 +92,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		process.setTitle(RandomTestUtil.randomString());
 		process.setTitle_i18n(
 			HashMapBuilder.put(
-				LocaleUtil.US.toLanguageTag(), process.getTitle()
+				LocaleUtil.US.toString(), process.getTitle()
 			).build());
 
 		return process;
@@ -105,18 +105,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 
 	@Override
 	protected Process testGetProcess_addProcess() throws Exception {
-		return testGetProcessesPage_addProcess(randomProcess());
-	}
-
-	protected Process testGetProcessesPage_addProcess(Process process)
-		throws Exception {
-
-		process = _workflowMetricsRESTTestHelper.addProcess(
-			testGroup.getCompanyId(), process);
-
-		_processes.add(process);
-
-		return process;
+		return _addProcess(randomProcess());
 	}
 
 	@Override
@@ -128,12 +117,21 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 	protected Process testPostProcess_addProcess(Process process)
 		throws Exception {
 
-		return testGetProcessesPage_addProcess(process);
+		return _addProcess(process);
 	}
 
 	@Override
 	protected Process testPutProcess_addProcess() throws Exception {
 		return testGetProcess_addProcess();
+	}
+
+	private Process _addProcess(Process process) throws Exception {
+		process = _workflowMetricsRESTTestHelper.addProcess(
+			testGroup.getCompanyId(), process);
+
+		_processes.add(process);
+
+		return process;
 	}
 
 	private void _deleteProcesses() throws Exception {

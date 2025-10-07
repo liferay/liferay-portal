@@ -706,7 +706,7 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 
 						throw new Exception(
 							StringBundler.concat(
-								"Init paramter name ", initParameterName,
+								"Init parameter name ", initParameterName,
 								" conflicts with filter name ", filterName));
 					}
 
@@ -831,7 +831,7 @@ public class WebXMLDefinitionLoader extends DefaultHandler {
 
 						throw new Exception(
 							StringBundler.concat(
-								"Init paramter name ", initParameterName,
+								"Init parameter name ", initParameterName,
 								" conflicts with servlet name ", servletName));
 					}
 

@@ -75,8 +75,8 @@ public class HtmlContentTransformerImplTest {
 		Assert.assertEquals(
 			"<img src=\"not-adaptable\"/><whatever></whatever>",
 			_htmlContentTransformerImpl.transform(
-				"<img src=\"not-adaptable\"/>" +
-					"<img data-fileentryid=\"1989\" src=\"adaptable\"/>"));
+				"<img src=\"not-adaptable\"/><img data-fileentryid=\"1989\" " +
+					"src=\"adaptable\"/>"));
 	}
 
 	@Test
@@ -110,8 +110,8 @@ public class HtmlContentTransformerImplTest {
 		Assert.assertEquals(
 			"<whatever></whatever><whatever></whatever>",
 			_htmlContentTransformerImpl.transform(
-				"<img data-fileentryid=\"1989\" src=\"adaptable\"/>" +
-					"<img data-fileentryid=\"1989\" src=\"adaptable\"/>"));
+				"<img data-fileentryid=\"1989\" src=\"adaptable\"/><img " +
+					"data-fileentryid=\"1989\" src=\"adaptable\"/>"));
 	}
 
 	@Test
@@ -130,8 +130,8 @@ public class HtmlContentTransformerImplTest {
 			"<whatever></whatever><img data-fileentryid=\"1999\" " +
 				"src=\"adaptable\"/>",
 			_htmlContentTransformerImpl.transform(
-				"<img data-fileentryid=\"1989\" src=\"adaptable\"/>" +
-					"<img data-fileentryid=\"1999\" src=\"adaptable\"/>"));
+				"<img data-fileentryid=\"1989\" src=\"adaptable\"/><img " +
+					"data-fileentryid=\"1999\" src=\"adaptable\"/>"));
 	}
 
 	@Test

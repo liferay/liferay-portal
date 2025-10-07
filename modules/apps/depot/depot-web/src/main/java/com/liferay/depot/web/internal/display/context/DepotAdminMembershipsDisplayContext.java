@@ -6,7 +6,7 @@
 package com.liferay.depot.web.internal.display.context;
 
 import com.liferay.admin.kernel.util.PortalMyAccountApplicationType;
-import com.liferay.depot.web.internal.item.selector.DepotGroupItemSelectorCriterion;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
@@ -30,9 +30,9 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 
 import jakarta.portlet.PortletURL;
@@ -125,8 +125,10 @@ public class DepotAdminMembershipsDisplayContext {
 
 	public PortletURL getItemSelectorURL() {
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
-			new DepotGroupItemSelectorCriterion();
+			new GroupItemSelectorCriterion();
 
+		groupItemSelectorCriterion.setDepotEntryType(
+			DepotConstants.TYPE_ASSET_LIBRARY);
 		groupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new GroupItemSelectorReturnType());
 		groupItemSelectorCriterion.setIncludeAllVisibleGroups(true);

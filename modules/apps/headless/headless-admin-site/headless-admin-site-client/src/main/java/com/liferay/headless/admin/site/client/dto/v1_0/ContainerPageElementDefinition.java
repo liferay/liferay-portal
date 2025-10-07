@@ -26,41 +26,25 @@ public class ContainerPageElementDefinition
 		return ContainerPageElementDefinitionSerDes.toDTO(json);
 	}
 
-	public FragmentImage getBackgroundFragmentImage() {
-		return backgroundFragmentImage;
-	}
-
-	public void setBackgroundFragmentImage(
-		FragmentImage backgroundFragmentImage) {
-
-		this.backgroundFragmentImage = backgroundFragmentImage;
-	}
-
-	public void setBackgroundFragmentImage(
-		UnsafeSupplier<FragmentImage, Exception>
-			backgroundFragmentImageUnsafeSupplier) {
-
-		try {
-			backgroundFragmentImage =
-				backgroundFragmentImageUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected FragmentImage backgroundFragmentImage;
-
-	public String getContentVisibility() {
+	public ContentVisibility getContentVisibility() {
 		return contentVisibility;
 	}
 
-	public void setContentVisibility(String contentVisibility) {
+	public String getContentVisibilityAsString() {
+		if (contentVisibility == null) {
+			return null;
+		}
+
+		return contentVisibility.toString();
+	}
+
+	public void setContentVisibility(ContentVisibility contentVisibility) {
 		this.contentVisibility = contentVisibility;
 	}
 
 	public void setContentVisibility(
-		UnsafeSupplier<String, Exception> contentVisibilityUnsafeSupplier) {
+		UnsafeSupplier<ContentVisibility, Exception>
+			contentVisibilityUnsafeSupplier) {
 
 		try {
 			contentVisibility = contentVisibilityUnsafeSupplier.get();
@@ -70,7 +54,7 @@ public class ContainerPageElementDefinition
 		}
 	}
 
-	protected String contentVisibility;
+	protected ContentVisibility contentVisibility;
 
 	public String[] getCssClasses() {
 		return cssClasses;
@@ -113,28 +97,6 @@ public class ContainerPageElementDefinition
 	}
 
 	protected String customCSS;
-
-	public CustomCSSViewport[] getCustomCSSViewports() {
-		return customCSSViewports;
-	}
-
-	public void setCustomCSSViewports(CustomCSSViewport[] customCSSViewports) {
-		this.customCSSViewports = customCSSViewports;
-	}
-
-	public void setCustomCSSViewports(
-		UnsafeSupplier<CustomCSSViewport[], Exception>
-			customCSSViewportsUnsafeSupplier) {
-
-		try {
-			customCSSViewports = customCSSViewportsUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected CustomCSSViewport[] customCSSViewports;
 
 	public FragmentLink getFragmentLink() {
 		return fragmentLink;
@@ -316,6 +278,39 @@ public class ContainerPageElementDefinition
 
 	public String toString() {
 		return ContainerPageElementDefinitionSerDes.toJSON(this);
+	}
+
+	public static enum ContentVisibility {
+
+		AUTO("Auto");
+
+		public static ContentVisibility create(String value) {
+			for (ContentVisibility contentVisibility : values()) {
+				if (Objects.equals(contentVisibility.getValue(), value) ||
+					Objects.equals(contentVisibility.name(), value)) {
+
+					return contentVisibility;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private ContentVisibility(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 }

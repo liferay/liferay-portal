@@ -6,7 +6,16 @@
 import {slugify} from 'commerce-frontend-js';
 import {debounce} from 'frontend-js-web';
 
-export default function ({bcp47LanguageId, isCPOptionSelectDate, namespace}) {
+export default function ({
+	allowedSkuContributorTypeNames,
+	availableTypeNames,
+	bcp47LanguageId,
+	isCPOptionSelectDate,
+	namespace,
+}) {
+	const allowedSkuContributorFieldTypeSelectOptions =
+		allowedSkuContributorTypeNames.split(',');
+	const availableFieldTypeSelectOptions = availableTypeNames.split(',');
 	const form = document.getElementById(namespace + 'fm');
 
 	const dateInput = form.querySelector('#' + namespace + 'date');
@@ -14,13 +23,70 @@ export default function ({bcp47LanguageId, isCPOptionSelectDate, namespace}) {
 	const durationTypeInput = form.querySelector(
 		'#' + namespace + 'durationType'
 	);
+	const formFieldTypeSelect = form.querySelector(
+		'#' + namespace + 'commerceOptionTypeKey'
+	);
 	const labelInput = form.querySelector(
 		'#' + namespace + 'optionValueSelectDateLabel'
+	);
+	const skuContributorInput = form.querySelector(
+		'#' + namespace + 'skuContributor'
 	);
 	const timeInput = form.querySelector('#' + namespace + 'time');
 	const timeZoneInput = form.querySelector('#' + namespace + 'timezone');
 
 	const optionValueSelectDateObj = new optionValueSelectDate();
+
+	function checkDDMFormFieldType() {
+		const skuContributorInputChecked = skuContributorInput.checked;
+
+		enableFormFieldTypeSelectOptionValues(availableFieldTypeSelectOptions);
+
+		if (skuContributorInputChecked) {
+			enableFormFieldTypeSelectOptionValues(
+				allowedSkuContributorFieldTypeSelectOptions
+			);
+		}
+	}
+
+	function enableFormFieldTypeSelectOptionValues(
+		availableFieldTypeSelectOptions
+	) {
+		for (let i = 0; i < formFieldTypeSelect.options.length; i++) {
+			const formFieldTypeSelectOption = formFieldTypeSelect.options[i];
+
+			if (formFieldTypeSelectOption.value === '') {
+				continue;
+			}
+
+			if (
+				endsWith(
+					formFieldTypeSelectOption.value,
+					availableFieldTypeSelectOptions
+				)
+			) {
+				if (formFieldTypeSelectOption.getAttribute('disabled')) {
+					formFieldTypeSelectOption.removeAttribute('disabled');
+				}
+
+				continue;
+			}
+
+			formFieldTypeSelectOption.setAttribute('disabled', true);
+		}
+	}
+
+	function endsWith(value, array) {
+		value = value.toLowerCase();
+
+		for (let i = 0; i < array.length; i++) {
+			if (value.endsWith(array[i].toLowerCase())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	function optionValueSelectDate() {
 		this.date = null;
@@ -133,5 +199,35 @@ export default function ({bcp47LanguageId, isCPOptionSelectDate, namespace}) {
 		};
 
 		keyInput.addEventListener('input', debounce(handleOnKeyInput, 200));
+	}
+
+	if (allowedSkuContributorTypeNames) {
+		const handleFormFieldTypeSelectChanges = function () {
+			if (
+				endsWith(
+					formFieldTypeSelect.value,
+					allowedSkuContributorFieldTypeSelectOptions
+				)
+			) {
+				if (skuContributorInput.getAttribute('disabled')) {
+					skuContributorInput.removeAttribute('disabled');
+				}
+			}
+			else {
+				if (!skuContributorInput.checked) {
+					if (!skuContributorInput.getAttribute('disabled')) {
+						skuContributorInput.setAttribute('disabled', 'true');
+					}
+				}
+			}
+		};
+
+		formFieldTypeSelect.addEventListener(
+			'change',
+			handleFormFieldTypeSelectChanges
+		);
+		skuContributorInput.addEventListener('change', checkDDMFormFieldType);
+		checkDDMFormFieldType();
+		handleFormFieldTypeSelectChanges();
 	}
 }

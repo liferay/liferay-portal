@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Document Library Opener UAD
 Bundle-SymbolicName: com.liferay.document.library.opener.uad
-Bundle-Version: 3.0.14
+Bundle-Version: 3.0.15
 -dsannotations-options: inherit

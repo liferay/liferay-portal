@@ -12,6 +12,7 @@ import {
 	Essentials,
 	Font,
 	GeneralHtmlSupport,
+	GeneralHtmlSupportConfig,
 	Heading,
 	HorizontalLine,
 	Image,
@@ -27,6 +28,7 @@ import {
 	List,
 	MediaEmbed,
 	Paragraph,
+	PasteFromOffice,
 	RemoveFormat,
 	SourceEditing,
 	Strikethrough,
@@ -39,6 +41,8 @@ import {
 } from 'ckeditor5';
 import {sub} from 'frontend-js-web';
 
+import AICreator from '../plugins/AICreator';
+import HeadlessItemSelector from '../plugins/HeadlessItemSelector';
 import ItemSelector from '../plugins/ItemSelector';
 import {EEditorConfigPreset, EEditorVariant} from './types';
 
@@ -59,6 +63,7 @@ const getDefaultEditorConfig = ({
 		Link,
 		List,
 		Paragraph,
+		PasteFromOffice,
 		Underline,
 	];
 
@@ -68,11 +73,27 @@ const getDefaultEditorConfig = ({
 		},
 	};
 
+	const htmlSupport: GeneralHtmlSupportConfig = {
+		allow: [
+			{
+				attributes: true,
+				classes: true,
+				name: /.*/,
+				styles: true,
+			},
+		],
+		allowEmpty: ['img'],
+		disallow: [{name: 'script'}, {attributes: /on.*/}],
+	};
+
 	if (preset === EEditorConfigPreset.BASIC) {
 		const basicEditorConfig: EditorConfig = {
+			htmlSupport,
 			plugins: basicPlugins,
 			toolbar: {
 				items: [
+					'accessibilityHelp',
+					'|',
 					'undo',
 					'redo',
 					'|',
@@ -98,12 +119,13 @@ const getDefaultEditorConfig = ({
 
 	const advancedPlugins = [
 		...basicPlugins,
+		AICreator,
 		Alignment,
 		BlockQuote,
 		Font,
 		Heading,
+		HeadlessItemSelector,
 		HorizontalLine,
-		ItemSelector,
 		ImageBlock,
 		ImageCaption,
 		ImageInline,
@@ -111,8 +133,9 @@ const getDefaultEditorConfig = ({
 		ImageStyle,
 		ImageToolbar,
 		Indent,
-		RemoveFormat,
+		ItemSelector,
 		MediaEmbed,
+		RemoveFormat,
 		Strikethrough,
 		Style,
 		Table,
@@ -126,6 +149,8 @@ const getDefaultEditorConfig = ({
 	}
 
 	const toolbarItems = [
+		'accessibilityHelp',
+		'|',
 		'undo',
 		'redo',
 		'|',
@@ -159,9 +184,12 @@ const getDefaultEditorConfig = ({
 		'horizontalLine',
 		'|',
 		'alignment',
+		'|',
+		'aiCreator',
 	];
 
 	if (editorVariant === EEditorVariant.CLASSIC) {
+		toolbarItems.push('|');
 		toolbarItems.push('sourceEditing');
 	}
 
@@ -196,17 +224,7 @@ const getDefaultEditorConfig = ({
 				},
 			],
 		},
-		htmlSupport: {
-			allow: [
-				{
-					attributes: true,
-					classes: true,
-					name: /.*/,
-					styles: true,
-				},
-			],
-			allowEmpty: ['img'],
-		},
+		htmlSupport,
 		image: {
 			toolbar: [
 				'imageStyle:inline',

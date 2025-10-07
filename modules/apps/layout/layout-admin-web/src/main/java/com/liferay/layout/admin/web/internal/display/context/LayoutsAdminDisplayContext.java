@@ -40,7 +40,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.layout.set.prototype.helper.LayoutSetPrototypeHelper;
-import com.liferay.layout.theme.item.selector.criterion.LayoutThemeItemSelectorCriterion;
+import com.liferay.layout.theme.item.selector.LayoutThemeItemSelectorCriterion;
 import com.liferay.layout.util.comparator.LayoutCreateDateComparator;
 import com.liferay.layout.util.comparator.LayoutRelevanceComparator;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -98,12 +98,12 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.RobotsUtil;
 import com.liferay.site.display.context.GroupDisplayContextHelper;
 import com.liferay.site.navigation.model.SiteNavigationMenu;
@@ -126,8 +126,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  * @author Eudaldo Alonso
@@ -289,6 +289,16 @@ public class LayoutsAdminDisplayContext {
 		).buildString();
 	}
 
+	public String getAddModalTitle() {
+		String title = "add-page";
+
+		if (ParamUtil.getBoolean(httpServletRequest, "emptyLayout")) {
+			title = "page-name";
+		}
+
+		return LanguageUtil.get(httpServletRequest, title);
+	}
+
 	public List<SiteNavigationMenu> getAutoSiteNavigationMenus() {
 		return SiteNavigationMenuLocalServiceUtil.getAutoSiteNavigationMenus(
 			themeDisplay.getScopeGroupId());
@@ -362,6 +372,31 @@ public class LayoutsAdminDisplayContext {
 			"privateLayout", layout.isPrivateLayout()
 		).setParameter(
 			"selPlid", layout.getPlid()
+		).buildString();
+	}
+
+	public String getConvertEmptyLayoutURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/layout_admin/convert_empty_layout"
+		).setParameter(
+			"layoutPageTemplateEntryId",
+			ParamUtil.getLong(httpServletRequest, "layoutPageTemplateEntryId")
+		).setParameter(
+			"masterLayoutPlid",
+			ParamUtil.getLong(httpServletRequest, "masterLayoutPlid")
+		).setParameter(
+			"type",
+			() -> {
+				String type = ParamUtil.getString(httpServletRequest, "type");
+
+				if (Validator.isNotNull(type)) {
+					return type;
+				}
+
+				return null;
+			}
 		).buildString();
 	}
 
@@ -594,7 +629,7 @@ public class LayoutsAdminDisplayContext {
 
 		LayoutSet layoutSet = selLayout.getLayoutSet();
 
-		TreeMap<String, String> virtualHostnames =
+		NavigableMap<String, String> virtualHostnames =
 			layoutSet.getVirtualHostnames();
 
 		if (virtualHostnames.isEmpty() ||
@@ -737,6 +772,8 @@ public class LayoutsAdminDisplayContext {
 
 				return portletDisplay.getURLBackTitle();
 			}
+		).setParameter(
+			"privateLayout", isPrivateLayout()
 		).setParameter(
 			"selPlid", plid
 		).buildPortletURL();
@@ -1150,6 +1187,20 @@ public class LayoutsAdminDisplayContext {
 			).setParameter(
 				"selPlid", selPlid
 			).buildPortletURL();
+
+		if (selPlid != LayoutConstants.DEFAULT_PLID) {
+			Layout layout = LayoutLocalServiceUtil.fetchLayout(selPlid);
+
+			if ((layout != null) && layout.isTypeEmpty()) {
+				selectLayoutPageTemplateEntryURL.setParameter(
+					"emptyLayout",
+					String.valueOf(
+						ParamUtil.getBoolean(
+							httpServletRequest, "emptyLayout")));
+				selectLayoutPageTemplateEntryURL.setParameter(
+					"externalReferenceCode", layout.getExternalReferenceCode());
+			}
+		}
 
 		if (layoutPageTemplateCollectionId > 0) {
 			selectLayoutPageTemplateEntryURL.setParameter(
@@ -1570,7 +1621,7 @@ public class LayoutsAdminDisplayContext {
 
 		String virtualHostname = null;
 
-		TreeMap<String, String> virtualHostnames =
+		NavigableMap<String, String> virtualHostnames =
 			PortalUtil.getVirtualHostnames(layoutSet);
 
 		if (!virtualHostnames.isEmpty()) {
@@ -1997,7 +2048,8 @@ public class LayoutsAdminDisplayContext {
 			availableActions.add("exportTranslation");
 		}
 
-		if (LayoutPermissionUtil.contains(
+		if (!layout.isTypeEmpty() &&
+			LayoutPermissionUtil.contains(
 				themeDisplay.getPermissionChecker(), layout,
 				ActionKeys.PERMISSIONS)) {
 
@@ -2391,7 +2443,7 @@ public class LayoutsAdminDisplayContext {
 
 		_types = new String[] {
 			LayoutConstants.TYPE_CONTENT, LayoutConstants.TYPE_EMBEDDED,
-			LayoutConstants.TYPE_LINK_TO_LAYOUT,
+			LayoutConstants.TYPE_EMPTY, LayoutConstants.TYPE_LINK_TO_LAYOUT,
 			LayoutConstants.TYPE_FULL_PAGE_APPLICATION,
 			LayoutConstants.TYPE_NODE, LayoutConstants.TYPE_PANEL,
 			LayoutConstants.TYPE_PORTLET, LayoutConstants.TYPE_URL
@@ -2437,7 +2489,7 @@ public class LayoutsAdminDisplayContext {
 
 	private boolean _matchesHostname(
 		StringBuilder friendlyURLBase,
-		TreeMap<String, String> virtualHostnames) {
+		NavigableMap<String, String> virtualHostnames) {
 
 		for (String virtualHostname : virtualHostnames.keySet()) {
 			if (friendlyURLBase.indexOf(virtualHostname) != -1) {

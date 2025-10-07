@@ -44,16 +44,30 @@ public class LayoutSerDes {
 
 		sb.append("{");
 
-		if (layout.getContainerType() != null) {
+		if (layout.getAlign() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"containerType\": ");
+			sb.append("\"align\": ");
 
 			sb.append("\"");
 
-			sb.append(layout.getContainerType());
+			sb.append(layout.getAlign());
+
+			sb.append("\"");
+		}
+
+		if (layout.getContentDisplay() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"contentDisplay\": ");
+
+			sb.append("\"");
+
+			sb.append(layout.getContentDisplay());
 
 			sb.append("\"");
 		}
@@ -68,6 +82,20 @@ public class LayoutSerDes {
 			sb.append("\"");
 
 			sb.append(layout.getFlexWrap());
+
+			sb.append("\"");
+		}
+
+		if (layout.getJustify() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"justify\": ");
+
+			sb.append("\"");
+
+			sb.append(layout.getJustify());
 
 			sb.append("\"");
 		}
@@ -104,11 +132,19 @@ public class LayoutSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (layout.getContainerType() == null) {
-			map.put("containerType", null);
+		if (layout.getAlign() == null) {
+			map.put("align", null);
 		}
 		else {
-			map.put("containerType", String.valueOf(layout.getContainerType()));
+			map.put("align", String.valueOf(layout.getAlign()));
+		}
+
+		if (layout.getContentDisplay() == null) {
+			map.put("contentDisplay", null);
+		}
+		else {
+			map.put(
+				"contentDisplay", String.valueOf(layout.getContentDisplay()));
 		}
 
 		if (layout.getFlexWrap() == null) {
@@ -116,6 +152,13 @@ public class LayoutSerDes {
 		}
 		else {
 			map.put("flexWrap", String.valueOf(layout.getFlexWrap()));
+		}
+
+		if (layout.getJustify() == null) {
+			map.put("justify", null);
+		}
+		else {
+			map.put("justify", String.valueOf(layout.getJustify()));
 		}
 
 		if (layout.getWidthType() == null) {
@@ -142,10 +185,16 @@ public class LayoutSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "containerType")) {
+			if (Objects.equals(jsonParserFieldName, "align")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "contentDisplay")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "flexWrap")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "justify")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "widthType")) {
@@ -160,10 +209,16 @@ public class LayoutSerDes {
 			Layout layout, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "containerType")) {
+			if (Objects.equals(jsonParserFieldName, "align")) {
 				if (jsonParserFieldValue != null) {
-					layout.setContainerType(
-						Layout.ContainerType.create(
+					layout.setAlign(
+						Layout.Align.create((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "contentDisplay")) {
+				if (jsonParserFieldValue != null) {
+					layout.setContentDisplay(
+						Layout.ContentDisplay.create(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -171,6 +226,12 @@ public class LayoutSerDes {
 				if (jsonParserFieldValue != null) {
 					layout.setFlexWrap(
 						Layout.FlexWrap.create((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "justify")) {
+				if (jsonParserFieldValue != null) {
+					layout.setJustify(
+						Layout.Justify.create((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "widthType")) {

@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.template.TemplateHandlerRegistryUtil;
 import com.liferay.portal.kernel.template.TemplateVariableDefinition;
 import com.liferay.portal.kernel.template.TemplateVariableGroup;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 
 import java.util.Collection;
@@ -73,7 +74,7 @@ public class JournalDefaultTemplateProviderImpl
 				templateVariableDefinition.generateCode(getLanguage())[0];
 
 			sb.append("<dt class=\"text-capitalize\">");
-			sb.append(templateVariableDefinition.getLabel());
+			sb.append(HtmlUtil.escape(templateVariableDefinition.getLabel()));
 			sb.append("</dt><dd>");
 			sb.append(code);
 			sb.append("</dd>");

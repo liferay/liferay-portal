@@ -130,8 +130,11 @@ export default function propsTransformer({
 	portletNamespace,
 	...otherProps
 }) {
-	const {panelState, selectedItemRowId, singlePageApplicationEnabled} =
-		additionalProps;
+	const {
+		panelState,
+		selectedItemRowId,
+		singlePageApplicationEnabled = !!Liferay.SPA,
+	} = additionalProps;
 
 	if (singlePageApplicationEnabled) {
 		handlePanelStateFromSession(additionalProps);

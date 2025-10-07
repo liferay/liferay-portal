@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.CompanyProviderClassTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -526,25 +527,26 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	@Test
 	@TestInfo("LPS-130898")
 	public void testForEachCompanyId() throws Exception {
-		boolean originalDatabasePartitionThreadPoolEnabled =
-			ReflectionTestUtil.getFieldValue(
-				DBPartitionUtil.class,
-				"_DATABASE_PARTITION_THREAD_POOL_ENABLED");
-
 		try {
 			addDBPartitions();
 
 			insertPartitionRequiredData();
 
-			_testForEachCompanyId(false);
-			_testForEachCompanyId(true);
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"DATABASE_PARTITION_THREAD_POOL_ENABLED", false)) {
+
+				_testForEachCompanyId();
+			}
+
+			try (SafeCloseable safeCloseable =
+					PropsValuesTestUtil.swapWithSafeCloseable(
+						"DATABASE_PARTITION_THREAD_POOL_ENABLED", true)) {
+
+				_testForEachCompanyId();
+			}
 		}
 		finally {
-			ReflectionTestUtil.setFieldValue(
-				DBPartitionUtil.class,
-				"_DATABASE_PARTITION_THREAD_POOL_ENABLED",
-				originalDatabasePartitionThreadPoolEnabled);
-
 			deletePartitionRequiredData();
 			removeDBPartitions();
 		}
@@ -791,14 +793,7 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 			StorageType.PERSISTED);
 	}
 
-	private void _testForEachCompanyId(
-			boolean databasePartitionThreadPoolEnabled)
-		throws Exception {
-
-		ReflectionTestUtil.setFieldValue(
-			DBPartitionUtil.class, "_DATABASE_PARTITION_THREAD_POOL_ENABLED",
-			databasePartitionThreadPoolEnabled);
-
+	private void _testForEachCompanyId() throws Exception {
 		List<Long> companyIds = new CopyOnWriteArrayList<>();
 
 		DBPartitionUtil.forEachCompanyId(

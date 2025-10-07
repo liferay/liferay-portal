@@ -6,12 +6,9 @@
 package com.liferay.login.web.internal.portlet;
 
 import com.liferay.login.web.constants.LoginPortletKeys;
+import com.liferay.login.web.internal.portlet.util.LoginUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.Portlet;
 import jakarta.portlet.PortletException;
@@ -60,36 +57,16 @@ public class CreateAccountPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		if (!_isAllowedToRenderView(renderRequest)) {
+		if (!LoginUtil.isAllowedToRenderView(
+				"/create_account.jsp", "/login/create_account",
+				renderRequest)) {
+
 			renderRequest.setAttribute(
 				getMVCPathAttributeName(renderResponse.getNamespace()),
 				"/login.jsp");
 		}
 
 		super.render(renderRequest, renderResponse);
-	}
-
-	private boolean _isAllowedToRenderView(RenderRequest renderRequest) {
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		if (!themeDisplay.isSignedIn()) {
-			return true;
-		}
-
-		String mvcPath = ParamUtil.getString(renderRequest, "mvcPath");
-		String mvcRenderCommandName = ParamUtil.getString(
-			renderRequest, "mvcRenderCommandName");
-
-		if ((Validator.isNull(mvcPath) &&
-			 Validator.isNull(mvcRenderCommandName)) ||
-			mvcPath.equals("/create_account.jsp") ||
-			mvcRenderCommandName.equals("/login/create_account")) {
-
-			return false;
-		}
-
-		return true;
 	}
 
 	@Reference(

@@ -586,8 +586,6 @@ definition {
 	@description = "Verify that the correct number of Entries are displayed"
 	@priority = 3
 	test DisplayCorrectNumberOfEntries {
-		property portal.acceptance = "true";
-
 		task ("Given a published form") {
 			FormsAdmin.addForm();
 

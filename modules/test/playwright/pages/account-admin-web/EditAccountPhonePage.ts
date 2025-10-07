@@ -6,12 +6,16 @@
 import {Locator, Page} from '@playwright/test';
 
 export class EditAccountPhonePage {
+	readonly extensionLabel: Locator;
 	readonly numberInput: Locator;
+	readonly numberLabel: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 
 	constructor(page: Page) {
+		this.extensionLabel = page.getByLabel('Phone Extension');
 		this.numberInput = page.getByRole('textbox', {name: 'Number'});
+		this.numberLabel = page.getByLabel('Phone Number');
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 	}

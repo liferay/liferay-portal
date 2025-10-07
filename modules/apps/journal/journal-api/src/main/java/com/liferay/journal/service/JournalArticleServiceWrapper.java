@@ -1573,6 +1573,15 @@ public class JournalArticleServiceWrapper
 	}
 
 	@Override
+	public JournalArticle revertArticle(
+			long groupId, String articleId, double version)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _journalArticleService.revertArticle(
+			groupId, articleId, version);
+	}
+
+	@Override
 	public void subscribe(long groupId, long articleId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

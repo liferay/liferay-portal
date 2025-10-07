@@ -265,9 +265,9 @@ export function ModalAddFilter({
 							system,
 							titleObjectFieldName,
 						},
-					] = await API.getObjectDefinitions(
-						`filter=name eq '${value}'`
-					);
+					] = await API.getObjectDefinitions({
+						filter: `name eq '${value}'`,
+					});
 
 					const titleObjectField = objectFields.find(
 						(objectField) =>

@@ -38,7 +38,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -170,7 +169,7 @@ public class LayoutSetModelImpl
 	public static final long LAYOUTSETID_COLUMN_BITMASK = 32L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.LayoutSet"));
 
 	public LayoutSetModelImpl() {
@@ -703,12 +702,12 @@ public class LayoutSetModelImpl
 		String companyFallbackVirtualHostname) {
 	}
 
-	public java.util.TreeMap<String, String> getVirtualHostnames() {
+	public java.util.NavigableMap<String, String> getVirtualHostnames() {
 		return null;
 	}
 
 	public void setVirtualHostnames(
-		java.util.TreeMap<String, String> virtualHostnames) {
+		java.util.NavigableMap<String, String> virtualHostnames) {
 	}
 
 	public long getColumnBitmask() {
@@ -996,7 +995,7 @@ public class LayoutSetModelImpl
 			setVirtualHostnames(null);
 
 			layoutSetCacheModel.virtualHostnames =
-				(java.util.TreeMap<String, String>)
+				(java.util.NavigableMap<String, String>)
 					_virtualHostnamesMethodHandle.invokeExact(
 						(LayoutSetImpl)this);
 		}
@@ -1191,17 +1190,17 @@ public class LayoutSetModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<String>
-		companyFallbackVirtualHostnameUpdateEntityCacheConsumer =
-			companyFallbackVirtualHostname -> {
+	protected static final BiConsumer<LayoutSet, String>
+		companyFallbackVirtualHostnameUpdateEntityCacheBiConsumer =
+			(layoutSet, companyFallbackVirtualHostname) -> {
 				LayoutSetCacheModel layoutSetCacheModel =
 					EntityCacheUtil.fetchCacheModel(
-						LayoutSetImpl.class, _layoutSetId,
+						LayoutSetImpl.class, layoutSet.getPrimaryKey(),
 						LayoutSetCacheModel.class);
 
 				if ((layoutSetCacheModel != null) &&
 					(layoutSetCacheModel.getMvccVersion() ==
-						getMvccVersion())) {
+						layoutSet.getMvccVersion())) {
 
 					layoutSetCacheModel.companyFallbackVirtualHostname =
 						companyFallbackVirtualHostname;
@@ -1211,19 +1210,22 @@ public class LayoutSetModelImpl
 	private static final MethodHandle
 		_companyFallbackVirtualHostnameMethodHandle;
 
-	protected final transient Consumer<java.util.TreeMap<String, String>>
-		virtualHostnamesUpdateEntityCacheConsumer = virtualHostnames -> {
-			LayoutSetCacheModel layoutSetCacheModel =
-				EntityCacheUtil.fetchCacheModel(
-					LayoutSetImpl.class, _layoutSetId,
-					LayoutSetCacheModel.class);
+	protected static final BiConsumer
+		<LayoutSet, java.util.NavigableMap<String, String>>
+			virtualHostnamesUpdateEntityCacheBiConsumer =
+				(layoutSet, virtualHostnames) -> {
+					LayoutSetCacheModel layoutSetCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							LayoutSetImpl.class, layoutSet.getPrimaryKey(),
+							LayoutSetCacheModel.class);
 
-			if ((layoutSetCacheModel != null) &&
-				(layoutSetCacheModel.getMvccVersion() == getMvccVersion())) {
+					if ((layoutSetCacheModel != null) &&
+						(layoutSetCacheModel.getMvccVersion() ==
+							layoutSet.getMvccVersion())) {
 
-				layoutSetCacheModel.virtualHostnames = virtualHostnames;
-			}
-		};
+						layoutSetCacheModel.virtualHostnames = virtualHostnames;
+					}
+				};
 
 	private static final MethodHandle _virtualHostnamesMethodHandle;
 
@@ -1237,7 +1239,7 @@ public class LayoutSetModelImpl
 
 			_virtualHostnamesMethodHandle = lookup.findGetter(
 				LayoutSetImpl.class, "_virtualHostnames",
-				java.util.TreeMap.class);
+				java.util.NavigableMap.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
 			throw new ExceptionInInitializerError(reflectiveOperationException);

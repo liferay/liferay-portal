@@ -8,6 +8,7 @@ package com.liferay.object.rest.test.util;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.vulcan.aggregation.Facet;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -69,6 +71,22 @@ public abstract class BaseObjectEntryManagerImplTestCase {
 			ObjectEntry actualObjectEntry, ObjectEntry expectedObjectEntry)
 		throws Exception {
 
+		Map<String, Map<String, String>> actualOjectEntryActions =
+			actualObjectEntry.getActions();
+
+		Map<String, Map<String, String>> expectedObjectEntryActions =
+			expectedObjectEntry.getActions();
+
+		if (expectedObjectEntryActions != null) {
+			for (Map.Entry<String, Map<String, String>> actualActions :
+					actualOjectEntryActions.entrySet()) {
+
+				Assert.assertEquals(
+					actualActions.getKey(), actualActions.getValue(),
+					expectedObjectEntryActions.get(actualActions.getKey()));
+			}
+		}
+
 		Map<String, Object> actualObjectEntryProperties =
 			actualObjectEntry.getProperties();
 
@@ -80,6 +98,69 @@ public abstract class BaseObjectEntryManagerImplTestCase {
 
 			assertObjectEntryProperties(
 				actualObjectEntry, actualObjectEntryProperties, expectedEntry);
+		}
+
+		if (expectedObjectEntry.getStatus() != null) {
+			Assert.assertEquals(
+				_getObjectEntryStatusCode(expectedObjectEntry),
+				_getObjectEntryStatusCode(actualObjectEntry));
+		}
+	}
+
+	protected void assertEquals(
+			Page<ObjectEntry> actualPage, Page<ObjectEntry> expectedPage)
+		throws Exception {
+
+		if (expectedPage.getFacets() != null) {
+			assertFacets(actualPage.getFacets(), expectedPage.getFacets());
+		}
+
+		assertEquals(
+			(List<ObjectEntry>)actualPage.getItems(),
+			(List<ObjectEntry>)expectedPage.getItems());
+
+		Assert.assertEquals(
+			expectedPage.getTotalCount(), actualPage.getTotalCount());
+	}
+
+	protected void assertFacets(
+			List<Facet> actualFacets, List<Facet> expectedFacets)
+		throws Exception {
+
+		Assert.assertEquals(
+			actualFacets.toString(), expectedFacets.size(),
+			actualFacets.size());
+
+		for (int i = 0; i < expectedFacets.size(); i++) {
+			Facet actualFacet = actualFacets.get(i);
+			Facet expectedFacet = expectedFacets.get(i);
+
+			Assert.assertEquals(
+				expectedFacet.getFacetCriteria(),
+				actualFacet.getFacetCriteria());
+
+			List<Facet.FacetValue> actualFacetFacetValues =
+				actualFacet.getFacetValues();
+
+			List<Facet.FacetValue> expectedFacetFacetValues =
+				expectedFacet.getFacetValues();
+
+			Assert.assertEquals(
+				actualFacetFacetValues.toString(),
+				expectedFacetFacetValues.size(), actualFacetFacetValues.size());
+
+			for (int j = 0; j < expectedFacetFacetValues.size(); j++) {
+				Facet.FacetValue actualFacetValue = actualFacetFacetValues.get(
+					j);
+				Facet.FacetValue expectedFacetValue =
+					expectedFacetFacetValues.get(j);
+
+				Assert.assertEquals(
+					expectedFacetValue.getNumberOfOccurrences(),
+					actualFacetValue.getNumberOfOccurrences());
+				Assert.assertEquals(
+					expectedFacetValue.getTerm(), actualFacetValue.getTerm());
+			}
 		}
 	}
 
@@ -118,6 +199,18 @@ public abstract class BaseObjectEntryManagerImplTestCase {
 		return null;
 	}
 
+	protected Sort[] getSorts(String sortString) {
+		if (sortString == null) {
+			return new Sort[] {SortFactoryUtil.create("createDate", false)};
+		}
+
+		String[] parts = StringUtil.split(sortString, ":");
+
+		return new Sort[] {
+			SortFactoryUtil.create(parts[0], Objects.equals(parts[1], "desc"))
+		};
+	}
+
 	protected String getValue(Object value) {
 		if (value == null) {
 			return null;
@@ -148,24 +241,11 @@ public abstract class BaseObjectEntryManagerImplTestCase {
 			Map<String, String> context, ObjectEntry... expectedObjectEntries)
 		throws Exception {
 
-		Sort[] sorts = null;
-
-		if (context.containsKey("sort")) {
-			String[] sort = StringUtil.split(context.get("sort"), ":");
-
-			sorts = new Sort[] {
-				SortFactoryUtil.create(sort[0], Objects.equals(sort[1], "desc"))
-			};
-		}
-		else {
-			sorts = new Sort[] {SortFactoryUtil.create("createDate", false)};
-		}
-
-		Page<ObjectEntry> page = getObjectEntries(context, sorts);
-
 		assertEquals(
-			(List<ObjectEntry>)page.getItems(),
-			ListUtil.fromArray(expectedObjectEntries));
+			getObjectEntries(context, getSorts(context.get("sort"))),
+			Page.of(
+				ListUtil.fromArray(expectedObjectEntries), null,
+				expectedObjectEntries.length));
 	}
 
 	protected static User adminUser;
@@ -175,15 +255,21 @@ public abstract class BaseObjectEntryManagerImplTestCase {
 	@Inject
 	protected static DTOConverterRegistry dtoConverterRegistry;
 
+	@Inject
+	protected static ObjectDefinitionLocalService objectDefinitionLocalService;
+
 	protected ListTypeDefinition listTypeDefinition;
 
 	@Inject
 	protected ListTypeDefinitionLocalService listTypeDefinitionLocalService;
 
 	@Inject
-	protected ObjectDefinitionLocalService objectDefinitionLocalService;
-
-	@Inject
 	protected ObjectFieldLocalService objectFieldLocalService;
+
+	private Integer _getObjectEntryStatusCode(ObjectEntry objectEntry) {
+		Status objectEntryStatus = objectEntry.getStatus();
+
+		return objectEntryStatus.getCode();
+	}
 
 }

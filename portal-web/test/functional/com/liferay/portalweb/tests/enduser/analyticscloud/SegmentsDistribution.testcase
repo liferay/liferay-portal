@@ -56,84 +56,6 @@ definition {
 		ACUtils.tearDownAC();
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8627 | Test Summary: Segment distribution chart can be filtered by number property"
-	@ignore = "true"
-	@priority = 3
-	test CanDistributionChartFilteredNumber {
-
-		// AC Refactor: Chart fails to appear when filtering with a number property.
-		// AC Refactor ticket: LRAC-9328
-		// AC Bug ticket: LRAC-9329
-
-		task ("Add a user custom field and sync") {
-			CustomFields.openCustomFieldAdmin();
-
-			CustomFields.addCP(
-				customFieldName = "Age",
-				customFieldType = "Input Field",
-				customInputDataType = "Integer",
-				resourceName = "User",
-				startingValue = 21);
-
-			ACDXPSettings.syncAttributes(
-				attributeCategory = "People",
-				attributeNameList = "Age");
-		}
-
-		task ("View AC Page as new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-
-			ACUtils.navigateToSitePage(
-				pageName = "AC Page",
-				siteName = "Site Name");
-
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		task ("Add a new static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-		}
-
-		task ("Type the segment name") {
-			ACUtils.setItemName(itemName = "Static Segment Test");
-		}
-
-		task ("Add new user as member") {
-			ACSegments.addStaticMember(tableMember = "userfn userln");
-
-			ACSegments.saveSegment();
-		}
-
-		task ("Go to Segments") {
-			ACNavigation.goToSegments();
-
-			ACSegments.accessSegment(segmentName = "Static Segment Test");
-		}
-
-		task ("Filter Attribute") {
-			ACNavigation.switchTab(tabName = "Distribution");
-
-			ACSegments.selectDistributionByAttribute(attribute = "age");
-		}
-
-		task ("View Chart Entry") {
-
-			// Test will fail here because of no chart appearing.
-
-			ACSegments.viewBreakdownChartsEntry(key_entry = "userfn - 100.0%");
-		}
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8628 | Test Summary: Segment distribution chart can be filtered by text property"
 	@priority = 3
 	test CanDistributionChartFilteredText {
@@ -160,18 +82,15 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
-		task ("Add a new static segment") {
+		task ("Add a new Dynamic segment") {
 			ACNavigation.goToSegments();
 
-			ACSegments.createStaticSegment();
-		}
+			ACSegments.createDynamicSegmentAndFillFields(
+				criterion = "Individual Attributes",
+				segmentField = "email",
+				segments = "Dynamic Segment Test");
 
-		task ("Type the segment name") {
-			ACUtils.setItemName(itemName = "Static Segment Test");
-		}
-
-		task ("Add new user as member") {
-			ACSegments.addStaticMember(tableMember = "userfn userln");
+			ACSegments.editTextCriterion(textInput = "userea@liferay.com");
 
 			ACSegments.saveSegment();
 		}
@@ -179,7 +98,7 @@ definition {
 		task ("Go to Segments") {
 			ACNavigation.goToSegments();
 
-			ACSegments.accessSegment(segmentName = "Static Segment Test");
+			ACSegments.accessSegment(segmentName = "Dynamic Segment Test");
 		}
 
 		task ("Filter Attribute") {
@@ -237,18 +156,15 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
-		task ("Add a new static segment") {
+		task ("Add a new Dynamic segment") {
 			ACNavigation.goToSegments();
 
-			ACSegments.createStaticSegment();
-		}
+			ACSegments.createDynamicSegmentAndFillFields(
+				criterion = "Individual Attributes",
+				segmentField = "email",
+				segments = "Dynamic Segment Test");
 
-		task ("Type the segment name") {
-			ACUtils.setItemName(itemName = "Static Segment Test");
-		}
-
-		task ("Add new user as member") {
-			ACSegments.addStaticMultiMember(tableMember = ${nameList});
+			ACSegments.editTextCriterion(textInput = "@liferay.com");
 
 			ACSegments.saveSegment();
 		}
@@ -256,7 +172,7 @@ definition {
 		task ("Go to Segments") {
 			ACNavigation.goToSegments();
 
-			ACSegments.accessSegment(segmentName = "Static Segment Test");
+			ACSegments.accessSegment(segmentName = "Dynamic Segment Test");
 		}
 
 		task ("Filter Attribute") {

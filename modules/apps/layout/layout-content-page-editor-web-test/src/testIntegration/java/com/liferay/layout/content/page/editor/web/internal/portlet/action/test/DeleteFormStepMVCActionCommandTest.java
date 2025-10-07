@@ -21,7 +21,6 @@ import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -169,8 +168,8 @@ public class DeleteFormStepMVCActionCommandTest {
 
 		Assert.assertFalse(stepperFragmentEntryLink.isDeleted());
 
-		JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-			stepperFragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			stepperFragmentEntryLink.getEditableValuesJSONObject();
 
 		JSONObject configurationValuesJSONObject =
 			editableValuesJSONObject.getJSONObject(
@@ -351,7 +350,8 @@ public class DeleteFormStepMVCActionCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), _draftLayout.getPlid(),
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_draftLayout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_draftLayout.getPlid()),
 				layoutStructure.toString());
@@ -422,9 +422,6 @@ public class DeleteFormStepMVCActionCommandTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private JSONFactory _jsonFactory;
 
 	@Inject
 	private Language _language;

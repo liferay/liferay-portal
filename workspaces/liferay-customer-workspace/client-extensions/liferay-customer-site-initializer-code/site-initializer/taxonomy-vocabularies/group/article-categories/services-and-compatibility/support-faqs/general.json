@@ -1,0 +1,10 @@
+{
+	"name": "General",
+	"name_i18n": {
+		"en_US": "General",
+		"es-ES": "Geral",
+		"ja-JP": "全般",
+		"pt-BR": "Geral"
+	},
+	"viewableBy": "Anyone"
+}

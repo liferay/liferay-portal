@@ -17,11 +17,11 @@ import java.util.concurrent.CyclicBarrier;
 public class SynchronousInvocationHandler implements InvocationHandler {
 
 	public static void disable() {
-		_synchronizeThreadLocal.remove();
+		_synchronized.remove();
 	}
 
 	public static void enable() {
-		_synchronizeThreadLocal.set(Boolean.TRUE);
+		_synchronized.set(Boolean.TRUE);
 	}
 
 	public SynchronousInvocationHandler(
@@ -38,7 +38,7 @@ public class SynchronousInvocationHandler implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args)
 		throws Throwable {
 
-		if ((_synchronizeThreadLocal.get() == Boolean.TRUE) &&
+		if ((_synchronized.get() == Boolean.TRUE) &&
 			_syncMethod.equals(method)) {
 
 			_cyclicBarrier.await();
@@ -47,7 +47,7 @@ public class SynchronousInvocationHandler implements InvocationHandler {
 		return method.invoke(_target, args);
 	}
 
-	private static final ThreadLocal<Boolean> _synchronizeThreadLocal =
+	private static final ThreadLocal<Boolean> _synchronized =
 		new InheritableThreadLocal<>();
 
 	private final CyclicBarrier _cyclicBarrier;

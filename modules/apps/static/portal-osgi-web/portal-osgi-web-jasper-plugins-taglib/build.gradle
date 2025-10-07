@@ -5,7 +5,7 @@ clean {
 }
 
 dependencies {
-	compileOnly group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.40"
+	compileOnly group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.43"
 }
 
 deploy {

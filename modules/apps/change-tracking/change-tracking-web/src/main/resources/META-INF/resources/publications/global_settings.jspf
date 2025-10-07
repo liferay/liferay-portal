@@ -39,9 +39,37 @@
 	</div>
 </c:if>
 
+<div id="<portlet:namespace />editPublicationsPermissions">
+	<clay:sheet-section>
+		<h3 class="sheet-subtitle" id="<portlet:namespace />editPublicationsPermissionsHeader"><liferay-ui:message key="permissions" /></h3>
+
+		<clay:alert
+			dismissible="<%= true %>"
+			message='<%= LanguageUtil.format(request, "when-a-user-creates-a-publication,-liferay-automatically-gives-them-the-owner-role", new String[] {"<strong>", "</strong>", "<strong>", "</strong>"}, false) %>'
+		/>
+
+		<div class="sheet-text" id="<portlet:namespace />editPublicationsPermissionsHelp"><liferay-ui:message key="edit-permissions-on-which-roles-can-view,-delete,-update,-publish,-invite-users,-and-edit-permissions-for-all-publications" /></div>
+
+		<div id="<portlet:namespace />editPublicationsPermissionsModal">
+			<react:component
+				module="{PublicationPermissions} from change-tracking-web"
+				props="<%= publicationsConfigurationDisplayContext.getReactData() %>"
+			/>
+		</div>
+	</clay:sheet-section>
+</div>
+
 <div id="<portlet:namespace />sandboxOnly">
 	<clay:sheet-section>
 		<h3 class="sheet-subtitle" id="<portlet:namespace />sandboxOnlyHeader"><liferay-ui:message key="sandbox-only" /></h3>
+
+		<c:if test="<%= publicationsConfigurationDisplayContext.isSandboxOnlyEnabled() && publicationsConfigurationDisplayContext.hasPublishPermission() %>">
+			<clay:alert
+				dismissible="<%= true %>"
+				displayType="warning"
+				message='<%= LanguageUtil.format(request, "currently,-any-publication-owner-can-publish-the-publication-they-have-created", new String[] {"<strong>", "</strong>", "<strong>", "</strong>"}, false) %>'
+			/>
+		</c:if>
 
 		<div class="sheet-text" id="<portlet:namespace />sandboxOnlyHelp"><liferay-ui:message key="sandbox-only-help" /></div>
 
@@ -79,6 +107,12 @@
 	Liferay.Util.toggleBoxes(
 		'<portlet:namespace />enablePublications',
 		'<portlet:namespace />manageRemotely',
+		<%= publicationsConfigurationDisplayContext.isPublicationsEnabled() ? false : null %>
+	);
+
+	Liferay.Util.toggleBoxes(
+		'<portlet:namespace />enablePublications',
+		'<portlet:namespace />editPublicationsPermissions',
 		<%= publicationsConfigurationDisplayContext.isPublicationsEnabled() ? false : null %>
 	);
 

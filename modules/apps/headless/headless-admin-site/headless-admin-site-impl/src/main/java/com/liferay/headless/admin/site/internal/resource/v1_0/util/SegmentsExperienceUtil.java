@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 import com.liferay.headless.admin.site.dto.v1_0.PageElement;
 import com.liferay.headless.admin.site.dto.v1_0.PageExperience;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
@@ -32,8 +33,8 @@ import java.util.Objects;
 public class SegmentsExperienceUtil {
 
 	public static SegmentsExperience addSegmentsExperience(
-			Layout layout, PageExperience pageExperience,
-			ServiceContext serviceContext)
+			InfoItemServiceRegistry infoItemServiceRegistry, Layout layout,
+			PageExperience pageExperience, ServiceContext serviceContext)
 		throws Exception {
 
 		if (!Objects.equals(layout.getType(), LayoutConstants.TYPE_CONTENT)) {
@@ -56,7 +57,7 @@ public class SegmentsExperienceUtil {
 
 		LayoutLocalServiceUtil.updateLayoutContent(
 			_getData(
-				layout, pageExperience,
+				infoItemServiceRegistry, layout, pageExperience,
 				segmentsExperience.getSegmentsExperienceId(), serviceContext),
 			layout, segmentsExperience.getSegmentsExperienceId());
 
@@ -83,14 +84,15 @@ public class SegmentsExperienceUtil {
 	}
 
 	public static SegmentsExperience updateSegmentsExperience(
-			Layout layout, PageExperience pageExperience,
+			InfoItemServiceRegistry infoItemServiceRegistry, Layout layout,
+			PageExperience pageExperience,
 			SegmentsExperience segmentsExperience,
 			ServiceContext serviceContext)
 		throws Exception {
 
 		LayoutLocalServiceUtil.updateLayoutContent(
 			_getData(
-				layout, pageExperience,
+				infoItemServiceRegistry, layout, pageExperience,
 				segmentsExperience.getSegmentsExperienceId(), serviceContext),
 			layout, segmentsExperience.getSegmentsExperienceId());
 
@@ -117,8 +119,9 @@ public class SegmentsExperienceUtil {
 	}
 
 	private static String _getData(
-			Layout layout, PageExperience pageExperience,
-			long segmentsExperienceId, ServiceContext serviceContext)
+			InfoItemServiceRegistry infoItemServiceRegistry, Layout layout,
+			PageExperience pageExperience, long segmentsExperienceId,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		LayoutStructure layoutStructure = new LayoutStructure();
@@ -127,7 +130,8 @@ public class SegmentsExperienceUtil {
 
 		LayoutStructureItemImporterContext layoutStructureItemImporterContext =
 			new LayoutStructureItemImporterContext(
-				layout.getGroupId(), layout, segmentsExperienceId,
+				serviceContext.getCompanyId(), layout.getGroupId(),
+				infoItemServiceRegistry, layout, segmentsExperienceId,
 				serviceContext.getUserId());
 
 		for (PageElement pageElement : pageExperience.getPageElements()) {

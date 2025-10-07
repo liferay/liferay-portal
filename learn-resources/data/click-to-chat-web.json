@@ -2,67 +2,67 @@
 	"chat-provider-account-id-chatwoot": {
 		"en_US": {
 			"message": "Get my account token for Chatwoot.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-crisp": {
 		"en_US": {
 			"message": "Get my account token for Crisp.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-hubspot": {
 		"en_US": {
 			"message": "Get my account token for Hubspot.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-jivochat": {
 		"en_US": {
 			"message": "Get my account token for JivoChat.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-livechat": {
 		"en_US": {
 			"message": "Get my account token for LiveChat.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-liveperson": {
 		"en_US": {
 			"message": "Get my account token for LivePerson.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-smartsupp": {
 		"en_US": {
 			"message": "Get my account token for Smartsupp.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-tawkto": {
 		"en_US": {
 			"message": "Get my account token for tawk.to.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-tidio": {
 		"en_US": {
 			"message": "Get my account token for Tidio.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-zendesk_web_widget": {
 		"en_US": {
 			"message": "Get my account token for Zendesk.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	},
 	"chat-provider-account-id-zendesk_web_widget_classic": {
 		"en_US": {
 			"message": "Get my account token for Zendesk.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/personalizing-site-experience/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
+			"url": "https://learn.liferay.com/w/dxp/personalization/experiences/enabling-automated-live-chat-systems#getting-the-chat-provider-account-id-or-token"
 		}
 	}
 }

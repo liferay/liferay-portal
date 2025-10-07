@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-adyen-batch:
     name: Liferay Adyen Batch
-    oAuthApplicationHeadlessServer: liferay-adyen-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-adyen-batch-oahs
     type: batch
-liferay-adyen-batch-oauth-application-headless-server:
+liferay-adyen-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Adyen Batch OAuth Application Headless Server

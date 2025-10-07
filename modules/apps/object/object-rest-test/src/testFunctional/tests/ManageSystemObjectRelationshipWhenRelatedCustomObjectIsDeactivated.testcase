@@ -131,8 +131,6 @@ definition {
 
 	@priority = 3
 	test CannotGetManyToManyRelationshipDetailsWhenCustomObjectIsDeactivated {
-		property portal.acceptance = "true";
-
 		task ("When I deactivate the custom object") {
 			ObjectAdmin.openObjectAdmin();
 
@@ -209,8 +207,6 @@ definition {
 
 	@priority = 3
 	test CannotGetOneToManyRelationshipDetailsWhenCustomObjectIsDeactivated {
-		property portal.acceptance = "true";
-
 		task ("When I deactivate the custom object") {
 			ObjectAdmin.openObjectAdmin();
 

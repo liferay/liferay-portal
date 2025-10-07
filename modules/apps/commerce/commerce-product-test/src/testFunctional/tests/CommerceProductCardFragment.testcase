@@ -76,7 +76,7 @@ definition {
 				productName = "Mount");
 
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "1,3,5",
+				allowedOrderQuantities = "1, 3, 5",
 				productName = "Torque Converters");
 		}
 

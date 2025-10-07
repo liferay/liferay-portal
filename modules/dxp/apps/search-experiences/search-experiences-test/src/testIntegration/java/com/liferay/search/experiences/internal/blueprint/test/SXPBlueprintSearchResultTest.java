@@ -15,6 +15,8 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
@@ -26,6 +28,7 @@ import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalFolderServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringBundler;
@@ -73,6 +76,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.search.test.util.DocumentsAssert;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1864,6 +1868,41 @@ public class SXPBlueprintSearchResultTest {
 			new String[] {"Search with Query String Syntax"});
 
 		_assertSearch("[Pepsi Cola]");
+	}
+
+	@FeatureFlag("LPS-129412")
+	@Test
+	public void testSearchableAssetTypesWithSubtype() throws Exception {
+		JournalTestUtil.addArticle(
+			_group.getGroupId(), "Basic Article",
+			RandomTestUtil.randomString());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		JournalArticleLocalServiceUtil.addArticle(
+			null, _user.getUserId(), _group.getGroupId(), 0,
+			HashMapBuilder.put(
+				LocaleUtil.US, "Custom Article"
+			).build(),
+			null, DDMStructureTestUtil.getSampleStructuredContent(),
+			ddmStructure.getStructureId(), StringPool.BLANK, _serviceContext);
+
+		_keywords = "Article";
+
+		_assertSearchIgnoreRelevance("[Basic Article, Custom Article]");
+
+		String searchableAssetType = StringBundler.concat(
+			JournalArticle.class.getName(), "&&",
+			_group.getExternalReferenceCode(), "&&",
+			ddmStructure.getExternalReferenceCode());
+
+		_updateConfigurationJSON(
+			"generalConfiguration",
+			JSONUtil.put(
+				"searchableAssetTypes", JSONUtil.put(searchableAssetType)));
+
+		_assertSearch("[Custom Article]");
 	}
 
 	@Test

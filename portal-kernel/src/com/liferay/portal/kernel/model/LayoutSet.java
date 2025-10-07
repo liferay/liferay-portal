@@ -116,7 +116,7 @@ public interface LayoutSet extends LayoutSetModel, PersistedModel {
 	 of a language id. If the layout set has no virtual hosts
 	 configured, the returned map will be empty.
 	 */
-	public java.util.TreeMap<String, String> getVirtualHostnames();
+	public java.util.NavigableMap<String, String> getVirtualHostnames();
 
 	public boolean hasSetModifiedDate();
 
@@ -143,6 +143,6 @@ public interface LayoutSet extends LayoutSetModel, PersistedModel {
 	 * @see #getVirtualHostnames()
 	 */
 	public void setVirtualHostnames(
-		java.util.TreeMap<String, String> virtualHostnames);
+		java.util.NavigableMap<String, String> virtualHostnames);
 
 }

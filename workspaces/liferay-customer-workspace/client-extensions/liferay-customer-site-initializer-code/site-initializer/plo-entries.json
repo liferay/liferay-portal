@@ -1,11 +1,92 @@
 [
 	{
+		"key": "a-setup-guide-to-empower-yourself-and-your-team",
+		"value": {
+			"en-US": "A setup guide to empower yourself and your team",
+			"es-ES": "Una guía de configuración para capacitaros a tu equipo y a ti",
+			"ja-JP": "自分自身とチームを強化するためのセットアップガイド",
+			"pt-BR": "Um guia de configuração para capacitar você e sua equipe"
+		}
+	},
+	{
 		"key": "account-settings",
 		"value": {
 			"en-US": "Account Settings",
 			"es-ES": "Configuraciones de la cuenta",
 			"ja-JP": "アカウント設定",
 			"pt-BR": "Configurações de Conta"
+		}
+	},
+	{
+		"key": "activate-your-liferay-saas-liferay-paas-or-liferay-self-hosted-instance",
+		"value": {
+			"en-US": "Activate your Liferay SaaS, Liferay PaaS, or Liferay Self-hosted Instance",
+			"es-ES": "Activa tu instancia de Liferay SaaS, Liferay PaaS o Liferay Self-Hosted",
+			"ja-JP": "Liferay SaaS、Liferay PaaS、またはLiferay Self-Hostedインスタンスをアクティベートする",
+			"pt-BR": "Ativar sua instância do Liferay SaaS, Liferay PaaS ou Liferay Self-hosted"
+		}
+	},
+	{
+		"key": "activation",
+		"value": {
+			"en-US": "Activation",
+			"es-ES": "Activación",
+			"ja-JP": "アクティベーション",
+			"pt-BR": "Ativação"
+		}
+	},
+	{
+		"key": "activation-keys",
+		"value": {
+			"en-US": "Activation Keys",
+			"es-ES": "Códigos de activación",
+			"ja-JP": "アクティベーションキー",
+			"pt-BR": "Chaves de ativação"
+		}
+	},
+	{
+		"key": "active",
+		"value": {
+			"en-US": "Active",
+			"es-ES": "Activo",
+			"ja-JP": "有効",
+			"pt-BR": "Ativo"
+		}
+	},
+	{
+		"key": "alphabetical-a-z",
+		"value": {
+			"en-US": "Alphabetical (A-Z)",
+			"es-ES": "Orden alfabético (A-Z)",
+			"ja-JP": "アルファベット順（A-Z）",
+			"pt-BR": "Ordem Alfabética (A-Z)"
+		}
+	},
+	{
+		"key": "alphabetical-z-a",
+		"value": {
+			"en-US": "Alphabetical (Z-A)",
+			"es-ES": "Orden alfabético (Z-A)",
+			"ja-JP": "アルファベット順（Z-A）",
+			"pt-BR": "Ordem Alfabética (Z-A)"
+		}
+	},
+	{
+		"key": "benefits-included-with-each-subscription-service-level",
+		"value": {
+			"en-US": "Benefits included with each subscription service level",
+			"es-ES": "Beneficios incluidos en cada nivel de servicio de suscripción",
+			"ja-JP": "各サブスクリプションサービスレベルに含まれる特典",
+			"pt-BR": "Benefícios incluídos em cada nível de serviço de assinatura"
+		}
+	},
+	{
+		"key": "business-events",
+		"value": {
+			"en-US": "Business Events",
+			"es-ES": "Eventos de negocio",
+			"ja-JP": "ビジネスイベント",
+			"pt-BR": "Eventos de Negócios"
 		}
 	},
 	{
@@ -24,12 +105,75 @@
 		}
 	},
 	{
+		"key": "contact-support",
+		"value": {
+			"en-US": "Contact Support",
+			"es-ES": "Contacta con Soporte",
+			"ja-JP": "サポートにお問い合わせ",
+			"pt-BR": "Contato com o Suporte"
+		}
+	},
+	{
+		"key": "customer-portal-first-steps-for-non-admin-and-non-partner-users",
+		"value": {
+			"en-US": "Customer Portal first steps for non-admin and non-partner users",
+			"es-ES": "Primeros pasos en el Portal del cliente para usuarios que no son administradores o partners",
+			"ja-JP": "非管理者および非パートナー・ユーザーのためのカスタマー・ポータル・ファースト・ステップ",
+			"pt-BR": "Primeiros passos no Portal do Cliente para usuários que não são administradores nem parceiros"
+		}
+	},
+	{
+		"key": "designated-languages-and-channels-for-liferay-support",
+		"value": {
+			"en-US": "Designated languages and channels for Liferay Support",
+			"es-ES": "Idiomas y canales designados para el soporte de Liferay",
+			"ja-JP": "Liferayサポートの指定言語とチャンネル",
+			"pt-BR": "Idiomas e canais designados para o Suporte Liferay"
+		}
+	},
+	{
+		"key": "ended-on",
+		"value": {
+			"en-US": "Ended on",
+			"es-ES": "Finalizó el",
+			"ja-JP": "終了",
+			"pt-BR": "Finalizado em"
+		}
+	},
+	{
+		"key": "ends-on",
+		"value": {
+			"en-US": "Ends on",
+			"es-ES": "Finaliza el",
+			"ja-JP": "終了",
+			"pt-BR": "Termina em"
+		}
+	},
+	{
+		"key": "expired",
+		"value": {
+			"en-US": "Expired",
+			"es-ES": "Vencido",
+			"ja-JP": "期限切れ",
+			"pt-BR": "Expirado"
+		}
+	},
+	{
 		"key": "for-more-information-please-click-x",
 		"value": {
 			"en-US": "For more information, please click {0}.",
 			"es-ES": "Para más información, haz clic {0}.",
 			"ja-JP": "詳細については、{0} をクリックしてください。",
 			"pt-BR": "Para mais informações, por favor clique {0}."
+		}
+	},
+	{
+		"key": "future",
+		"value": {
+			"en-US": "Future",
+			"es-ES": "Futuro",
+			"ja-JP": "未来",
+			"pt-BR": "Futuro"
 		}
 	},
 	{
@@ -45,6 +189,24 @@
 			"es-ES": "aquí",
 			"ja-JP": "こちら",
 			"pt-BR": "aqui"
+		}
+	},
+	{
+		"key": "last-created-project",
+		"value": {
+			"en-US": "Last Created Project",
+			"es-ES": "Último proyecto creado",
+			"ja-JP": "最後に作成されたプロジェクト",
+			"pt-BR": "Último projeto criado"
+		}
+	},
+	{
+		"key": "last-viewed-project",
+		"value": {
+			"en-US": "Last Viewed Project",
+			"es-ES": "Último proyecto visualizado",
+			"ja-JP": "最後に見たプロジェクト",
+			"pt-BR": "Último projeto visualizado"
 		}
 	},
 	{
@@ -105,6 +267,60 @@
 		}
 	},
 	{
+		"key": "on-this-page",
+		"value": {
+			"en-US": "On this page",
+			"es-ES": "En esta página",
+			"ja-JP": "このページで",
+			"pt-BR": "Nesta página"
+		}
+	},
+	{
+		"key": "quick-answers-and-resources-to-common-support-questions",
+		"value": {
+			"en-US": "Quick answers and resources to common support questions",
+			"es-ES": "Respuestas rápidas y recursos a preguntas comunes sobre soporte",
+			"ja-JP": "サポートに関する一般的な質問のクイック回答とリソース",
+			"pt-BR": "Respostas rápidas e recursos para as dúvidas mais comuns de suporte"
+		}
+	},
+	{
+		"key": "search-engine-compatibility-by-product-and-version",
+		"value": {
+			"en-US": "Search engine compatibility by product and version",
+			"es-ES": "Compatibilidad de motores de búsqueda por producto y versión",
+			"ja-JP": "製品およにバージョン別の検索エンジンの互換性",
+			"pt-BR": "Compatibilidade do mecanismo de busca por produto e versão"
+		}
+	},
+	{
+		"key": "see-project-details",
+		"value": {
+			"en-US": "See Project Details",
+			"es-ES": "Ver detalles del proyecto",
+			"ja-JP": "プロジェクトの詳細を見る",
+			"pt-BR": "Ver detalhes do projeto"
+		}
+	},
+	{
+		"key": "sign-in",
+		"value": {
+			"en-US": "Sign in",
+			"es-ES": "Inicia sesión",
+			"ja-JP": "ログイン",
+			"pt-BR": "Entrar"
+		}
+	},
+	{
+		"key": "sign-in-to-access-the-customer-portal-features",
+		"value": {
+			"en-US": "Sign in to access the Customer Portal features",
+			"es-ES": "Inicia sesión para acceder a las funcionalidades del Portal del cliente",
+			"ja-JP": "サインインしてカスタマーポータルの機能にアクセスする",
+			"pt-BR": "Faça login para acessar os recursos do Portal do Cliente"
+		}
+	},
+	{
 		"key": "sites",
 		"value": {
 			"en-US": "Sites"
@@ -113,19 +329,64 @@
 	{
 		"key": "sla-normal-message",
 		"value": {
-			"en-US": "While immediate callbacks are reserved for those with platinum level, a support member will get in touch within 1 business day during our <a href='https://www.liferay.com/support/coverage-areas-and-hours'>standard business hours</a> of your designated Support Center. In the meantime, consider creating a <a href='https://help.liferay.com/hc'>support ticket</a> which can help expedite a resolution.",
-			"es-ES": "Aunque las respuestas inmediatas se reservan para el nivel plantinum, un miembro de soporte se pondrá en contacto en menos de un día hábil dentro del <a href='https://www.liferay.com/support/coverage-areas-and-hours'>horario habitual de negocio</a> de tu centro de soporte asignado. Mientras tanto, considera crear un <a href='https://help.liferay.com/hc'>ticket de soporte</a>, ya que puede ayudar a agilizar la resolución del problema.",
-			"ja-JP": "即時コールバックは、プラチナレベルの方に限りますが、ご指定のサポートセンターの<a href='https://www.liferay.com/support/coverage-areas-and-hours'>標準営業時間</a>内であれば、1営業日以内にサポートメンバーからご連絡いたします。それまでの間、解決を早めるために<a href='https://help.liferay.com/hc'>サポートチケット</a>の作成をご検討ください。",
-			"pt-BR": "Embora os retornos de chamada imediatos sejam reservados para aqueles com nível platinum, um membro da equipe de suporte entrará em contato dentro de 1 dia útil durante nosso <a href='https://www.liferay.com/support/coverage-areas-and-hours'>horário comercial padrão</a> do seu Centro de Suporte designado. Enquanto isso, considere criar um <a href='https://help.liferay.com/hc'>ticket de suporte</a>, o que pode ajudar a agilizar a resolução."
+			"en-US": "While immediate callbacks are reserved for those with platinum level, a support member will get in touch within 1 business day during our <a href='https://www.liferay.com/support/coverage-areas-and-hours'>standard business hours</a> of your designated Support Center. In the meantime, consider creating a <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>support ticket</a> which can help expedite a resolution.",
+			"es-ES": "Aunque las respuestas inmediatas se reservan para el nivel plantinum, un miembro de soporte se pondrá en contacto en menos de un día hábil dentro del <a href='https://www.liferay.com/support/coverage-areas-and-hours'>horario habitual de negocio</a> de tu centro de soporte asignado. Mientras tanto, considera crear un <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de soporte</a>, ya que puede ayudar a agilizar la resolución del problema.",
+			"ja-JP": "即時コールバックは、プラチナレベルの方に限りますが、ご指定のサポートセンターの<a href='https://www.liferay.com/support/coverage-areas-and-hours'>標準営業時間</a>内であれば、1営業日以内にサポートメンバーからご連絡いたします。それまでの間、解決を早めるために<a href='https://liferay.atlassian.net/servicedesk/customer/portals'>サポートチケット</a>の作成をご検討ください。",
+			"pt-BR": "Embora os retornos de chamada imediatos sejam reservados para aqueles com nível platinum, um membro da equipe de suporte entrará em contato dentro de 1 dia útil durante nosso <a href='https://www.liferay.com/support/coverage-areas-and-hours'>horário comercial padrão</a> do seu Centro de Suporte designado. Enquanto isso, considere criar um <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de suporte</a>, o que pode ajudar a agilizar a resolução."
 		}
 	},
 	{
 		"key": "sla-platinum-message",
 		"value": {
-			"en-US": "A Liferay Support member will contact you within 1 hour at the indicated phone number. Consider creating a <a href='https://help.liferay.com/hc'>support ticket</a> if you haven't already to help expedite a resolution.",
-			"es-ES": "Un miembro de Soporte de Liferay se pondrá en contacto en menos de 1 hora mediante el teléfono indicado. Considera crear un <a href='https://help.liferay.com/hc'>ticket de soporte</a> si no lo has creado ya para agilizar la resolución del problema.",
-			"ja-JP": "Liferayサポートメンバーから指定の電話番号に1時間以内にご連絡いたします。まだ<a href='https://help.liferay.com/hc'>サポートチケット</a>を作成していない場合は、解決を早めるためにサポートチケットの作成をご検討ください。",
-			"pt-BR": "Um membro do Suporte da Liferay entrará em contato com você dentro de 1 hora no número de telefone indicado. Considere criar um <a href='https://help.liferay.com/hc'>ticket de suporte</a>, caso ainda não tenha feito, para ajudar a agilizar a resolução."
+			"en-US": "A Liferay Support member will contact you within 1 hour at the indicated phone number. Consider creating a <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>support ticket</a> if you haven't already to help expedite a resolution.",
+			"es-ES": "Un miembro de Soporte de Liferay se pondrá en contacto en menos de 1 hora mediante el teléfono indicado. Considera crear un <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de soporte</a> si no lo has creado ya para agilizar la resolución del problema.",
+			"ja-JP": "Liferayサポートメンバーから指定の電話番号に1時間以内にご連絡いたします。まだ<a href='https://liferay.atlassian.net/servicedesk/customer/portals'>サポートチケット</a>を作成していない場合は、解決を早めるためにサポートチケットの作成をご検討ください。",
+			"pt-BR": "Um membro do Suporte da Liferay entrará em contato com você dentro de 1 hora no número de telefone indicado. Considere criar um <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de suporte</a>, caso ainda não tenha feito, para ajudar a agilizar a resolução."
+		}
+	},
+	{
+		"key": "starts-on",
+		"value": {
+			"en-US": "Starts on",
+			"es-ES": "Comienza el",
+			"ja-JP": "開始",
+			"pt-BR": "Começa em"
+		}
+	},
+	{
+		"key": "support-region",
+		"value": {
+			"en-US": "Support Region",
+			"es-ES": "Región de soporte",
+			"ja-JP": "サポート地域",
+			"pt-BR": "Região de suporte"
+		}
+	},
+	{
+		"key": "supported-configurations-for-major-liferay-products-and-releases",
+		"value": {
+			"en-US": "Supported configurations for major Liferay products and releases.",
+			"es-ES": "Configuraciones soportadas para productos y versiones principales de Liferay",
+			"ja-JP": "主要なLiferay製品およびリリースでサポートされている構成",
+			"pt-BR": "Configurações suportadas para os principais produtos e versões do Liferay"
+		}
+	},
+	{
+		"key": "team-members",
+		"value": {
+			"en-US": "Team Members",
+			"es-ES": "Miembros del equipo",
+			"ja-JP": "チームメンバー",
+			"pt-BR": "Membros da equipe"
+		}
+	},
+	{
+		"key": "team-setup-and-activation-management-for-you-and-your-customers",
+		"value": {
+			"en-US": "Team setup and activation management for you and your customers",
+			"es-ES": "Configuración del equipo y gestión de activaciones para tus clientes y tú",
+			"ja-JP": "チーム・セットアップとアクティベーション管理",
+			"pt-BR": "Configuração da equipe e gerenciamento de ativações para você e seus clientes"
 		}
 	},
 	{
@@ -138,15 +399,48 @@
 		}
 	},
 	{
+		"key": "view-all",
+		"value": {
+			"en-US": "View All",
+			"es-ES": "Ver todos",
+			"ja-JP": "全てを見る",
+			"pt-BR": "Ver tudo"
+		}
+	},
+	{
 		"key": "welcome-to-customer-portal",
 		"value": {
-			"en-US": "Welcome to Customer Portal"
+			"en-US": "Welcome to Customer Portal",
+			"es-ES": "Te damos la bienvenida al Portal del cliente",
+			"ja-JP": "カスタマーポータルへようこそ",
+			"pt-BR": "Bem vindo ao Portal do cliente"
 		}
 	},
 	{
 		"key": "welcome-x",
 		"value": {
-			"en-US": "Welcome, {0}"
+			"en-US": "Welcome, {0}",
+			"es-ES": "Te damos la bienvenida, {0}",
+			"ja-JP": "ようこそ、○○さん {0}",
+			"pt-BR": "Boas-vindas, {0}"
+		}
+	},
+	{
+		"key": "you-dont-have-any-projects-on-customer-portal",
+		"value": {
+			"en-US": "You don't have any projects on Customer Portal.",
+			"es-ES": "No tienes ningún proyecto en el Portal del cliente",
+			"ja-JP": "カスタマーポータルにプロジェクトがありません。",
+			"pt-BR": "Você não tem nenhum projeto no Portal do Cliente."
+		}
+	},
+	{
+		"key": "your-project",
+		"value": {
+			"en-US": "Your Project",
+			"es-ES": "Tu proyecto",
+			"ja-JP": "プロジェクト",
+			"pt-BR": "Seu projeto"
 		}
 	}
 ]

@@ -7,8 +7,6 @@ package com.liferay.notification.internal.type.users.provider;
 
 import com.liferay.notification.constants.NotificationRecipientConstants;
 import com.liferay.notification.context.NotificationContext;
-import com.liferay.notification.model.NotificationRecipient;
-import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
@@ -38,21 +36,15 @@ public class DefaultUsersProvider implements UsersProvider {
 	}
 
 	@Override
-	public List<User> provide(NotificationContext notificationContext)
+	public List<User> provide(
+			NotificationContext notificationContext, List<String> values)
 		throws PortalException {
 
-		NotificationTemplate notificationTemplate =
-			notificationContext.getNotificationTemplate();
-
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
 		return TransformUtil.unsafeTransform(
-			notificationRecipient.getNotificationRecipientSettings(),
-			notificationRecipientSetting -> {
+			values,
+			value -> {
 				User user = _userLocalService.getUserByScreenName(
-					notificationRecipientSetting.getCompanyId(),
-					notificationRecipientSetting.getValue());
+					notificationContext.getCompanyId(), value);
 
 				if (!ModelResourcePermissionUtil.contains(
 						_permissionCheckerFactory.create(user),

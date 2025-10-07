@@ -34,12 +34,12 @@ public class SamlSpMessageTable extends BaseTable<SamlSpMessageTable> {
 		createColumn(
 			"samlIdpEntityId", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
+	public final Column<SamlSpMessageTable, Date> expirationDate = createColumn(
+		"expirationDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<SamlSpMessageTable, String> samlIdpResponseKey =
 		createColumn(
 			"samlIdpResponseKey", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
-	public final Column<SamlSpMessageTable, Date> expirationDate = createColumn(
-		"expirationDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 
 	private SamlSpMessageTable() {
 		super("SamlSpMessage", SamlSpMessageTable::new);

@@ -33,13 +33,13 @@ public class PortalImageAbsolutePortalURLBuilderTest
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Parameterized.Parameters(name = "{0}: context={1}, proxy={2}, cdnHost={3}")
+	@Parameterized.Parameters(name = "{0}: cdnHost={1}, context={2}, proxy={3}")
 	public static Collection<Object[]> data() {
 		return Arrays.asList(
 			new Object[][] {
 				{0, false, false, false}, {1, false, false, true},
-				{2, true, false, false}, {3, true, true, false},
-				{4, false, true, false}
+				{2, false, true, false}, {3, false, true, true},
+				{4, true, false, false}
 			});
 	}
 
@@ -48,8 +48,8 @@ public class PortalImageAbsolutePortalURLBuilderTest
 		super.setUp();
 
 		_absolutePortalURLBuilder = new AbsolutePortalURLBuilderImpl(
-			mockCacheHelper(), mockPortal(context, proxy, cdnHost),
-			mockHttpServletRequest());
+			mockCacheHelper(), mockHashedFilesRegistry(),
+			mockPortal(context, proxy, cdnHost), mockHttpServletRequest());
 
 		_portalImageAbsolutePortalURLBuilder =
 			_absolutePortalURLBuilder.forPortalImage("path/to/image.png");
@@ -75,30 +75,29 @@ public class PortalImageAbsolutePortalURLBuilderTest
 			_portalImageAbsolutePortalURLBuilder.build());
 	}
 
-	@Parameterized.Parameter(3)
+	@Parameterized.Parameter(1)
 	public boolean cdnHost;
 
-	@Parameterized.Parameter(1)
+	@Parameterized.Parameter(2)
 	public boolean context;
 
 	@Parameterized.Parameter
 	public int index;
 
-	@Parameterized.Parameter(2)
+	@Parameterized.Parameter(3)
 	public boolean proxy;
 
 	private static final String[] _RESULTS = {
-		"/image/path/to/image.png", "http://cdn-host/image/path/to/image.png",
+		"/image/path/to/image.png", "/proxy/image/path/to/image.png",
 		"/context/image/path/to/image.png",
 		"/proxy/context/image/path/to/image.png",
-		"/proxy/image/path/to/image.png"
+		"http://cdn-host/image/path/to/image.png"
 	};
 
 	private static final String[] _RESULTS_IGNORE_CDN = {
-		"/image/path/to/image.png", "/image/path/to/image.png",
+		"/image/path/to/image.png", "/proxy/image/path/to/image.png",
 		"/context/image/path/to/image.png",
-		"/proxy/context/image/path/to/image.png",
-		"/proxy/image/path/to/image.png"
+		"/proxy/context/image/path/to/image.png", "/image/path/to/image.png"
 	};
 
 	private AbsolutePortalURLBuilder _absolutePortalURLBuilder;

@@ -111,9 +111,6 @@ public interface CPDefinition extends CPDefinitionModel, PersistedModel {
 
 	public int hashCode();
 
-	public boolean isVisible(long cpConfigurationListId)
-		throws com.liferay.portal.kernel.exception.PortalException;
-
 	public void setDeliverySubscriptionTypeSettingsUnicodeProperties(
 		com.liferay.portal.kernel.util.UnicodeProperties
 			deliverySubscriptionTypeSettingsUnicodeProperties);

@@ -38,7 +38,6 @@ test('LPD-3360 Checkout with single approval', async ({
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: `${site.name} Channel`,
 		siteGroupId: site.id,
 	});
 

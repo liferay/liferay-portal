@@ -20,7 +20,7 @@ import com.liferay.portal.file.install.FileInstaller;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

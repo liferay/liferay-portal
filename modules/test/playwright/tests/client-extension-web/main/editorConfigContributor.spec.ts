@@ -7,7 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
 import getRandomString from '../../../utils/getRandomString';
+import performLogin from '../../../utils/performLogin';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
 import {editEditorConfigContributorPageTest} from './fixtures/editEditorConfigContributorPageTest';
@@ -23,7 +25,8 @@ const test = mergeTests(
 		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
-	journalPagesTest
+	journalPagesTest,
+	virtualInstancesPagesTest
 );
 
 test('Create, edit and delete editor config contributor client extension @LPS-186870', async ({
@@ -167,5 +170,73 @@ test('CKEditor is still usable after deploying Client Extension @LPD-31017', asy
 		await editorTextBox.fill('LPD-31017');
 
 		await expect(editorTextBox).toHaveText('LPD-31017');
+	});
+});
+
+test('Check client extension does not apply to new instances @LPD-63018', async ({
+	browser,
+	virtualInstancesPage,
+}) => {
+	const DEFAULT_VIRTUAL_INSTANCE_NAME = 'www.able.com';
+	const virtualInstancePage = await browser.newPage({
+		baseURL: `http://${DEFAULT_VIRTUAL_INSTANCE_NAME}:8080`,
+	});
+	await test.step('Create virtual instance', async () => {
+		test.slow();
+
+		await virtualInstancesPage.addNewVirtualInstance(
+			DEFAULT_VIRTUAL_INSTANCE_NAME
+		);
+
+		await performLogin(
+			virtualInstancePage,
+			'test',
+			'?p_p_id=com_liferay_login_web_portlet_LoginPortlet&' +
+				'p_p_state=maximized',
+			`@${DEFAULT_VIRTUAL_INSTANCE_NAME}.com`
+		);
+	});
+
+	await test.step('Check toolbar does not appear', async () => {
+		await virtualInstancePage.getByRole('link', {name: 'Edit'}).click();
+
+		await virtualInstancePage
+			.getByLabel('Search Fragments and Widgets')
+			.fill('ckeditor');
+
+		await virtualInstancePage
+			.getByRole('menuitem', {name: 'CKEditor Sample Add CKEditor'})
+			.locator('div')
+			.first()
+			.click();
+
+		await virtualInstancePage.keyboard.press('ArrowLeft');
+
+		await virtualInstancePage.keyboard.press('Enter');
+
+		await virtualInstancePage.keyboard.press('Enter');
+
+		await virtualInstancePage
+			.locator('header')
+			.filter({hasText: 'CKEditor Sample'})
+			.first()
+			.waitFor({state: 'visible'});
+
+		await virtualInstancePage.getByLabel('Publish').click();
+
+		await virtualInstancePage
+			.getByRole('link', {name: 'CKEditor 4'})
+			.first()
+			.click();
+
+		await virtualInstancePage.getByRole('link', {name: 'Alloy'}).click();
+
+		await expect(
+			virtualInstancePage.getByText('Alloy Editor')
+		).toBeVisible();
+
+		await expect(
+			virtualInstancePage.getByTitle('Insert Video')
+		).not.toBeInViewport();
 	});
 });

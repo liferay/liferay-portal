@@ -408,10 +408,14 @@ public class EditPortalDefaultPermissionsConfigurationDisplayContext {
 			return _roleTypes;
 		}
 
-		_roleTypes = RoleConstants.TYPES_REGULAR_AND_SITE;
-
-		if ((_group != null) && _group.isDepot()) {
+		if ((_group == null) || _group.isControlPanel()) {
+			_roleTypes = _TYPES_DEPOT_AND_REGULAR_AND_SITE;
+		}
+		else if (_group.isDepot()) {
 			_roleTypes = _TYPES_DEPOT_AND_REGULAR;
+		}
+		else {
+			_roleTypes = RoleConstants.TYPES_REGULAR_AND_SITE;
 		}
 
 		if (ResourceActionsUtil.isPortalModelResource(getModelResource())) {
@@ -480,6 +484,11 @@ public class EditPortalDefaultPermissionsConfigurationDisplayContext {
 
 	private static final int[] _TYPES_DEPOT_AND_REGULAR = {
 		RoleConstants.TYPE_DEPOT, RoleConstants.TYPE_REGULAR
+	};
+
+	private static final int[] _TYPES_DEPOT_AND_REGULAR_AND_SITE = {
+		RoleConstants.TYPE_DEPOT, RoleConstants.TYPE_REGULAR,
+		RoleConstants.TYPE_SITE
 	};
 
 	private List<String> _actions;

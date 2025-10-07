@@ -11,9 +11,8 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.io.unsync.UnsyncPrintWriter;
 import com.liferay.portal.kernel.test.rule.ClassTestRule;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.util.PropsImpl;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.File;
 import java.io.IOException;
@@ -229,14 +228,12 @@ public class HypersonicServerClassTestRule extends ClassTestRule<Server> {
 		PropsValues.LIFERAY_HOME + "/data/hypersonic_temp/";
 
 	static {
-		Props props = new PropsImpl();
-
-		String className = props.get("jdbc.default.driverClassName");
+		String className = PropsUtil.get("jdbc.default.driverClassName");
 
 		_HYPERSONIC = className.equals(JDBCDriver.class.getName());
 
 		if (_HYPERSONIC) {
-			String jdbcURL = props.get("jdbc.default.url");
+			String jdbcURL = PropsUtil.get("jdbc.default.url");
 
 			int index = jdbcURL.lastIndexOf(CharPool.SLASH);
 

@@ -242,6 +242,18 @@ public class LiferayLocalRepository
 	}
 
 	@Override
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
+		DLFileEntry dlFileEntry = dlFileEntryLocalService.fetchDLFileEntry(
+			fileEntryId);
+
+		if (dlFileEntry == null) {
+			return null;
+		}
+
+		return new LiferayFileEntry(dlFileEntry);
+	}
+
+	@Override
 	public FileEntry fetchFileEntry(long folderId, String title) {
 		DLFileEntry dlFileEntry = dlFileEntryLocalService.fetchFileEntry(
 			getGroupId(), toFolderId(folderId), title);

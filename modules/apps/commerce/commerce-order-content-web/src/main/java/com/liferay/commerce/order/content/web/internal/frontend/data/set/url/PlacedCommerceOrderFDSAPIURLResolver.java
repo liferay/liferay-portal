@@ -42,15 +42,28 @@ public class PlacedCommerceOrderFDSAPIURLResolver implements FDSAPIURLResolver {
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
-		AccountEntry accountEntry = commerceContext.getAccountEntry();
-
-		if (accountEntry == null) {
+		if (commerceContext == null) {
 			return StringPool.BLANK;
 		}
 
 		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(
+			_commerceChannelLocalService.fetchCommerceChannel(
 				commerceContext.getCommerceChannelId());
+
+		if (commerceChannel == null) {
+			return StringPool.BLANK;
+		}
+
+		String accountExternalReferenceCode = StringPool.BLANK;
+		long accountId = 0;
+
+		AccountEntry accountEntry = commerceContext.getAccountEntry();
+
+		if (accountEntry != null) {
+			accountExternalReferenceCode =
+				accountEntry.getExternalReferenceCode();
+			accountId = accountEntry.getAccountEntryId();
+		}
 
 		String externalReferenceCode = StringPool.BLANK;
 
@@ -66,8 +79,7 @@ public class PlacedCommerceOrderFDSAPIURLResolver implements FDSAPIURLResolver {
 				"{externalReferenceCode}"
 			},
 			new String[] {
-				accountEntry.getExternalReferenceCode(),
-				String.valueOf(accountEntry.getAccountEntryId()),
+				accountExternalReferenceCode, String.valueOf(accountId),
 				commerceChannel.getExternalReferenceCode(),
 				String.valueOf(commerceChannel.getCommerceChannelId()),
 				externalReferenceCode

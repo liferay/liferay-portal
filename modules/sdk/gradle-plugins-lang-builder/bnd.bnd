@@ -1,6 +1,6 @@
 Bundle-Description: The Lang Builder Gradle plugin lets you run the Liferay Lang Builder tool to sort and translate the language keys in your project.
 Bundle-Name: Liferay Gradle Plugins Lang Builder
 Bundle-SymbolicName: com.liferay.gradle.plugins.lang.builder
-Bundle-Version: 3.0.43
+Bundle-Version: 3.0.44
 Export-Package: com.liferay.gradle.plugins.lang.builder
 -includeresource: @com.liferay.lang.builder-*.jar!/com/liferay/lang/builder/LangBuilderArgs.class

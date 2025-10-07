@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Product Type Virtual Web
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.web
-Bundle-Version: 4.0.58
+Bundle-Version: 4.0.59
 Web-ContextPath: /commerce-product-type-virtual-web
 -dsannotations-options: inherit

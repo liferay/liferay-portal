@@ -230,7 +230,26 @@ public abstract class BaseWorkspaceGitRepository
 		return getString("sender_branch_username");
 	}
 
-	public boolean getSnapshot() {
+	public boolean isSnapshot() {
+		String jobName = System.getenv("JOB_NAME");
+
+		if (jobName.equals("forward-pullrequest") ||
+			jobName.equals("publish-testray-report") ||
+			jobName.equals("test-portal-source-format") ||
+			jobName.contains("validation")) {
+
+			return false;
+		}
+
+		String jobVariant = System.getenv("JOB_VARIANT");
+
+		if (jobName.contains("master") &&
+			!JenkinsResultsParserUtil.isNullOrEmpty(jobVariant) &&
+			jobVariant.contains("modules-unit")) {
+
+			return false;
+		}
+
 		return getBoolean("snapshot");
 	}
 
@@ -523,7 +542,7 @@ public abstract class BaseWorkspaceGitRepository
 		validateKeys(_REQUIRED_KEYS);
 
 		if (JenkinsResultsParserUtil.isCloudCINode()) {
-			_snapshot = getSnapshot();
+			_snapshot = isSnapshot();
 		}
 	}
 
@@ -773,8 +792,8 @@ public abstract class BaseWorkspaceGitRepository
 
 			File archiveFile = new File(baseGitRepositoryDir, fileName);
 
-			CloudBucketUtil.copyS3File(
-				archiveFile.getCanonicalPath(),
+			CloudBucketUtil.downloadS3File(
+				archiveFile,
 				JenkinsResultsParserUtil.combine(
 					CloudBucketUtil.S3_BUCKET_PATH_FILE_PROPAGATOR,
 					"/git-shallow-clone-archives/", fileName));
@@ -878,9 +897,8 @@ public abstract class BaseWorkspaceGitRepository
 			File gitArchiveFile = new File(
 				baseRepositoryDir, _getGitArchiveName());
 
-			CloudBucketUtil.copyS3File(
-				gitArchiveFile.getCanonicalPath(),
-				_getGitArchiveS3BucketPath());
+			CloudBucketUtil.downloadS3File(
+				gitArchiveFile, _getGitArchiveS3BucketPath());
 
 			File directory = getDirectory();
 
@@ -890,6 +908,31 @@ public abstract class BaseWorkspaceGitRepository
 
 			JenkinsResultsParserUtil.unzip(gitArchiveFile, directory);
 
+			String jobVariant = System.getenv("JOB_VARIANT");
+
+			String directoryPath = directory.getPath();
+
+			if ((jobVariant.contains("app-server-bundle-builder") ||
+				 jobVariant.contains("rest-builder") ||
+				 jobVariant.contains("service-builder")) &&
+				directoryPath.contains("liferay-portal")) {
+
+				String commitCommand =
+					"git init; git add .; git commit -m \"LRCI-XXXX Temp\"";
+
+				GitUtil.ExecutionResult executionResult =
+					GitUtil.executeBashCommands(
+						GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+						GitUtil.MILLIS_TIMEOUT, directory, commitCommand);
+
+				if (executionResult.getExitValue() != 0) {
+					throw new RuntimeException(
+						JenkinsResultsParserUtil.combine(
+							"Unable to commit temp file",
+							executionResult.getStandardError()));
+				}
+			}
+
 			return;
 		}
 
@@ -897,8 +940,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		File archiveFile = gitWorkingDirectory.archive(_getGitArchiveName());
 
-		CloudBucketUtil.copyS3File(
-			_getGitArchiveS3BucketPath(), archiveFile.getCanonicalPath());
+		CloudBucketUtil.uploadS3File(_getGitArchiveS3BucketPath(), archiveFile);
 
 		_setSnapshot(true);
 

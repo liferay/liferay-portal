@@ -24,14 +24,6 @@ const renderComponent = (state?: Partial<PicklistContext.State>) => {
 };
 
 describe('PicklistOptions', () => {
-	beforeEach(() => {
-		(global as any).Liferay.Language.direction = {
-			en_US: 'rtl',
-		};
-
-		jest.clearAllMocks();
-	});
-
 	it('shows an empty state when there are no picklists', () => {
 		renderComponent({options: new Map()});
 
@@ -140,7 +132,7 @@ describe('PicklistOptions', () => {
 
 		await waitFor(() => {
 			expect(
-				screen.getByText('x-of-x-items-selected')
+				screen.getByText(`all-selected-x-of-x-items`)
 			).toBeInTheDocument();
 		});
 

@@ -1492,6 +1492,14 @@ definition {
 			JSONAccountEntry.addAccountEntry(
 				accountEntryName = "Commerce Account",
 				accountEntryType = "Business");
+
+			CommerceJSONAccountsAPI._addCommerceAccountAddress(
+				accountEntryName = "Commerce Account",
+				city = "Test Address",
+				countryISOCode = "US",
+				name = "Test Name",
+				street1 = "Test Street",
+				zip = "Test Zip Code");
 		}
 
 		task ("And a user with the Operations Manager role") {
@@ -1516,10 +1524,12 @@ definition {
 		task ("And an orders is placed and shipped") {
 			CommerceJSONOrdersAPI._addCommerceOrder(
 				accountEntryName = "Commerce Account",
+				billingAddressName = "Test Name",
 				orderItems = "MIN55858:1",
 				orderStatus = 1,
 				paymentMethod = "money-order",
-				paymentStatus = 2);
+				paymentStatus = 2,
+				shippingAddressName = "Test Name");
 
 			CommerceOrders.openOrdersAdmin();
 

@@ -5,7 +5,7 @@
 
 package com.liferay.portal.cache.key;
 
-import com.liferay.portal.kernel.util.Digester;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Before;
@@ -26,7 +26,8 @@ public class JavaSHA1CacheKeyGeneratorTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		cacheKeyGenerator = new MessageDigestCacheKeyGenerator(Digester.SHA_1);
+		cacheKeyGenerator = new MessageDigestCacheKeyGenerator(
+			DigesterUtil.SHA_1);
 	}
 
 }

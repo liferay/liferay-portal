@@ -22,10 +22,10 @@
 		<field name="errorMessage" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="executeStatus" type="String" />
 		<field name="fieldNames" type="String">
 			<hint name="max-length">4000</hint>
 		</field>
-		<field name="executeStatus" type="String" />
 		<field name="parameters" type="Map" />
 		<field name="processedItemsCount" type="int" />
 		<field name="startTime" type="Date" />

@@ -257,6 +257,15 @@ public class RepositoryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByPortletId() throws Exception {
+		_persistence.countByPortletId("");
+
+		_persistence.countByPortletId("null");
+
+		_persistence.countByPortletId((String)null);
+	}
+
+	@Test
 	public void testCountByG_N_P() throws Exception {
 		_persistence.countByG_N_P(RandomTestUtil.nextLong(), "", "");
 

@@ -9,7 +9,6 @@
 		border-radius: 0.5rem;
 		display: flex;
 		flex-direction: column;
-		max-width: 37.5rem;
 		padding: 0.5rem;
 		transition: background-color 0.5s;
 		transition: border 0.5s;
@@ -84,7 +83,7 @@
 	}
 
 	&-title {
-		align-items: baseline;
+		align-items: center;
 		display: flex;
 		gap: 0.5rem;
 		justify-content: center;
@@ -101,13 +100,13 @@
 		}
 
 		&-icon {
-			height: 1rem;
-			margin-top: 2px;
-			width: 1rem;
 			filter: invert(20%) sepia(92%) saturate(5175%) hue-rotate(214deg)
 				brightness(86%) contrast(110%);
-
+			height: 1rem;
+			margin: 0;
+			margin-top: 2px;
 			transition: filter 0.5s;
+			width: 1rem;
 
 			&-rounded {
 				border-radius: 50%;

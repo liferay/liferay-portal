@@ -12,7 +12,8 @@ definition {
 			${portalURL}/api/jsonws/depot.depotentry/add-depot-entry \
 				-u ${userLoginInfo} \
 				-d nameMap={"en_US": "${depotName}"} \
-				-d descriptionMap={"en_US": "${depotDescription}"}
+				-d descriptionMap={"en_US": "${depotDescription}"} \
+				-d "type=0"
 		''';
 
 		echo("## Adding a 'Depot' with the following info using JSONWS:");

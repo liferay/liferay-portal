@@ -6,11 +6,11 @@ exports[`SegmentSticker should render 1`] = `
     class="sticker sticker-root sticker-static segment-sticker-root sticker-rounded sticker-dark"
   >
     <svg
-      class="lexicon-icon lexicon-icon-individual_static_segment icon-root"
+      class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
       role="presentation"
     >
       <use
-        href="#individual_static_segment"
+        href="#individual_dynamic_segment"
       />
     </svg>
   </div>

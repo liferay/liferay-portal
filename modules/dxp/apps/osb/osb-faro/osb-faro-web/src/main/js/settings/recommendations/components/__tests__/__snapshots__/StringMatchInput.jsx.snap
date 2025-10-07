@@ -19,7 +19,7 @@ exports[`StringMatchInput should render 1`] = `
       </div>
       <input
         class="form-control-inset"
-        value=".*custom-assets"
+        value=".*documents"
       />
     </div>
   </div>

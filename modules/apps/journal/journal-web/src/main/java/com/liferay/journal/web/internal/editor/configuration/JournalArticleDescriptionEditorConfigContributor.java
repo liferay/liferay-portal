@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 	property = {
-		"editor.config.key=descriptionMapAsXMLEditor",
+		"editor.config.key=descriptionMapAsXMLEditor", "editor.name=ckeditor",
 		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL
 	},
 	service = EditorConfigContributor.class

@@ -71,6 +71,16 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro gotoExactEntry(entryName = null) {
+		AssertClickNoError(
+			key_entryName = ${entryName},
+			locator1 = "CommerceNavigation#ENTRY_NAME_EXACT_MATCH",
+			value1 = ${entryName});
+
+		WaitForPageLoad();
+	}
+
+	@summary = "Default summary"
 	macro gotoFrontStoreProductPage() {
 		var baseURL = JSONCompany.getPortalURL();
 		var productName = StringUtil.replace(${productName}, " ", "-");

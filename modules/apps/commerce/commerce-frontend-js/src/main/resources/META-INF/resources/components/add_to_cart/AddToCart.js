@@ -137,13 +137,17 @@ function AddToCart({
 
 	useEffect(() => {
 		function handleQuantityChanged({quantity, skuId}) {
-			setCpInstance((cpInstance) => ({
-				...cpInstance,
-				inCart:
-					skuId === cpInstance.skuId || skuId === ALL
-						? Boolean(quantity)
-						: cpInstance.inCart,
-			}));
+			setCpInstance((cpInstance) => {
+				const isModified =
+					skuId === cpInstance.skuId ||
+					skuId.toString() === cpInstance.skuId ||
+					skuId === ALL;
+
+				return {
+					...cpInstance,
+					inCart: isModified ? Boolean(quantity) : cpInstance.inCart,
+				};
+			});
 		}
 
 		function handleUOMChanged({unitOfMeasure}) {

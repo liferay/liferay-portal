@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration",
-	service = Sanitizer.class
+	property = "sanitizer.order:Integer=10", service = Sanitizer.class
 )
 public class IFrameSanitizerImpl implements Sanitizer {
 

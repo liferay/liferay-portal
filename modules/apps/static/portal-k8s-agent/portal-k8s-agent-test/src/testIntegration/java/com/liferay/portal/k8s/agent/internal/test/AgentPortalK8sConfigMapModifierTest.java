@@ -54,6 +54,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
@@ -154,6 +155,8 @@ public class AgentPortalK8sConfigMapModifierTest {
 					AgentPortalK8sConfigMapModifierTest.class,
 					"dependencies/ca.crt")
 			).put(
+				"debounceDelayMillis", 10
+			).put(
 				"namespace", "test"
 			).put(
 				"saToken", "saToken"
@@ -192,15 +195,18 @@ public class AgentPortalK8sConfigMapModifierTest {
 		).withName(
 			webId.concat("-lxc-dxp-metadata")
 		).waitUntilCondition(
-			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
+			curConfigMap ->
+				(curConfigMap != null) &&
+				Objects.equals(
+					webId,
+					curConfigMap.getData(
+					).get(
+						"com.liferay.lxc.dxp.domains"
+					)),
+			3, TimeUnit.MINUTES
 		);
 
 		Assert.assertNotNull(configMap);
-
-		Map<String, String> data = configMap.getData();
-
-		Assert.assertEquals(webId, data.get("com.liferay.lxc.dxp.domains"));
-		Assert.assertEquals(webId, data.get("com.liferay.lxc.dxp.main.domain"));
 
 		ObjectMeta objectMeta = configMap.getMetadata();
 
@@ -266,7 +272,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 		).withName(
 			configMapName
 		).waitUntilCondition(
-			it -> it != null, 20, TimeUnit.SECONDS
+			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
 		);
 
 		Assert.assertNotNull(configMap);
@@ -291,6 +297,178 @@ public class AgentPortalK8sConfigMapModifierTest {
 			serviceId, labels.get("ext.lxc.liferay.com/serviceId"));
 		Assert.assertEquals(
 			"ext-init", labels.get("lxc.liferay.com/metadataType"));
+	}
+
+	@Test
+	public void testFlushModifyConfigMapFast() throws Exception {
+		String serviceId = RandomTestUtil.randomString();
+
+		String configMapName = StringBundler.concat(
+			serviceId, StringPool.DASH, TestPropsValues.COMPANY_WEB_ID,
+			"-lxc-ext-init-metadata");
+
+		PortalK8sConfigMapModifier.Result result =
+			_portalK8sConfigMapModifier.modifyConfigMap(
+				configMapModel -> {
+					Map<String, String> data = configMapModel.data();
+
+					data.put(
+						"com.liferay.lxc.dxp.domains",
+						RandomTestUtil.randomString());
+					data.put(
+						"com.liferay.lxc.dxp.main.domain",
+						RandomTestUtil.randomString());
+					data.put(
+						"com.liferay.lxc.dxp.mainDomain",
+						RandomTestUtil.randomString());
+
+					Map<String, String> labels = configMapModel.labels();
+
+					labels.put("lxc.liferay.com/metadataType", "ext-init");
+					labels.put("ext.lxc.liferay.com/serviceId", serviceId);
+					labels.put(
+						"dxp.lxc.liferay.com/virtualInstanceId",
+						TestPropsValues.COMPANY_WEB_ID);
+				},
+				configMapName);
+
+		Assert.assertEquals(PortalK8sConfigMapModifier.Result.BUFFERED, result);
+
+		result = _portalK8sConfigMapModifier.modifyConfigMap(
+			configMapModel -> {
+				Map<String, String> data = configMapModel.data();
+
+				data.put(
+					"com.liferay.lxc.dxp.domains",
+					TestPropsValues.COMPANY_WEB_ID);
+				data.put(
+					"com.liferay.lxc.dxp.main.domain",
+					TestPropsValues.COMPANY_WEB_ID);
+				data.put(
+					"com.liferay.lxc.dxp.mainDomain",
+					TestPropsValues.COMPANY_WEB_ID);
+
+				Map<String, String> labels = configMapModel.labels();
+
+				labels.put("lxc.liferay.com/metadataType", "ext-init");
+				labels.put("ext.lxc.liferay.com/serviceId", serviceId);
+				labels.put(
+					"dxp.lxc.liferay.com/virtualInstanceId",
+					TestPropsValues.COMPANY_WEB_ID);
+			},
+			configMapName);
+
+		Assert.assertEquals(PortalK8sConfigMapModifier.Result.BUFFERED, result);
+
+		ConfigMap configMap = _kubernetesMockClient.configMaps(
+		).withName(
+			configMapName
+		).waitUntilCondition(
+			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
+		);
+
+		Assert.assertNotNull(configMap);
+
+		Map<String, String> data = configMap.getData();
+
+		Assert.assertEquals(
+			TestPropsValues.COMPANY_WEB_ID,
+			data.get("com.liferay.lxc.dxp.main.domain"));
+
+		ObjectMeta objectMeta = configMap.getMetadata();
+
+		Assert.assertEquals(Long.valueOf(1), objectMeta.getGeneration());
+	}
+
+	@Test
+	public void testFlushModifyConfigMapSlow() throws Exception {
+		String serviceId = RandomTestUtil.randomString();
+		String randomString = RandomTestUtil.randomString();
+
+		String configMapName = StringBundler.concat(
+			serviceId, StringPool.DASH, TestPropsValues.COMPANY_WEB_ID,
+			"-lxc-ext-init-metadata");
+
+		_portalK8sConfigMapModifier.modifyConfigMap(
+			configMapModel -> {
+				Map<String, String> data = configMapModel.data();
+
+				data.put("com.liferay.lxc.dxp.domains", randomString);
+				data.put("com.liferay.lxc.dxp.main.domain", randomString);
+				data.put("com.liferay.lxc.dxp.mainDomain", randomString);
+
+				Map<String, String> labels = configMapModel.labels();
+
+				labels.put("lxc.liferay.com/metadataType", "ext-init");
+				labels.put("ext.lxc.liferay.com/serviceId", serviceId);
+				labels.put(
+					"dxp.lxc.liferay.com/virtualInstanceId",
+					TestPropsValues.COMPANY_WEB_ID);
+			},
+			configMapName);
+
+		ConfigMap configMap = _kubernetesMockClient.configMaps(
+		).withName(
+			configMapName
+		).waitUntilCondition(
+			curConfigMap -> curConfigMap != null, 20, TimeUnit.SECONDS
+		);
+
+		Assert.assertNotNull(configMap);
+
+		Map<String, String> configMapData = configMap.getData();
+
+		Assert.assertEquals(
+			randomString, configMapData.get("com.liferay.lxc.dxp.main.domain"));
+
+		ObjectMeta objectMeta = configMap.getMetadata();
+
+		Assert.assertEquals(Long.valueOf(1), objectMeta.getGeneration());
+
+		_portalK8sConfigMapModifier.modifyConfigMap(
+			configMapModel -> {
+				Map<String, String> data = configMapModel.data();
+
+				data.put(
+					"com.liferay.lxc.dxp.domains",
+					TestPropsValues.COMPANY_WEB_ID);
+				data.put(
+					"com.liferay.lxc.dxp.main.domain",
+					TestPropsValues.COMPANY_WEB_ID);
+				data.put(
+					"com.liferay.lxc.dxp.mainDomain",
+					TestPropsValues.COMPANY_WEB_ID);
+
+				Map<String, String> labels = configMapModel.labels();
+
+				labels.put("lxc.liferay.com/metadataType", "ext-init");
+				labels.put("ext.lxc.liferay.com/serviceId", serviceId);
+				labels.put(
+					"dxp.lxc.liferay.com/virtualInstanceId",
+					TestPropsValues.COMPANY_WEB_ID);
+			},
+			configMapName);
+
+		configMap = _kubernetesMockClient.configMaps(
+		).withName(
+			configMapName
+		).waitUntilCondition(
+			curConfigMap ->
+				(curConfigMap != null) &&
+				Objects.equals(
+					TestPropsValues.COMPANY_WEB_ID,
+					curConfigMap.getData(
+					).get(
+						"com.liferay.lxc.dxp.main.domain"
+					)),
+			20, TimeUnit.SECONDS
+		);
+
+		Assert.assertNotNull(configMap);
+
+		objectMeta = configMap.getMetadata();
+
+		Assert.assertEquals(Long.valueOf(2), objectMeta.getGeneration());
 	}
 
 	@Test
@@ -461,8 +639,7 @@ public class AgentPortalK8sConfigMapModifierTest {
 					RandomTestUtil.randomString(), StringPool.DASH,
 					TestPropsValues.COMPANY_WEB_ID, "-lxc-ext-init-metadata"));
 
-		Assert.assertEquals(
-			PortalK8sConfigMapModifier.Result.UNCHANGED, result);
+		Assert.assertEquals(PortalK8sConfigMapModifier.Result.BUFFERED, result);
 	}
 
 	private void _assertNotInDatabase(String pid) throws Exception {

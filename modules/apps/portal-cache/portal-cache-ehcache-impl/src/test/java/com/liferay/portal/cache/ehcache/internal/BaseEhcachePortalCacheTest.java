@@ -31,7 +31,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
-import java.util.logging.Level;
 
 import org.ehcache.Cache;
 import org.ehcache.CacheManager;
@@ -574,11 +573,11 @@ public class BaseEhcachePortalCacheTest {
 		_ehcachePortalCache.put(_KEY_1, _VALUE_1);
 		_ehcachePortalCache.put(_KEY_2, _VALUE_2);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				PortalCacheCacheEventListener.class.getName() +
 					StringPool.PERIOD +
 						_ehcachePortalCache.getPortalCacheName(),
-				Level.FINE)) {
+				LoggerTestUtil.DEBUG)) {
 
 			_ehcachePortalCache.remove(_KEY_1);
 			_ehcachePortalCache.remove(_KEY_2, _VALUE_2);

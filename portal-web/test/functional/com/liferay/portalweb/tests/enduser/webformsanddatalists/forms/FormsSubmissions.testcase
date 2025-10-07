@@ -1130,95 +1130,6 @@ definition {
 		FormPortlet.submit();
 	}
 
-	@description = "LPS-60818 - Verify that a Form can require CAPTCHA before being accessed"
-	@priority = 5
-	test CanRequireCAPTCHA {
-		property captcha.enabled = "true";
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		FormsAdmin.addForm();
-
-		Form.editName();
-
-		Form.editDescription();
-
-		Form.addTextField(fieldPositionNumber = 0);
-
-		var fieldTextField = FormFields.getFieldName();
-
-		Form.editFieldLabelMetal(fieldValue = "Text Field");
-
-		Form.closeSidebar();
-
-		FormsAdminNavigator.gotoSettings();
-
-		Form.configureRequireCaptcha();
-
-		Form.save();
-
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Forms");
-
-		FormsAdminNavigator.gotoEditFormByName();
-
-		Form.publishForm();
-
-		FormsAdminNavigator.gotoPublishCopyURLLink();
-
-		var publishedFormPublicURL = Form.getPublishedFormPublicURL(publishedFormPublicURL = ${publishedFormPublicURL});
-
-		Form.save();
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Form Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Guest",
-			layoutName = "Form Page",
-			widgetName = "Form");
-
-		Navigator.gotoPage(pageName = "Form Page");
-
-		FormPortletNavigator.gotoSelectForm();
-
-		FormPortletConfiguration.selectForm();
-
-		PortletEntry.save();
-
-		for (var formAccessLevel : list "private,public") {
-			if (${formAccessLevel} == "private") {
-				Navigator.gotoPage(pageName = "Form Page");
-			}
-			else if (${formAccessLevel} == "public") {
-				Navigator.openSpecificURL(url = ${publishedFormPublicURL});
-			}
-
-			FormPortlet.waitFormRenderer(text = "Submit");
-
-			FormFields.viewTextField(
-				fieldLabel = "Text Field",
-				fieldName = ${fieldTextField});
-
-			FormFields.editText(
-				fieldName = ${fieldTextField},
-				fieldValue = "Text Field Value");
-
-			FormFields.viewCaptchaField();
-
-			FormFields.editCaptchaTextVerification(fieldValue = 1);
-
-			FormPortlet.submitWithError(errorMessage = "Text verification failed.");
-
-			FormFields.viewTextValue(
-				fieldName = ${fieldTextField},
-				fieldValue = "Text Field Value");
-		}
-	}
-
 	@description = "Verify that a Form can require user authentication before being accessed"
 	@priority = 5
 	test CanRequireUserAuthentication {
@@ -1543,7 +1454,6 @@ definition {
 	@description = "Verify if that the See Partial results page displays graphs correctly."
 	@priority = 3
 	test CheckSeePartialResultsPageWithGraph {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 
 		FormsAdmin.addForm();
@@ -1611,8 +1521,6 @@ definition {
 	@description = "Verify if with 'Limit to one submit per user' enabled, the translation options are the same as those present in the Form Builder"
 	@priority = 3
 	test CheckTranslationOptionsOneSubmissionPerUserMessage {
-		property portal.acceptance = "true";
-
 		FormsAdmin.addForm();
 
 		Click(locator1 = "Form#LANGUAGE_ADD_BUTTON");
@@ -1898,8 +1806,6 @@ definition {
 	@description = "Verify that a Form's Submit button's text can be customized with numbers"
 	@priority = 3
 	test SubmitButtonTextCanBeCustomizedWithNumbers {
-		property portal.acceptance = "true";
-
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");
@@ -1928,8 +1834,6 @@ definition {
 	@description = "Verify that a Form's Submit button's text can be customized with special characters"
 	@priority = 3
 	test SubmitButtonTextCanBeCustomizedWithSpecialCharacters {
-		property portal.acceptance = "true";
-
 		FormsAdmin.addForm();
 
 		Form.editName(formName = "Form 1");

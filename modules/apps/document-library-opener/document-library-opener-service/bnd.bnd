@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Opener Service
 Bundle-SymbolicName: com.liferay.document.library.opener.service
-Bundle-Version: 3.0.38
+Bundle-Version: 3.0.39
 Liferay-Require-SchemaVersion: 1.1.0
 Liferay-Service: true
 -dsannotations-options: inherit

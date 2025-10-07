@@ -1,0 +1,40 @@
+<FragmentEntryLink>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>1</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>b2c75b9f-d73d-d3e5-117d-245e32ed7d6e</__uuid>
+  <__externalReferenceCode>b2c75b9f-d73d-d3e5-117d-245e32ed7d6e</__externalReferenceCode>
+  <__fragmentEntryLinkId>35854</__fragmentEntryLinkId>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:34:31.529</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 11:03:14.848</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__originalFragmentEntryLinkId>0</__originalFragmentEntryLinkId>
+  <__fragmentEntryId>0</__fragmentEntryId>
+  <__segmentsExperienceId>35828</__segmentsExperienceId>
+  <__classNameId>20033</__classNameId>
+  <__classPK>100</__classPK>
+  <__plid>100</__plid>
+  <__css>.component-paragraph img {
+	max-width: 100%;
+}</__css>
+  <__html>&lt;div class=&quot;clearfix component-paragraph text-break&quot; data-lfr-editable-id=&quot;element-text&quot; data-lfr-editable-type=&quot;rich-text&quot;&gt;
+	A paragraph is a self-contained unit of a discourse in writing dealing with
+	a particular point or idea. Paragraphs are usually an expected part of
+	formal writing, used to organize longer prose.
+&lt;/div&gt;</__html>
+  <__js></__js>
+  <__configuration></__configuration>
+  <__deleted>false</__deleted>
+  <__editableValues>{&quot;com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor&quot;:{&quot;element-text&quot;:{&quot;sv_SE&quot;:&quot;Anvisningar&quot;,&quot;defaultValue&quot;:&quot;\n\tA paragraph is a self-contained unit of a discourse in writing dealing with\n\ta particular point or idea. Paragraphs are usually an expected part of\n\tformal writing, used to organize longer prose.\n&quot;,&quot;pt_BR&quot;:&quot;Instruções&quot;,&quot;ja_JP&quot;:&quot;説明&quot;,&quot;fr_FR&quot;:&quot;Instructions&quot;,&quot;hu_HU&quot;:&quot;Utasítások&quot;,&quot;de_DE&quot;:&quot;Anweisungen&quot;,&quot;ca_ES&quot;:&quot;Instruccions&quot;,&quot;ar_SA&quot;:&quot;التعليمات&quot;,&quot;fi_FI&quot;:&quot;Ohjeet&quot;,&quot;en_US&quot;:&quot;Instructions&quot;,&quot;zh_CN&quot;:&quot;说明&quot;,&quot;es_ES&quot;:&quot;Instrucciones&quot;,&quot;config&quot;:{&quot;mapperType&quot;:&quot;link&quot;},&quot;nl_NL&quot;:&quot;Instructies&quot;}}}</__editableValues>
+  <__namespace>oqiw</__namespace>
+  <__position>0</__position>
+  <__rendererKey>BASIC_COMPONENT-paragraph</__rendererKey>
+  <__type>1</__type>
+  <__lastPropagationDate class="sql-timestamp">2025-08-29 11:03:14.847</__lastPropagationDate>
+  <__columnBitmask>0</__columnBitmask>
+</FragmentEntryLink>

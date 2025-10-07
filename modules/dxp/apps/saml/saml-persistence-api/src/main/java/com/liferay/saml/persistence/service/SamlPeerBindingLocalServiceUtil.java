@@ -37,16 +37,14 @@ public class SamlPeerBindingLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.saml.persistence.service.impl.SamlPeerBindingLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static SamlPeerBinding addSamlPeerBinding(
-			long userId, String samlNameIdFormat,
+			long userId, String samlPeerEntityId, String samlNameIdFormat,
 			String samlNameIdNameQualifier, String samlNameIdSpNameQualifier,
-			String samlNameIdSpProvidedId, String samlNameIdValue,
-			String samlPeerEntityId)
+			String samlNameIdSpProvidedId, String samlNameIdValue)
 		throws PortalException {
 
 		return getService().addSamlPeerBinding(
-			userId, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdSpNameQualifier, samlNameIdSpProvidedId, samlNameIdValue,
-			samlPeerEntityId);
+			userId, samlPeerEntityId, samlNameIdFormat, samlNameIdNameQualifier,
+			samlNameIdSpNameQualifier, samlNameIdSpProvidedId, samlNameIdValue);
 	}
 
 	/**
@@ -220,13 +218,13 @@ public class SamlPeerBindingLocalServiceUtil {
 	}
 
 	public static SamlPeerBinding fetchSamlPeerBinding(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId) {
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue) {
 
 		return getService().fetchSamlPeerBinding(
-			companyId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdValue, samlPeerEntityId);
+			companyId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier, samlNameIdValue);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
@@ -291,13 +289,13 @@ public class SamlPeerBindingLocalServiceUtil {
 	}
 
 	public static List<SamlPeerBinding> getSamlPeerBindings(
-		long companyId, boolean deleted, String samlNameIdFormat,
-		String samlNameIdNameQualifier, String samlNameIdValue,
-		String samlPeerEntityId) {
+		long companyId, String samlPeerEntityId, boolean deleted,
+		String samlNameIdFormat, String samlNameIdNameQualifier,
+		String samlNameIdValue) {
 
 		return getService().getSamlPeerBindings(
-			companyId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlNameIdValue, samlPeerEntityId);
+			companyId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier, samlNameIdValue);
 	}
 
 	/**
@@ -310,13 +308,13 @@ public class SamlPeerBindingLocalServiceUtil {
 	}
 
 	public static List<SamlPeerBinding> getUserSamlPeerBindings(
-			long userId, boolean deleted, String samlNameIdFormat,
-			String samlNameIdNameQualifier, String samlPeerEntityId)
+			long userId, String samlPeerEntityId, boolean deleted,
+			String samlNameIdFormat, String samlNameIdNameQualifier)
 		throws PortalException {
 
 		return getService().getUserSamlPeerBindings(
-			userId, deleted, samlNameIdFormat, samlNameIdNameQualifier,
-			samlPeerEntityId);
+			userId, samlPeerEntityId, deleted, samlNameIdFormat,
+			samlNameIdNameQualifier);
 	}
 
 	/**

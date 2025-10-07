@@ -8,9 +8,7 @@ package com.liferay.oauth2.provider.rest.internal.spi.bearer.token.provider;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
 
 import java.util.Map;
 
@@ -36,8 +34,6 @@ public class DefaultBearerTokenProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropsUtil.setProps(new PropsImpl());
-
 		Map<String, Object> properties = HashMapBuilder.<String, Object>put(
 			"access.token.expires.in", _ACCESS_TOKEN_EXPIRES_IN
 		).put(

@@ -28,6 +28,7 @@ export class JSONWebServicesDepotApiHelper {
 			'descriptionMap',
 			JSON.stringify({en_US: getRandomString()})
 		);
+		urlSearchParams.append('type', '0');
 
 		return this.apiHelpers.post(
 			`${liferayConfig.environment.baseUrl}${this.basePath}/add-depot-entry`,

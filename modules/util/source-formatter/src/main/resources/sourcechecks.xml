@@ -55,10 +55,6 @@
 			<category name="Miscellaneous" />
 			<description name="Checks for redundant `app.bnd` in deprecated or archived modules." />
 		</check>
-		<check name="BNDJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="BNDLineBreaksCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary line breaks in `.bnd` files." />
@@ -151,6 +147,10 @@
 		<check name="CodeownersFileLocationCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that `CODEOWNERS` files are located in `.github` directory." />
+		</check>
+		<check name="CodeownersOrderCheck">
+			<category name="Styling" />
+			<description name="Sorts code owners in `CODEOWNERS` files." />
 		</check>
 		<check name="CodeownersWhitespaceCheck">
 			<category name="Styling" />
@@ -247,10 +247,6 @@
 			<category name="Styling" />
 			<description name="Sorts and groups imports in `.ftl` files." />
 		</check>
-		<check name="FTLJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="FTLLiferayVariableOrderCheck">
 			<category name="Styling" />
 			<description name="Sorts assign statement of `liferay_*` variables." />
@@ -317,10 +313,6 @@
 		<check name="GradleIndentationCheck">
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in gradle build files." />
-		</check>
-		<check name="GradleJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="GradleJavaVersionCheck">
 			<category name="Bug Prevention" />
@@ -408,10 +400,6 @@
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary empty lines." />
 		</check>
-		<check name="HTMLJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="HTMLWhitespaceCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace in `.html` files." />
@@ -419,6 +407,52 @@
 		<check name="XMLTagAttributesCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on tag attributes." />
+		</check>
+	</source-processor>
+	<source-processor name="JakartaTransformSourceProcessor">
+		<check name="JakartaTransformBNDCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformFTLCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformGradleCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformHTMLCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformJavaCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformJSCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformJSPCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformPropertiesCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformTLDCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformTSCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
+		</check>
+		<check name="JakartaTransformXMLCheck">
+			<category name="JakartaTransform" />
+			<description name="Performs replacements for use of Jakarta." />
 		</check>
 	</source-processor>
 	<source-processor name="JavaSourceProcessor">
@@ -487,10 +521,6 @@
 			<category name="Bug Prevention" />
 			<description name="Checks for correct use of `location == ?` when calling `org.osgi.service.cm.ConfigurationAdmin#createFactoryConfiguration`." />
 		</check>
-		<check name="JavaConfigurationCategoryCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks that the value of `category` in `@ExtendedObjectClassDefinition` matches the `categoryKey` of the corresponding class in `configuration-admin-web`." />
-		</check>
 		<check name="JavaConstructorParametersCheck">
 			<category name="Styling" />
 			<description name="Checks that the order of variable assignments matches the order of the parameters in the constructor signature." />
@@ -498,6 +528,10 @@
 		<check name="JavaConstructorSuperCallCheck">
 			<category name="Styling" />
 			<description name="Finds unnecessary call to no-argument constructor of the superclass." />
+		</check>
+		<check name="JavaDefaultAdminScreenNameCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that we do not use `PropsKeys.DEFAULT_ADMIN_SCREEN_NAME` or `PropsValues.DEFAULT_ADMIN_SCREEN_NAME`." />
 		</check>
 		<check name="JavaDeserializationSecurityCheck">
 			<category name="Security" />
@@ -566,10 +600,6 @@
 			<category name="Styling" />
 			<description name="Validates use of `IOException`." />
 		</check>
-		<check name="JavaJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="JavaLocalSensitiveComparisonCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that `java.text.Collator` is used when comparing localized values." />
@@ -616,6 +646,7 @@
 		<check name="JavaReturnStatementCheck">
 			<category name="Styling" />
 			<description name="Finds unnecessary `else` statement (when `if` and `else` statement both end with `return` statement)." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaSeeAnnotationCheck">
 			<category name="Bug Prevention" />
@@ -704,6 +735,10 @@
 			<category name="Styling" />
 			<description name="Validates `copyright` header." />
 		</check>
+		<check name="DeprecatedClassesCheck">
+			<category name="Bug Prevention" />
+			<description name="Replaces deprecated classes." />
+		</check>
 		<check name="IllegalImportsCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds cases of incorrect use of certain classes." />
@@ -750,13 +785,9 @@
 			<category name="Javadoc" />
 			<description name="Checks if the `@deprecated` javadoc is pointing to the correct version." />
 		</check>
-		<check name="JavaDeprecatedKernelClassesCheck">
-			<category name="Bug Prevention" />
-			<description name="Finds calls to deprecated classes `com.liferay.portal.kernel.util.CharPool` and `com.liferay.portal.kernel.util.StringPool`." />
-		</check>
 		<check name="JavaFeatureFlagManagerUtilCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds cases where `FeatureFlagManagerUtil.isEnabled` should be used." />
+			<description name="Finds cases where `FeatureFlagManagerUtil.isEnabled` should be used and incorrect use of it." />
 			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaFeatureFlagsAndTestInfoAnnotationCheck">
@@ -1001,9 +1032,18 @@
 
 		<!-- Module Source Checks -->
 
+		<check name="JavaConfigurationCategoryCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that the value of `category` in `@ExtendedObjectClassDefinition` matches the `categoryKey` of the corresponding class that implements `ConfigurationCategory`." />
+		</check>
 		<check name="JavaLocalServiceImplErcUsageCheck">
 			<category name="Productivity" />
 			<description name="Automatically generates and ensures that `externalReferenceCode` is properly used in local `*ServiceImpl` add method." />
+			<property name="enabled" value="false" />
+		</check>
+		<check name="JavaLocalServiceImplUserIdUsageCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds incorrect use of `GuestOrUserUtil.getUserId()` or `PrincipalThreadLocal.getUserId()`." />
 			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaModuleClassGetResourceCallCheck">
@@ -1094,6 +1134,10 @@
 		<check name="JSONBatchEngineDataFileCheck">
 			<category name="Styling" />
 			<description name="Remove elements in `*.batch-engine-data.json` files." />
+		</check>
+		<check name="JSONCommerceCatalogFileCheck">
+			<category name="Styling" />
+			<description name="Sorts `*.options.json`, `*.products.json`, and `*.products.specifications.json` files." />
 		</check>
 		<check name="JSONDeprecatedPackagesCheck">
 			<category name="Bug Prevention" />
@@ -1200,10 +1244,6 @@
 			<category name="Styling" />
 			<description name="Finds cases where variables can be inlined." />
 		</check>
-		<check name="JSPJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="JSPJavaParserCheck">
 			<category name="Styling" />
 			<description name="Performs JavaParser on `.java` files." />
@@ -1301,6 +1341,10 @@
 			<category name="Styling" />
 			<description name="Validates `copyright` header." />
 		</check>
+		<check name="DeprecatedClassesCheck">
+			<category name="Bug Prevention" />
+			<description name="Replaces deprecated classes." />
+		</check>
 		<check name="JSPCoreTaglibCheck">
 			<category name="Styling" />
 			<description name="Finds cases where a `c:choose` or `c:if` tag can be used instead of an if-statement." />
@@ -1380,10 +1424,6 @@
 		</check>
 	</source-processor>
 	<source-processor name="JSSourceProcessor">
-		<check name="JSJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="JSLodashDependencyCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds incorrect use of `AUI._`." />
@@ -1509,10 +1549,6 @@
 			<category name="Styling" />
 			<description name="Finds incorrect indentation in Poshi Script files." />
 		</check>
-		<check name="PoshiJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="PoshiPauseUsageCheck">
 			<category name="Performance" />
 			<description name="Finds missing comment with JIRA project when using `Pause`." />
@@ -1557,6 +1593,10 @@
 			<category name="Styling" />
 			<description name="Validates comments in `.properties` files." />
 		</check>
+		<check name="PropertiesDefaultAdminScreenNameCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that we do not use `default.admin.screen.name`." />
+		</check>
 		<check name="PropertiesDefinitionKeysCheck">
 			<category name="Styling" />
 			<description name="Sorts definition keys in `liferay-plugin-package.properties` file." />
@@ -1584,10 +1624,6 @@
 		<check name="PropertiesImportedFilesContentCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on `imported-files.properties` file." />
-		</check>
-		<check name="PropertiesJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="PropertiesLanguageContractionsCheck">
 			<category name="Styling" />
@@ -1754,10 +1790,6 @@
 			<category name="Styling" />
 			<description name="Checks the order of attributes in `.tld` file." />
 		</check>
-		<check name="TLDJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="TLDStylingCheck">
 			<category name="Styling" />
 			<description name="Applies rules to enforce consistency in code style." />
@@ -1776,10 +1808,6 @@
 		</check>
 	</source-processor>
 	<source-processor name="TSSourceProcessor">
-		<check name="TSJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
-		</check>
 		<check name="WhitespaceCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace." />
@@ -1865,14 +1893,6 @@
 		<check name="UpgradeJavaBaseModelListenerCheck">
 			<category name="Upgrade" />
 			<description name="Add parameter in the onAfterUpdate and onBeforeUpdate methods of the BaseModelListener class." />
-		</check>
-		<check name="UpgradeJavaBasePanelAppExtendedClassesCheck">
-			<category name="Upgrade" />
-			<description name="Replace the setPortlet method with getPortlet." />
-		</check>
-		<check name="UpgradeJavaCommerceOrderValidatorCheck">
-			<category name="Upgrade" />
-			<description name="Replace the parameter Int for BigDecimal of method validate of 'CommerceOrderValidator' interface." />
 		</check>
 		<check name="UpgradeJavaDDMFormValuesSerializerTrackerCheck">
 			<category name="Upgrade" />
@@ -2077,10 +2097,6 @@
 		<check name="XMLInstanceWrappersFileCheck">
 			<category name="Styling" />
 			<description name="Checks the order of instance-wrappers in `instance_wrappers.xml` file." />
-		</check>
-		<check name="XMLJakartaTransformCheck">
-			<category name="JakartaTransform" />
-			<description name="Performs replacements for use of Jakarta." />
 		</check>
 		<check name="XMLLog4jFileCheck">
 			<category name="Styling" />

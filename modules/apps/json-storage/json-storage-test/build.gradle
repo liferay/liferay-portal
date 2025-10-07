@@ -1,6 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
-	testIntegrationImplementation group: "com.liferay", name: "org.springframework.tx", version: "5.3.39.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "com.liferay", name: "org.springframework.tx", version: "6.2.9.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"

@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
-import com.liferay.portal.search.elasticsearch7.internal.document.DefaultElasticsearchDocumentFactory;
-import com.liferay.portal.search.elasticsearch7.internal.document.ElasticsearchDocumentFactory;
 import com.liferay.portal.search.elasticsearch7.internal.index.constants.IndexMappingsConstants;
 import com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.document.DocumentRequestExecutorFixture;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
@@ -607,23 +605,18 @@ public class ElasticsearchSearchEngineAdapterDocumentRequestTest {
 
 		ReflectionTestUtil.setFieldValue(
 			searchEngineAdapter, "_documentRequestExecutor",
-			_createDocumentRequestExecutor(
-				elasticsearchClientResolver,
-				new DefaultElasticsearchDocumentFactory()));
+			_createDocumentRequestExecutor(elasticsearchClientResolver));
 
 		return searchEngineAdapter;
 	}
 
 	private static DocumentRequestExecutor _createDocumentRequestExecutor(
-		ElasticsearchClientResolver elasticsearchClientResolver,
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
+		ElasticsearchClientResolver elasticsearchClientResolver) {
 
 		DocumentRequestExecutorFixture documentRequestExecutorFixture =
 			new DocumentRequestExecutorFixture() {
 				{
 					setElasticsearchClientResolver(elasticsearchClientResolver);
-					setElasticsearchDocumentFactory(
-						elasticsearchDocumentFactory);
 				}
 			};
 

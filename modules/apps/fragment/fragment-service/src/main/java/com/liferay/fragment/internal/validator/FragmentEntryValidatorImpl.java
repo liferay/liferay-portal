@@ -40,23 +40,24 @@ import org.osgi.service.component.annotations.Reference;
 public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 
 	@Override
-	public void validateConfiguration(String configuration)
+	public void validateConfiguration(JSONObject configurationJSONObject)
 		throws FragmentEntryConfigurationException {
 
-		validateConfigurationValues(configuration, null);
+		validateConfigurationValues(configurationJSONObject, null);
 	}
 
 	@Override
 	public void validateConfigurationValues(
-			String configuration, JSONObject valuesJSONObject)
+			JSONObject configurationJSONObject, JSONObject valuesJSONObject)
 		throws FragmentEntryConfigurationException {
 
-		if (Validator.isNull(configuration)) {
+		if (configurationJSONObject == null) {
 			return;
 		}
 
 		try {
-			_validateConfigurationValues(configuration, valuesJSONObject);
+			_validateConfigurationValues(
+				configurationJSONObject, valuesJSONObject);
 		}
 		catch (Exception exception) {
 			throw new FragmentEntryConfigurationException(
@@ -178,15 +179,13 @@ public class FragmentEntryValidatorImpl implements FragmentEntryValidator {
 	}
 
 	private void _validateConfigurationValues(
-			String configuration, JSONObject valuesJSONObject)
+			JSONObject configurationJSONObject, JSONObject valuesJSONObject)
 		throws Exception {
 
-		_configurationJSONValidator.validate(configuration);
+		_configurationJSONValidator.validate(
+			_jsonFactory.toString(configurationJSONObject));
 
 		Set<String> fieldNames = new HashSet<>();
-
-		JSONObject configurationJSONObject = _jsonFactory.createJSONObject(
-			configuration);
 
 		JSONArray fieldSetsJSONArray = configurationJSONObject.getJSONArray(
 			"fieldSets");

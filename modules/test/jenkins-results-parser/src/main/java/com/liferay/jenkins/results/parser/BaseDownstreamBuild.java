@@ -27,7 +27,10 @@ import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,6 +39,7 @@ import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -66,8 +71,52 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			return;
 		}
 
-		_downstreamBuildReport = BuildReportFactory.newDownstreamBuildReport(
-			this);
+		_uploadJenkinsConsoleTestrayAttachment();
+
+		if (!isBuildCachingEnabled() ||
+			!JenkinsResultsParserUtil.isCloudCINode() || isFailing()) {
+
+			return;
+		}
+
+		String distinctTimeStamp =
+			JenkinsResultsParserUtil.getDistinctTimeStamp();
+
+		File baseDir = new File(
+			System.getProperty("java.io.tmpdir"), "/build-report-files/");
+
+		File buildReportFile = new File(baseDir, distinctTimeStamp + ".json");
+
+		File buildReportGzipFile = new File(
+			baseDir, distinctTimeStamp + ".json.gz");
+
+		String s3ObjectPath = _getS3ObjectPath(buildReportGzipFile);
+
+		try {
+			JSONObject buildReportJSONObject = getBuildReportJSONObject();
+
+			if (buildReportJSONObject == null) {
+				return;
+			}
+
+			JenkinsResultsParserUtil.write(
+				buildReportFile, String.valueOf(buildReportJSONObject));
+
+			JenkinsResultsParserUtil.gzip(buildReportFile, buildReportGzipFile);
+
+			CloudBucketUtil.uploadS3File(s3ObjectPath, buildReportGzipFile);
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to upload ", String.valueOf(buildReportGzipFile),
+					" to ", s3ObjectPath),
+				exception);
+		}
+		finally {
+			JenkinsResultsParserUtil.delete(buildReportFile);
+			JenkinsResultsParserUtil.delete(buildReportGzipFile);
+		}
 	}
 
 	@Override
@@ -196,6 +245,14 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			);
 		}
 
+		JSONArray testResultsJSONArray = new JSONArray();
+
+		for (TestResult testResult : getTestResults(null)) {
+			testResultsJSONArray.put(testResult.getTestReportJSONObject());
+		}
+
+		buildReportJSONObject.put("testResults", testResultsJSONArray);
+
 		return buildReportJSONObject;
 	}
 
@@ -305,23 +362,6 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			List<Element> failureElements = getTestResultGitHubElements(
 				getUniqueFailureTestResults(), true);
 
-			List<Element> upstreamJobFailureElements =
-				getTestResultGitHubElements(
-					getUpstreamJobFailureTestResults(), false);
-
-			if (!upstreamJobFailureElements.isEmpty()) {
-				upstreamJobFailureMessageElement = messageElement.createCopy();
-
-				Dom4JUtil.getOrderedListElement(
-					upstreamJobFailureElements,
-					upstreamJobFailureMessageElement, 3);
-
-				System.out.println(
-					JenkinsResultsParserUtil.combine(
-						"[", getBuildName(), "] Saved an upstream failure ",
-						"GitHub message"));
-			}
-
 			Dom4JUtil.getOrderedListElement(failureElements, messageElement, 3);
 
 			if (failureElements.isEmpty()) {
@@ -345,21 +385,21 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		return _gitHubMessageElement;
 	}
 
-	public Map<String, List<String>> getTestClassMethodsMap() {
+	public Map<String, List<String>> getTestClassMethodNamesMap() {
 		String batchName = getBatchName();
 
 		if (!batchName.contains("integration") && !batchName.contains("unit")) {
 			return Collections.emptyMap();
 		}
 
-		Map<String, List<String>> testClassMethodsMap = new HashMap<>();
+		Map<String, List<String>> testClassMethodNamesMap = new HashMap<>();
 
 		AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup();
 
 		if ((axisTestClassGroup == null) ||
 			!axisTestClassGroup.hasTestClasses()) {
 
-			return testClassMethodsMap;
+			return testClassMethodNamesMap;
 		}
 
 		List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
@@ -383,11 +423,11 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 				}
 			}
 
-			testClassMethodsMap.put(
+			testClassMethodNamesMap.put(
 				jUnitTestClass.getTestClassName(), methodNames);
 		}
 
-		return testClassMethodsMap;
+		return testClassMethodNamesMap;
 	}
 
 	@Override
@@ -411,19 +451,7 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	public List<TestResult> getUniqueFailureTestResults() {
 		List<TestResult> uniqueFailureTestResults = new ArrayList<>();
 
-		List<TestResult> testResults = new ArrayList<>();
-
-		testResults.addAll(getTestResults(null));
-
-		List<TestResult> passedTestResults = getTestResults("PASSED");
-
-		if (isFailing() && (passedTestResults.size() == 1) &&
-			testResults.isEmpty()) {
-
-			testResults.addAll(passedTestResults);
-		}
-
-		for (TestResult testResult : testResults) {
+		for (TestResult testResult : getTestResults(null)) {
 			if (!testResult.isFailing()) {
 				continue;
 			}
@@ -442,11 +470,11 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		return uniqueFailureTestResults;
 	}
 
-	public Map<String, List<String>> getUntestedTestClassMethodsMap() {
-		Map<String, List<String>> untestedTestClassMethodsMap =
-			getTestClassMethodsMap();
+	public Map<String, List<String>> getUntestedTestClassMethodNamesMap() {
+		Map<String, List<String>> untestedTestClassMethodNamesMap =
+			getTestClassMethodNamesMap();
 
-		if (untestedTestClassMethodsMap.isEmpty()) {
+		if (untestedTestClassMethodNamesMap.isEmpty()) {
 			return Collections.emptyMap();
 		}
 
@@ -459,23 +487,25 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		for (TestResult testResult : testResults) {
 			String testResultClassName = testResult.getClassName();
 
-			if (untestedTestClassMethodsMap.containsKey(testResultClassName)) {
-				List<String> testClassMethods = untestedTestClassMethodsMap.get(
-					testResultClassName);
+			if (untestedTestClassMethodNamesMap.containsKey(
+					testResultClassName)) {
 
-				testClassMethods.remove(testResult.getTestName());
+				List<String> testClassMethodNames =
+					untestedTestClassMethodNamesMap.get(testResultClassName);
 
-				untestedTestClassMethodsMap.put(
-					testResultClassName, testClassMethods);
+				testClassMethodNames.remove(testResult.getTestName());
+
+				untestedTestClassMethodNamesMap.put(
+					testResultClassName, testClassMethodNames);
 			}
 		}
 
-		return untestedTestClassMethodsMap;
+		return untestedTestClassMethodNamesMap;
 	}
 
 	public List<TestResult> getUntestedTestResults() {
 		Map<String, List<String>> untestedTestsMap =
-			getUntestedTestClassMethodsMap();
+			getUntestedTestClassMethodNamesMap();
 
 		if (untestedTestsMap.isEmpty()) {
 			return Collections.emptyList();
@@ -486,13 +516,13 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		for (Map.Entry<String, List<String>> entry :
 				untestedTestsMap.entrySet()) {
 
-			List<String> testClassMethods = entry.getValue();
+			List<String> testClassMethodNames = entry.getValue();
 
-			if (testClassMethods.isEmpty()) {
+			if (testClassMethodNames.isEmpty()) {
 				continue;
 			}
 
-			for (String methodName : testClassMethods) {
+			for (String methodName : testClassMethodNames) {
 				JSONObject caseJSONObject = new JSONObject();
 
 				String testClassName = entry.getKey();
@@ -538,19 +568,7 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 	public List<TestResult> getUpstreamJobFailureTestResults() {
 		List<TestResult> upstreamFailureTestResults = new ArrayList<>();
 
-		List<TestResult> testResults = new ArrayList<>();
-
-		testResults.addAll(getTestResults(null));
-
-		List<TestResult> passedTestResults = getTestResults("PASSED");
-
-		if (isFailing() && (passedTestResults.size() == 1) &&
-			testResults.isEmpty()) {
-
-			testResults.addAll(passedTestResults);
-		}
-
-		for (TestResult testResult : testResults) {
+		for (TestResult testResult : getTestResults(null)) {
 			if (!testResult.isFailing()) {
 				continue;
 			}
@@ -630,6 +648,8 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 		buildDatabase.putProperty(
 			BUILD_URLS_PROPERTIES_KEY, getAxisName(), getBuildURL(), false);
+
+		_saveBadBuildURLsInBuildDatabase(getBadBuildURLs());
 	}
 
 	protected BaseDownstreamBuild(String url, TopLevelBuild topLevelBuild) {
@@ -1044,6 +1064,136 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		}
 
 		return testResultGitHubElements;
+	}
+
+	private String _getS3ObjectPath(File file) {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			sb.append(
+				JenkinsResultsParserUtil.getBuildProperty(
+					"cloud.ci.s3.bucket.build.reports.path"));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		BuildDatabase buildDatabase = getBuildDatabase();
+
+		List<Workspace> workspaces = buildDatabase.getWorkspaces();
+
+		if (workspaces.isEmpty()) {
+			return null;
+		}
+
+		Workspace workspace = workspaces.get(0);
+
+		WorkspaceGitRepository workspaceGitRepository =
+			workspace.getPrimaryWorkspaceGitRepository();
+
+		sb.append("/");
+		sb.append(workspaceGitRepository.getName());
+		sb.append("/");
+		sb.append(workspaceGitRepository.getBaseBranchSHA());
+		sb.append("/");
+		sb.append(workspaceGitRepository.getSenderBranchSHA());
+		sb.append("/");
+		sb.append(getBatchName());
+		sb.append("/");
+		sb.append(file.getName());
+
+		return sb.toString();
+	}
+
+	private String _getTestrayAttachmentBaseKey() {
+		TopLevelBuild topLevelBuild = getTopLevelBuild();
+
+		if (topLevelBuild == null) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(
+			JenkinsResultsParserUtil.toDateString(
+				new Date(topLevelBuild.getStartTime()), "yyyy-MM",
+				"America/Los_Angeles"));
+
+		sb.append("/");
+
+		JenkinsMaster jenkinsMaster = topLevelBuild.getJenkinsMaster();
+
+		sb.append(jenkinsMaster.getName());
+
+		sb.append("/");
+		sb.append(topLevelBuild.getJobName());
+		sb.append("/");
+		sb.append(topLevelBuild.getBuildNumber());
+		sb.append("/");
+		sb.append(getAxisName());
+
+		return sb.toString();
+	}
+
+	private void _saveBadBuildURLsInBuildDatabase(List<String> badBuildURLs) {
+		if (badBuildURLs.isEmpty()) {
+			return;
+		}
+
+		BuildDatabase buildDatabase = getBuildDatabase();
+
+		buildDatabase.putProperty(
+			BAD_BUILD_URLS_PROPERTIES_KEY, getAxisName(),
+			JenkinsResultsParserUtil.join(",", badBuildURLs), false);
+	}
+
+	private void _uploadJenkinsConsoleTestrayAttachment() {
+		if (!Objects.equals(getStatus(), "completed")) {
+			return;
+		}
+
+		String workspace = System.getenv("WORKSPACE");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(workspace)) {
+			throw new RuntimeException("Please set WORKSPACE");
+		}
+
+		File testrayUploadBaseDir = new File(
+			workspace, JenkinsResultsParserUtil.getDistinctTimeStamp());
+
+		File jenkinsConsoleFile = new File(
+			testrayUploadBaseDir, "jenkins-console.txt");
+		File jenkinsConsoleGzFile = new File(
+			testrayUploadBaseDir, "jenkins-console.txt.gz");
+
+		try {
+			JenkinsConsoleTextLoader jenkinsConsoleTextLoader =
+				JenkinsConsoleTextLoader.getInstance(getBuildURL());
+
+			JenkinsResultsParserUtil.write(
+				jenkinsConsoleFile, jenkinsConsoleTextLoader.getConsoleText());
+
+			JenkinsResultsParserUtil.gzip(
+				jenkinsConsoleFile, jenkinsConsoleGzFile);
+
+			TestrayCloudBucket testrayCloudBucket =
+				TestrayCloudBucket.getInstance();
+
+			TestrayCloudObject testrayCloudObject =
+				testrayCloudBucket.createTestrayCloudObject(
+					JenkinsResultsParserUtil.combine(
+						_getTestrayAttachmentBaseKey(), "/",
+						jenkinsConsoleGzFile.getName()),
+					jenkinsConsoleGzFile);
+
+			addTestrayAttachmentURL(testrayCloudObject.getURL());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+		finally {
+			JenkinsResultsParserUtil.delete(testrayUploadBaseDir);
+		}
 	}
 
 	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =

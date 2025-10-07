@@ -6,7 +6,10 @@
 package com.liferay.mail.messaging.internal;
 
 import com.liferay.mail.kernel.model.MailMessage;
+import com.liferay.mail.kernel.service.MailService;
+import com.liferay.mail.settings.configuration.MailSettingSystemConfiguration;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -16,9 +19,7 @@ import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.security.auth.EmailAddressGenerator;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.security.auth.EmailAddressGeneratorFactory;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.mail.internet.InternetAddress;
 
@@ -26,9 +27,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -36,10 +41,18 @@ import org.osgi.service.component.annotations.Component;
  * @author Zsolt Balogh
  */
 @Component(
+	configurationPid = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration",
 	property = "destination.name=" + DestinationNames.MAIL,
 	service = MessageListener.class
 )
 public class MailMessageListener extends BaseMessageListener {
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_mailSettingSystemConfiguration = ConfigurableUtil.createConfigurable(
+			MailSettingSystemConfiguration.class, properties);
+	}
 
 	protected void doMailMessage(MailMessage mailMessage) throws Exception {
 		InternetAddress from = filterInternetAddress(mailMessage.getFrom());
@@ -65,7 +78,7 @@ public class MailMessageListener extends BaseMessageListener {
 		InternetAddress[] bcc = filterInternetAddresses(mailMessage.getBCC());
 
 		InternetAddress[] auditTrail = InternetAddress.parse(
-			PropsValues.MAIL_AUDIT_TRAIL);
+			_mailSettingSystemConfiguration.auditTrail());
 
 		if (auditTrail.length > 0) {
 			if (ArrayUtil.isNotEmpty(bcc)) {
@@ -93,7 +106,10 @@ public class MailMessageListener extends BaseMessageListener {
 		if (ArrayUtil.isNotEmpty(to) || ArrayUtil.isNotEmpty(cc) ||
 			ArrayUtil.isNotEmpty(bcc) || ArrayUtil.isNotEmpty(bulkAddresses)) {
 
-			MailEngine.send(mailMessage);
+			MailEngine.send(
+				_mailService, mailMessage,
+				_mailSettingSystemConfiguration.batchSize(),
+				_mailSettingSystemConfiguration.throwsExceptionOnFailure());
 		}
 	}
 
@@ -118,12 +134,15 @@ public class MailMessageListener extends BaseMessageListener {
 			return null;
 		}
 
-		if (_mailSendBlacklist.contains(emailAddress)) {
+		Set<String> sendBlacklist = new HashSet<>(
+			Arrays.asList(_mailSettingSystemConfiguration.sendBlacklist()));
+
+		if (sendBlacklist.contains(emailAddress)) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					StringBundler.concat(
 						"Email ", emailAddress, " will be ignored because it ",
-						"is included in ", PropsKeys.MAIL_SEND_BLACKLIST));
+						"is included in blacklist"));
 			}
 
 			return null;
@@ -157,7 +176,10 @@ public class MailMessageListener extends BaseMessageListener {
 	private static final Log _log = LogFactoryUtil.getLog(
 		MailMessageListener.class);
 
-	private static final Set<String> _mailSendBlacklist = new HashSet<>(
-		Arrays.asList(PropsValues.MAIL_SEND_BLACKLIST));
+	@Reference
+	private MailService _mailService;
+
+	private volatile MailSettingSystemConfiguration
+		_mailSettingSystemConfiguration;
 
 }

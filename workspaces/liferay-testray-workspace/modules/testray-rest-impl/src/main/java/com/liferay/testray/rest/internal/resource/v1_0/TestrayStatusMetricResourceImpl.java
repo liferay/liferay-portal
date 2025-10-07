@@ -5,9 +5,15 @@
 
 package com.liferay.testray.rest.internal.resource.v1_0;
 
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -15,18 +21,23 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.testray.rest.dto.v1_0.TestrayBuildMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayCaseTypeMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayComponentMetric;
+import com.liferay.testray.rest.dto.v1_0.TestrayIssueMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayRoutineMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayRunMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayStatusMetric;
 import com.liferay.testray.rest.dto.v1_0.TestrayTeamMetric;
 import com.liferay.testray.rest.internal.util.TestrayUtil;
+import com.liferay.testray.rest.manager.TestrayManager;
 import com.liferay.testray.rest.resource.v1_0.TestrayStatusMetricResource;
+
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -382,6 +393,103 @@ public class TestrayStatusMetricResourceImpl
 	}
 
 	@Override
+	public Page<TestrayIssueMetric>
+			getTestrayStatusMetricByTestrayJiraIssueIdTestrayJiraIssueTestrayIssuesMetricsPage(
+				Long testrayJiraIssueId, Long testrayBuildId,
+				Pagination pagination)
+		throws Exception {
+
+		Map<String, Serializable> testrayJiraIssue =
+			_objectEntryLocalService.getValues(testrayJiraIssueId);
+
+		String issueType = GetterUtil.getString(
+			testrayJiraIssue.get("issueType")
+		).toLowerCase();
+
+		StringBundler sb = new StringBundler(35);
+
+		sb.append("select i.c_jiraissueid_, i.issuetype_, i.title_, ");
+		sb.append("oe.externalreferencecode, blocked, failed, incomplete,");
+		sb.append("inprogress, passed, testfix, total, untested from ");
+		sb.append("O_[%COMPANY_ID%]_jiraissue i join objectentry oe ON ");
+		sb.append("i.c_jiraissueid_ = oe.objectentryid left join (select i.");
+		sb.append(
+			StringUtil.merge(_objectRelationshipNames.get(issueType), ", i."));
+		sb.append(", count(duestatus_) as total, sum(case when duestatus_ = ");
+		sb.append("'BLOCKED' then 1 else 0 end) as blocked, sum(case when ");
+		sb.append("duestatus_ = 'FAILED' then 1 else 0 end) as failed, ");
+		sb.append("sum(case when duestatus_ = 'INCOMPLETE' then 1 else 0 ");
+		sb.append("end) as incomplete, sum(case when duestatus_ = ");
+		sb.append("'INPROGRESS' then 1 else 0 end) as inprogress, sum(case ");
+		sb.append("when duestatus_ = 'PASSED' then 1 else 0 end) as passed, ");
+		sb.append("sum(case when duestatus_ = 'TESTFIX' then 1 else 0 end) ");
+		sb.append("as testfix, sum(case when duestatus_ = 'UNTESTED' then 1 ");
+		sb.append("else 0 end) as untested from ");
+		sb.append(_getObjectRelationshipTableName());
+		sb.append(" rel join o_[%COMPANY_ID%]_jiraissue i ON ");
+		sb.append("i.c_jiraissueid_ = rel.c_jiraissueid_ join ");
+		sb.append("o_[%COMPANY_ID%]_casedetail cd on cd.c_casedetailid_ = ");
+		sb.append("rel.c_casedetailid_ where i.r_");
+		sb.append(issueType);
+		sb.append("_c_jiraissueid = ? and cd.r_buildtocasedetail_c_buildid = ");
+		sb.append("? group by i.");
+		sb.append(
+			StringUtil.merge(_objectRelationshipNames.get(issueType), ", i."));
+		sb.append(") as status on i.c_jiraissueid_ = status.");
+		sb.append(_objectRelationshipNames.get(issueType)[0]);
+
+		if (StringUtil.equalsIgnoreCase(issueType, "epic")) {
+			sb.append(" or i.c_jiraissueid_ = status.");
+			sb.append(_objectRelationshipNames.get(issueType)[1]);
+			sb.append(" or i.c_jiraissueid_ = status.");
+			sb.append(_objectRelationshipNames.get(issueType)[2]);
+		}
+
+		sb.append(" where i.r_parentissue_c_jiraissueid = ? group by ");
+		sb.append("i.c_jiraissueid_, i.issuetype_, i.title_, ");
+		sb.append("oe.externalreferencecode, blocked, failed, incomplete, ");
+		sb.append("inprogress, passed, testfix, total, untested");
+
+		List<Object> params = new ArrayList<>();
+
+		params.add(testrayJiraIssueId);
+		params.add(testrayBuildId);
+		params.add(testrayJiraIssueId);
+
+		String sql = StringUtil.replace(
+			sb.toString(), "[%COMPANY_ID%]",
+			String.valueOf(contextCompany.getCompanyId()));
+
+		long totalCount = TestrayUtil.getTotalCount(sql, params);
+
+		if (pagination != null) {
+			sql += " limit ? offset ?";
+
+			params.add(pagination.getPageSize());
+			params.add(pagination.getStartPosition());
+		}
+
+		List<Map<String, Object>> values = TestrayUtil.executeQuery(
+			sql, params);
+
+		return Page.of(
+			transform(
+				values,
+				value -> new TestrayIssueMetric() {
+					{
+						testrayIssueKey = GetterUtil.getString(
+							value.get("externalreferencecode"));
+						testrayIssueTitle = GetterUtil.getString(
+							value.get("title_"));
+						testrayIssueType = GetterUtil.getString(
+							value.get("issuetype_"));
+						testrayStatusMetric = _getTestrayStatusMetric(value);
+					}
+				}),
+			pagination, totalCount);
+	}
+
+	@Override
 	public Page<TestrayRoutineMetric>
 			getTestrayStatusMetricByTestrayProjectIdTestrayProjectTestrayRoutinesMetricsPage(
 				Long testrayProjectId, Pagination pagination, Sort[] sorts)
@@ -488,7 +596,7 @@ public class TestrayStatusMetricResourceImpl
 				String testrayTaskStatus, Pagination pagination)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(14);
+		StringBundler sb = new StringBundler(15);
 
 		sb.append("select b.c_buildId_ from O_[%COMPANY_ID%]_Build b, ");
 		sb.append("O_[%COMPANY_ID%]_ProductVersion pv ");
@@ -497,14 +605,17 @@ public class TestrayStatusMetricResourceImpl
 			sb.append(", O_[%COMPANY_ID%]_Task t ");
 		}
 
-		sb.append("where b.r_routineToBuilds_c_routineId = ? and ");
-		sb.append("pv.c_productVersionId_ = ");
-		sb.append("b.r_productVersionToBuilds_c_productVersionId and ");
-		sb.append("b.template_ = false and b.archived_ = false ");
-
 		List<Object> params = new ArrayList<>();
 
-		params.add(testrayRoutineId);
+		sb.append("where b.r_routineToBuilds_c_routineId in (");
+		sb.append(
+			TestrayUtil.interpolateParams(
+				params,
+				_testrayManager.getRelatedTestrayRoutineIds(
+					contextCompany.getCompanyId(), testrayRoutineId)));
+		sb.append(") and pv.c_productVersionId_ = ");
+		sb.append("b.r_productVersionToBuilds_c_productVersionId and ");
+		sb.append("b.template_ = false and b.archived_ = false ");
 
 		if (Validator.isNotNull(testrayProductVersion)) {
 			sb.append("and pv.c_productVersionId_ = ? ");
@@ -531,7 +642,7 @@ public class TestrayStatusMetricResourceImpl
 
 		long totalCount = TestrayUtil.getTotalCount(sql, params);
 
-		sb = new StringBundler(29);
+		sb = new StringBundler(31);
 
 		sb.append("select (b.caseresultblocked_ + b.caseresultfailed_ + ");
 		sb.append("b.caseresultincomplete_ + b.caseresultinprogress_ + ");
@@ -554,14 +665,18 @@ public class TestrayStatusMetricResourceImpl
 			sb.append(", O_[%COMPANY_ID%]_Task t ");
 		}
 
-		sb.append("where b.r_routineToBuilds_c_routineId = ? and ");
-		sb.append("bx.c_buildid_ = b.c_buildid_ and pv.c_productVersionId_ = ");
-		sb.append("b.r_productVersionToBuilds_c_productVersionId and ");
-		sb.append("b.template_ = false and b.archived_ = false ");
-
 		params = new ArrayList<>();
 
-		params.add(testrayRoutineId);
+		sb.append("where b.r_routineToBuilds_c_routineId in (");
+		sb.append(
+			TestrayUtil.interpolateParams(
+				params,
+				_testrayManager.getRelatedTestrayRoutineIds(
+					contextCompany.getCompanyId(), testrayRoutineId)));
+		sb.append(") and bx.c_buildid_ = b.c_buildid_ and ");
+		sb.append("pv.c_productVersionId_ = ");
+		sb.append("b.r_productVersionToBuilds_c_productVersionId and ");
+		sb.append("b.template_ = false and b.archived_ = false ");
 
 		if (Validator.isNotNull(testrayProductVersion)) {
 			sb.append("and pv.c_productVersionId_ = ? ");
@@ -633,6 +748,20 @@ public class TestrayStatusMetricResourceImpl
 			pagination, totalCount);
 	}
 
+	private String _getObjectRelationshipTableName() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				contextCompany.getCompanyId(), "C_CaseDetail");
+
+		List<ObjectRelationship> objectRelationships =
+			_objectRelationshipLocalService.getObjectRelationships(
+				objectDefinition.getObjectDefinitionId(), "manyToMany");
+
+		ObjectRelationship objectRelationship = objectRelationships.get(0);
+
+		return objectRelationship.getDBTableName();
+	}
+
 	private TestrayStatusMetric _getTestrayStatusMetric(
 		Map<String, Object> map) {
 
@@ -652,5 +781,32 @@ public class TestrayStatusMetricResourceImpl
 
 		return testrayStatusMetric;
 	}
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
+
+	private final Map<String, String[]> _objectRelationshipNames =
+		HashMapBuilder.put(
+			"epic",
+			new String[] {
+				"c_jiraissueid_", "r_story_c_jiraissueid",
+				"r_task_c_jiraissueid"
+			}
+		).put(
+			"initiative", new String[] {"r_epic_c_jiraissueid"}
+		).put(
+			"story", new String[] {"c_jiraissueid_"}
+		).put(
+			"task", new String[] {"c_jiraissueid_"}
+		).build();
+
+	@Reference
+	private TestrayManager _testrayManager;
 
 }

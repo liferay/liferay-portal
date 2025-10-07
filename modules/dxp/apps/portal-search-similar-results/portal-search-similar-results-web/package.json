@@ -5,5 +5,5 @@
 		"checkFormat": "node-scripts format --check",
 		"format": "node-scripts format"
 	},
-	"version": "3.0.59"
+	"version": "3.0.60"
 }

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Service
 Bundle-SymbolicName: com.liferay.site.service
-Bundle-Version: 4.0.38
+Bundle-Version: 4.0.39
 Liferay-Require-SchemaVersion: 2.1.2
 Liferay-Service: true
 -dsannotations-options: inherit

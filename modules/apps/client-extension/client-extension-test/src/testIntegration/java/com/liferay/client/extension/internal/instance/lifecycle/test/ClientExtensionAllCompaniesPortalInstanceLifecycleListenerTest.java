@@ -13,20 +13,20 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.log4j.Log4JUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsImpl;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -49,15 +49,19 @@ public class ClientExtensionAllCompaniesPortalInstanceLifecycleListenerTest {
 
 	@Before
 	public void setUp() {
-		_originalProps = com.liferay.portal.kernel.util.PropsUtil.getProps();
+		Map<String, String> priorities = Log4JUtil.getPriorities();
 
-		com.liferay.portal.kernel.util.PropsUtil.setProps(new PropsImpl());
+		_priority = priorities.get(
+			"com.liferay.client.extension.type.internal.manager." +
+				"CETManagerImpl");
+
+		Log4JUtil.setLevel(
+			"com.liferay.client.extension.type.internal.manager.CETManagerImpl",
+			"ERROR", false);
 	}
 
 	@After
 	public void tearDown() {
-		com.liferay.portal.kernel.util.PropsUtil.setProps(_originalProps);
-
 		for (AutoCloseable autoCloseable : _autoCloseables) {
 			try {
 				autoCloseable.close();
@@ -66,6 +70,10 @@ public class ClientExtensionAllCompaniesPortalInstanceLifecycleListenerTest {
 				_log.error(exception);
 			}
 		}
+
+		Log4JUtil.setLevel(
+			"com.liferay.client.extension.type.internal.manager.CETManagerImpl",
+			_priority, false);
 	}
 
 	@Test
@@ -166,6 +174,6 @@ public class ClientExtensionAllCompaniesPortalInstanceLifecycleListenerTest {
 	@Inject
 	private CETManager _cetManager;
 
-	private Props _originalProps;
+	private String _priority;
 
 }

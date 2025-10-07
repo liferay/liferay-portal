@@ -153,7 +153,7 @@ function getLabels({actionButton, articleId, workflowEnabled}) {
 		return {
 			button: workflowEnabled
 				? Liferay.Language.get('submit-for-workflow')
-				: Liferay.Language.get('schedule'),
+				: Liferay.Language.get('schedule[verb]'),
 			description: articleId
 				? workflowEnabled
 					? Liferay.Language.get(

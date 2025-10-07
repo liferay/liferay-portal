@@ -6,11 +6,14 @@
 package com.liferay.object.web.internal.item.selector;
 
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -19,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @author Guilherme Camacho
@@ -27,10 +31,12 @@ public class ObjectEntryItemDescriptor
 	implements ItemSelectorViewDescriptor.ItemDescriptor {
 
 	public ObjectEntryItemDescriptor(
+		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest,
 		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 		Portal portal) {
 
+		_groupLocalService = groupLocalService;
 		_httpServletRequest = httpServletRequest;
 		_objectDefinition = objectDefinition;
 		_objectEntry = objectEntry;
@@ -77,13 +83,27 @@ public class ObjectEntryItemDescriptor
 				return String.valueOf(_objectEntry.getObjectEntryId());
 			}
 		).put(
-			"externalReferenceCode",
+			"externalReferenceCode", _objectEntry.getExternalReferenceCode()
+		).put(
+			"scopeExternalReferenceCode",
 			() -> {
-				if (!_objectDefinition.isDefaultStorageType()) {
-					return _objectEntry.getExternalReferenceCode();
+				if ((_objectEntry.getGroupId() ==
+						themeDisplay.getScopeGroupId()) ||
+					Objects.equals(
+						_objectDefinition.getScope(),
+						ObjectDefinitionConstants.SCOPE_COMPANY)) {
+
+					return null;
 				}
 
-				return null;
+				Group group = _groupLocalService.fetchGroup(
+					_objectEntry.getGroupId());
+
+				if (group == null) {
+					return null;
+				}
+
+				return group.getExternalReferenceCode();
 			}
 		).put(
 			"title", getTitle(themeDisplay.getLocale())
@@ -135,6 +155,7 @@ public class ObjectEntryItemDescriptor
 		return String.valueOf(_objectEntry.getObjectEntryId());
 	}
 
+	private final GroupLocalService _groupLocalService;
 	private final HttpServletRequest _httpServletRequest;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntry _objectEntry;

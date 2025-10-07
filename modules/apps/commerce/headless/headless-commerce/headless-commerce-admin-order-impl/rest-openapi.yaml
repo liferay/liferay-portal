@@ -169,6 +169,9 @@ components:
                 advanceStatus:
                     example: trasmitted
                     type: string
+                author:
+                    readOnly: true
+                    type: string
                 billingAddress:
                     $ref: "#/components/schemas/BillingAddress"
                 billingAddressExternalReferenceCode:
@@ -721,6 +724,10 @@ components:
                 printedNote:
                     example: Order item printed note
                     type: string
+                productId:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 promoPrice:
                     example: 101
                     format: bigdecimal

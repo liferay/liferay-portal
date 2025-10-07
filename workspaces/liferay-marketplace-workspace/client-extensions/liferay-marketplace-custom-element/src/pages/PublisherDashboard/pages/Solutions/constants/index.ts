@@ -51,7 +51,7 @@ export const SOLUTION_FLOW_ITEMS = [
 	},
 	{
 		description: i18n.translate(
-			'define-profile-company-information-for-your-solution-this-will-inform-users-about-this-versions-updates-on-the-storefront'
+			'define-company-profile-information-for-your-solution-this-will-inform-users-about-this-versions-updates-on-the-storefront'
 		),
 		label: i18n.translate('company-profile'),
 		parseSchema: (context: SolutionInitialState) =>
@@ -61,7 +61,7 @@ export const SOLUTION_FLOW_ITEMS = [
 	},
 	{
 		description: i18n.translate(
-			'define-contact-us-information-for-your-solution-this-will-inform-users-about-this-versions-updates-on-the-storefront'
+			'define-contact-information-for-your-solution-this-will-inform-users-about-this-versions-updates-on-the-storefront'
 		),
 		label: i18n.translate('contact-us'),
 		parseSchema: (context: SolutionInitialState) =>

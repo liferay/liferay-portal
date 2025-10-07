@@ -1158,8 +1158,6 @@ definition {
 		}
 
 		if (isSet(allowedOrderQuantities)) {
-			var allowedOrderQuantities = StringUtil.replace(${allowedOrderQuantities}, ",", "-");
-
 			var allowedOrderQuantities = '''"allowedOrderQuantities": [${allowedOrderQuantities}]''';
 
 			ListUtil.add(${fieldsList}, ${allowedOrderQuantities});

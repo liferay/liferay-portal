@@ -130,7 +130,7 @@ export class PageEditorPage {
 		}
 
 		if (name !== 'Stepper') {
-			await this.waitForChangesSaved();
+			await this.waitForChangesSaved({timeout: 2000});
 		}
 	}
 
@@ -486,8 +486,10 @@ export class PageEditorPage {
 		await collapseSection(this.experienceSelector);
 
 		await this.page
-			.getByText('Select Experience')
-			.waitFor({state: 'hidden'});
+			.getByRole('heading', {name: 'Select Experience'})
+			.waitFor({
+				state: 'hidden',
+			});
 	}
 
 	async copyFragment(fragmentId: string) {
@@ -1066,9 +1068,28 @@ export class PageEditorPage {
 			.check({trial: true});
 
 		if (!fields || fields === 'all') {
+
+			// Select all fields and then deselect metadata fields
+
 			await fieldsModal
 				.getByLabel('Select All Items on the Page')
 				.check();
+
+			const basicInfoHeader = fieldsModal.locator('.table-divider', {
+				hasText: 'Basic Information',
+			});
+
+			let current = basicInfoHeader.locator(
+				'xpath=./following-sibling::*[1]'
+			);
+
+			while (
+				!(await current.getAttribute('class')).includes('table-divider')
+			) {
+				await current.getByRole('checkbox').uncheck();
+
+				current = current.locator('xpath=./following-sibling::*[1]');
+			}
 		}
 		else {
 			for (const field of fields) {
@@ -1110,6 +1131,14 @@ export class PageEditorPage {
 		);
 	}
 
+	async mapFormRelationshipFragment(fragmentId: string, type: string) {
+		const fragment = this.getFragment(fragmentId);
+
+		await fragment.getByLabel('Select a content type').selectOption(type);
+
+		await this.waitForChangesSaved();
+	}
+
 	async mapEditableLink({
 		editableId,
 		fragmentName,
@@ -1137,7 +1166,9 @@ export class PageEditorPage {
 	async openExperienceSelector() {
 		await expandSection(this.experienceSelector);
 
-		await this.page.getByText('Select Experience').waitFor();
+		await this.page
+			.getByRole('heading', {name: 'Select Experience'})
+			.waitFor();
 	}
 
 	async openMappingSelector() {
@@ -1196,6 +1227,18 @@ export class PageEditorPage {
 				.locator('.page-editor__toolbar')
 				.getByRole('button', {name: 'Actions'}),
 		});
+	}
+
+	async removeMapping() {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Remove Item'}),
+			trigger: this.page.getByLabel('View Item Options'),
+		});
+
+		await expect(
+			this.page.getByPlaceholder('No Item Selected')
+		).toBeVisible();
 	}
 
 	async removeFragment(fragmentId: string) {
@@ -1531,7 +1574,7 @@ export class PageEditorPage {
 
 		if (source === 'relationship') {
 			await this.page
-				.getByLabel('Relationship')
+				.getByLabel('Relationship', {exact: true})
 				.selectOption(mappingConfiguration.relationship);
 		}
 
@@ -1552,8 +1595,6 @@ export class PageEditorPage {
 
 	async switchExperience(experience: string) {
 		await this.openExperienceSelector();
-
-		await this.page.getByText('Select Experience').waitFor();
 
 		await this.page
 			.locator('.dropdown-menu__experience', {
@@ -1591,14 +1632,14 @@ export class PageEditorPage {
 		await this.waitForChangesSaved();
 	}
 
-	async waitForChangesSaved() {
-		await this.page.getByLabel('Saved', {exact: true}).waitFor();
+	async waitForChangesSaved({timeout}: {timeout?: number} = {}) {
+		await this.page.getByLabel('Saved', {exact: true}).waitFor({timeout});
 
 		await this.page
 			.getByText(
 				'Changes have been saved. Page editor will autosave new changes.'
 			)
-			.waitFor();
+			.waitFor({timeout});
 	}
 
 	getEditable({

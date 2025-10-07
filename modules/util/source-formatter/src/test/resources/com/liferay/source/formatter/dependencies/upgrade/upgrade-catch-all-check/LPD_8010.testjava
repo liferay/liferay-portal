@@ -1,0 +1,29 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies.upgrade;
+
+/**
+ * @author Agnes Maciel
+ */
+public class LPD_8010 {
+
+	public void method() {
+		AutoBatchPreparedStatementUtil.autoBatch(
+			connection.prepareStatement(
+				"delete from AssetLink where entryId1 = ? or entryId2 = ?"));
+
+		AutoBatchPreparedStatementUtil.autoBatch(
+			elementConnection.prepareStatement(
+				"update LayoutPageTemplateCollection set lptCollectionKey = ?" +
+					" where layoutPageTemplateCollectionId = ?"));
+	}
+
+	public void method(PreparedStatement preparedStatement) {
+		AutoBatchPreparedStatementUtil.autoBatch(null);
+		AutoBatchPreparedStatementUtil.autoBatch(preparedStatement);
+	}
+
+}

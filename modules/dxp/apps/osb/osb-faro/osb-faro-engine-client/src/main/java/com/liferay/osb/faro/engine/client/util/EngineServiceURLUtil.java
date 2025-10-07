@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.http.client.utils.URIBuilder;
 
 /**
@@ -35,7 +36,7 @@ public class EngineServiceURLUtil {
 
 		String url = getBackendURL(faroProject, null);
 
-		if (StringUtils.contains(
+		if (Strings.CS.contains(
 				FaroPropsValues.OSB_ASAH_BACKEND_URL, "{wedeploy}")) {
 
 			return url;
@@ -58,7 +59,7 @@ public class EngineServiceURLUtil {
 
 		String url = getPublisherURL(faroProject, null);
 
-		if (StringUtils.contains(
+		if (Strings.CS.contains(
 				FaroPropsValues.OSB_ASAH_PUBLISHER_URL, "{wedeploy}")) {
 
 			return url;

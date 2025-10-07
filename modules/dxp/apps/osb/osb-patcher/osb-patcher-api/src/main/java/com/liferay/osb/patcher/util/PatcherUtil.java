@@ -5,6 +5,21 @@
 
 package com.liferay.osb.patcher.util;
 
+import com.google.api.gax.core.FixedCredentialsProvider;
+import com.google.api.gax.rpc.UnaryCallable;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
+import com.google.cloud.pubsub.v1.stub.SubscriberStub;
+import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
+import com.google.pubsub.v1.AcknowledgeRequest;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.PubsubMessage;
+import com.google.pubsub.v1.PullRequest;
+import com.google.pubsub.v1.PullResponse;
+import com.google.pubsub.v1.ReceivedMessage;
+
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherConstants;
 import com.liferay.osb.patcher.constants.PatcherProductVersionConstants;
@@ -23,14 +38,12 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DigesterUtil;
@@ -43,11 +56,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.lock.service.LockLocalServiceUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -120,15 +133,88 @@ public class PatcherUtil {
 		return sortTokens(newTickets);
 	}
 
-	public static String getNextPatcherBuilderStatusMsg() throws Exception {
+	public static String getNextPatcherBuilderStatusMsg(long companyId)
+		throws Exception {
+
 		PatcherConfiguration patcherConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
+				PatcherConfiguration.class, companyId);
 
 		if (Validator.isNull(
 				patcherConfiguration.patcherPubsubCredentialFilePath())) {
 
 			return null;
+		}
+
+		ServiceAccountCredentials serviceAccountCredentials =
+			ServiceAccountCredentials.fromStream(
+				new FileInputStream(
+					patcherConfiguration.patcherPubsubCredentialFilePath()));
+
+		SubscriberStubSettings subscriberStubSettings =
+			SubscriberStubSettings.newBuilder(
+			).setCredentialsProvider(
+				FixedCredentialsProvider.create(serviceAccountCredentials)
+			).setTransportChannelProvider(
+				SubscriberStubSettings.defaultGrpcTransportProviderBuilder(
+				).setMaxInboundMessageSize(
+					20 * 1024 * 1024
+				).build()
+			).build();
+
+		SubscriberStub subscriber = null;
+
+		try {
+			subscriber = GrpcSubscriberStub.create(subscriberStubSettings);
+
+			String subscriptionName = ProjectSubscriptionName.format(
+				patcherConfiguration.patcherPubsubProjectId(),
+				patcherConfiguration.patcherPubsubSubscriptionId());
+
+			PullRequest pullRequest = PullRequest.newBuilder(
+			).setMaxMessages(
+				1
+			).setSubscription(
+				subscriptionName
+			).build();
+
+			UnaryCallable<PullRequest, PullResponse> pullUnaryCallable =
+				subscriber.pullCallable();
+
+			PullResponse pullResponse = pullUnaryCallable.call(pullRequest);
+
+			List<ReceivedMessage> receivedMessageList =
+				pullResponse.getReceivedMessagesList();
+
+			ReceivedMessage receivedMessage = receivedMessageList.get(0);
+
+			AcknowledgeRequest acknowledgeRequest =
+				AcknowledgeRequest.newBuilder(
+				).setSubscription(
+					subscriptionName
+				).addAllAckIds(
+					Collections.singleton(receivedMessage.getAckId())
+				).build();
+
+			UnaryCallable<AcknowledgeRequest, Empty> acknowledgeUnaryCallable =
+				subscriber.acknowledgeCallable();
+
+			acknowledgeUnaryCallable.call(acknowledgeRequest);
+
+			subscriber.close();
+
+			PubsubMessage pubsubMessage = receivedMessage.getMessage();
+
+			ByteString pubsubMessageData = pubsubMessage.getData();
+
+			return pubsubMessageData.toStringUtf8();
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			subscriber.close();
 		}
 
 		return null;
@@ -155,19 +241,6 @@ public class PatcherUtil {
 		overriddenTickets.retainAll(getCurrentTickets(patcherFixPack));
 
 		return sortTokens(overriddenTickets);
-	}
-
-	public static Map<String, Object> getPropertiesMap(Object... properties) {
-		Map<String, Object> propertiesMap = new HashMap<>();
-
-		for (int i = 0; i < properties.length; i += 2) {
-			String propertyName = String.valueOf(properties[i]);
-			Object propertyValue = properties[i + 1];
-
-			propertiesMap.put(propertyName, propertyValue);
-		}
-
-		return propertiesMap;
 	}
 
 	public static List<String> getTickets(String name) {
@@ -199,29 +272,6 @@ public class PatcherUtil {
 
 	public static List<String> getTokens(String name) {
 		return ListUtil.fromArray(StringUtil.split(name));
-	}
-
-	public static String getUserDisplayURL(
-			ThemeDisplay themeDisplay, long userId)
-		throws Exception {
-
-		User user = UserLocalServiceUtil.fetchUser(userId);
-
-		if (user == null) {
-			return StringPool.BLANK;
-		}
-
-		PatcherConfiguration patcherConfiguration =
-			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, CompanyThreadLocal.getCompanyId());
-
-		if (Validator.isNull(patcherConfiguration.liferayUsersProfileURL())) {
-			return user.getDisplayURL(themeDisplay);
-		}
-
-		return StringUtil.replace(
-			patcherConfiguration.liferayUsersProfileURL(),
-			"${liferay:screenName}", user.getScreenName());
 	}
 
 	public static boolean isPatcherProjectVersionName(String name) {
@@ -277,47 +327,10 @@ public class PatcherUtil {
 		return true;
 	}
 
-	public static void notifyUsersInactivePatcherBaseModels(
-			ThemeDisplay themeDisplay)
-		throws Exception {
+	public static void notifyUsersInactivePatcherBaseModels() throws Exception {
+		PatcherBuildUtil.notifyUsersInactivePatcherBuilds();
 
-		PatcherBuildUtil.notifyUsersInactivePatcherBuilds(themeDisplay);
-
-		PatcherFixUtil.notifyUsersInactivePatcherFixes(themeDisplay);
-	}
-
-	public static void pollIndexState(
-			String className, long classPK, ThemeDisplay themeDisplay,
-			Object... attributes)
-		throws Exception {
-
-		Map<String, Serializable> attributesMap = getSearchAttributes(
-			attributes);
-
-		attributesMap.put(Field.ENTRY_CLASS_PK, classPK);
-
-		for (int i = 0; i < _POLL_INDEX_MAX_COUNT; i++) {
-			Hits hits = search(className, attributesMap, null, themeDisplay);
-
-			Document[] documents = hits.getDocs();
-
-			if (documents.length > 0) {
-				return;
-			}
-
-			Thread.sleep(_POLL_INDEX_WAIT_INTERVAL);
-		}
-	}
-
-	public static String prepareKeywords(String keywords) {
-		if (Validator.isNull(keywords)) {
-			return StringPool.BLANK;
-		}
-
-		String[] keywordsArray = keywords.split("\\s*(,|\\s)\\s*");
-
-		return StringPool.QUOTE + StringUtil.merge(keywordsArray, "\" \"") +
-			StringPool.QUOTE;
+		PatcherFixUtil.notifyUsersInactivePatcherFixes();
 	}
 
 	public static String preparePatcherName(String name) {
@@ -330,23 +343,21 @@ public class PatcherUtil {
 			new String[] {StringPool.BLANK, StringPool.BLANK});
 	}
 
-	public static void processOSBPatcherMessageQueue(ThemeDisplay themeDisplay)
+	public static void processOSBPatcherMessageQueue(long companyId)
 		throws Exception {
 
-		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
-			themeDisplay.getCompanyId());
+		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(companyId);
 
 		String lockClassName = PatcherBuild.class.getName() + "_Jenkins";
 
 		if (LockLocalServiceUtil.hasLock(
-				defaultUserId, lockClassName, themeDisplay.getCompanyId())) {
+				defaultUserId, lockClassName, companyId)) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
 						"Skipping ", lockClassName,
-						" file processing for company ",
-						themeDisplay.getCompanyId(),
+						" file processing for company ", companyId,
 						"because it is currently running"));
 			}
 
@@ -355,10 +366,11 @@ public class PatcherUtil {
 
 		try {
 			LockLocalServiceUtil.lock(
-				defaultUserId, lockClassName, themeDisplay.getCompanyId(),
-				lockClassName, false, Time.HOUR);
+				defaultUserId, lockClassName, companyId, lockClassName, false,
+				Time.HOUR);
 
-			String jenkinsStatusJSONString = getNextPatcherBuilderStatusMsg();
+			String jenkinsStatusJSONString = getNextPatcherBuilderStatusMsg(
+				companyId);
 
 			if (Validator.isNotNull(jenkinsStatusJSONString) &&
 				_log.isInfoEnabled()) {
@@ -391,23 +403,20 @@ public class PatcherUtil {
 			_log.error(exception);
 		}
 		finally {
-			LockLocalServiceUtil.unlock(
-				lockClassName, themeDisplay.getCompanyId());
+			LockLocalServiceUtil.unlock(lockClassName, companyId);
 		}
 	}
 
-	public static void processOSBPatcherStatusFiles(
-			String path, ThemeDisplay themeDisplay)
+	public static void processOSBPatcherStatusFiles(long companyId, String path)
 		throws Exception {
 
-		long defaultUserId = UserLocalServiceUtil.getDefaultUserId(
-			themeDisplay.getCompanyId());
+		User defaultUser = UserLocalServiceUtil.getDefaultUser(companyId);
 
 		String lockClassName = PatcherFix.class.getName();
 
 		PatcherConfiguration patcherConfiguration =
 			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, themeDisplay.getCompanyId());
+				PatcherConfiguration.class, companyId);
 
 		String patcherStatusPath = patcherConfiguration.patcherStatusPath();
 
@@ -431,14 +440,13 @@ public class PatcherUtil {
 		}
 
 		if (LockLocalServiceUtil.hasLock(
-				defaultUserId, lockClassName, themeDisplay.getCompanyId())) {
+				defaultUser.getUserId(), lockClassName, companyId)) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
 						"Skipping ", lockClassName,
-						" file processing for company ",
-						themeDisplay.getCompanyId(),
+						" file processing for company ", companyId,
 						"because it is currently running"));
 			}
 
@@ -447,7 +455,7 @@ public class PatcherUtil {
 
 		try {
 			LockLocalServiceUtil.lock(
-				defaultUserId, lockClassName, themeDisplay.getCompanyId(),
+				defaultUser.getUserId(), lockClassName, companyId,
 				lockClassName, false, Time.HOUR);
 
 			String[] patcherFileNames = FileUtil.listFiles(path);
@@ -509,12 +517,12 @@ public class PatcherUtil {
 						PatcherBuildUtil.
 							processOSBPatcherBuildMergeJenkinsStatus(
 								user, GetterUtil.getLong(patcherId),
-								jenkinsStatusJSONString, themeDisplay);
+								jenkinsStatusJSONString);
 					}
 					else {
 						PatcherFixUtil.processOSBPatcherFixAddJenkinsStatus(
 							GetterUtil.getLong(patcherId),
-							jenkinsStatusJSONString, themeDisplay);
+							jenkinsStatusJSONString, defaultUser);
 					}
 				}
 				catch (Exception exception) {
@@ -526,8 +534,7 @@ public class PatcherUtil {
 			_log.error(exception);
 		}
 		finally {
-			LockLocalServiceUtil.unlock(
-				lockClassName, themeDisplay.getCompanyId());
+			LockLocalServiceUtil.unlock(lockClassName, companyId);
 		}
 	}
 
@@ -613,31 +620,6 @@ public class PatcherUtil {
 
 		return StringUtil.merge(keywordsArray, StringPool.COMMA_AND_SPACE);
 	}
-
-	protected static Map<String, Serializable> getSearchAttributes(
-			Object... attributes)
-		throws Exception {
-
-		if ((attributes.length != 0) && ((attributes.length % 2) != 0)) {
-			throw new Exception("Arguments length is not an even number");
-		}
-
-		Map<String, Serializable> attributesMap = new HashMap<>();
-
-		for (int i = 0; i < attributes.length; i += 2) {
-			String name = String.valueOf(attributes[i]);
-
-			Serializable value = (Serializable)attributes[i + 1];
-
-			attributesMap.put(name, value);
-		}
-
-		return attributesMap;
-	}
-
-	private static final long _POLL_INDEX_MAX_COUNT = 4;
-
-	private static final long _POLL_INDEX_WAIT_INTERVAL = 250;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		"jsp.osb.patcher.util.PatcherUtil");

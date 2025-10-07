@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.util.List;
-import java.util.TreeMap;
+import java.util.NavigableMap;
 
 /**
  * @author Juergen Kappler
@@ -150,7 +150,7 @@ public class NestedPortletsDisplayContext {
 			WebKeys.VIRTUAL_HOST_LAYOUT_SET);
 
 		if (layoutSet != null) {
-			TreeMap<String, String> virtualHostnames =
+			NavigableMap<String, String> virtualHostnames =
 				layoutSet.getVirtualHostnames();
 
 			if (!virtualHostnames.isEmpty()) {

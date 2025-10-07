@@ -11,9 +11,9 @@ import com.liferay.adaptive.media.web.internal.background.task.OptimizeImagesSin
 import com.liferay.adaptive.media.web.internal.constants.AMPortletKeys;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -79,7 +79,7 @@ public class OptimizeImagesMVCActionCommand extends BaseMVCActionCommand {
 
 		try {
 			return _backgroundTaskManager.addBackgroundTask(
-				userId, CompanyConstants.SYSTEM, jobName,
+				userId, BackgroundTaskConstants.GROUP_ID_DEFAULT, jobName,
 				OptimizeImagesAllConfigurationsBackgroundTaskExecutor.class.
 					getName(),
 				taskContextMap, new ServiceContext());
@@ -106,7 +106,7 @@ public class OptimizeImagesMVCActionCommand extends BaseMVCActionCommand {
 
 		try {
 			return _backgroundTaskManager.addBackgroundTask(
-				userId, CompanyConstants.SYSTEM, jobName,
+				userId, BackgroundTaskConstants.GROUP_ID_DEFAULT, jobName,
 				OptimizeImagesSingleConfigurationBackgroundTaskExecutor.class.
 					getName(),
 				taskContextMap, new ServiceContext());

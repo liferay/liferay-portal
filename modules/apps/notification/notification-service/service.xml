@@ -188,6 +188,7 @@
 		<exception>NotificationTemplateAttachmentObjectFieldId</exception>
 		<exception>NotificationTemplateDescription</exception>
 		<exception>NotificationTemplateEditorType</exception>
+		<exception>NotificationTemplateExternalReferenceCode</exception>
 		<exception>NotificationTemplateName</exception>
 		<exception>NotificationTemplateObjectDefinitionId</exception>
 		<exception>NotificationTemplateSubject</exception>

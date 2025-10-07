@@ -5,7 +5,7 @@
 
 package com.liferay.asset.display.page.item.selector.web.internal.display.context;
 
-import com.liferay.asset.display.page.item.selector.AssetDisplayPageSelectorCriterion;
+import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.item.selector.criteria.AssetEntryItemSelectorReturnType;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -46,12 +46,14 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 
 	public AssetDisplayPagesItemSelectorCustomViewDisplayContext(
 		HttpServletRequest httpServletRequest, String itemSelectedEventName,
-		AssetDisplayPageSelectorCriterion assetDisplayPageSelectorCriterion,
+		AssetDisplayPageItemSelectorCriterion
+			assetDisplayPageItemSelectorCriterion,
 		PortletURL portletURL) {
 
 		_httpServletRequest = httpServletRequest;
 		_itemSelectedEventName = itemSelectedEventName;
-		_assetDisplayPageSelectorCriterion = assetDisplayPageSelectorCriterion;
+		_assetDisplayPageItemSelectorCriterion =
+			assetDisplayPageItemSelectorCriterion;
 		_portletURL = portletURL;
 
 		_portletRequest = (PortletRequest)httpServletRequest.getAttribute(
@@ -82,8 +84,8 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 				LayoutPageTemplateEntryServiceUtil.
 					getLayoutPageCollectionsAndLayoutPageTemplateEntries(
 						_getGroupId(), getLayoutPageTemplateCollectionId(),
-						_assetDisplayPageSelectorCriterion.getClassNameId(),
-						_assetDisplayPageSelectorCriterion.getClassTypeId(),
+						_assetDisplayPageItemSelectorCriterion.getClassNameId(),
+						_assetDisplayPageItemSelectorCriterion.getClassTypeId(),
 						_getKeywords(),
 						LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 						WorkflowConstants.STATUS_APPROVED,
@@ -93,8 +95,8 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 			LayoutPageTemplateEntryServiceUtil.
 				getLayoutPageCollectionsAndLayoutPageTemplateEntriesCount(
 					_getGroupId(), getLayoutPageTemplateCollectionId(),
-					_assetDisplayPageSelectorCriterion.getClassNameId(),
-					_assetDisplayPageSelectorCriterion.getClassTypeId(),
+					_assetDisplayPageItemSelectorCriterion.getClassNameId(),
+					_assetDisplayPageItemSelectorCriterion.getClassTypeId(),
 					_getKeywords(),
 					LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
 					WorkflowConstants.STATUS_APPROVED));
@@ -258,9 +260,9 @@ public class AssetDisplayPagesItemSelectorCustomViewDisplayContext {
 		return _orderByCol;
 	}
 
+	private final AssetDisplayPageItemSelectorCriterion
+		_assetDisplayPageItemSelectorCriterion;
 	private SearchContainer<?> _assetDisplayPageSearchContainer;
-	private final AssetDisplayPageSelectorCriterion
-		_assetDisplayPageSelectorCriterion;
 	private Long _groupId;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _itemSelectedEventName;

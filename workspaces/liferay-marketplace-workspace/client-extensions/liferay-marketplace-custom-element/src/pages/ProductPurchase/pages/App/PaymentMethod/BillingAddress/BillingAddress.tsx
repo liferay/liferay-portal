@@ -3,219 +3,152 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
+import {useSelector} from '@xstate/store/react';
 import React, {useState} from 'react';
+import {KeyedMutator} from 'swr';
 
-import {Input} from '../../../../../../components/Input/Input';
 import {RadioCard} from '../../../../../../components/RadioCard/RadioCard';
 import {Section} from '../../../../../../components/Section/Section';
-import Select from '../../../../../../components/Select/Select';
 import useCommerceRegions from '../../../../../../hooks/useCommerceRegions';
-import i18n from '../../../../../../i18n';
 import {Liferay} from '../../../../../../liferay/liferay';
+import HeadlessAdminUser from '../../../../../../services/rest/HeadlessAdminUser';
+import {Region} from '../../../../../../services/rest/HeadlessCommerceAdminAddress';
+import {useProductPurchaseOutletContext} from '../../../../ProductPurchaseOutlet';
+import {productPurchaseStore} from '../../../../store';
+import BillingAddressForm from './BillinAddressForm';
 import getPostalAddressDescription from './getPostalAddressDescription';
-
-import './BillingAddress.scss';
 
 type BillingAddressProps = {
 	addresses: BillingAddress[];
-	billingAddress: BillingAddress;
+	mutateUserAccoutAddress: KeyedMutator<{items: BillingAddress[]}>;
 	setBillingAddress: React.Dispatch<BillingAddress>;
 };
 
-const defaultBillingAddress = {
-	city: '',
-	country: '',
-	countryISOCode: '',
-	name: '',
-	phoneNumber: '',
-	regionISOCode: '',
-	street1: '',
-	street2: '',
-	zip: '',
-};
-
-function BillingAddressForm({
-	billingAddress,
+const BillingAddress: React.FC<BillingAddressProps> = ({
+	addresses,
+	mutateUserAccoutAddress,
 	setBillingAddress,
-	setSelectedAddress,
-	setShowNewAddressButton,
-	showNewAddressButton,
-}: BillingAddressProps & {
-	setSelectedAddress: React.Dispatch<string>;
-	setShowNewAddressButton: React.Dispatch<boolean>;
-	showNewAddressButton: boolean;
-}) {
+}) => {
+	const {billingAddress} = useSelector(
+		productPurchaseStore,
+		(state) => state.context.payment
+	);
+
+	const billingAdressName = billingAddress.name || '';
+
+	const {selectedAccount} = useProductPurchaseOutletContext();
+	const [showNewAddressButton, setShowNewAddressButton] = useState(true);
 	const {data: regionsResponse} = useCommerceRegions();
+	const [selectedAddress, setSelectedAddress] =
+		useState<string>(billingAdressName);
 
-	const regions = regionsResponse?.items || [];
+	const regions = regionsResponse?.items ?? [];
 
-	const states =
-		regions.find((region) => region.a2 === billingAddress.country)
-			?.regions ?? [];
+	const onSelectAddress = async ({
+		address,
+		title,
+	}: {
+		address: BillingAddress;
+		title: string | undefined;
+	}) => {
+		setSelectedAddress(address.name as string);
 
-	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setBillingAddress({
-			...billingAddress,
-			[event.target.name]: event.target.value,
-		});
+		const postalAddress = addresses.find(
+			(address) => address.name === title
+		);
+
+		const billingAddress = {
+			city: postalAddress?.city,
+			country: postalAddress?.countryISOCode,
+			countryISOCode: postalAddress?.countryISOCode || 'US',
+			name: postalAddress?.name,
+			phoneNumber: postalAddress?.phoneNumber,
+			regionISOCode: postalAddress?.regionISOCode,
+			street1: postalAddress?.street1,
+			street2: postalAddress?.street2,
+			zip: postalAddress?.zip,
+		};
+
+		setBillingAddress(billingAddress);
+
+		if (!showNewAddressButton) {
+			setShowNewAddressButton(true);
+		}
 	};
 
-	if (showNewAddressButton) {
-		return (
-			<button
-				className="align-items-center billing-address-section-card-new-address d-flex justify-content-center mt-4 w-100"
-				onClick={() => {
-					setShowNewAddressButton(false);
+	const saveAddress = async (billingAddress: BillingAddress) => {
+		const getCountryNameByCode = (
+			regions: Region[],
+			countryCode?: string
+		) => {
+			const country = regions.find((region) => region.a2 === countryCode);
 
-					setBillingAddress({
-						...defaultBillingAddress,
-						countryISOCode: regions[0].a2,
-					});
-				}}
-			>
-				<ClayIcon symbol="plus" />
+			return (
+				country?.title_i18n[Liferay.ThemeDisplay.getLanguageId()] ||
+				country?.title_i18n[
+					Liferay.ThemeDisplay.getDefaultLanguageId()
+				] ||
+				country?.name
+			);
+		};
 
-				<span>New Address</span>
-			</button>
+		const getRegionByCountryCode = (
+			regions: Region[],
+			regionISOCode?: string,
+			countryCode?: string
+		) => {
+			const country = regions.find((region) => region.a2 === countryCode);
+			const addressRegion = country?.regions.find(
+				(region) => region.regionCode === regionISOCode
+			);
+
+			return addressRegion?.name;
+		};
+
+		const postAddress = await HeadlessAdminUser.postAddress(
+			selectedAccount.id,
+			{
+				addressCountry: getCountryNameByCode(
+					regions,
+					billingAddress?.country
+				),
+				addressLocality: billingAddress.city,
+				addressRegion: getRegionByCountryCode(
+					regions,
+					billingAddress.regionISOCode,
+					billingAddress?.country
+				),
+				addressType: 'billing-and-shipping',
+				name: billingAddress.name,
+				phoneNumber: billingAddress.phoneNumber,
+				postalCode: billingAddress.zip,
+				primary: false,
+				streetAddressLine1: billingAddress.street1,
+				streetAddressLine2: billingAddress.street2,
+			}
 		);
-	}
 
-	return (
-		<div className="billing-address-section-card-container h-auto mt-4">
-			<div className="align-items-center billing-address-section-card-header d-flex justify-content-between">
-				<small className="font-weight-bold">New Address</small>
+		await mutateUserAccoutAddress((addressCache) => ({
+			...addressCache,
+			items: [...addresses, postAddress],
+		}));
 
-				<ClayButton
-					onClick={() => {
-						setShowNewAddressButton(true);
-						setSelectedAddress('');
+		setSelectedAddress(billingAddress.name as string);
 
-						setBillingAddress(defaultBillingAddress);
-					}}
-				>
-					{i18n.translate('cancel')}
-				</ClayButton>
-			</div>
+		setBillingAddress(billingAddress);
 
-			<div className="billing-address-section-container d-flex flex-column p-4 w-100">
-				<Input
-					label="Full Name"
-					name="name"
-					onChange={onChange}
-					required
-					value={billingAddress?.name}
-				/>
-
-				<Input
-					label="Address"
-					name="street1"
-					onChange={onChange}
-					placeholder="Address 1"
-					required
-					value={billingAddress?.street1}
-				/>
-
-				<Input
-					name="street2"
-					onChange={onChange}
-					placeholder="Address 2"
-					value={billingAddress?.street2}
-				/>
-
-				<Select
-					boldLabel
-					className="custom-input"
-					label="Country"
-					name="country"
-					onChange={({target: {value}}) => {
-						const states =
-							regions.find((region) => region.a2 === value)
-								?.regions ?? [];
-
-						setBillingAddress({
-							...billingAddress,
-							country: value,
-							countryISOCode: value,
-							...(!!states.length && {
-								regionISOCode: states[0].regionCode,
-							}),
-						});
-					}}
-					options={regions.map((region) => ({
-						key: region.a2,
-						name:
-							region.title_i18n[
-								Liferay.ThemeDisplay.getLanguageId()
-							] ||
-							region.title_i18n[
-								Liferay.ThemeDisplay.getDefaultLanguageId()
-							] ||
-							region.name,
-					}))}
-					required
-					value={billingAddress?.country}
-				/>
-
-				<Select
-					boldLabel
-					className="custom-input"
-					defaultOption={false}
-					disabled={!states.length}
-					label="State"
-					name="regionISOCode"
-					onChange={onChange}
-					options={states.map((state) => ({
-						key: state.regionCode,
-						name: state.name,
-					}))}
-					required={!!states.length}
-					value={billingAddress?.regionISOCode}
-				/>
-
-				<Input
-					label="City"
-					name="city"
-					onChange={onChange}
-					required
-					value={billingAddress?.city}
-				/>
-
-				<Input
-					label="Zip/Area Code"
-					name="zip"
-					onChange={onChange}
-					required
-					value={billingAddress?.zip}
-				/>
-
-				<Input
-					label="Phone"
-					name="phoneNumber"
-					onChange={onChange}
-					required
-					value={billingAddress?.phoneNumber}
-				/>
-			</div>
-		</div>
-	);
-}
-
-export function BillingAddress(props: BillingAddressProps) {
-	const [selectedAddress, setSelectedAddress] = useState('');
-
-	const {addresses, setBillingAddress} = props;
-
-	const [showNewAddressButton, setShowNewAddressButton] = useState(true);
+		if (!showNewAddressButton) {
+			setShowNewAddressButton(true);
+		}
+	};
 
 	return (
 		<Section
-			className="billing-address-section w-100"
+			className="billing-address-section"
 			label="Billing Address"
 			required
 		>
-			{addresses.map((address, index) => {
+			{addresses?.map((address, index) => {
 				const {description, title} =
 					getPostalAddressDescription(address);
 
@@ -224,30 +157,7 @@ export function BillingAddress(props: BillingAddressProps) {
 						className="mb-4"
 						description={description}
 						key={index}
-						onChange={() => {
-							setSelectedAddress(address.name as string);
-
-							const postalAddress = addresses.find(
-								(address) => address.name === title
-							);
-
-							const billingAddress = {
-								city: postalAddress?.city,
-								country: postalAddress?.countryISOCode,
-								countryISOCode:
-									postalAddress?.countryISOCode || 'US',
-								name: postalAddress?.name,
-								phoneNumber: postalAddress?.phoneNumber,
-								regionISOCode: postalAddress?.regionISOCode,
-								street1: postalAddress?.street1,
-								street2: postalAddress?.street2,
-								zip: postalAddress?.zip,
-							};
-
-							setShowNewAddressButton(false);
-
-							setBillingAddress(billingAddress);
-						}}
+						onChange={() => onSelectAddress({address, title})}
 						selected={selectedAddress === address.name}
 						title={title}
 					/>
@@ -255,11 +165,14 @@ export function BillingAddress(props: BillingAddressProps) {
 			})}
 
 			<BillingAddressForm
-				{...props}
+				saveAddress={saveAddress}
+				setBillingAddress={setBillingAddress}
 				setSelectedAddress={setSelectedAddress}
 				setShowNewAddressButton={setShowNewAddressButton}
 				showNewAddressButton={showNewAddressButton}
 			/>
 		</Section>
 	);
-}
+};
+
+export default BillingAddress;

@@ -143,9 +143,7 @@ export interface IFilterTypeProps {
 	availableFieldsFilter: (field: IField) => boolean;
 	displayType: (filter?: IFilter) => string;
 	fdsViewRelationship: string;
-	fdsViewRelationshipId: string;
 	label: string;
-	url: string;
 }
 
 export interface IList extends IBaseVisualizationMode<'list'> {}

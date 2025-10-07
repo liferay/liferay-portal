@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
 import React, {
 	useCallback,
 	useContext,
@@ -441,7 +442,20 @@ export default function DiagramBuilder() {
 			!deserialize
 		) {
 			retrieveDefinitionRequest(definitionName)
-				.then((response) => response.json())
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(
+							sub(
+								Liferay.Language.get(
+									'failed-to-retrieve-definition-with-name-x'
+								),
+								definitionName
+							)
+						);
+					}
+
+					return response.json();
+				})
 				.then(
 					({
 						active,
@@ -499,7 +513,10 @@ export default function DiagramBuilder() {
 							setElements
 						);
 					}
-				);
+				)
+				.catch((error) => {
+					console.error(error);
+				});
 		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps

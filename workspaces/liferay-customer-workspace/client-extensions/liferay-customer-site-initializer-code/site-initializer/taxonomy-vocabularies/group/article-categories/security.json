@@ -1,0 +1,10 @@
+{
+	"name": "Security",
+	"name_i18n": {
+		"en_US": "Security",
+		"es-ES": "Seguridad",
+		"ja-JP": "セキュリティ",
+		"pt-BR": "Segurança"
+	},
+	"viewableBy": "Anyone"
+}

@@ -12,7 +12,7 @@ SiteNavigationMenuContextualMenusItemSelectorViewDisplayContext siteNavigationMe
 %>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathModule() + "/site-navigation-item-selector-web/css/ContextualMenus.css") %>' rel="stylesheet" />
+	<aui:link hashedFile="<%= true %>" href="site-navigation-item-selector-web/css/ContextualMenus.css" rel="stylesheet" />
 </liferay-util:html-top>
 
 <clay:container-fluid

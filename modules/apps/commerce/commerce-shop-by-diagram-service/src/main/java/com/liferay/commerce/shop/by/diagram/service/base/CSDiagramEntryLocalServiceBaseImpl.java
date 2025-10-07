@@ -240,6 +240,23 @@ public abstract class CSDiagramEntryLocalServiceBaseImpl
 		return csDiagramEntryPersistence.fetchByPrimaryKey(CSDiagramEntryId);
 	}
 
+	@Override
+	public CSDiagramEntry fetchCSDiagramEntryByExternalReferenceCode(
+		String externalReferenceCode, long companyId) {
+
+		return csDiagramEntryPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public CSDiagramEntry getCSDiagramEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return csDiagramEntryPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the cs diagram entry with the primary key.
 	 *

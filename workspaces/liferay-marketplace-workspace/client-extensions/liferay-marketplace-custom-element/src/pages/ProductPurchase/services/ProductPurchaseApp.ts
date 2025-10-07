@@ -4,16 +4,16 @@
  */
 
 import {Analytics} from '../../../core/Analytics';
-import {OrderTypes} from '../../../enums/Order';
-import {ProductType, SkuOptions} from '../../../enums/Product';
-import headlessCommerceDeliveryCart from '../../../services/rest/HeadlessCommerceDeliveryCart';
+import {ProductSpecificationKey, SkuOptions} from '../../../enums/Product';
+import HeadlessCommerceDeliveryCart from '../../../services/rest/HeadlessCommerceDeliveryCart';
 import {postEmailAppInformation} from '../../../utils/api';
 import {
 	getProductPriceModel,
 	getSkuByOptionValueKey,
-	isCloudProduct,
 } from '../../../utils/productUtils';
 import {getSiteURL} from '../../../utils/site';
+import {getProductOrderTypes} from '../../GetApp/utils/getProductOrderTypes';
+import {getProductSpecificationValues} from '../../GetApp/utils/getProductSpecificationValues';
 import ProductPurchase from './ProductPurchase';
 
 type ProductPurchaseCartOptions = {
@@ -43,9 +43,10 @@ export default class ProductPurchaseApp extends ProductPurchase {
 			orderID: order.id,
 			priceModel: 'paid',
 			productName: this.product?.name as string,
-			productType: isCloudProduct(this.product)
-				? ProductType.CLOUD
-				: ProductType.DXP,
+			productType: this.product?.productSpecifications.find(
+				(spec) =>
+					spec.specificationKey === ProductSpecificationKey.APP_TYPE
+			)?.value,
 		});
 
 		return order;
@@ -67,7 +68,7 @@ export default class ProductPurchaseApp extends ProductPurchase {
 
 			// Only requests with cart are processed with payment
 
-			return {...baseCart, paymentMethod: 'paypal-integration'};
+			return baseCart;
 		}
 
 		const skuOptionValue = cartOptions?.isTrialSKU
@@ -85,7 +86,7 @@ export default class ProductPurchaseApp extends ProductPurchase {
 	public async getNextStepsLink(cart: Cart) {
 		const callback = `${window.location.origin}${getSiteURL()}/next-steps?orderId=${cart.id}`;
 
-		const url = await headlessCommerceDeliveryCart.getPaymentMethodURL(
+		const url = await HeadlessCommerceDeliveryCart.getPaymentMethodURL(
 			cart.id,
 			callback
 		);
@@ -94,10 +95,8 @@ export default class ProductPurchaseApp extends ProductPurchase {
 	}
 
 	static getOrderTypeExternalReferenceCode(product: DeliveryProduct) {
-		if (isCloudProduct(product)) {
-			return OrderTypes.CLOUDAPP;
-		}
-
-		return OrderTypes.DXPAPP;
+		return getProductOrderTypes(
+			getProductSpecificationValues(product?.productSpecifications || [])
+		).externalReferenceCode;
 	}
 }

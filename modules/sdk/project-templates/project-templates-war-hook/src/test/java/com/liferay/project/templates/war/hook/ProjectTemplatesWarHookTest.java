@@ -8,6 +8,7 @@ package com.liferay.project.templates.war.hook;
 import com.liferay.maven.executor.MavenExecutor;
 import com.liferay.project.templates.BaseProjectTemplatesTestCase;
 import com.liferay.project.templates.extensions.util.Validator;
+import com.liferay.project.templates.extensions.util.VersionUtil;
 import com.liferay.project.templates.util.FileTestUtil;
 
 import java.io.File;
@@ -41,7 +42,7 @@ public class ProjectTemplatesWarHookTest
 		return Arrays.asList(
 			new Object[][] {
 				{"7.0.10.17"}, {"7.1.10.7"}, {"7.2.10.7"}, {"7.3.7"},
-				{"7.4.3.56"}, {"2024.q1.1"}
+				{"7.4.3.56"}, {"2024.q1.1"}, {"2025.q3.1"}
 			});
 	}
 
@@ -73,6 +74,12 @@ public class ProjectTemplatesWarHookTest
 		File gradleProjectDir = testBuildTemplateProjectWarInWorkspace(
 			temporaryFolder, _gradleDistribution, mavenExecutor, template, name,
 			_liferayVersion);
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(
+				gradleProjectDir,
+				"/src/main/java/warhook/WarHookLoginPostAction.java");
+		}
 
 		testTemplateWarHookDTD(gradleProjectDir, _liferayVersion);
 	}

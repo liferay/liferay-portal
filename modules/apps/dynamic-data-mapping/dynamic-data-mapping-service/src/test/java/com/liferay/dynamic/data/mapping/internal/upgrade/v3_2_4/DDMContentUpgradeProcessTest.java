@@ -16,7 +16,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,8 +55,9 @@ public class DDMContentUpgradeProcessTest {
 		DDMContentUpgradeProcess ddmContentUpgradeProcess =
 			new DDMContentUpgradeProcess(null);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				DDMContentUpgradeProcess.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DDMContentUpgradeProcess.class.getName(),
+				LoggerTestUtil.WARN)) {
 
 			JSONArray fieldValuesJSONArray = JSONUtil.putAll(
 				JSONUtil.put(

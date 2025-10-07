@@ -40,6 +40,12 @@ public class StylesDocumentFragmentEntryProcessor
 		FragmentEntryLink fragmentEntryLink, Document document,
 		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
 
+		String html = fragmentEntryLink.getHtml();
+
+		if (!html.contains("data-lfr-styles")) {
+			return;
+		}
+
 		Elements elements = document.getElementsByAttribute("data-lfr-styles");
 
 		if (elements.isEmpty()) {

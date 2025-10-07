@@ -21,7 +21,7 @@ export const test = mergeTests(
 	accountsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-47858': {enabled: true},
+		'LPD-35914': {enabled: true},
 	}),
 	loginTest()
 );
@@ -78,7 +78,7 @@ test(
 
 test(
 	'Account groups are displayed in account details page',
-	{tag: ['@LPD-28159']},
+	{tag: ['@LPD-28159', '@LPD-58550']},
 	async ({accountAccountGroupsPage, accountsPage, apiHelpers}) => {
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: getRandomString(),
@@ -134,6 +134,7 @@ test(
 		await expect(
 			await accountAccountGroupsPage.accountGroupName(accountGroup3.name)
 		).toBeVisible();
+		await expect(accountAccountGroupsPage.statusColumn).toBeVisible();
 	}
 );
 
@@ -331,47 +332,55 @@ test('Can bulk delete account groups', async ({
 	}
 });
 
-test('Can assign an account to an account group', async ({
-	accountGroupAccountSelectorPage,
-	accountGroupAccountsPage,
-	accountGroupsPage,
-	apiHelpers,
-}) => {
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: getRandomString(),
-		type: 'business',
-	});
+test(
+	'Can assign an account to an account group',
+	{tag: ['@LPD-48520', '@LPD-58550']},
+	async ({
+		accountGroupAccountSelectorPage,
+		accountGroupAccountsPage,
+		accountGroupsPage,
+		apiHelpers,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: getRandomString(),
+			type: 'business',
+		});
 
-	const accountGroup = await apiHelpers.headlessAdminUser.postAccountGroup({
-		name: getRandomString(),
-	});
+		const accountGroup =
+			await apiHelpers.headlessAdminUser.postAccountGroup({
+				name: getRandomString(),
+			});
 
-	apiHelpers.data.push({id: accountGroup.id, type: 'accountGroup'});
+		apiHelpers.data.push({id: accountGroup.id, type: 'accountGroup'});
 
-	await accountGroupsPage.goto();
+		await accountGroupsPage.goto();
 
-	await accountGroupsPage.accountGroupLink(accountGroup.name).click();
+		await accountGroupsPage.accountGroupLink(accountGroup.name).click();
 
-	await expect(accountGroupAccountsPage.noAccountsMessage).toBeVisible();
+		await expect(accountGroupAccountsPage.noAccountsMessage).toBeVisible();
 
-	await expect(async () => {
+		await expect(async () => {
+			await expect(
+				accountGroupAccountsPage.accountsTable.searchInput
+			).toBeEditable();
+
+			await accountGroupAccountsPage.accountsTable.newButton.click();
+
+			await expect(
+				accountGroupAccountSelectorPage.accountsTable.cell(account.name)
+			).toBeVisible();
+			await expect(
+				accountGroupAccountSelectorPage.accountsTable.cell('Active')
+			).toBeVisible();
+		}).toPass();
+
+		await accountGroupAccountSelectorPage.selectAccounts([account.name]);
+
 		await expect(
-			accountGroupAccountsPage.accountsTable.searchInput
-		).toBeEditable();
-
-		await accountGroupAccountsPage.accountsTable.newButton.click();
-
-		await expect(
-			accountGroupAccountSelectorPage.accountsTable.cell(account.name)
+			accountGroupAccountsPage.accountsTable.cell(account.name)
 		).toBeVisible();
-	}).toPass();
-
-	await accountGroupAccountSelectorPage.selectAccounts([account.name]);
-
-	await expect(
-		accountGroupAccountsPage.accountsTable.cell(account.name)
-	).toBeVisible();
-});
+	}
+);
 
 test(
 	'Can bulk assign an account to an account group',

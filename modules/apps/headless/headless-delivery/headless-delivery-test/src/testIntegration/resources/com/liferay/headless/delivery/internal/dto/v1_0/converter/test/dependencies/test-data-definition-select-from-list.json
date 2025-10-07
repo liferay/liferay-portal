@@ -1,0 +1,113 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"alphabeticalOrder": "[$ALPHABETICAL_ORDER$]",
+				"dataSourceType": [
+					"manual"
+				],
+				"dataType": "string",
+				"ddmDataProviderInstanceId": [
+				],
+				"ddmDataProviderInstanceOutput": [
+				],
+				"fieldNamespace": "",
+				"fieldReference": "Select[$RANDOM_INT$]0",
+				"labelAtStructureLevel": true,
+				"multiple": true,
+				"nativeField": false,
+				"objectFieldName": "",
+				"options": {
+					"en_US": [
+						{
+							"label": "one",
+							"reference": "Option[$RANDOM_INT$]1",
+							"value": "Option[$RANDOM_INT$]1"
+						},
+						{
+							"label": "two",
+							"reference": "Option[$RANDOM_INT$]2",
+							"value": "Option[$RANDOM_INT$]2"
+						},
+						{
+							"label": "three",
+							"reference": "Option[$RANDOM_INT$]3",
+							"value": "Option[$RANDOM_INT$]3"
+						}
+					]
+				},
+				"requiredErrorMessage": {
+					"en_US": ""
+				},
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"en_US": [
+				]
+			},
+			"fieldType": "select",
+			"indexType": "keyword",
+			"indexable": true,
+			"label": {
+				"en_US": "Select from List"
+			},
+			"localizable": true,
+			"name": "Select[$RANDOM_INT$]0",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			}
+		}
+	],
+	"dataDefinitionKey": "[$RANDOM_INT$]",
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Select[$RANDOM_INT$]0"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": ""
+				},
+				"title": {
+					"en_US": ""
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+			"en_US": "test"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"description": {
+	},
+	"name": {
+		"en_US": "test"
+	},
+	"storageType": "default"
+}

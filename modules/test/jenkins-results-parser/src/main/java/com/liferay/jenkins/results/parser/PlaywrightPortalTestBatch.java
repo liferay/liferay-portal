@@ -76,8 +76,12 @@ public class PlaywrightPortalTestBatch
 			if (matcher.matches()) {
 				environmentVariables.put(
 					"PLAYWRIGHT_ARGS_0", portalBatchTestSelector);
+
+				String projectName = matcher.group("projectName");
+
 				environmentVariables.put(
-					"PLAYWRIGHT_PROJECT_NAME", matcher.group("projectName"));
+					"PLAYWRIGHT_PROJECT_NAME",
+					projectName.replaceAll("/", "."));
 			}
 			else {
 				environmentVariables.put(
@@ -142,6 +146,6 @@ public class PlaywrightPortalTestBatch
 	}
 
 	private static final Pattern _playwrightFileNamePattern = Pattern.compile(
-		"tests/(?<filePath>(?<projectName>[^/]+)/.*.spec.ts)");
+		"tests/(?<filePath>(?<projectName>.+)/[^/]+.spec.ts)");
 
 }

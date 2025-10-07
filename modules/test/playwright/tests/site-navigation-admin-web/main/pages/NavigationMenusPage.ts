@@ -7,7 +7,10 @@ import {FrameLocator, Locator, Page} from '@playwright/test';
 
 import {PageEditorPage} from '../../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {DisplayPageTemplatesPage} from '../../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
+import {ApplicationsMenuPage} from '../../../../pages/product-navigation-applications-menu/ApplicationsMenuPage';
+import {ProductMenuPage} from '../../../../pages/product-navigation-control-menu-web/ProductMenuPage';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import getRandomString from '../../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
@@ -17,6 +20,15 @@ export class NavigationMenusPage {
 	readonly getMenuItem: (menuItemName: string) => Promise<Locator>;
 	readonly getModalListItem: (itemName: string) => Promise<Locator>;
 	readonly getModalMenuItem: (menuItemName: string) => Promise<Locator>;
+	readonly getNavigationMenuActionMenu: (
+		menuName: string
+	) => Promise<Locator>;
+	readonly getNavigationMenuCell: (
+		cellName: string,
+		locator: Locator
+	) => Promise<Locator>;
+	readonly getNavigationMenuRow: (menuId: Number) => Promise<Locator>;
+	readonly getNestingLevel: (name: string) => Promise<string>;
 
 	readonly addButton: Locator;
 	readonly addMenuItemButton: Locator;
@@ -32,6 +44,9 @@ export class NavigationMenusPage {
 	readonly submenuModal: FrameLocator;
 	readonly urlModal: FrameLocator;
 	readonly vocabulariesModal: FrameLocator;
+
+	readonly applicationsMenuPage: ApplicationsMenuPage;
+	readonly productMenuPage: ProductMenuPage;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -53,6 +68,40 @@ export class NavigationMenusPage {
 				.frameLocator('iframe')
 				.getByRole('menuitem')
 				.getByText(menuItemName);
+		};
+
+		this.getNavigationMenuActionMenu = async (menuName: string) => {
+			return page
+				.getByRole('row', {name: 'Select ' + menuName})
+				.getByLabel('Show Actions');
+		};
+
+		this.getNavigationMenuCell = async (
+			cellName: string,
+			locator: Locator
+		) => {
+			return locator.getByRole('cell', {
+				exact: true,
+				name: cellName,
+			});
+		};
+
+		this.getNavigationMenuRow = async (menuId: Number) => {
+			return page.locator(
+				'[id="_com_liferay_site_navigation_admin_web_portlet_SiteNavigationAdminPortlet_siteNavigationMenus_' +
+					menuId +
+					'"]'
+			);
+		};
+
+		this.getNestingLevel = async (name: string) => {
+			return this.page
+				.getByText(name)
+				.evaluate((element) =>
+					getComputedStyle(element).getPropertyValue(
+						'--nesting-level'
+					)
+				);
 		};
 
 		this.addButton = page.getByRole('button', {name: 'Add'});
@@ -79,12 +128,9 @@ export class NavigationMenusPage {
 		this.vocabulariesModal = page.frameLocator(
 			'iframe[title="Select Vocabularies"]'
 		);
-	}
 
-	async goto(siteUrl?: Site['friendlyUrlPath']) {
-		await this.page.goto(
-			`/group${siteUrl || '/guest'}${PORTLET_URLS.navigationMenus}`
-		);
+		this.applicationsMenuPage = new ApplicationsMenuPage(this.page);
+		this.productMenuPage = new ProductMenuPage(this.page);
 	}
 
 	async addBlogItem(name: string) {
@@ -106,23 +152,24 @@ export class NavigationMenusPage {
 		);
 	}
 
-	async changeBlogItem(current: string, next: string) {
-		await this.page.getByText(current, {exact: true}).click();
+	async addChildPage(parentPage: string, childPage: string) {
+		await this.page.getByText(parentPage).hover();
 
-		await this.page.getByLabel('Item', {exact: true}).click();
+		await this.page
+			.getByRole('button', {name: 'View ' + parentPage + ' Options'})
+			.click();
 
-		await this.page.waitForSelector('iframe', {state: 'attached'});
+		await this.page.getByRole('menuitem', {name: 'Add Child'}).hover();
 
-		await this.blogsModal.getByRole('button', {name: next}).click();
+		await this.page.waitForTimeout(500);
 
-		await this.page.waitForSelector('iframe', {state: 'detached'});
+		await this.page.getByRole('menuitem', {name: 'Page'}).click();
 
-		await this.saveButton.click();
+		await this.pagesModal.getByText(childPage, {exact: true}).click();
 
-		await waitForAlert(
-			this.page,
-			'Success:Your request completed successfully.'
-		);
+		await this.selectButton.click();
+
+		await waitForAlert(this.page, 'Success:1 Page was added to this menu.');
 	}
 
 	async addDocumentImageItem(imageName: string) {
@@ -147,31 +194,10 @@ export class NavigationMenusPage {
 		await this.documentsModal.getByText(imageName).click();
 	}
 
-	async changeDocumentImageItem(current: string, next: string) {
-		await this.page.getByText(current, {exact: true}).click();
+	async addNavigationMenuToGlobalSite(navigationMenuName: string) {
+		await this.gotoGlobalSiteNavigationMenuPortlet();
 
-		await this.page.getByLabel('Item', {exact: true}).click();
-
-		await this.documentsModal
-			.getByRole('link', {name: 'Sites and Libraries'})
-			.click();
-
-		await this.documentsModal
-			.getByRole('link', {name: 'Liferay DXP'})
-			.click();
-
-		await this.documentsModal
-			.getByRole('link', {name: 'Provided by Liferay'})
-			.click();
-
-		await this.documentsModal.getByText(next).click();
-
-		await this.saveButton.click();
-
-		await waitForAlert(
-			this.page,
-			'Success:Your request completed successfully.'
-		);
+		await this.createNavigationMenu(navigationMenuName);
 	}
 
 	async addOrChangeIcon(iconName: string) {
@@ -194,20 +220,38 @@ export class NavigationMenusPage {
 		await waitForAlert(this.page, 'Success');
 	}
 
-	async addSubmenuItem(submenuName: string) {
-		await this.addMenuItemButton.click();
+	async addSubmenuItem(submenuName: string, submenuItemName?: string) {
+		if (submenuItemName) {
+			await this.page
+				.locator('p.card-title')
+				.filter({hasText: submenuItemName})
+				.hover();
 
-		await (await this.getMenuItem('Submenu')).click();
+			await this.page
+				.getByLabel('View ' + submenuItemName + ' Options')
+				.click();
+
+			await (await this.getMenuItem('Add Child')).hover();
+
+			await this.page.getByText('Submenu', {exact: true}).nth(4).click();
+		}
+		else {
+			await this.addMenuItemButton.click();
+
+			await (await this.getMenuItem('Submenu')).click();
+		}
 
 		// Wait until the modal is fully loaded
 
-		await this.page.waitForTimeout(500);
+		await this.page.waitForTimeout(1000);
 
 		const textBox = this.submenuModal.getByPlaceholder('Name');
 
+		await textBox.click();
+
 		await textBox.fill(submenuName);
 
-		await this.page.waitForTimeout(500);
+		await this.page.waitForTimeout(300);
 
 		await this.submenuModal.getByRole('button', {name: 'Add'}).click();
 
@@ -217,7 +261,11 @@ export class NavigationMenusPage {
 		);
 	}
 
-	async addURLItem(urlName: string, submenuItemName?: string) {
+	async addURLItem(
+		urlName: string,
+		submenuItemName?: string,
+		openNewTab?: boolean
+	) {
 		if (submenuItemName) {
 			await this.page
 				.locator('p.card-title')
@@ -240,7 +288,7 @@ export class NavigationMenusPage {
 
 		// Wait until the modal is fully loaded
 
-		await this.page.waitForTimeout(500);
+		await this.page.waitForTimeout(1000);
 
 		const urlTextBox = this.urlModal.getByPlaceholder('http://');
 
@@ -250,9 +298,13 @@ export class NavigationMenusPage {
 
 		await urlNameTextbox.fill(urlName);
 
+		if (openNewTab) {
+			await this.urlModal.getByLabel('Open in a new tab').check();
+		}
+
 		const addButton = this.urlModal.getByRole('button', {name: 'Add'});
 
-		await this.page.waitForTimeout(500);
+		await this.page.waitForTimeout(1000);
 
 		await addButton.click();
 
@@ -300,6 +352,52 @@ export class NavigationMenusPage {
 		await displayPageTemplatesPage.markAsDefault(templateName);
 	}
 
+	async changeBlogItem(current: string, next: string) {
+		await this.page.getByText(current, {exact: true}).click();
+
+		await this.page.getByLabel('Item', {exact: true}).click();
+
+		await this.page.waitForSelector('iframe', {state: 'attached'});
+
+		await this.blogsModal.getByRole('button', {name: next}).click();
+
+		await this.page.waitForSelector('iframe', {state: 'detached'});
+
+		await this.saveButton.click();
+
+		await waitForAlert(
+			this.page,
+			'Success:Your request completed successfully.'
+		);
+	}
+
+	async changeDocumentImageItem(current: string, next: string) {
+		await this.page.getByText(current, {exact: true}).click();
+
+		await this.page.getByLabel('Item', {exact: true}).click();
+
+		await this.documentsModal
+			.getByRole('link', {name: 'Sites and Libraries'})
+			.click();
+
+		await this.documentsModal
+			.getByRole('link', {name: 'Liferay DXP'})
+			.click();
+
+		await this.documentsModal
+			.getByRole('link', {name: 'Provided by Liferay'})
+			.click();
+
+		await this.documentsModal.getByText(next).click();
+
+		await this.saveButton.click();
+
+		await waitForAlert(
+			this.page,
+			'Success:Your request completed successfully.'
+		);
+	}
+
 	async createNavigationMenu(menuName: string) {
 		await this.addButton.click();
 
@@ -312,6 +410,49 @@ export class NavigationMenusPage {
 		await this.saveButton.click();
 
 		await waitForAlert(this.page);
+	}
+
+	async fillNavigationMenuItemCustomField(
+		menuItemName: string,
+		customFieldName: string
+	): Promise<string> {
+		await this.page.getByText(menuItemName).click();
+
+		const encodedcustomFieldName = customFieldName.replace(/-/g, '_2d_');
+
+		const randomValue = getRandomString();
+
+		await this.page
+			.locator(
+				`[id^="_com_liferay_site_navigation_admin_web_portlet_SiteNavigationAdminPortlet_"][id$="${encodedcustomFieldName}"]`
+			)
+			.fill(randomValue);
+
+		await this.page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(this.page);
+
+		return randomValue;
+	}
+
+	async goto(siteUrl?: Site['friendlyUrlPath']) {
+		await this.page.goto(
+			`/group${siteUrl || '/guest'}${PORTLET_URLS.navigationMenus}`
+		);
+	}
+
+	async gotoGlobalSiteNavigationMenuPortlet() {
+		await this.applicationsMenuPage.goToApplicationsMenu();
+
+		await this.applicationsMenuPage.goToGlobalSite();
+
+		await this.productMenuPage.openProductMenuIfClosed();
+
+		await this.productMenuPage.siteBuilderButton.click();
+
+		await this.productMenuPage.page
+			.getByRole('menuitem', {name: 'Navigation Menus'})
+			.click();
 	}
 
 	async openAddCategoryModal() {

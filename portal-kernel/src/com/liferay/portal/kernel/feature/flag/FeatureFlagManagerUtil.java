@@ -5,7 +5,6 @@
 
 package com.liferay.portal.kernel.feature.flag;
 
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -14,12 +13,10 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.Dictionary;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -47,34 +44,46 @@ public class FeatureFlagManagerUtil {
 	}
 
 	public static String getJSON(long companyId) {
-		return _withFeatureFlagManager(
-			featureFlagManager -> featureFlagManager.getJSON(companyId),
-			() -> _JSON);
+		FeatureFlagManager featureFlagManager =
+			_featureFlagManagerSnapshot.get();
+
+		if (featureFlagManager != null) {
+			return featureFlagManager.getJSON(companyId);
+		}
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				"No feature flag manager service found. Returning the " +
+					"default value.");
+		}
+
+		return _JSON;
 	}
 
 	public static boolean isEnabled(long companyId, String key) {
-		return _withFeatureFlagManager(
-			featureFlagManager -> featureFlagManager.isEnabled(companyId, key),
-			() -> {
-				if (PortalRunMode.isTestMode()) {
-					return GetterUtil.getBoolean(
-						PropsUtil.get("feature.flag." + key));
-				}
+		FeatureFlagManager featureFlagManager =
+			_featureFlagManagerSnapshot.get();
 
-				try (SafeCloseable safeCloseable =
-						CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-							companyId)) {
+		if (featureFlagManager != null) {
+			return featureFlagManager.isEnabled(companyId, key);
+		}
 
-					return GetterUtil.getBoolean(
-						PropsUtil.get("feature.flag." + key));
-				}
-			});
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				"No feature flag manager service found. Returning the " +
+					"default value.");
+		}
+
+		return GetterUtil.getBoolean(PropsUtil.get("feature.flag." + key));
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
+	 *		#isEnabled(long, String)}
+	 */
+	@Deprecated
 	public static boolean isEnabled(String key) {
-		return _withFeatureFlagManager(
-			featureFlagManager -> featureFlagManager.isEnabled(key),
-			() -> GetterUtil.getBoolean(PropsUtil.get("feature.flag." + key)));
+		return isEnabled(CompanyThreadLocal.getCompanyId(), key);
 	}
 
 	public static <T> ServiceRegistration<T> registerService(
@@ -85,29 +94,6 @@ public class FeatureFlagManagerUtil {
 		return new FeatureFlaggedServiceRegistration<>(
 			bundleContext, featureFlagKey, serviceClass, serviceFunction,
 			servicePropertiesFunction);
-	}
-
-	private static <T> T _withFeatureFlagManager(
-		Function<FeatureFlagManager, T> function, Supplier<T> supplier) {
-
-		if (PortalRunMode.isTestMode()) {
-			return supplier.get();
-		}
-
-		FeatureFlagManager featureFlagManager =
-			_featureFlagManagerSnapshot.get();
-
-		if (featureFlagManager != null) {
-			return function.apply(featureFlagManager);
-		}
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				"No feature flag manager service found. Returning the " +
-					"default value.");
-		}
-
-		return supplier.get();
 	}
 
 	private static final String _JSON = String.valueOf(
@@ -147,7 +133,7 @@ public class FeatureFlagManagerUtil {
 								servicePropertiesFunction.apply(enabled)));
 					},
 					MapUtil.singletonDictionary(
-						"featureFlagKey", featureFlagKey));
+						"feature.flag.key", featureFlagKey));
 		}
 
 		@Override

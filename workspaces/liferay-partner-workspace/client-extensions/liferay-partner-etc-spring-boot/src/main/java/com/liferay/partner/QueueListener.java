@@ -353,8 +353,7 @@ public class QueueListener extends BaseRestController {
 
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
-			"liferay-partner-etc-spring-boot-oauth-application-headless-" +
-				"server");
+			"liferay-partner-etc-spring-boot-oahs");
 	}
 
 	private String _getCountryISOCode(JSONObject koroneikiAccountJSONObject) {

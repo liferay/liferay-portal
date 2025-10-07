@@ -11,6 +11,7 @@ import BaseEditor from './BaseEditor';
 const ClassicEditor = forwardRef(
 	(
 		{
+			ariaInvalid,
 			ariaLabel,
 			ariaRequired,
 			className,
@@ -26,6 +27,7 @@ const ClassicEditor = forwardRef(
 	) => {
 		return (
 			<div
+				{...(ariaInvalid ? {'aria-invalid': 'true'} : {})}
 				aria-label={ariaLabel}
 				className={className}
 				id={`${name}Container`}

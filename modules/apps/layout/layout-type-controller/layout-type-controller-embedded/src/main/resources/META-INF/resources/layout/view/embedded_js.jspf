@@ -5,42 +5,15 @@
  */
 --%>
 
-<aui:script use="aui-autosize-iframe">
-	var iframe = A.one('#embeddedIframe');
+<%
+UnicodeProperties typeSettingsUnicodeProperties = layout.getTypeSettingsProperties();
+%>
 
-	if (iframe) {
-		iframe.plug(A.Plugin.AutosizeIframe);
-
-		iframe.on('load', () => {
-			var height = A.Plugin.AutosizeIframe.getContentHeight(iframe);
-			var normalHeight = 600;
-
-			if (height == null) {
-				if (themeDisplay.isStateMaximized()) {
-					height = A.getDoc().get('docHeight');
-				}
-				else {
-					height = normalHeight;
-
-					iframe.autosizeiframe.set('monitorHeight', false);
-				}
-			}
-
-			if (height < normalHeight) {
-				height = normalHeight;
-			}
-
-			iframe.setStyle('height', height);
-		});
-
-		iframe.set(
-			'src',
-
-			<%
-			UnicodeProperties typeSettingsUnicodeProperties = layout.getTypeSettingsProperties();
-			%>
-
-			'<%= HtmlUtil.escapeJS(typeSettingsUnicodeProperties.getProperty("embeddedLayoutURL")) %>'
-		);
-	}
-</aui:script>
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"url", HtmlUtil.escapeHREF(typeSettingsUnicodeProperties.getProperty("embeddedLayoutURL"))
+		).build()
+	%>'
+	module="{embedded} from layout-type-controller-embedded"
+/>

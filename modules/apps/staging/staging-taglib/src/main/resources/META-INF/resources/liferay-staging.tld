@@ -519,6 +519,13 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>Whether to show the details menu. The default value is false.</description>
+			<name>detailsMenu</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<description>The empty results message's language key.</description>
 			<name>emptyResultsMessage</name>
 			<required>true</required>
@@ -579,6 +586,13 @@
 		<attribute>
 			<description>Whether to show the delete menu. The default value is true.</description>
 			<name>deleteMenu</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>Whether to show the details menu. The default value is false.</description>
+			<name>detailsMenu</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>

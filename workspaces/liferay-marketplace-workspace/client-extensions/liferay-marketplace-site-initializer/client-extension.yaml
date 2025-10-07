@@ -1,10 +1,10 @@
 liferay-marketplace-site-initializer:
     name: Liferay Marketplace Site Initializer
-    oAuthApplicationHeadlessServer: liferay-marketplace-site-initializer-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-marketplace-site-initializer-oahs
     siteExternalReferenceCode: LIFERAY_MARKETPLACE
     siteName: Marketplace
     type: siteInitializer
-liferay-marketplace-site-initializer-oauth-application-headless-server:
+liferay-marketplace-site-initializer-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Marketplace Site Initializer OAuth Application Headless Server

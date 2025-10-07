@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay WAR-style theme project.
 Bundle-Name: Liferay Project Templates Theme
 Bundle-SymbolicName: com.liferay.project.templates.theme
-Bundle-Version: 1.0.199
+Bundle-Version: 1.0.201
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

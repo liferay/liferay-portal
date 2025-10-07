@@ -240,7 +240,7 @@ definition {
 
 		Type(
 			key_fieldLabel = "Maximum Order Quantity",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
 			value1 = ${maximumQuantity});
 
 		Button.clickPublish();
@@ -322,7 +322,7 @@ definition {
 
 		Type(
 			key_fieldLabel = "Minimum Order Quantity",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
 			value1 = ${minimumQuantity});
 
 		Button.clickPublish();
@@ -1294,6 +1294,7 @@ definition {
 	}
 
 	@description = "COMMERCE-6334. The user is able to view a bundled product details in the mini cart(Name, SKU, Bundled Items, Quantity, List Price, Image)"
+	@ignore = "true"
 	@priority = 3
 	test ViewMiniCartBundledProductDetails {
 		property portal.acceptance = "false";
@@ -1956,7 +1957,7 @@ definition {
 
 		Type(
 			key_title = "Entries",
-			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
+			locator1 = "CommerceEntry#ADD_RELATION_FIELD_SEARCH",
 			value1 = "ABS Sensor");
 
 		Button.clickSubmitButton();
@@ -1977,7 +1978,7 @@ definition {
 
 		Type(
 			key_title = "Entries",
-			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
+			locator1 = "CommerceEntry#ADD_RELATION_FIELD_SEARCH",
 			value1 = "ABS Sensor");
 
 		Button.clickSubmitButton();

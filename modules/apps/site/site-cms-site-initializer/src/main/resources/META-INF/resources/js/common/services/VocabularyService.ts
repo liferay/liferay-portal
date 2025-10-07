@@ -1,0 +1,29 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {IVocabulary} from '../../common/types/IVocabulary';
+import ApiHelper from './ApiHelper';
+
+async function createVocabulary(siteId: number, vocabulary: IVocabulary) {
+	return await ApiHelper.post<IVocabulary>(
+		`/o/headless-admin-taxonomy/v1.0/sites/${siteId}/taxonomy-vocabularies`,
+		vocabulary
+	);
+}
+
+async function fetchVocabulary(vocabularyId: number) {
+	return await ApiHelper.get<IVocabulary>(
+		`/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/${vocabularyId}`
+	);
+}
+
+async function updateVocabulary(vocabulary: IVocabulary) {
+	return await ApiHelper.put<IVocabulary>(
+		`/o/headless-admin-taxonomy/v1.0/taxonomy-vocabularies/${vocabulary.id}`,
+		vocabulary
+	);
+}
+
+export default {createVocabulary, fetchVocabulary, updateVocabulary};

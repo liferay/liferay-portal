@@ -297,7 +297,7 @@
 </tr>
 <tr>
 	<td>FDS_SELECT_ALL</td>
-	<td>//input[contains(@name,'table-head-selector') and (@type='checkbox')]</td>
+	<td>//input[contains(@name,'items-selector') and (@type='checkbox')]</td>
 	<td></td>
 </tr>
 <tr>

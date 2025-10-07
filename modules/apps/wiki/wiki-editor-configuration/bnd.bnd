@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Wiki Editor Configuration
 Bundle-SymbolicName: com.liferay.wiki.editor.configuration
-Bundle-Version: 5.0.31
+Bundle-Version: 5.0.32
 -dsannotations-options: inherit

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Service Access Policy API
 Bundle-SymbolicName: com.liferay.portal.security.service.access.policy.api
-Bundle-Version: 9.0.2
+Bundle-Version: 9.0.3
 Export-Package:\
 	com.liferay.portal.security.service.access.policy.configuration,\
 	com.liferay.portal.security.service.access.policy.constants,\

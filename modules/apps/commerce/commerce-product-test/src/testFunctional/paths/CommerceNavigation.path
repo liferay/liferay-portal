@@ -37,7 +37,7 @@
 </tr>
 <tr>
 	<td>ENTRY_NAME</td>
-	<td>//div[contains(@class, 'data-set-wrapper') or @class='searchcontainer-content']//*[text()='${key_entryName}']</td>
+	<td>//div[contains(@class, 'data-set-wrapper') or @class='searchcontainer-content']//td//*[text()='${key_entryName}']</td>
 	<td></td>
 </tr>
 <tr>

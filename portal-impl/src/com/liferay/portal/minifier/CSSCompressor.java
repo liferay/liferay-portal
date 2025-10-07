@@ -357,9 +357,7 @@ public class CSSCompressor {
 
 			token = token.substring(1, token.length() - 1);
 
-			if (token.indexOf("___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_") >=
-					0) {
-
+			if (token.contains("___YUICSSMIN_PRESERVE_CANDIDATE_COMMENT_")) {
 				for (int i = 0; i < comments.size(); i++) {
 					token = StringUtil.replace(
 						token,
@@ -421,7 +419,8 @@ public class CSSCompressor {
 				if (endIndex <= 0) {
 					break;
 				}
-				else if ((endIndex > 0) && (css.charAt(endIndex - 1) != '\\')) {
+
+				if (css.charAt(endIndex - 1) != '\\') {
 					foundTerminator = true;
 
 					if (!Objects.equals(terminator, ")")) {

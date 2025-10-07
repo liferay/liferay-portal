@@ -3705,29 +3705,6 @@ definition {
 			defaultStatus = "True");
 	}
 
-	@description = "Verify that the user can switch between Details and Revision Story Tab"
-	@priority = 4
-	test CanSwitchBetweenDetailsRevisionTabs {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		Workflow.openWorkflowListView();
-
-		Workflow.addNewDefinition(workflowDefinitionTitle = "New Workflow Definition");
-
-		Workflow.saveDefinition(newKaleoDesigner = "True");
-
-		ProcessBuilderKaleoDesignerReact.gotoInfoWorkflowDefinition();
-
-		Navigator.gotoNavTab(navTab = "Revision History");
-
-		ProcessBuilderKaleoDesignerReact.viewRevisionHistoryFieldsPresent();
-
-		Navigator.gotoNavTab(navTab = "Details");
-
-		ProcessBuilderKaleoDesignerReact.viewDetailsFieldsPresent();
-	}
-
 	@description = "Verify that the user can turn on the Timers recurrence mode"
 	@priority = 4
 	test CanTurnOnTimerRecurrenceMode {

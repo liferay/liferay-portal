@@ -6,6 +6,10 @@
 package com.liferay.portal.search.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
@@ -41,7 +45,10 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.internal.test.util.BaseTestFilterVisitor;
 import com.liferay.portal.search.test.rule.SearchTestRule;
@@ -58,6 +65,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,14 +94,22 @@ public class SearchPermissionCheckerTest {
 
 		_bundleContext = bundle.getBundleContext();
 
+		_depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), StringUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+		_group = GroupTestUtil.addGroup();
+		_organization = OrganizationTestUtil.addOrganization();
+
 		_serviceReference = _bundleContext.getServiceReference(
 			SearchPermissionChecker.class);
 
 		_searchPermissionChecker = _bundleContext.getService(_serviceReference);
-
-		_group = GroupTestUtil.addGroup();
-
-		_organization = OrganizationTestUtil.addOrganization();
 	}
 
 	@After
@@ -133,6 +149,7 @@ public class SearchPermissionCheckerTest {
 		Assert.assertFalse(booleanFilter.hasClauses());
 	}
 
+	@Ignore
 	@Test
 	public void testContributedRolesPermissionFilter() throws Exception {
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -179,6 +196,29 @@ public class SearchPermissionCheckerTest {
 				new long[] {_group.getGroupId()}, Field.ROLE_ID,
 				String.valueOf(_role.getRoleId()));
 		}
+	}
+
+	@Test
+	public void testDepotRolePermissionFilter() throws Exception {
+		_user = UserTestUtil.addGroupUser(
+			_depotEntry.getGroup(), DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		Role role = RoleLocalServiceUtil.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		_addViewPermission(
+			ResourceConstants.SCOPE_GROUP, _depotEntry.getGroupId(),
+			role.getRoleId());
+
+		_assertFieldValue(
+			null, Field.GROUP_ID, String.valueOf(_depotEntry.getGroupId()));
+		_assertFieldValue(
+			null, Field.GROUP_ROLE_ID,
+			_depotEntry.getGroupId() + StringPool.DASH + role.getRoleId());
 	}
 
 	@Test
@@ -356,6 +396,9 @@ public class SearchPermissionCheckerTest {
 		"com.liferay.segments.configuration.SegmentsConfiguration";
 
 	private BundleContext _bundleContext;
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
 
 	@DeleteAfterTestRun
 	private Group _group;

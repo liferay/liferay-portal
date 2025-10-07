@@ -1,0 +1,170 @@
+[#function getProperty props key]
+	[#list props as prop]
+		[#if prop.key == key]
+			[#return prop.value /]
+		[/#if]
+	[/#list]
+
+	[#return "" /]
+[/#function]
+
+[#assign displayObject = (request.getAttribute("LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER").getDisplayObject())!{} /]
+
+[#if displayObject?has_content]
+	[#assign
+		categoryId = displayObject.categoryId!""
+		category = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + categoryId)!{}
+		mainCategoryId = displayObject.treePath?split("/")[1]!""
+	/]
+
+	[#if category?has_content]
+		[#assign
+			baseURL = themeDisplay.getURLCurrent()?replace('/[v]/.*', '', 'r')
+			categoryProps = category.taxonomyCategoryProperties
+			categoryDisplayLayout = getProperty(categoryProps, "display-layout")
+		/]
+
+		[#if categoryDisplayLayout == "list"]
+			[#assign childrenCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + categoryId + "/taxonomy-categories").items![] /]
+
+			<div class="cp-category-card-container d-flex flex-wrap mb-4">
+				[#list childrenCategories as childCategory]
+					[#assign isChildCategoryVisible = getProperty(childCategory.taxonomyCategoryProperties, "visible") /]
+
+					[#if isChildCategoryVisible == "false"]
+						[#continue /]
+					[/#if]
+
+					[#assign listItems = [] /]
+
+					[#if configuration.showArticles]
+						[#assign articles = restClient.get("/headless-delivery/v1.0/sites/${themeDisplay.getScopeGroupId()}/structured-contents?search=${childCategory.id}&flatten=true").items![] /]
+
+						[#if articles?has_content]
+							[#list articles as article]
+								[#assign listItems = listItems + [{"isVisible": "true", "name": article.title, "url": "${baseURL}/w/${article.friendlyUrlPath}"}] /]
+							[/#list]
+						[/#if]
+					[/#if]
+
+					[#if configuration.showCategories]
+						[#assign grandChildrenCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + childCategory.id + "/taxonomy-categories").items![] /]
+
+						[#if grandChildrenCategories?has_content]
+							[#list grandChildrenCategories as grandChildCategory]
+								[#assign listItems = listItems + [{"isVisible": getProperty(grandChildCategory.taxonomyCategoryProperties, "visible"), "name": grandChildCategory.name, "url": grandChildCategory.id}] /]
+							[/#list]
+						[/#if]
+					[/#if]
+
+					[#if listItems?has_content]
+						[#assign
+							childCategoryBackgroundImage = getProperty(childCategory.taxonomyCategoryProperties, "background-image")
+							childCategoryIconName = getProperty(childCategory.taxonomyCategoryProperties, "icon-name")
+						/]
+
+						[#if childCategoryBackgroundImage?has_content]
+							[#assign childCategoryStyle = "background-image: url(${childCategoryBackgroundImage})" /]
+						[#else]
+							[#assign childCategoryStyle = "background-color: var(--color-surface-background, #F1F5FB)" /]
+						[/#if]
+
+						<div class="cp-category-card d-flex flex-column">
+							<div class="child-category d-flex px-3" style="${htmlUtil.escape(childCategoryStyle)}">
+								[#if childCategoryIconName?has_content]
+									[@clay["icon"] symbol="${htmlUtil.escape(childCategoryIconName)}" /]
+								[/#if]
+
+								<h5 class="m-0 pl-2">
+									${htmlUtil.escape(childCategory.name?upper_case)}
+								</h5>
+							</div>
+
+							<div class="grand-children-categories">
+								<ul class="list-unstyled m-0 p-2">
+									[#list listItems?sort_by("name") as listItem]
+										[#if listItem.isVisible == "false"]
+											[#continue /]
+										[/#if]
+
+										<li class="p-2">
+											<a class="d-flex" href="${listItem.url}">
+												${htmlUtil.escape(listItem.name)}
+											</a>
+										</li>
+									[/#list]
+								</ul>
+							</div>
+						</div>
+					[/#if]
+				[/#list]
+			</div>
+		[#else]
+			[#assign
+				defaultStyle = "background-color: var(--color-surface-background, #F1F5FB);"
+				listItems = []
+			/]
+
+			[#if configuration.showArticles]
+				[#assign articles = restClient.get("/headless-delivery/v1.0/sites/${themeDisplay.getScopeGroupId()}/structured-contents?search=${categoryId}&flatten=true").items![] /]
+
+				[#if articles?has_content]
+					[#list articles as article]
+						[#assign listItems = listItems + [{"icon": "", "name": article.title, "style": defaultStyle, "subtitle": "", "thumbnail": "", "url": "${baseURL}/w/${article.friendlyUrlPath}"}] /]
+					[/#list]
+				[/#if]
+			[/#if]
+
+			[#if configuration.showCategories]
+				[#assign childrenCategories = restClient.get("/headless-admin-taxonomy/v1.0/taxonomy-categories/" + categoryId + "/taxonomy-categories").items![] /]
+
+				[#list childrenCategories as childCategory]
+					[#assign isChildCategoryVisible = getProperty(childCategory.taxonomyCategoryProperties, "visibleInNav") /]
+
+					[#if isChildCategoryVisible == "false"]
+						[#continue /]
+					[/#if]
+
+					[#assign
+						childCategoryBackgroundImage = getProperty(childCategory.taxonomyCategoryProperties, "background-image")
+						childCategoryIconName = getProperty(childCategory.taxonomyCategoryProperties, "icon-name")
+						childCategorySubtitle = getProperty(childCategory.taxonomyCategoryProperties, "subtitle")
+						childCategoryThumbnail = getProperty(childCategory.taxonomyCategoryProperties, "thumbnail")
+					/]
+
+					[#assign childCategoryStyle = childCategoryBackgroundImage?has_content?then("background-image: url(${childCategoryBackgroundImage});", defaultStyle) /]
+
+					[#assign listItems = listItems + [{"icon": childCategoryIconName, "name": childCategory.name, "style": childCategoryStyle, "subtitle": childCategorySubtitle, "thumbnail": childCategoryThumbnail, "url": childCategory.id}] /]
+				[/#list]
+			[/#if]
+
+			<div class="cp-category-card-container d-flex flex-wrap justify-content-center mb-4">
+				[#list listItems?sort_by("name") as listItem]
+					<a class="cp-category-tile" href="${htmlUtil.escape(listItem.url)}">
+						<div class="align-items-center card card-flat d-flex flex-column justify-content-center p-4" style="${htmlUtil.escape(listItem.style)}">
+							[#if listItem.thumbnail?has_content]
+								<img class="mb-3" src="${htmlUtil.escape(listItem.thumbnail)}" />
+							[/#if]
+
+							<div class="align-items-center d-flex mb-3 tile-title">
+								[#if listItem.icon?has_content]
+									[@clay["icon"] symbol="${htmlUtil.escape(listItem.icon)}" /]
+								[/#if]
+
+								<h5 class="m-0">
+									${htmlUtil.escape(listItem.name)}
+								</h5>
+							</div>
+
+							[#if listItem.subtitle?has_content]
+								<p class="text-paragraph">
+									${languageUtil.get(locale, htmlUtil.escape(listItem.subtitle))}
+								</p>
+							[/#if]
+						</div>
+					</a>
+				[/#list]
+			</div>
+		[/#if]
+	[/#if]
+[/#if]

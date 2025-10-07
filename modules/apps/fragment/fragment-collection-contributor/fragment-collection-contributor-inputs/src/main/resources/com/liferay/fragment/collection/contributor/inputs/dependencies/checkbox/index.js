@@ -1,4 +1,4 @@
-const inputElement = document.getElementById(`${fragmentNamespace}-checkbox`);
+const inputElement = document.getElementById(`${fragmentElementId}-checkbox`);
 
 const preventClick = (event) => event.preventDefault();
 
@@ -6,7 +6,8 @@ if (inputElement) {
 	if (input.readOnly) {
 		inputElement.addEventListener('click', preventClick);
 	}
-	else if (layoutMode === 'edit') {
+
+	if (layoutMode === 'edit') {
 		inputElement.setAttribute('disabled', true);
 	}
 	else {
@@ -22,7 +23,7 @@ if (inputElement) {
 						inputElement,
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
-						namespace: fragmentNamespace,
+						namespace: fragmentElementId,
 					});
 
 					inputElement.addEventListener('change', (event) => {
@@ -55,11 +56,11 @@ if (inputElement) {
 							}
 						},
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-checkbox-read-only`
+							`${fragmentElementId}-checkbox-read-only`
 						),
 						unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

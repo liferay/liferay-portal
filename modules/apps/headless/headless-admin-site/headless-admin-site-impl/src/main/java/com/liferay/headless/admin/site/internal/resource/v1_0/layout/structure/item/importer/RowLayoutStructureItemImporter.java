@@ -10,9 +10,11 @@ import com.liferay.headless.admin.site.dto.v1_0.RowPageElementDefinition;
 import com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context.LayoutStructureItemImporterContext;
 import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutStructureUtil;
 import com.liferay.layout.util.constants.LayoutDataItemTypeConstants;
+import com.liferay.layout.util.constants.StyledLayoutStructureConstants;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.RowStyledLayoutStructureItem;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
 /**
@@ -50,19 +52,24 @@ public class RowLayoutStructureItemImporter
 		rowStyledLayoutStructureItem.setCustomCSS(
 			rowPageElementDefinition.getCustomCSS());
 		rowStyledLayoutStructureItem.setGutters(
-			rowPageElementDefinition.getGutters());
+			GetterUtil.getBoolean(
+				rowPageElementDefinition.getGutters(), Boolean.TRUE));
 		rowStyledLayoutStructureItem.setIndexed(
-			rowPageElementDefinition.getIndexed());
+			GetterUtil.getBoolean(
+				rowPageElementDefinition.getIndexed(), Boolean.TRUE));
 		rowStyledLayoutStructureItem.setModulesPerRow(
-			rowPageElementDefinition.getModulesPerRow());
+			GetterUtil.getInteger(rowPageElementDefinition.getModulesPerRow()));
 		rowStyledLayoutStructureItem.setName(
 			rowPageElementDefinition.getName());
 		rowStyledLayoutStructureItem.setNumberOfColumns(
-			rowPageElementDefinition.getNumberOfColumns());
+			GetterUtil.getInteger(
+				rowPageElementDefinition.getNumberOfColumns()));
 		rowStyledLayoutStructureItem.setReverseOrder(
-			rowPageElementDefinition.getReverseOrder());
+			GetterUtil.getBoolean(rowPageElementDefinition.getReverseOrder()));
 		rowStyledLayoutStructureItem.setVerticalAlignment(
-			rowPageElementDefinition.getVerticalAlignment());
+			GetterUtil.getString(
+				rowPageElementDefinition.getVerticalAlignment(),
+				StyledLayoutStructureConstants.VERTICAL_ALIGNMENT_TOP));
 
 		return rowStyledLayoutStructureItem;
 	}

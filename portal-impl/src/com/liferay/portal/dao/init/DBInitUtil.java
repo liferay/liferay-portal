@@ -19,10 +19,10 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.spring.hibernate.DialectDetector;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
-import com.liferay.portal.util.PropsUtil;
 
 import java.sql.Connection;
 
@@ -60,14 +60,12 @@ public class DBInitUtil {
 			throw new IllegalStateException("Data source is null");
 		}
 
+		DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();
+
+		_dataSource = DBPartitionUtil.wrapDataSource(_dataSource);
+
 		try (Connection connection = _dataSource.getConnection()) {
 			_init(DBManagerUtil.getDB(), connection);
-
-			DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();
-
-			_dataSource = DBPartitionUtil.wrapDataSource(_dataSource);
-
-			DBPartitionUtil.setDefaultCompanyId(connection);
 		}
 
 		_dataSource = new LazyConnectionDataSourceProxy(_dataSource);
@@ -119,6 +117,15 @@ public class DBInitUtil {
 	}
 
 	private static void _init(DB db, Connection connection) throws Exception {
+		try {
+			DBPartitionUtil.setDefaultCompanyId(connection);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
 		if (_checkDefaultRelease(connection)) {
 			_setSupportsStringCaseSensitiveQuery(db, connection);
 
@@ -140,6 +147,17 @@ public class DBInitUtil {
 			db.runSQL(
 				connection,
 				"alter table Release_ add schemaVersion VARCHAR(75) null");
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		try {
+			db.runSQL(
+				connection,
+				"alter table Release_ add versionDisplayName VARCHAR(75) null");
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -170,6 +188,8 @@ public class DBInitUtil {
 			_createTablesAndPopulate(db, connection);
 
 			_setSupportsStringCaseSensitiveQuery(db, connection);
+
+			DBPartitionUtil.setDefaultCompanyId(connection);
 		}
 	}
 

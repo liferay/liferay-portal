@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -66,7 +67,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.hamcrest.CoreMatchers;
@@ -105,70 +105,25 @@ public class FreeMarkerFragmentEntryProcessorTest {
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			_group.getGroupId(), TestPropsValues.getUserId());
+
+		_fragmentCollection = _fragmentCollectionService.addFragmentCollection(
+			null, _group.getGroupId(), "Fragment Collection", StringPool.BLANK,
+			_serviceContext);
+
 		_layout = LayoutTestUtil.addTypePortletLayout(_group);
 	}
 
 	@Test
-	public void testAddFragmentEntryWithFreeMarkerVariable() throws Exception {
-		FragmentEntry fragmentEntry = _addFragmentEntry(
-			"fragment_entry_with_freemarker_variable.html", null);
-
-		Assert.assertNotNull(fragmentEntry);
-	}
-
-	@Test(expected = FragmentEntryContentException.class)
-	public void testAddFragmentEntryWithInvalidFreeMarkerVariable()
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"freemarker.runtime", LoggerTestUtil.ERROR)) {
-
-			ServiceContext serviceContext =
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId());
-
-			serviceContext.setRequest(_getMockHttpServletRequest());
-
-			FragmentCollection fragmentCollection =
-				_fragmentCollectionService.addFragmentCollection(
-					null, _group.getGroupId(), "Fragment Collection",
-					StringPool.BLANK, serviceContext);
-
-			FragmentEntry draftFragmentEntry =
-				_fragmentEntryService.addFragmentEntry(
-					null, _group.getGroupId(),
-					fragmentCollection.getFragmentCollectionId(),
-					"fragment-entry", "Fragment Entry", null,
-					_readFileToString(
-						"fragment_entry_with_invalid_freemarker_variable.html"),
-					null, false, null, null, 0, false, false,
-					FragmentConstants.TYPE_COMPONENT, null,
-					WorkflowConstants.STATUS_DRAFT, serviceContext);
-
-			ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-			_fragmentEntryService.publishDraft(draftFragmentEntry);
-		}
-	}
-
-	@Test
-	public void testAddFragmentWithFragmentElementId() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		FragmentCollection fragmentCollection =
-			_fragmentCollectionService.addFragmentCollection(
-				null, _group.getGroupId(), "Fragment Collection",
-				StringPool.BLANK, serviceContext);
-
+	public void testAddFragmentEntryWithFragmentElementId() throws Exception {
 		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
 			null, _group.getGroupId(),
-			fragmentCollection.getFragmentCollectionId(), "fragment-entry",
+			_fragmentCollection.getFragmentCollectionId(), "fragment-entry",
 			"Fragment Entry", null, "${fragmentElementId}", null, false,
 			StringPool.BLANK, null, 0, false, false,
 			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_APPROVED, serviceContext);
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
@@ -191,23 +146,79 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	}
 
 	@Test
-	public void testAddFragmentWithLayoutMode() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		FragmentCollection fragmentCollection =
-			_fragmentCollectionService.addFragmentCollection(
-				null, _group.getGroupId(), "Fragment Collection",
-				StringPool.BLANK, serviceContext);
-
+	@TestInfo("LPD-57548")
+	public void testAddFragmentEntryWithFragmentName() throws Exception {
 		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
 			null, _group.getGroupId(),
-			fragmentCollection.getFragmentCollectionId(), "fragment-entry",
+			_fragmentCollection.getFragmentCollectionId(), "fragment-entry",
+			"Fragment Entry", null, "${fragmentName}", null, false,
+			StringPool.BLANK, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
+
+		fragmentEntryLink.setFragmentEntryId(
+			fragmentEntry.getFragmentEntryId());
+		fragmentEntryLink.setHtml(fragmentEntry.getHtml());
+
+		DefaultFragmentEntryProcessorContext
+			defaultFragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					_getMockHttpServletRequest(), new MockHttpServletResponse(),
+					null, LocaleUtil.getDefault());
+
+		Assert.assertEquals(
+			"Fragment Entry",
+			_getProcessedHTML(
+				_fragmentEntryProcessorRegistry.processFragmentEntryLinkHTML(
+					fragmentEntryLink, defaultFragmentEntryProcessorContext)));
+	}
+
+	@Test
+	public void testAddFragmentEntryWithFreeMarkerVariable() throws Exception {
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			"fragment_entry_with_freemarker_variable.html", null);
+
+		Assert.assertNotNull(fragmentEntry);
+	}
+
+	@Test(expected = FragmentEntryContentException.class)
+	public void testAddFragmentEntryWithInvalidFreeMarkerVariable()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"freemarker.runtime", LoggerTestUtil.ERROR)) {
+
+			_serviceContext.setRequest(_getMockHttpServletRequest());
+
+			FragmentEntry draftFragmentEntry =
+				_fragmentEntryService.addFragmentEntry(
+					null, _group.getGroupId(),
+					_fragmentCollection.getFragmentCollectionId(),
+					"fragment-entry", "Fragment Entry", null,
+					_readFileToString(
+						"fragment_entry_with_invalid_freemarker_variable.html"),
+					null, false, null, null, 0, false, false,
+					FragmentConstants.TYPE_COMPONENT, null,
+					WorkflowConstants.STATUS_DRAFT, _serviceContext);
+
+			ServiceContextThreadLocal.pushServiceContext(_serviceContext);
+
+			_fragmentEntryService.publishDraft(draftFragmentEntry);
+		}
+	}
+
+	@Test
+	public void testAddFragmentEntryWithLayoutMode() throws Exception {
+		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
+			null, _group.getGroupId(),
+			_fragmentCollection.getFragmentCollectionId(), "fragment-entry",
 			"Fragment Entry", null, "${layoutMode}", null, false,
 			StringPool.BLANK, null, 0, false, false,
 			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_APPROVED, serviceContext);
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 
 		FragmentEntryLink fragmentEntryLink =
 			_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
@@ -306,23 +317,17 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	public void testProcessFragmentEntryLinkHTMLWithConfigurationCollectionSelector()
 		throws Exception {
 
-		Map<Locale, String> titleMap = HashMapBuilder.put(
-			LocaleUtil.US, "t1"
-		).build();
-
-		Map<Locale, String> contentMap = HashMapBuilder.put(
-			LocaleUtil.US, "c1"
-		).build();
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
-			PortalUtil.getClassNameId(JournalArticle.class), titleMap, null,
-			contentMap, LocaleUtil.getSiteDefault(), false, true,
-			serviceContext);
+			PortalUtil.getClassNameId(JournalArticle.class),
+			HashMapBuilder.put(
+				LocaleUtil.US, "t1"
+			).build(),
+			null,
+			HashMapBuilder.put(
+				LocaleUtil.US, "c1"
+			).build(),
+			LocaleUtil.getSiteDefault(), false, true, _serviceContext);
 
 		AssetListEntry assetListEntry =
 			_assetListEntryLocalService.addDynamicAssetListEntry(
@@ -330,7 +335,7 @@ public class FreeMarkerFragmentEntryProcessorTest {
 				"Collection Title",
 				_getTypeSettings(
 					_group.getGroupId(), journalArticle.getClassNameId()),
-				serviceContext);
+				_serviceContext);
 
 		Map<String, String> editableValuesValues = HashMapBuilder.put(
 			"classNameId",
@@ -470,9 +475,7 @@ public class FreeMarkerFragmentEntryProcessorTest {
 			).put(
 				LocaleUtil.US, "c1"
 			).build(),
-			LocaleUtil.getSiteDefault(), false, true,
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+			LocaleUtil.getSiteDefault(), false, true, _serviceContext);
 
 		FragmentEntry fragmentEntry = _addFragmentEntry(
 			"fragment_entry_with_configuration_itemselector_journal_article." +
@@ -631,15 +634,6 @@ public class FreeMarkerFragmentEntryProcessorTest {
 			Map<String, String> values)
 		throws Exception {
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		FragmentCollection fragmentCollection =
-			_fragmentCollectionService.addFragmentCollection(
-				null, _group.getGroupId(), "Fragment Collection",
-				StringPool.BLANK, serviceContext);
-
 		String configuration = null;
 
 		if (configurationFile != null) {
@@ -651,11 +645,11 @@ public class FreeMarkerFragmentEntryProcessorTest {
 
 		return _fragmentEntryService.addFragmentEntry(
 			null, _group.getGroupId(),
-			fragmentCollection.getFragmentCollectionId(), "fragment-entry",
+			_fragmentCollection.getFragmentCollectionId(), "fragment-entry",
 			"Fragment Entry", null, _readFileToString(htmlFile), null, false,
 			configuration, null, 0, false, false,
 			FragmentConstants.TYPE_COMPONENT, null,
-			WorkflowConstants.STATUS_APPROVED, serviceContext);
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()
@@ -789,6 +783,8 @@ public class FreeMarkerFragmentEntryProcessorTest {
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
 
+	private FragmentCollection _fragmentCollection;
+
 	@Inject
 	private FragmentCollectionService _fragmentCollectionService;
 
@@ -815,6 +811,8 @@ public class FreeMarkerFragmentEntryProcessorTest {
 
 	@Inject
 	private Portal _portal;
+
+	private ServiceContext _serviceContext;
 
 	@Inject
 	private ThemeLocalService _themeLocalService;

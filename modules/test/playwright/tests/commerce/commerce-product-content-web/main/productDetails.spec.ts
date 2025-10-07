@@ -63,7 +63,6 @@ test('LPD-31658 Users cannot view and download owner limited product attachments
 	);
 
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -195,7 +194,6 @@ test('COMMERCE-9677 As a buyer, I want to be able to view a virtual product Deta
 	});
 
 	await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'View product details',
 		siteGroupId: site.id,
 	});
 
@@ -302,7 +300,6 @@ test(
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: 'View product details',
 			siteGroupId: site.id,
 		});
 
@@ -629,7 +626,7 @@ test(`LPD-29993 Users can view and download a product's attachments`, async ({
 	});
 
 	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'admin',
+		name: getRandomString(),
 		type: 'business',
 	});
 
@@ -663,7 +660,6 @@ test(`LPD-29993 Users can view and download a product's attachments`, async ({
 	);
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
@@ -747,7 +743,6 @@ test('LPD-39598 Can view SKU UOM discount is applied on product details page', a
 	});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: getRandomString(),
 		siteGroupId: site.id,
 	});
 
@@ -1140,7 +1135,6 @@ test(
 		});
 
 		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: 'View product details',
 			siteGroupId: site.id,
 		});
 

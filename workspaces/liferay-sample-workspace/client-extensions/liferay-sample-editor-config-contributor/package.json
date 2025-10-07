@@ -4,12 +4,13 @@
 	},
 	"description": "Liferay Sample Editor Config Contributor",
 	"devDependencies": {
+		"ckeditor5": "46.0.2",
 		"typescript": "^5.0.4"
 	},
 	"main": "./src/index.ts",
 	"name": "@liferay/liferay-sample-editor-config-contributor",
 	"scripts": {
-		"build": "tsc",
+		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:ckeditor5",
 		"start": "PORT=3000 serve --cors",
 		"watch": "tsc --watch"
 	},

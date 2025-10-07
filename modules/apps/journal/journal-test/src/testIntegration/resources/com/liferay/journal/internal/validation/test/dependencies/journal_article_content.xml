@@ -1,0 +1,21 @@
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="Image99748988" index-type="text" instance-id="sPB5cezy" name="Image99748988" type="image">
+		<dynamic-content language-id="en_US">
+			<![CDATA[
+				{
+					"alt": "",
+					"classNameId": 33788,
+					"description": "",
+					"fileEntryId": "33789",
+					"groupId": "[$GROUP_ID]",
+					"height": 1365,
+					"title": "test.png",
+					"type": "document",
+					"url": "/documents/d/guest/INVALIDLINK?download=true",
+					"uuid": "[$UUID]",
+					"width": 1728
+				}
+			]]>
+		</dynamic-content>
+	</dynamic-element>
+</root>

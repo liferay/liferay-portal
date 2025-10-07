@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
+import {EEditorType, waitForEditor} from '../../../../../utils/waitFor';
 import {ckeditorSamplePageTest} from './../../fixtures/ckeditorSamplePageTest';
 
 export const test = mergeTests(
@@ -27,9 +28,7 @@ test.beforeEach(async ({ckeditorSamplePage, page, site}) => {
 	await ckeditorSamplePage.selectTab('CKEditor 4');
 	await ckeditorSamplePage.selectTab('React');
 
-	await expect(
-		page.getByText('Classic Editor used from a React component')
-	).toBeVisible();
+	await waitForEditor({editorType: EEditorType.CKEDITOR4, page});
 });
 
 test(

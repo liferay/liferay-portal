@@ -56,6 +56,15 @@ public class RoleServiceUtil {
 		getService().addUserRoles(userId, roleIds);
 	}
 
+	public static Role copyRole(
+			long userId, String name, long sourceRoleId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().copyRole(
+			userId, name, sourceRoleId, serviceContext);
+	}
+
 	/**
 	 * Deletes the role with the primary key and its associated permissions.
 	 *
@@ -115,12 +124,12 @@ public class RoleServiceUtil {
 			excludedTeamRoleId, teamGroupId);
 	}
 
-	public static Role getOrAddIncompleteRole(
+	public static Role getOrAddEmptyRole(
 			String externalReferenceCode, String className, long classPK,
 			String name, int type)
 		throws Exception {
 
-		return getService().getOrAddIncompleteRole(
+		return getService().getOrAddEmptyRole(
 			externalReferenceCode, className, classPK, name, type);
 	}
 

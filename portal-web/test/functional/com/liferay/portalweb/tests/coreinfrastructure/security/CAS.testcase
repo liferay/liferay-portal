@@ -16,7 +16,7 @@ definition {
 	@description = "LPS-126600 TC-2: Validate there is no CAS option under SSO category in Instance Settings."
 	@priority = 3
 	test AssertCASNotAvailableUnderInstanceSettings {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Go to SSO under instance settings") {
 			var baseURL = PropsUtil.get("portal.url");
@@ -34,7 +34,7 @@ definition {
 	@description = "LPS-126600 TC-1: Validate there is no CAS option under SSO category in System Settings."
 	@priority = 3
 	test AssertCASNotAvailableUnderSystemSettings {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Go to SSO under system settings") {
 			var baseURL = PropsUtil.get("portal.url");

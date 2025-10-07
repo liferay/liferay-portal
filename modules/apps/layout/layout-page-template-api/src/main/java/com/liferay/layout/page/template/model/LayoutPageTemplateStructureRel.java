@@ -55,4 +55,6 @@ public interface LayoutPageTemplateStructureRel
 
 			};
 
+	public com.liferay.portal.kernel.json.JSONObject getDataJSONObject();
+
 }

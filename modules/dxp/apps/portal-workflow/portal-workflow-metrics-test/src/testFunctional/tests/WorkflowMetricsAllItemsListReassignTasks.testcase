@@ -571,7 +571,6 @@ definition {
 	@description = "LPS-106219 - Verify that the user can filter, by Process Step, instances with pending tasks in parallel"
 	@priority = 3
 	test UserCanFilterInstanceWithPendingTasksInParallelByStep {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

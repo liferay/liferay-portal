@@ -52,6 +52,16 @@ public class CommerceDiscountRelServiceWrapper
 
 	@Override
 	public com.liferay.commerce.discount.model.CommerceDiscountRel
+			fetchCommerceDiscountRel(
+				long commerceDiscountId, String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRelService.fetchCommerceDiscountRel(
+			commerceDiscountId, className, classPK);
+	}
+
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRel
 			fetchCommerceDiscountRel(String className, long classPK)
 		throws com.liferay.portal.kernel.exception.PortalException {
 

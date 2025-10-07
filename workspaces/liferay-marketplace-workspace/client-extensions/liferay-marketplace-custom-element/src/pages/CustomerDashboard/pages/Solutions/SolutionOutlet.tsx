@@ -22,6 +22,7 @@ const SolutionOutlet = () => (
 					],
 			},
 		]}
+		showActions={false}
 	/>
 );
 

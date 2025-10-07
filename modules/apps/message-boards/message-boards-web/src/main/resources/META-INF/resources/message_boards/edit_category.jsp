@@ -61,7 +61,7 @@ if (portletTitleBasedNavigation) {
 	portletDisplay.setShowBackIcon(true);
 	portletDisplay.setURLBack(redirect);
 
-	renderResponse.setTitle(LanguageUtil.get(request, mbHomeDisplayContext.getTitle()));
+	renderResponse.setTitle(mbHomeDisplayContext.getTitle());
 }
 %>
 

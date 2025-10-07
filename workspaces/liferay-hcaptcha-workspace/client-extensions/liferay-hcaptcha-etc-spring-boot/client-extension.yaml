@@ -3,10 +3,10 @@ liferay-hcaptcha-etc-spring-boot:
     captchaResponseParameterName: h-captcha-response
     customElementExternalReferenceCode: LXC:liferay-hcaptcha-custom-element
     name: Liferay hCAPTCHA Etc Spring Boot
-    oAuth2ApplicationExternalReferenceCode: liferay-hcaptcha-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-hcaptcha-etc-spring-boot-oaua
     resourcePath: /validation
     type: captcha
-liferay-hcaptcha-etc-spring-boot-oauth-application-user-agent:
+liferay-hcaptcha-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay hCAPTCHA Etc Spring Boot OAuth Application User Agent

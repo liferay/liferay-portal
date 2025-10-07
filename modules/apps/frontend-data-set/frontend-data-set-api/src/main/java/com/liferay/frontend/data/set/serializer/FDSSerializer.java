@@ -32,11 +32,26 @@ public interface FDSSerializer {
 	public boolean isAvailable(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public default String serializeAdditionalAPIURLParameters(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return serializeAdditionalAPIURLParameters(
+			fdsName, httpServletRequest, true, null);
+	}
+
 	public String serializeAdditionalAPIURLParameters(
-		String fdsName, HttpServletRequest httpServletRequest);
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject);
+
+	public default String serializeAPIURL(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return serializeAPIURL(fdsName, httpServletRequest, true, null);
+	}
 
 	public String serializeAPIURL(
-		String fdsName, HttpServletRequest httpServletRequest);
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject);
 
 	public List<FDSActionDropdownItem> serializeBulkActions(
 		String fdsName, HttpServletRequest httpServletRequest);

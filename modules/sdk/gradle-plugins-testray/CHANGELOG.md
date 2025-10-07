@@ -1,5 +1,10 @@
 # Liferay Gradle Plugins Testray Change Log
 
+## 1.0.22 - 2024-08-27
+
+### Commits
+- [LRCI-4524] Update com.liferay.jenkins.results.parser to 1.0.1445 (4c25ef9084)
+
 ## 1.0.21 - 2024-06-14
 
 ### Commits
@@ -152,4 +157,5 @@ gradle-plugins-testray (68ce5ae615)
 [LRCI-3487]: https://issues.liferay.com/browse/LRCI-3487
 [LRCI-4259]: https://issues.liferay.com/browse/LRCI-4259
 [LRCI-4268]: https://issues.liferay.com/browse/LRCI-4268
+[LRCI-4524]: https://issues.liferay.com/browse/LRCI-4524
 [LRQA-75318]: https://issues.liferay.com/browse/LRQA-75318

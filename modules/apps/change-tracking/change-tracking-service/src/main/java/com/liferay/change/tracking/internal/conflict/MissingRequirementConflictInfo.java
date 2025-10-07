@@ -8,6 +8,7 @@ package com.liferay.change.tracking.internal.conflict;
 import com.liferay.change.tracking.spi.display.CTDisplayRenderer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -18,12 +19,24 @@ import java.util.ResourceBundle;
 public class MissingRequirementConflictInfo extends BaseConflictInfo {
 
 	public MissingRequirementConflictInfo(
+		long modelClassPK, String requirementTypeName) {
+
+		_modelClassPK = modelClassPK;
+		_requirementTypeName = requirementTypeName;
+
+		_className = null;
+		_requirementCTDisplayRenderer = null;
+	}
+
+	public MissingRequirementConflictInfo(
 		String className, long modelClassPK,
 		CTDisplayRenderer<?> requirementCTDisplayRenderer) {
 
 		_className = className;
 		_modelClassPK = modelClassPK;
 		_requirementCTDisplayRenderer = requirementCTDisplayRenderer;
+
+		_requirementTypeName = null;
 	}
 
 	@Override
@@ -50,6 +63,10 @@ public class MissingRequirementConflictInfo extends BaseConflictInfo {
 	}
 
 	private String _getRequirementTypeName(Locale locale) {
+		if (Validator.isNotNull(_requirementTypeName)) {
+			return LanguageUtil.get(locale, _requirementTypeName);
+		}
+
 		if (_requirementCTDisplayRenderer == null) {
 			String name = ResourceActionsUtil.getModelResource(
 				locale, _className);
@@ -67,5 +84,6 @@ public class MissingRequirementConflictInfo extends BaseConflictInfo {
 	private final String _className;
 	private final long _modelClassPK;
 	private final CTDisplayRenderer<?> _requirementCTDisplayRenderer;
+	private final String _requirementTypeName;
 
 }

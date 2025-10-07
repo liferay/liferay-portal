@@ -42,6 +42,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,6 +65,79 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testManyToManyObjectRelationshipRelatedInfoCollectionProvider()
+		throws Exception {
+
+		_testManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+			ObjectDefinitionConstants.SCOPE_COMPANY,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		_testManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+			ObjectDefinitionConstants.SCOPE_COMPANY,
+			ObjectDefinitionConstants.SCOPE_SITE);
+		_testManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+			ObjectDefinitionConstants.SCOPE_SITE,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+		_testManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+			ObjectDefinitionConstants.SCOPE_SITE,
+			ObjectDefinitionConstants.SCOPE_SITE);
+	}
+
+	private ObjectDefinition _addObjectDefinition(
+			ObjectField objectField, String scope)
+		throws Exception {
+
+		return _objectDefinitionLocalService.addCustomObjectDefinition(
+			TestPropsValues.getUserId(), 0, null, false, true, false, true,
+			false, false, false, false, false, null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			ObjectDefinitionTestUtil.getRandomName(), null, null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			true, scope, ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+			Collections.emptyList(), Arrays.asList(objectField),
+			Collections.emptyList());
+	}
+
+	private void _assertRelatedInfoCollectionProvider(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		ObjectEntry... relatedObjectEntries) {
+
+		RelatedInfoItemCollectionProvider relatedInfoItemCollectionProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				RelatedInfoItemCollectionProvider.class,
+				objectDefinition.getClassName());
+
+		Assert.assertNotNull(relatedInfoItemCollectionProvider);
+
+		CollectionQuery collectionQuery = new CollectionQuery();
+
+		collectionQuery.setPagination(
+			Pagination.of(relatedObjectEntries.length, 0));
+		collectionQuery.setRelatedItemObject(objectEntry);
+
+		InfoPage collectionInfoPage =
+			relatedInfoItemCollectionProvider.getCollectionInfoPage(
+				collectionQuery);
+
+		List<ObjectEntry> objectEntries = collectionInfoPage.getPageItems();
+
+		Assert.assertEquals(
+			objectEntries.toString(), relatedObjectEntries.length,
+			objectEntries.size());
+
+		Assert.assertEquals(
+			relatedObjectEntries.length, collectionInfoPage.getTotalCount());
+
+		for (ObjectEntry relatedObjectEntry : relatedObjectEntries) {
+			Assert.assertTrue(objectEntries.contains(relatedObjectEntry));
+		}
+	}
+
+	private void _testManyToManyObjectRelationshipRelatedInfoCollectionProvider(
+			String scope1, String scope2)
+		throws Exception {
 
 		_objectDefinition1 = _addObjectDefinition(
 			new TextObjectFieldBuilder(
@@ -71,7 +145,8 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
 			).name(
 				"objectDefinition1TextObjectFieldName"
-			).build());
+			).build(),
+			scope1);
 
 		_objectDefinition1 =
 			_objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -84,7 +159,8 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
 			).name(
 				"objectDefinition2TextObjectFieldName"
-			).build());
+			).build(),
+			scope2);
 
 		_objectDefinition2 =
 			_objectDefinitionLocalService.publishCustomObjectDefinition(
@@ -100,15 +176,16 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);
-	}
 
-	@Test
-	public void testManyToManyObjectRelationshipRelatedInfoCollectionProvider()
-		throws Exception {
+		long groupId1 = 0L;
+
+		if (Objects.equals(scope1, ObjectDefinitionConstants.SCOPE_SITE)) {
+			groupId1 = _group.getGroupId();
+		}
 
 		ObjectEntry objectDefinition1ObjectEntry1 =
 			_objectEntryLocalService.addObjectEntry(
-				_group.getGroupId(), TestPropsValues.getUserId(),
+				groupId1, TestPropsValues.getUserId(),
 				_objectDefinition1.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -121,7 +198,7 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 
 		ObjectEntry objectDefinition1ObjectEntry2 =
 			_objectEntryLocalService.addObjectEntry(
-				_group.getGroupId(), TestPropsValues.getUserId(),
+				groupId1, TestPropsValues.getUserId(),
 				_objectDefinition1.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -132,9 +209,15 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
+		long groupId2 = 0L;
+
+		if (Objects.equals(scope2, ObjectDefinitionConstants.SCOPE_SITE)) {
+			groupId2 = _group.getGroupId();
+		}
+
 		ObjectEntry objectDefinition2ObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				_group.getGroupId(), TestPropsValues.getUserId(),
+				groupId2, TestPropsValues.getUserId(),
 				_objectDefinition2.getObjectDefinitionId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
@@ -168,57 +251,6 @@ public class ManyToManyObjectRelationshipInfoCollectionProviderTest {
 		_assertRelatedInfoCollectionProvider(
 			_objectDefinition2, objectDefinition2ObjectEntry,
 			objectDefinition1ObjectEntry1, objectDefinition1ObjectEntry2);
-	}
-
-	private ObjectDefinition _addObjectDefinition(ObjectField objectField)
-		throws Exception {
-
-		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, false, true, false,
-			false, false, null,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			ObjectDefinitionTestUtil.getRandomName(), null, null,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			true, ObjectDefinitionConstants.SCOPE_SITE,
-			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Collections.emptyList(), Arrays.asList(objectField));
-	}
-
-	private void _assertRelatedInfoCollectionProvider(
-		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-		ObjectEntry... relatedObjectEntries) {
-
-		RelatedInfoItemCollectionProvider relatedInfoItemCollectionProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				RelatedInfoItemCollectionProvider.class,
-				objectDefinition.getClassName());
-
-		Assert.assertNotNull(relatedInfoItemCollectionProvider);
-
-		CollectionQuery collectionQuery = new CollectionQuery();
-
-		collectionQuery.setPagination(
-			Pagination.of(relatedObjectEntries.length, 0));
-		collectionQuery.setRelatedItemObject(objectEntry);
-
-		InfoPage collectionInfoPage =
-			relatedInfoItemCollectionProvider.getCollectionInfoPage(
-				collectionQuery);
-
-		List<ObjectEntry> objectEntries = collectionInfoPage.getPageItems();
-
-		Assert.assertNotNull(objectEntries);
-
-		Assert.assertEquals(
-			objectEntries.toString(), relatedObjectEntries.length,
-			objectEntries.size());
-
-		Assert.assertEquals(
-			relatedObjectEntries.length, collectionInfoPage.getTotalCount());
-
-		for (ObjectEntry relatedObjectEntry : relatedObjectEntries) {
-			Assert.assertTrue(objectEntries.contains(relatedObjectEntry));
-		}
 	}
 
 	@DeleteAfterTestRun

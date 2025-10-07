@@ -8,6 +8,8 @@
 			${MoreDetails.getData()}
 
 			<#if (CommerceUrl.getData())??>
+				&nbsp;
+
 				<a href="${friendlyURLs[themeDisplay.getLanguageId()]!""}">
 					<a href="${CommerceUrl.getData()}">
 						<u>${CommerceTitleUrl.getData()}</u>

@@ -27,11 +27,13 @@ export default function getSelectedField({fields, mappingFieldsKey, value}) {
 		return cache[cacheKey];
 	}
 
-	const flattenField = fields.flatMap((fieldSet) => fieldSet.fields);
+	const flattenFields = fields.flatMap((field) =>
+		'fields' in field ? field.fields : [field]
+	);
 
 	const selectedField =
-		flattenField.find((field) => field.key === value) ||
-		flattenField.find((field) => field.name === value);
+		flattenFields.find((field) => field.key === value) ||
+		flattenFields.find((field) => field.name === value);
 
 	if (selectedField) {
 		if (mappingFieldsKey) {

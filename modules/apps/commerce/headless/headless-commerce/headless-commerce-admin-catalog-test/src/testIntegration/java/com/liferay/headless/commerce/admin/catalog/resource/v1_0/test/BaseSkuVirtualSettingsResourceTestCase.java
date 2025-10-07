@@ -32,12 +32,12 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -336,7 +336,7 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 			testGraphQLGetSkuByExternalReferenceCodeSkuVirtualSettings_addSkuVirtualSettings()
 		throws Exception {
 
-		return testGraphQLSkuVirtualSettings_addSkuVirtualSettings();
+		return testGraphQLSkuSkuVirtualSettings_addSkuVirtualSettings();
 	}
 
 	@Test
@@ -475,11 +475,11 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 			testGraphQLGetSkuIdSkuVirtualSettings_addSkuVirtualSettings()
 		throws Exception {
 
-		return testGraphQLSkuVirtualSettings_addSkuVirtualSettings();
+		return testGraphQLSkuSkuVirtualSettings_addSkuVirtualSettings();
 	}
 
 	protected SkuVirtualSettings
-			testGraphQLSkuVirtualSettings_addSkuVirtualSettings()
+			testGraphQLSkuSkuVirtualSettings_addSkuVirtualSettings()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -779,6 +779,8 @@ public abstract class BaseSkuVirtualSettingsResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

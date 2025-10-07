@@ -66,25 +66,6 @@ public class DisplayPageTemplateFolderSerDes {
 			sb.append(displayPageTemplateFolder.getCreator());
 		}
 
-		if (displayPageTemplateFolder.getCreatorExternalReferenceCode() !=
-				null) {
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"creatorExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				_escape(
-					displayPageTemplateFolder.
-						getCreatorExternalReferenceCode()));
-
-			sb.append("\"");
-		}
-
 		if (displayPageTemplateFolder.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -174,6 +155,21 @@ public class DisplayPageTemplateFolderSerDes {
 			sb.append("\"");
 		}
 
+		if (displayPageTemplateFolder.getParentDisplayPageTemplateFolder() !=
+				null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"parentDisplayPageTemplateFolder\": ");
+
+			sb.append(
+				String.valueOf(
+					displayPageTemplateFolder.
+						getParentDisplayPageTemplateFolder()));
+		}
+
 		if (displayPageTemplateFolder.
 				getParentDisplayPageTemplateFolderExternalReferenceCode() !=
 					null) {
@@ -193,6 +189,30 @@ public class DisplayPageTemplateFolderSerDes {
 						getParentDisplayPageTemplateFolderExternalReferenceCode()));
 
 			sb.append("\"");
+		}
+
+		if (displayPageTemplateFolder.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i < displayPageTemplateFolder.getPermissions().length; i++) {
+
+				sb.append(displayPageTemplateFolder.getPermissions()[i]);
+
+				if ((i + 1) <
+						displayPageTemplateFolder.getPermissions().length) {
+
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		if (displayPageTemplateFolder.getUuid() != null) {
@@ -241,19 +261,6 @@ public class DisplayPageTemplateFolderSerDes {
 			map.put(
 				"creator",
 				String.valueOf(displayPageTemplateFolder.getCreator()));
-		}
-
-		if (displayPageTemplateFolder.getCreatorExternalReferenceCode() ==
-				null) {
-
-			map.put("creatorExternalReferenceCode", null);
-		}
-		else {
-			map.put(
-				"creatorExternalReferenceCode",
-				String.valueOf(
-					displayPageTemplateFolder.
-						getCreatorExternalReferenceCode()));
 		}
 
 		if (displayPageTemplateFolder.getDateCreated() == null) {
@@ -310,6 +317,19 @@ public class DisplayPageTemplateFolderSerDes {
 				"name", String.valueOf(displayPageTemplateFolder.getName()));
 		}
 
+		if (displayPageTemplateFolder.getParentDisplayPageTemplateFolder() ==
+				null) {
+
+			map.put("parentDisplayPageTemplateFolder", null);
+		}
+		else {
+			map.put(
+				"parentDisplayPageTemplateFolder",
+				String.valueOf(
+					displayPageTemplateFolder.
+						getParentDisplayPageTemplateFolder()));
+		}
+
 		if (displayPageTemplateFolder.
 				getParentDisplayPageTemplateFolderExternalReferenceCode() ==
 					null) {
@@ -323,6 +343,15 @@ public class DisplayPageTemplateFolderSerDes {
 				String.valueOf(
 					displayPageTemplateFolder.
 						getParentDisplayPageTemplateFolderExternalReferenceCode()));
+		}
+
+		if (displayPageTemplateFolder.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions",
+				String.valueOf(displayPageTemplateFolder.getPermissions()));
 		}
 
 		if (displayPageTemplateFolder.getUuid() == null) {
@@ -354,11 +383,6 @@ public class DisplayPageTemplateFolderSerDes {
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -381,8 +405,17 @@ public class DisplayPageTemplateFolderSerDes {
 			}
 			else if (Objects.equals(
 						jsonParserFieldName,
+						"parentDisplayPageTemplateFolder")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
 						"parentDisplayPageTemplateFolderExternalReferenceCode")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "uuid")) {
@@ -401,14 +434,6 @@ public class DisplayPageTemplateFolderSerDes {
 				if (jsonParserFieldValue != null) {
 					displayPageTemplateFolder.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				if (jsonParserFieldValue != null) {
-					displayPageTemplateFolder.setCreatorExternalReferenceCode(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -451,12 +476,43 @@ public class DisplayPageTemplateFolderSerDes {
 			}
 			else if (Objects.equals(
 						jsonParserFieldName,
+						"parentDisplayPageTemplateFolder")) {
+
+				if (jsonParserFieldValue != null) {
+					displayPageTemplateFolder.
+						setParentDisplayPageTemplateFolder(
+							DisplayPageTemplateFolderSerDes.toDTO(
+								(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
 						"parentDisplayPageTemplateFolderExternalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
 					displayPageTemplateFolder.
 						setParentDisplayPageTemplateFolderExternalReferenceCode(
 							(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.headless.admin.site.client.permission.
+						Permission[] permissionsArray = new
+						com.liferay.headless.admin.site.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.headless.admin.site.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					displayPageTemplateFolder.setPermissions(permissionsArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "uuid")) {

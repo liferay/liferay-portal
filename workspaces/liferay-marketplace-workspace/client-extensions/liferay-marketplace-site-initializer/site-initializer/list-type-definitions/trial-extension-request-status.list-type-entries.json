@@ -1,0 +1,38 @@
+[
+	{
+		"externalReferenceCode": "APPROVED",
+		"key": "Approved",
+		"name": "Approved",
+		"name_i18n": {
+			"en-US": "Approved"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "AUTO-APPROVED",
+		"key": "AutoApproved",
+		"name": "Auto Approved",
+		"name_i18n": {
+			"en-US": "Auto Approved"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "PENDING",
+		"key": "Pending",
+		"name": "Pending",
+		"name_i18n": {
+			"en-US": "Pending"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "REJECTED",
+		"key": "Rejected",
+		"name": "Rejected",
+		"name_i18n": {
+			"en-US": "Rejected"
+		},
+		"type": "string"
+	}
+]

@@ -42,6 +42,19 @@ public abstract class BaseTestClassReport implements TestClassReport {
 	}
 
 	@Override
+	public String getModuleAppPath() {
+		List<TestReport> testReports = getTestReports();
+
+		if (testReports.isEmpty()) {
+			return null;
+		}
+
+		TestReport testReport = testReports.get(0);
+
+		return testReport.getModuleAppPath();
+	}
+
+	@Override
 	public long getOverheadDuration() {
 		DownstreamBuildReport downstreamBuildReport =
 			getDownstreamBuildReport();

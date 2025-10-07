@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Navigation Directory Web
 Bundle-SymbolicName: com.liferay.site.navigation.directory.web
-Bundle-Version: 6.0.34
+Bundle-Version: 6.0.35
 Web-ContextPath: /site-navigation-directory-web

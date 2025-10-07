@@ -11,8 +11,414 @@
 	},
 	"items": [
 		{
+			"accountEntryRestricted": false,
 			"active": true,
-			"defaultLanguageId": "en_US",
+			"className": "com.liferay.portal.kernel.model.User",
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"externalReferenceCode": "L_USER",
+			"label": {
+				"en_US": "User",
+				"ja_JP": "ユーザー"
+			},
+			"modifiable": false,
+			"name": "User",
+			"objectFolderExternalReferenceCode": "default",
+			"objectRelationships": [
+				{
+					"deletionType": "disassociate",
+					"externalReferenceCode": "L_USER_TO_P2S3_ENROLLMENTS",
+					"label": {
+						"en_US": "L User to P2S3 Enrollment"
+					},
+					"name": "lUserToP2S3Enrollments",
+					"objectDefinitionExternalReferenceCode1": "L_USER",
+					"objectDefinitionExternalReferenceCode2": "P2S3_ENROLLMENT",
+					"type": "oneToMany"
+				},
+				{
+					"deletionType": "disassociate",
+					"externalReferenceCode": "L_USER_TO_P2S3_QUIZ_RESULTS",
+					"label": {
+						"en_US": "L User to P2S3 Quiz Result"
+					},
+					"name": "lUserToP2S3QuizResults",
+					"objectDefinitionExternalReferenceCode1": "L_USER",
+					"objectDefinitionExternalReferenceCode2": "P2S3_QUIZ_RESULT",
+					"type": "oneToMany"
+				},
+				{
+					"deletionType": "disassociate",
+					"externalReferenceCode": "L_USER_TO_P2S3_USER_BADGES",
+					"label": {
+						"en_US": "L User to P2S3 User Badges"
+					},
+					"name": "lUserToP2S3UserBadges",
+					"objectDefinitionExternalReferenceCode1": "L_USER",
+					"objectDefinitionExternalReferenceCode2": "P2S3_USER_BADGE",
+					"type": "oneToMany"
+				}
+			],
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "Users",
+				"ja_JP": "ユーザー"
+			},
+			"portlet": false,
+			"restContextPath": "/o/headless-admin-user/v1.0/user-accounts",
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"storageType": "default",
+			"system": true,
+			"titleObjectFieldName": "id"
+		},
+		{
+			"active": true,
+			"enableLocalization": true,
+			"enableObjectEntryHistory": false,
+			"externalReferenceCode": "P2S3_ANNOUNCEMENT",
+			"label": {
+				"en_US": "P2S3 Announcement"
+			},
+			"modifiable": true,
+			"name": "P2S3Announcement",
+			"objectFields": [
+				{
+					"DBType": "Clob",
+					"businessType": "RichText",
+					"externalReferenceCode": "CONTENT",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Content"
+					},
+					"localized": true,
+					"name": "content",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Clob",
+					"unique": false
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"localized": true,
+					"name": "description",
+					"objectFieldSettings": [
+						{
+							"name": "showCounter",
+							"value": false
+						}
+					],
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Clob",
+					"unique": false
+				},
+				{
+					"DBType": "Long",
+					"businessType": "Attachment",
+					"externalReferenceCode": "IMAGE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Image"
+					},
+					"localized": false,
+					"name": "image",
+					"objectFieldSettings": [
+						{
+							"name": "acceptedFileExtensions",
+							"value": "jpeg, jpg, pdf, png"
+						},
+						{
+							"name": "fileSource",
+							"value": "documentsAndMedia"
+						},
+						{
+							"name": "maximumFileSize",
+							"value": 100
+						}
+					],
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "TITLE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Title"
+					},
+					"localized": true,
+					"name": "title",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Announcement Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_ANNOUNCEMENT",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Announcement Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "content",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "image",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								},
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Categorization"
+									},
+									"priority": 0,
+									"type": "categorization"
+								}
+							],
+							"priority": 0
+						}
+					]
+				}
+			],
+			"panelCategoryKey": "control_panel.object",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "P2S3 Announcements"
+			},
+			"portlet": true,
+			"restContextPath": "/o/c/p2s3announcements",
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"titleObjectFieldName": "title"
+		},
+		{
+			"active": true,
+			"enableComments": false,
+			"enableObjectEntryHistory": false,
+			"externalReferenceCode": "P2S3_ANNOUNCEMENT_IMAGE_TYPE",
+			"label": {
+				"en_US": "P2S3 Announcement Image Type"
+			},
+			"modifiable": true,
+			"name": "P2S3AnnouncementImageType",
+			"objectFields": [
+				{
+					"DBType": "Long",
+					"businessType": "Attachment",
+					"externalReferenceCode": "IMAGE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Image"
+					},
+					"localized": false,
+					"name": "image",
+					"objectFieldSettings": [
+						{
+							"name": "acceptedFileExtensions",
+							"value": "jpeg, jpg, pdf, png"
+						},
+						{
+							"name": "maximumFileSize",
+							"value": 100
+						},
+						{
+							"name": "fileSource",
+							"value": "documentsAndMedia"
+						}
+					],
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Name"
+					},
+					"localized": false,
+					"name": "name",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Announcement Image Type Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_ANNOUNCEMENT_IMAGE_TYPE",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Announcement Image Type Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "image",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"priority": 0
+						}
+					]
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "disassociate",
+					"externalReferenceCode": "P2S3_ANNOUNCEMENT_IMAGE_TYPE_TO_P2S3_ANNOUNCEMENT",
+					"label": {
+						"en_US": "P2S3 Announcement Image Type to P2S3 Announcement"
+					},
+					"name": "p2s3ImageTypeToP2S3Announcement",
+					"objectDefinitionExternalReferenceCode1": "P2S3_ANNOUNCEMENT_IMAGE_TYPE",
+					"objectDefinitionExternalReferenceCode2": "P2S3_ANNOUNCEMENT",
+					"type": "oneToMany"
+				}
+			],
+			"panelCategoryKey": "control_panel.object",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "P2S3 Announcement Image Types"
+			},
+			"portlet": true,
+			"restContextPath": "/o/c/p2s3announcementimagetypes",
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"titleObjectFieldName": "name"
+		},
+		{
+			"active": true,
 			"enableLocalization": true,
 			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_ASSESSMENT",
@@ -125,6 +531,95 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Assessment Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_ASSESSMENT",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Assessment Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "durationMinutes",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "url",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Learning Path"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_ASSESSMENT_TO_P2S3_LEARNING_PATHS",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -143,7 +638,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3assessments",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -153,7 +648,99 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
+			"enableLocalization": true,
+			"enableObjectEntryHistory": false,
+			"externalReferenceCode": "P2S3_AUDIO_LESSON",
+			"label": {
+				"en_US": "P2S3 Audio Lesson"
+			},
+			"modifiable": true,
+			"name": "P2S3AudioLesson",
+			"objectFields": [
+				{
+					"DBType": "Long",
+					"businessType": "Attachment",
+					"externalReferenceCode": "AUDIO",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Audio"
+					},
+					"localized": false,
+					"name": "audio",
+					"objectFieldSettings": [
+						{
+							"name": "acceptedFileExtensions",
+							"value": "mp3, mp4"
+						},
+						{
+							"name": "fileSource",
+							"value": "documentsAndMedia"
+						},
+						{
+							"name": "maximumFileSize",
+							"value": 100
+						}
+					],
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Long",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "LANGUAGE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Language"
+					},
+					"localized": false,
+					"name": "language",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String",
+					"unique": false
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"externalReferenceCode": "VOICE_NAME",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Voice Name"
+					},
+					"localized": false,
+					"name": "voiceName",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "String",
+					"unique": false
+				}
+			],
+			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"pluralLabel": {
+				"en_US": "P2S3 Audio Lessons"
+			},
+			"portlet": true,
+			"restContextPath": "/o/c/p2s3audiolessons",
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			}
+		},
+		{
+			"active": true,
 			"enableCategorization": true,
 			"enableLocalization": true,
 			"enableObjectEntryHistory": false,
@@ -167,15 +754,15 @@
 				{
 					"DBType": "Long",
 					"businessType": "Attachment",
-					"externalReferenceCode": "IMAGE",
+					"externalReferenceCode": "BADGE",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
-						"en_US": "Image"
+						"en_US": "Badge"
 					},
 					"localized": false,
-					"name": "image",
+					"name": "badge",
 					"objectFieldSettings": [
 						{
 							"name": "acceptedFileExtensions",
@@ -255,12 +842,77 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Create / Edit Badge"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_BADGE",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Main"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Badge Information"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 8
+												},
+												{
+													"objectFieldName": "year",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "badge",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						}
+					]
+				}
+			],
 			"pluralLabel": {
 				"en_US": "P2S3 Badges"
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3badges",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -270,7 +922,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableLocalization": true,
 			"enableObjectEntryHistory": false,
 			"externalReferenceCode": "P2S3_CERTIFICATION",
@@ -367,6 +1018,85 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Certification Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_CERTIFICATION",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Certification Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "persona",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Assessments"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_CERTIFICATION_TO_P2S3_ASSESSMENTS",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -385,7 +1115,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3certifications",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -395,7 +1125,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableLocalization": true,
@@ -406,6 +1135,33 @@
 			},
 			"modifiable": true,
 			"name": "P2S3Course",
+			"objectActions": [
+				{
+					"active": true,
+					"errorMessage": {
+						"en_US": "Error while create course students role"
+					},
+					"label": {
+						"en_US": "Inherit and Cascade Permissions"
+					},
+					"name": "fixCourseStudentsRole",
+					"objectActionExecutorKey": "function#liferay-learn-etc-spring-boot-object-action-permission",
+					"objectActionTriggerKey": "standalone",
+					"parameters": {
+					}
+				},
+				{
+					"active": true,
+					"label": {
+						"en_US": "Inherit and Cascade Permissions"
+					},
+					"name": "setCourseStudentsRole",
+					"objectActionExecutorKey": "function#liferay-learn-etc-spring-boot-object-action-permission",
+					"objectActionTriggerKey": "onAfterAdd",
+					"parameters": {
+					}
+				}
+			],
 			"objectFields": [
 				{
 					"DBType": "Clob",
@@ -530,7 +1286,7 @@
 					},
 					"listTypeDefinitionExternalReferenceCode": "P2S3_PERSONAS",
 					"localized": false,
-					"name": "persona",
+					"name": "audience",
 					"readOnly": "false",
 					"required": true,
 					"state": false,
@@ -574,6 +1330,125 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Course Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_COURSE",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Course Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 8
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "expertiseLevel",
+													"priority": 0,
+													"size": 6
+												},
+												{
+													"objectFieldName": "audience",
+													"priority": 0,
+													"size": 6
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "image",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "introduction",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								},
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Categorization"
+									},
+									"objectLayoutRows": [
+									],
+									"priority": 0,
+									"type": "categorization"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Modules"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_COURSE_TO_P2S3_MODULES",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -624,7 +1499,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableObjectEntryDraft": false,
 			"externalReferenceCode": "P2S3_ENROLLMENT",
@@ -706,7 +1580,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3enrollments",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -715,7 +1589,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": false,
 			"enableLocalization": false,
 			"enableObjectEntryDraft": false,
@@ -752,15 +1625,15 @@
 				{
 					"DBType": "String",
 					"businessType": "Text",
-					"externalReferenceCode": "EMAIL",
+					"externalReferenceCode": "EMAIL_ADDRESS",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
-						"en_US": "E-mail"
+						"en_US": "E-mail Address"
 					},
 					"localized": false,
-					"name": "email",
+					"name": "emailAddress",
 					"readOnly": "false",
 					"required": true,
 					"state": false,
@@ -883,7 +1756,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3examresults",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -892,7 +1765,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": false,
 			"enableLocalization": false,
 			"enableObjectEntryDraft": false,
@@ -930,7 +1802,6 @@
 					"readOnly": "false",
 					"required": false,
 					"state": false,
-					"system": false,
 					"type": "Integer",
 					"unique": false
 				},
@@ -977,7 +1848,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3examresultssynchronizations",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -986,7 +1857,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": false,
@@ -1094,6 +1964,81 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Create / Edit External Media"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_EXTERNAL_MEDIA",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "External Media"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main Information"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 6
+												},
+												{
+													"objectFieldName": "durationMinutes",
+													"priority": 0,
+													"size": 6
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "url",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -1112,7 +2057,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3externalmedias",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -1122,7 +2067,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableLocalization": true,
 			"enableObjectEntryHistory": false,
@@ -1262,7 +2206,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableComments": false,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": false,
@@ -1385,7 +2328,7 @@
 					"type": "oneToMany"
 				}
 			],
-			"panelCategoryKey": "site_administration.content",
+			"panelCategoryKey": "control_panel.object",
 			"parameterRequired": false,
 			"pluralLabel": {
 				"en_US": "P2S3 FAQ Topics"
@@ -1398,12 +2341,10 @@
 				"label": "approved",
 				"label_i18n": "Approved"
 			},
-			"system": false,
 			"titleObjectFieldName": "title"
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableLocalization": true,
@@ -1463,6 +2404,24 @@
 					},
 					"localized": true,
 					"name": "content",
+					"readOnly": "false",
+					"required": false,
+					"state": false,
+					"type": "Clob",
+					"unique": false
+				},
+				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"externalReferenceCode": "DESCRIPTION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Description"
+					},
+					"localized": true,
+					"name": "description",
 					"readOnly": "false",
 					"required": false,
 					"state": false,
@@ -1639,6 +2598,16 @@
 										{
 											"objectLayoutColumns": [
 												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
 													"objectFieldName": "knowledgeArticleType",
 													"priority": 0,
 													"size": 4
@@ -1749,7 +2718,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableLocalization": true,
@@ -1828,7 +2796,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableLocalization": true,
@@ -1839,6 +2806,33 @@
 			},
 			"modifiable": true,
 			"name": "P2S3LearningPath",
+			"objectActions": [
+				{
+					"active": true,
+					"errorMessage": {
+						"en_US": "Error while create course students role"
+					},
+					"label": {
+						"en_US": "Cascade Permissions"
+					},
+					"name": "fixCourseStudentsRole",
+					"objectActionExecutorKey": "function#liferay-learn-etc-spring-boot-object-action-permission",
+					"objectActionTriggerKey": "standalone",
+					"parameters": {
+					}
+				},
+				{
+					"active": true,
+					"label": {
+						"en_US": "Cascade Permissions"
+					},
+					"name": "setCourseStudentsRole",
+					"objectActionExecutorKey": "function#liferay-learn-etc-spring-boot-object-action-permission",
+					"objectActionTriggerKey": "onAfterAdd",
+					"parameters": {
+					}
+				}
+			],
 			"objectFields": [
 				{
 					"DBType": "Clob",
@@ -1971,6 +2965,23 @@
 					"unique": false
 				},
 				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "POSITION",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Position"
+					},
+					"localized": false,
+					"name": "position",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "Integer",
+					"unique": false
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"externalReferenceCode": "TITLE",
@@ -1990,6 +3001,130 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Learning Path Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_LEARNING_PATH",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Learning Path Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "expertiseLevel",
+													"priority": 0,
+													"size": 6
+												},
+												{
+													"objectFieldName": "persona",
+													"priority": 0,
+													"size": 6
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "image",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "content",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								},
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Categorization"
+									},
+									"objectLayoutRows": [
+									],
+									"priority": 0,
+									"type": "categorization"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Steps"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_LEARNING_PATH_TO_P2S3_LEARNING_PATH_STEPS",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -2029,7 +3164,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
@@ -2107,11 +3241,11 @@
 					"indexedAsKeyword": false,
 					"indexedLanguageId": "en_US",
 					"label": {
-						"en_US": "Step Type"
+						"en_US": "Type"
 					},
 					"listTypeDefinitionExternalReferenceCode": "P2S3_STEP_TYPES",
 					"localized": false,
-					"name": "stepType",
+					"name": "type",
 					"readOnly": "false",
 					"required": true,
 					"state": false,
@@ -2138,6 +3272,76 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Learning Path Step Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_LEARNING_PATH_STEP",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Main"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Step Information"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "type",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						}
+					]
+				}
+			],
 			"pluralLabel": {
 				"en_US": "P2S3 Learning Path Steps"
 			},
@@ -2153,7 +3357,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"enableLocalization": true,
@@ -2311,12 +3514,115 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Lesson Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_LESSON",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Lesson Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "durationMinutes",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "media",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "content",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						}
+					]
+				}
+			],
+			"objectRelationships": [
+				{
+					"deletionType": "disassociate",
+					"externalReferenceCode": "P2S3_LESSON_TO_P2S3_AUDIO_LESSONS",
+					"label": {
+						"en_US": "P2S3 Lesson to P2S3 Audio Lessons"
+					},
+					"name": "p2s3LessonToP2S3AudioLessons",
+					"objectDefinitionExternalReferenceCode1": "P2S3_LESSON",
+					"objectDefinitionExternalReferenceCode2": "P2S3_AUDIO_LESSON",
+					"type": "oneToMany"
+				}
+			],
 			"pluralLabel": {
 				"en_US": "P2S3 Lessons"
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3lessons",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2326,7 +3632,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableComments": false,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
@@ -2434,6 +3739,99 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Module Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_MODULE",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Module Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 6
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 6
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "introduction",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Lessons"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_MODULE_TO_P2S3_LESSONS",
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Quizzes"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_MODULE_TO_P2S3_QUIZZES",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -2463,7 +3861,7 @@
 			},
 			"portlet": true,
 			"restContextPath": "/o/c/p2s3modules",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2473,7 +3871,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ",
 			"label": {
@@ -2526,13 +3923,13 @@
 				{
 					"DBType": "Boolean",
 					"businessType": "Boolean",
-					"externalReferenceCode": "KNOWLEDGE_CHECK",
+					"externalReferenceCode": "IS_KNOWLEDGE_CHECK",
 					"indexed": true,
 					"label": {
-						"en_US": "Knowledge Check"
+						"en_US": "Is Knowledge Check"
 					},
 					"localized": false,
-					"name": "knowledgeCheck",
+					"name": "isKnowledgeCheck",
 					"readOnly": "false",
 					"type": "Boolean"
 				},
@@ -2608,6 +4005,104 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Quiz Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_QUIZ",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Quiz Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "durationMinutes",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "title",
+													"priority": 0,
+													"size": 6
+												},
+												{
+													"objectFieldName": "passingScore",
+													"priority": 0,
+													"size": 3
+												},
+												{
+													"objectFieldName": "isKnowledgeCheck",
+													"priority": 0,
+													"size": 3
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "description",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Questions"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_QUIZ_TO_P2S3_QUIZ_QUESTIONS",
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Quiz Badge"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_QUIZ_TO_P2S3_BADGES",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -2647,7 +4142,7 @@
 				"en_US": "P2S3 Quizzes"
 			},
 			"restContextPath": "/o/c/p2s3quizzes",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2657,7 +4152,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ_ANSWER",
 			"label": {
@@ -2744,11 +4238,71 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Answer Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "T4T14_QUIZ_ANSWER",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Answer Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "score",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "answer",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						}
+					]
+				}
+			],
 			"pluralLabel": {
 				"en_US": "P2S3 Quiz Answers"
 			},
 			"restContextPath": "/o/c/p2s3quizanswers",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2758,7 +4312,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableLocalization": true,
 			"externalReferenceCode": "P2S3_QUIZ_QUESTION",
 			"label": {
@@ -2827,6 +4380,23 @@
 					"unique": false
 				},
 				{
+					"DBType": "Integer",
+					"businessType": "Integer",
+					"externalReferenceCode": "QUESTION_TOTAL_SCORE",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Question Total Score"
+					},
+					"localized": false,
+					"name": "questionTotalScore",
+					"readOnly": "false",
+					"required": true,
+					"state": false,
+					"type": "Integer",
+					"unique": false
+				},
+				{
 					"DBType": "String",
 					"businessType": "Picklist",
 					"externalReferenceCode": "QUESTION_TYPE",
@@ -2844,26 +4414,88 @@
 					"state": false,
 					"type": "String",
 					"unique": false
-				},
-				{
-					"DBType": "Integer",
-					"businessType": "Integer",
-					"externalReferenceCode": "TOTAL_SCORE",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Total Score"
-					},
-					"localized": false,
-					"name": "totalScore",
-					"readOnly": "false",
-					"required": true,
-					"state": false,
-					"type": "Integer",
-					"unique": false
 				}
 			],
 			"objectFolderExternalReferenceCode": "P2S3_LEARNING_MANAGEMENT_SYSTEM",
+			"objectLayouts": [
+				{
+					"defaultObjectLayout": true,
+					"name": {
+						"en_US": "Question Create / Edit"
+					},
+					"objectDefinitionExternalReferenceCode": "P2S3_QUIZ_QUESTION",
+					"objectLayoutTabs": [
+						{
+							"name": {
+								"en_US": "Question Information"
+							},
+							"objectLayoutBoxes": [
+								{
+									"collapsable": false,
+									"name": {
+										"en_US": "Main"
+									},
+									"objectLayoutRows": [
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "name",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "questionType",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "position",
+													"priority": 0,
+													"size": 4
+												},
+												{
+													"objectFieldName": "questionTotalScore",
+													"priority": 0,
+													"size": 4
+												}
+											],
+											"priority": 0
+										},
+										{
+											"objectLayoutColumns": [
+												{
+													"objectFieldName": "question",
+													"priority": 0,
+													"size": 12
+												}
+											],
+											"priority": 0
+										}
+									],
+									"priority": 0,
+									"type": "regular"
+								}
+							],
+							"objectRelationshipId": 0,
+							"priority": 0
+						},
+						{
+							"name": {
+								"en_US": "Answers"
+							},
+							"objectLayoutBoxes": [
+							],
+							"objectRelationshipExternalReferenceCode": "P2S3_QUIZ_QUESTION_TO_P2S3_QUIZ_ANSWERS",
+							"priority": 0
+						}
+					]
+				}
+			],
 			"objectRelationships": [
 				{
 					"deletionType": "disassociate",
@@ -2881,7 +4513,7 @@
 				"en_US": "P2S3 Quiz Questions"
 			},
 			"restContextPath": "/o/c/p2s3quizquestions",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2891,7 +4523,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": false,
 			"externalReferenceCode": "P2S3_QUIZ_RESULT",
 			"label": {
@@ -2957,7 +4588,7 @@
 			},
 			"portlet": false,
 			"restContextPath": "/o/c/p2s3quizresults",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",
@@ -2966,7 +4597,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableComments": false,
 			"enableLocalization": true,
 			"enableObjectEntryDraft": true,
@@ -3433,7 +5063,6 @@
 					"objectDefinitionScope2": "company",
 					"objectDefinitionSystem2": false,
 					"reverse": false,
-					"system": false,
 					"type": "manyToMany"
 				},
 				{
@@ -3450,7 +5079,6 @@
 					"objectDefinitionScope2": "company",
 					"objectDefinitionSystem2": false,
 					"reverse": false,
-					"system": false,
 					"type": "manyToMany"
 				},
 				{
@@ -3467,7 +5095,6 @@
 					"objectDefinitionScope2": "company",
 					"objectDefinitionSystem2": false,
 					"reverse": false,
-					"system": false,
 					"type": "manyToMany"
 				},
 				{
@@ -3484,7 +5111,6 @@
 					"objectDefinitionScope2": "company",
 					"objectDefinitionSystem2": false,
 					"reverse": false,
-					"system": false,
 					"type": "oneToMany"
 				}
 			],
@@ -3504,7 +5130,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableLocalization": true,
 			"enableObjectEntryHistory": false,
@@ -3644,7 +5269,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"externalReferenceCode": "P2S3_USER_BADGE",
 			"label": {
@@ -3693,7 +5317,7 @@
 				"en_US": "P2S3 User Badges"
 			},
 			"restContextPath": "/o/c/p2s3userbadges",
-			"scope": "site",
+			"scope": "company",
 			"status": {
 				"code": 0,
 				"label": "approved",

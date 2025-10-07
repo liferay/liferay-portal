@@ -121,12 +121,6 @@ export function EditAssetCategoryCPDisplayLayout({
 		`${portletNamespace}categoriesContainer`
 	);
 
-	function handleCloseButtonClick(event) {
-		const button = event.currentTarget;
-
-		categoriesContainer?.removeChild(button.parentElement.parentElement);
-	}
-
 	const classPK = document.getElementById(`${portletNamespace}classPK`);
 
 	const assetCategoryId = assetCategory?.categoryId;
@@ -184,4 +178,12 @@ export function EditAssetCategoryCPDisplayLayout({
 			url: categorySelectorUrl,
 		});
 	});
+
+	function handleCloseButtonClick(event) {
+		const button = event.currentTarget;
+
+		categoriesContainer?.removeChild(button.parentElement.parentElement);
+
+		classPK.value = 0;
+	}
 }

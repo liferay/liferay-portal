@@ -13,6 +13,7 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTableUtil;
+import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,15 +87,33 @@ public class ObjectFieldSettingUtil {
 		}
 	}
 
+	public static Map<String, Object> getDefaultValues(
+		long objectDefinitionId) {
+
+		Map<String, Object> defaultValues = new HashMap<>();
+
+		for (ObjectField objectField :
+				ObjectFieldLocalServiceUtil.getObjectFields(
+					objectDefinitionId)) {
+
+			defaultValues.put(
+				objectField.getName(),
+				getDefaultValue(null, objectField, null));
+		}
+
+		return defaultValues;
+	}
+
 	public static String getTimeZoneId(
 		List<ObjectFieldSetting> objectFieldSettings, User user) {
 
-		if ((user == null) || ListUtil.isEmpty(objectFieldSettings) ||
-			!StringUtil.equals(
-				getValue(
-					ObjectFieldSettingConstants.NAME_TIME_STORAGE,
-					objectFieldSettings),
-				ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC)) {
+		if ((user == null) ||
+			(ListUtil.isNotEmpty(objectFieldSettings) &&
+			 !StringUtil.equals(
+				 getValue(
+					 ObjectFieldSettingConstants.NAME_TIME_STORAGE,
+					 objectFieldSettings),
+				 ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC))) {
 
 			return null;
 		}

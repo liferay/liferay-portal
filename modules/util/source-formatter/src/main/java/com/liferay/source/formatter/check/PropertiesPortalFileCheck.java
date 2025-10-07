@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +55,6 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 			 shortFileName.startsWith("portal") &&
 			 !shortFileName.contains("-legacy-") &&
 			 !shortFileName.equals("portal-osgi-configuration.properties") &&
-			 !shortFileName.equals("portal-test.properties") &&
 			 !shortFileName.equals("portal-upgrade-database.properties") &&
 			 !shortFileName.equals("portal-upgrade-ext.properties")) ||
 			(!isPortalSource() && !isSubrepository() &&
@@ -116,7 +116,9 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 		for (Map.Entry<String, List<String>> entry : properties.entrySet()) {
 			List<String> values = entry.getValue();
 
-			if (values.size() > 1) {
+			if ((values.size() > 1) && (sb.length() > 0) &&
+				!StringUtil.endsWith(sb.toString(), "\n\n")) {
+
 				sb.append("\n");
 			}
 
@@ -276,7 +278,10 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 				else {
 					value = line;
 
-					if (value.endsWith(",\\")) {
+					if (value.endsWith(",")) {
+						value = value.substring(0, value.length() - 1);
+					}
+					else if (value.endsWith(",\\")) {
 						value = value.substring(0, value.length() - 2);
 					}
 
@@ -337,14 +342,28 @@ public class PropertiesPortalFileCheck extends BaseFileCheck {
 			}
 		}
 
-		String newContent = StringBundler.concat(
-			_generateProperties(portalPropertiesMap), "\n\n",
-			_generateProperties(propertiesMap), "\n\n",
-			_generateProperties(portalOSGiEnvironmentPropertiesMap));
+		StringBundler sb = new StringBundler(6);
 
-		newContent = StringUtil.replace(newContent, "\n\n\n", "\n\n");
+		for (Map<String, List<String>> map :
+				Arrays.asList(
+					portalPropertiesMap, propertiesMap,
+					portalOSGiEnvironmentPropertiesMap)) {
 
-		newContent = newContent.trim();
+			if (map.isEmpty()) {
+				continue;
+			}
+
+			String propertiesString = _generateProperties(map);
+
+			if (Validator.isBlank(propertiesString)) {
+				continue;
+			}
+
+			sb.append(propertiesString);
+			sb.append("\n\n");
+		}
+
+		String newContent = StringUtil.trim(sb.toString());
 
 		if (!StringUtil.equals(content, newContent)) {
 			return newContent;

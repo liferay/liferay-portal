@@ -29,11 +29,7 @@ describe('InputLocalized component', () => {
 		);
 
 		expect(screen.getByLabelText('Name')).toBeVisible();
-		expect(
-			screen.getByRole('button', {
-				name: 'en_US',
-			})
-		).toBeVisible();
+		expect(screen.getByTitle('en_US')).toBeVisible();
 	});
 
 	it('renders an asterisk Clay icon when defined as "required"', () => {

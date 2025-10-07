@@ -8256,6 +8256,12 @@ public class UserPersistenceImpl
 						(UserModelImpl)cachedUser;
 
 					userModelImpl.setGroupId(cachedUserModelImpl.getGroupId());
+
+					userModelImpl.setLayoutsUpdated(
+						cachedUserModelImpl.getLayoutsUpdated());
+
+					userModelImpl.setUserGroupIds(
+						cachedUserModelImpl.getUserGroupIds());
 				}
 			}
 		}

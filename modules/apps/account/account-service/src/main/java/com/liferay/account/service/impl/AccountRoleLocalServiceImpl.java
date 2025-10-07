@@ -10,7 +10,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.base.AccountRoleLocalServiceBaseImpl;
 import com.liferay.account.service.persistence.AccountEntryPersistence;
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -222,18 +222,15 @@ public class AccountRoleLocalServiceImpl
 		return accountRolePersistence.findByAccountEntryId(accountEntryIds);
 	}
 
-	@Override
-	public AccountRole getOrAddIncompleteAccountRole(
+	public AccountRole getOrAddEmptyAccountRole(
 			String externalReferenceCode, long companyId, long userId,
 			long accountEntryId, String name)
-		throws Exception {
+		throws PortalException {
 
-		return _incompleteModelManager.getOrAddIncompleteModel(
-			AccountRole.class, companyId, externalReferenceCode,
-			this::fetchAccountRoleByExternalReferenceCode,
-			this::getAccountRoleByExternalReferenceCode,
+		return _emptyModelManager.getOrAddEmptyModel(
+			AccountRole.class, companyId,
 			() -> {
-				Role role = _roleLocalService.getOrAddIncompleteRole(
+				Role role = _roleLocalService.getOrAddEmptyRole(
 					externalReferenceCode, companyId, userId,
 					AccountRole.class.getName(),
 					AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, name,
@@ -245,7 +242,10 @@ public class AccountRoleLocalServiceImpl
 				accountRole.setAccountEntryId(accountEntryId);
 
 				return updateAccountRole(accountRole);
-			});
+			},
+			externalReferenceCode,
+			this::fetchAccountRoleByExternalReferenceCode,
+			this::getAccountRoleByExternalReferenceCode);
 	}
 
 	@Override
@@ -410,7 +410,7 @@ public class AccountRoleLocalServiceImpl
 	private AccountEntryPersistence _accountEntryPersistence;
 
 	@Reference
-	private IncompleteModelManager _incompleteModelManager;
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

@@ -49,6 +49,8 @@ import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
 
+import java.math.BigDecimal;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -3739,6 +3741,646 @@ public class CommerceShipmentItemPersistenceImpl
 		_FINDER_COLUMN_C_C_C_COMMERCEINVENTORYWAREHOUSEID_2 =
 			"commerceShipmentItem.commerceInventoryWarehouseId = ?";
 
+	private FinderPath _finderPathWithPaginationFindByC_NotC_GteQ;
+	private FinderPath _finderPathWithPaginationCountByC_NotC_GteQ;
+
+	/**
+	 * Returns all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @return the matching commerce shipment items
+	 */
+	@Override
+	public List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		return findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	/**
+	 * Returns a range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @return the range of matching commerce shipment items
+	 */
+	@Override
+	public List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end) {
+
+		return findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end, null);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching commerce shipment items
+	 */
+	@Override
+	public List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		return findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end, orderByComparator, true);
+	}
+
+	/**
+	 * Returns an ordered range of all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceShipmentItemModelImpl</code>.
+	 * </p>
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param start the lower bound of the range of commerce shipment items
+	 * @param end the upper bound of the range of commerce shipment items (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching commerce shipment items
+	 */
+	@Override
+	public List<CommerceShipmentItem> findByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity, int start, int end,
+		OrderByComparator<CommerceShipmentItem> orderByComparator,
+		boolean useFinderCache) {
+
+		FinderPath finderPath = null;
+		Object[] finderArgs = null;
+
+		finderPath = _finderPathWithPaginationFindByC_NotC_GteQ;
+		finderArgs = new Object[] {
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, start,
+			end, orderByComparator
+		};
+
+		List<CommerceShipmentItem> list = null;
+
+		if (useFinderCache) {
+			list = (List<CommerceShipmentItem>)finderCache.getResult(
+				finderPath, finderArgs, this);
+
+			if ((list != null) && !list.isEmpty()) {
+				for (CommerceShipmentItem commerceShipmentItem : list) {
+					if ((commerceShipmentId !=
+							commerceShipmentItem.getCommerceShipmentId()) ||
+						(commerceInventoryWarehouseId ==
+							commerceShipmentItem.
+								getCommerceInventoryWarehouseId()) ||
+						(quantity.compareTo(
+							commerceShipmentItem.getQuantity()) > 0)) {
+
+						list = null;
+
+						break;
+					}
+				}
+			}
+		}
+
+		if (list == null) {
+			StringBundler sb = null;
+
+			if (orderByComparator != null) {
+				sb = new StringBundler(
+					5 + (orderByComparator.getOrderByFields().length * 2));
+			}
+			else {
+				sb = new StringBundler(5);
+			}
+
+			sb.append(_SQL_SELECT_COMMERCESHIPMENTITEM_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCESHIPMENTID_2);
+
+			sb.append(
+				_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCEINVENTORYWAREHOUSEID_2);
+
+			boolean bindQuantity = false;
+
+			if (quantity == null) {
+				sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_1);
+			}
+			else {
+				bindQuantity = true;
+
+				sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_2);
+			}
+
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+			}
+			else {
+				sb.append(CommerceShipmentItemModelImpl.ORDER_BY_JPQL);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(commerceShipmentId);
+
+				queryPos.add(commerceInventoryWarehouseId);
+
+				if (bindQuantity) {
+					queryPos.add(quantity);
+				}
+
+				list = (List<CommerceShipmentItem>)QueryUtil.list(
+					query, getDialect(), start, end);
+
+				cacheResult(list);
+
+				if (useFinderCache) {
+					finderCache.putResult(finderPath, finderArgs, list);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce shipment item
+	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
+	 */
+	@Override
+	public CommerceShipmentItem findByC_NotC_GteQ_First(
+			long commerceShipmentId, long commerceInventoryWarehouseId,
+			BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws NoSuchShipmentItemException {
+
+		CommerceShipmentItem commerceShipmentItem = fetchByC_NotC_GteQ_First(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+
+		if (commerceShipmentItem != null) {
+			return commerceShipmentItem;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("commerceShipmentId=");
+		sb.append(commerceShipmentId);
+
+		sb.append(", commerceInventoryWarehouseId!=");
+		sb.append(commerceInventoryWarehouseId);
+
+		sb.append(", quantity>=");
+		sb.append(quantity);
+
+		sb.append("}");
+
+		throw new NoSuchShipmentItemException(sb.toString());
+	}
+
+	/**
+	 * Returns the first commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
+	 */
+	@Override
+	public CommerceShipmentItem fetchByC_NotC_GteQ_First(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		List<CommerceShipmentItem> list = findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity, 0, 1,
+			orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the last commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce shipment item
+	 * @throws NoSuchShipmentItemException if a matching commerce shipment item could not be found
+	 */
+	@Override
+	public CommerceShipmentItem findByC_NotC_GteQ_Last(
+			long commerceShipmentId, long commerceInventoryWarehouseId,
+			BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws NoSuchShipmentItemException {
+
+		CommerceShipmentItem commerceShipmentItem = fetchByC_NotC_GteQ_Last(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			orderByComparator);
+
+		if (commerceShipmentItem != null) {
+			return commerceShipmentItem;
+		}
+
+		StringBundler sb = new StringBundler(8);
+
+		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+		sb.append("commerceShipmentId=");
+		sb.append(commerceShipmentId);
+
+		sb.append(", commerceInventoryWarehouseId!=");
+		sb.append(commerceInventoryWarehouseId);
+
+		sb.append(", quantity>=");
+		sb.append(quantity);
+
+		sb.append("}");
+
+		throw new NoSuchShipmentItemException(sb.toString());
+	}
+
+	/**
+	 * Returns the last commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching commerce shipment item, or <code>null</code> if a matching commerce shipment item could not be found
+	 */
+	@Override
+	public CommerceShipmentItem fetchByC_NotC_GteQ_Last(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity,
+		OrderByComparator<CommerceShipmentItem> orderByComparator) {
+
+		int count = countByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity);
+
+		if (count == 0) {
+			return null;
+		}
+
+		List<CommerceShipmentItem> list = findByC_NotC_GteQ(
+			commerceShipmentId, commerceInventoryWarehouseId, quantity,
+			count - 1, count, orderByComparator);
+
+		if (!list.isEmpty()) {
+			return list.get(0);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns the commerce shipment items before and after the current commerce shipment item in the ordered set where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentItemId the primary key of the current commerce shipment item
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next commerce shipment item
+	 * @throws NoSuchShipmentItemException if a commerce shipment item with the primary key could not be found
+	 */
+	@Override
+	public CommerceShipmentItem[] findByC_NotC_GteQ_PrevAndNext(
+			long commerceShipmentItemId, long commerceShipmentId,
+			long commerceInventoryWarehouseId, BigDecimal quantity,
+			OrderByComparator<CommerceShipmentItem> orderByComparator)
+		throws NoSuchShipmentItemException {
+
+		CommerceShipmentItem commerceShipmentItem = findByPrimaryKey(
+			commerceShipmentItemId);
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			CommerceShipmentItem[] array = new CommerceShipmentItemImpl[3];
+
+			array[0] = getByC_NotC_GteQ_PrevAndNext(
+				session, commerceShipmentItem, commerceShipmentId,
+				commerceInventoryWarehouseId, quantity, orderByComparator,
+				true);
+
+			array[1] = commerceShipmentItem;
+
+			array[2] = getByC_NotC_GteQ_PrevAndNext(
+				session, commerceShipmentItem, commerceShipmentId,
+				commerceInventoryWarehouseId, quantity, orderByComparator,
+				false);
+
+			return array;
+		}
+		catch (Exception exception) {
+			throw processException(exception);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	protected CommerceShipmentItem getByC_NotC_GteQ_PrevAndNext(
+		Session session, CommerceShipmentItem commerceShipmentItem,
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity,
+		OrderByComparator<CommerceShipmentItem> orderByComparator,
+		boolean previous) {
+
+		StringBundler sb = null;
+
+		if (orderByComparator != null) {
+			sb = new StringBundler(
+				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+					(orderByComparator.getOrderByFields().length * 3));
+		}
+		else {
+			sb = new StringBundler(5);
+		}
+
+		sb.append(_SQL_SELECT_COMMERCESHIPMENTITEM_WHERE);
+
+		sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCESHIPMENTID_2);
+
+		sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCEINVENTORYWAREHOUSEID_2);
+
+		boolean bindQuantity = false;
+
+		if (quantity == null) {
+			sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_1);
+		}
+		else {
+			bindQuantity = true;
+
+			sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_2);
+		}
+
+		if (orderByComparator != null) {
+			String[] orderByConditionFields =
+				orderByComparator.getOrderByConditionFields();
+
+			if (orderByConditionFields.length > 0) {
+				sb.append(WHERE_AND);
+			}
+
+			for (int i = 0; i < orderByConditionFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByConditionFields[i]);
+
+				if ((i + 1) < orderByConditionFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN_HAS_NEXT);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(WHERE_GREATER_THAN);
+					}
+					else {
+						sb.append(WHERE_LESSER_THAN);
+					}
+				}
+			}
+
+			sb.append(ORDER_BY_CLAUSE);
+
+			String[] orderByFields = orderByComparator.getOrderByFields();
+
+			for (int i = 0; i < orderByFields.length; i++) {
+				sb.append(_ORDER_BY_ENTITY_ALIAS);
+				sb.append(orderByFields[i]);
+
+				if ((i + 1) < orderByFields.length) {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC_HAS_NEXT);
+					}
+					else {
+						sb.append(ORDER_BY_DESC_HAS_NEXT);
+					}
+				}
+				else {
+					if (orderByComparator.isAscending() ^ previous) {
+						sb.append(ORDER_BY_ASC);
+					}
+					else {
+						sb.append(ORDER_BY_DESC);
+					}
+				}
+			}
+		}
+		else {
+			sb.append(CommerceShipmentItemModelImpl.ORDER_BY_JPQL);
+		}
+
+		String sql = sb.toString();
+
+		Query query = session.createQuery(sql);
+
+		query.setFirstResult(0);
+		query.setMaxResults(2);
+
+		QueryPos queryPos = QueryPos.getInstance(query);
+
+		queryPos.add(commerceShipmentId);
+
+		queryPos.add(commerceInventoryWarehouseId);
+
+		if (bindQuantity) {
+			queryPos.add(quantity);
+		}
+
+		if (orderByComparator != null) {
+			for (Object orderByConditionValue :
+					orderByComparator.getOrderByConditionValues(
+						commerceShipmentItem)) {
+
+				queryPos.add(orderByConditionValue);
+			}
+		}
+
+		List<CommerceShipmentItem> list = query.list();
+
+		if (list.size() == 2) {
+			return list.get(1);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Removes all the commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63; from the database.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 */
+	@Override
+	public void removeByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		for (CommerceShipmentItem commerceShipmentItem :
+				findByC_NotC_GteQ(
+					commerceShipmentId, commerceInventoryWarehouseId, quantity,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			remove(commerceShipmentItem);
+		}
+	}
+
+	/**
+	 * Returns the number of commerce shipment items where commerceShipmentId = &#63; and commerceInventoryWarehouseId &ne; &#63; and quantity &ge; &#63;.
+	 *
+	 * @param commerceShipmentId the commerce shipment ID
+	 * @param commerceInventoryWarehouseId the commerce inventory warehouse ID
+	 * @param quantity the quantity
+	 * @return the number of matching commerce shipment items
+	 */
+	@Override
+	public int countByC_NotC_GteQ(
+		long commerceShipmentId, long commerceInventoryWarehouseId,
+		BigDecimal quantity) {
+
+		FinderPath finderPath = _finderPathWithPaginationCountByC_NotC_GteQ;
+
+		Object[] finderArgs = new Object[] {
+			commerceShipmentId, commerceInventoryWarehouseId, quantity
+		};
+
+		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
+
+		if (count == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_SQL_COUNT_COMMERCESHIPMENTITEM_WHERE);
+
+			sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCESHIPMENTID_2);
+
+			sb.append(
+				_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCEINVENTORYWAREHOUSEID_2);
+
+			boolean bindQuantity = false;
+
+			if (quantity == null) {
+				sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_1);
+			}
+			else {
+				bindQuantity = true;
+
+				sb.append(_FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				queryPos.add(commerceShipmentId);
+
+				queryPos.add(commerceInventoryWarehouseId);
+
+				if (bindQuantity) {
+					queryPos.add(quantity);
+				}
+
+				count = (Long)query.uniqueResult();
+
+				finderCache.putResult(finderPath, finderArgs, count);
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		return count.intValue();
+	}
+
+	private static final String
+		_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCESHIPMENTID_2 =
+			"commerceShipmentItem.commerceShipmentId = ? AND ";
+
+	private static final String
+		_FINDER_COLUMN_C_NOTC_GTEQ_COMMERCEINVENTORYWAREHOUSEID_2 =
+			"commerceShipmentItem.commerceInventoryWarehouseId != ? AND ";
+
+	private static final String _FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_1 =
+		"commerceShipmentItem.quantity IS NULL";
+
+	private static final String _FINDER_COLUMN_C_NOTC_GTEQ_QUANTITY_2 =
+		"commerceShipmentItem.quantity >= ?";
+
 	private FinderPath _finderPathFetchByERC_C;
 
 	/**
@@ -4777,6 +5419,29 @@ public class CommerceShipmentItemPersistenceImpl
 				"commerceInventoryWarehouseId"
 			},
 			true);
+
+		_finderPathWithPaginationFindByC_NotC_GteQ = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_NotC_GteQ",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				BigDecimal.class.getName(), Integer.class.getName(),
+				Integer.class.getName(), OrderByComparator.class.getName()
+			},
+			new String[] {
+				"commerceShipmentId", "commerceInventoryWarehouseId", "quantity"
+			},
+			true);
+
+		_finderPathWithPaginationCountByC_NotC_GteQ = new FinderPath(
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_NotC_GteQ",
+			new String[] {
+				Long.class.getName(), Long.class.getName(),
+				BigDecimal.class.getName()
+			},
+			new String[] {
+				"commerceShipmentId", "commerceInventoryWarehouseId", "quantity"
+			},
+			false);
 
 		_finderPathFetchByERC_C = new FinderPath(
 			FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",

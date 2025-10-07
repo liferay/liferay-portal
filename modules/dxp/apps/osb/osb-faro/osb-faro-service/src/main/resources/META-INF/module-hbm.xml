@@ -7,6 +7,7 @@
 	<import class="com.liferay.osb.faro.model.FaroPreferences" />
 	<import class="com.liferay.osb.faro.model.FaroProject" />
 	<import class="com.liferay.osb.faro.model.FaroProjectEmailDomain" />
+	<import class="com.liferay.osb.faro.model.FaroProjectUsage" />
 	<import class="com.liferay.osb.faro.model.FaroUser" />
 	<class dynamic-update="true" name="com.liferay.osb.faro.model.impl.FaroChannelImpl" table="OSBFaro_FaroChannel">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="faroChannelId" type="long">
@@ -92,6 +93,21 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="faroProjectId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="emailDomain" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class dynamic-update="true" name="com.liferay.osb.faro.model.impl.FaroProjectUsageImpl" table="OSBFaro_FaroProjectUsage">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="faroProjectUsageId" type="long">
+			<generator class="assigned" />
+		</id>
+		<version access="com.liferay.portal.dao.orm.hibernate.PrivateFieldPropertyAccessor" name="mvccVersion" type="long" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="createTime" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="modifiedTime" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="faroProjectId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="knownIndividualsCount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="monthDateKey" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="pageViewsCount" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="usageTime" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class dynamic-update="true" name="com.liferay.osb.faro.model.impl.FaroUserImpl" table="OSBFaro_FaroUser">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="faroUserId" type="long">

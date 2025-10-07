@@ -20,11 +20,10 @@ import com.liferay.portal.kernel.search.suggest.SuggestionConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.InputStream;
@@ -160,17 +159,6 @@ public abstract class BaseSpellCheckIndexWriter
 		_querySuggestionMaxNGramLength = querySuggestionMaxNGramLength;
 	}
 
-	protected Digester getDigester() {
-
-		// See LPS-72507 and LPS-76500
-
-		if (digester != null) {
-			return digester;
-		}
-
-		return DigesterUtil.getDigester();
-	}
-
 	protected URL getResource(String name) {
 		Thread thread = Thread.currentThread();
 
@@ -190,7 +178,8 @@ public abstract class BaseSpellCheckIndexWriter
 
 	protected String[] getSupportedLocales() {
 		return StringUtil.split(
-			props.get(PropsKeys.INDEX_SEARCH_SPELL_CHECKER_SUPPORTED_LOCALES));
+			PropsUtil.get(
+				PropsKeys.INDEX_SEARCH_SPELL_CHECKER_SUPPORTED_LOCALES));
 	}
 
 	protected String getUID(
@@ -211,8 +200,6 @@ public abstract class BaseSpellCheckIndexWriter
 		}
 
 		try {
-			Digester digester = getDigester();
-
 			CharsetEncoder charsetEncoder =
 				CharsetEncoderUtil.getCharsetEncoder(StringPool.UTF8);
 
@@ -234,8 +221,8 @@ public abstract class BaseSpellCheckIndexWriter
 
 			String key = keySB.toString();
 
-			byte[] bytes = digester.digestRaw(
-				Digester.MD5, charsetEncoder.encode(CharBuffer.wrap(key)));
+			byte[] bytes = DigesterUtil.digestRaw(
+				DigesterUtil.MD5, charsetEncoder.encode(CharBuffer.wrap(key)));
 
 			uidSB.append(Base64.encode(bytes));
 		}
@@ -302,7 +289,7 @@ public abstract class BaseSpellCheckIndexWriter
 			String keywordFieldName, String typeFieldValue, int maxNGramLength)
 		throws Exception {
 
-		String[] dictionaryFileNames = props.getArray(
+		String[] dictionaryFileNames = PropsUtil.getArray(
 			propsKey, new Filter(languageId));
 
 		indexKeywords(
@@ -312,7 +299,7 @@ public abstract class BaseSpellCheckIndexWriter
 		List<Group> groups = groupLocalService.getLiveGroups();
 
 		for (Group group : groups) {
-			String[] groupDictionaryFileNames = props.getArray(
+			String[] groupDictionaryFileNames = PropsUtil.getArray(
 				propsKey,
 				new Filter(languageId, String.valueOf(group.getGroupId())));
 
@@ -327,13 +314,8 @@ public abstract class BaseSpellCheckIndexWriter
 		}
 	}
 
-	protected Digester digester;
-
 	@Reference
 	protected GroupLocalService groupLocalService;
-
-	@Reference
-	protected Props props;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseSpellCheckIndexWriter.class);

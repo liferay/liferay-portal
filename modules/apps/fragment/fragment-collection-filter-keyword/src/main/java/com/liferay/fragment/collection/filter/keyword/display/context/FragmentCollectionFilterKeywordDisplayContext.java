@@ -9,6 +9,7 @@ import com.liferay.fragment.constants.FragmentConfigurationFieldDataType;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -20,11 +21,11 @@ import java.util.Map;
 public class FragmentCollectionFilterKeywordDisplayContext {
 
 	public FragmentCollectionFilterKeywordDisplayContext(
-		String configuration,
+		JSONObject configurationJSONObject,
 		FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
 		FragmentRendererContext fragmentRendererContext) {
 
-		_configuration = configuration;
+		_configurationJSONObject = configurationJSONObject;
 		_fragmentEntryConfigurationParser = fragmentEntryConfigurationParser;
 		_fragmentRendererContext = fragmentRendererContext;
 
@@ -50,8 +51,8 @@ public class FragmentCollectionFilterKeywordDisplayContext {
 		).put(
 			"targetCollections",
 			_fragmentEntryConfigurationParser.getConfigurationFieldValue(
-				_fragmentEntryLink.getEditableValues(), "targetCollections",
-				FragmentConfigurationFieldDataType.ARRAY)
+				_fragmentEntryLink.getEditableValuesJSONObject(),
+				"targetCollections", FragmentConfigurationFieldDataType.ARRAY)
 		).build();
 	}
 
@@ -65,11 +66,12 @@ public class FragmentCollectionFilterKeywordDisplayContext {
 
 	private Object _getFieldValue(String fieldName) {
 		return _fragmentEntryConfigurationParser.getFieldValue(
-			_configuration, _fragmentEntryLink.getEditableValues(),
+			_configurationJSONObject,
+			_fragmentEntryLink.getEditableValuesJSONObject(),
 			_fragmentRendererContext.getLocale(), fieldName);
 	}
 
-	private final String _configuration;
+	private final JSONObject _configurationJSONObject;
 	private final FragmentEntryConfigurationParser
 		_fragmentEntryConfigurationParser;
 	private final FragmentEntryLink _fragmentEntryLink;

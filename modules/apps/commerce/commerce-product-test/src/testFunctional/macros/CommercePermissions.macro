@@ -227,7 +227,7 @@ definition {
 	macro removeAccountRolePermission(roleTitle = null, permission = null) {
 		Navigator.gotoNavTab(navTab = "Account Roles");
 
-		CommerceNavigator.gotoEntry(entryName = ${roleTitle});
+		CommerceNavigator.gotoExactEntry(entryName = ${roleTitle});
 
 		Navigator.gotoNavTab(navTab = "Define Permissions");
 
@@ -275,7 +275,7 @@ definition {
 
 	@summary = "Default summary"
 	macro removeRegularRolePermission(roleTitle = null, permission = null) {
-		CommerceNavigator.gotoEntry(entryName = ${roleTitle});
+		CommerceNavigator.gotoExactEntry(entryName = ${roleTitle});
 
 		Navigator.gotoNavTab(navTab = "Define Permissions");
 

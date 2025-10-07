@@ -54,7 +54,8 @@ public class DeleteOAuth2ApplicationsMVCActionCommand
 				_log.debug(portalException);
 			}
 
-			SessionErrors.add(actionRequest, portalException.getClass());
+			SessionErrors.add(
+				actionRequest, portalException.getClass(), portalException);
 		}
 
 		return true;

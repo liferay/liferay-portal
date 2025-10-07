@@ -107,7 +107,7 @@ public class AvailabilityLabelInfoItemRenderer
 				_cpDefinitionHelper.getCPCatalogEntry(
 					_getCommerceAccountId(groupId, httpServletRequest), groupId,
 					cpDefinition.getCPDefinitionId(),
-					_portal.getLocale(httpServletRequest));
+					_portal.getLocale(httpServletRequest), false);
 
 			CPSku cpSku = _cpContentHelper.getDefaultCPSku(cpCatalogEntry);
 

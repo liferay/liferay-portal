@@ -513,8 +513,16 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
 			dataDefinitionId);
 
+		DataLayout dataLayout = dataDefinition.getDefaultDataLayout();
+
 		dataDefinition = _putDataDefinition(
 			dataDefinitionId, dataDefinition, ddmStructure);
+
+		_putDataLayout(dataDefinition, dataLayout);
+
+		_removeFieldsFromDataLayoutsAndDataListViews(
+			dataDefinitionId,
+			_getRemovedFieldNames(dataDefinition, dataDefinitionId));
 
 		for (long classPK :
 				_deDataDefinitionFieldLinkLocalService.getClassPKS(
@@ -537,9 +545,18 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 					_ddmStructureLayoutLocalService, _ddmStructureLocalService,
 					contextHttpServletRequest, _spiDDMFormRuleConverter);
 
+			dataLayout = existingDataDefinition.getDefaultDataLayout();
+
 			_putDataDefinition(
 				existingDataDefinition.getId(), existingDataDefinition,
 				existingDDMStructure);
+
+			_putDataLayout(existingDataDefinition, dataLayout);
+
+			_removeFieldsFromDataLayoutsAndDataListViews(
+				existingDataDefinition.getId(),
+				_getRemovedFieldNames(
+					existingDataDefinition, existingDataDefinition.getId()));
 		}
 
 		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
@@ -1328,19 +1345,6 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			_journalArticleLocalService.getStructureArticlesCount(
 				ddmStructure.getGroupId(), ddmStructure.getStructureId()));
 
-		DataLayout dataLayout = dataDefinition.getDefaultDataLayout();
-
-		if (dataLayout != null) {
-			DataLayoutResource dataLayoutResource = _getDataLayoutResource(
-				false);
-
-			DataLayout putDataLayout = dataLayoutResource.putDataLayout(
-				_getDefaultDataLayoutId(dataDefinitionId, dataLayout),
-				dataLayout);
-
-			dataDefinition.setDefaultDataLayout(() -> putDataLayout);
-		}
-
 		JSONObject definitionJSONObject = _jsonFactory.createJSONObject(
 			ddmStructure.getDefinition());
 
@@ -1356,13 +1360,26 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 		_validate(dataDefinition, dataDefinitionContentType, ddmForm);
 
-		_removeFieldsFromDataLayoutsAndDataListViews(
-			dataDefinitionId,
-			_getRemovedFieldNames(dataDefinition, dataDefinitionId));
-
 		DDMFormFieldUtil.sortNestedDDMFormFields(ddmForm.getDDMFormFields());
 
 		return _updateDataDefinition(dataDefinition, dataDefinitionId, ddmForm);
+	}
+
+	private void _putDataLayout(
+			DataDefinition dataDefinition, DataLayout dataLayout)
+		throws Exception {
+
+		if (dataLayout == null) {
+			return;
+		}
+
+		DataLayoutResource dataLayoutResource = _getDataLayoutResource(false);
+
+		DataLayout putDataLayout = dataLayoutResource.putDataLayout(
+			_getDefaultDataLayoutId(dataDefinition.getId(), dataLayout),
+			dataLayout);
+
+		dataDefinition.setDefaultDataLayout(() -> putDataLayout);
 	}
 
 	private void _removeFieldsFromDataLayout(

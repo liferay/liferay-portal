@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-// @ts-ignore
-
 export {LocalizationSelect} from './LocalizationSelect';
-export {getOrCreateTranslationInput} from './getOrCreateTranslationInput';
+
+export {getTranslationInput} from './getTranslationInput';
 export {
 	handleInputLengthError,
 	hideLengthError,

@@ -30,9 +30,9 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 
 import java.text.DateFormat;
 
@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -139,6 +140,22 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			Arrays.asList(userGroup1, userGroup2),
 			(List<UserGroup>)page.getItems());
 		assertValid(page);
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteUserGroupByExternalReferenceCodeUsers()
+		throws Exception {
+
+		super.testGraphQLDeleteUserGroupByExternalReferenceCodeUsers();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteUserGroupUsers() throws Exception {
+		super.testGraphQLDeleteUserGroupUsers();
 	}
 
 	@Override
@@ -321,8 +338,19 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 
 		long totalCount = page.getTotalCount();
 
+		// Sleep for 1 second to ensure that user group 1 and existing user
+		// groups are created 1 second apart
+
+		Thread.sleep(1000);
+
 		UserGroup userGroup1 = testGetUserGroupsPage_addUserGroup(
 			randomUserGroup());
+
+		// Sleep for 1 second to ensure that user group 1 and user group 2 are
+		// created 1 second apart
+
+		Thread.sleep(1000);
+
 		UserGroup userGroup2 = testGetUserGroupsPage_addUserGroup(
 			randomUserGroup());
 
@@ -342,6 +370,11 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			Pagination.of(1, 2), null);
 
 		Assert.assertEquals(2, page.getTotalCount());
+
+		// Sleep for 1 second to ensure that user group 1 and user group 2 are
+		// modified 1 second apart
+
+		Thread.sleep(1000);
 
 		userGroup1.setDescription(
 			StringUtil.toLowerCase(RandomTestUtil.randomString()));

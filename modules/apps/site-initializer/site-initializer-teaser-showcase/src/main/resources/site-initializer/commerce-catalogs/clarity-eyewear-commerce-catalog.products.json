@@ -1,176 +1,25 @@
 [
 	{
 		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Our classic aviator sunglasses, a must-have accessory for sunny days, offer the perfect blend of style and functionality, whether you're lounging on the beach, driving with the top down, or enjoying a leisurely walk, with their timeless design, high-quality materials for durability, UV-protective lenses, and comfortable lightweight feel, ensuring you elevate your sunny day look and won't want to leave home without them.",
-		"externalReferenceCode": "CLASSIC-AVIATOR-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_1.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Classic Aviator Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "CLASSIC-AVIATOR-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Elevate your athletic performance and outdoor experiences with our sports sunglasses, meticulously engineered for active lifestyles. These sunglasses are not just about style; they're designed to provide a secure and comfortable fit, ensuring they stay in place no matter how vigorous your activity. The impact-resistant construction offers superior protection, while the lenses deliver exceptional clarity, allowing you to see every detail of your surroundings with precision. Whether you're engaged in high-intensity sports, running on challenging trails, or cycling through scenic routes, these sunglasses combine essential functionality with a sleek, aerodynamic look that complements your athletic prowess. Experience the difference that quality eyewear makes in your active pursuits.",
-		"externalReferenceCode": "SPORTS-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_2.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Sports Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "SPORTS-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Step out in iconic vintage style with our retro round sunglasses, a fashionable nod to the past that exudes timeless charm. These sunglasses feature a classic round frame that has been a symbol of cool for generations, offering a distinctive and stylish look that complements a wide range of outfits. Perfect for adding a touch of retro flair to your everyday ensemble, they not only enhance your style but also provide essential UV protection, ensuring your eyes are shielded from the sun's harmful rays. Whether you're strolling through a weekend market or attending a stylish outdoor event, these sunglasses are the perfect accessory to complete your look with a touch of vintage sophistication. Embrace the retro vibe and make a statement wherever you go.",
-		"externalReferenceCode": "RETRO-ROUND-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_3.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Retro Round Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "RETRO-ROUND-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Make a bold and glamorous fashion statement with our cat-eye sunglasses, a stylish accessory designed to accentuate your features with their distinctive upswept frame. These sunglasses are more than just eye protection; they are a symbol of elegance and trendiness, offering a perfect blend of classic Hollywood glamour and contemporary chic. Ideal for adding a touch of sophistication to any look, whether you're dressing up for a special occasion or adding flair to your everyday wear, these sunglasses elevate your style quotient effortlessly. The unique cat-eye silhouette enhances your facial structure, while providing the necessary protection from the sun, ensuring you look fabulous and feel confident wherever you go. Embrace the allure of the cat-eye and let your personality shine.",
-		"externalReferenceCode": "CAT-EYE-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_4.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Cat Eye Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "CAT-EYE-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Embrace a modern and chic aesthetic with our oversized square sunglasses, a bold accessory that offers both style and extensive coverage. These sunglasses feature a contemporary, oversized frame that makes a striking statement, perfect for those who want to stand out from the crowd and express their individuality. Ideal for fashion-forward individuals, they provide a contemporary twist on a classic design, offering both a fashionable look and ample protection from the sun's rays. Whether you're attending a high-profile event or simply enjoying a sunny day out, these sunglasses add an instant touch of glamour and sophistication to your ensemble. Make a statement with these oversized square sunglasses and showcase your unique sense of style.",
-		"externalReferenceCode": "OVERSIZED-SQUARE-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_5.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Oversized Square Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "OVERSIZED-SQUARE-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Sunglasses"
-		],
-		"cost": 0,
-		"description": "Add a refined and sophisticated touch to your style with our round metal sunglasses, a sleek accessory that exudes minimalist elegance. These sunglasses feature a lightweight, thin metal frame paired with classic round lenses, creating a timeless and versatile look that complements any outfit. Perfect for everyday wear, they offer both exceptional comfort and understated style, making them an essential addition to your accessory collection. Whether you're navigating the urban landscape or enjoying a relaxed weekend outing, these sunglasses provide both style and essential protection from the sun. Embrace the minimalist charm of these round metal sunglasses and elevate your look with effortless sophistication.",
-		"externalReferenceCode": "ROUND-METAL-SUNGLASSES",
-		"height": 0,
-		"images": [
-			"product_6.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Round Metal Sunglasses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "ROUND-METAL-SUNGLASSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
 			"Contacts"
 		],
 		"cost": 0,
-		"description": "Experience exceptional comfort, clarity, and convenience with ClearVision 1-Day Contact Lenses, the perfect choice for those seeking hassle-free vision correction. These daily disposable lenses are designed to provide a fresh and comfortable feel every day, eliminating the need for daily cleaning and storage routines. Ideal for individuals with busy lifestyles, these lenses offer unparalleled convenience and hygiene, ensuring your eyes stay healthy and comfortable throughout the day. Whether you're a frequent traveler, an active sports enthusiast, or simply someone who values the ease of daily disposables, ClearVision lenses deliver crisp, clear vision and all-day comfort. Enjoy the freedom and flexibility of daily lenses and experience the difference in your daily routine.",
-		"externalReferenceCode": "CLEARVISION-1-DAY-CONTACT-LENSES",
+		"description": "Experience exceptional comfort, clear vision, and reliable stability with Acuvue Oasys for Astigmatism, contact lenses specifically designed to correct astigmatism and provide superior comfort. These lenses offer consistent and stable vision, ensuring your eyes remain comfortable and your vision remains sharp throughout the day. Perfect for those who need reliable vision correction for astigmatism, Acuvue Oasys lenses provide the stability and clarity you need to live your life to the fullest. Enjoy the confidence of clear, stable vision and the renowned comfort of Acuvue Oasys technology, tailored to meet the unique needs of astigmatic eyes. Choose Acuvue Oasys for Astigmatism for superior vision correction and all-day comfort.",
+		"externalReferenceCode": "ACUVUE-OASYS-FOR-ASTIGMATISM",
 		"height": 0,
 		"images": [
-			"product_7.jpg"
+			"product_28.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "ClearVision 1-Day Contact Lenses",
+		"name": "Acuvue Oasys for Astigmatism",
 		"options": [
+			{
+				"key": "premium-box-option"
+			}
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "CLEARVISION-1-DAY-CONTACT-LENSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Contacts"
-		],
-		"cost": 0,
-		"description": "Enjoy superior comfort, exceptional vision, and long-lasting performance with Biofinity Monthly Contact Lenses, designed for those who demand the best in contact lens technology. These lenses are crafted for extended wear, providing exceptional breathability and optimal moisture retention, ensuring your eyes stay comfortable and hydrated throughout the month. Perfect for individuals seeking a reliable and comfortable solution for continuous wear, Biofinity lenses deliver consistent clarity and comfort, even during prolonged use. Experience the difference that advanced lens technology can make in your daily life, providing you with the freedom and confidence to live your life to the fullest. Discover the ultimate in monthly lens comfort and performance with Biofinity.",
-		"externalReferenceCode": "BIOFINITY-MONTHLY-CONTACT-LENSES",
-		"height": 0,
-		"images": [
-			"product_8.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Biofinity Monthly Contact Lenses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "BIOFINITY-MONTHLY-CONTACT-LENSES",
+		"sku": "ACUVUE-OASYS-FOR-ASTIGMATISM",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -243,88 +92,22 @@
 	},
 	{
 		"categories": [
-			"Lenses"
-		],
-		"cost": 0,
-		"description": "Enjoy smooth, continuous, and clear vision correction at all distances with Progressive Lenses, the modern and versatile solution for presbyopia. These lenses offer a seamless transition between near, intermediate, and distance vision, eliminating the visible lines and abrupt changes associated with traditional bifocals or trifocals. Perfect for individuals seeking a sophisticated and unobtrusive solution for age-related vision changes, progressive lenses provide a natural and comfortable viewing experience for all your daily activities. Whether you're working on a computer, reading, or enjoying outdoor activities, progressive lenses offer the ultimate in visual clarity and comfort, allowing you to see clearly and confidently at any distance.",
-		"externalReferenceCode": "PROGRESSIVE-LENSES",
-		"height": 0,
-		"images": [
-			"product_12.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Progressive Lenses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "PROGRESSIVE-LENSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Lenses"
-		],
-		"cost": 0,
-		"description": "Experience clear, comfortable, and reliable vision correction with our Clear Lenses, the essential choice for everyday wear. These lenses are designed to provide optimal clarity and visual acuity, ensuring you see the world with precision and comfort. Ideal for individuals who need vision correction without any tint or additional features, clear lenses offer a simple and effective solution for a wide range of vision needs. Whether you're working, studying, or enjoying your leisure time, clear lenses provide the clarity and comfort you need to see your best. Choose clear lenses for straightforward, dependable vision correction that meets your everyday needs.",
-		"externalReferenceCode": "CLEAR-LENSES",
-		"height": 0,
-		"images": [
-			"product_13.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Clear Lenses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "CLEAR-LENSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Lenses"
-		],
-		"cost": 0,
-		"description": "Protect your eyes from the harmful effects of digital screen exposure with Blue Light Blocking Lenses, designed to filter out high-energy blue light emitted by computers, smartphones, and other digital devices. These lenses are essential for individuals who spend extended periods in front of screens, helping to reduce eye strain, minimize headaches, and improve sleep quality by mitigating the disruptive effects of blue light on your circadian rhythm. Ideal for students, professionals, and anyone who relies on digital technology, blue light blocking lenses offer both protection and clarity, ensuring your eyes stay comfortable and healthy in the digital age. Invest in your eye health and experience the difference that blue light protection can make in your daily life.",
-		"externalReferenceCode": "BLUE-LIGHT-BLOCKING-LENSES",
-		"height": 0,
-		"images": [
-			"product_14.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Blue Light Blocking Lenses",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "BLUE-LIGHT-BLOCKING-LENSES",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
 			"Contacts"
 		],
 		"cost": 0,
-		"description": "Enhance your natural eye color with FreshLook ColorBlends, a stunning collection of contact lenses that offer a wide range of natural-looking shades for a subtle or dramatic transformation. These lenses are perfect for individuals who want to experiment with their look, whether you desire a subtle enhancement or a bold change, without compromising on the comfort and health of your eyes. Experience the confidence of beautiful, vibrant eyes and the comfort of advanced lens technology, designed to provide all-day wearability and exceptional breathability. Choose FreshLook ColorBlends to express your unique style and enjoy the perfect blend of fashion and function in a monthly contact lens, available in a variety of captivating colors to suit your individual taste.",
-		"externalReferenceCode": "FRESHLOOK-COLORBLENDS",
+		"description": "Enjoy superior comfort, exceptional vision, and long-lasting performance with Biofinity Monthly Contact Lenses, designed for those who demand the best in contact lens technology. These lenses are crafted for extended wear, providing exceptional breathability and optimal moisture retention, ensuring your eyes stay comfortable and hydrated throughout the month. Perfect for individuals seeking a reliable and comfortable solution for continuous wear, Biofinity lenses deliver consistent clarity and comfort, even during prolonged use. Experience the difference that advanced lens technology can make in your daily life, providing you with the freedom and confidence to live your life to the fullest. Discover the ultimate in monthly lens comfort and performance with Biofinity.",
+		"externalReferenceCode": "BIOFINITY-MONTHLY-CONTACT-LENSES",
 		"height": 0,
 		"images": [
-			"product_15.jpg"
+			"product_8.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "FreshLook ColorBlends",
+		"name": "Biofinity Monthly Contact Lenses",
 		"options": [
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "FRESHLOOK-COLORBLENDS",
+		"sku": "BIOFINITY-MONTHLY-CONTACT-LENSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -353,110 +136,44 @@
 	},
 	{
 		"categories": [
-			"Eyeglasses"
+			"Lenses"
 		],
 		"cost": 0,
-		"description": "Refine your professional appearance and enhance your vision with our Sophisticated Rectangle eyeglasses, featuring a sleek and polished design that complements any face shape. These frames offer a timeless and versatile aesthetic, perfect for those who want to project a polished and modern image. Ideal for both men and women, these eyeglasses provide both style and clarity, ensuring you look and see your best in any setting. Whether you're in the boardroom, attending meetings, or simply going about your daily routine, these sophisticated rectangle frames add a touch of elegance and professionalism to your look. Choose these eyeglasses for a refined and confident style.",
-		"externalReferenceCode": "SOPHISTICATED-RECTANGLE",
+		"description": "Protect your eyes from the harmful effects of digital screen exposure with Blue Light Blocking Lenses, designed to filter out high-energy blue light emitted by computers, smartphones, and other digital devices. These lenses are essential for individuals who spend extended periods in front of screens, helping to reduce eye strain, minimize headaches, and improve sleep quality by mitigating the disruptive effects of blue light on your circadian rhythm. Ideal for students, professionals, and anyone who relies on digital technology, blue light blocking lenses offer both protection and clarity, ensuring your eyes stay comfortable and healthy in the digital age. Invest in your eye health and experience the difference that blue light protection can make in your daily life.",
+		"externalReferenceCode": "BLUE-LIGHT-BLOCKING-LENSES",
 		"height": 0,
 		"images": [
-			"product_17.jpg"
+			"product_14.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Sophisticated Rectangle",
+		"name": "Blue Light Blocking Lenses",
 		"options": [
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "SOPHISTICATED-RECTANGLE",
+		"sku": "BLUE-LIGHT-BLOCKING-LENSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
 	},
 	{
 		"categories": [
-			"Eyeglasses"
+			"Sunglasses"
 		],
 		"cost": 0,
-		"description": "Make a bold and fashion-forward statement with our Trendy Oversized eyeglasses, featuring a striking and contemporary design that exudes modern style. These frames are perfect for those who want to showcase their personality and express their individuality with a bold and confident look. Ideal for those who appreciate contemporary fashion, these eyeglasses combine fashion with function, providing both a stylish look and comfortable wear. Whether you're attending a social event, exploring the city, or simply expressing your unique style, these trendy oversized frames will elevate your look and make a lasting impression. Choose these eyeglasses to showcase your bold and fashion-forward sense of style.",
-		"externalReferenceCode": "TRENDY-OVERSIZED",
+		"description": "Make a bold and glamorous fashion statement with our cat-eye sunglasses, a stylish accessory designed to accentuate your features with their distinctive upswept frame. These sunglasses are more than just eye protection; they are a symbol of elegance and trendiness, offering a perfect blend of classic Hollywood glamour and contemporary chic. Ideal for adding a touch of sophistication to any look, whether you're dressing up for a special occasion or adding flair to your everyday wear, these sunglasses elevate your style quotient effortlessly. The unique cat-eye silhouette enhances your facial structure, while providing the necessary protection from the sun, ensuring you look fabulous and feel confident wherever you go. Embrace the allure of the cat-eye and let your personality shine.",
+		"externalReferenceCode": "CAT-EYE-SUNGLASSES",
 		"height": 0,
 		"images": [
-			"product_18.jpg"
+			"product_4.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Trendy Oversized",
+		"name": "Cat Eye Sunglasses",
 		"options": [
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "TRENDY-OVERSIZED",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Eyeglasses"
-		],
-		"cost": 0,
-		"description": "Add a touch of timeless elegance and retro charm to your look with our Elegant Cat Eye eyeglasses, featuring a classic and sophisticated design that enhances your features. These frames offer a blend of vintage allure and contemporary style, perfect for those who want to express their unique sense of fashion with a touch of sophistication. Ideal for both casual and formal occasions, these eyeglasses provide both style and clarity, ensuring you look and feel your best. Whether you're attending a special event or simply adding a touch of glamour to your everyday wear, these elegant cat-eye frames will elevate your style and make a lasting impression. Choose these eyeglasses for a refined and stylish aesthetic.",
-		"externalReferenceCode": "ELEGANT-CAT-EYE",
-		"height": 0,
-		"images": [
-			"product_19.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Elegant Cat Eye",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "ELEGANT-CAT-EYE",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Eyeglasses"
-		],
-		"cost": 0,
-		"description": "Achieve a sleek, contemporary, and minimalist look with our Modern Rectangle eyeglasses, featuring a clean and understated design that suits a variety of styles. These frames offer a versatile and sophisticated aesthetic, perfect for those who prefer a modern and refined look. Ideal for both professional and casual settings, these eyeglasses provide both clarity and style, ensuring you look and see your best. Whether you're in the office, attending meetings, or simply going about your daily routine, these modern rectangle frames add a touch of contemporary elegance to your look. Choose these eyeglasses for a versatile and understated style.",
-		"externalReferenceCode": "MODERN-RECTANGLE",
-		"height": 0,
-		"images": [
-			"product_20.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Modern Rectangle",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "MODERN-RECTANGLE",
-		"warehouse1": 60,
-		"weight": 0,
-		"width": 0
-	},
-	{
-		"categories": [
-			"Eyeglasses"
-		],
-		"cost": 0,
-		"description": "Embrace timeless style and retro charm with our Vintage Round eyeglasses, featuring a classic and iconic design that exudes vintage appeal. These frames offer a unique and fashionable look, perfect for those who appreciate retro aesthetics and want to express their individual style. Ideal for both men and women, these eyeglasses provide both style and clarity, ensuring you look and see your best. Whether you're exploring vintage markets, attending retro-themed events, or simply adding a touch of vintage flair to your everyday wear, these round frames will elevate your look and make a lasting impression. Choose these eyeglasses to showcase your appreciation for classic style and vintage charm.",
-		"externalReferenceCode": "VINTAGE-ROUND",
-		"height": 0,
-		"images": [
-			"product_21.jpg"
-		],
-		"minStockQuantity": 5,
-		"name": "Vintage Round",
-		"options": [
-		],
-		"price": 0,
-		"promoPrice": 0,
-		"sku": "VINTAGE-ROUND",
+		"sku": "CAT-EYE-SUNGLASSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -485,25 +202,22 @@
 	},
 	{
 		"categories": [
-			"Lenses"
+			"Sunglasses"
 		],
 		"cost": 0,
-		"description": "Correct your vision at all distances with Multifocal Lenses, designed to address the challenges of presbyopia and provide clear vision for near, intermediate, and far distances. These lenses offer a comprehensive solution for individuals who need correction for age-related vision changes, eliminating the need for multiple pairs of glasses and providing seamless vision correction for all your daily activities. Ideal for reading, working on a computer, and enjoying outdoor activities, multifocal lenses offer the convenience and clarity you need to see your best at any distance. Experience the freedom and versatility of multifocal lenses and enjoy clear vision in every aspect of your life.",
-		"externalReferenceCode": "MULTIFOCAL-LENSES",
+		"description": "Our classic aviator sunglasses, a must-have accessory for sunny days, offer the perfect blend of style and functionality, whether you're lounging on the beach, driving with the top down, or enjoying a leisurely walk, with their timeless design, high-quality materials for durability, UV-protective lenses, and comfortable lightweight feel, ensuring you elevate your sunny day look and won't want to leave home without them.",
+		"externalReferenceCode": "CLASSIC-AVIATOR-SUNGLASSES",
 		"height": 0,
 		"images": [
-			"product_23.jpg"
+			"product_1.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Multifocal Lenses",
+		"name": "Classic Aviator Sunglasses",
 		"options": [
-			{
-				"key": "premium-box-option"
-			}
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "MULTIFOCAL-LENSES",
+		"sku": "CLASSIC-AVIATOR-SUNGLASSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -513,22 +227,19 @@
 			"Lenses"
 		],
 		"cost": 0,
-		"description": "Achieve clear, stable, and comfortable vision with Toric Lenses, specifically designed to correct astigmatism and provide exceptional visual acuity. These lenses offer precise vision correction for individuals with astigmatic eyes, ensuring consistent clarity and comfort throughout the day. Perfect for those who need reliable vision correction for astigmatism, toric lenses provide the stability and clarity you need to live your life to the fullest. Experience the confidence of clear, stable vision and the comfort of advanced lens technology, tailored to meet the unique needs of astigmatic eyes. Choose Toric Lenses for superior vision correction and all-day comfort.",
-		"externalReferenceCode": "TORIC-LENSES",
+		"description": "Experience clear, comfortable, and reliable vision correction with our Clear Lenses, the essential choice for everyday wear. These lenses are designed to provide optimal clarity and visual acuity, ensuring you see the world with precision and comfort. Ideal for individuals who need vision correction without any tint or additional features, clear lenses offer a simple and effective solution for a wide range of vision needs. Whether you're working, studying, or enjoying your leisure time, clear lenses provide the clarity and comfort you need to see your best. Choose clear lenses for straightforward, dependable vision correction that meets your everyday needs.",
+		"externalReferenceCode": "CLEAR-LENSES",
 		"height": 0,
 		"images": [
-			"product_24.jpg"
+			"product_13.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Toric Lenses",
+		"name": "Clear Lenses",
 		"options": [
-			{
-				"key": "premium-box-option"
-			}
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "TORIC-LENSES",
+		"sku": "CLEAR-LENSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -538,22 +249,19 @@
 			"Contacts"
 		],
 		"cost": 0,
-		"description": "Experience the convenience and comfort of Monthly Disposable Lenses, designed for a month-long wear cycle, offering a perfect balance of comfort, clarity, and value. These lenses provide a practical and cost-effective solution for those who prefer a routine replacement schedule, ensuring clear vision and consistent comfort throughout the month. Ideal for everyday wear, monthly disposable lenses offer a reliable and comfortable option for vision correction. Enjoy the convenience of a monthly replacement schedule and the confidence of clear, comfortable vision with these dependable lenses.",
-		"externalReferenceCode": "MONTHLY-DISPOSABLE-LENSES",
+		"description": "Experience exceptional comfort, clarity, and convenience with ClearVision 1-Day Contact Lenses, the perfect choice for those seeking hassle-free vision correction. These daily disposable lenses are designed to provide a fresh and comfortable feel every day, eliminating the need for daily cleaning and storage routines. Ideal for individuals with busy lifestyles, these lenses offer unparalleled convenience and hygiene, ensuring your eyes stay healthy and comfortable throughout the day. Whether you're a frequent traveler, an active sports enthusiast, or simply someone who values the ease of daily disposables, ClearVision lenses deliver crisp, clear vision and all-day comfort. Enjoy the freedom and flexibility of daily lenses and experience the difference in your daily routine.",
+		"externalReferenceCode": "CLEARVISION-1-DAY-CONTACT-LENSES",
 		"height": 0,
 		"images": [
-			"product_25.jpg"
+			"product_7.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Monthly Disposable Lenses",
+		"name": "ClearVision 1-Day Contact Lenses",
 		"options": [
-			{
-				"key": "premium-box-option"
-			}
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "MONTHLY-DISPOSABLE-LENSES",
+		"sku": "CLEARVISION-1-DAY-CONTACT-LENSES",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0
@@ -585,6 +293,144 @@
 	},
 	{
 		"categories": [
+			"Eyeglasses"
+		],
+		"cost": 0,
+		"description": "Add a touch of timeless elegance and retro charm to your look with our Elegant Cat Eye eyeglasses, featuring a classic and sophisticated design that enhances your features. These frames offer a blend of vintage allure and contemporary style, perfect for those who want to express their unique sense of fashion with a touch of sophistication. Ideal for both casual and formal occasions, these eyeglasses provide both style and clarity, ensuring you look and feel your best. Whether you're attending a special event or simply adding a touch of glamour to your everyday wear, these elegant cat-eye frames will elevate your style and make a lasting impression. Choose these eyeglasses for a refined and stylish aesthetic.",
+		"externalReferenceCode": "ELEGANT-CAT-EYE",
+		"height": 0,
+		"images": [
+			"product_19.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Elegant Cat Eye",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "ELEGANT-CAT-EYE",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Contacts"
+		],
+		"cost": 0,
+		"description": "Enhance your natural eye color with FreshLook ColorBlends, a stunning collection of contact lenses that offer a wide range of natural-looking shades for a subtle or dramatic transformation. These lenses are perfect for individuals who want to experiment with their look, whether you desire a subtle enhancement or a bold change, without compromising on the comfort and health of your eyes. Experience the confidence of beautiful, vibrant eyes and the comfort of advanced lens technology, designed to provide all-day wearability and exceptional breathability. Choose FreshLook ColorBlends to express your unique style and enjoy the perfect blend of fashion and function in a monthly contact lens, available in a variety of captivating colors to suit your individual taste.",
+		"externalReferenceCode": "FRESHLOOK-COLORBLENDS",
+		"height": 0,
+		"images": [
+			"product_15.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "FreshLook ColorBlends",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "FRESHLOOK-COLORBLENDS",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Eyeglasses"
+		],
+		"cost": 0,
+		"description": "Achieve a sleek, contemporary, and minimalist look with our Modern Rectangle eyeglasses, featuring a clean and understated design that suits a variety of styles. These frames offer a versatile and sophisticated aesthetic, perfect for those who prefer a modern and refined look. Ideal for both professional and casual settings, these eyeglasses provide both clarity and style, ensuring you look and see your best. Whether you're in the office, attending meetings, or simply going about your daily routine, these modern rectangle frames add a touch of contemporary elegance to your look. Choose these eyeglasses for a versatile and understated style.",
+		"externalReferenceCode": "MODERN-RECTANGLE",
+		"height": 0,
+		"images": [
+			"product_20.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Modern Rectangle",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "MODERN-RECTANGLE",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Contacts"
+		],
+		"cost": 0,
+		"description": "Experience the convenience and comfort of Monthly Disposable Lenses, designed for a month-long wear cycle, offering a perfect balance of comfort, clarity, and value. These lenses provide a practical and cost-effective solution for those who prefer a routine replacement schedule, ensuring clear vision and consistent comfort throughout the month. Ideal for everyday wear, monthly disposable lenses offer a reliable and comfortable option for vision correction. Enjoy the convenience of a monthly replacement schedule and the confidence of clear, comfortable vision with these dependable lenses.",
+		"externalReferenceCode": "MONTHLY-DISPOSABLE-LENSES",
+		"height": 0,
+		"images": [
+			"product_25.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Monthly Disposable Lenses",
+		"options": [
+			{
+				"key": "premium-box-option"
+			}
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "MONTHLY-DISPOSABLE-LENSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Lenses"
+		],
+		"cost": 0,
+		"description": "Correct your vision at all distances with Multifocal Lenses, designed to address the challenges of presbyopia and provide clear vision for near, intermediate, and far distances. These lenses offer a comprehensive solution for individuals who need correction for age-related vision changes, eliminating the need for multiple pairs of glasses and providing seamless vision correction for all your daily activities. Ideal for reading, working on a computer, and enjoying outdoor activities, multifocal lenses offer the convenience and clarity you need to see your best at any distance. Experience the freedom and versatility of multifocal lenses and enjoy clear vision in every aspect of your life.",
+		"externalReferenceCode": "MULTIFOCAL-LENSES",
+		"height": 0,
+		"images": [
+			"product_23.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Multifocal Lenses",
+		"options": [
+			{
+				"key": "premium-box-option"
+			}
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "MULTIFOCAL-LENSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Sunglasses"
+		],
+		"cost": 0,
+		"description": "Embrace a modern and chic aesthetic with our oversized square sunglasses, a bold accessory that offers both style and extensive coverage. These sunglasses feature a contemporary, oversized frame that makes a striking statement, perfect for those who want to stand out from the crowd and express their individuality. Ideal for fashion-forward individuals, they provide a contemporary twist on a classic design, offering both a fashionable look and ample protection from the sun's rays. Whether you're attending a high-profile event or simply enjoying a sunny day out, these sunglasses add an instant touch of glamour and sophistication to your ensemble. Make a statement with these oversized square sunglasses and showcase your unique sense of style.",
+		"externalReferenceCode": "OVERSIZED-SQUARE-SUNGLASSES",
+		"height": 0,
+		"images": [
+			"product_5.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Oversized Square Sunglasses",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "OVERSIZED-SQUARE-SUNGLASSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
 			"Lenses"
 		],
 		"cost": 0,
@@ -610,17 +456,127 @@
 	},
 	{
 		"categories": [
-			"Contacts"
+			"Lenses"
 		],
 		"cost": 0,
-		"description": "Experience exceptional comfort, clear vision, and reliable stability with Acuvue Oasys for Astigmatism, contact lenses specifically designed to correct astigmatism and provide superior comfort. These lenses offer consistent and stable vision, ensuring your eyes remain comfortable and your vision remains sharp throughout the day. Perfect for those who need reliable vision correction for astigmatism, Acuvue Oasys lenses provide the stability and clarity you need to live your life to the fullest. Enjoy the confidence of clear, stable vision and the renowned comfort of Acuvue Oasys technology, tailored to meet the unique needs of astigmatic eyes. Choose Acuvue Oasys for Astigmatism for superior vision correction and all-day comfort.",
-		"externalReferenceCode": "ACUVUE-OASYS-FOR-ASTIGMATISM",
+		"description": "Enjoy smooth, continuous, and clear vision correction at all distances with Progressive Lenses, the modern and versatile solution for presbyopia. These lenses offer a seamless transition between near, intermediate, and distance vision, eliminating the visible lines and abrupt changes associated with traditional bifocals or trifocals. Perfect for individuals seeking a sophisticated and unobtrusive solution for age-related vision changes, progressive lenses provide a natural and comfortable viewing experience for all your daily activities. Whether you're working on a computer, reading, or enjoying outdoor activities, progressive lenses offer the ultimate in visual clarity and comfort, allowing you to see clearly and confidently at any distance.",
+		"externalReferenceCode": "PROGRESSIVE-LENSES",
 		"height": 0,
 		"images": [
-			"product_28.jpg"
+			"product_12.jpg"
 		],
 		"minStockQuantity": 5,
-		"name": "Acuvue Oasys for Astigmatism",
+		"name": "Progressive Lenses",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "PROGRESSIVE-LENSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Sunglasses"
+		],
+		"cost": 0,
+		"description": "Step out in iconic vintage style with our retro round sunglasses, a fashionable nod to the past that exudes timeless charm. These sunglasses feature a classic round frame that has been a symbol of cool for generations, offering a distinctive and stylish look that complements a wide range of outfits. Perfect for adding a touch of retro flair to your everyday ensemble, they not only enhance your style but also provide essential UV protection, ensuring your eyes are shielded from the sun's harmful rays. Whether you're strolling through a weekend market or attending a stylish outdoor event, these sunglasses are the perfect accessory to complete your look with a touch of vintage sophistication. Embrace the retro vibe and make a statement wherever you go.",
+		"externalReferenceCode": "RETRO-ROUND-SUNGLASSES",
+		"height": 0,
+		"images": [
+			"product_3.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Retro Round Sunglasses",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "RETRO-ROUND-SUNGLASSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Sunglasses"
+		],
+		"cost": 0,
+		"description": "Add a refined and sophisticated touch to your style with our round metal sunglasses, a sleek accessory that exudes minimalist elegance. These sunglasses feature a lightweight, thin metal frame paired with classic round lenses, creating a timeless and versatile look that complements any outfit. Perfect for everyday wear, they offer both exceptional comfort and understated style, making them an essential addition to your accessory collection. Whether you're navigating the urban landscape or enjoying a relaxed weekend outing, these sunglasses provide both style and essential protection from the sun. Embrace the minimalist charm of these round metal sunglasses and elevate your look with effortless sophistication.",
+		"externalReferenceCode": "ROUND-METAL-SUNGLASSES",
+		"height": 0,
+		"images": [
+			"product_6.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Round Metal Sunglasses",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "ROUND-METAL-SUNGLASSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Eyeglasses"
+		],
+		"cost": 0,
+		"description": "Refine your professional appearance and enhance your vision with our Sophisticated Rectangle eyeglasses, featuring a sleek and polished design that complements any face shape. These frames offer a timeless and versatile aesthetic, perfect for those who want to project a polished and modern image. Ideal for both men and women, these eyeglasses provide both style and clarity, ensuring you look and see your best in any setting. Whether you're in the boardroom, attending meetings, or simply going about your daily routine, these sophisticated rectangle frames add a touch of elegance and professionalism to your look. Choose these eyeglasses for a refined and confident style.",
+		"externalReferenceCode": "SOPHISTICATED-RECTANGLE",
+		"height": 0,
+		"images": [
+			"product_17.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Sophisticated Rectangle",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "SOPHISTICATED-RECTANGLE",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Sunglasses"
+		],
+		"cost": 0,
+		"description": "Elevate your athletic performance and outdoor experiences with our sports sunglasses, meticulously engineered for active lifestyles. These sunglasses are not just about style; they're designed to provide a secure and comfortable fit, ensuring they stay in place no matter how vigorous your activity. The impact-resistant construction offers superior protection, while the lenses deliver exceptional clarity, allowing you to see every detail of your surroundings with precision. Whether you're engaged in high-intensity sports, running on challenging trails, or cycling through scenic routes, these sunglasses combine essential functionality with a sleek, aerodynamic look that complements your athletic prowess. Experience the difference that quality eyewear makes in your active pursuits.",
+		"externalReferenceCode": "SPORTS-SUNGLASSES",
+		"height": 0,
+		"images": [
+			"product_2.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Sports Sunglasses",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "SPORTS-SUNGLASSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Lenses"
+		],
+		"cost": 0,
+		"description": "Achieve clear, stable, and comfortable vision with Toric Lenses, specifically designed to correct astigmatism and provide exceptional visual acuity. These lenses offer precise vision correction for individuals with astigmatic eyes, ensuring consistent clarity and comfort throughout the day. Perfect for those who need reliable vision correction for astigmatism, toric lenses provide the stability and clarity you need to live your life to the fullest. Experience the confidence of clear, stable vision and the comfort of advanced lens technology, tailored to meet the unique needs of astigmatic eyes. Choose Toric Lenses for superior vision correction and all-day comfort.",
+		"externalReferenceCode": "TORIC-LENSES",
+		"height": 0,
+		"images": [
+			"product_24.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Toric Lenses",
 		"options": [
 			{
 				"key": "premium-box-option"
@@ -628,7 +584,51 @@
 		],
 		"price": 0,
 		"promoPrice": 0,
-		"sku": "ACUVUE-OASYS-FOR-ASTIGMATISM",
+		"sku": "TORIC-LENSES",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Eyeglasses"
+		],
+		"cost": 0,
+		"description": "Make a bold and fashion-forward statement with our Trendy Oversized eyeglasses, featuring a striking and contemporary design that exudes modern style. These frames are perfect for those who want to showcase their personality and express their individuality with a bold and confident look. Ideal for those who appreciate contemporary fashion, these eyeglasses combine fashion with function, providing both a stylish look and comfortable wear. Whether you're attending a social event, exploring the city, or simply expressing your unique style, these trendy oversized frames will elevate your look and make a lasting impression. Choose these eyeglasses to showcase your bold and fashion-forward sense of style.",
+		"externalReferenceCode": "TRENDY-OVERSIZED",
+		"height": 0,
+		"images": [
+			"product_18.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Trendy Oversized",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "TRENDY-OVERSIZED",
+		"warehouse1": 60,
+		"weight": 0,
+		"width": 0
+	},
+	{
+		"categories": [
+			"Eyeglasses"
+		],
+		"cost": 0,
+		"description": "Embrace timeless style and retro charm with our Vintage Round eyeglasses, featuring a classic and iconic design that exudes vintage appeal. These frames offer a unique and fashionable look, perfect for those who appreciate retro aesthetics and want to express their individual style. Ideal for both men and women, these eyeglasses provide both style and clarity, ensuring you look and see your best. Whether you're exploring vintage markets, attending retro-themed events, or simply adding a touch of vintage flair to your everyday wear, these round frames will elevate your look and make a lasting impression. Choose these eyeglasses to showcase your appreciation for classic style and vintage charm.",
+		"externalReferenceCode": "VINTAGE-ROUND",
+		"height": 0,
+		"images": [
+			"product_21.jpg"
+		],
+		"minStockQuantity": 5,
+		"name": "Vintage Round",
+		"options": [
+		],
+		"price": 0,
+		"promoPrice": 0,
+		"sku": "VINTAGE-ROUND",
 		"warehouse1": 60,
 		"weight": 0,
 		"width": 0

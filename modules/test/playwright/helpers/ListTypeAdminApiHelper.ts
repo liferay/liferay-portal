@@ -38,22 +38,23 @@ export class ListTypeAdminApiHelper {
 		);
 	}
 
-	async postListTypeEntry(
-		listTypeDefinitionExternalReferenceCode: string,
-		englishListTypeEntryName: string,
-		translatedNames?: LocalizedValue<string>
-	): Promise<ListTypeDefinition> {
-		const requestBody = {
-			key: englishListTypeEntryName.toLocaleLowerCase(),
-			name_i18n: {
-				en_US: englishListTypeEntryName,
-				...translatedNames,
-			},
-		};
-
+	async postListTypeEntry({
+		key,
+		listTypeDefinitionExternalReferenceCode,
+		name_i18n,
+	}: {
+		key: string;
+		listTypeDefinitionExternalReferenceCode: string;
+		name_i18n: LocalizedValue<string>;
+	}): Promise<ListTypeDefinition> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/list-type-definitions/by-external-reference-code/${listTypeDefinitionExternalReferenceCode}/list-type-entries`,
-			{data: requestBody}
+			{
+				data: {
+					key: key.toLowerCase(),
+					name_i18n,
+				},
+			}
 		);
 	}
 

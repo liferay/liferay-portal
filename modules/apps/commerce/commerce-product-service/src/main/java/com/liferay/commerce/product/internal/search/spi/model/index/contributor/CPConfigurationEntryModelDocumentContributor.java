@@ -91,8 +91,6 @@ public class CPConfigurationEntryModelDocumentContributor
 				cpConfigurationEntry.getCPConfigurationEntryId());
 			document.addKeyword(
 				Field.ENTRY_CLASS_PK, cpConfigurationEntry.getClassPK());
-			document.addKeyword(
-				Field.HIDDEN, !cpConfigurationEntry.isVisible());
 
 			CPDefinition cpDefinition = null;
 

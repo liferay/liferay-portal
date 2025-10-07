@@ -229,4 +229,9 @@ public interface DB {
 			boolean dropStaleIndexes)
 		throws Exception;
 
+	public void updatePrimaryKey(
+			Connection connection, String tableName,
+			String[] primaryKeyColumnNames)
+		throws Exception;
+
 }

@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.index.IndexNameBuilder;
@@ -35,7 +35,6 @@ import com.liferay.portal.search.opensearch2.internal.connection.helper.IndexCre
 import com.liferay.portal.search.opensearch2.internal.facet.FacetProcessor;
 import com.liferay.portal.search.opensearch2.internal.search.engine.adapter.OpenSearchEngineAdapterFixture;
 import com.liferay.portal.search.test.util.indexing.IndexingFixture;
-import com.liferay.portal.util.DigesterImpl;
 import com.liferay.portal.util.LocalizationImpl;
 
 import java.io.IOException;
@@ -216,8 +215,9 @@ public class OpenSearchIndexingFixture implements IndexingFixture {
 			openSearchIndexSearcher, "_openSearchConfigurationWrapper",
 			createOpenSearchConfigurationWrapper(
 				openSearchFixture.getOpenSearchConfigurationProperties()));
-		ReflectionTestUtil.setFieldValue(
-			openSearchIndexSearcher, "_props", _createProps());
+
+		_setUpIndexSearchLimit();
+
 		ReflectionTestUtil.setFieldValue(
 			openSearchIndexSearcher, "_querySuggester",
 			_createOpenSearchQuerySuggester(
@@ -303,8 +303,6 @@ public class OpenSearchIndexingFixture implements IndexingFixture {
 		OpenSearchSpellCheckIndexWriter openSearchSpellCheckIndexWriter =
 			new OpenSearchSpellCheckIndexWriter() {
 				{
-					digester = new DigesterImpl();
-
 					setLocalization(localization);
 				}
 			};
@@ -317,20 +315,6 @@ public class OpenSearchIndexingFixture implements IndexingFixture {
 			searchEngineAdapter);
 
 		return openSearchSpellCheckIndexWriter;
-	}
-
-	private Props _createProps() {
-		Props props = Mockito.mock(Props.class);
-
-		Mockito.doReturn(
-			"20"
-		).when(
-			props
-		).get(
-			PropsKeys.INDEX_SEARCH_LIMIT
-		);
-
-		return props;
 	}
 
 	private SearchEngineInformation _createSearchEngineInformation() {
@@ -362,6 +346,10 @@ public class OpenSearchIndexingFixture implements IndexingFixture {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	private void _setUpIndexSearchLimit() {
+		PropsUtil.set(PropsKeys.INDEX_SEARCH_LIMIT, "20");
 	}
 
 	private final long _companyId;

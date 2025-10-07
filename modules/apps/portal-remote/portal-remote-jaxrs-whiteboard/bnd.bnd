@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Remote JAXRS Whiteboard
 Bundle-SymbolicName: com.liferay.portal.remote.jaxrs.whiteboard
-Bundle-Version: 12.0.11
+Bundle-Version: 12.0.13
 Export-Package:\
 	com.liferay.portal.remote.jaxrs.whiteboard.lifecycle,\
 	\
@@ -15,7 +15,7 @@ Export-Package:\
 	javax.wsdl.xml;version="1.2"
 Provide-Capability:\
 	osgi.contract;\
-		osgi.contract="JakartaRESTfulWebServices";\
+		osgi.contract=JakartaRESTfulWebServices;\
 		uses:="jakarta.ws.rs,jakarta.ws.rs.client,jakarta.ws.rs.ext,jakarta.ws.rs.sse,jakarta.ws.rs.container,jakarta.ws.rs.core";\
 		version:Version="3.1.0"
 Require-Capability:\

@@ -121,7 +121,7 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/assets/blogs#blogs');
+			await expect(href).toContain('/assets-analytics/blogs-analytics');
 
 			await newPage.close();
 		});
@@ -153,7 +153,7 @@ test(
 
 			await expect(href).toContain('learn.liferay.com');
 			await expect(href).toContain(
-				'/assets/documents-and-media#documents-and-media'
+				'/assets-analytics/documents-and-media-analytics'
 			);
 
 			await newPage.close();
@@ -183,7 +183,7 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/assets/forms#forms');
+			await expect(href).toContain('/assets-analytics/forms-analytics');
 
 			await newPage.close();
 		});
@@ -212,36 +212,9 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/assets/web-content#web-content');
-
-			await newPage.close();
-		});
-
-		await test.step('Go Custom Tab, check empty state message', async () => {
-			await navigateTo({
-				page,
-				pageName: 'Custom',
-			});
-
-			await expect(
-				page.getByText('There are no visitors data found.')
-			).toBeVisible();
-			await expect(
-				page.getByText(
-					'Check back later to verify if data has been received from your data sources, or you can try a different date range.'
-				)
-			).toBeVisible();
-
-			await page
-				.getByRole('link', {name: 'Learn more about custom assets.'})
-				.click();
-
-			const newPage = await page.waitForEvent('popup');
-
-			const href = newPage.url();
-
-			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/assets/tracking-custom-assets');
+			await expect(href).toContain(
+				'/assets-analytics/web-content-analytics'
+			);
 
 			await newPage.close();
 		});
@@ -341,7 +314,7 @@ test(
 
 			await expect(href).toContain('learn.liferay.com');
 			await expect(href).toContain(
-				'/people/individuals#active-individuals'
+				'/people/individuals-analytics#active-individuals'
 			);
 
 			await newPage.close();
@@ -368,7 +341,9 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/people/individuals#interests');
+			await expect(href).toContain(
+				'/people/individuals-analytics#interests'
+			);
 
 			await newPage.close();
 		});
@@ -398,7 +373,9 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/people/individuals#breakdown');
+			await expect(href).toContain(
+				'/people/individuals-analytics#breakdown'
+			);
 
 			await newPage.close();
 		});
@@ -427,7 +404,9 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/people/individuals#interests');
+			await expect(href).toContain(
+				'/people/individuals-analytics#interests'
+			);
 
 			await newPage.close();
 		});
@@ -454,7 +433,9 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/people/individuals#breakdown');
+			await expect(href).toContain(
+				'/people/individuals-analytics#breakdown'
+			);
 
 			await newPage.close();
 		});
@@ -485,7 +466,7 @@ test(
 			const href = newPage.url();
 
 			await expect(href).toContain('learn.liferay.com');
-			await expect(href).toContain('/optimization/a-b-testing');
+			await expect(href).toContain('/optimization/ab-tests-analytics');
 
 			await newPage.close();
 		});

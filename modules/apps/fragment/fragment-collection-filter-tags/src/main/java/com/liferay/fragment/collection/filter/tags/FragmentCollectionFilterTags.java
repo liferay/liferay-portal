@@ -11,9 +11,9 @@ import com.liferay.fragment.collection.filter.FragmentCollectionFilter;
 import com.liferay.fragment.collection.filter.tags.display.context.FragmentCollectionFilterTagsDisplayContext;
 import com.liferay.fragment.renderer.FragmentRendererContext;
 import com.liferay.fragment.util.configuration.FragmentEntryConfigurationParser;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -40,7 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 public class FragmentCollectionFilterTags implements FragmentCollectionFilter {
 
 	@Override
-	public String getConfiguration() {
+	public JSONObject getConfigurationJSONObject() {
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			"content.Language", LocaleUtil.getMostRelevantLocale(), getClass());
 
@@ -58,7 +58,7 @@ public class FragmentCollectionFilterTags implements FragmentCollectionFilter {
 				_log.debug(jsonException);
 			}
 
-			return StringPool.BLANK;
+			return null;
 		}
 	}
 
@@ -94,8 +94,9 @@ public class FragmentCollectionFilterTags implements FragmentCollectionFilter {
 			httpServletRequest.setAttribute(
 				FragmentCollectionFilterTagsDisplayContext.class.getName(),
 				new FragmentCollectionFilterTagsDisplayContext(
-					getConfiguration(), _fragmentEntryConfigurationParser,
-					fragmentRendererContext, httpServletRequest));
+					getConfigurationJSONObject(),
+					_fragmentEntryConfigurationParser, fragmentRendererContext,
+					httpServletRequest));
 
 			RequestDispatcher requestDispatcher =
 				_servletContext.getRequestDispatcher("/page.jsp");

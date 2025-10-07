@@ -52,7 +52,7 @@ public class FeatureFlagBatchEngineUnitProcessor {
 	protected void activate(BundleContext bundleContext) {
 		_serviceRegistration = bundleContext.registerService(
 			FeatureFlagListener.class, new FeatureFlagListenerImpl(),
-			MapUtil.singletonDictionary("featureFlagKey", "*"));
+			MapUtil.singletonDictionary("feature.flag.key", "*"));
 	}
 
 	@Deactivate

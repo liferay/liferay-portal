@@ -20,8 +20,8 @@ const test = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-11232': {enabled: true},
 		'LPD-17564': {enabled: true},
+		'LPS-179669': {enabled: true},
 	}),
 	loginTest()
 );
@@ -155,6 +155,83 @@ test(
 		});
 		await expect(
 			page.getByRole('heading', {name: 'Deletion Not Allowed'})
+		).toBeVisible();
+	}
+);
+
+test(
+	'Some actions are only allowed to non-system structures',
+	{tag: '@LPD-51405'},
+	async ({apiHelpers, page, structuresPage}) => {
+		await structuresPage.goto();
+
+		await page
+			.getByRole('row', {name: 'Basic Document'})
+			.locator('.dropdown-toggle')
+			.click();
+
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'View Usages'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Make a Copy'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
+		).toBeVisible();
+
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Edit'})
+		).toBeHidden();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Export as JSON'})
+		).toBeHidden();
+		expect(
+			page.getByRole('menuitem', {
+				exact: true,
+				name: 'Import and Override',
+			})
+		).toBeHidden();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Delete'})
+		).toBeHidden();
+
+		const objectDefinition =
+			(await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFolderExternalReferenceCode: 'L_CMS_FILE_TYPES',
+				status: {code: 0},
+			})) as ObjectDefinition;
+
+		await structuresPage.goto();
+
+		await page
+			.getByRole('row', {name: objectDefinition.name})
+			.locator('.dropdown-toggle')
+			.click();
+
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Edit'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'View Usages'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Make a Copy'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Export as JSON'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {
+				exact: true,
+				name: 'Import and Override',
+			})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Permissions'})
+		).toBeVisible();
+		expect(
+			page.getByRole('menuitem', {exact: true, name: 'Delete'})
 		).toBeVisible();
 	}
 );

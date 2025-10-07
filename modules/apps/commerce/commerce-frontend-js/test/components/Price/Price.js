@@ -45,10 +45,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -92,10 +90,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -153,10 +149,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -223,10 +217,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -317,11 +309,9 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						netPrice,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					netPrice={netPrice}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -360,10 +350,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -391,11 +379,9 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-						standalone,
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
+					standalone={standalone}
 				/>
 			);
 
@@ -421,10 +407,8 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -452,11 +436,9 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						compact,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					compact={compact}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -484,11 +466,9 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						displayDiscountLevels,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					displayDiscountLevels={displayDiscountLevels}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -552,11 +532,9 @@ describe('Price', () => {
 
 			render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						namespace,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					namespace={namespace}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 
@@ -605,11 +583,9 @@ describe('Price', () => {
 
 			const {container} = render(
 				<Price
-					{...{
-						...BASE_PROPS,
-						namespace,
-						price: {...BASE_PRICE_PROPS, ...price},
-					}}
+					{...BASE_PROPS}
+					namespace={namespace}
+					price={{...BASE_PRICE_PROPS, ...price}}
 				/>
 			);
 

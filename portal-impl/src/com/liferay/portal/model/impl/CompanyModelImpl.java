@@ -41,7 +41,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -164,7 +163,7 @@ public class CompanyModelImpl
 	public static final long COMPANYID_COLUMN_BITMASK = 4L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.Company"));
 
 	public CompanyModelImpl() {
@@ -1427,14 +1426,16 @@ public class CompanyModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<Long> groupIdUpdateEntityCacheConsumer =
-		groupId -> {
+	protected static final BiConsumer<Company, Long>
+		groupIdUpdateEntityCacheBiConsumer = (company, groupId) -> {
 			CompanyCacheModel companyCacheModel =
 				EntityCacheUtil.fetchCacheModel(
-					CompanyImpl.class, _companyId, CompanyCacheModel.class);
+					CompanyImpl.class, company.getPrimaryKey(),
+					CompanyCacheModel.class);
 
 			if ((companyCacheModel != null) &&
-				(companyCacheModel.getMvccVersion() == getMvccVersion())) {
+				(companyCacheModel.getMvccVersion() ==
+					company.getMvccVersion())) {
 
 				companyCacheModel.groupId = groupId;
 			}
@@ -1442,18 +1443,21 @@ public class CompanyModelImpl
 
 	private static final MethodHandle _groupIdMethodHandle;
 
-	protected final transient Consumer<String>
-		virtualHostnameUpdateEntityCacheConsumer = virtualHostname -> {
-			CompanyCacheModel companyCacheModel =
-				EntityCacheUtil.fetchCacheModel(
-					CompanyImpl.class, _companyId, CompanyCacheModel.class);
+	protected static final BiConsumer<Company, String>
+		virtualHostnameUpdateEntityCacheBiConsumer =
+			(company, virtualHostname) -> {
+				CompanyCacheModel companyCacheModel =
+					EntityCacheUtil.fetchCacheModel(
+						CompanyImpl.class, company.getPrimaryKey(),
+						CompanyCacheModel.class);
 
-			if ((companyCacheModel != null) &&
-				(companyCacheModel.getMvccVersion() == getMvccVersion())) {
+				if ((companyCacheModel != null) &&
+					(companyCacheModel.getMvccVersion() ==
+						company.getMvccVersion())) {
 
-				companyCacheModel.virtualHostname = virtualHostname;
-			}
-		};
+					companyCacheModel.virtualHostname = virtualHostname;
+				}
+			};
 
 	private static final MethodHandle _virtualHostnameMethodHandle;
 

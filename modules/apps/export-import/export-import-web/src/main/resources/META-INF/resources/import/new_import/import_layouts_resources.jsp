@@ -238,7 +238,7 @@ ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(user
 												long modelDeletionCount = manifestSummary.getModelDeletionCount(portletDataHandler.getDeletionSystemEventStagedModelTypes());
 											%>
 
-												<c:if test="<%= (importModelCount != 0) || (modelDeletionCount != 0) || !portletDataHandler.isModelCountSupported() %>">
+												<c:if test="<%= (importModelCount != 0) || (modelDeletionCount != 0) %>">
 													<li class="tree-item">
 														<liferay-util:buffer
 															var="badgeHTML"

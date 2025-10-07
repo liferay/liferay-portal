@@ -12,19 +12,20 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class ObjectFieldBusinessTypeException extends PortalException {
 
-	public ObjectFieldBusinessTypeException() {
+	public ObjectFieldBusinessTypeException(String message) {
+		super(message);
 	}
 
-	public ObjectFieldBusinessTypeException(String msg) {
-		super(msg);
+	public ObjectFieldBusinessTypeException(String message, String messageKey) {
+		super(message);
+
+		_messageKey = messageKey;
 	}
 
-	public ObjectFieldBusinessTypeException(String msg, Throwable throwable) {
-		super(msg, throwable);
+	public String getMessageKey() {
+		return _messageKey;
 	}
 
-	public ObjectFieldBusinessTypeException(Throwable throwable) {
-		super(throwable);
-	}
+	private String _messageKey;
 
 }

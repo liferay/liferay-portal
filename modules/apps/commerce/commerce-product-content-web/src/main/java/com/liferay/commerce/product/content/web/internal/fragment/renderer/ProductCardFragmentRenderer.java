@@ -27,7 +27,6 @@ import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -53,7 +52,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -70,11 +68,8 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", getClass());
 
 		try {
 			JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -85,14 +80,15 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 							"/configuration.json"));
 
 			return _fragmentEntryConfigurationParser.translateConfiguration(
-				jsonObject, resourceBundle);
+				jsonObject,
+				ResourceBundleUtil.getBundle("content.Language", getClass()));
 		}
 		catch (JSONException jsonException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(jsonException);
 			}
 
-			return StringPool.BLANK;
+			return null;
 		}
 	}
 
@@ -182,7 +178,7 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 				_cpDefinitionHelper.getCPCatalogEntry(
 					_getAccountEntryId(groupId, httpServletRequest), groupId,
 					cpDefinition.getCPDefinitionId(),
-					_portal.getLocale(httpServletRequest)));
+					_portal.getLocale(httpServletRequest), false));
 
 			httpServletRequest.setAttribute(
 				CPContentWebKeys.CP_CONTENT_HELPER, _cpContentHelper);
@@ -194,8 +190,10 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 			FragmentEntryLink fragmentEntryLink =
 				fragmentRendererContext.getFragmentEntryLink();
 
-			String configuration = fragmentEntryLink.getConfiguration();
-			String editableValues = fragmentEntryLink.getEditableValues();
+			JSONObject configurationJSONObject =
+				fragmentEntryLink.getConfigurationJSONObject();
+			JSONObject editableValuesJSONObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
 
 			Locale locale = fragmentRendererContext.getLocale();
 
@@ -203,52 +201,56 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 				"liferay-commerce:product-card:showAddToCartButton",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale,
-						"showAddToCartButton")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showAddToCartButton")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showAddToWishListButton",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale,
-						"showAddToWishListButton")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showAddToWishListButton")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showAvailabilityLabel",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale,
-						"showAvailabilityLabel")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showAvailabilityLabel")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showCompareCheckbox",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale,
-						"showCompareCheckbox")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showCompareCheckbox")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showDiscontinuedLabel",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale,
-						"showDiscontinuedLabel")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showDiscontinuedLabel")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showImage",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale, "showImage")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showImage")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showName",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale, "showName")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showName")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showPrice",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale, "showPrice")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showPrice")));
 			httpServletRequest.setAttribute(
 				"liferay-commerce:product-card:showSku",
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						configuration, editableValues, locale, "showSku")));
+						configurationJSONObject, editableValuesJSONObject,
+						locale, "showSku")));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
 		}
@@ -287,31 +289,16 @@ public class ProductCardFragmentRenderer implements FragmentRenderer {
 	}
 
 	private void _printPortletMessageInfo(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, String message) {
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, String message)
+		throws IOException {
 
-		try {
-			PrintWriter printWriter = httpServletResponse.getWriter();
+		PrintWriter printWriter = httpServletResponse.getWriter();
 
-			StringBundler sb = new StringBundler(3);
-
-			sb.append("<div class=\"portlet-msg-info\">");
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			sb.append(themeDisplay.translate(message));
-
-			sb.append("</div>");
-
-			printWriter.write(sb.toString());
-		}
-		catch (IOException ioException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(ioException);
-			}
-		}
+		printWriter.write(
+			StringBundler.concat(
+				"<div class=\"portlet-msg-info\">",
+				_language.get(httpServletRequest, message), "</div>"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

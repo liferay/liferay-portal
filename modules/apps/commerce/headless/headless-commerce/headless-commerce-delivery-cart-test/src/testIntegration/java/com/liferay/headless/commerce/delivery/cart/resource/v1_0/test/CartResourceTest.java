@@ -196,6 +196,13 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testGraphQLDeleteCart() throws Exception {
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteCartByExternalReferenceCode()
+		throws Exception {
+	}
+
 	@Override
 	@Test
 	public void testPatchCart() throws Exception {

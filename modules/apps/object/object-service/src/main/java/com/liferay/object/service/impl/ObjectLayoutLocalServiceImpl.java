@@ -5,11 +5,14 @@
 
 package com.liferay.object.service.impl;
 
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectLayoutBoxConstants;
 import com.liferay.object.exception.DefaultObjectLayoutException;
+import com.liferay.object.exception.NoSuchObjectFieldException;
 import com.liferay.object.exception.ObjectDefinitionModifiableException;
 import com.liferay.object.exception.ObjectLayoutBoxCategorizationTypeException;
 import com.liferay.object.exception.ObjectLayoutColumnSizeException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectLayout;
@@ -17,6 +20,7 @@ import com.liferay.object.model.ObjectLayoutBox;
 import com.liferay.object.model.ObjectLayoutColumn;
 import com.liferay.object.model.ObjectLayoutRow;
 import com.liferay.object.model.ObjectLayoutTab;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutTabLocalService;
 import com.liferay.object.service.base.ObjectLayoutLocalServiceBaseImpl;
@@ -304,16 +308,28 @@ public class ObjectLayoutLocalServiceImpl
 			objectFieldId);
 
 		if (objectField.getObjectDefinitionId() != objectDefinitionId) {
-
-			// TODO
-
-			throw new PortalException();
+			throw new NoSuchObjectFieldException();
 		}
 
 		if ((size < 0) || (size > 12)) {
 			throw new ObjectLayoutColumnSizeException(
 				"Object layout column size must be more than 0 and less than " +
 					"12");
+		}
+
+		if (objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+
+			ObjectRelationship objectRelationship =
+				objectField.getObjectRelationship();
+
+			if (objectRelationship.isEdge()) {
+				throw new ObjectRelationshipEdgeException(
+					"Edge object relationship object fields cannot be " +
+						"associated with object layouts",
+					"edge-object-relationship-object-fields-cannot-be-" +
+						"associated-with-object-layouts");
+			}
 		}
 
 		ObjectLayoutColumn objectLayoutColumn =
@@ -584,6 +600,19 @@ public class ObjectLayoutLocalServiceImpl
 			_objectDefinitionPersistence.fetchByPrimaryKey(objectDefinitionId);
 
 		for (ObjectLayoutTab objectLayoutTab : objectLayoutTabs) {
+			if (objectLayoutTab.getObjectRelationshipId() != 0) {
+				ObjectRelationship objectRelationship =
+					objectLayoutTab.getObjectRelationship();
+
+				if (objectRelationship.isEdge()) {
+					throw new ObjectRelationshipEdgeException(
+						"Edge object relationships cannot be associated with " +
+							"object layout tabs",
+						"edge-object-relationships-cannot-be-associated-with-" +
+							"object-layout-tabs");
+				}
+			}
+
 			List<ObjectLayoutBox> objectLayoutBoxes =
 				objectLayoutTab.getObjectLayoutBoxes();
 

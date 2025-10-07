@@ -13,11 +13,7 @@ import ClayMultiSelect from '@clayui/multi-select';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
 import ClayTabs from '@clayui/tabs';
-import {
-	FeatureIndicator,
-	openConfirmModal,
-	openToast,
-} from 'frontend-js-components-web';
+import {openConfirmModal, openToast} from 'frontend-js-components-web';
 import {fetch, getOpener, objectToFormData, sub} from 'frontend-js-web';
 import React, {useCallback, useRef, useState} from 'react';
 
@@ -992,10 +988,6 @@ const ManageCollaborators = ({
 					onClick={() => setTab(TABS.link)}
 				>
 					{Liferay.Language.get('share-link')}
-
-					<div className="c-ml-1 float-right">
-						<FeatureIndicator type="beta" />
-					</div>
 				</ClayTabs.Item>
 			</ClayTabs>
 		);

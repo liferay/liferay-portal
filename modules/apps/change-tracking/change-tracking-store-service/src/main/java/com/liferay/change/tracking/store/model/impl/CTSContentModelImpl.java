@@ -788,7 +788,7 @@ public class CTSContentModelImpl
 	private long _repositoryId;
 	private String _path;
 	private String _version;
-	private CTSContentDataBlobModel _dataBlobModel;
+	private transient CTSContentDataBlobModel _dataBlobModel;
 	private long _size;
 	private String _storeType;
 

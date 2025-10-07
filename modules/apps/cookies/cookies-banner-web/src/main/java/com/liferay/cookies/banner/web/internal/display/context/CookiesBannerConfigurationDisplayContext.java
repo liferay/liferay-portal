@@ -19,9 +19,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import jakarta.portlet.RenderRequest;
-import jakarta.portlet.RenderResponse;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
@@ -35,13 +32,13 @@ public class CookiesBannerConfigurationDisplayContext
 
 	public CookiesBannerConfigurationDisplayContext(
 		CookiesConfigurationProvider cookiesConfigurationProvider,
+		HttpServletRequest httpServletRequest,
 		LayoutUtilityPageEntryLayoutProvider
-			layoutUtilityPageEntryLayoutProvider,
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+			layoutUtilityPageEntryLayoutProvider) {
 
 		super(
-			cookiesConfigurationProvider, layoutUtilityPageEntryLayoutProvider,
-			renderRequest, renderResponse);
+			cookiesConfigurationProvider, httpServletRequest,
+			layoutUtilityPageEntryLayoutProvider);
 	}
 
 	public Map<String, Object> getContext() {
@@ -64,8 +61,9 @@ public class CookiesBannerConfigurationDisplayContext
 			return cookiePolicyLink;
 		}
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		Layout layout =
 			layoutUtilityPageEntryLayoutProvider.
@@ -102,8 +100,9 @@ public class CookiesBannerConfigurationDisplayContext
 	}
 
 	public boolean isShowButtons() {
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		return !themeDisplay.isStatePopUp();
 	}

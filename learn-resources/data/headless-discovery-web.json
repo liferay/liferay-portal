@@ -1,14 +1,14 @@
 {
 	"filter": {
 		"en_US": {
-			"message": "Use this filter to narrow down results using query conditions.",
-			"url": "https://learn.liferay.com/w/dxp/headless-delivery/consuming-apis/api-query-parameters"
+			"message": "Learn more about filterable fields.",
+			"url": "https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters"
 		}
 	},
 	"search": {
 		"en_US": {
 			"message": "Use this search to find specific results within your data.",
-			"url": "https://learn.liferay.com/w/dxp/headless-delivery/consuming-apis/api-query-parameters"
+			"url": "https://learn.liferay.com/w/dxp/integration/headless-apis/using-liferay-as-a-headless-platform/consuming-apis/api-query-parameters"
 		}
 	}
 }

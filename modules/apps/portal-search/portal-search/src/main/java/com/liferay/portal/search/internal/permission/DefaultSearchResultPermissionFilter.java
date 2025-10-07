@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Tuple;
@@ -54,7 +55,6 @@ import com.liferay.portal.search.internal.hits.SearchHitsBuilderFactoryImpl;
 import com.liferay.portal.search.internal.searcher.SearchResponseImpl;
 import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchRequestBuilder;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -824,10 +824,8 @@ public class DefaultSearchResultPermissionFilter
 				_start = start;
 				_end = end;
 
-				_delta = end - start;
-
-				_documents = new CircularFifoQueue<>(_delta);
-				_scores = new CircularFifoQueue<>(_delta);
+				_documents = new CircularFifoQueue<>(Math.max(1, end - start));
+				_scores = new CircularFifoQueue<>(Math.max(1, end - start));
 			}
 
 			public boolean add(Document document, Float score) {
@@ -869,7 +867,6 @@ public class DefaultSearchResultPermissionFilter
 				return _totalDocs;
 			}
 
-			private final int _delta;
 			private final CircularFifoQueue<Document> _documents;
 			private int _documentsDiscarded;
 			private final int _end;

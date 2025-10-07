@@ -58,22 +58,20 @@ export default class CreateFilters {
 				const [filterKey] = key.split('|');
 				const formattedKey = filterKey.replace('$', '');
 
-				if (customOperator === 'lambda') {
-					if (Array.isArray(value)) {
-						const lambdas = value
-							.map((filter) =>
-								SearchBuilder.lambda(filterKey, filter)
-							)
-							.join(' or ');
+				if (
+					customOperator === 'lambda' ||
+					customOperator === 'lambdaContains'
+				) {
+					const builderFn =
+						customOperator === 'lambda'
+							? SearchBuilder.lambda
+							: SearchBuilder.lambdaContains;
 
-						searchCondition = lambdas;
-					}
-					else {
-						searchCondition = SearchBuilder.lambda(
-							filterKey,
-							value
-						);
-					}
+					searchCondition = Array.isArray(value)
+						? `(${value
+								.map((filter) => builderFn(filterKey, filter))
+								.join(' or ')})`
+						: builderFn(filterKey, value);
 				}
 				else {
 					const getOptionalSearchCondition = () => {
@@ -106,16 +104,13 @@ export default class CreateFilters {
 			}
 			else {
 				if (schema?.type === 'date-range' && Array.isArray(value)) {
-					const [start, end] = value[0]
-						.split(' - ')
-						.map((dateStr: string) =>
-							new Date(dateStr.trim()).toISOString()
-						);
+					const [start, end] = (value as string[])[0].split(' - ');
 
-					searchCondition = [
-						SearchBuilder.gt(key, start),
-						SearchBuilder.lt(key, end),
-					].join(' and ');
+					searchCondition = new SearchBuilder()
+						.gt(key, `${start}T00:00:00Z`)
+						.and()
+						.lt(key, `${end}T23:59:59Z`)
+						.build();
 				}
 				else {
 					if (Array.isArray(value)) {

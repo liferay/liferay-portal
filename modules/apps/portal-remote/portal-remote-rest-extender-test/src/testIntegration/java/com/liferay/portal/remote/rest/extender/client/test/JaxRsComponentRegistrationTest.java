@@ -108,9 +108,10 @@ public class JaxRsComponentRegistrationTest {
 				ServiceTrackerFactory.open(
 					_bundleContext,
 					StringBundler.concat(
-						"(&(objectClass=", Bus.class.getName(), ")(",
+						"(&(",
 						HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH,
-						"=/rest-test))"));
+						"=/rest-test)(objectClass=", Bus.class.getName(),
+						"))"));
 
 			Bus bus = serviceTracker.waitForService(10000L);
 

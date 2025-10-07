@@ -24,7 +24,7 @@ public interface FragmentEntryProcessor {
 	}
 
 	public default JSONObject getDefaultEditableValuesJSONObject(
-		String html, String configuration) {
+		String html, JSONObject configurationJSONObject) {
 
 		return null;
 	}
@@ -43,11 +43,6 @@ public interface FragmentEntryProcessor {
 		throws PortalException {
 
 		return html;
-	}
-
-	public default void validateFragmentEntryHTML(
-			String html, String configuration)
-		throws PortalException {
 	}
 
 }

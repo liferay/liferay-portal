@@ -91,7 +91,7 @@ public class CollectionFilterFragmentRenderer implements FragmentRenderer {
 
 		return GetterUtil.getString(
 			_fragmentEntryConfigurationParser.getConfigurationFieldValue(
-				fragmentEntryLink.getEditableValues(), "filterKey",
+				fragmentEntryLink.getEditableValuesJSONObject(), "filterKey",
 				FragmentConfigurationFieldDataType.STRING));
 	}
 

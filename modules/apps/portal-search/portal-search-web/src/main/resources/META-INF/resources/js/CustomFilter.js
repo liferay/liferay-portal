@@ -22,10 +22,10 @@ export default function ({namespace: portletNamespace}) {
 		const queryString = FacetUtil.updateQueryString(
 			filterValueInput.getAttribute('name'),
 			[filterValueInput.value],
-			document.location.search
+			window.location.search
 		);
 
-		document.location.href = searchURL + queryString;
+		Liferay.Util.navigate(searchURL + queryString);
 	}
 
 	function _handleSubmit(event) {

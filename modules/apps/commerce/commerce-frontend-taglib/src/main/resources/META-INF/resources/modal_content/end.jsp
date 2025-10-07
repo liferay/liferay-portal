@@ -10,7 +10,7 @@
 	</div>
 
 	<c:if test="<%= Validator.isNotNull(submitButtonLabel) || showCancelButton || showSubmitButton %>">
-		<div class="modal-footer modal-iframe-footer position-fixed w-100">
+		<div class="bg-white modal-footer modal-iframe-footer position-fixed w-100">
 			<div class="modal-item-last">
 				<div class="btn-group-spaced" role="group">
 					<c:if test="<%= showCancelButton %>">

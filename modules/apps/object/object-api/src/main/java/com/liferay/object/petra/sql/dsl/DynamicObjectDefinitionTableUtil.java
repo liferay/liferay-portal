@@ -6,10 +6,13 @@
 package com.liferay.object.petra.sql.dsl;
 
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -57,6 +60,27 @@ public class DynamicObjectDefinitionTableUtil {
 
 		return StringBundler.concat(
 			dataType, "(", getMaxLength(businessType), ")");
+	}
+
+	public static DynamicObjectDefinitionTable getDynamicObjectDefinitionTable(
+			boolean extension, ObjectDefinition objectDefinition,
+			ObjectFieldLocalService objectFieldLocalService)
+		throws PortalException {
+
+		// TODO Cache this across the cluster with proper invalidation when the
+		// object definition or its object fields are updated
+
+		String dbTableName = objectDefinition.getDBTableName();
+
+		if (extension) {
+			dbTableName = objectDefinition.getExtensionDBTableName();
+		}
+
+		return new DynamicObjectDefinitionTable(
+			objectDefinition,
+			objectFieldLocalService.getObjectFields(
+				objectDefinition.getObjectDefinitionId(), dbTableName),
+			dbTableName);
 	}
 
 	public static Class<?> getJavaClass(String dbType) {

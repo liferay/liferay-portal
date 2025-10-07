@@ -29,6 +29,10 @@ function MainSearch({onClear}: {onClear: () => void}) {
 					onChange={(event) => {
 						setInputValue(event.target.value);
 
+						if (!event.target.value) {
+							onClear();
+						}
+
 						if (!apiURL && !appURL) {
 							onSearch({query: event.target.value});
 						}
@@ -41,33 +45,11 @@ function MainSearch({onClear}: {onClear: () => void}) {
 						}
 					}}
 					placeholder={Liferay.Language.get('search')}
+					type="search"
 					value={inputValue}
 				/>
 
 				<ClayInput.GroupInsetItem after tag="div">
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('clear')}
-						className="navbar-breakpoint-d-none"
-						disabled={!inputValue?.length}
-						displayType="unstyled"
-						monospaced={false}
-						onClick={(event) => {
-							event.preventDefault();
-
-							setInputValue('');
-
-							onClear();
-							onSearch({query: ''});
-						}}
-						style={{
-							opacity: !inputValue?.length ? 0 : 1,
-							pointerEvents: !inputValue?.length
-								? 'none'
-								: 'auto',
-						}}
-						symbol="times-circle"
-					/>
-
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('search')}
 						displayType="unstyled"

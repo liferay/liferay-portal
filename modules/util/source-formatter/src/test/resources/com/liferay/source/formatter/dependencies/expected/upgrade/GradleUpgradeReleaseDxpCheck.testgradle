@@ -1,10 +1,10 @@
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "7.4.13.u27"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2024.q1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
 
 	cssBuilder group: "com.liferay", name: "com.liferay.css.builder", version: "3.1.4"
 
-	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "7.4.13.u27"
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2024.q1.1"
 	testImplementation group: "junit", name: "junit", version: "4.12"
 	testImplementation group: "org.mockito", name: "mockito-all", version: "1.10.19"
 }

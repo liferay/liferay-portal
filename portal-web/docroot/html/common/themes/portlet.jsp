@@ -18,7 +18,7 @@ LiferayRenderResponse liferayRenderResponse = (LiferayRenderResponse)LiferayPort
 
 // Portlet title
 
-String portletTitle = PortletConfigurationUtil.getPortletTitle(portletDisplay.getPortletName(), portletDisplay.getPortletPreferences(), themeDisplay.getLanguageId());
+String portletTitle = PortletConfigurationUtil.getPortletTitle(portletDisplay.getId(), portletDisplay.getPortletPreferences(), themeDisplay.getLanguageId());
 
 if (portletDisplay.isActive() && Validator.isNull(portletTitle)) {
 	portletTitle = liferayRenderResponse.getTitle();

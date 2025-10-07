@@ -14,18 +14,18 @@ configurations {
 
 dependencies {
 	compileOnly group: "com.liferay", name: "org.hibernate.core", version: "5.6.7.LIFERAY-PATCHED-2.JAKARTA-LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "5.3.39.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.context", version: "5.3.39.LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.orm", version: "5.3.39.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay", name: "org.springframework.tx", version: "5.3.39.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.9.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.springframework.orm", version: "6.2.9.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay", name: "org.springframework.tx", version: "6.2.9.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.persistence", name: "jakarta.persistence-api", version: "3.1.0"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.dependencymanager", version: "4.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.springframework", name: "spring-aop", version: "5.3.39"
-	compileOnly group: "org.springframework", name: "spring-core", version: "5.3.39"
+	compileOnly group: "org.springframework", name: "spring-aop", version: "6.2.9"
+	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.9"
+	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.9"
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")

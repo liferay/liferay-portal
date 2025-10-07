@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -101,9 +100,9 @@ public class JSONFactoryTest {
 	public void testDeserializeNonwhitelistedClass() {
 		String json = JSONFactoryUtil.serialize(new JSONFactoryTest());
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				LiferayJSONDeserializationWhitelist.class.getName(),
-				Level.WARNING)) {
+				LoggerTestUtil.WARN)) {
 
 			Object object = JSONFactoryUtil.deserialize(json);
 

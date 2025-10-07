@@ -12,7 +12,7 @@ String sitemapUrl = PortalUtil.getPortalURL(request) + themeDisplay.getPathConte
 
 LayoutSet layoutSet = layoutsAdminDisplayContext.getSelLayoutSet();
 
-TreeMap<String, String> virtualHostnames = layoutSet.getVirtualHostnames();
+NavigableMap<String, String> virtualHostnames = layoutSet.getVirtualHostnames();
 
 if (!virtualHostnames.containsKey(PortalUtil.getHost(request))) {
 	sitemapUrl += "?groupId=" + layoutsAdminDisplayContext.getLiveGroupId() + "&privateLayout=" + layoutsAdminDisplayContext.isPrivateLayout();

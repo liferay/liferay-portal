@@ -8,6 +8,7 @@ package com.liferay.fragment.entry.processor.styles;
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.processor.FragmentEntryValidator;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -27,7 +28,7 @@ public class StylesFragmentEntryValidator implements FragmentEntryValidator {
 
 	@Override
 	public void validateFragmentEntryHTML(
-			String html, String configuration, Locale locale)
+			String html, JSONObject configurationJSONObject, Locale locale)
 		throws PortalException {
 
 		if (StringUtil.count(html, "data-lfr-styles") > 1) {

@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.security.script.management.groovy.script.use.GroovyScriptUse;
 import com.liferay.portal.security.script.management.groovy.script.uses.factory.GroovyScriptUsesFactory;
+import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.definition.groovy.script.use.WorkflowDefinitionGroovyScriptUseDetector;
 import com.liferay.portal.workflow.definition.groovy.script.use.WorkflowDefinitionGroovyScriptUseSourceURLFactory;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
@@ -46,7 +47,8 @@ public class WorkflowDefinitionGroovyScriptUsesFactory
 						workflowDefinition.getContent(), _jsonFactory) ||
 					Objects.equals(
 						workflowDefinition.getName(),
-						"message-boards-user-stats-moderation")) {
+						WorkflowDefinitionConstants.
+							NAME_MESSAGE_BOARDS_USER_STATS_MODERATION)) {
 
 					return null;
 				}

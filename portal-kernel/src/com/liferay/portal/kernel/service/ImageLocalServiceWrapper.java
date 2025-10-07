@@ -340,67 +340,6 @@ public class ImageLocalServiceWrapper
 		return _imageLocalService.updateImage(image);
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[])}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, byte[] bytes)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _imageLocalService.updateImage(imageId, bytes);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[], String, int, int, int)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(
-			long imageId, byte[] bytes, String type, int height, int width,
-			int size)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _imageLocalService.updateImage(
-			imageId, bytes, type, height, width, size);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, File)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, java.io.File file)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _imageLocalService.updateImage(imageId, file);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, java.io.InputStream inputStream)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _imageLocalService.updateImage(imageId, inputStream);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream, boolean)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(
-			long imageId, java.io.InputStream inputStream,
-			boolean cleanUpStream)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _imageLocalService.updateImage(
-			imageId, inputStream, cleanUpStream);
-	}
-
 	@Override
 	public Image updateImage(long companyId, long imageId, byte[] bytes)
 		throws com.liferay.portal.kernel.exception.PortalException {

@@ -237,11 +237,11 @@ public class OrganizationServiceUtil {
 			gtOrganizationId, companyId, parentOrganizationId, size);
 	}
 
-	public static Organization getOrAddIncompleteOrganization(
+	public static Organization getOrAddEmptyOrganization(
 			String externalReferenceCode, String name)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteOrganization(
+		return getService().getOrAddEmptyOrganization(
 			externalReferenceCode, name);
 	}
 

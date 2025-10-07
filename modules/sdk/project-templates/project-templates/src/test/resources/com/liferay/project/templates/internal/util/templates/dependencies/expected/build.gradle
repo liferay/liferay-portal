@@ -5,5 +5,6 @@ dependencies {
 	compileOnly group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
+	compileOnly group: "com.liferay", name: "org.hibernate.validator", version: "6.2.5.Final.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.osgi.service.jaxrs", version: "1.0.0.JAKARTA-LIFERAY-PATCHED-1"
 }

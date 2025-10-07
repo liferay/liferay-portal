@@ -5,9 +5,11 @@
 
 package com.liferay.object.web.internal.asset.model;
 
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderService;
@@ -16,6 +18,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.util.Portal;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,7 +55,9 @@ public class ObjectEntryFolderAssetRendererFactory
 			return null;
 		}
 
-		return new ObjectEntryFolderAssetRenderer(objectEntryFolder, this);
+		return new ObjectEntryFolderAssetRenderer(
+			_assetDisplayPageFriendlyURLProvider, _depotEntryLocalService,
+			objectEntryFolder, this, _portal);
 	}
 
 	@Override
@@ -85,6 +90,13 @@ public class ObjectEntryFolderAssetRendererFactory
 			CompanyThreadLocal.getCompanyId(), "LPD-17564");
 	}
 
+	@Reference
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.object.model.ObjectEntryFolder)"
 	)
@@ -93,5 +105,8 @@ public class ObjectEntryFolderAssetRendererFactory
 
 	@Reference
 	private ObjectEntryFolderService _objectEntryFolderService;
+
+	@Reference
+	private Portal _portal;
 
 }

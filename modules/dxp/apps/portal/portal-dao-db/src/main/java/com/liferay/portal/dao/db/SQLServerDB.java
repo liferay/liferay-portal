@@ -177,8 +177,8 @@ public class SQLServerDB extends BaseDB {
 	@Override
 	public String getRecreateSQL(String databaseName) {
 		return StringBundler.concat(
-			"drop database ", databaseName, ";\n", "create database ",
-			databaseName, ";\n\n", "go\n\n");
+			"drop database ", databaseName, ";\ncreate database ", databaseName,
+			";\n\ngo\n\n");
 	}
 
 	@Override

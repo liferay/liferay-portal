@@ -1,8 +1,9 @@
 Bundle-Name: Liferay Shared Dependencies Nimbusds
 Bundle-SymbolicName: com.liferay.shared.dependencies.nimbusds
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.5
 Import-Package:\
 	!com.google.crypto.tink.*,\
+	!com.google.errorprone.annotations.*,\
 	\
 	!javax.servlet.*,\
 	\

@@ -39,11 +39,20 @@ public class CommerceMediaResolverUtil {
 			long commerceAccountId, long cpAttachmentFileEntryId)
 		throws PortalException {
 
+		return getThumbnailURL(
+			commerceAccountId, cpAttachmentFileEntryId, true);
+	}
+
+	public static String getThumbnailURL(
+			long commerceAccountId, long cpAttachmentFileEntryId,
+			boolean secure)
+		throws PortalException {
+
 		CommerceMediaResolver commerceMediaResolver =
 			_serviceTracker.getService();
 
 		return commerceMediaResolver.getThumbnailURL(
-			commerceAccountId, cpAttachmentFileEntryId);
+			commerceAccountId, cpAttachmentFileEntryId, secure);
 	}
 
 	public static String getURL(

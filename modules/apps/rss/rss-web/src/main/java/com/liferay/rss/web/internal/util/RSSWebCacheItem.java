@@ -8,10 +8,10 @@ package com.liferay.rss.web.internal.util;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.webcache.WebCacheException;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.rss.web.internal.configuration.RSSWebCacheConfiguration;
 
 import com.rometools.rome.io.SyndFeedInput;

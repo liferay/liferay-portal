@@ -62,6 +62,8 @@ export class CKEditor4Page {
 
 		const imageCard = this.itemSelectorFrame.getByText(cardTitle);
 
+		await imageCard.waitFor({state: 'visible'});
+
 		await imageCard.click();
 
 		await expect(

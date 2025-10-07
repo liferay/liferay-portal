@@ -239,8 +239,9 @@ public class APIPropertyRelevantObjectEntryModelListener
 			}
 
 			int count = _objectEntryLocalService.getValuesListCount(
-				objectEntry.getGroupId(), objectEntry.getCompanyId(),
-				objectEntry.getUserId(), objectEntry.getObjectDefinitionId(),
+				new Long[] {objectEntry.getGroupId()},
+				objectEntry.getCompanyId(), objectEntry.getUserId(),
+				objectEntry.getObjectDefinitionId(),
 				_filterFactory.create(
 					StringBundler.concat(
 						"id ne '", objectEntry.getObjectEntryId(),
@@ -251,7 +252,7 @@ public class APIPropertyRelevantObjectEntryModelListener
 						apiSchemaId, "'"),
 					_objectDefinitionLocalService.getObjectDefinition(
 						objectEntry.getObjectDefinitionId())),
-				null);
+				false, null);
 
 			if (count > 0) {
 				throw new ObjectEntryValuesException.InvalidObjectField(

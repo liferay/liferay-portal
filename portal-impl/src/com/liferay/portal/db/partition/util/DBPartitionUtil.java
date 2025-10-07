@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.module.framework.ThrowableCollector;
 import com.liferay.portal.kernel.scheduler.SchedulerEngine;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
@@ -40,9 +41,9 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.hibernate.DialectDetector;
-import com.liferay.portal.util.PropsValues;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -90,7 +91,7 @@ public class DBPartitionUtil {
 		throws PortalException {
 
 		if (DBPartition.isPartitionEnabled() &&
-			(_DATABASE_PARTITION_SCHEMA_NAME_PREFIX.length() > 11)) {
+			(PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX.length() > 11)) {
 
 			throw new PortalException(
 				"The value for property " +
@@ -195,7 +196,7 @@ public class DBPartitionUtil {
 			return;
 		}
 
-		if (_DATABASE_PARTITION_THREAD_POOL_ENABLED) {
+		if (PropsValues.DATABASE_PARTITION_THREAD_POOL_ENABLED) {
 			_forEachCompanyIdConcurrently(unsafeConsumer);
 
 			return;
@@ -284,6 +285,16 @@ public class DBPartitionUtil {
 		return key + StringPool.AT + CompanyThreadLocal.getNonsystemCompanyId();
 	}
 
+	public static String getPartitionKey(
+		String key, ShardedModel shardedModel) {
+
+		if (!DBPartition.isPartitionEnabled()) {
+			return key;
+		}
+
+		return key + StringPool.AT + shardedModel.getCompanyId();
+	}
+
 	public static String getPartitionName(long companyId) {
 		if ((companyId == CompanyConstants.SYSTEM) ||
 			(companyId == _defaultCompanyId)) {
@@ -291,7 +302,7 @@ public class DBPartitionUtil {
 			return _defaultPartitionName;
 		}
 
-		return _DATABASE_PARTITION_SCHEMA_NAME_PREFIX + companyId;
+		return PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX + companyId;
 	}
 
 	public static boolean importDBPartition(long companyId)
@@ -1468,15 +1479,12 @@ public class DBPartitionUtil {
 		return false;
 	}
 
-	private static boolean _isSkip(Connection connection, String tableName)
+	private static boolean _isSkip(
+			DBInspector dbInspector, String tableName, boolean defaultCompany)
 		throws SQLException {
 
 		try {
-			DBInspector dbInspector = new DBInspector(connection);
-
-			if ((dbInspector.isControlTable(tableName) &&
-				 (CompanyThreadLocal.getNonsystemCompanyId() !=
-					 _defaultCompanyId)) ||
+			if ((dbInspector.isControlTable(tableName) && !defaultCompany) ||
 				dbInspector.hasView(tableName)) {
 
 				return true;
@@ -1590,14 +1598,22 @@ public class DBPartitionUtil {
 			public int executeUpdate(String sql) throws SQLException {
 				String lowerCaseSQL = StringUtil.toLowerCase(sql);
 
-				Connection connection = statement.getConnection();
+				// Do not use getNonsystemCompanyId at this point because
+				// DataAccess might not be initialized
 
-				if (CompanyThreadLocal.getNonsystemCompanyId() !=
-						PortalInstancePool.getDefaultCompanyIdBySQL(
-							connection)) {
+				boolean defaultCompany = false;
 
+				if ((CompanyThreadLocal.getCompanyId() ==
+						CompanyConstants.SYSTEM) ||
+					(CompanyThreadLocal.getCompanyId() == _defaultCompanyId)) {
+
+					defaultCompany = true;
+				}
+
+				if (!defaultCompany) {
 					int count = StringUtil.count(
-						lowerCaseSQL, _DATABASE_PARTITION_SCHEMA_NAME_PREFIX);
+						lowerCaseSQL,
+						PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX);
 
 					if (count == 0) {
 						count = StringUtil.count(
@@ -1611,20 +1627,34 @@ public class DBPartitionUtil {
 					}
 				}
 
+				Connection connection = statement.getConnection();
+
+				DBInspector dbInspector = new DBInspector(connection);
+
 				String[] query = sql.split(StringPool.SPACE);
 
 				if ((StringUtil.startsWith(lowerCaseSQL, "alter table") &&
-					 _isSkip(connection, query[2])) ||
+					 _isSkip(dbInspector, query[2], defaultCompany)) ||
 					(StringUtil.startsWith(lowerCaseSQL, "create index") &&
-					 _isSkip(connection, query[4])) ||
+					 _isSkip(dbInspector, query[4], defaultCompany)) ||
 					(StringUtil.startsWith(
 						lowerCaseSQL, "create unique index") &&
-					 _isSkip(connection, query[5]))) {
+					 _isSkip(dbInspector, query[5], defaultCompany)) ||
+					(StringUtil.startsWith(lowerCaseSQL, "delete") &&
+					 _isSkip(dbInspector, query[1], defaultCompany)) ||
+					(StringUtil.startsWith(lowerCaseSQL, "delete from") &&
+					 _isSkip(dbInspector, query[2], defaultCompany)) ||
+					(StringUtil.startsWith(lowerCaseSQL, "insert into") &&
+					 _isSkip(dbInspector, query[2], defaultCompany)) ||
+					(StringUtil.startsWith(lowerCaseSQL, "update") &&
+					 _isSkip(dbInspector, query[1], defaultCompany))) {
 
 					return 0;
 				}
 				else if (StringUtil.startsWith(lowerCaseSQL, "drop index")) {
-					if ((query.length >= 5) && _isSkip(connection, query[4])) {
+					if ((query.length >= 5) &&
+						_isSkip(dbInspector, query[4], defaultCompany)) {
+
 						return 0;
 					}
 					else if (query.length <= 4) {
@@ -1645,7 +1675,6 @@ public class DBPartitionUtil {
 				int returnValue = super.executeUpdate(sql);
 
 				try {
-					DBInspector dbInspector = new DBInspector(connection);
 					String tableName = query[2];
 
 					if (!dbInspector.isControlTable(tableName)) {
@@ -1677,15 +1706,6 @@ public class DBPartitionUtil {
 
 	private static final String
 		_DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX = "lexported_";
-
-	private static final String _DATABASE_PARTITION_SCHEMA_NAME_PREFIX =
-		GetterUtil.get(
-			PropsUtil.get("database.partition.schema.name.prefix"),
-			"lpartition_");
-
-	private static final boolean _DATABASE_PARTITION_THREAD_POOL_ENABLED =
-		GetterUtil.getBoolean(
-			PropsUtil.get("database.partition.thread.pool.enabled"), true);
 
 	private static final String _QUARTZ_TABLE_NAME_PREFIX = GetterUtil.get(
 		PropsUtil.get("persisted.scheduler.org.quartz.jobStore.tablePrefix"),

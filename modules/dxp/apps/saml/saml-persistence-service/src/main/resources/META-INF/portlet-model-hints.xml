@@ -4,6 +4,20 @@
 	<hint-collection name="ENTITY-ID">
 		<hint name="max-length">1024</hint>
 	</hint-collection>
+	<model name="com.liferay.saml.persistence.model.SamlIbSloMessage">
+		<field name="samlIbSloMessageId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="samlIdpEntityId" type="String">
+			<hint-collection name="ENTITY-ID" />
+		</field>
+		<field name="logoutRequestXml" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+		<field name="samlIdpSessionIndex" type="String">
+			<hint name="max-length">200</hint>
+		</field>
+	</model>
 	<model name="com.liferay.saml.persistence.model.SamlIdpSpConnection">
 		<field name="samlIdpSpConnectionId" type="long" />
 		<field name="companyId" type="long" />
@@ -11,6 +25,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="samlSpEntityId" type="String">
+			<hint-collection name="ENTITY-ID" />
+		</field>
 		<field name="assertionLifetime" type="int" />
 		<field name="attributeNames" type="String">
 			<hint-collection name="TEXTAREA" />
@@ -19,21 +36,18 @@
 		<field name="attributesNamespaceEnabled" type="boolean" />
 		<field name="enabled" type="boolean" />
 		<field name="encryptionForced" type="boolean" />
+		<field name="metadataUpdatedDate" type="Date" />
 		<field name="metadataUrl" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
 		<field name="metadataXml" type="String">
 			<hint-collection name="CLOB" />
 		</field>
-		<field name="metadataUpdatedDate" type="Date" />
 		<field name="name" type="String" />
 		<field name="nameIdAttribute" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
 		<field name="nameIdFormat" type="String">
-			<hint-collection name="ENTITY-ID" />
-		</field>
-		<field name="samlSpEntityId" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
 	</model>
@@ -59,9 +73,12 @@
 	<model name="com.liferay.saml.persistence.model.SamlPeerBinding">
 		<field name="samlPeerBindingId" type="long" />
 		<field name="companyId" type="long" />
-		<field name="createDate" type="Date" />
 		<field name="userId" type="long" />
 		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="samlPeerEntityId" type="String">
+			<hint-collection name="ENTITY-ID" />
+		</field>
 		<field name="deleted" type="boolean" />
 		<field name="samlNameIdFormat" type="String">
 			<hint name="max-length">128</hint>
@@ -72,9 +89,6 @@
 		<field name="samlNameIdSpNameQualifier" type="String" />
 		<field name="samlNameIdSpProvidedId" type="String" />
 		<field name="samlNameIdValue" type="String">
-			<hint-collection name="ENTITY-ID" />
-		</field>
-		<field name="samlPeerEntityId" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
 	</model>
@@ -97,6 +111,9 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="samlIdpEntityId" type="String">
+			<hint-collection name="ENTITY-ID" />
+		</field>
 		<field name="assertionSignatureRequired" type="boolean" />
 		<field name="clockSkew" type="long" />
 		<field name="enabled" type="boolean" />
@@ -111,9 +128,6 @@
 		</field>
 		<field name="name" type="String" />
 		<field name="nameIdFormat" type="String">
-			<hint-collection name="ENTITY-ID" />
-		</field>
-		<field name="samlIdpEntityId" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
 		<field name="signAuthnRequest" type="boolean" />
@@ -132,8 +146,8 @@
 		<field name="samlIdpEntityId" type="String">
 			<hint-collection name="ENTITY-ID" />
 		</field>
-		<field name="samlIdpResponseKey" type="String" />
 		<field name="expirationDate" type="Date" />
+		<field name="samlIdpResponseKey" type="String" />
 	</model>
 	<model name="com.liferay.saml.persistence.model.SamlSpSession">
 		<field name="samlSpSessionId" type="long" />

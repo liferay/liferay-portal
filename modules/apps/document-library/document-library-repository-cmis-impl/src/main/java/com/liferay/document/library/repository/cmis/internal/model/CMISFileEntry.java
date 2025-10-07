@@ -676,6 +676,11 @@ public class CMISFileEntry extends BaseCMISModel implements FileEntry {
 	public void setCreateDate(Date createDate) {
 	}
 
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		throw new UnsupportedOperationException();
+	}
+
 	public void setFileEntryId(long fileEntryId) {
 		_fileEntryId = fileEntryId;
 	}

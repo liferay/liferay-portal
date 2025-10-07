@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
@@ -50,6 +51,7 @@ public class DepotEntryInfoItemObjectProviderTest {
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), StringUtil.randomString()
 			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
 		ServiceContextThreadLocal.pushServiceContext(

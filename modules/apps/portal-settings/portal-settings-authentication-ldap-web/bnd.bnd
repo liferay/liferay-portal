@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Settings Authentication LDAP Web
 Bundle-SymbolicName: com.liferay.portal.settings.authentication.ldap.web
-Bundle-Version: 5.0.35
+Bundle-Version: 5.0.37
 Import-Package:\
 	javax.net.ssl,\
 	\

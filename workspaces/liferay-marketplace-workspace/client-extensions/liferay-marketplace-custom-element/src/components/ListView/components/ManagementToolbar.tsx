@@ -4,7 +4,7 @@
  */
 
 import ClayManagementToolbar from '@clayui/management-toolbar';
-import {ReactElement, ReactNode, useContext} from 'react';
+import {ReactElement, useContext} from 'react';
 
 import {
 	FilterSchemaOption,
@@ -22,20 +22,10 @@ export type ManagementToolbarProps = {
 		},
 		filterSchema?: FilterSchemaOption
 	) => ReactElement;
-	actions: any;
-	buttons?: ReactNode | ((actions: any) => ReactNode);
-	display?: {
-		columns?: boolean;
-	};
 
-	/**
-	 * Check out the file {src/schema/filter.ts}
-	 */
 	filterSchema?: FilterSchemaOption;
 	searchVisible?: boolean;
-	title?: string;
 	totalItems: number;
-	visible?: boolean;
 };
 
 const ManagementToolbar: React.FC<ManagementToolbarProps> = ({

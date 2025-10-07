@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.io.Serializable;
 
@@ -23,7 +23,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Tina Tian
@@ -41,13 +40,14 @@ public class MultiVMEhcachePortalCacheManager
 		this.bundleContext = bundleContext;
 
 		clusterEnabled = GetterUtil.getBoolean(
-			_props.get(PropsKeys.CLUSTER_LINK_ENABLED));
+			PropsUtil.get(PropsKeys.CLUSTER_LINK_ENABLED));
 		_defaultReplicatorPropertiesString = _getPortalPropertiesString(
 			PropsKeys.EHCACHE_REPLICATOR_PROPERTIES_DEFAULT);
-		_replicatorProperties = _props.getProperties(
+		_replicatorProperties = PropsUtil.getProperties(
 			PropsKeys.EHCACHE_REPLICATOR_PROPERTIES + StringPool.PERIOD, true);
 
-		setConfigFile(props.get(PropsKeys.EHCACHE_MULTI_VM_CONFIG_LOCATION));
+		setConfigFile(
+			PropsUtil.get(PropsKeys.EHCACHE_MULTI_VM_CONFIG_LOCATION));
 		setDefaultConfigFile(_DEFAULT_CONFIG_FILE_NAME);
 		setPortalCacheManagerName(PortalCacheManagerNames.MULTI_VM);
 
@@ -84,7 +84,7 @@ public class MultiVMEhcachePortalCacheManager
 	protected boolean clusterEnabled;
 
 	private String _getPortalPropertiesString(String portalPropertyKey) {
-		String[] array = _props.getArray(portalPropertyKey);
+		String[] array = PropsUtil.getArray(portalPropertyKey);
 
 		if (array.length == 0) {
 			return null;
@@ -113,10 +113,6 @@ public class MultiVMEhcachePortalCacheManager
 		MultiVMEhcachePortalCacheManager.class);
 
 	private String _defaultReplicatorPropertiesString;
-
-	@Reference
-	private Props _props;
-
 	private Properties _replicatorProperties;
 
 }

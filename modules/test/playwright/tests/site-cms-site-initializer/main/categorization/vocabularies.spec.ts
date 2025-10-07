@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {checkAccessibility} from '../../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
@@ -57,6 +58,17 @@ test(
 		});
 
 		await expect(vocabulariesPage.getItem(name)).toBeHidden();
+
+		await checkAccessibility({
+			page: vocabulariesPage.page,
+			selectors: ['.content'],
+			selectorsToExclude: [
+				'.control-menu-container',
+				'.fds',
+				'.sidebar-container',
+				'.top-bar',
+			],
+		});
 	}
 );
 
@@ -133,6 +145,12 @@ test(
 			name,
 		});
 
+		await checkAccessibility({
+			page: editVocabularyPage.page,
+			selectors: ['.cms-section'],
+			selectorsToExclude: ['.control-menu-container'],
+		});
+
 		await editVocabularyPage.multiSelectToggle.click();
 
 		await editVocabularyPage.changeVisibility('Private');
@@ -154,6 +172,12 @@ test(
 		const newVocabualry = page.getByRole('link', {name});
 
 		await newVocabualry.click();
+
+		await checkAccessibility({
+			page: editVocabularyPage.page,
+			selectors: ['.categorization-section'],
+			selectorsToExclude: ['.control-menu-container'],
+		});
 
 		await expect(page.getByText(`Edit ${name}`)).toBeVisible();
 
@@ -227,6 +251,15 @@ test(
 		await expect(page.getByText(`Edit ${name}`)).toBeVisible();
 
 		await editVocabularyPage.assetTypesButton.click();
+
+		await checkAccessibility({
+			page: editVocabularyPage.page,
+			selectors: ['.cms-section'],
+			selectorsToExclude: [
+				'categorization-vertical-nav',
+				'.control-menu-container',
+			],
+		});
 
 		await editVocabularyPage.selectAssetTypes('Blog');
 
@@ -330,6 +363,42 @@ test(
 
 		await clickAndExpectToBeVisible({
 			target: page.getByText('The Asset Types field is required.'),
+			trigger: editVocabularyPage.saveButton,
+		});
+	}
+);
+
+test(
+	'Validate that a UI error appears when attempting to create a vocabulary with an existing name',
+	{tag: '@LPD-57497'},
+	async ({editVocabularyPage, page}) => {
+		await editVocabularyPage.goto();
+
+		const name = `Vocabulary${getRandomInt()}`;
+
+		await editVocabularyPage.changeGeneralInfo({
+			description: getRandomString(),
+			name,
+		});
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText(
+				`Success:${name} was published successfully.`
+			),
+			trigger: editVocabularyPage.saveButton,
+		});
+
+		await editVocabularyPage.goto();
+
+		await editVocabularyPage.changeGeneralInfo({
+			description: getRandomString(),
+			name,
+		});
+
+		await clickAndExpectToBeVisible({
+			target: page.getByText(
+				'Please enter a unique name. This one is already in use.'
+			),
 			trigger: editVocabularyPage.saveButton,
 		});
 	}

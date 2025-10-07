@@ -58,8 +58,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanCreateCustomObjectEntriesWithPatchObjectInManyToManyRelationship {
-		property portal.acceptance = "true";
-
 		task ("And Given Student and Subject entries are created with postStudent including studentsSubjects with Subject entries information") {
 			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
 				en_US_plural_label = "students",
@@ -158,8 +156,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanCreateCustomObjectEntriesWithPutParentObjectInManyToManyRelationship {
-		property portal.acceptance = "true";
-
 		task ("And Given Student and Subject entries are created with postStudent including studentsSubjects with Subject entries information") {
 			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
 				en_US_plural_label = "students",
@@ -319,8 +315,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CannotCreateCustomObjectsEntriesWithNonexistentNestedFieldInManyToManyRelationships {
-		property portal.acceptance = "true";
-
 		task ("When creating a Student entry with postStudent including nonexistent nestedField with Subject entries information") {
 			CustomObjectAPI.createObjectEntryAndRelatedObjects(
 				en_US_plural_label = "subjects",
@@ -429,8 +423,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanUpdateCustomObjectEntriesWithPutChildObjectInManyToManyRelationship {
-		property portal.acceptance = "true";
-
 		task ("And Given Subject and Student entries with custom ERCs are created with postSubject including studentsSubjects with Student entries information") {
 			var response = CustomObjectAPI.createObjectEntryAndRelatedObjects(
 				en_US_plural_label = "subjects",

@@ -26,9 +26,9 @@ import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,6 +68,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 /**
  * @author Raymond Augé
  * @author Sampsa Sohlman
+ * @author Gregory Amerson
  */
 public class ConfigurationPersistenceManager
 	implements NotCachablePersistenceManager, PersistenceManager,
@@ -280,7 +281,9 @@ public class ConfigurationPersistenceManager
 		lock.lock();
 
 		try {
-			if (!InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly()) {
+			if (!InMemoryOnlyConfigurationThreadLocal.isInMemoryOnly() &&
+				!isEphemeral(pid, newDictionary)) {
+
 				_storeInDatabase(pid, newDictionary);
 			}
 

@@ -23,7 +23,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marcos Martins
  */
 @Component(
-	property = "item.class.name=com.liferay.object.model.ObjectDefinition",
+	property = {
+		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
+		"item.class.name=com.liferay.object.model.ObjectDefinition"
+	},
 	service = InfoItemObjectProvider.class
 )
 public class ObjectDefinitionInfoItemObjectProvider

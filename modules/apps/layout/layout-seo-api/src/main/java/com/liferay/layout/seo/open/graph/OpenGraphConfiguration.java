@@ -23,8 +23,8 @@ public interface OpenGraphConfiguration {
 	public boolean isLayoutTranslatedLanguagesEnabled(Group group)
 		throws PortalException;
 
-	public boolean isOpenGraphEnabled(Company company) throws PortalException;
-
 	public boolean isOpenGraphEnabled(Group group) throws PortalException;
+
+	public boolean isOpenGraphEnabled(long companyId) throws PortalException;
 
 }

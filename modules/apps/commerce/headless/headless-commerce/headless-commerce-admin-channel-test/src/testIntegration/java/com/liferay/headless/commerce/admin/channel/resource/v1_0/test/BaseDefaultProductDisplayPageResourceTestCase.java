@@ -32,12 +32,12 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -194,7 +194,21 @@ public abstract class BaseDefaultProductDisplayPageResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteChannelByExternalReferenceCodeDefaultProductDisplayPage()
+		throws Exception {
+
+		Assert.assertTrue(false);
+	}
+
+	@Test
 	public void testDeleteChannelIdDefaultProductDisplayPage()
+		throws Exception {
+
+		Assert.assertTrue(false);
+	}
+
+	@Test
+	public void testGraphQLDeleteChannelIdDefaultProductDisplayPage()
 		throws Exception {
 
 		Assert.assertTrue(false);
@@ -211,7 +225,7 @@ public abstract class BaseDefaultProductDisplayPageResourceTestCase {
 	public void testGraphQLGetChannelByExternalReferenceCodeDefaultProductDisplayPage()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		Assert.assertTrue(false);
 	}
 
 	@Test
@@ -230,7 +244,7 @@ public abstract class BaseDefaultProductDisplayPageResourceTestCase {
 	public void testGraphQLGetChannelIdDefaultProductDisplayPage()
 		throws Exception {
 
-		Assert.assertTrue(true);
+		Assert.assertTrue(false);
 	}
 
 	@Test

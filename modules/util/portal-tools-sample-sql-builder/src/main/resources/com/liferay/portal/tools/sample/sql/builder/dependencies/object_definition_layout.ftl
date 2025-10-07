@@ -6,16 +6,18 @@
 
 		contentLayoutModels = dataFactory.newContentPageLayoutModels(groupId, name)
 
-		segmentsExperienceModel = dataFactory.newSegmentsExperienceModel(contentLayoutModels)
+		segmentsExperienceModels = dataFactory.newSegmentsExperienceModels(contentLayoutModels)
 
-		fragmentEntryLinkModels = dataFactory.newObjectFieldsFragmentEntryLinkModels(contentLayoutModels, objectFieldModels, segmentsExperienceModel.getSegmentsExperienceId())
+		fragmentEntryLinkModels = dataFactory.newObjectFieldsFragmentEntryLinkModels(contentLayoutModels, objectFieldModels, segmentsExperienceModels)
 	/>
 
 	<#list fragmentEntryLinkModels as fragmentEntryLinkModel>
 		${dataFactory.toInsertSQL(fragmentEntryLinkModel)}
 	</#list>
 
-	${dataFactory.toInsertSQL(segmentsExperienceModel)}
+	<#list segmentsExperienceModels as segmentsExperienceModel>
+		${dataFactory.toInsertSQL(segmentsExperienceModel)}
+	</#list>
 
 	<#list contentLayoutModels as contentLayoutModel>
 		<#assign layoutPageTemplateStructureModel = dataFactory.newLayoutPageTemplateStructureModel(contentLayoutModel) />
@@ -26,9 +28,9 @@
 
 		${dataFactory.toInsertSQL(layoutPageTemplateStructureModel)}
 
-		${dataFactory.toInsertSQL(dataFactory.newObjectDefinitionLayoutPageTemplateStructureRelModel(fragmentEntryLinkModels, layoutPageTemplateStructureModel, objectDefinitionModel))}
+		${dataFactory.toInsertSQL(dataFactory.newObjectDefinitionLayoutPageTemplateStructureRelModel(fragmentEntryLinkModels, contentLayoutModel, layoutPageTemplateStructureModel, objectDefinitionModel))}
 
-		 <#if contentLayoutModel.friendlyURL?contains(name)>
+		 <#if contentLayoutModel.friendlyURL?contains(name?c_lower_case)>
 			${csvFileWriter.write("objectDefinition", virtualHostModel.hostname + "," + groupModel.friendlyURL + "," + contentLayoutModel.getFriendlyURL() + "\n")}
 		</#if>
 	</#list>

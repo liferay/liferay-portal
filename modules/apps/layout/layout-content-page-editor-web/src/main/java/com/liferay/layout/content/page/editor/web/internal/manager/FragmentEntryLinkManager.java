@@ -143,19 +143,19 @@ public class FragmentEntryLinkManager {
 			return Collections.emptySet();
 		}
 
-		FragmentEntry fragmentEntry = _getFragmentEntry(
-			fragmentEntryLink, LocaleUtil.getMostRelevantLocale());
-
-		if (fragmentEntry != null) {
-			return _getFieldTypes(fragmentEntry.getTypeOptions());
-		}
-
 		FragmentRenderer fragmentRenderer =
 			_fragmentRendererRegistry.getFragmentRenderer(
 				fragmentEntryLink.getRendererKey());
 
 		if (fragmentRenderer != null) {
 			return _getFieldTypes(fragmentRenderer.getTypeOptions());
+		}
+
+		FragmentEntry fragmentEntry = _getFragmentEntry(
+			fragmentEntryLink, LocaleUtil.getMostRelevantLocale());
+
+		if (fragmentEntry != null) {
+			return _getFieldTypes(fragmentEntry.getTypeOptions());
 		}
 
 		return Collections.emptySet();
@@ -178,8 +178,8 @@ public class FragmentEntryLinkManager {
 		themeDisplay.setIsolated(true);
 
 		try {
-			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
+			JSONObject editableValuesJSONObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
 
 			String content = _getContent(
 				defaultFragmentRendererContext, editableValuesJSONObject,
@@ -238,8 +238,7 @@ public class FragmentEntryLinkManager {
 					"editableTypes", Collections.emptyMap()
 				).put(
 					"editableValues",
-					_jsonFactory.createJSONObject(
-						fragmentEntryLink.getEditableValues())
+					fragmentEntryLink.getEditableValuesJSONObject()
 				).put(
 					"fragmentEntryId", 0
 				).put(
@@ -266,11 +265,9 @@ public class FragmentEntryLinkManager {
 
 			defaultFragmentRendererContext.setLocale(themeDisplay.getLocale());
 
-			String configuration = _fragmentRendererController.getConfiguration(
-				defaultFragmentRendererContext);
-
-			JSONObject configurationJSONObject = _jsonFactory.createJSONObject(
-				configuration);
+			JSONObject configurationJSONObject =
+				_fragmentRendererController.getConfigurationJSONObject(
+					defaultFragmentRendererContext);
 
 			FragmentEntryLinkItemSelectorUtil.
 				addFragmentEntryLinkFieldsSelectorURL(
@@ -308,7 +305,8 @@ public class FragmentEntryLinkManager {
 			).put(
 				"defaultConfigurationValues",
 				_fragmentEntryConfigurationParser.
-					getConfigurationDefaultValuesJSONObject(configuration)
+					getConfigurationDefaultValuesJSONObject(
+						configurationJSONObject)
 			).put(
 				"editableTypes",
 				EditableFragmentEntryProcessorUtil.getEditableTypes(content)

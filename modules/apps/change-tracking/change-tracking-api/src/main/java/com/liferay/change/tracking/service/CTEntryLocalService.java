@@ -69,7 +69,6 @@ public interface CTEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public CTEntry addCTEntry(CTEntry ctEntry);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public CTEntry addCTEntry(
 			String externalReferenceCode, long ctCollectionId,
 			long modelClassNameId, CTModel<?> ctModel, long userId,
@@ -105,7 +104,6 @@ public interface CTEntryLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CTEntry deleteCTEntry(CTEntry ctEntry) throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public CTEntry deleteCTEntry(CTEntry ctEntry, boolean force)
 		throws PortalException;
 

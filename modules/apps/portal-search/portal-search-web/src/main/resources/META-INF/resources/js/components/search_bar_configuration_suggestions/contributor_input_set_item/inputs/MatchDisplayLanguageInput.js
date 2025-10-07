@@ -8,16 +8,17 @@ import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
-function MatchDisplayLanguageInput({onChange, value}) {
+function MatchDisplayLanguageInput({index, onChange, value}) {
 	return (
 		<ClayInput.GroupItem>
-			<label>
+			<label htmlFor={`matchDisplayLanguage${index}`}>
 				{Liferay.Language.get('match-display-language')}
 
 				<ClayTooltipProvider>
 					<span
 						className="c-ml-2"
 						data-tooltip-align="top"
+						tabIndex={0}
 						title={Liferay.Language.get(
 							'match-display-language-help'
 						)}
@@ -29,6 +30,7 @@ function MatchDisplayLanguageInput({onChange, value}) {
 
 			<ClaySelect
 				aria-label={Liferay.Language.get('match-display-language')}
+				id={`matchDisplayLanguage${index}`}
 				onChange={onChange}
 				value={value}
 			>

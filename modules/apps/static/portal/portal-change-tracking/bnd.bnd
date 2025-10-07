@@ -1,4 +1,4 @@
 Bundle-Activator: com.liferay.portal.change.tracking.internal.activator.PortalChangeTrackingBundleActivator
 Bundle-Name: Liferay Portal Change Tracking
 Bundle-SymbolicName: com.liferay.portal.change.tracking
-Bundle-Version: 2.0.22
+Bundle-Version: 2.0.23

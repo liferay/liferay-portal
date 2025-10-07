@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.upgrade.util.UpgradeTable;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.upgrade.util.UpgradeTableFactoryUtil;
 import com.liferay.portal.upgrade.v7_0_0.util.ClassNameTable;
 import com.liferay.portal.upgrade.v7_0_0.util.ClusterGroupTable;
@@ -27,7 +28,6 @@ import com.liferay.portal.upgrade.v7_0_0.util.ReleaseTable;
 import com.liferay.portal.upgrade.v7_0_0.util.ResourceActionTable;
 import com.liferay.portal.upgrade.v7_0_0.util.ServiceComponentTable;
 import com.liferay.portal.upgrade.v7_0_0.util.VirtualHostTable;
-import com.liferay.portal.util.PropsUtil;
 
 import java.io.IOException;
 

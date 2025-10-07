@@ -54,44 +54,12 @@ describe('OptionFieldKeyValue', () => {
 		fetch.mockResponseOnce(JSON.stringify({}));
 	});
 
-	it('is not editable', () => {
-		const {container} = render(
-			<OptionFieldKeyValueWithProvider
-				name="OptionFieldKeyValue"
-				readOnly={true}
-				spritemap={spritemap}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
 	it('has a helptext', () => {
 		const {container} = render(
 			<OptionFieldKeyValueWithProvider
 				name="OptionFieldKeyValue"
 				spritemap={spritemap}
 				tip="Type something"
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has an id', () => {
-		const {container} = render(
-			<OptionFieldKeyValueWithProvider
-				id="Id"
-				name="OptionFieldKeyValue"
-				spritemap={spritemap}
 			/>
 		);
 
@@ -134,6 +102,38 @@ describe('OptionFieldKeyValue', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('has a value', () => {
+		const {container} = render(
+			<OptionFieldKeyValueWithProvider
+				name="OptionFieldKeyValue"
+				spritemap={spritemap}
+				value="value"
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has an id', () => {
+		const {container} = render(
+			<OptionFieldKeyValueWithProvider
+				id="Id"
+				name="OptionFieldKeyValue"
+				spritemap={spritemap}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
 	it('hides keyword input', () => {
 		const {container} = render(
 			<OptionFieldKeyValueWithProvider
@@ -147,6 +147,22 @@ describe('OptionFieldKeyValue', () => {
 			container.querySelectorAll('.key-value-input');
 
 		expect(OptionFieldKeyValueInput.length).toBe(0);
+	});
+
+	it('is not editable', () => {
+		const {container} = render(
+			<OptionFieldKeyValueWithProvider
+				name="OptionFieldKeyValue"
+				readOnly={true}
+				spritemap={spritemap}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
 	});
 
 	it('is not required', () => {
@@ -165,44 +181,28 @@ describe('OptionFieldKeyValue', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('renders component with a key', () => {
+		const {container} = render(
+			<OptionFieldKeyValueWithProvider
+				keyword="key"
+				name="OptionFieldKeyValue"
+				spritemap={spritemap}
+			/>
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
 	it('renders Label if showLabel is true', () => {
 		const {container} = render(
 			<OptionFieldKeyValueWithProvider
 				label="text"
 				name="OptionFieldKeyValue"
 				showLabel={true}
-				spritemap={spritemap}
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a value', () => {
-		const {container} = render(
-			<OptionFieldKeyValueWithProvider
-				name="OptionFieldKeyValue"
-				spritemap={spritemap}
-				value="value"
-			/>
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders component with a key', () => {
-		const {container} = render(
-			<OptionFieldKeyValueWithProvider
-				keyword="key"
-				name="OptionFieldKeyValue"
 				spritemap={spritemap}
 			/>
 		);

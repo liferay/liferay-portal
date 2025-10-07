@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Knowledge Base Markdown Converter Implementation
 Bundle-SymbolicName: com.liferay.knowledge.base.markdown.converter.impl
-Bundle-Version: 4.0.15
+Bundle-Version: 4.0.16
 Import-Package:\
 	!org.objectweb.*,\
 	\

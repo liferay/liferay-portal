@@ -292,40 +292,45 @@ public class FilePropagator {
 		}
 
 		synchronized (this) {
-			String targetSlave = _targetSlaves.remove(0);
+			while (true) {
+				String targetSlave = _targetSlaves.remove(0);
 
-			_busySlaves.add(targetSlave);
+				_busySlaves.add(targetSlave);
 
-			try {
-				Process process = _executeBashCommands(commands, targetSlave);
+				try {
+					Process process = _executeBashCommands(
+						commands, targetSlave);
 
-				int result = process.exitValue();
+					if (process.exitValue() != 0) {
+						throw new Exception(
+							JenkinsResultsParserUtil.readInputStream(
+								process.getErrorStream()));
+					}
 
-				_busySlaves.remove(targetSlave);
+					_busySlaves.remove(targetSlave);
+					_mirrorSlaves.add(targetSlave);
 
-				if (result != 0) {
-					_errorSlaves.add(targetSlave);
+					break;
+				}
+				catch (Exception exception) {
+					_busySlaves.remove(targetSlave);
+
+					if (!_errorSlaves.contains(targetSlave)) {
+						_errorSlaves.add(targetSlave);
+					}
+
+					if (_targetSlaves.isEmpty()) {
+						throw new FilePropagatorRuntimeException(
+							this,
+							"Unable to copy from source. Executed: " + commands,
+							exception);
+					}
 
 					log(
-						JenkinsResultsParserUtil.readInputStream(
-							process.getErrorStream(), true));
-
-					_copyFromSource();
+						JenkinsResultsParserUtil.combine(
+							"Unable to copy from source to ", targetSlave,
+							". Retrying with another node."));
 				}
-				else {
-					_mirrorSlaves.add(targetSlave);
-				}
-			}
-			catch (Exception exception) {
-				_busySlaves.remove(targetSlave);
-
-				if (!_errorSlaves.contains(targetSlave)) {
-					_errorSlaves.add(targetSlave);
-				}
-
-				throw new FilePropagatorRuntimeException(
-					this, "Unable to copy from source. Executed: " + commands,
-					exception);
 			}
 		}
 

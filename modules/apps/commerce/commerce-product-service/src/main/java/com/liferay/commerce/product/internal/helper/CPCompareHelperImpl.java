@@ -65,6 +65,15 @@ public class CPCompareHelperImpl implements CPCompareHelper {
 		long groupId, long commerceAccountId,
 		String cpDefinitionIdsCookieValue) {
 
+		return getCPDefinitionIds(
+			groupId, commerceAccountId, cpDefinitionIdsCookieValue, true);
+	}
+
+	@Override
+	public List<Long> getCPDefinitionIds(
+		long groupId, long commerceAccountId, String cpDefinitionIdsCookieValue,
+		boolean secure) {
+
 		return TransformUtil.transform(
 			_getCpDefinitionIds(cpDefinitionIdsCookieValue),
 			cpDefinitionId -> {
@@ -73,7 +82,7 @@ public class CPCompareHelperImpl implements CPCompareHelper {
 				try {
 					cpCatalogEntry = _cpDefinitionHelper.getCPCatalogEntry(
 						commerceAccountId, groupId, cpDefinitionId,
-						LocaleUtil.getDefault());
+						LocaleUtil.getDefault(), secure);
 				}
 				catch (PortalException portalException) {
 					if (_log.isWarnEnabled()) {

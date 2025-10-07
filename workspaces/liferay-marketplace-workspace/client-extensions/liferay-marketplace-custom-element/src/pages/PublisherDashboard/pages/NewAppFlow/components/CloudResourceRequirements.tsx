@@ -46,9 +46,7 @@ const CloudResourceRequirements = () => {
 				/>
 
 				<Form.HelpMessage>
-					{i18n.translate(
-						'enter-the-required-cpus-0-is-a-valid-value'
-					)}
+					{i18n.translate('enter-the-required-cpus-0-is-valid')}
 				</Form.HelpMessage>
 			</Form.FormControl>
 
@@ -78,9 +76,7 @@ const CloudResourceRequirements = () => {
 				/>
 
 				<Form.HelpMessage>
-					{i18n.translate(
-						'enter-the-required-ram-0-is-a-valid-value'
-					)}
+					{i18n.translate('enter-the-required-ram-0-is-valid')}
 				</Form.HelpMessage>
 			</Form.FormControl>
 		</>

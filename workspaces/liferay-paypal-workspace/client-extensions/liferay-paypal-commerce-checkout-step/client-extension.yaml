@@ -8,14 +8,14 @@ liferay-paypal-commerce-checkout-step:
     checkoutStepName: PayPal SDK Checkout Step
     checkoutStepOrder: 2147483547
     name: Liferay PayPal Commerce Checkout Step
-    oAuth2ApplicationExternalReferenceCode: liferay-paypal-commerce-checkout-step-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-paypal-commerce-checkout-step-oaua
     order: true
     paymentMethodKey: liferay-paypal-commerce-payment-integration
     sennaDisabled: true
     showControls: false
     type: commerceCheckoutStep
     visible: true
-liferay-paypal-commerce-checkout-step-oauth-application-user-agent:
+liferay-paypal-commerce-checkout-step-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay PayPal Commerce Checkout Step OAuth Application User Agent

@@ -220,47 +220,6 @@ definition {
 		ObjectAdmin.assertCannotDeleteObjectWithRelationshipErrorMessage();
 	}
 
-	@description = "LPS-135406 - Verify it is not possible to delete native fields of objects native"
-	@priority = 4
-	test CannotDeleteFieldsFromNativeObjects {
-		for (var systemObjects : list "Account,Commerce Product,Commerce Product Group,Commerce Order,Postal Address,User") {
-			ApplicationsMenu.gotoPortlet(
-				category = "Object",
-				panel = "Control Panel",
-				portlet = "Objects");
-
-			ObjectPortlet.selectSystemObject(label = ${systemObjects});
-
-			ObjectAdmin.goToFieldsTab();
-
-			AssertNotVisible(locator1 = "Icon#DELETE");
-		}
-	}
-
-	@description = "LPS-135406 - Verify it is not possible to delete a relationship field of custom object from a native object"
-	@priority = 4
-	test CannotDeleteReleationshipFieldFromNativeObject {
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 151500",
-			objectName = "CustomObject151500",
-			pluralLabelName = "Custom Objects 151500");
-
-		ObjectAdmin.addObjectRelationshipViaAPI(
-			objectName_1 = "User",
-			objectName_2 = "CustomObject151500",
-			relationshipLabel = "Relationship",
-			relationshipName = "relationship",
-			relationshipType = "oneToMany");
-
-		ObjectAdmin.openObjectAdmin();
-
-		ObjectPortlet.selectCustomObject(label = "Custom Object 151500");
-
-		ObjectAdmin.goToFieldsTab();
-
-		AssertNotVisible(locator1 = "Icon#DELETE");
-	}
-
 	@description = "LPS-150886 - Verify that the custom object label cannot be used to confirm the deletion"
 	@priority = 5
 	test CannotUseObjectLabelAsConfirmation {

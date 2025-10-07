@@ -1,0 +1,10 @@
+{
+	"name": "Liferay Docker Images",
+	"name_i18n": {
+		"en_US": "Liferay Docker Images",
+		"es-ES": "Imágenes de Docker de Liferay",
+		"ja-JP": "Liferay Dockerイメージ",
+		"pt-BR": "Imagens Docker do Liferay"
+	},
+	"viewableBy": "Anyone"
+}

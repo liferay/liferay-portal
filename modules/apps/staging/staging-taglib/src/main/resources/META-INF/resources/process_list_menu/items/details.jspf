@@ -1,0 +1,19 @@
+<%--
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+--%>
+
+<portlet:renderURL var="importErrorsList">
+	<portlet:param name="mvcRenderCommandName" value="/export_import/view_import_errors" />
+	<portlet:param name="backgroundTaskId" value="<%= String.valueOf(backgroundTask.getBackgroundTaskId()) %>" />
+</portlet:renderURL>
+
+<c:if test="<%= !backgroundTask.isInProgress() %>">
+	<li>
+		<a class="dropdown-item" href="<%= importErrorsList %>">
+			<liferay-ui:message key="view-details" />
+		</a>
+	</li>
+</c:if>

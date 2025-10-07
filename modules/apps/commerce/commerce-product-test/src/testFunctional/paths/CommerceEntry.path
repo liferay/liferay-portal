@@ -407,7 +407,7 @@
 </tr>
 <tr>
 	<td>ADD_BUTTON</td>
-	<td>//*[@data-qa-id='addButton'] | //a[contains(@class,'btn') and span[contains(@class,'icon-plus')]] | //button/span[contains(@class,'icon-plus')] | //button[@type='button']/*[contains(@class,'icon-plus')] | //div[contains(@class,'section-header') and contains (.,'Options')]/button</td>
+	<td>//*[@data-qa-id='addButton'] | //*[@data-testid='fdsCreationActionButton'][1] | //a[contains(@class,'btn') and span[contains(@class,'icon-plus')]] | //button/span[contains(@class,'icon-plus')] | //button[@type='button']/*[contains(@class,'icon-plus')] | //div[contains(@class,'section-header') and contains (.,'Options')]/button</td>
 	<td></td>
 </tr>
 <tr>
@@ -952,7 +952,7 @@
 </tr>
 <tr>
 	<td>TABLE_EXPOSE_ENTRY_BY_POSITION</td>
-	<td>//*[contains(@class, 'table-responsive')]//tbody/tr[${key_linePosition}]/td[${key_colunmPosition}]</td>
+	<td>//*[contains(@class, 'table-responsive')]//tbody/tr[${key_linePosition}]/td[${key_columnPosition}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1115,6 +1115,11 @@
 <tr>
 	<td>ADD_RELATION_FIELD</td>
 	<td>//div[div[contains(@class,'h4') and contains(.,'${key_title}')]]//input[@type='text']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ADD_RELATION_FIELD_SEARCH</td>
+	<td>//div[div[contains(@class,'h4') and contains(.,'${key_title}')]]//input[@type='search']</td>
 	<td></td>
 </tr>
 <tr>

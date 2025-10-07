@@ -55,10 +55,15 @@ public abstract class BaseJakartaUpgradeProcess extends UpgradeProcess {
 				continue;
 			}
 
-			Queue<String> modifiedKeys = new ConcurrentLinkedQueue<>();
-
 			String[] primaryKeyColumnNames = getPrimaryKeyColumnNames(
 				connection, tableName);
+
+			if (primaryKeyColumnNames.length == 0) {
+				throw new Exception(
+					"Table " + tableName + " has no primary key");
+			}
+
+			Queue<String> modifiedKeys = new ConcurrentLinkedQueue<>();
 
 			processConcurrently(
 				_getSelectSQL(columnName, primaryKeyColumnNames, tableName),

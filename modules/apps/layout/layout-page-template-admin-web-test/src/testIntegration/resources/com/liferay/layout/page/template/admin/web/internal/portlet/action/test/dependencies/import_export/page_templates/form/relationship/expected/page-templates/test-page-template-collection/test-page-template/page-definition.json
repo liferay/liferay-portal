@@ -1,0 +1,81 @@
+{
+	"pageElement": {
+		"id": "item1",
+		"pageElements": [
+			{
+				"definition": {
+					"formConfig": {
+						"formReference": {
+							"className": "com.liferay.object.model.ObjectDefinition#00000",
+							"classType": 0
+						},
+						"formType": "simple",
+						"numberOfSteps": 0
+					},
+					"indexed": true,
+					"layout": {
+					}
+				},
+				"id": "item2",
+				"pageElements": [
+					{
+						"definition": {
+							"buttonLabel": {
+								"value_i18n": {
+									"en_US": "Add New",
+									"es_ES": "Añade nueva"
+								}
+							},
+							"contentType": "someContentType",
+							"cssClasses": [
+								"customClass1",
+								"customClass2"
+							],
+							"customCSS": ".[$FRAGMENT_CLASS$] { color: blue; }",
+							"customCSSViewports": [
+								{
+									"customCSS": ".[$FRAGMENT_CLASS$] { color: red; }",
+									"id": "landscapeMobile"
+								},
+								{
+									"customCSS": ".[$FRAGMENT_CLASS$] { color: pink; }",
+									"id": "portraitMobile"
+								},
+								{
+									"customCSS": ".[$FRAGMENT_CLASS$] { color: aquamarine; }",
+									"id": "tablet"
+								}
+							],
+							"fragmentStyle": {
+								"backgroundColor": "",
+								"borderRadius": "rounded-0",
+								"borderWidth": "0",
+								"fontFamily": "sans-serif",
+								"fontSize": "medium",
+								"fontWeight": "font-weight-normal",
+								"height": "h-auto",
+								"maxHeight": "none",
+								"maxWidth": "none",
+								"minHeight": "auto",
+								"minWidth": "auto",
+								"overflow": "visible",
+								"shadow": "shadow-none",
+								"textAlign": "none",
+								"width": "w-auto"
+							}
+						},
+						"id": "77df4dca-ee9e-b7eb-b71e-d6c8a7e02575",
+						"type": "FormRelationship"
+					}
+				],
+				"type": "Form"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"themeName": "Classic"
+	},
+	"version": 1.1
+}

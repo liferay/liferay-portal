@@ -22,6 +22,7 @@ interface IProps {
 	addLayoutURL: string;
 	getLayoutPageTemplateEntryListURL: string;
 	layoutPageTemplateEntryId: string;
+	modalTitle?: string;
 	portletNamespace: string;
 	subtitle: string;
 	thumbnailURL: string;
@@ -32,6 +33,7 @@ export default function LayoutPageTemplateEntryCard({
 	addLayoutURL,
 	getLayoutPageTemplateEntryListURL,
 	layoutPageTemplateEntryId,
+	modalTitle,
 	subtitle,
 	thumbnailURL,
 	title,
@@ -48,7 +50,7 @@ export default function LayoutPageTemplateEntryCard({
 			height: '60vh',
 			id: 'addLayoutDialog',
 			size: 'md',
-			title: Liferay.Language.get('add-page'),
+			title: modalTitle,
 			url: addLayoutURL,
 		});
 	};

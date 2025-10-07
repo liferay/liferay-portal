@@ -7,8 +7,16 @@ import fetcher from '../fetcher';
 
 export default class HeadlessAdminUser {
 	static async getAccount(accountId: string | number) {
-		return fetcher<UserAccount>(
+		return fetcher<Account>(
 			`/o/headless-admin-user/v1.0/accounts/${accountId}`
+		);
+	}
+
+	static async getAccountByExternalReferenceCode(
+		externalReferenceCode: string
+	) {
+		return fetcher<Account>(
+			`/o/headless-admin-user/v1.0/accounts/by-external-reference-code/${externalReferenceCode}`
 		);
 	}
 
@@ -31,7 +39,7 @@ export default class HeadlessAdminUser {
 	}
 
 	static async getUserAccountById(accountId: string | number) {
-		return fetcher(
+		return fetcher<UserAccount>(
 			`/o/headless-admin-user/v1.0/user-accounts/${accountId}`
 		);
 	}
@@ -60,6 +68,16 @@ export default class HeadlessAdminUser {
 	) {
 		return fetcher.post(
 			`/o/headless-admin-user/v1.0/accounts/${accountId}/account-roles/${roleId}/user-accounts/${userId}`
+		);
+	}
+
+	static async updateAccount(
+		accountId: number | string,
+		data: Partial<Account>
+	) {
+		return fetcher.patch(
+			`/o/headless-admin-user/v1.0/accounts/${accountId}`,
+			data
 		);
 	}
 

@@ -9,6 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
 import {customFieldsPagesTest} from '../../../fixtures/customFieldsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../fixtures/displayPageTemplatesPagesTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
@@ -28,6 +29,7 @@ import {templatesPageTest} from '../../template-web/main/fixtures/templatesPageT
 export const test = mergeTests(
 	apiHelpersTest,
 	dataApiHelpersTest,
+	displayPageTemplatesPagesTest,
 	changeTrackingPagesTest,
 	customFieldsPagesTest,
 	featureFlagsTest({
@@ -100,6 +102,8 @@ test('Add and apply content template', async ({
 		template: contentPageTemplateName,
 	});
 
+	await pageEditorPage.publishPage();
+
 	// Review publication changes and publish
 
 	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
@@ -110,6 +114,15 @@ test('Add and apply content template', async ({
 		title: contentPageTemplateName,
 		type: 'Layout Page Template Entry',
 	});
+
+	await page
+		.getByRole('link', {exact: true, name: contentPageTemplateName})
+		.click();
+	await expect(
+		page.locator(
+			'//td[contains(@class,"publications-render-view-content")]'
+		)
+	).toBeVisible();
 
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
 		ctCollection.body.id
@@ -131,6 +144,83 @@ test('Add and apply content template', async ({
 		pageTemplateCollectionName
 	);
 });
+
+test(
+	'Add and apply display page template',
+	{tag: '@LPD-60041'},
+	async ({
+		apiHelpers,
+		changeTrackingPage,
+		ctCollection,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		await changeTrackingPage.workOnPublication(ctCollection);
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		const displayPageTemplateName = getRandomString();
+
+		// Create a display page template for Basic Web Content
+
+		await displayPageTemplatesPage.createTemplate({
+			contentSubtype: 'Basic Web Content',
+			contentType: 'Web Content Article',
+			name: displayPageTemplateName,
+		});
+
+		await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+		// Add heading fragment to the template
+
+		await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+		await pageEditorPage.publishPage();
+
+		// Review publication changes
+
+		await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+		await changeTrackingPage.viewChanges({
+			changed: 'Added',
+			site: site.name,
+			title: displayPageTemplateName,
+			type: 'Layout Page Template Entry',
+		});
+
+		await page
+			.getByRole('link', {exact: true, name: displayPageTemplateName})
+			.click();
+		await expect(
+			page.locator(
+				'//td[contains(@class,"publications-render-view-content")]'
+			)
+		).toBeVisible();
+
+		await apiHelpers.headlessChangeTracking.publishCTCollection(
+			ctCollection.body.id
+		);
+
+		await changeTrackingPage.assertStatus(
+			'Published',
+			ctCollection.body.name
+		);
+
+		// Verify that the fragment is present
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+		await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+		await expect(page.getByText('Heading Example')).toBeVisible();
+
+		// Delete display page template
+
+		await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+		await displayPageTemplatesPage.deleteAllDisplayPageTemplates();
+	}
+);
 
 test('Add and apply information template', async ({
 	apiHelpers,
@@ -222,6 +312,8 @@ test('Add and apply information template', async ({
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 	await expect(page.getByText(journalName)).toBeVisible();
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test('Add and apply widget template', async ({
@@ -305,6 +397,8 @@ test('Add and apply widget template', async ({
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 	await expect(page.getByText('en_US')).toBeVisible();
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test('Add new page with master template', async ({
@@ -367,6 +461,15 @@ test('Add new page with master template', async ({
 		type: 'Fragment Entry Link',
 	});
 
+	await page
+		.getByRole('link', {exact: true, name: masterPageTemplateEntryName})
+		.click();
+	await expect(
+		page.locator(
+			'//td[contains(@class,"publications-render-view-content")]'
+		)
+	).toBeVisible();
+
 	await apiHelpers.headlessChangeTracking.publishCTCollection(
 		ctCollection.body.id
 	);
@@ -377,6 +480,8 @@ test('Add new page with master template', async ({
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 	await expect(page.locator('.navbar-dark')).toBeVisible();
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test('Apply style book layout', async ({
@@ -401,6 +506,10 @@ test('Apply style book layout', async ({
 	await styleBooksPage.create(styleBookName);
 
 	await styleBooksPage.selectTokenCategory('Typography');
+
+	await page.getByRole('button', {name: 'Font Size'}).click();
+
+	await page.waitForTimeout(300);
 
 	await styleBooksPage.updateTokenInput(
 		'Font Family Base',
@@ -444,6 +553,8 @@ test('Apply style book layout', async ({
 
 	// Verify the layout font is times
 
+	await page.reload();
+
 	await page.goto('/');
 
 	await page.getByRole('menuitem', {name: layoutTitle}).click();
@@ -452,6 +563,8 @@ test('Apply style book layout', async ({
 		'font-family',
 		'times'
 	);
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test('Create custom fragments', async ({
@@ -527,6 +640,8 @@ test('Create custom fragments', async ({
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 	await expect(page.getByText('test html')).toBeVisible();
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test('Create page with existing page template', async ({
@@ -610,9 +725,14 @@ test('Create page with existing page template', async ({
 		page.getByRole('link', {exact: true, name: widgetPageTemplateName})
 	).not.toBeVisible();
 
-	await pageTemplatesPage.deletePageTemplateCollection(
+	await pageTemplatesPage.clickPageTemplateCollectionAction(
+		'Delete',
 		pageTemplateCollectionName
 	);
+
+	await page.getByRole('button', {name: 'Delete'}).click();
+
+	await expect(page.getByText('No Page Template Sets yet.')).toBeVisible();
 });
 
 test(
@@ -659,6 +779,8 @@ test(
 			title: site.name,
 			type: 'Calendar',
 		});
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 	}
 );
 
@@ -797,6 +919,8 @@ test(
 
 		await expect(page.getByText('Heading Example')).toBeVisible();
 		await expect(page.getByText('Edited Text')).toBeVisible();
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 	}
 );
 
@@ -893,11 +1017,13 @@ test(
 
 		await page.getByLabel('Select Item').click();
 
+		await page.waitForTimeout(300);
+
 		await page.getByRole('menuitem', {name: 'Select Item'}).click();
 
 		await page
 			.frameLocator('iframe[title="Select"]')
-			.getByRole('menuitem', {name: 'Web Content'})
+			.getByRole('menuitem', {exact: true, name: 'Web Content'})
 			.click();
 
 		await page
@@ -909,6 +1035,8 @@ test(
 
 		await expect(page.getByText(journalName1)).toBeVisible();
 		await expect(page.getByText(journalName1)).toBeVisible();
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 	}
 );
 
@@ -1029,9 +1157,13 @@ test('Publish with asset publisher configuration', async ({
 		.getByLabel('Dynamic')
 		.click();
 
-	await page.getByLabel('close', {exact: true}).click();
+	await page.locator('.modal').getByLabel('Close', {exact: true}).click();
 
 	await page.reload();
+
+	await expect(page.getByText('Asset Publisher Basic')).toBeVisible();
+
+	await page.waitForTimeout(300);
 
 	await page
 		.getByTestId('addButton')
@@ -1043,6 +1175,8 @@ test('Publish with asset publisher configuration', async ({
 	const fileName = getRandomString();
 
 	await page.getByLabel('Title Required').fill(fileName);
+
+	await page.waitForTimeout(300);
 
 	await page.getByRole('button', {name: 'Publish'}).click();
 
@@ -1069,6 +1203,8 @@ test('Publish with asset publisher configuration', async ({
 
 	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 	await expect(page.getByText(fileName)).toBeVisible();
+
+	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 });
 
 test(
@@ -1091,7 +1227,7 @@ test(
 
 		const layoutTitle = getRandomString();
 
-		await apiHelpers.jsonWebServicesLayout.addLayout({
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
 			title: layoutTitle,
 		});
@@ -1172,6 +1308,8 @@ test(
 		await expect(
 			page.locator(`.field[name*="${customField.fieldName}"]`)
 		).toHaveValue(publicationText);
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 	}
 );
 
@@ -1249,5 +1387,7 @@ test(
 				style: 'marginTop',
 			})
 		).toBe('8px');
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
 	}
 );

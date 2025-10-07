@@ -6,6 +6,7 @@
 package com.liferay.asset.model.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.ClassTypeField;
 import com.liferay.asset.model.DDMStructureClassType;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -71,6 +73,13 @@ public class DDMStructureClassTypeTest {
 				ddmStructureClassType.getClassTypeFields(),
 				classTypeField -> Objects.equals(
 					classTypeField.getType(), "date_time")));
+
+		ClassTypeField classTypeField = ddmStructureClassType.getClassTypeField(
+			"Text38954058");
+
+		Assert.assertEquals(
+			classTypeField.getLabel(),
+			HtmlUtil.escape("<script>alert(document.cookie)</script>"));
 	}
 
 	@Inject

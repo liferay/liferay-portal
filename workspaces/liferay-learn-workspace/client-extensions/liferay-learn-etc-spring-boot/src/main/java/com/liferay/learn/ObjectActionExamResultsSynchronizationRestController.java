@@ -7,7 +7,6 @@ package com.liferay.learn;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2AccessTokenManager;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.time.OffsetDateTime;
@@ -90,7 +89,7 @@ public class ObjectActionExamResultsSynchronizationRestController
 
 	private String _getAuthorization() {
 		return _liferayOAuth2AccessTokenManager.getAuthorization(
-			"liferay-learn-etc-spring-boot-oauth-application-headless-server");
+			"liferay-learn-etc-spring-boot-oahs");
 	}
 
 	private OffsetDateTime _getLatestSuccessfulExecutionOffsetDateTime() {
@@ -98,8 +97,7 @@ public class ObjectActionExamResultsSynchronizationRestController
 			get(
 				_getAuthorization(),
 				UriComponentsBuilder.fromPath(
-					"/o/c/p2s3examresultssynchronizations/scopes/" +
-						_siteGroupId
+					"/o/c/p2s3examresultssynchronizations"
 				).queryParam(
 					"fields", "dateCreated"
 				).queryParam(
@@ -224,10 +222,8 @@ public class ObjectActionExamResultsSynchronizationRestController
 				put(
 					_getAuthorization(), _getPayload(jsonObject1),
 					UriComponentsBuilder.fromPath(
-						StringBundler.concat(
-							"/o/c/p2s3examresults/scopes/", _siteGroupId,
-							"/by-external-reference-code/",
-							jsonObject1.getLong("id"))
+						"/o/c/p2s3examresults/by-external-reference-code/" +
+							jsonObject1.getLong("id")
 					).build(
 					).toUri()));
 
@@ -284,9 +280,6 @@ public class ObjectActionExamResultsSynchronizationRestController
 
 	@Value("${liferay.oauth.application.external.reference.codes}")
 	private String _liferayOAuthApplicationExternalReferenceCodes;
-
-	@Value("${liferay.learn.dxp.site.group.id}")
-	private Long _siteGroupId;
 
 	@Value("${liferay.learn.webassessor.security.token}")
 	private String _webassessorSecurityToken;

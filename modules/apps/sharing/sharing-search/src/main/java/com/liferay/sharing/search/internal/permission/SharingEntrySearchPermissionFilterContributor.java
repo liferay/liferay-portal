@@ -11,6 +11,7 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.search.spi.model.permission.contributor.SearchPermissionFilterContributor;
 
 import org.osgi.service.component.annotations.Component;
@@ -45,8 +46,10 @@ public class SharingEntrySearchPermissionFilterContributor
 				userGroup -> String.valueOf(userGroup.getUserGroupId()),
 				String.class));
 
-		booleanFilter.add(
-			sharedToUserGroupIdTermsFilter, BooleanClauseOccur.SHOULD);
+		if (ArrayUtil.isNotEmpty(sharedToUserGroupIdTermsFilter.getValues())) {
+			booleanFilter.add(
+				sharedToUserGroupIdTermsFilter, BooleanClauseOccur.SHOULD);
+		}
 
 		TermsFilter sharedToUserIdTermsFilter = new TermsFilter(
 			"sharedToUserId");

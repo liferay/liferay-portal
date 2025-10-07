@@ -70,8 +70,14 @@ public interface JSONFactory {
 	public String looseSerializeDeep(
 		Object object, JSONTransformer jsonTransformer, Class<?> clazz);
 
+	public JSONObject safeCreateJSONObject(String json);
+
+	public JSONObject safeCreateJSONObject(String json, boolean strict);
+
 	public String serialize(Object object);
 
 	public String serializeThrowable(Throwable throwable);
+
+	public String toString(JSONObject jsonObject);
 
 }

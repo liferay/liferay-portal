@@ -68,7 +68,9 @@ public class CommerceReturnContentPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-10562")) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(renderRequest), "LPD-10562")) {
+
 			include("/returns/error.jsp", renderRequest, renderResponse);
 		}
 		else {

@@ -13,7 +13,6 @@
 	},
 	"items": [
 		{
-			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_APPLICATION_STATUSES",
 			"listTypeEntries": [
 				{
@@ -33,7 +32,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_ENDPOINT_HTTP_METHODS",
 			"listTypeEntries": [
 				{
@@ -53,7 +51,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_ENDPOINT_RETRIEVE_TYPES",
 			"listTypeEntries": [
 				{
@@ -73,7 +70,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_ENDPOINT_SCOPES",
 			"listTypeEntries": [
 				{
@@ -93,7 +89,6 @@
 			"system": true
 		},
 		{
-			"defaultLanguageId": "en_US",
 			"externalReferenceCode": "L_API_PROPERTY_TYPES",
 			"listTypeEntries": [
 				{

@@ -94,6 +94,11 @@ const yupSchema = {
 		steps: yup.string(),
 		stepsType: yup.string(),
 	}),
+	caseDetail: yup.object({
+		dueStatus: yup.string().required(),
+		id: yup.string(),
+		name: yup.string().required(),
+	}),
 	caseResult: yup.object({
 		buildId: yup.number(),
 		caseId: yup.number(),
@@ -145,13 +150,16 @@ const yupSchema = {
 		id: yup.string(),
 		number: yup.number(),
 	}),
-	jiraIssues: yup.object({
-		issues: yup.array(
-			yup.object({
-				label: yup.string(),
-				value: yup.string(),
-			})
-		),
+	jiraIssue: yup.object({
+		description: yup.string(),
+		externalReferenceCode: yup.string().required(),
+		id: yup.string(),
+		title: yup.string().required(),
+	}),
+	jiraProject: yup.object({
+		externalReferenceCode: yup.string().required(),
+		id: yup.string(),
+		name: yup.string().required(),
 	}),
 	option: yup.object({
 		name: yup.string(),
@@ -191,6 +199,12 @@ const yupSchema = {
 		autoanalyze: yup.boolean().required(),
 		id: yup.number(),
 		name: yup.string().required(),
+		parentRoutines: yup.mixed(),
+		r_teamToRoutines_c_teamId: yup
+			.number()
+			.transform((value, originalValue) => {
+				return originalValue === '' ? 0 : value;
+			}),
 	}),
 	run: yup.object({
 		buildId: yup.number(),

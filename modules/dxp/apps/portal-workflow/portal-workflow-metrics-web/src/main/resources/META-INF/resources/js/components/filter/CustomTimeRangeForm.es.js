@@ -121,7 +121,7 @@ export default function CustomTimeRangeForm({
 
 					<FormGroupItem error={errors['dateEnd']}>
 						<label htmlFor="dateEnd">
-							{Liferay.Language.get('to')}
+							{Liferay.Language.get('to[date-time]')}
 						</label>
 
 						<MaskedInputDefault

@@ -8,4 +8,5 @@ export const config = {
 	teardown: 'page-management-site.teardown',
 	testDir: 'tests/setup/page-management-site/main',
 	testMatch: 'setup.spec.ts',
+	timeout: 90 * 1000,
 };

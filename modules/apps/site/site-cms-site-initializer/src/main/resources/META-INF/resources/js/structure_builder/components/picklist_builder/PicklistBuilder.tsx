@@ -7,13 +7,12 @@ import ClayLayout from '@clayui/layout';
 import {ILearnResourceContext} from 'frontend-js-components-web';
 import React, {useEffect} from 'react';
 
-import {Picklist} from '../../../types/Picklist';
-import CacheContextProvider from '../../contexts/CacheContext';
+import {Picklist} from '../../../common/types/Picklist';
 import PicklistBuilderContextProvider, {
 	buildState,
 	useId,
 } from '../../contexts/PicklistBuilderContext';
-import PicklistBuilderManagementBar from './PicklistBuilderManagementBar';
+import PicklistBuilderToolbar from './PicklistBuilderToolbar';
 import PicklistFields from './PicklistFields';
 import PicklistOptions from './PicklistOptions';
 
@@ -31,9 +30,7 @@ export default function PicklistBuilder({
 			<div className="d-flex flex-column">
 				<HistoryManager />
 
-				<CacheContextProvider>
-					<PicklistBuilderManagementBar />
-				</CacheContextProvider>
+				<PicklistBuilderToolbar />
 
 				<ClayLayout.ContainerFluid className="px-4" size="md" view>
 					<PicklistFields learnResources={learnResources} />

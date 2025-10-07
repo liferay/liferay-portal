@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentConstants;
@@ -119,6 +120,7 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(LocaleUtil.getDefault(), name), null,
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(group.getCompanyId());
@@ -150,7 +152,7 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			StringPool.BLANK, 0,
 			"com.liferay.site.cms.site.initializer.internal.fragment." +
-				"renderer.SpaceListComponentSectionFragmentRenderer",
+				"renderer.SpacesComponentSectionFragmentRenderer",
 			FragmentConstants.TYPE_COMPONENT,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
@@ -159,14 +161,15 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			TestPropsValues.getUserId(), 0, null, false, false, true, false,
-			false, false, null,
+			TestPropsValues.getUserId(), 0, null, false, true, false, true,
+			false, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			true, ObjectDefinitionConstants.SCOPE_DEPOT,
 			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-			Collections.emptyList(), Arrays.asList(objectField));
+			Collections.emptyList(), Arrays.asList(objectField),
+			Collections.emptyList());
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest(long id)
@@ -257,7 +260,7 @@ public class SpaceStickerDisplayContextTest extends BaseDisplayContextTestCase {
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpaceListComponentSectionFragmentRenderer"
+		filter = "component.name=com.liferay.site.cms.site.initializer.internal.fragment.renderer.SpacesComponentSectionFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
 

@@ -1030,7 +1030,7 @@ definition {
 				groupName = "Test Site Name",
 				operator = "equals",
 				segmentName = "Segment With Test User",
-				text = "Test");
+				text = "test");
 		}
 
 		task ("Create a manual Collection") {
@@ -1437,6 +1437,8 @@ definition {
 	@description = "This is a test for LPS-166045. The site designer could see the usages of Collections from asset library."
 	@priority = 5
 	test ViewUsagesOfCollectionFromAssetLibrary {
+		property portal.acceptance = "quarantine";
+
 		task ("Given the site designer has collections from asset library") {
 			JSONDepot.addDepot(depotName = "Test Depot Name");
 

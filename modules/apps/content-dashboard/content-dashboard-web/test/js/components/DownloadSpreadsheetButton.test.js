@@ -13,7 +13,7 @@ import DownloadSpreadsheetButton from '../../../src/main/resources/META-INF/reso
 import * as utils from '../../../src/main/resources/META-INF/resources/js/components/DownloadSpreadsheetButton/downloadSpreadsheetUtils';
 
 const getComponent = (fileURL = 'demo-file-url') => {
-	return <DownloadSpreadsheetButton {...{fileURL, total: 12}} />;
+	return <DownloadSpreadsheetButton fileURL={fileURL} total={12} />;
 };
 
 describe('DownloadSpreadsheetButton', () => {

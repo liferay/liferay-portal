@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Encryptor
 Bundle-SymbolicName: com.liferay.portal.encryptor
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Import-Package:\
 	com.ibm.crypto.provider;resolution:=optional,\
 	\

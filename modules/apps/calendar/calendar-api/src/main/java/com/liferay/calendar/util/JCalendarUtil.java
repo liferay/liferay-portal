@@ -45,12 +45,17 @@ public class JCalendarUtil {
 		Calendar startTimeJCalendar, Calendar endTimeJCalendar) {
 
 		startTimeJCalendar = toMidnightJCalendar(startTimeJCalendar);
-		endTimeJCalendar = toMidnightJCalendar(endTimeJCalendar);
+
+		if (isMidnight(endTimeJCalendar)) {
+			endTimeJCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		}
+
+		endTimeJCalendar = toLastHourJCalendar(endTimeJCalendar);
 
 		long startTime = startTimeJCalendar.getTimeInMillis();
 		long endTime = endTimeJCalendar.getTimeInMillis();
 
-		return (endTime - startTime) / DAY;
+		return Math.round((float)(endTime - startTime) / DAY);
 	}
 
 	public static int getDSTShift(
@@ -115,6 +120,19 @@ public class JCalendarUtil {
 		Calendar adjustedJCalendar2 = toLastHourJCalendar(jCalendar2);
 
 		return adjustedJCalendar1.after(adjustedJCalendar2);
+	}
+
+	public static boolean isMidnight(Calendar jCalendar) {
+		Calendar midnightJCalendar = toMidnightJCalendar(
+			(Calendar)jCalendar.clone());
+
+		if (midnightJCalendar.getTimeInMillis() ==
+				jCalendar.getTimeInMillis()) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static boolean isSameDayOfWeek(

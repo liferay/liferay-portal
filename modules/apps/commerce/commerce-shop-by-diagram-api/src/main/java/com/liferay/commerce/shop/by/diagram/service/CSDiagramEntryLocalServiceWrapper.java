@@ -256,6 +256,15 @@ public class CSDiagramEntryLocalServiceWrapper
 	}
 
 	@Override
+	public CSDiagramEntry fetchCSDiagramEntryByExternalReferenceCode(
+		String externalReferenceCode, long companyId) {
+
+		return _csDiagramEntryLocalService.
+			fetchCSDiagramEntryByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -344,6 +353,16 @@ public class CSDiagramEntryLocalServiceWrapper
 
 		return _csDiagramEntryLocalService.getCSDiagramEntry(
 			cpDefinitionId, sequence);
+	}
+
+	@Override
+	public CSDiagramEntry getCSDiagramEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _csDiagramEntryLocalService.
+			getCSDiagramEntryByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	@Override

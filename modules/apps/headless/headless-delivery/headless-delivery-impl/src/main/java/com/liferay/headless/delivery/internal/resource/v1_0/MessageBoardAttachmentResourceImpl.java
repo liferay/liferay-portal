@@ -204,7 +204,7 @@ public class MessageBoardAttachmentResourceImpl
 			{
 				setContentUrl(
 					() -> _dlURLHelper.getPreviewURL(
-						fileEntry, fileEntry.getFileVersion(), null, "", false,
+						fileEntry, fileEntry.getFileVersion(), null, "", true,
 						false));
 				setContentValue(
 					() -> ContentValueUtil.toContentValue(

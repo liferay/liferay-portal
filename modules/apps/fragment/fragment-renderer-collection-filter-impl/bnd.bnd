@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Renderer Collection Filter Implementation
 Bundle-SymbolicName: com.liferay.fragment.renderer.collection.filter.impl
-Bundle-Version: 1.0.39
+Bundle-Version: 1.0.40
 Web-ContextPath: /fragment-renderer-collection-filter-impl

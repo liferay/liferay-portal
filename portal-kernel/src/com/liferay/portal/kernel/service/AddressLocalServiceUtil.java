@@ -376,12 +376,12 @@ public class AddressLocalServiceUtil {
 			orderByComparator);
 	}
 
-	public static Address getOrAddIncompleteAddress(
+	public static Address getOrAddEmptyAddress(
 			String externalReferenceCode, long companyId, long userId,
 			String className, long classPK)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteAddress(
+		return getService().getOrAddEmptyAddress(
 			externalReferenceCode, companyId, userId, className, classPK);
 	}
 

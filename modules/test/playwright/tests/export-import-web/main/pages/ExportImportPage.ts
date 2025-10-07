@@ -7,10 +7,12 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {ProductMenuPage} from '../../../../pages/product-navigation-control-menu-web/ProductMenuPage';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {getTempDir} from '../../../../utils/temp';
 
 export class ExportImportPage {
+	readonly cancelButton: Locator;
 	readonly continueButton: Locator;
 	readonly copyAsNewRadioButton: Locator;
 	readonly deleteApplicationDataAlert: Locator;
@@ -29,13 +31,17 @@ export class ExportImportPage {
 	readonly newImportButton: Locator;
 	readonly page: Page;
 	readonly productMenuPage: ProductMenuPage;
+	readonly taskMenu: (taskName: string) => Locator;
+	readonly taskSuccessLabel: (taskName: string) => Locator;
 	readonly title: Locator;
 	readonly updateDataAlert: Locator;
 	readonly updateDataMirrorWarningLabel: Locator;
 	readonly useCurrentUserAsAuthorCheckbox: Locator;
+	readonly viewDetails: Locator;
 	readonly warningHeader: Locator;
 
 	constructor(page: Page) {
+		this.cancelButton = page.getByRole('button', {name: 'Cancel'});
 		this.continueButton = page.getByRole('button', {name: 'Continue'});
 		this.copyAsNewRadioButton = page.getByLabel('Copy as new');
 		this.deleteApplicationDataAlert = page.locator('[role="alert"]', {
@@ -68,6 +74,18 @@ export class ExportImportPage {
 		this.newImportButton = page.getByRole('link', {name: 'Import'});
 		this.page = page;
 		this.productMenuPage = new ProductMenuPage(page);
+		this.taskMenu = (taskName: string) =>
+			this.page
+				.locator('[data-qa-id="row"]', {
+					hasText: taskName,
+				})
+				.getByRole('button');
+		this.taskSuccessLabel = (taskName: string) =>
+			this.page
+				.locator('[data-qa-id="row"]', {
+					hasText: taskName,
+				})
+				.getByText('Successful');
 		this.title = page.getByPlaceholder('Enter the name of the process');
 		this.updateDataAlert = page.locator('[role="alert"]', {
 			hasText:
@@ -81,6 +99,7 @@ export class ExportImportPage {
 		this.useCurrentUserAsAuthorCheckbox = page.getByLabel(
 			'Use the Current User as Author: Assign the current user as the author of all'
 		);
+		this.viewDetails = page.getByRole('menuitem', {name: 'View Details'});
 		this.warningHeader = page.getByRole('heading', {
 			name: 'Important Info About Your Import',
 		});
@@ -93,6 +112,32 @@ export class ExportImportPage {
 
 		if (itemLabel) {
 			await this.page.getByLabel(itemLabel, {exact: true}).click();
+		}
+
+		await this.exportButton.click();
+	}
+
+	async exportAll(title: string, itemLabel?: string) {
+		await this.newExportButton.click();
+
+		await this.title.fill(title);
+
+		if (itemLabel) {
+			await this.page.getByLabel(itemLabel, {exact: true}).click();
+		}
+
+		const portletListContainer = this.page.locator(
+			'#_com_liferay_exportimport_web_portlet_ExportPortlet_selectContents .portlet-list'
+		);
+
+		await portletListContainer.waitFor();
+
+		const checkBoxes = portletListContainer.locator(
+			'input[type="checkbox"]'
+		);
+
+		for (const checkbox of await checkBoxes.all()) {
+			await checkbox.check();
 		}
 
 		await this.exportButton.click();
@@ -151,10 +196,13 @@ export class ExportImportPage {
 			)
 			.click();
 
-		await this.page
+		const utilityPages = this.page
 			.locator('#PagesContent')
-			.getByText('Utility Pages')
-			.click();
+			.getByText('Utility Pages');
+
+		if (await utilityPages.isVisible()) {
+			await utilityPages.click();
+		}
 
 		await this.page
 			.locator(
@@ -162,7 +210,12 @@ export class ExportImportPage {
 			)
 			.click();
 
-		await this.page.getByText('Comments', {exact: true}).click();
+		await this.page
+			.locator(
+				'[id="_com_liferay_exportimport_web_portlet_ImportPortlet_contentOptions"]'
+			)
+			.getByText('Comments')
+			.click();
 
 		await this.page
 			.locator(
@@ -172,6 +225,41 @@ export class ExportImportPage {
 			.click();
 
 		await this.importButton.click();
+	}
+
+	async getExportableItems() {
+		await this.newExportButton.click();
+
+		const portletListContainer = this.page.locator(
+			'#_com_liferay_exportimport_web_portlet_ExportPortlet_selectContents .portlet-list'
+		);
+
+		await portletListContainer.waitFor();
+
+		const itemsLocator = portletListContainer.locator(
+			'.custom-control-label-text:has(strong)'
+		);
+
+		const itemsMap = new Map();
+
+		for (const itemLocator of await itemsLocator.all()) {
+			const title = await itemLocator.locator('strong').textContent();
+			const countText = await itemLocator
+				.locator('.staging-taglib-checkbox-items')
+				.textContent();
+
+			const countMatch = countText ? countText.match(/\d+/) : null;
+
+			if (title && countMatch) {
+				const countAsNumber = parseInt(countMatch[0], 10);
+
+				itemsMap.set(title.trim(), countAsNumber);
+			}
+		}
+
+		await this.cancelButton.click();
+
+		return itemsMap;
 	}
 
 	async downloadExportProcess(name: string) {
@@ -202,6 +290,16 @@ export class ExportImportPage {
 		);
 	}
 
+	async goToImportDetails(exportName: string) {
+		await expect(this.taskSuccessLabel(exportName)).toBeVisible();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.viewDetails,
+			trigger: this.taskMenu(exportName),
+		});
+	}
+
 	async goToImportOptions(
 		folderPath: string,
 		siteUrl?: Site['friendlyUrlPath']
@@ -228,6 +326,15 @@ export class ExportImportPage {
 		await fileChooser.setFiles(folderPath);
 
 		await this.continueButton.click();
-		await this.page.getByText('File Summary');
+		this.page.getByText('File Summary');
+	}
+
+	async goToImportErrorDetails(externalReferenceCode: string) {
+		await this.page
+			.getByRole('row', {name: externalReferenceCode})
+			.getByLabel('view')
+			.click();
+
+		expect(this.page.getByText('Error Details').first()).toBeVisible();
 	}
 }

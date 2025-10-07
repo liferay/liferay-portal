@@ -14,11 +14,15 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalServiceUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateLayoutExternalReferenceCodeException;
 import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
+import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.MasterLayoutException;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -358,6 +362,36 @@ public class LayoutLocalServiceTest {
 			layout2,
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				_group.getGroupId(), false, friendlyURL1));
+	}
+
+	@Test
+	public void testGetOrAddEmptyLayout() throws Exception {
+
+		// Lazy referencing disabled
+
+		try {
+			_layoutLocalService.getOrAddEmptyLayout(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), _serviceContext);
+
+			Assert.fail();
+		}
+		catch (NoSuchLayoutException noSuchLayoutException) {
+			Assert.assertNotNull(noSuchLayoutException);
+		}
+
+		// Lazy referencing enabled
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			Layout layout = _layoutLocalService.getOrAddEmptyLayout(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), _serviceContext);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, layout.getStatus());
+		}
 	}
 
 	@Test
@@ -711,6 +745,51 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateLayoutWithLazyReferencingEnabled() throws Exception {
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			Layout layout = _layoutLocalService.getOrAddEmptyLayout(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), _serviceContext);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, layout.getStatus());
+
+			try {
+				layout = _layoutLocalService.updateLayout(
+					_group.getGroupId(), layout.isPrivateLayout(),
+					layout.getLayoutId(), layout.getParentLayoutId(),
+					layout.getNameMap(), layout.getTitleMap(),
+					layout.getDescriptionMap(), layout.getKeywordsMap(),
+					layout.getRobotsMap(), layout.getType(), false,
+					layout.getFriendlyURLMap(), layout.isIconImage(), null,
+					layout.getStyleBookEntryId(),
+					layout.getFaviconFileEntryId(),
+					layout.getMasterLayoutPlid(), _serviceContext);
+
+				Assert.fail();
+			}
+			catch (LayoutTypeException layoutTypeException) {
+				Assert.assertNotNull(layoutTypeException);
+			}
+
+			layout = _layoutLocalService.updateLayout(
+				_group.getGroupId(), layout.isPrivateLayout(),
+				layout.getLayoutId(), layout.getParentLayoutId(),
+				layout.getNameMap(), layout.getTitleMap(),
+				layout.getDescriptionMap(), layout.getKeywordsMap(),
+				layout.getRobotsMap(), LayoutConstants.TYPE_CONTENT, false,
+				layout.getFriendlyURLMap(), layout.isIconImage(), null,
+				layout.getStyleBookEntryId(), layout.getFaviconFileEntryId(),
+				layout.getMasterLayoutPlid(), _serviceContext);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, layout.getStatus());
+		}
+	}
+
+	@Test
 	public void testUpdateLookAndFeel() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
 
@@ -763,6 +842,97 @@ public class LayoutLocalServiceTest {
 			layout.isHidden(), layout.getFriendlyURLMap(),
 			layout.getIconImage(), null, layout.getStyleBookEntryId(),
 			layout.getFaviconFileEntryId(), layout.getPlid(), _serviceContext);
+	}
+
+	@Test
+	public void testUpdatePriority() throws Exception {
+		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		Layout layout3 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		Layout layout4 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		Layout layout5 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		_layoutLocalService.updatePriority(layout1.getPlid(), 0);
+		_layoutLocalService.updatePriority(layout2.getPlid(), 1);
+		_layoutLocalService.updatePriority(layout3.getPlid(), 2);
+		_layoutLocalService.updatePriority(layout4.getPlid(), 3);
+		_layoutLocalService.updatePriority(layout5.getPlid(), 4);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 1, layout2);
+		_testUpdatePriority(0, 2, layout3);
+		_testUpdatePriority(0, 3, layout4);
+		_testUpdatePriority(0, 4, layout5);
+
+		_layoutLocalService.updatePriority(layout4.getPlid(), 1);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 1, layout4);
+		_testUpdatePriority(0, 2, layout2);
+		_testUpdatePriority(0, 3, layout3);
+		_testUpdatePriority(0, 4, layout5);
+
+		layout5 = _layoutLocalService.updatePriority(layout5.getPlid(), 5);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 1, layout4);
+		_testUpdatePriority(0, 2, layout2);
+		_testUpdatePriority(0, 3, layout3);
+		_testUpdatePriority(0, 4, layout5);
+
+		layout3 = _layoutLocalService.updatePriority(layout3.getPlid(), -1);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 1, layout4);
+		_testUpdatePriority(0, 2, layout2);
+		_testUpdatePriority(0, 3, layout5);
+		_testUpdatePriority(0, 4, layout3);
+
+		layout2 = _layoutLocalService.updateParentLayoutId(
+			layout2.getPlid(), layout1.getPlid());
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 1, layout4);
+		_testUpdatePriority(0, 3, layout5);
+		_testUpdatePriority(0, 4, layout3);
+		_testUpdatePriority(layout1.getLayoutId(), 0, layout2);
+
+		layout4 = _layoutLocalService.updateParentLayoutId(
+			layout4.getPlid(), layout1.getPlid());
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 3, layout5);
+		_testUpdatePriority(0, 4, layout3);
+		_testUpdatePriority(layout1.getLayoutId(), 0, layout2);
+		_testUpdatePriority(layout1.getLayoutId(), 1, layout4);
+
+		layout3 = _layoutLocalService.updateParentLayoutIdAndPriority(
+			layout3.getPlid(), layout1.getPlid(), 3);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(0, 3, layout5);
+		_testUpdatePriority(layout1.getLayoutId(), 0, layout2);
+		_testUpdatePriority(layout1.getLayoutId(), 1, layout4);
+		_testUpdatePriority(layout1.getLayoutId(), 2, layout3);
+
+		layout5 = _layoutLocalService.updateParentLayoutIdAndPriority(
+			layout5.getPlid(), layout1.getPlid(), -1);
+
+		_testUpdatePriority(0, 0, layout1);
+		_testUpdatePriority(layout1.getLayoutId(), 0, layout2);
+		_testUpdatePriority(layout1.getLayoutId(), 1, layout4);
+		_testUpdatePriority(layout1.getLayoutId(), 2, layout3);
+		_testUpdatePriority(layout1.getLayoutId(), 3, layout5);
 	}
 
 	@Test
@@ -836,6 +1006,15 @@ public class LayoutLocalServiceTest {
 
 		Assert.assertEquals(
 			0, _layoutLocalService.getLayoutsCount(_group.getGroupId()));
+	}
+
+	private void _testUpdatePriority(
+		long expectedParentLayoutId, int expectedPriority, Layout layout) {
+
+		layout = _layoutLocalService.fetchLayout(layout.getPlid());
+
+		Assert.assertEquals(expectedParentLayoutId, layout.getParentLayoutId());
+		Assert.assertEquals(expectedPriority, layout.getPriority());
 	}
 
 	@Inject

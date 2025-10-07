@@ -69,42 +69,6 @@ public abstract class BaseTestrayTestFlowResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/by-testray-subtaskId/{testraySubtaskId}' -d $'{"caseResultAmount": ___, "comment": ___, "dueStatus": ___, "issues": ___, "mbMessageId": ___, "mbThreadId": ___, "subtaskAmount": ___, "userId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testraySubtaskId"
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {
-			@io.swagger.v3.oas.annotations.tags.Tag(name = "TestrayTestFlow")
-		}
-	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path(
-		"/testray-testflow/by-testray-subtaskId/{testraySubtaskId}"
-	)
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
-	@Override
-	public TestrayTestFlow putTestrayTestFlowByTestraySubtaskIdTestraySubtask(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@javax.validation.constraints.NotNull
-			@javax.ws.rs.PathParam("testraySubtaskId")
-			Long testraySubtaskId,
-			TestrayTestFlow testrayTestFlow)
-		throws Exception {
-
-		return new TestrayTestFlow();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/testray-subtask'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -201,28 +165,6 @@ public abstract class BaseTestrayTestFlowResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/testray-subtask/merge'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {
-			@io.swagger.v3.oas.annotations.tags.Tag(name = "TestrayTestFlow")
-		}
-	)
-	@javax.ws.rs.Consumes({"application/json", "application/xml"})
-	@javax.ws.rs.Path("/testray-testflow/testray-subtask/merge")
-	@javax.ws.rs.Produces({"application/json", "application/xml"})
-	@javax.ws.rs.PUT
-	@Override
-	public Page<TestraySubtask> putTestrayTestFlowTestraySubtaskMergePage(
-			TestraySubtask[] testraySubtasks)
-		throws Exception {
-
-		return Page.of(Collections.emptyList());
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/{testrayTaskId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -304,6 +246,64 @@ public abstract class BaseTestrayTestFlowResourceImpl
 			vulcanBatchEngineImportTaskResource.postImportTask(
 				TestrayTestFlow.class.getName(), callbackURL, null, object)
 		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/by-testray-subtaskId/{testraySubtaskId}' -d $'{"caseResultAmount": ___, "comment": ___, "dueStatus": ___, "issues": ___, "mbMessageId": ___, "mbThreadId": ___, "subtaskAmount": ___, "userId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "testraySubtaskId"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "TestrayTestFlow")
+		}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path(
+		"/testray-testflow/by-testray-subtaskId/{testraySubtaskId}"
+	)
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@javax.ws.rs.PUT
+	@Override
+	public TestrayTestFlow putTestrayTestFlowByTestraySubtaskIdTestraySubtask(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@javax.validation.constraints.NotNull
+			@javax.ws.rs.PathParam("testraySubtaskId")
+			Long testraySubtaskId,
+			TestrayTestFlow testrayTestFlow)
+		throws Exception {
+
+		return new TestrayTestFlow();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/testray-rest/v1.0/testray-testflow/testray-subtask/merge'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "TestrayTestFlow")
+		}
+	)
+	@javax.ws.rs.Consumes({"application/json", "application/xml"})
+	@javax.ws.rs.Path("/testray-testflow/testray-subtask/merge")
+	@javax.ws.rs.Produces({"application/json", "application/xml"})
+	@javax.ws.rs.PUT
+	@Override
+	public Page<TestraySubtask> putTestrayTestFlowTestraySubtaskMergePage(
+			TestraySubtask[] testraySubtasks)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
 	}
 
 	@Override

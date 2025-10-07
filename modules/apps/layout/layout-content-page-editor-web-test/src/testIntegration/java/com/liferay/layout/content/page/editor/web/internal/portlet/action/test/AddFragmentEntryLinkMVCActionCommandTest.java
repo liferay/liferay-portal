@@ -11,6 +11,7 @@ import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -254,7 +256,38 @@ public class AddFragmentEntryLinkMVCActionCommandTest {
 			true);
 	}
 
+	@Test
+	@TestInfo("LPD-63068")
+	public void testAddFragmentEntryLinkWithFragmentRenderer()
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest(_group.getGroupId());
+
+		mockLiferayPortletActionRequest.addParameter(
+			"fragmentEntryKey", _fragmentRenderer.getKey());
+
+		_addFragmentEntry(
+			_fragmentRenderer.getKey(), RandomTestUtil.randomString());
+
+		FragmentEntryLink fragmentEntryLink = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "addFragmentEntryLink",
+			new Class<?>[] {ActionRequest.class},
+			mockLiferayPortletActionRequest);
+
+		Assert.assertEquals(
+			_fragmentRenderer.getKey(), fragmentEntryLink.getRendererKey());
+		Assert.assertEquals(StringPool.BLANK, fragmentEntryLink.getHtml());
+	}
+
 	private FragmentEntry _addFragmentEntry(String html) throws Exception {
+		return _addFragmentEntry(RandomTestUtil.randomString(), html);
+	}
+
+	private FragmentEntry _addFragmentEntry(
+			String fragmentEntryKey, String html)
+		throws Exception {
+
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
 
@@ -265,11 +298,10 @@ public class AddFragmentEntryLinkMVCActionCommandTest {
 
 		return _fragmentEntryLocalService.addFragmentEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			fragmentCollection.getFragmentCollectionId(),
-			StringUtil.randomString(), StringUtil.randomString(),
-			RandomTestUtil.randomString(), html, RandomTestUtil.randomString(),
-			false, "{fieldSets: []}", null, 0, false, false,
-			FragmentConstants.TYPE_COMPONENT, null,
+			fragmentCollection.getFragmentCollectionId(), fragmentEntryKey,
+			StringUtil.randomString(), RandomTestUtil.randomString(), html,
+			RandomTestUtil.randomString(), false, "{fieldSets: []}", null, 0,
+			false, false, FragmentConstants.TYPE_COMPONENT, null,
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}
 
@@ -502,6 +534,11 @@ public class AddFragmentEntryLinkMVCActionCommandTest {
 
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Inject(
+		filter = "component.name=com.liferay.fragment.internal.renderer.SaveContentFragmentRenderer"
+	)
+	private FragmentRenderer _fragmentRenderer;
 
 	@DeleteAfterTestRun
 	private Group _group;

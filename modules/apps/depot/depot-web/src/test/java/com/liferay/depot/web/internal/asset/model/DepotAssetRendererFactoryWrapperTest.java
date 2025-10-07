@@ -7,12 +7,18 @@ package com.liferay.depot.web.internal.asset.model;
 
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.function.Consumer;
@@ -74,6 +80,22 @@ public class DepotAssetRendererFactoryWrapperTest {
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
 					RandomTestUtil.randomLong()));
 		}
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(-1)) {
+
+			ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
+
+			try {
+				Assert.assertSame(
+					assetRenderer,
+					depotAssetRendererFactoryWrapper.getAssetRenderer(
+						RandomTestUtil.randomLong()));
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
+		}
 	}
 
 	@Test
@@ -96,15 +118,14 @@ public class DepotAssetRendererFactoryWrapperTest {
 			depotGroupId
 		);
 
-		long groupId = _setUpGroup();
-
 		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
 			new DepotAssetRendererFactoryWrapper(
-				_assetRendererFactory, null, null, _groupLocalService, null,
-				null, _siteConnectedGroupGroupProvider);
+				_assetRendererFactory, null, _depotEntryLocalService,
+				_groupLocalService, null, null,
+				_siteConnectedGroupGroupProvider);
 
 		try (SafeCloseable safeCloseable =
-				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
+				GroupThreadLocal.setGroupIdWithSafeCloseable(_setUpGroup())) {
 
 			Assert.assertNull(
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
@@ -192,6 +213,75 @@ public class DepotAssetRendererFactoryWrapperTest {
 		}
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	public void testGetAssetRendererByDepotEntryType() throws Exception {
+		AssetRenderer<Object> assetRenderer = Mockito.mock(AssetRenderer.class);
+
+		Mockito.when(
+			_assetRendererFactory.getAssetRenderer(Mockito.anyLong())
+		).thenReturn(
+			assetRenderer
+		);
+
+		long depotGroupId = _setUpDepotGroup();
+
+		Mockito.when(
+			assetRenderer.getGroupId()
+		).thenReturn(
+			depotGroupId
+		);
+
+		DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
+
+		Mockito.when(
+			_depotEntryLocalService.getGroupDepotEntry(Mockito.anyLong())
+		).thenReturn(
+			depotEntry
+		);
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_SPACE
+		);
+
+		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
+			new DepotAssetRendererFactoryWrapper(
+				_assetRendererFactory, null, _depotEntryLocalService,
+				_groupLocalService, null, null,
+				_siteConnectedGroupGroupProvider);
+
+		long groupId = _setUpGroup();
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
+
+			Assert.assertSame(
+				assetRenderer,
+				depotAssetRendererFactoryWrapper.getAssetRenderer(
+					RandomTestUtil.randomLong()));
+		}
+
+		Mockito.when(
+			depotEntry.getType()
+		).thenReturn(
+			DepotConstants.TYPE_ASSET_LIBRARY
+		);
+
+		depotAssetRendererFactoryWrapper = new DepotAssetRendererFactoryWrapper(
+			_assetRendererFactory, null, _depotEntryLocalService,
+			_groupLocalService, null, null, _siteConnectedGroupGroupProvider);
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(groupId)) {
+
+			Assert.assertNull(
+				depotAssetRendererFactoryWrapper.getAssetRenderer(
+					RandomTestUtil.randomLong()));
+		}
+	}
+
 	private long _setUpControlPanelGroup() throws Exception {
 		return _setUpGroup(
 			group -> Mockito.when(
@@ -252,6 +342,8 @@ public class DepotAssetRendererFactoryWrapperTest {
 
 	private final AssetRendererFactory<Object> _assetRendererFactory =
 		Mockito.mock(AssetRendererFactory.class);
+	private final DepotEntryLocalService _depotEntryLocalService = Mockito.mock(
+		DepotEntryLocalService.class);
 	private final GroupLocalService _groupLocalService = Mockito.mock(
 		GroupLocalService.class);
 	private final SiteConnectedGroupGroupProvider

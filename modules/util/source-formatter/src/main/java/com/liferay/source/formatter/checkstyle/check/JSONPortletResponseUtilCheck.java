@@ -101,9 +101,7 @@ public class JSONPortletResponseUtilCheck extends BaseCheck {
 					}
 				}
 
-				if (containsVariableName(
-						firstChildDetailAST, variableName, null)) {
-
+				if (containsVariableName(firstChildDetailAST, variableName)) {
 					break;
 				}
 

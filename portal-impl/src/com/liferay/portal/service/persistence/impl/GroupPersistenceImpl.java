@@ -13691,10 +13691,19 @@ public class GroupPersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						group.getCtCollectionId())) {
 
-				if (EntityCacheUtil.getResult(
-						GroupImpl.class, group.getPrimaryKey()) == null) {
+				Group cachedGroup = (Group)EntityCacheUtil.getResult(
+					GroupImpl.class, group.getPrimaryKey());
 
+				if (cachedGroup == null) {
 					cacheResult(group);
+				}
+				else {
+					GroupModelImpl groupModelImpl = (GroupModelImpl)group;
+					GroupModelImpl cachedGroupModelImpl =
+						(GroupModelImpl)cachedGroup;
+
+					groupModelImpl.setClassName(
+						cachedGroupModelImpl.getClassName());
 				}
 			}
 		}

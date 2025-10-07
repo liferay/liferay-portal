@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Auto Tagger Web
 Bundle-SymbolicName: com.liferay.asset.auto.tagger.web
-Bundle-Version: 3.0.26
+Bundle-Version: 3.0.27
 Web-ContextPath: /asset-auto-tagger-web

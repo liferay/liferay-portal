@@ -9,4 +9,6 @@ export {default as ParentOrganization} from './ParentOrganization';
 export {default as UserNameFields} from './UserNameFields';
 export {default as ViewFlatOrganizationsAndUsersManagementToolbarPropsTransformer} from './ViewFlatOrganizationsAndUsersManagementToolbarPropsTransformer';
 export {default as ViewTreeManagementToolbarPropsTransformer} from './ViewTreeManagementToolbarPropsTransformer';
+export {default as WebdavInputCopyButton} from './WebdavInputCopyButton';
+
 export {ACTIONS} from './actions';

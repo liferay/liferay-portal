@@ -273,6 +273,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				contextAcceptLanguage.getPreferredLocale()));
 	}
 
+	private static final EntityModel _entityModel = new AccountEntityModel();
+
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AccountDTOConverter)"
 	)
@@ -302,8 +304,6 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
-
-	private final EntityModel _entityModel = new AccountEntityModel();
 
 	@Reference
 	private File _file;

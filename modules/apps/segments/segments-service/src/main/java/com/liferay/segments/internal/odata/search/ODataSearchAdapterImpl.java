@@ -28,8 +28,8 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.search.generic.MatchAllQuery;
 import com.liferay.portal.kernel.search.generic.TermRangeQueryImpl;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.Filter;
@@ -111,7 +111,7 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 		}
 
 		int indexSearchLimit = GetterUtil.getInteger(
-			_props.get(PropsKeys.INDEX_SEARCH_LIMIT));
+			PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
 		Document lastDocument = null;
 
 		Sort sort = new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false);
@@ -261,8 +261,5 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;
-
-	@Reference
-	private Props _props;
 
 }

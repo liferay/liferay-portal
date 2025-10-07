@@ -6,5 +6,5 @@
 import {State} from '../contexts/StateContext';
 
 export default function selectStructureERC(state: State) {
-	return state.erc;
+	return state.structure.erc;
 }

@@ -152,10 +152,9 @@ test.describe('Revision History tab', () => {
 		await test.step('Assert that the Revision History tab displays a list of versions in descending order', async () => {
 			const versionLabels = page.getByText('version');
 
-			await expect(versionLabels).toHaveCount(4);
+			await expect(versionLabels).toHaveCount(3);
 
 			await expect(versionLabels).toHaveText([
-				'Current Version: 4',
 				'Version 3',
 				'Version 2',
 				'Version 1',

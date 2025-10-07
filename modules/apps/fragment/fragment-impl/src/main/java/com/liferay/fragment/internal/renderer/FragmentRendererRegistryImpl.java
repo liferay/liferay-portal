@@ -125,7 +125,7 @@ public class FragmentRendererRegistryImpl implements FragmentRendererRegistry {
 					_fragmentEntryLinkLocalService.createFragmentEntryLink(0);
 
 				_fragmentEntryValidator.validateConfiguration(
-					fragmentRenderer.getConfiguration(
+					fragmentRenderer.getConfigurationJSONObject(
 						new DefaultFragmentRendererContext(fragmentEntryLink)));
 
 				return fragmentRenderer;

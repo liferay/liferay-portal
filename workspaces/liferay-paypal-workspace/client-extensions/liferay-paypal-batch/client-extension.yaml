@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-paypal-batch:
     name: Liferay Paypal Batch
-    oAuthApplicationHeadlessServer: liferay-paypal-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-paypal-batch-oahs
     type: batch
-liferay-paypal-batch-oauth-application-headless-server:
+liferay-paypal-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay PayPal Batch OAuth Application Headless Server

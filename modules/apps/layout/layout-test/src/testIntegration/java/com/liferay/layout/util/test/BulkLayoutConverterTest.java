@@ -18,7 +18,6 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -221,8 +220,8 @@ public class BulkLayoutConverterTest {
 				Assert.assertNotNull(fragmentEntryLink);
 				Assert.assertTrue(fragmentEntryLink.isTypePortlet());
 
-				JSONObject jsonObject = _jsonFactory.createJSONObject(
-					fragmentEntryLink.getEditableValues());
+				JSONObject jsonObject =
+					fragmentEntryLink.getEditableValuesJSONObject();
 
 				Assert.assertEquals(
 					AssetPublisherPortletKeys.ASSET_PUBLISHER,
@@ -425,9 +424,6 @@ public class BulkLayoutConverterTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@Inject
-	private JSONFactory _jsonFactory;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;

@@ -65,6 +65,7 @@ public class DDMStructureIndexTypeUpgradeProcess extends UpgradeProcess {
 				}
 
 				preparedStatement2.executeBatch();
+
 				preparedStatement3.executeBatch();
 			}
 		}

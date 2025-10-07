@@ -8,9 +8,11 @@ import {Locator, Page} from '@playwright/test';
 export class ProcessMetricsPage {
 	readonly page: Page;
 	readonly viewAllAssigneesButton: Locator;
+	readonly viewAllStepsButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.viewAllAssigneesButton = this.page.getByText('View All Assignees');
+		this.viewAllStepsButton = this.page.getByText('View All Steps');
 	}
 }

@@ -86,7 +86,7 @@ export default function ({formId, initialKeywords, retainFacetSelections}) {
 			const keywords = getKeywords();
 			const searchURL = form.action;
 
-			let queryString = updateQueryString(document.location.search);
+			let queryString = updateQueryString(window.location.search);
 
 			/*
 			 * Refer to LPD-19994 for acceptance criteria regarding
@@ -102,7 +102,7 @@ export default function ({formId, initialKeywords, retainFacetSelections}) {
 				queryString = FacetUtil.removeAllFacetParameters(queryString);
 			}
 
-			document.location.href = searchURL + queryString;
+			Liferay.Util.navigate(searchURL + queryString);
 		}
 	}
 

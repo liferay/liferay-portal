@@ -573,20 +573,24 @@ describe('ExperienceToolbarSection', () => {
 
 		await waitFor(() => expect(serviceFetch).toHaveBeenCalledTimes(2));
 
-		expect(serviceFetch).toHaveBeenCalledWith(
-			expect.stringContaining(MOCK_CREATE_URL),
-			expect.objectContaining({
-				body: expect.objectContaining({
-					name: 'New Experience #1',
-					segmentsEntryId: 'test-segment-id-00',
-				}),
-			})
+		await waitFor(() =>
+			expect(serviceFetch).toHaveBeenCalledWith(
+				expect.stringContaining(MOCK_CREATE_URL),
+				expect.objectContaining({
+					body: expect.objectContaining({
+						name: 'New Experience #1',
+						segmentsEntryId: 'test-segment-id-00',
+					}),
+				})
+			)
 		);
 
-		expect(mockDispatch).toHaveBeenCalledWith(
-			expect.objectContaining({
-				type: CREATE_SEGMENTS_EXPERIENCE,
-			})
+		await waitFor(() =>
+			expect(mockDispatch).toHaveBeenCalledWith(
+				expect.objectContaining({
+					type: CREATE_SEGMENTS_EXPERIENCE,
+				})
+			)
 		);
 
 		await findByRole('list');
@@ -594,6 +598,7 @@ describe('ExperienceToolbarSection', () => {
 		dropdownElement = document.querySelector(
 			'.page-editor__toolbar-experience__dropdown-menu'
 		);
+
 		await waitFor(() => expect(dropdownElement).toBeInTheDocument());
 	});
 

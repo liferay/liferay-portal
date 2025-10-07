@@ -9,7 +9,6 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -42,7 +41,8 @@ public class JarUtil {
 		}
 
 		try (InputStream inputStream = Files.newInputStream(path)) {
-			String digest = DigesterUtil.digestHex(Digester.SHA_1, inputStream);
+			String digest = DigesterUtil.digestHex(
+				DigesterUtil.SHA_1, inputStream);
 
 			if (!StringUtil.equalsIgnoreCase(sha1, digest)) {
 				throw new Exception(

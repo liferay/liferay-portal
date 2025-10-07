@@ -1,0 +1,35 @@
+{{- if .Values.createClusterResources -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    labels:
+    {{- include "liferayAWSBackupRestore.labels" . | nindent 8 }}
+    name: {{ include "liferayAWSBackupRestore.name" . }}
+rules:
+    -   apiGroups: [""]
+        resources: ["namespaces"]
+        verbs:
+            -   get
+            -   list
+    -   apiGroups: [""]
+        resourceNames: [{{ .Values.liferayWorkload.managedSecretName }}]
+        resources: ["secrets"]
+        verbs:
+            -   create
+            -   get
+            -   patch
+            -   update
+    -   apiGroups: ["apps"]
+        resourceNames: [{{ .Values.liferayWorkload.name }}]
+        resources: ["statefulsets"]
+        verbs:
+            -   get
+            -   list
+            -   patch
+            -   watch
+    -   apiGroups: ["argoproj.io"]
+        resources: ["workflowtaskresults"]
+        verbs:
+            -   create
+            -   patch
+{{- end }}

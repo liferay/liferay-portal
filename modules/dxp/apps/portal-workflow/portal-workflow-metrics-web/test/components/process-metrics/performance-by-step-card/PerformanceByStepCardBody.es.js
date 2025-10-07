@@ -56,8 +56,9 @@ describe('The performance by step body component should', () => {
 		);
 		const renderResult = render(
 			<PerformanceByStepCard.Body
-				{...{items, totalCount: items.length}}
+				items={items}
 				processId={123456}
+				totalCount={items.length}
 			/>,
 			{wrapper}
 		);

@@ -78,6 +78,8 @@ public class LayoutImplTest {
 			_addThemeSettingProperty(
 				key, layoutSet.getSettingsProperties(), value));
 
+		_layout = _layoutLocalService.fetchLayout(_layout.getPlid());
+
 		Assert.assertEquals(value, _layout.getThemeSetting(key, "regular"));
 
 		_layout = _layoutLocalService.updateLookAndFeel(

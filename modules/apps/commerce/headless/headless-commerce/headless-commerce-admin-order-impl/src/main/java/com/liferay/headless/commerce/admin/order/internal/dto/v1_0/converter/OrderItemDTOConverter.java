@@ -135,6 +135,7 @@ public class OrderItemDTOConverter
 				setPriceManuallyAdjusted(
 					commerceOrderItem::isPriceManuallyAdjusted);
 				setPrintedNote(commerceOrderItem::getPrintedNote);
+				setProductId(commerceOrderItem::getCProductId);
 				setPromoPrice(commerceOrderItem::getPromoPrice);
 				setPromoPriceWithTaxAmount(
 					commerceOrderItem::getPromoPriceWithTaxAmount);

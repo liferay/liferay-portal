@@ -25,12 +25,12 @@ function renderComponent() {
 }
 
 describe('GlobalContext', () => {
-	it('load iframe correctly if the content has a div with content id', async () => {
+	it('load iframe correctly if the content has a div with master-layout-wrapper id', async () => {
 		const iframe = renderComponent();
 
 		iframe.contentWindow.document.open();
 		iframe.contentWindow.document.write(
-			'<html><head></head><body><div id="content"></div></body></html>'
+			'<html><head></head><body><div id="master-layout-wrapper"></div></body></html>'
 		);
 
 		await act(async () => {

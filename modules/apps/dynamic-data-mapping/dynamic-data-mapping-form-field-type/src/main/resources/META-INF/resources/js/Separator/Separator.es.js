@@ -22,7 +22,11 @@ const Separator = ({name, style, ...otherProps}) => {
 	}, [style]);
 
 	return (
-		<FieldBase name={name} {...otherProps}>
+		<FieldBase
+			{...otherProps}
+			editOnlyInDefaultLanguage={false}
+			name={name}
+		>
 			<hr className="separator" ref={elRef} />
 
 			<input name={name} type="hidden" />

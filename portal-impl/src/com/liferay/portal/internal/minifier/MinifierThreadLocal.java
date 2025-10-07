@@ -6,7 +6,7 @@
 package com.liferay.portal.internal.minifier;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.Closeable;
 

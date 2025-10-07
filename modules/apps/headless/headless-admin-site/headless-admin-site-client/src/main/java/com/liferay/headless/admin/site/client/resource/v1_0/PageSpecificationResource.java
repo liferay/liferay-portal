@@ -33,127 +33,115 @@ public interface PageSpecificationResource {
 		return new Builder();
 	}
 
-	public void deleteSiteSiteByExternalReferenceCodePageSpecification(
+	public void deleteSitePageSpecification(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse deleteSitePageSpecificationHttpResponse(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageSpecification>
+			getSiteDisplayPageTemplatePageSpecificationsPage(
+				String siteExternalReferenceCode,
+				String displayPageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSiteDisplayPageTemplatePageSpecificationsPageHttpResponse(
+				String siteExternalReferenceCode,
+				String displayPageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageSpecification> getSiteMasterPagePageSpecificationsPage(
+			String siteExternalReferenceCode,
+			String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSiteMasterPagePageSpecificationsPageHttpResponse(
+				String siteExternalReferenceCode,
+				String masterPageExternalReferenceCode)
+		throws Exception;
+
+	public PageSpecification getSitePageSpecification(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse getSitePageSpecificationHttpResponse(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageSpecification> getSitePageTemplatePageSpecificationsPage(
+			String siteExternalReferenceCode,
+			String pageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSitePageTemplatePageSpecificationsPageHttpResponse(
+				String siteExternalReferenceCode,
+				String pageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSiteSitePagePageSpecificationsPageHttpResponse(
+				String siteExternalReferenceCode,
+				String sitePageExternalReferenceCode)
+		throws Exception;
+
+	public Page<PageSpecification> getSiteUtilityPagePageSpecificationsPage(
+			String siteExternalReferenceCode,
+			String utilityPageExternalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getSiteUtilityPagePageSpecificationsPageHttpResponse(
+				String siteExternalReferenceCode,
+				String utilityPageExternalReferenceCode)
+		throws Exception;
+
+	public PageSpecification patchSitePageSpecification(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode,
+			PageSpecification pageSpecification)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse patchSitePageSpecificationHttpResponse(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode,
+			PageSpecification pageSpecification)
+		throws Exception;
+
+	public PageSpecification postSitePageSpecificationPublish(
 			String siteExternalReferenceCode,
 			String pageSpecificationExternalReferenceCode)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			deleteSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
+			postSitePageSpecificationPublishHttpResponse(
 				String siteExternalReferenceCode,
 				String pageSpecificationExternalReferenceCode)
 		throws Exception;
 
-	public Page<PageSpecification>
-			getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPage(
-				String siteExternalReferenceCode,
-				String displayPageTemplateExternalReferenceCode)
+	public PageSpecification putSitePageSpecification(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode,
+			PageSpecification pageSpecification)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String displayPageTemplateExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification>
-			getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPage(
-				String siteExternalReferenceCode,
-				String masterPageExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String masterPageExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification
-			getSiteSiteByExternalReferenceCodePageSpecification(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification>
-			getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPage(
-				String siteExternalReferenceCode,
-				String pageTemplateExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String pageTemplateExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification>
-			getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPage(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode)
-		throws Exception;
-
-	public Page<PageSpecification>
-			getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPage(
-				String siteExternalReferenceCode,
-				String utilityPageExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPageHttpResponse(
-				String siteExternalReferenceCode,
-				String utilityPageExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification
-			patchSiteSiteByExternalReferenceCodePageSpecification(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode,
-				PageSpecification pageSpecification)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			patchSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode,
-				PageSpecification pageSpecification)
-		throws Exception;
-
-	public PageSpecification
-			postSiteSiteByExternalReferenceCodePageSpecificationPublish(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			postSiteSiteByExternalReferenceCodePageSpecificationPublishHttpResponse(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode)
-		throws Exception;
-
-	public PageSpecification
-			putSiteSiteByExternalReferenceCodePageSpecification(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode,
-				PageSpecification pageSpecification)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			putSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-				String siteExternalReferenceCode,
-				String pageSpecificationExternalReferenceCode,
-				PageSpecification pageSpecification)
+	public HttpInvoker.HttpResponse putSitePageSpecificationHttpResponse(
+			String siteExternalReferenceCode,
+			String pageSpecificationExternalReferenceCode,
+			PageSpecification pageSpecification)
 		throws Exception;
 
 	public static class Builder {
@@ -265,13 +253,13 @@ public interface PageSpecificationResource {
 	public static class PageSpecificationResourceImpl
 		implements PageSpecificationResource {
 
-		public void deleteSiteSiteByExternalReferenceCodePageSpecification(
+		public void deleteSitePageSpecification(
 				String siteExternalReferenceCode,
 				String pageSpecificationExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				deleteSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
+				deleteSitePageSpecificationHttpResponse(
 					siteExternalReferenceCode,
 					pageSpecificationExternalReferenceCode);
 
@@ -334,10 +322,9 @@ public interface PageSpecificationResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				deleteSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode)
+		public HttpInvoker.HttpResponse deleteSitePageSpecificationHttpResponse(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -381,13 +368,13 @@ public interface PageSpecificationResource {
 		}
 
 		public Page<PageSpecification>
-				getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPage(
+				getSiteDisplayPageTemplatePageSpecificationsPage(
 					String siteExternalReferenceCode,
 					String displayPageTemplateExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPageHttpResponse(
+				getSiteDisplayPageTemplatePageSpecificationsPageHttpResponse(
 					siteExternalReferenceCode,
 					displayPageTemplateExternalReferenceCode);
 
@@ -451,7 +438,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodeDisplayPageTemplatePageSpecificationsPageHttpResponse(
+				getSiteDisplayPageTemplatePageSpecificationsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String displayPageTemplateExternalReferenceCode)
 			throws Exception {
@@ -496,14 +483,13 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<PageSpecification>
-				getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPage(
-					String siteExternalReferenceCode,
-					String masterPageExternalReferenceCode)
+		public Page<PageSpecification> getSiteMasterPagePageSpecificationsPage(
+				String siteExternalReferenceCode,
+				String masterPageExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPageHttpResponse(
+				getSiteMasterPagePageSpecificationsPageHttpResponse(
 					siteExternalReferenceCode, masterPageExternalReferenceCode);
 
 			String content = httpResponse.getContent();
@@ -566,7 +552,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodeMasterPagePageSpecificationsPageHttpResponse(
+				getSiteMasterPagePageSpecificationsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String masterPageExternalReferenceCode)
 			throws Exception {
@@ -611,14 +597,13 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageSpecification
-				getSiteSiteByExternalReferenceCodePageSpecification(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode)
+		public PageSpecification getSitePageSpecification(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
+				getSitePageSpecificationHttpResponse(
 					siteExternalReferenceCode,
 					pageSpecificationExternalReferenceCode);
 
@@ -681,10 +666,9 @@ public interface PageSpecificationResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode)
+		public HttpInvoker.HttpResponse getSitePageSpecificationHttpResponse(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -728,13 +712,13 @@ public interface PageSpecificationResource {
 		}
 
 		public Page<PageSpecification>
-				getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPage(
+				getSitePageTemplatePageSpecificationsPage(
 					String siteExternalReferenceCode,
 					String pageTemplateExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPageHttpResponse(
+				getSitePageTemplatePageSpecificationsPageHttpResponse(
 					siteExternalReferenceCode,
 					pageTemplateExternalReferenceCode);
 
@@ -798,7 +782,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodePageTemplatePageSpecificationsPageHttpResponse(
+				getSitePageTemplatePageSpecificationsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String pageTemplateExternalReferenceCode)
 			throws Exception {
@@ -843,14 +827,13 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<PageSpecification>
-				getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPage(
-					String siteExternalReferenceCode,
-					String sitePageExternalReferenceCode)
+		public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
+				String siteExternalReferenceCode,
+				String sitePageExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPageHttpResponse(
+				getSiteSitePagePageSpecificationsPageHttpResponse(
 					siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 			String content = httpResponse.getContent();
@@ -913,7 +896,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodeSitePagePageSpecificationsPageHttpResponse(
+				getSiteSitePagePageSpecificationsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String sitePageExternalReferenceCode)
 			throws Exception {
@@ -957,14 +940,13 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<PageSpecification>
-				getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPage(
-					String siteExternalReferenceCode,
-					String utilityPageExternalReferenceCode)
+		public Page<PageSpecification> getSiteUtilityPagePageSpecificationsPage(
+				String siteExternalReferenceCode,
+				String utilityPageExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPageHttpResponse(
+				getSiteUtilityPagePageSpecificationsPageHttpResponse(
 					siteExternalReferenceCode,
 					utilityPageExternalReferenceCode);
 
@@ -1028,7 +1010,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getSiteSiteByExternalReferenceCodeUtilityPagePageSpecificationsPageHttpResponse(
+				getSiteUtilityPagePageSpecificationsPageHttpResponse(
 					String siteExternalReferenceCode,
 					String utilityPageExternalReferenceCode)
 			throws Exception {
@@ -1073,15 +1055,14 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageSpecification
-				patchSiteSiteByExternalReferenceCodePageSpecification(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode,
-					PageSpecification pageSpecification)
+		public PageSpecification patchSitePageSpecification(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode,
+				PageSpecification pageSpecification)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				patchSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
+				patchSitePageSpecificationHttpResponse(
 					siteExternalReferenceCode,
 					pageSpecificationExternalReferenceCode, pageSpecification);
 
@@ -1144,11 +1125,10 @@ public interface PageSpecificationResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				patchSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode,
-					PageSpecification pageSpecification)
+		public HttpInvoker.HttpResponse patchSitePageSpecificationHttpResponse(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode,
+				PageSpecification pageSpecification)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1193,14 +1173,13 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageSpecification
-				postSiteSiteByExternalReferenceCodePageSpecificationPublish(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode)
+		public PageSpecification postSitePageSpecificationPublish(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postSiteSiteByExternalReferenceCodePageSpecificationPublishHttpResponse(
+				postSitePageSpecificationPublishHttpResponse(
 					siteExternalReferenceCode,
 					pageSpecificationExternalReferenceCode);
 
@@ -1264,7 +1243,7 @@ public interface PageSpecificationResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postSiteSiteByExternalReferenceCodePageSpecificationPublishHttpResponse(
+				postSitePageSpecificationPublishHttpResponse(
 					String siteExternalReferenceCode,
 					String pageSpecificationExternalReferenceCode)
 			throws Exception {
@@ -1311,15 +1290,14 @@ public interface PageSpecificationResource {
 			return httpInvoker.invoke();
 		}
 
-		public PageSpecification
-				putSiteSiteByExternalReferenceCodePageSpecification(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode,
-					PageSpecification pageSpecification)
+		public PageSpecification putSitePageSpecification(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode,
+				PageSpecification pageSpecification)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				putSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
+				putSitePageSpecificationHttpResponse(
 					siteExternalReferenceCode,
 					pageSpecificationExternalReferenceCode, pageSpecification);
 
@@ -1382,11 +1360,10 @@ public interface PageSpecificationResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				putSiteSiteByExternalReferenceCodePageSpecificationHttpResponse(
-					String siteExternalReferenceCode,
-					String pageSpecificationExternalReferenceCode,
-					PageSpecification pageSpecification)
+		public HttpInvoker.HttpResponse putSitePageSpecificationHttpResponse(
+				String siteExternalReferenceCode,
+				String pageSpecificationExternalReferenceCode,
+				PageSpecification pageSpecification)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();

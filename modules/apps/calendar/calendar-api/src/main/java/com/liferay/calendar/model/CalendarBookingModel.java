@@ -8,6 +8,7 @@ package com.liferay.calendar.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.LocalizedModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
@@ -36,8 +37,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CalendarBookingModel
 	extends BaseModel<CalendarBooking>, CTModel<CalendarBooking>,
-			LocalizedModel, MVCCModel, ShardedModel, StagedGroupedModel,
-			TrashedModel, WorkflowedModel {
+			ExternalReferenceCodeModel, LocalizedModel, MVCCModel, ShardedModel,
+			StagedGroupedModel, TrashedModel, WorkflowedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -109,6 +110,23 @@ public interface CalendarBookingModel
 	 */
 	@Override
 	public void setUuid(String uuid);
+
+	/**
+	 * Returns the external reference code of this calendar booking.
+	 *
+	 * @return the external reference code of this calendar booking
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this calendar booking.
+	 *
+	 * @param externalReferenceCode the external reference code of this calendar booking
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the calendar booking ID of this calendar booking.

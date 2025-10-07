@@ -15,8 +15,8 @@ ViewCategoryUsagesDisplayContext viewCategoryUsagesDisplayContext = (ViewCategor
 	<div class="categorization-section">
 		<div>
 			<react:component
-				module="{CategorizationBreadcrumb} from site-cms-site-initializer"
-				props="<%= viewCategoryUsagesDisplayContext.getBreadcrumbReactData() %>"
+				module="{Breadcrumb} from site-cms-site-initializer"
+				props="<%= viewCategoryUsagesDisplayContext.getBreadcrumbProps() %>"
 			/>
 		</div>
 

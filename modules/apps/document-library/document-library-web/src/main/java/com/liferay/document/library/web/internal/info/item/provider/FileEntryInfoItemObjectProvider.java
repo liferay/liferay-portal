@@ -5,15 +5,17 @@
 
 package com.liferay.document.library.web.internal.info.item.provider;
 
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.GroupUrlTitleInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
+import com.liferay.info.item.provider.BaseInfoItemObjectProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.repository.LocalRepository;
-import com.liferay.portal.kernel.repository.RepositoryProvider;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -25,58 +27,52 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"info.item.identifier=com.liferay.info.item.ClassPKInfoItemIdentifier",
+		"info.item.identifier=com.liferay.info.item.ERCInfoItemIdentifier",
 		"info.item.identifier=com.liferay.info.item.GroupUrlTitleInfoItemIdentifier",
+		"item.class.name=com.liferay.portal.kernel.repository.model.FileEntry",
 		"service.ranking:Integer=100"
 	},
 	service = InfoItemObjectProvider.class
 )
 public class FileEntryInfoItemObjectProvider
-	implements InfoItemObjectProvider<FileEntry> {
+	extends BaseInfoItemObjectProvider<FileEntry> {
 
 	@Override
-	public FileEntry getInfoItem(InfoItemIdentifier infoItemIdentifier)
+	protected FileEntry doGetInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
 		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
+			!(infoItemIdentifier instanceof ERCInfoItemIdentifier) &&
 			!(infoItemIdentifier instanceof GroupUrlTitleInfoItemIdentifier)) {
 
 			throw new NoSuchInfoItemException(
 				"Unsupported info item identifier " + infoItemIdentifier);
 		}
 
-		long classPK = 0;
+		try {
+			if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
+				ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
+					(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
-		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
-			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
-				(ClassPKInfoItemIdentifier)infoItemIdentifier;
+				return _dlAppLocalService.fetchFileEntry(
+					classPKInfoItemIdentifier.getClassPK());
+			}
 
-			classPK = classPKInfoItemIdentifier.getClassPK();
-		}
-		else if (infoItemIdentifier instanceof
-					GroupUrlTitleInfoItemIdentifier) {
+			if (infoItemIdentifier instanceof ERCInfoItemIdentifier) {
+				ERCInfoItemIdentifier ercInfoItemIdentifier =
+					(ERCInfoItemIdentifier)infoItemIdentifier;
+
+				return _dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+					groupId, ercInfoItemIdentifier.getExternalReferenceCode());
+			}
 
 			GroupUrlTitleInfoItemIdentifier groupURLTitleInfoItemIdentifier =
 				(GroupUrlTitleInfoItemIdentifier)infoItemIdentifier;
 
-			classPK = Long.valueOf(
-				groupURLTitleInfoItemIdentifier.getUrlTitle());
-		}
-
-		try {
-			LocalRepository localRepository =
-				_repositoryProvider.fetchFileEntryLocalRepository(classPK);
-
-			if (localRepository == null) {
-				return null;
-			}
-
-			FileEntry fileEntry = localRepository.getFileEntry(classPK);
-
-			if (fileEntry.isInTrash()) {
-				return null;
-			}
-
-			return fileEntry;
+			return _dlAppLocalService.fetchFileEntry(
+				GetterUtil.getLong(
+					groupURLTitleInfoItemIdentifier.getUrlTitle()));
 		}
 		catch (PortalException portalException) {
 			throw new NoSuchInfoItemException(
@@ -87,6 +83,6 @@ public class FileEntryInfoItemObjectProvider
 	}
 
 	@Reference
-	private RepositoryProvider _repositoryProvider;
+	private DLAppLocalService _dlAppLocalService;
 
 }

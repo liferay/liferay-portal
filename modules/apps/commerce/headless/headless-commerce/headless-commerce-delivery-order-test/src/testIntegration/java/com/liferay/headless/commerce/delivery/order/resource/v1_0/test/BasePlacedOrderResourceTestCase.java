@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -50,7 +51,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -2725,6 +2725,14 @@ public abstract class BasePlacedOrderResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("authorId", additionalAssertFieldName)) {
+				if (placedOrder.getAuthorId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("channelId", additionalAssertFieldName)) {
 				if (placedOrder.getChannelId() == null) {
 					valid = false;
@@ -3127,6 +3135,10 @@ public abstract class BasePlacedOrderResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
+
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.commerce.delivery.order.dto.v1_0.
@@ -3223,6 +3235,17 @@ public abstract class BasePlacedOrderResourceTestCase {
 			if (Objects.equals("author", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						placedOrder1.getAuthor(), placedOrder2.getAuthor())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("authorId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						placedOrder1.getAuthorId(),
+						placedOrder2.getAuthorId())) {
 
 					return false;
 				}
@@ -3903,6 +3926,11 @@ public abstract class BasePlacedOrderResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("authorId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("channelId")) {
@@ -4907,6 +4935,7 @@ public abstract class BasePlacedOrderResourceTestCase {
 				account = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				accountId = RandomTestUtil.randomLong();
 				author = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				authorId = RandomTestUtil.randomLong();
 				channelId = RandomTestUtil.randomLong();
 				couponCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());

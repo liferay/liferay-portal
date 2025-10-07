@@ -79,6 +79,7 @@ public class CProductUpgradeProcess extends UpgradeProcess {
 			}
 
 			preparedStatement1.executeBatch();
+
 			preparedStatement2.executeBatch();
 		}
 	}

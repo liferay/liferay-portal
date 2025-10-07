@@ -11,12 +11,10 @@ import {useOutletContext} from 'react-router-dom';
 import useSWR from 'swr';
 
 import ExternalLink from '../../../../../../components/ExternalLink';
+import {MarketplaceCategories} from '../../../../../../enums/Categories';
 import {LearnLinks} from '../../../../../../enums/Learn';
 import {OrderTypes} from '../../../../../../enums/Order';
-import {
-	ProductCategories,
-	ProductSpecificationKey,
-} from '../../../../../../enums/Product';
+import {ProductSpecificationKey} from '../../../../../../enums/Product';
 import useGetProductByOrderId from '../../../../../../hooks/useGetProductByOrderId';
 import i18n from '../../../../../../i18n';
 import {Liferay} from '../../../../../../liferay/liferay';
@@ -123,7 +121,7 @@ const Download = () => {
 					'Liferay Portal ' +
 						getProductCategoriesByVocabularyName(
 							outletContext?.product?.categories || [],
-							ProductCategories.MARKETPLACE_LIFERAY_VERSION
+							MarketplaceCategories.MARKETPLACE_LIFERAY_VERSION
 						)
 							.map((versionName) => versionName)
 							.join(', '),

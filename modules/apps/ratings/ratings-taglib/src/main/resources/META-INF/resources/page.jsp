@@ -163,7 +163,7 @@ String type = GetterUtil.getString((String)request.getAttribute("liferay-ratings
 	</c:choose>
 
 	<react:component
-		module="{Ratings} from ratings-taglib"
+		module="{BaseRatings} from ratings-taglib"
 		props='<%= (Map<String, Object>)request.getAttribute("liferay-ratings:ratings:data") %>'
 	/>
 </div>

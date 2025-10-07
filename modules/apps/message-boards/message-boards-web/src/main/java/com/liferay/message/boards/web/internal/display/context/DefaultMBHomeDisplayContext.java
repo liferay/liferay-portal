@@ -33,7 +33,8 @@ public class DefaultMBHomeDisplayContext implements MBHomeDisplayContext {
 		MBCategory category = _mbRequestHelper.getCategory();
 
 		if (category == null) {
-			return "add-category";
+			return LanguageUtil.get(
+				_mbRequestHelper.getRequest(), "add-category[message-board]");
 		}
 
 		return LanguageUtil.format(

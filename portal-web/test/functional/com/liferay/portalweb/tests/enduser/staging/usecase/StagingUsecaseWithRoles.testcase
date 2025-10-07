@@ -401,6 +401,8 @@ definition {
 		PagesAdmin.viewPageItemPresent(pageName = "Test Page Name");
 	}
 
+	@description = "Ignored due to LPD-66917"
+	@ignore = "true"
 	@priority = 3
 	test StagingDemoLocalLive4 {
 		property test.liferay.virtual.instance = "false";

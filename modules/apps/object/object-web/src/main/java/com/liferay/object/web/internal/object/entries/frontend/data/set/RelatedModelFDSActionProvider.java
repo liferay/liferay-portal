@@ -207,6 +207,20 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 			_portal.getCurrentURL(httpServletRequest)
 		).setParameter(
 			"externalReferenceCode", objectEntry.getExternalReferenceCode()
+		).setParameter(
+			"objectRelationshipId",
+			ParamUtil.getLong(httpServletRequest, "objectRelationshipId")
+		).setParameter(
+			"parentObjectEntryERC",
+			() -> {
+				long objectEntryId = ParamUtil.getLong(
+					httpServletRequest, "objectEntryId");
+
+				ObjectEntry parentObjectEntry =
+					_objectEntryLocalService.getObjectEntry(objectEntryId);
+
+				return parentObjectEntry.getExternalReferenceCode();
+			}
 		).buildPortletURL();
 	}
 

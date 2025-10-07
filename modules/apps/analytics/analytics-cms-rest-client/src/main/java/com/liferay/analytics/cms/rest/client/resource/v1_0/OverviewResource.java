@@ -33,23 +33,23 @@ public interface OverviewResource {
 	}
 
 	public Overview getContentOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getContentOverviewHttpResponse(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public Overview getFileOverview(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getFileOverviewHttpResponse(
-			String languageId, String rangeEnd, Integer rangeKey,
-			String rangeStart, Long spaceId)
+			Long depotEntryId, String languageId, String rangeEnd,
+			Integer rangeKey, String rangeStart)
 		throws Exception;
 
 	public static class Builder {
@@ -161,13 +161,13 @@ public interface OverviewResource {
 	public static class OverviewResourceImpl implements OverviewResource {
 
 		public Overview getContentOverview(
-				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Long spaceId)
+				Long depotEntryId, String languageId, String rangeEnd,
+				Integer rangeKey, String rangeStart)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getContentOverviewHttpResponse(
-					languageId, rangeEnd, rangeKey, rangeStart, spaceId);
+					depotEntryId, languageId, rangeEnd, rangeKey, rangeStart);
 
 			String content = httpResponse.getContent();
 
@@ -229,8 +229,8 @@ public interface OverviewResource {
 		}
 
 		public HttpInvoker.HttpResponse getContentOverviewHttpResponse(
-				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Long spaceId)
+				Long depotEntryId, String languageId, String rangeEnd,
+				Integer rangeKey, String rangeStart)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -254,6 +254,11 @@ public interface OverviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
+			if (depotEntryId != null) {
+				httpInvoker.parameter(
+					"depotEntryId", String.valueOf(depotEntryId));
+			}
+
 			if (languageId != null) {
 				httpInvoker.parameter("languageId", String.valueOf(languageId));
 			}
@@ -270,10 +275,6 @@ public interface OverviewResource {
 				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
 			}
 
-			if (spaceId != null) {
-				httpInvoker.parameter("spaceId", String.valueOf(spaceId));
-			}
-
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -288,12 +289,12 @@ public interface OverviewResource {
 		}
 
 		public Overview getFileOverview(
-				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Long spaceId)
+				Long depotEntryId, String languageId, String rangeEnd,
+				Integer rangeKey, String rangeStart)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse = getFileOverviewHttpResponse(
-				languageId, rangeEnd, rangeKey, rangeStart, spaceId);
+				depotEntryId, languageId, rangeEnd, rangeKey, rangeStart);
 
 			String content = httpResponse.getContent();
 
@@ -355,8 +356,8 @@ public interface OverviewResource {
 		}
 
 		public HttpInvoker.HttpResponse getFileOverviewHttpResponse(
-				String languageId, String rangeEnd, Integer rangeKey,
-				String rangeStart, Long spaceId)
+				Long depotEntryId, String languageId, String rangeEnd,
+				Integer rangeKey, String rangeStart)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -380,6 +381,11 @@ public interface OverviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
+			if (depotEntryId != null) {
+				httpInvoker.parameter(
+					"depotEntryId", String.valueOf(depotEntryId));
+			}
+
 			if (languageId != null) {
 				httpInvoker.parameter("languageId", String.valueOf(languageId));
 			}
@@ -394,10 +400,6 @@ public interface OverviewResource {
 
 			if (rangeStart != null) {
 				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
-			}
-
-			if (spaceId != null) {
-				httpInvoker.parameter("spaceId", String.valueOf(spaceId));
 			}
 
 			httpInvoker.path(

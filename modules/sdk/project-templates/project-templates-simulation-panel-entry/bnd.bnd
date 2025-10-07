@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay panel app module project that customizes Liferay Portal's Simulation Menu.
 Bundle-Name: Liferay Project Templates Simulation Panel Entry
 Bundle-SymbolicName: com.liferay.project.templates.simulation.panel.entry
-Bundle-Version: 1.0.198
+Bundle-Version: 1.0.200
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

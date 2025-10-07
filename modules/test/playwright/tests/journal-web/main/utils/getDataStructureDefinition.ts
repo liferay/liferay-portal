@@ -10,7 +10,12 @@ interface Props {
 }
 
 interface Field {
-	fieldType?: 'journal_article' | 'select' | 'text';
+	fieldType?:
+		| 'document_library'
+		| 'image'
+		| 'journal_article'
+		| 'select'
+		| 'text';
 	localizable?: boolean;
 	name: string;
 	options?: Options;

@@ -52,7 +52,7 @@ public class NumericDDMFormFieldValueLocalizer
 
 			Number number = null;
 
-			if (value.indexOf(StringPool.PERIOD) != -1) {
+			if (value.contains(StringPool.PERIOD)) {
 				number = GetterUtil.getNumber(
 					defaultDecimalFormat.parse(value));
 			}
@@ -62,28 +62,29 @@ public class NumericDDMFormFieldValueLocalizer
 
 			String formattedNumber = decimalFormat.format(number);
 
-			if (!value.equals(formattedNumber)) {
-				number = defaultDecimalFormat.parse(value);
+			if (value.equals(formattedNumber)) {
+				return formattedNumber;
+			}
 
-				formattedNumber = decimalFormat.format(number);
+			number = defaultDecimalFormat.parse(value);
 
-				if (isEditingFieldValue() && _endsWithDecimalSeparator(value)) {
-					formattedNumber = formattedNumber.concat(
-						String.valueOf(value.charAt(value.length() - 1)));
-				}
-				else if (!NumberUtil.hasDecimalSeparator(formattedNumber) &&
-						 NumberUtil.hasDecimalSeparator(value) &&
-						 !_endsWithDecimalSeparator(value)) {
+			formattedNumber = decimalFormat.format(number);
 
-					DecimalFormatSymbols decimalFormatSymbols =
-						decimalFormat.getDecimalFormatSymbols();
+			if (isEditingFieldValue() && _endsWithDecimalSeparator(value)) {
+				return formattedNumber.concat(
+					String.valueOf(value.charAt(value.length() - 1)));
+			}
+			else if (!NumberUtil.hasDecimalSeparator(formattedNumber) &&
+					 NumberUtil.hasDecimalSeparator(value) &&
+					 !_endsWithDecimalSeparator(value)) {
 
-					formattedNumber = StringBundler.concat(
-						formattedNumber,
-						decimalFormatSymbols.getDecimalSeparator(),
-						value.substring(
-							NumberUtil.getDecimalSeparatorIndex(value) + 1));
-				}
+				DecimalFormatSymbols decimalFormatSymbols =
+					decimalFormat.getDecimalFormatSymbols();
+
+				return StringBundler.concat(
+					formattedNumber, decimalFormatSymbols.getDecimalSeparator(),
+					value.substring(
+						NumberUtil.getDecimalSeparatorIndex(value) + 1));
 			}
 
 			return formattedNumber;

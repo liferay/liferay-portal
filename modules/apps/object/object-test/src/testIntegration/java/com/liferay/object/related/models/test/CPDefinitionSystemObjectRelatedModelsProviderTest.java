@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Collections;
@@ -49,10 +50,11 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_cpDefinitionIds = addBaseModels(2);
+		_cProductIds = addBaseModels(2);
 
 		CPDefinition cpDefinition1 =
-			CPDefinitionLocalServiceUtil.getCPDefinition(_cpDefinitionIds[0]);
+			CPDefinitionLocalServiceUtil.getCProductCPDefinition(
+				_cProductIds[0], 1);
 
 		_cpDefinitionLocalService.updateCPDefinitionLocalization(
 			cpDefinition1, cpDefinition1.getDefaultLanguageId(),
@@ -61,7 +63,8 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		CPDefinition cpDefinition2 =
-			CPDefinitionLocalServiceUtil.getCPDefinition(_cpDefinitionIds[1]);
+			CPDefinitionLocalServiceUtil.getCProductCPDefinition(
+				_cProductIds[1], 1);
 
 		_cpDefinitionLocalService.updateCPDefinitionLocalization(
 			cpDefinition2, cpDefinition2.getDefaultLanguageId(),
@@ -117,7 +120,7 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 
 	@Override
 	protected long[] addBaseModels(int count) throws Exception {
-		long[] cpDefinitionIds = new long[count];
+		long[] cProductIds = new long[count];
 
 		CommerceCatalog commerceCatalog =
 			_commerceCatalogLocalService.addCommerceCatalog(
@@ -131,10 +134,10 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 			CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
 				commerceCatalog.getGroupId());
 
-			cpDefinitionIds[i] = cpDefinition.getCPDefinitionId();
+			cProductIds[i] = cpDefinition.getCProductId();
 		}
 
-		return cpDefinitionIds;
+		return cProductIds;
 	}
 
 	@Override
@@ -146,13 +149,15 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 	}
 
 	@Override
-	protected void deleteBaseModel(long primaryKey) throws Exception {
-		_cpDefinitionLocalService.deleteCPDefinition(primaryKey);
+	protected void deleteBaseModel(long primaryKey) {
+		_cpDefinitionLocalService.deleteCPDefinitions(
+			primaryKey, WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Override
 	protected Object fetchBaseModel(long primaryKey) {
-		return _cpDefinitionLocalService.fetchCPDefinition(primaryKey);
+		return _cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+			primaryKey);
 	}
 
 	@Override
@@ -183,23 +188,24 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 			insertIntoOrUpdateExtensionTable(
-				objectEntry.getObjectEntryId(), _cpDefinitionIds[0],
+				objectEntry.getObjectEntryId(), _cProductIds[0],
 				_systemObjectDefinition.getObjectDefinitionId());
 			insertIntoOrUpdateExtensionTable(
-				objectEntry.getObjectEntryId(), _cpDefinitionIds[1],
+				objectEntry.getObjectEntryId(), _cProductIds[1],
 				_systemObjectDefinition.getObjectDefinitionId());
 		}
 		else {
 			ObjectRelationshipTestUtil.addObjectRelationshipMappingTableValues(
 				objectRelationship.getObjectRelationshipId(),
-				objectEntry.getPrimaryKey(), _cpDefinitionIds[0]);
+				objectEntry.getPrimaryKey(), _cProductIds[0]);
 			ObjectRelationshipTestUtil.addObjectRelationshipMappingTableValues(
 				objectRelationship.getObjectRelationshipId(),
-				objectEntry.getPrimaryKey(), _cpDefinitionIds[1]);
+				objectEntry.getPrimaryKey(), _cProductIds[1]);
 		}
 
 		CPDefinition cpDefinition =
-			CPDefinitionLocalServiceUtil.getCPDefinition(_cpDefinitionIds[0]);
+			CPDefinitionLocalServiceUtil.getCProductCPDefinition(
+				_cProductIds[0], 1);
 
 		ObjectRelationshipTestUtil.assertSearchRelatedModels(
 			0, objectRelatedModelsProvider,
@@ -221,10 +227,10 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
-	private long[] _cpDefinitionIds;
-
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	private long[] _cProductIds;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;

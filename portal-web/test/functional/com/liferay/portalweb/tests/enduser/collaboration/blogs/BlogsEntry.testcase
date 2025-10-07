@@ -2,7 +2,7 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property portal.acceptance = "true";
+	property portal.acceptance = "false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Blogs";
@@ -107,6 +107,8 @@ definition {
 	@priority = 5
 	@refactorneeded
 	test AddBlogWithFormatting {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openToAddEntry(siteURLKey = "guest");
 
 		BlogsNavigator.gotoSelectFile();
@@ -252,6 +254,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAddHTMLToContentField {
+		property portal.acceptance = "true";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -317,6 +321,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAddTitleWithoutEscapingCharacters {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addEntry(
@@ -336,6 +342,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAddWithCustomURL {
+		property portal.acceptance = "true";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -386,6 +394,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAddWithEmbeddedVideo {
+		property portal.acceptance = "true";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Blogs Page");
@@ -479,6 +489,7 @@ definition {
 	@refactorneeded
 	test CanAddWithTrackbackURL {
 		property custom.properties = "blogs.trackback.enabled=true";
+		property portal.acceptance = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -521,6 +532,8 @@ definition {
 	@description = "LPS-186698 Confirm that the blog is created via API, check that the console, and the Title and Content fields are faulty."
 	@priority = 4
 	test CanAssertThatTheBlogContentViaAPI {
+		property portal.acceptance = "true";
+
 		task ("Given go to http://localhost:8080/o/api and create a new blog post") {
 			var blogPostingId = BlogPostingAPI.getIdOfCreatedBlogPosting(
 				articleBody = "test",
@@ -568,6 +581,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanAutomaticallySaveEntryAsDraft {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addDraftViaAutoSave(
@@ -693,6 +708,8 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanDeleteDraft {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addDraft(
@@ -728,6 +745,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanDeleteMultipleEntriesSequentially {
+		property portal.acceptance = "true";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry1 Content",
 			entryTitle = "Blogs Entry1 Title");
@@ -799,6 +818,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanEditCustomAbstract {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -972,6 +992,8 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanManuallySaveAsDraft {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addDraft(
@@ -1051,6 +1073,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CannotAddWithEmptyContent {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addWithInvalidContent(
@@ -1066,6 +1090,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CannotAddWithEmptyTitle {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addWithInvalidTitle(
@@ -1317,6 +1343,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanPublishDraft {
+		property portal.acceptance = "true";
+
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
 
 		Blogs.addDraft(
@@ -1346,6 +1374,7 @@ definition {
 	@refactordone
 	test CanSchedulePost {
 		property custom.properties = "company.default.time.zone=America/Los_Angeles";
+		property portal.acceptance = "true";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
@@ -1382,6 +1411,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanSearchByContent {
+		property portal.acceptance = "true";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Search Page");
@@ -1406,6 +1437,8 @@ definition {
 	@priority = 4
 	@refactordone
 	test CanSearchByTitle {
+		property portal.acceptance = "true";
+
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",
 			layoutName = "Search Page");
@@ -1429,6 +1462,8 @@ definition {
 	@description = "This is a test for LPS-80502. It asserts that user can search a draft blog entry."
 	@priority = 4
 	test CanSearchForDraftEntry {
+		property portal.acceptance = "true";
+
 		JSONBlog.addEntry(
 			entryContent = "Blogs Entry Content",
 			entrySubtitle = "Blogs Entry Subtitle",
@@ -1453,6 +1488,7 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CanViewDefaultAbstract {
+		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1543,6 +1579,7 @@ definition {
 	test CanViewInlineVideoWithPublication {
 		property osgi.module.configuration.file.names = "com.liferay.change.tracking.configuration.CTSettingsConfiguration.config";
 		property osgi.module.configurations = "enabled=B\"true\"";
+		property portal.acceptance = "true";
 
 		JSONPublications.addPublication(publicationName = "Publication Name");
 

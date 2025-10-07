@@ -129,6 +129,11 @@
 			<finder-column arrayable-operator="OR" name="folderId" />
 			<finder-column name="fileEntryTypeId" />
 		</finder>
+		<finder name="C_C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
 		<finder name="S_L_C1_C2" return-type="Collection">
 			<finder-column name="smallImageId" />
 			<finder-column name="largeImageId" />

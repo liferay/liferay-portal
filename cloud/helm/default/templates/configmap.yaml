@@ -5,6 +5,28 @@ data:
         #!/usr/bin/env bash
 
         export JDK_JAVA_OPTIONS="${JDK_JAVA_OPTIONS} --add-opens=jdk.naming.dns/com.sun.jndi.dns=java.naming"
+    010_install_prometheus_jmx_agent.sh: |
+        #!/usr/bin/env bash
+
+        if [ "${JMX_AGENT_YAML}x" != "x" ]
+        then
+            if [ ! -f /opt/liferay/metrics/jmx_prometheus_javaagent.jar ]
+            then
+                JMX_AGENT_VERSION=${JMX_AGENT_VERSION:-1.3.0}
+
+                curl \
+                    --fail \
+                    --location \
+                    --output /opt/liferay/metrics/jmx_prometheus_javaagent.jar \
+                    --show-error \
+                    --silent \
+                    https://github.com/prometheus/jmx_exporter/releases/download/${JMX_AGENT_VERSION}/jmx_prometheus_javaagent-${JMX_AGENT_VERSION}.jar
+            fi
+
+            export CATALINA_OPTS="${CATALINA_OPTS} -javaagent:/opt/liferay/metrics/jmx_prometheus_javaagent.jar=${JMX_AGENT_PORT:+${JMX_AGENT_PORT}:}/opt/liferay/metrics/metrics_exporter.yaml"
+
+            echo "${JMX_AGENT_YAML}" > /opt/liferay/metrics/metrics_exporter.yaml
+        fi
     com.liferay.portal.k8s.agent.configuration.PortalK8sAgentConfiguration.config: |
         apiServerHost="$[env:KUBERNETES_SERVICE_HOST]"
         apiServerPort="$[env:KUBERNETES_SERVICE_PORT]"

@@ -307,7 +307,7 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 			_getDTOConverterContext(userGroup.getUserGroupId()), userGroup);
 	}
 
-	private final EntityModel _entityModel = new UserGroupEntityModel();
+	private static final EntityModel _entityModel = new UserGroupEntityModel();
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.kernel.model.UserGroup)"

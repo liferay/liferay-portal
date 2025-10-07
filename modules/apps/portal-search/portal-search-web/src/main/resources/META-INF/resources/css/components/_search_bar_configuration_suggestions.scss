@@ -1,0 +1,9 @@
+html#{$cadmin-selector} {
+	.search-bar-configuration-suggestions-root {
+		.input-group-item.contributor-inputs {
+			.form-group-autofit > .input-group-item {
+				width: inherit;
+			}
+		}
+	}
+}

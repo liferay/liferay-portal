@@ -48,15 +48,15 @@ public class LayoutClassedModelUsageTable
 	public final Column<LayoutClassedModelUsageTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<LayoutClassedModelUsageTable, String>
+		classExternalReferenceCode = createColumn(
+			"classExternalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<LayoutClassedModelUsageTable, Long> classNameId =
 		createColumn(
 			"classNameId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<LayoutClassedModelUsageTable, Long> classPK =
 		createColumn("classPK", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<LayoutClassedModelUsageTable, String>
-		classedModelExternalReferenceCode = createColumn(
-			"cmExternalReferenceCode", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
 	public final Column<LayoutClassedModelUsageTable, String> containerKey =
 		createColumn(
 			"containerKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);

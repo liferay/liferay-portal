@@ -232,7 +232,7 @@ String aggregationType = customFacetDisplayContext.getAggregationType();
 											id='<%= liferayPortletResponse.getNamespace() + "customRangeTo" %>'
 											md="6"
 										>
-											<aui:field-wrapper label="to" name="toInput">
+											<aui:field-wrapper label="to[date-time]" name="toInput">
 												<liferay-ui:input-date
 													cssClass="custom-range-input-date-to"
 													dayParam="toDay"
@@ -270,7 +270,7 @@ String aggregationType = customFacetDisplayContext.getAggregationType();
 
 										<div class="col-md-6" id="<portlet:namespace />customRangeTo">
 											<aui:field-wrapper>
-												<aui:input id="toInput" label="to" name="toInput" type="number" value="<%= customFacetDisplayContext.getToParameterValue() %>" />
+												<aui:input id="toInput" label="to[date-time]" name="toInput" type="number" value="<%= customFacetDisplayContext.getToParameterValue() %>" />
 											</aui:field-wrapper>
 										</div>
 
@@ -304,6 +304,11 @@ String aggregationType = customFacetDisplayContext.getAggregationType();
 />
 
 <c:if test='<%= customFacetDisplayContext.isShowInputRange() && (aggregationType.equals("dateRange") || aggregationType.equals("range")) %>'>
+	<aui:script>
+		Liferay.destroyComponent('<portlet:namespace />fromInputDatePicker');
+		Liferay.destroyComponent('<portlet:namespace />toInputDatePicker');
+	</aui:script>
+
 	<aui:script use="liferay-search-custom-range-facet">
 		new Liferay.Search.CustomRangeFacet({
 			aggregationType: '<%= customFacetDisplayContext.getAggregationType() %>',

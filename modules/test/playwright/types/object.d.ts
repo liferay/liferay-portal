@@ -11,6 +11,18 @@ interface Actions {
 	update?: HTTPMethod;
 }
 
+interface CreateObjectField {
+	aggregationField?: string;
+	aggregationFieldFunction?: string;
+	aggregationFieldRelationship?: string;
+	attachmentSource?: string;
+	autoIncrementInitialValue?: string;
+	formulaFieldOutput?: 'Decimal' | 'Integer';
+	listTypeDefinitionName?: string;
+	objectFieldBusinessType: string;
+	objectFieldLabel: string;
+}
+
 interface DataObject {
 	[K: string]: unknown;
 }

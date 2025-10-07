@@ -6,12 +6,15 @@
 import {Locator, Page} from '@playwright/test';
 
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
+import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export class PicklistBuilderPage {
 	readonly page: Page;
 
+	readonly addButton: Locator;
 	readonly ercInput: Locator;
 	readonly nameInput: Locator;
 	readonly saveButton: Locator;
@@ -19,9 +22,24 @@ export class PicklistBuilderPage {
 	constructor(page: Page) {
 		this.page = page;
 
+		this.addButton = this.page.getByLabel('Add New').first();
 		this.ercInput = this.page.getByLabel('ERC');
 		this.nameInput = this.page.getByLabel('Picklist Name');
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
+	}
+
+	async addOption(name: string) {
+		await clickAndExpectToBeVisible({
+			target: this.page.locator('.modal-header').getByText('Add Option'),
+			trigger: this.addButton,
+		});
+
+		await this.page.locator('.modal-body').getByLabel('Name').fill(name);
+
+		await clickAndExpectToBeHidden({
+			target: this.page.locator('.modal-header').getByText('Add Option'),
+			trigger: this.page.locator('.modal-footer').getByText('Save'),
+		});
 	}
 
 	async createPicklist() {

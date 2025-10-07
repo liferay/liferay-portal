@@ -24,11 +24,16 @@
 
 		<column name="classExternalReferenceCode" type="String" />
 		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
 		<column name="exportImportConfigurationId" type="long" />
-		<column convert-null="false" name="error" type="String" />
+		<column convert-null="false" name="errorMessage" type="String" />
 		<column convert-null="false" name="errorStacktrace" type="String" />
-		<column name="resolved" type="boolean" />
+		<column name="modelName" type="String" />
+		<column name="origin" type="int" />
+		<column name="scope" type="String" />
+		<column name="scopeKey" type="String" />
 		<column name="type" type="int" />
+		<column name="status" type="int" />
 
 		<!-- Finder methods -->
 

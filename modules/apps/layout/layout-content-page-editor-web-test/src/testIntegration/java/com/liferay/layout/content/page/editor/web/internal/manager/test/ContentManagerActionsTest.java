@@ -14,6 +14,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
+import com.liferay.layout.manager.ContentManager;
 import com.liferay.layout.model.LayoutClassedModelUsage;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
@@ -93,11 +94,11 @@ public class ContentManagerActionsTest {
 
 		_layoutClassedModelUsage =
 			_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-				_group.getGroupId(),
+				_group.getGroupId(), StringPool.BLANK,
 				_portal.getClassNameId(FileEntry.class.getName()),
-				fileEntry.getFileEntryId(), StringPool.BLANK,
-				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-				_layout.getPlid(), new ServiceContext());
+				fileEntry.getFileEntryId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomLong(), _layout.getPlid(),
+				new ServiceContext());
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 			_layoutDisplayPageProviderRegistry.
@@ -241,11 +242,8 @@ public class ContentManagerActionsTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	@Inject(
-		filter = "component.name=com.liferay.layout.content.page.editor.web.internal.manager.ContentManager",
-		type = Inject.NoType.class
-	)
-	private Object _contentManager;
+	@Inject
+	private ContentManager _contentManager;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

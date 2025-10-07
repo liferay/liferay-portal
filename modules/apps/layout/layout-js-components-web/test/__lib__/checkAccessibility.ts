@@ -5,6 +5,8 @@
 
 import axe, {AxeResults, ContextObject} from 'axe-core';
 
+import formatAccessibility from './formatAccessibility';
+
 const config = {
 
 	// Color contrast checks do not work in JSDOM so are turned off.
@@ -19,14 +21,16 @@ export default async function checkAccessibility({
 	bestPractices = false,
 	context,
 }: {
-	bestPractices: boolean;
-	context: ContextObject;
+	bestPractices?: boolean;
+	context: ContextObject | axe.Selector;
 }) {
 	if (bestPractices) {
 		config.runOnly = [...config.runOnly, 'best-practice'];
 	}
 
-	const results: AxeResults = await axe.run(context, config);
+	const {violations}: AxeResults = await axe.run(context, config);
 
-	expect(results.violations).toStrictEqual([]);
+	if (violations.length) {
+		throw new Error(formatAccessibility(violations));
+	}
 }

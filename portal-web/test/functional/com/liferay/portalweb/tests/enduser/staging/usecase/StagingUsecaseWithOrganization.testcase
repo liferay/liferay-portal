@@ -33,7 +33,6 @@ definition {
 	@priority = 3
 	test StagingOrganizations {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

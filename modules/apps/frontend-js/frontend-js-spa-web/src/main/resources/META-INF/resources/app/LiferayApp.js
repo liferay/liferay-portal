@@ -125,6 +125,8 @@ class LiferayApp extends App {
 		body.appendChild(
 			buildFragment('<div class="lfr-spa-loading-bar"></div>')
 		);
+
+		this.setLinkSelector(this.getLinkSelector() + ':not(.ck-content *)');
 	}
 
 	/**

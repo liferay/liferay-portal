@@ -22,8 +22,8 @@ import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.ldap.SafeLdapContext;
@@ -133,7 +133,7 @@ public class LDAPAuth implements Authenticator {
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		_authPipelineEnableLiferayCheck = GetterUtil.getBoolean(
-			_props.get(PropsKeys.AUTH_PIPELINE_ENABLE_LIFERAY_CHECK));
+			PropsUtil.get(PropsKeys.AUTH_PIPELINE_ENABLE_LIFERAY_CHECK));
 	}
 
 	private LDAPAuthResult _authenticate(
@@ -794,9 +794,6 @@ public class LDAPAuth implements Authenticator {
 		policyOption = ReferencePolicyOption.GREEDY
 	)
 	private volatile SafePortalLDAP _portalLDAP;
-
-	@Reference
-	private Props _props;
 
 	@Reference(
 		target = "(factoryPid=com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration)"

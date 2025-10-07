@@ -7,7 +7,6 @@ package com.liferay.osb.patcher.web.internal.search;
 
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.PatcherBuildConstants;
-import com.liferay.osb.patcher.constants.PatcherFixConstants;
 import com.liferay.osb.patcher.constants.WorkflowConstants;
 import com.liferay.osb.patcher.model.PatcherAccount;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -17,13 +16,13 @@ import com.liferay.osb.patcher.service.PatcherBuildLocalService;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalService;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.BaseIndexer;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -31,7 +30,7 @@ import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Summary;
-import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -39,14 +38,20 @@ import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 
 import java.util.Locale;
+import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Zsolt Balogh
  */
-@Component(service = Indexer.class)
+@Component(
+	configurationPid = "com.liferay.osb.patcher.configuration.PatcherConfiguration",
+	service = Indexer.class
+)
 public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 
 	public static final String CLASS_NAME = PatcherBuild.class.getName();
@@ -57,130 +62,67 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 	}
 
 	@Override
-	public void postProcessContextQuery(
-			BooleanQuery contextQuery, SearchContext searchContext)
+	public void postProcessContextBooleanFilter(
+			BooleanFilter contextBooleanFilter, SearchContext searchContext)
 		throws Exception {
-
-		BooleanQuery booleanQuery = new BooleanQueryImpl();
-
-		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.MUST;
 
 		long patcherProductVersionId = GetterUtil.getLong(
 			searchContext.getAttribute("patcherProductVersionId"));
 
 		if (patcherProductVersionId > 0) {
-			contextQuery.addRequiredTerm(
+			contextBooleanFilter.addRequiredTerm(
 				"patcherProductVersionId", patcherProductVersionId);
 		}
 
-		PatcherConfiguration patcherConfiguration =
-			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, searchContext.getCompanyId());
-
 		if (GetterUtil.getBoolean(
-				searchContext.getAttribute("advancedSearch"))) {
-
-			contextQuery.addRequiredTerm("childBuild", false);
-
-			if (patcherConfiguration.patcherScanningEnabled()) {
-				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
-			}
-			else {
-				contextQuery.addRequiredTerm("latestKeyBuild", true);
-			}
-
-			setBooleanQuery(booleanQuery, searchContext);
-		}
-		else if (GetterUtil.getBoolean(
-					searchContext.getAttribute("buildsViewSearch"))) {
+				searchContext.getAttribute("buildsViewSearch"))) {
 
 			String key = GetterUtil.getString(
 				searchContext.getAttribute("key"));
 
 			if (Validator.isNotNull(key)) {
-				booleanQuery.addRequiredTerm("key", key, false);
+				contextBooleanFilter.addRequiredTerm("key", key);
 			}
+
+			return;
 		}
-		else if (GetterUtil.getBoolean(
-					searchContext.getAttribute("buildsIndexSearch"))) {
 
-			contextQuery.addRequiredTerm("childBuild", false);
+		contextBooleanFilter.addRequiredTerm("childBuild", false);
 
-			if (patcherConfiguration.patcherScanningEnabled()) {
-				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
-			}
-			else {
-				contextQuery.addRequiredTerm("latestKeyBuild", true);
-			}
-
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED);
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_AUTOMATION_PASSED_SMOKE_ONLY);
-			booleanQuery.addExactTerm(
-				"qaStatus", WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY);
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_FAILED_MANUALLY_SMOKE_ONLY);
-			booleanQuery.addExactTerm(
-				"qaStatus", WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY);
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_PASSED_MANUALLY_SMOKE_ONLY);
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_PENDING_SMOKE_ONLY);
-			booleanQuery.addExactTerm(
-				"qaStatus", WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED);
-			booleanQuery.addExactTerm(
-				"qaStatus",
-				WorkflowConstants.STATUS_BUILD_QA_TESTING_SKIPPED_SMOKE_ONLY);
-			booleanQuery.addExactTerm(
-				"qaStatus", WorkflowConstants.STATUS_PENDING);
-			booleanQuery.addExactTerm(
-				"type", PatcherBuildConstants.TYPE_FIX_PACK);
-
-			booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
-		}
-		else if (GetterUtil.getBoolean(
-					searchContext.getAttribute("viewMostRecent"))) {
-
-			contextQuery.addRequiredTerm("childBuild", false);
-
-			booleanQuery.addExactTerm(
-				"type", PatcherBuildConstants.TYPE_FIX_PACK);
-
-			booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
+		if (_patcherConfiguration.patcherScanningEnabled()) {
+			contextBooleanFilter.addRequiredTerm(
+				"latestSupportTicketBuild", true);
 		}
 		else {
-			contextQuery.addRequiredTerm("childBuild", false);
-
-			if (patcherConfiguration.patcherScanningEnabled()) {
-				contextQuery.addRequiredTerm("latestSupportTicketBuild", true);
-			}
-			else {
-				contextQuery.addRequiredTerm("latestKeyBuild", true);
-			}
-
-			String patcherBuildAccountEntryCode = GetterUtil.getString(
-				searchContext.getAttribute("patcherBuildAccountEntryCode"));
-
-			if (Validator.isNotNull(patcherBuildAccountEntryCode)) {
-				contextQuery.addRequiredTerm(
-					"patcherBuildAccountEntryCode",
-					patcherBuildAccountEntryCode);
-			}
-
-			booleanQuery.addExactTerm(
-				"type", PatcherBuildConstants.TYPE_FIX_PACK);
-
-			booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
+			contextBooleanFilter.addRequiredTerm("latestKeyBuild", true);
 		}
 
-		if (booleanQuery.hasClauses()) {
-			contextQuery.add(booleanQuery, booleanClauseOccur);
+		String accountEntryCode = GetterUtil.getString(
+			searchContext.getAttribute("accountEntryCode"));
+
+		if (Validator.isNotNull(accountEntryCode)) {
+			contextBooleanFilter.addRequiredTerm(
+				"accountEntryCode", accountEntryCode);
+		}
+
+		int qaStatus = GetterUtil.getInteger(
+			searchContext.getAttribute("qaStatus"));
+
+		if (qaStatus != WorkflowConstants.STATUS_ANY) {
+			contextBooleanFilter.addRequiredTerm("qaStatus", qaStatus);
+		}
+
+		int status = GetterUtil.getInteger(
+			searchContext.getAttribute("status"));
+
+		if (status != WorkflowConstants.STATUS_ANY) {
+			contextBooleanFilter.addRequiredTerm("status", status);
+		}
+
+		int type = GetterUtil.getInteger(searchContext.getAttribute("type"));
+
+		if (type != PatcherBuildConstants.TYPE_ANY) {
+			contextBooleanFilter.addRequiredTerm("type", type);
 		}
 	}
 
@@ -195,17 +137,21 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 			return;
 		}
 
-		boolean advancedSearch = GetterUtil.getBoolean(
-			searchContext.getAttribute("advancedSearch"));
+		addSearchTerm(searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
+		addSearchTerm(searchQuery, searchContext, "accountEntryCode", true);
+		addSearchTerm(searchQuery, searchContext, "patcherBuildName", true);
+		addSearchTerm(
+			searchQuery, searchContext, "patcherProjectVersionName", true);
+		addSearchTerm(searchQuery, searchContext, "supportTicket", true);
+	}
 
-		if (!advancedSearch) {
-			addSearchTerm(
-				searchQuery, searchContext, Field.ENTRY_CLASS_PK, false);
-			addSearchTerm(searchQuery, searchContext, "patcherBuildName", true);
-			addSearchTerm(
-				searchQuery, searchContext, "patcherProjectVersionName", true);
-			addSearchTerm(searchQuery, searchContext, "supportTicket", true);
-		}
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties)
+		throws ConfigurationException {
+
+		_patcherConfiguration = ConfigurableUtil.createConfigurable(
+			PatcherConfiguration.class, properties);
 	}
 
 	@Override
@@ -225,14 +171,9 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 
 		document.addKeyword("childBuild", patcherBuild.isChildBuild());
 		document.addText("comments", patcherBuild.getComments());
-
-		PatcherConfiguration patcherConfiguration =
-			ConfigurationProviderUtil.getCompanyConfiguration(
-				PatcherConfiguration.class, patcherBuild.getCompanyId());
-
 		document.addText(
 			"downloadURL",
-			patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
+			_patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
 				patcherBuild.getFileName());
 
 		if (Validator.isNotNull(patcherBuild.getFileName())) {
@@ -250,9 +191,8 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 			_patcherAccountLocalService.getPatcherAccount(
 				patcherBuild.getPatcherAccountId());
 
-		document.addText(
-			"patcherBuildAccountEntryCode",
-			patcherAccount.getAccountEntryCode());
+		document.addKeyword(
+			"accountEntryCode", patcherAccount.getAccountEntryCode());
 
 		document.addKeyword("patcherBuildId", patcherBuild.getPatcherBuildId());
 		document.addText("patcherBuildName", patcherBuild.getName());
@@ -342,117 +282,6 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 		indexableActionableDynamicQuery.performActions();
 	}
 
-	protected void setBooleanQuery(
-			BooleanQuery booleanQuery, SearchContext searchContext)
-		throws Exception {
-
-		long entryClassPK = GetterUtil.getLong(
-			searchContext.getAttribute(Field.ENTRY_CLASS_PK));
-
-		if (entryClassPK > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, Field.ENTRY_CLASS_PK,
-				entryClassPK);
-		}
-
-		String patcherBuildName = GetterUtil.getString(
-			searchContext.getAttribute("patcherBuildName"));
-
-		if (Validator.isNotNull(patcherBuildName)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherBuildName",
-				PatcherUtil.prepareKeywords(patcherBuildName), true);
-		}
-
-		String supportTicket = GetterUtil.getString(
-			searchContext.getAttribute("supportTicket"));
-
-		if (Validator.isNotNull(supportTicket)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "supportTicket",
-				PatcherUtil.prepareKeywords(supportTicket), true);
-		}
-
-		String patcherBuildAccountEntryCode = GetterUtil.getString(
-			searchContext.getAttribute("patcherBuildAccountEntryCode"));
-
-		if (Validator.isNotNull(patcherBuildAccountEntryCode)) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherBuildAccountEntryCode",
-				PatcherUtil.prepareKeywords(patcherBuildAccountEntryCode),
-				true);
-		}
-
-		long patcherProjectVersionIdFilter = GetterUtil.getLong(
-			searchContext.getAttribute("patcherProjectVersionIdFilter"));
-
-		if (patcherProjectVersionIdFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "patcherProjectVersionId",
-				patcherProjectVersionIdFilter);
-		}
-
-		int qaStatusFilter = GetterUtil.getInteger(
-			searchContext.getAttribute("qaStatusFilter"));
-
-		if (qaStatusFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "qaStatus", qaStatusFilter);
-		}
-
-		int statusFilter = GetterUtil.getInteger(
-			searchContext.getAttribute("statusFilter"));
-
-		if (statusFilter > 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "status", statusFilter);
-		}
-
-		int typeFilter = GetterUtil.getInteger(
-			searchContext.getAttribute("typeFilter"),
-			PatcherFixConstants.TYPE_ANY);
-
-		if (typeFilter >= 0) {
-			setBooleanQueryIsAndSearch(
-				booleanQuery, searchContext, "type", typeFilter);
-		}
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			BooleanQuery query)
-		throws Exception {
-
-		if (searchContext.isAndSearch()) {
-			booleanQuery.add(query, BooleanClauseOccur.MUST);
-		}
-		else {
-			booleanQuery.add(query, BooleanClauseOccur.SHOULD);
-		}
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			String field, Object value)
-		throws Exception {
-
-		setBooleanQueryIsAndSearch(
-			booleanQuery, searchContext, field, value, false);
-	}
-
-	protected void setBooleanQueryIsAndSearch(
-			BooleanQuery booleanQuery, SearchContext searchContext,
-			String field, Object value, boolean like)
-		throws Exception {
-
-		if (searchContext.isAndSearch()) {
-			booleanQuery.addRequiredTerm(field, String.valueOf(value), like);
-		}
-		else {
-			booleanQuery.addTerm(field, String.valueOf(value), like);
-		}
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		PatcherBuildIndexer.class);
 
@@ -464,6 +293,8 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 
 	@Reference
 	private PatcherBuildLocalService _patcherBuildLocalService;
+
+	private volatile PatcherConfiguration _patcherConfiguration;
 
 	@Reference
 	private PatcherProjectVersionLocalService

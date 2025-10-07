@@ -25,7 +25,7 @@ import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.commerce.util.CommerceCheckoutStepRegistry;
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
 import com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrder;
-import com.liferay.headless.commerce.delivery.order.internal.odate.entity.v1_0.PlacedOrderEntityModel;
+import com.liferay.headless.commerce.delivery.order.internal.odata.entity.v1_0.PlacedOrderEntityModel;
 import com.liferay.headless.commerce.delivery.order.resource.v1_0.PlacedOrderResource;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;

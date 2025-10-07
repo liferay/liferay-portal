@@ -43,6 +43,38 @@
 					]
 				},
 				"id": "c481b0bb-2c2f-9239-5271-bccbe3958524",
+				"pageElements": [
+					{
+						"definition": {
+							"fragmentDropZoneId": "sidebarTrigger"
+						},
+						"id": "4758a107-25ac-1907-fb0e-62579ed379d0",
+						"type": "FragmentDropZone"
+					},
+					{
+						"definition": {
+							"fragmentDropZoneId": "bulkActionsMonitor"
+						},
+						"id": "726bf8f8-04c9-5ab4-4279-dd17bf67ecaa",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.BulkActionsMonitorComponentSectionFragmentRender"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"id": "9df1ccad-1a4c-7b69-dca7-49a385029e6c",
+								"type": "Fragment"
+							}
+						],
+						"type": "FragmentDropZone"
+					}
+				],
 				"type": "Fragment"
 			},
 			{

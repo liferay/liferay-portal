@@ -12,6 +12,7 @@ import {
 } from '../../components/ModelBuilder/utils';
 
 interface BuildObjectDefinitionNodeMockProps {
+	dbTableName?: string;
 	linkedObjectDefinition?: boolean;
 	modifiable?: boolean;
 	objectDefinitionExternalReferenceCode: string;
@@ -43,6 +44,7 @@ const objectRelationshipMock = {
 } as ObjectRelationship;
 
 function buildObjectDefinitionNodeMock({
+	dbTableName,
 	linkedObjectDefinition,
 	modifiable,
 	objectDefinitionExternalReferenceCode,
@@ -59,16 +61,18 @@ function buildObjectDefinitionNodeMock({
 			active: true,
 			dateCreated: '',
 			dateModified: '',
-			dbTableName: '',
+			dbTableName: dbTableName ?? '',
 			defaultLanguageId: 'en_US',
 			enableCategorization: true,
 			enableComments: false,
+			enableFormContainer: false,
 			enableFriendlyURLCustomization: false,
 			enableIndexSearch: false,
 			enableLocalization: false,
 			enableObjectEntryDraft: false,
 			enableObjectEntryHistory: false,
 			enableObjectEntrySchedule: false,
+			enableObjectEntrySubscription: false,
 			externalReferenceCode: objectDefinitionExternalReferenceCode,
 			friendlyURLSeparator: objectDefinitionName,
 			hasObjectDefinitionDeleteResourcePermission: false,
@@ -126,6 +130,7 @@ describe('checkPostalAddressUnsupportedObjectRelationship function', () => {
 		});
 
 		const postalAddressObjectDefinition = buildObjectDefinitionNodeMock({
+			dbTableName: 'Address',
 			objectDefinitionExternalReferenceCode: 'L_POSTAL_ADDRESS',
 			objectDefinitionName: 'Address',
 		});
@@ -152,6 +157,7 @@ describe('checkPostalAddressUnsupportedObjectRelationship function', () => {
 		});
 
 		const postalAddressObjectDefinition = buildObjectDefinitionNodeMock({
+			dbTableName: 'Address',
 			objectDefinitionExternalReferenceCode: 'L_POSTAL_ADDRESS',
 			objectDefinitionName: 'Address',
 		});
@@ -303,6 +309,7 @@ describe('getUnsupportedObjectRelationshipErrorMessage function', () => {
 		});
 
 		const postalAddressObjectDefinition = buildObjectDefinitionNodeMock({
+			dbTableName: 'Address',
 			objectDefinitionExternalReferenceCode: 'L_POSTAL_ADDRESS',
 			objectDefinitionName: 'Address',
 		});

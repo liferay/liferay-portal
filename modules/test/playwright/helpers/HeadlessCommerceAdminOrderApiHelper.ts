@@ -35,6 +35,7 @@ type TOrderItem = {
 	productId?: number;
 	quantity: number;
 	skuId?: string;
+	unitOfMeasureKey?: number;
 	unitPrice?: number;
 };
 

@@ -68,6 +68,10 @@ public class LayoutActionDropdownItemsProvider {
 			Layout layout, boolean includeAddChildPageAction)
 		throws Exception {
 
+		if (layout.isTypeEmpty()) {
+			return _getEmptyLayoutActionDropdownItems(layout);
+		}
+
 		Layout draftLayout = _layoutsAdminDisplayContext.getDraftLayout(layout);
 
 		return DropdownItemListBuilder.addGroup(
@@ -462,6 +466,60 @@ public class LayoutActionDropdownItemsProvider {
 
 			dropdownItem.setLabel(label);
 		};
+	}
+
+	private List<DropdownItem> _getEmptyLayoutActionDropdownItems(
+		Layout layout) {
+
+		return DropdownItemListBuilder.addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					DropdownItemListBuilder.add(
+						dropdownItem -> {
+							dropdownItem.setHref(
+								_getEmptySelectLayoutPageTemplateEntryURL(
+									layout));
+							dropdownItem.setIcon("pencil");
+							dropdownItem.setLabel(
+								LanguageUtil.get(_httpServletRequest, "edit"));
+						}
+					).build());
+				dropdownGroupItem.setSeparator(true);
+			}
+		).addGroup(
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					DropdownItemListBuilder.add(
+						() -> _layoutActionsHelper.isShowDeleteAction(layout),
+						_getDeleteLayoutActionUnsafeConsumer(layout)
+					).build());
+				dropdownGroupItem.setSeparator(true);
+			}
+		).build();
+	}
+
+	private String _getEmptySelectLayoutPageTemplateEntryURL(Layout layout)
+		throws PortalException {
+
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/layout_admin/select_layout_page_template_entry"
+		).setRedirect(
+			_layoutsAdminDisplayContext.getRedirect()
+		).setBackURL(
+			_getBackURL()
+		).setParameter(
+			"emptyLayout", Boolean.TRUE
+		).setParameter(
+			"externalReferenceCode", layout.getExternalReferenceCode()
+		).setParameter(
+			"groupId", layout.getGroupId()
+		).setParameter(
+			"privateLayout", layout.isPrivateLayout()
+		).setParameter(
+			"selPlid", layout.getPlid()
+		).buildString();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>

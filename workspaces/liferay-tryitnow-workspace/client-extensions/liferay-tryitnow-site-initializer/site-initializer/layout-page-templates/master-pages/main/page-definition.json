@@ -173,6 +173,7 @@
 													"expandedLevels": "auto",
 													"rootMenuItemLevel": "0",
 													"rootMenuItemType": "absolute",
+													"siteNavigationMenuExternalReferenceCode": "M2H8-MAIN",
 													"siteNavigationMenuName": "Main Menu",
 													"siteNavigationMenuType": "-1"
 												},
@@ -497,7 +498,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -542,6 +543,7 @@
 															"expandedLevels": "auto",
 															"rootMenuItemLevel": "0",
 															"rootMenuItemType": "absolute",
+															"siteNavigationMenuExternalReferenceCode": "M2H8-FOOTER-CLARITY",
 															"siteNavigationMenuName": "Footer Clarity Menu",
 															"siteNavigationMenuType": "-1"
 														},
@@ -601,7 +603,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -643,6 +645,7 @@
 																	"expandedLevels": "auto",
 																	"rootMenuItemLevel": "0",
 																	"rootMenuItemType": "absolute",
+																	"siteNavigationMenuExternalReferenceCode": "M2H8-FOOTER-TRIAL",
 																	"siteNavigationMenuName": "Footer Trial Menu",
 																	"siteNavigationMenuType": "-1"
 																},
@@ -705,7 +708,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -747,6 +750,7 @@
 																	"expandedLevels": "auto",
 																	"rootMenuItemLevel": "0",
 																	"rootMenuItemType": "absolute",
+																	"siteNavigationMenuExternalReferenceCode": "M2H8-FOOTER-LIFERAY",
 																	"siteNavigationMenuName": "Footer Liferay Menu",
 																	"siteNavigationMenuType": "-1"
 																},
@@ -809,7 +813,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -841,7 +845,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-text",
+																"key": "dialect-text",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -900,7 +904,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "DIALECT-dialect-button",
+																		"key": "dialect-button",
 																		"siteKey": "[$GROUP_KEY$]"
 																	},
 																	"fragmentConfig": {
@@ -939,7 +943,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "DIALECT-dialect-button",
+																		"key": "dialect-button",
 																		"siteKey": "[$GROUP_KEY$]"
 																	},
 																	"fragmentConfig": {
@@ -1096,7 +1100,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-button",
+																"key": "dialect-button",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -1127,7 +1131,7 @@
 													{
 														"definition": {
 															"fragment": {
-																"key": "DIALECT-dialect-button",
+																"key": "dialect-button",
 																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
@@ -1190,7 +1194,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {

@@ -23,7 +23,7 @@ public class UADExportBackgroundTaskStatusMessageSender {
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put("entityName", entityName);
 		message.put("messageType", messageType);
@@ -38,7 +38,7 @@ public class UADExportBackgroundTaskStatusMessageSender {
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put("applicationDataTotal", total);
 		message.put("applicationKey", applicationKey);

@@ -40,6 +40,7 @@ const HIDE_CONTEXT_CHANGE_WARNING_DURATION_OPTIONS = [
 
 export default function ChangeTrackingIndicator({
 	checkoutDropdownItem,
+	cms,
 	contextChangeButtons,
 	createDropdownItem,
 	getConflictInfoURL,
@@ -465,6 +466,10 @@ export default function ChangeTrackingIndicator({
 	};
 
 	const renderDropdown = () => {
+		if (cms) {
+			return renderTrigger;
+		}
+
 		return (
 			<ClayDropDownWithItems
 				alignmentPosition={Align.BottomCenter}
@@ -479,7 +484,7 @@ export default function ChangeTrackingIndicator({
 		return (
 			<ClayPopover
 				alignPosition="bottom"
-				closeOnClickOutside={true}
+				closeOnClickOutside={!cms}
 				disableScroll={true}
 				header={
 					<ClayLayout.ContentRow verticalAlign="center">
@@ -487,29 +492,35 @@ export default function ChangeTrackingIndicator({
 							{warningHeader}
 						</ClayLayout.ContentCol>
 
-						<ClayLayout.ContentCol>
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get('close')}
-								displayType="unstyled"
-								onClick={() => {
-									setShowWarning(false);
+						{!cms && (
+							<ClayLayout.ContentCol>
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get('close')}
+									displayType="unstyled"
+									onClick={() => {
+										setShowWarning(false);
 
-									if (popoverCheckbox) {
-										savePortalPreferences(
-											'hideContextChangeWarningDuration',
-											saveDisplayPreferenceURL,
-											hideContextChangeWarningDuration
-										);
-									}
-								}}
-								size="xs"
-								symbol="times"
-								title={Liferay.Language.get('close')}
-							/>
-						</ClayLayout.ContentCol>
+										if (popoverCheckbox) {
+											savePortalPreferences(
+												'hideContextChangeWarningDuration',
+												saveDisplayPreferenceURL,
+												hideContextChangeWarningDuration
+											);
+										}
+									}}
+									size="xs"
+									symbol="times"
+									title={Liferay.Language.get('close')}
+								/>
+							</ClayLayout.ContentCol>
+						)}
 					</ClayLayout.ContentRow>
 				}
 				onShowChange={(value) => {
+					if (cms) {
+						return;
+					}
+
 					setShowWarning(value);
 
 					if (popoverCheckbox) {
@@ -691,7 +702,7 @@ export default function ChangeTrackingIndicator({
 
 			<span className="change-tracking-indicator-title">{title}</span>
 
-			<ClayIcon symbol="caret-bottom" />
+			{cms ? null : <ClayIcon symbol="caret-bottom" />}
 		</button>
 	);
 

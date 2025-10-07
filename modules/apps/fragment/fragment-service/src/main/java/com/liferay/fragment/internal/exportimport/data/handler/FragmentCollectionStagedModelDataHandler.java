@@ -7,6 +7,7 @@ package com.liferay.fragment.internal.exportimport.data.handler;
 
 import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
@@ -61,6 +62,12 @@ public class FragmentCollectionStagedModelDataHandler
 			PortletDataContext portletDataContext,
 			FragmentCollection fragmentCollection)
 		throws Exception {
+
+		if (fragmentCollection.isMarketplace() &&
+			!ExportImportThreadLocal.isStagingInProcess()) {
+
+			return;
+		}
 
 		Element fragmentCollectionElement =
 			portletDataContext.getExportDataElement(fragmentCollection);

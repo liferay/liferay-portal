@@ -28,6 +28,9 @@
 
 		<!-- Finder methods -->
 
+		<finder name="CompanyId" return-type="Collection">
+			<finder-column name="companyId" />
+		</finder>
 		<finder name="AccountEntryCode" return-type="PatcherAccount" unique="true">
 			<finder-column name="accountEntryCode" />
 		</finder>
@@ -395,7 +398,7 @@
 			<finder-column name="parentPatcherFixId" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="PProductVersion">
+	<entity local-service="true" name="PatcherProductVersion" remote-service="false" table="OSBPatcher_PProductVersion">
 
 		<!-- PK fields -->
 
@@ -424,7 +427,7 @@
 			<finder-column name="name" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="PProjectVersion">
+	<entity local-service="true" name="PatcherProjectVersion" remote-service="false" table="OSBPatcher_PProjectVersion">
 
 		<!-- PK fields -->
 

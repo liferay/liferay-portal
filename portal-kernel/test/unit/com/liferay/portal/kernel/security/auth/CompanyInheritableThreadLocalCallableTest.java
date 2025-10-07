@@ -8,9 +8,6 @@ package com.liferay.portal.kernel.security.auth;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.CompanyConstants;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.ProxyFactory;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,8 +32,6 @@ public class CompanyInheritableThreadLocalCallableTest {
 		).thenReturn(
 			1L
 		);
-
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
 	}
 
 	@Test

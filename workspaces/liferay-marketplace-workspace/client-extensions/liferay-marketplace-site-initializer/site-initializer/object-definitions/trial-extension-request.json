@@ -1,0 +1,51 @@
+{
+	"accountEntryRestricted": true,
+	"accountEntryRestrictedObjectFieldName": "r_accountToTrialExtensionRequest_accountEntryId",
+	"enableLocalization": false,
+	"externalReferenceCode": "TRIAL-EXTENSION-REQUEST",
+	"label": {
+		"en_US": "Trial Extension Request"
+	},
+	"name": "TrialExtensionRequest",
+	"objectFields": [
+		{
+			"DBType": "Integer",
+			"businessType": "Integer",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Duration"
+			},
+			"name": "duration",
+			"required": true,
+			"type": "Integer"
+		},
+		{
+			"DBType": "String",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Project ID"
+			},
+			"name": "projectId",
+			"required": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"label": {
+				"en_US": "Reason"
+			},
+			"name": "reason",
+			"required": false,
+			"type": "String"
+		}
+	],
+	"objectFolderExternalReferenceCode": "MARKETPLACE",
+	"pluralLabel": {
+		"en_US": "Trial Extension Requests"
+	},
+	"scope": "company"
+}

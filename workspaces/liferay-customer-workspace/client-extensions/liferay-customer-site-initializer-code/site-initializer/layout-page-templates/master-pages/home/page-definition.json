@@ -187,41 +187,9 @@
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
-														"iconBackgroundColor": "#5FC584",
-														"iconColor": "var(--color-neutral-0)",
-														"menuItemUrl": "https://help.liferay.com/"
-													},
-													"fragmentFields": [
-														{
-															"id": "menuItemText",
-															"value": {
-																"fragmentLink": {
-																},
-																"text": {
-																	"value_i18n": {
-																		"en_US": "Help Center"
-																	}
-																}
-															}
-														}
-													],
-													"fragmentStyle": {
-														"fontWeight": "fontWeightBold"
-													},
-													"indexed": true
-												},
-												"type": "Fragment"
-											},
-											{
-												"definition": {
-													"fragment": {
-														"key": "navigation-menu-item",
-														"siteKey": "[$GROUP_KEY$]"
-													},
-													"fragmentConfig": {
 														"iconBackgroundColor": "#ED8F9F",
 														"iconColor": "var(--color-neutral-0)",
-														"menuItemUrl": "https://help.liferay.com/"
+														"menuItemUrl": "https://support.liferay.com/"
 													},
 													"fragmentFields": [
 														{
@@ -488,7 +456,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Partners"
+																		"en_US": "Partners",
+																		"es_ES": "Partners",
+																		"ja_JP": "パートナー",
+																		"pt_BR": "Partners"
 																	}
 																}
 															}
@@ -517,9 +488,12 @@
 								"siteKey": "[$GROUP_KEY$]"
 							},
 							"fragmentConfig": {
-								"content": "This is a banner with a <a href='/test'>link</a>",
-								"displayEndDate": "01/01/2024",
-								"displayStartDate": "12/31/2024"
+								"alertType": "alert-info",
+								"content": "<b>NOTICE:</b> Liferay Help Center will undergo scheduled maintenance to migrate to our new ticket system. <br> <b>Start Time:</b> October 25, 2025, 4:00AM PDT <br> <b>Downtime Duration:</b> The expected maintenance window is 8 hours. <br> Access to the Help Center will be unavailable during this time. The Liferay Support Team will continue to actively monitor support issues. You will still be able to report issues during this maintenance window through the callback request form: <a href=\"/web/customer-portal/callback-request\" target=\"_blank\" rel=\"noopener noreferrer\"> support.liferay.com/callback-request </a>",
+								"dismissible": true,
+								"displayEndDate": "10/25/2025",
+								"displayStartDate": "10/05/2025",
+								"icon": "none"
 							},
 							"fragmentFields": [
 							],

@@ -202,8 +202,6 @@ public class CPConfigurationEntryPersistenceTest {
 
 		newCPConfigurationEntry.setTaxExempt(RandomTestUtil.randomBoolean());
 
-		newCPConfigurationEntry.setVisible(RandomTestUtil.randomBoolean());
-
 		newCPConfigurationEntry.setWeight(RandomTestUtil.nextDouble());
 
 		newCPConfigurationEntry.setWidth(RandomTestUtil.nextDouble());
@@ -319,9 +317,6 @@ public class CPConfigurationEntryPersistenceTest {
 		Assert.assertEquals(
 			existingCPConfigurationEntry.isTaxExempt(),
 			newCPConfigurationEntry.isTaxExempt());
-		Assert.assertEquals(
-			existingCPConfigurationEntry.isVisible(),
-			newCPConfigurationEntry.isVisible());
 		AssertUtils.assertEquals(
 			existingCPConfigurationEntry.getWeight(),
 			newCPConfigurationEntry.getWeight());
@@ -413,15 +408,6 @@ public class CPConfigurationEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_C_V() throws Exception {
-		_persistence.countByC_C_V(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_C_V(0L, 0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testCountByERC_C() throws Exception {
 		_persistence.countByERC_C("", RandomTestUtil.nextLong());
 
@@ -472,8 +458,8 @@ public class CPConfigurationEntryPersistenceTest {
 			"maxOrderQuantity", true, "minOrderQuantity", true,
 			"minStockQuantity", true, "multipleOrderQuantity", true,
 			"purchasable", true, "shippable", true, "shippingExtraPrice", true,
-			"shipSeparately", true, "taxExempt", true, "visible", true,
-			"weight", true, "width", true);
+			"shipSeparately", true, "taxExempt", true, "weight", true, "width",
+			true);
 	}
 
 	@Test
@@ -889,8 +875,6 @@ public class CPConfigurationEntryPersistenceTest {
 		cpConfigurationEntry.setShipSeparately(RandomTestUtil.randomBoolean());
 
 		cpConfigurationEntry.setTaxExempt(RandomTestUtil.randomBoolean());
-
-		cpConfigurationEntry.setVisible(RandomTestUtil.randomBoolean());
 
 		cpConfigurationEntry.setWeight(RandomTestUtil.nextDouble());
 

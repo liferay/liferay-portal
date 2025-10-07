@@ -23,7 +23,7 @@ export function InfoPanel({
 
 	return (
 		<SidePanel {...props}>
-			<InfoPanelContent items={selectedItems} />
+			<InfoPanelContent items={selectedItems ?? []} />
 		</SidePanel>
 	);
 }

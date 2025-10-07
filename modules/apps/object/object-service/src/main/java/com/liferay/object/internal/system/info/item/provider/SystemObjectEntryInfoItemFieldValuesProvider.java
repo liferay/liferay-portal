@@ -193,12 +193,20 @@ public class SystemObjectEntryInfoItemFieldValuesProvider
 				baseModelAttributes.get("createDate")));
 		infoFieldValues.add(
 			new InfoFieldValue<>(
+				ObjectEntryInfoItemFields.expirationDateInfoField,
+				baseModelAttributes.get("expirationDate")));
+		infoFieldValues.add(
+			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.externalReferenceCodeInfoField,
 				baseModelAttributes.get("externalReferenceCode")));
 		infoFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.modifiedDateInfoField,
 				baseModelAttributes.get("modifiedDate")));
+		infoFieldValues.add(
+			new InfoFieldValue<>(
+				ObjectEntryInfoItemFields.reviewDateInfoField,
+				baseModelAttributes.get("reviewDate")));
 		infoFieldValues.add(
 			new InfoFieldValue<>(
 				ObjectEntryInfoItemFields.statusInfoField,

@@ -172,6 +172,10 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
 		String portletId) {
 
+		if (portletId.equals(DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM_ADMIN)) {
+			return true;
+		}
+
 		try {
 			DDMPermissionChecker ddmPermissionChecker =
 				_serviceTrackerMap.getService(portletId);

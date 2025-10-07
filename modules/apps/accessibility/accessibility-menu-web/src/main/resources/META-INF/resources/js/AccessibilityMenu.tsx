@@ -137,7 +137,7 @@ const AccessibilityMenu = (props: Props) => {
 		[updateSetting]
 	);
 
-	const handleAccessiblitySettingChange = useCallback(
+	const handleAccessibilitySettingChange = useCallback(
 		(value: boolean, setting: AccessibilityMenuSetting) => {
 			if (setting.updating) {
 				return;
@@ -220,7 +220,7 @@ const AccessibilityMenu = (props: Props) => {
 										key={settings[key].key}
 										label={settings[key].label}
 										onChange={(value) =>
-											handleAccessiblitySettingChange(
+											handleAccessibilitySettingChange(
 												value,
 												settings[key]
 											)

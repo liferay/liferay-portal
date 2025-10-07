@@ -67,54 +67,55 @@ public class AddFragmentEntryLinkMVCActionCommand
 			ActionRequest actionRequest)
 		throws PortalException {
 
-		long groupId = ParamUtil.getLong(actionRequest, "groupId");
 		String fragmentEntryKey = ParamUtil.getString(
 			actionRequest, "fragmentEntryKey");
+
+		FragmentRenderer fragmentRenderer =
+			_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
+
+		long segmentsExperienceId = ParamUtil.getLong(
+			actionRequest, "segmentsExperienceId");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
+		if (fragmentRenderer != null) {
+			DefaultFragmentRendererContext defaultFragmentRendererContext =
+				new DefaultFragmentRendererContext(null);
+
+			return _fragmentEntryLinkService.addFragmentEntryLink(
+				null, serviceContext.getScopeGroupId(), 0, 0,
+				segmentsExperienceId, serviceContext.getPlid(),
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				_jsonFactory.toString(
+					fragmentRenderer.getConfigurationJSONObject(
+						defaultFragmentRendererContext)),
+				StringPool.BLANK, StringPool.BLANK, 0, fragmentEntryKey,
+				fragmentRenderer.getType(), serviceContext);
+		}
+
 		FragmentEntry fragmentEntry =
 			_fragmentEntryLinkManager.getFragmentEntry(
-				groupId, fragmentEntryKey, serviceContext.getLocale());
-
-		FragmentRenderer fragmentRenderer =
-			_fragmentRendererRegistry.getFragmentRenderer(fragmentEntryKey);
+				ParamUtil.getLong(actionRequest, "groupId"), fragmentEntryKey,
+				serviceContext.getLocale());
 
 		if ((fragmentEntry == null) && (fragmentRenderer == null)) {
 			throw new NoSuchEntryException();
 		}
 
-		long segmentsExperienceId = ParamUtil.getLong(
-			actionRequest, "segmentsExperienceId");
+		String contributedRendererKey = null;
 
-		if (fragmentEntry != null) {
-			String contributedRendererKey = null;
-
-			if (fragmentEntry.getFragmentEntryId() == 0) {
-				contributedRendererKey = fragmentEntryKey;
-			}
-
-			return _fragmentEntryLinkService.addFragmentEntryLink(
-				null, serviceContext.getScopeGroupId(), 0,
-				fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
-				serviceContext.getPlid(), fragmentEntry.getCss(),
-				fragmentEntry.getHtml(), fragmentEntry.getJs(),
-				fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
-				contributedRendererKey, fragmentEntry.getType(),
-				serviceContext);
+		if (fragmentEntry.getFragmentEntryId() == 0) {
+			contributedRendererKey = fragmentEntryKey;
 		}
 
-		DefaultFragmentRendererContext defaultFragmentRendererContext =
-			new DefaultFragmentRendererContext(null);
-
 		return _fragmentEntryLinkService.addFragmentEntryLink(
-			null, serviceContext.getScopeGroupId(), 0, 0, segmentsExperienceId,
-			serviceContext.getPlid(), StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK,
-			fragmentRenderer.getConfiguration(defaultFragmentRendererContext),
-			StringPool.BLANK, StringPool.BLANK, 0, fragmentEntryKey,
-			fragmentRenderer.getType(), serviceContext);
+			null, serviceContext.getScopeGroupId(), 0,
+			fragmentEntry.getFragmentEntryId(), segmentsExperienceId,
+			serviceContext.getPlid(), fragmentEntry.getCss(),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(),
+			fragmentEntry.getConfiguration(), null, StringPool.BLANK, 0,
+			contributedRendererKey, fragmentEntry.getType(), serviceContext);
 	}
 
 	@Override

@@ -32,6 +32,7 @@ import com.liferay.commerce.internal.order.comparator.CommerceOrderModifiedDateC
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.model.CommerceOrderTable;
 import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.model.CommerceShippingEngine;
 import com.liferay.commerce.model.CommerceShippingMethod;
@@ -74,6 +75,10 @@ import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.commerce.util.comparator.CommerceShippingMethodPriorityComparator;
 import com.liferay.document.library.kernel.util.DLAppHelperThreadLocal;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.sql.dsl.query.GroupByStep;
+import com.liferay.petra.sql.dsl.query.JoinStep;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -122,12 +127,14 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -763,6 +770,23 @@ public class CommerceOrderLocalServiceImpl
 			int start, int end, Sort sort)
 		throws PortalException {
 
+		if (Validator.isNull(keywords)) {
+			return dslQuery(
+				_getGroupByStep(
+					DSLQueryFactoryUtil.select(
+						CommerceOrderTable.INSTANCE
+					).from(
+						CommerceOrderTable.INSTANCE
+					),
+					companyId, groupId, commerceAccountIds, orderStatuses,
+					excludeOrderStatus
+				).orderBy(
+					CommerceOrderTable.INSTANCE, _toOrderByComparator(sort)
+				).limit(
+					start, end
+				));
+		}
+
 		SearchContext searchContext = _buildSearchContext(
 			companyId, groupId, commerceAccountIds, keywords,
 			excludeOrderStatus, orderStatuses, start, end, sort);
@@ -821,6 +845,17 @@ public class CommerceOrderLocalServiceImpl
 			long companyId, long groupId, long[] commerceAccountIds,
 			String keywords, int[] orderStatuses, boolean excludeOrderStatus)
 		throws PortalException {
+
+		if (Validator.isNull(keywords)) {
+			return dslQueryCount(
+				_getGroupByStep(
+					DSLQueryFactoryUtil.count(
+					).from(
+						CommerceOrderTable.INSTANCE
+					),
+					companyId, groupId, commerceAccountIds, orderStatuses,
+					excludeOrderStatus));
+		}
 
 		SearchContext searchContext = _buildSearchContext(
 			companyId, groupId, commerceAccountIds, keywords,
@@ -2479,6 +2514,48 @@ public class CommerceOrderLocalServiceImpl
 		return commerceOrders;
 	}
 
+	private GroupByStep _getGroupByStep(
+		JoinStep joinStep, long companyId, long groupId,
+		long[] commerceAccountIds, int[] orderStatuses,
+		boolean excludeOrderStatus) {
+
+		Predicate predicate = CommerceOrderTable.INSTANCE.companyId.eq(
+			companyId
+		).and(
+			CommerceOrderTable.INSTANCE.groupId.eq(groupId)
+		);
+
+		if (commerceAccountIds != null) {
+			if (commerceAccountIds.length == 0) {
+				predicate = predicate.and(
+					CommerceOrderTable.INSTANCE.commerceAccountId.isNull());
+			}
+			else {
+				predicate = predicate.and(
+					CommerceOrderTable.INSTANCE.commerceAccountId.in(
+						ArrayUtil.toArray(commerceAccountIds)));
+			}
+		}
+
+		if (orderStatuses != null) {
+			if (orderStatuses.length == 0) {
+				predicate = predicate.and(
+					CommerceOrderTable.INSTANCE.orderStatus.isNull());
+			}
+			else {
+				Predicate orderStatusPredicate =
+					CommerceOrderTable.INSTANCE.orderStatus.in(
+						ArrayUtil.toArray(orderStatuses));
+
+				predicate = predicate.and(
+					excludeOrderStatus ? orderStatusPredicate.not() :
+						orderStatusPredicate);
+			}
+		}
+
+		return joinStep.where(predicate);
+	}
+
 	private CommerceAddress _getNewCommerceAddress(
 			String addressType, CommerceOrder commerceOrder,
 			CommerceAddress commerceAddress, ServiceContext serviceContext)
@@ -3274,6 +3351,21 @@ public class CommerceOrderLocalServiceImpl
 			commerceOrder.setTotalDiscountPercentageLevel4(
 				discountPercentageLevel4);
 		}
+	}
+
+	private OrderByComparator<CommerceOrder> _toOrderByComparator(Sort sort) {
+		if (sort == null) {
+			sort = SortFactoryUtil.getSort(
+				CommerceOrder.class, Sort.LONG_TYPE, Field.CREATE_DATE, "DESC");
+		}
+		else {
+			sort.setFieldName(Field.CREATE_DATE);
+			sort.setType(Sort.LONG_TYPE);
+		}
+
+		return OrderByComparatorFactoryUtil.create(
+			CommerceOrderTable.INSTANCE.getTableName(), sort.getFieldName(),
+			!sort.isReverse());
 	}
 
 	private CommerceOrder _updateAddress(

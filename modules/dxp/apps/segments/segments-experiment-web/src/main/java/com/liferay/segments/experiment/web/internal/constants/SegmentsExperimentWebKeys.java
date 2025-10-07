@@ -10,6 +10,9 @@ package com.liferay.segments.experiment.web.internal.constants;
  */
 public class SegmentsExperimentWebKeys {
 
+	public static final String SEGMENTS_ANALYTICS_EXTERNAL_REFERENCE_CODE =
+		"SEGMENTS_ANALYTICS_EXTERNAL_REFERENCE_CODE";
+
 	public static final String SEGMENTS_EXPERIMENT = "SEGMENTS_EXPERIMENT";
 
 	public static final String SEGMENTS_EXPERIMENT_DISPLAY_CONTEXT =

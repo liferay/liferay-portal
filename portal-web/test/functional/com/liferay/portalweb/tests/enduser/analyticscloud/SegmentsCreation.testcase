@@ -97,56 +97,6 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8477 | Test Summary: Cancel creating a static segment"
-	@priority = 3
-	test CanCancelCreatingStaticSegment {
-		task ("Sign in as new user") {
-			User.logoutAndLoginPG(
-				userLoginEmailAddress = "userea@liferay.com",
-				userLoginFullName = "userfn userln");
-		}
-
-		task ("View the site page") {
-			ACUtils.navigateToSitePage(
-				actionType = "View WC",
-				documentTitleList = "1,2,3,4",
-				pageName = "AC Page",
-				siteName = "Site Name");
-
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		task ("Add a new static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-
-			ACUtils.setItemName(itemName = "Static Segment Test");
-		}
-
-		task ("Add the new user as member") {
-			ACSegments.addStaticMember(tableMember = "userfn userln");
-		}
-
-		task ("Cancel the creation") {
-			ACSegments.cancelSegment();
-
-			Button.click(button = "Leave Page");
-		}
-
-		task ("View the empty info in Segments admin") {
-			ACUtils.viewGenericText(textValueList = "There are no segments found.,Create a segment to get started.,Access our documentation to learn more.");
-
-			AssertVisible(locator1 = "ACSegments#CREATE_SEGMENT_BUTTON");
-		}
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8478 | Test Summary: Create a Dynamic Individuals Segment By Date"
 	@ignore = "true"
 	@priority = 4
@@ -973,51 +923,6 @@ definition {
 		}
 	}
 
-	@description = "Create a static segment with individual"
-	@priority = 5
-	test CanCreateStaticSegmentWithIndividuals {
-		property test.run.type = "single";
-
-		task ("View the site page with new user") {
-			ACUtils.navigateToSitePageWithUser(
-				actionType = "View WC",
-				documentTitleList = "1,2,3,4",
-				emailList = "userea@liferay.com",
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		ACUtils.closeAllSessionsAndWait();
-
-		ACUtils.launchAC();
-
-		ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-
-		ACNavigation.goToSegments();
-
-		ACSegments.createStaticSegment();
-
-		ACUtils.setItemName(itemName = "Static Segment Test");
-
-		ACSegments.addStaticMember(tableMember = "userfn userln");
-
-		ACSegments.saveSegment();
-
-		ACNavigation.goToSegments();
-
-		ACSegments.accessSegment(segmentName = "Static Segment Test");
-
-		ACNavigation.switchTab(tabName = "Membership");
-
-		AssertTextEquals(
-			locator1 = "ACSegments#SEGMENT_LABEL",
-			value1 = "STATIC SEGMENT");
-
-		AssertElementPresent(
-			key_userName = "userfn userln",
-			locator1 = "ACSegments#SEGMENT_MEMBERS");
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8474 | Test Summary: Duplicate a criteria"
 	@priority = 3
 	test CanDuplicateCriteria {
@@ -1191,93 +1096,6 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8472 | Test Summary: Paginate static segment 'Add Members' creation model"
-	@ignore = "true"
-	@priority = 3
-	test CanPaginateStaticSegmentAddMembers {
-
-		// AC Refactor: Data doesn't appear on time
-		// AC Refactor ticket: LRAC-14011
-
-		property test.run.type = "single";
-
-		var usernameList = "user1,user2,user3,user4,user5";
-		var emailList = "userea@liferay.com,user1@liferay.com,user2@liferay.com,user3@liferay.com,user4@liferay.com,user5@liferay.com";
-		var nameList = "user1 user1,user2 user2,user3 user3,user4 user4,user5 user5";
-
-		task ("Add 5 more new users") {
-			for (var name : list ${usernameList}) {
-				JSONUser.addUser(
-					userEmailAddress = "${name}@liferay.com",
-					userFirstName = ${name},
-					userLastName = ${name},
-					userScreenName = ${name});
-
-				JSONUser.setFirstPassword(
-					agreeToTermsAndAnswerReminderQuery = "true",
-					requireReset = "false",
-					userEmailAddress = "${name}@liferay.com");
-			}
-		}
-
-		task ("Sync the Contact Data") {
-			ACDXPSettings.syncNewContactData();
-		}
-
-		task ("View the page as different users") {
-			ACUtils.navigateToSitePageWithUser(
-				emailList = ${emailList},
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Close sessions") {
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		task ("Add a new static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-		}
-
-		task ("View the Pagination is 10 items in Add Members modal") {
-			Click(locator1 = "ACSegments#ADD_MEMBERS_BUTTON");
-
-			ACUtils.viewPaginationItemsPerPage(itemsPerPage = 10);
-		}
-
-		task ("View all users are shown in current page") {
-			ACUtils.viewNameList(nameList = "${nameList},userfn userln");
-		}
-
-		task ("Select the 4 items in Add Members modal") {
-			ACUtils.changePagination(itemsPerPage = 4);
-		}
-
-		task ("View only 5 users are shown in current page") {
-			ACUtils.viewNameList(nameList = ${nameList});
-
-			AssertElementNotPresent(
-				key_tableMember = "userfn userln",
-				locator1 = "ACSegments#TABLE_CHECKBOX");
-		}
-
-		task ("Navigate to the page 2") {
-			ACUtils.checkAnyPage(pageNumber = 2);
-		}
-
-		task ("View the userfn userln is shown in modal") {
-			ACUtils.viewNameList(nameList = "userfn userln");
-		}
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-8475 | Test Summary: Dynamic segment members preview in real time"
 	@priority = 3
 	test CanPreviewDynamicSegmentMembers {
@@ -1364,132 +1182,6 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8473 | Test Summary: Filter the Segment 'Add Members' Modal"
-	@ignore = "true"
-	@priority = 3
-	test CanSearchUserInAddMembersModal {
-
-		// AC Refactor: Data doesn't appear on time
-		// AC Refactor ticket: LRAC-14011
-
-		property test.run.type = "single";
-
-		var emailList = "userea@liferay.com,user1@liferay.com";
-
-		task ("Add one more user with a given birth date") {
-			JSONUser.addUser(
-				userEmailAddress = "user1@liferay.com",
-				userFirstName = "user1",
-				userLastName = "user1",
-				userScreenName = "user1");
-		}
-
-		task ("Sync the Contact Data") {
-			ACDXPSettings.syncNewContactData();
-		}
-
-		task ("View the page as different users") {
-			ACUtils.navigateToSitePageWithUser(
-				emailList = ${emailList},
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.closeAllSessionsAndWait();
-
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		task ("Add a new static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-		}
-
-		task ("Search username in Add Members modal") {
-			Click(locator1 = "ACSegments#ADD_MEMBERS_BUTTON");
-
-			ACUtils.searchBar(searchItem = "userfn userln");
-		}
-
-		task ("View only the userea shown in modal") {
-			ACUtils.viewNameList(nameList = "userfn userln");
-
-			AssertElementNotPresent(
-				key_nameList = "user1 user1",
-				locator1 = "ACUtils#NAME_LIST");
-		}
-
-		task ("Search email in Add Members modal") {
-			ACUtils.clearSearchBar();
-
-			ACUtils.searchBar(searchItem = "user1@liferay.com");
-		}
-
-		task ("View only the user1 shown in modal") {
-			ACUtils.viewNameList(nameList = "user1 user1");
-
-			AssertElementNotPresent(
-				key_nameList = "userfn userln",
-				locator1 = "ACUtils#NAME_LIST");
-		}
-	}
-
-	@description = "Feature ID: Legacy | Automation ID: LRAC-8133 | Test Summary: Create button shows option to create static or dynamic"
-	@priority = 5
-	test CanSeeOptionsToCreateStaticOrDynamicSegment {
-		property test.run.type = "single";
-
-		task ("View the site page with new user") {
-			ACUtils.navigateToSitePageWithUser(
-				actionType = "View WC",
-				documentTitleList = "1,2,3,4",
-				emailList = "userea@liferay.com",
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Close sessions and wait for 30 seconds") {
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		ACUtils.launchAC();
-
-		ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-
-		ACNavigation.goToSegments();
-
-		Click(locator1 = "ACSegments#CREATE_SEGMENT_BUTTON");
-
-		for (var segmentType : list "Dynamic Segment,Static Segment") {
-			var getFirst = StringUtil.extractFirst(${segmentType}, " ");
-
-			var getFirst = StringUtil.upperCase(${getFirst});
-
-			AssertTextEquals(
-				key_segmentType = ${getFirst},
-				locator1 = "ACSegments#SELECT_SEGMENT_TYPE",
-				value1 = ${segmentType});
-		}
-
-		ACSegments.selectSegmentType(segmentType = "STATIC");
-
-		AssertTextEquals(
-			locator1 = "ACSegments#SEGMENT_LABEL",
-			value1 = "STATIC SEGMENT");
-
-		ACNavigation.goToSegments();
-
-		ACSegments.createDynamicSegment();
-
-		AssertTextEquals(
-			locator1 = "ACSegments#SEGMENT_LABEL",
-			value1 = "DYNAMIC SEGMENT");
-	}
-
 	@description = "Feature ID: LRAC-13424 | Automation ID: LRAC-14041 | Test Summary: Check that it is not possible to create a dynamic segment with a name that is already in use"
 	@priority = 4
 	test CheckNotPossibleCreateDynamicSegmentWithNameAlreadyInUse {
@@ -1548,16 +1240,13 @@ definition {
 			ACUtils.viewResultsMessage(results = "Showing 1 to 1 of 1 entry.");
 		}
 
-		task ("Add a new static segment") {
-			ACSegments.createStaticSegment();
-		}
+		task ("Add a new Dynamic segment") {
+			ACSegments.createDynamicSegmentAndFillFields(
+				criterion = "Individual Attributes",
+				segmentField = "email",
+				segments = "Segment Name Already Exists 2");
 
-		task ("Type the segment name") {
-			ACUtils.setItemName(itemName = "Segment Name Already Exists 2");
-		}
-
-		task ("Add the new user as member") {
-			ACSegments.addStaticMember(tableMember = "userfn userln");
+			ACSegments.editTextCriterion(textInput = "test@liferay.com");
 		}
 
 		task ("Save the Segment") {
@@ -1578,111 +1267,6 @@ definition {
 			ACSegments.addSegmentField(segmentField = "email");
 
 			ACSegments.editTextCriterion(textInput = "userea@liferay.com");
-		}
-
-		task ("Save the Segment") {
-			Click(locator1 = "ACSegments#SAVE_SEGMENT");
-		}
-
-		task ("Assert that the warning pop-up appears") {
-			Alert.viewWarningSpecific(warningMessage = "Warning:This segment name is currently in use. Please try a different one");
-		}
-
-		task ("Cancel the creation") {
-			ACSegments.cancelSegment();
-
-			Button.click(button = "Leave Page");
-		}
-
-		task ("Check that only two segments are present in the list") {
-			ACUtils.viewResultsMessage(results = "Showing 1 to 2 of 2 entries.");
-		}
-	}
-
-	@description = "Feature ID: LRAC-13424 | Automation ID: LRAC-14042 | Test Summary: Check that it is not possible to create a static segment with a name that is already in use"
-	@priority = 4
-	test CheckNotPossibleCreateStaticSegmentWithNameAlreadyInUse {
-		task ("View the site page with new user") {
-			ACUtils.navigateToSitePageWithUser(
-				actionType = "View WC",
-				documentTitleList = "1,2,3,4",
-				emailList = "userea@liferay.com",
-				pageName = "AC Page",
-				siteName = "Site Name");
-		}
-
-		task ("Close sessions and wait for 30 seconds") {
-			ACUtils.closeAllSessionsAndWait();
-		}
-
-		task ("Switch to new property in AC") {
-			ACUtils.launchAC();
-
-			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-		}
-
-		for (var segmentName : list "Segment Name Already Exists,segment name already exists") {
-			task ("Add two new static segments") {
-				ACNavigation.goToSegments();
-
-				ACSegments.createStaticSegment();
-
-				ACUtils.setItemName(itemName = ${segmentName});
-			}
-
-			task ("Add the new user as member") {
-				ACSegments.addStaticMember(tableMember = "userfn userln");
-			}
-
-			task ("Save the Segment") {
-				Click(locator1 = "ACSegments#SAVE_SEGMENT");
-			}
-		}
-
-		task ("Assert that the warning pop-up appears") {
-			Alert.viewWarningSpecific(warningMessage = "Warning:This segment name is currently in use. Please try a different one.");
-		}
-
-		task ("Cancel the creation") {
-			ACSegments.cancelSegment();
-
-			Button.click(button = "Leave Page");
-		}
-
-		task ("Check that only one segment is present in the list") {
-			ACUtils.viewResultsMessage(results = "Showing 1 to 1 of 1 entry.");
-		}
-
-		task ("Add a new dynamic segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createDynamicSegment();
-
-			ACUtils.setItemName(itemName = "Segment Name Already Exists 2");
-		}
-
-		task ("Add an email field") {
-			ACSegments.goToSidebarAttributes(criterion = "Individual Attributes");
-
-			ACSegments.addSegmentField(segmentField = "email");
-
-			ACSegments.editTextCriterion(textInput = "userea@liferay.com");
-		}
-
-		task ("Save the Segment") {
-			ACSegments.saveSegment();
-		}
-
-		task ("Add a new static segment") {
-			ACNavigation.goToSegments();
-
-			ACSegments.createStaticSegment();
-
-			ACUtils.setItemName(itemName = "segment name already exists 2");
-		}
-
-		task ("Add the new user as member") {
-			ACSegments.addStaticMember(tableMember = "userfn userln");
 		}
 
 		task ("Save the Segment") {
@@ -1805,39 +1389,9 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
-		task ("Add a new static segment") {
+		task ("Add a new dynamic segment") {
 			ACNavigation.goToSegments();
 
-			ACSegments.createStaticSegment();
-		}
-
-		task ("View the Create button is disabled when the Name field is empty") {
-			AssertVisible(
-				key_text = "Create",
-				locator1 = "Button#ANY_DISABLED");
-		}
-
-		task ("Type the segment name") {
-			ACUtils.setItemName(itemName = "Static Segment Test");
-		}
-
-		task ("View the Create button is still disabled when there are no individuals") {
-			AssertTextEquals(
-				locator1 = "ACSegments#NO_MEMBER_TITLE",
-				value1 = "There are no Individuals found.");
-
-			AssertVisible(
-				key_text = "Create",
-				locator1 = "Button#ANY_DISABLED");
-		}
-
-		task ("Cancel the creation") {
-			ACSegments.cancelSegment();
-
-			ACUtils.viewGenericText(textValueList = "There are no segments found.,Create a segment to get started.,Access our documentation to learn more.");
-		}
-
-		task ("Add a new dynamic segment") {
 			ACSegments.createDynamicSegment();
 		}
 

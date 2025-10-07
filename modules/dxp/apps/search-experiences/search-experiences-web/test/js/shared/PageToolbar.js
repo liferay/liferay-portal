@@ -180,11 +180,12 @@ describe('PageToolbar', () => {
 
 		act(() => jest.runAllTimers());
 
-		fireEvent.click(getAllByTitle('Open Localizations')[0]);
+		fireEvent.click(getAllByTitle('en-US')[0]);
 
 		fireEvent.click(getAllByText('es-ES')[0]);
 
 		getByDisplayValue(title_i18n['es-ES']);
+
 		getByText(description_i18n['es-ES']);
 	});
 });

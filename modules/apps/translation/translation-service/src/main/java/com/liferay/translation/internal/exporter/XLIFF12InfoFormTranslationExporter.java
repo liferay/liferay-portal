@@ -11,8 +11,10 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
@@ -74,9 +76,13 @@ public class XLIFF12InfoFormTranslationExporter
 			(ClassPKInfoItemIdentifier)
 				infoItemReference.getInfoItemIdentifier();
 
+		String className = StringUtil.replace(
+			infoItemReference.getClassName(), CharPool.POUND,
+			CharPool.UNDERLINE);
+
 		fileElement.addAttribute(
 			"original",
-			infoItemReference.getClassName() + StringPool.COLON +
+			className + StringPool.COLON +
 				classPKInfoItemIdentifier.getClassPK());
 
 		fileElement.addAttribute(

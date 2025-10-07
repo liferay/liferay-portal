@@ -1,0 +1,20 @@
+{
+	"name": "Not Supported",
+	"name_i18n": {
+		"en_US": "Not Supported",
+		"es-ES": "No soportado",
+		"ja-JP": "サポート範囲外",
+		"pt-BR": "Não Suportado"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "background-image",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/not_supported.png$]"
+		},
+		{
+			"key": "icon-name",
+			"value": "times-circle"
+		}
+	],
+	"viewableBy": "Anyone"
+}

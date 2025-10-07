@@ -5,8 +5,8 @@
 
 package com.liferay.portal.vulcan.util;
 
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Collections;

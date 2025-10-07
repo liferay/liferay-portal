@@ -74,6 +74,10 @@ public class LayoutActionsHelper {
 	}
 
 	public boolean isShowConfigureAction(Layout layout) throws PortalException {
+		if (layout.isTypeEmpty()) {
+			return false;
+		}
+
 		return LayoutPermissionUtil.containsLayoutRestrictedUpdatePermission(
 			_themeDisplay.getPermissionChecker(), layout);
 	}
@@ -209,7 +213,9 @@ public class LayoutActionsHelper {
 	public boolean isShowPermissionsAction(Layout layout, Group selGroup)
 		throws PortalException {
 
-		if (StagingUtil.isIncomplete(layout) || selGroup.isLayoutPrototype()) {
+		if (StagingUtil.isIncomplete(layout) || layout.isTypeEmpty() ||
+			selGroup.isLayoutPrototype()) {
+
 			return false;
 		}
 

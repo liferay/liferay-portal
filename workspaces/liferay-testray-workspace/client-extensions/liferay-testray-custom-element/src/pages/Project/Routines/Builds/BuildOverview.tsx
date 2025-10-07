@@ -15,7 +15,7 @@ import {safeJSONParse} from '~/util';
 import JiraLink from '../../../../components/JiraLink';
 import Container from '../../../../components/Layout/Container';
 import QATable from '../../../../components/Table/QATable';
-import {useTotalTestCases} from '../../../../hooks/data/useCaseResultGroupBy';
+import {useTotalTestCasesByTestrayBuild} from '../../../../hooks/data/useCaseResultGroupBy';
 import useIssuesFound from '../../../../hooks/data/useIssuesFound';
 import i18n from '../../../../i18n';
 import {TestrayBuild, TestrayTask} from '../../../../services/rest';
@@ -29,7 +29,7 @@ type BuildOverviewProps = {
 };
 
 const BuildOverview: React.FC<BuildOverviewProps> = ({testrayBuild}) => {
-	const totalTestCasesGroup = useTotalTestCases(testrayBuild);
+	const totalTestCasesGroup = useTotalTestCasesByTestrayBuild(testrayBuild);
 	const {chart, entity, loading} = useCaseResultsChart({
 		buildId: testrayBuild.id,
 	});

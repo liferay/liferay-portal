@@ -7,6 +7,7 @@ package com.liferay.change.tracking.configuration;
 
 import aQute.bnd.annotation.metatype.Meta;
 
+import com.liferay.portal.configuration.metatype.annotations.ExtendedAttributeDefinition;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
 /**
@@ -48,12 +49,15 @@ public interface CTSettingsConfiguration {
 	)
 	public boolean modificationDeletionConflictCheckEnabled();
 
+	@ExtendedAttributeDefinition(featureFlagKey = "LPS-186360")
 	@Meta.AD(deflt = "false", name = "remote-enabled", required = false)
 	public boolean remoteEnabled();
 
+	@ExtendedAttributeDefinition(featureFlagKey = "LPS-186360")
 	@Meta.AD(name = "remote-client-id", required = false)
 	public String remoteClientId();
 
+	@ExtendedAttributeDefinition(featureFlagKey = "LPS-186360")
 	@Meta.AD(name = "remote-client-secret", required = false)
 	public String remoteClientSecret();
 

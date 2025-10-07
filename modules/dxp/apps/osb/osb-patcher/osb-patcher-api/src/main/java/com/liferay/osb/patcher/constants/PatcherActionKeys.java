@@ -10,6 +10,8 @@ package com.liferay.osb.patcher.constants;
  */
 public class PatcherActionKeys {
 
+	public static final String BUILD = "BUILD";
+
 	public static final String BUILDS = "BUILDS";
 
 	public static final String CHILD_BUILDS = "CHILD_BUILDS";
@@ -32,8 +34,16 @@ public class PatcherActionKeys {
 
 	public static final String SEND_REQUEST = "SEND_REQUEST";
 
+	public static final String SET_BUILD = "SET_BUILD";
+
 	public static final String SET_FIX_PACK_FIELDS = "SET_FIX_PACK_FIELDS";
 
+	public static final String SMOKE_TEST = "SMOKE_TEST";
+
+	public static final String TEST = "TEST";
+
 	public static final String UPDATE_COMMENTS_FIELD = "UPDATE_COMMENTS_FIELD";
+
+	public static final String UPDATE_QA_FIELDS = "UPDATE_QA_FIELDS";
 
 }

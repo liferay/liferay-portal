@@ -469,7 +469,7 @@ exports[`InterestTopics should render with a message to add keywords if there ar
       Add a keyword to be blocked.
       <a
         class="d-block mb-3"
-        href="https://learn.liferay.com/analytics-cloud/latest/en/workspace-data/definitions/managing-interest-topics.html"
+        href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-data/definitions"
         rel="noreferrer noopener"
         target="_blank"
       >

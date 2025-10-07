@@ -6,6 +6,7 @@
 package com.liferay.fragment.processor;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 
 import java.util.Locale;
 
@@ -17,7 +18,8 @@ import org.jsoup.nodes.Document;
 public interface DocumentFragmentEntryValidator {
 
 	public void validateFragmentEntryHTML(
-			Document document, String configuration, Locale locale)
+			Document document, JSONObject configurationJSONObject,
+			Locale locale)
 		throws PortalException;
 
 }

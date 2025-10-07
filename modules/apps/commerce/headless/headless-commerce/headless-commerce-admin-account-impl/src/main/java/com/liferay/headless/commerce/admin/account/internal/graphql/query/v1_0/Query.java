@@ -23,6 +23,8 @@ import com.liferay.headless.commerce.admin.account.resource.v1_0.AdminAccountGro
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1933,6 +1935,10 @@ public class Query {
 		accountResource.setContextUriInfo(_uriInfo);
 		accountResource.setContextUser(_user);
 		accountResource.setGroupLocalService(_groupLocalService);
+		accountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1949,6 +1955,10 @@ public class Query {
 		accountAddressResource.setContextUriInfo(_uriInfo);
 		accountAddressResource.setContextUser(_user);
 		accountAddressResource.setGroupLocalService(_groupLocalService);
+		accountAddressResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountAddressResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountAddressResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1965,6 +1975,10 @@ public class Query {
 		accountChannelEntryResource.setContextUriInfo(_uriInfo);
 		accountChannelEntryResource.setContextUser(_user);
 		accountChannelEntryResource.setGroupLocalService(_groupLocalService);
+		accountChannelEntryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountChannelEntryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountChannelEntryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1984,6 +1998,10 @@ public class Query {
 		accountChannelShippingOptionResource.setContextUser(_user);
 		accountChannelShippingOptionResource.setGroupLocalService(
 			_groupLocalService);
+		accountChannelShippingOptionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountChannelShippingOptionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountChannelShippingOptionResource.setRoleLocalService(
 			_roleLocalService);
 	}
@@ -2000,6 +2018,10 @@ public class Query {
 		accountMemberResource.setContextUriInfo(_uriInfo);
 		accountMemberResource.setContextUser(_user);
 		accountMemberResource.setGroupLocalService(_groupLocalService);
+		accountMemberResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountMemberResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountMemberResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -2016,6 +2038,10 @@ public class Query {
 		accountOrganizationResource.setContextUriInfo(_uriInfo);
 		accountOrganizationResource.setContextUser(_user);
 		accountOrganizationResource.setGroupLocalService(_groupLocalService);
+		accountOrganizationResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountOrganizationResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		accountOrganizationResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -2032,6 +2058,10 @@ public class Query {
 		adminAccountGroupResource.setContextUriInfo(_uriInfo);
 		adminAccountGroupResource.setContextUser(_user);
 		adminAccountGroupResource.setGroupLocalService(_groupLocalService);
+		adminAccountGroupResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		adminAccountGroupResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		adminAccountGroupResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -2058,6 +2088,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

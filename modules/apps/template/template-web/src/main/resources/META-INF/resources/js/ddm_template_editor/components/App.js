@@ -60,7 +60,7 @@ export default function App({
 
 					<Editor
 						autocompleteData={editorAutocompleteData}
-						initialScript={initialScript}
+						initialScript={Liferay.Util.unescapeHTML(initialScript)}
 						mode={mode}
 					/>
 				</div>

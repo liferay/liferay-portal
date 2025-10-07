@@ -35,7 +35,7 @@ function sourceTagTemplate({media, srcset}) {
 
 					let onSelectedImageChangeFn;
 
-					if (event.data.commandData) {
+					if (typeof event.data.commandData === 'function') {
 						onSelectedImageChangeFn = event.data.commandData;
 					}
 					else {

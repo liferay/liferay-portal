@@ -1,0 +1,45 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+
+		<title id="title"></title>
+	</head>
+
+	<body>
+		<h2 id="report-name"></h2>
+
+		<div class="date">
+			<p id="build-comparison-data-date"></p>
+		</div>
+
+		<div>
+			<div>
+				<i class="fa fa-search"></i>
+
+				<input id="search" onkeyup="searchTable(this.id, 'build-comparison-data-table')" placeholder="Filter by build identifier or metric name" type="text" />
+			</div>
+
+			<div class="table-wrapper">
+				<table class="table table-hover" data-sortable id="build-comparison-data-table" />
+			</div>
+		</div>
+
+		<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet" />
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sortable/0.8.0/js/sortable.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"></script>
+
+		<script src="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@1a5c67264e8db6aae2e38967a20c3f3a31416d27/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/js/utils.js"></script>
+
+		<link href="https://cdn.jsdelivr.net/gh/liferay/liferay-portal@cbdaa1da84693a1850cfdf792d92fadbdc4f01d5/modules/test/jenkins-results-parser/src/main/resources/com/liferay/jenkins/results/parser/dependencies/metrics/css/report.css" rel="stylesheet" />
+
+		<script src="js/table-data.js"></script>
+
+		<link href="css/main.css" rel="stylesheet" />
+
+		<script src="js/main.js"></script>
+	</body>
+</html>

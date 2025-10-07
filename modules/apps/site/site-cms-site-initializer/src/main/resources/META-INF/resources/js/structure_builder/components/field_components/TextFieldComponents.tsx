@@ -7,7 +7,7 @@ import ClayForm, {ClayCheckbox} from '@clayui/form';
 import React from 'react';
 
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
-import selectPublishedFields from '../../selectors/selectPublishedFields';
+import selectPublishedChildren from '../../selectors/selectPublishedChildren';
 import {Field, TextField} from '../../utils/field';
 import MaxLengthInput from '../MaxLengthInput';
 
@@ -30,9 +30,9 @@ function SecondSectionComponent({
 	const textField = field as TextField;
 
 	const dispatch = useStateDispatch();
-	const publishedFields = useSelector(selectPublishedFields);
+	const publishedChildren = useSelector(selectPublishedChildren);
 
-	const isPublished = publishedFields.has(field.uuid);
+	const isPublished = publishedChildren.has(field.uuid);
 
 	return (
 		<>

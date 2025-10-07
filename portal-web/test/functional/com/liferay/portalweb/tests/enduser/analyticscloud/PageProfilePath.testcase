@@ -262,15 +262,16 @@ definition {
 			ACProperties.switchProperty(propertyName = ${assignedPropertyName});
 		}
 
-		task ("Create four static segments") {
+		task ("Create four dynamic segments") {
 			for (var n : list "1,2,3,4") {
 				ACNavigation.goToSegments();
 
-				ACSegments.createStaticSegment();
+				ACSegments.createDynamicSegmentAndFillFields(
+					criterion = "Individual Attributes",
+					segmentField = "email",
+					segments = "Dynamic Segment Test ${n}");
 
-				ACUtils.setItemName(itemName = "Static Segment Test ${n}");
-
-				ACSegments.addStaticMember(tableMember = "Test Test");
+				ACSegments.editTextCriterion(textInput = "test@liferay.com");
 
 				ACSegments.saveSegment();
 			}
@@ -305,7 +306,7 @@ definition {
 		}
 
 		task ("View segments on the list") {
-			ACPagePath.viewSegmentDropdown(nameList = "Static Segment Test 1,Static Segment Test 2,Static Segment Test 3,Static Segment Test 4");
+			ACPagePath.viewSegmentDropdown(nameList = "Dynamic Segment Test 1,Dynamic Segment Test 2,Dynamic Segment Test 3,Dynamic Segment Test 4");
 		}
 	}
 

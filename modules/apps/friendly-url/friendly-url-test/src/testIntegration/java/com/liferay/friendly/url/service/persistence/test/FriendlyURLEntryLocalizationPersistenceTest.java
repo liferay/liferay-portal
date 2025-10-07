@@ -130,15 +130,15 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 		newFriendlyURLEntryLocalization.setLanguageId(
 			RandomTestUtil.randomString());
 
-		newFriendlyURLEntryLocalization.setUrlTitle(
-			RandomTestUtil.randomString());
-
 		newFriendlyURLEntryLocalization.setGroupId(RandomTestUtil.nextLong());
 
 		newFriendlyURLEntryLocalization.setClassNameId(
 			RandomTestUtil.nextLong());
 
 		newFriendlyURLEntryLocalization.setClassPK(RandomTestUtil.nextLong());
+
+		newFriendlyURLEntryLocalization.setUrlTitle(
+			RandomTestUtil.randomString());
 
 		_friendlyURLEntryLocalizations.add(
 			_persistence.update(newFriendlyURLEntryLocalization));
@@ -168,9 +168,6 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 			existingFriendlyURLEntryLocalization.getLanguageId(),
 			newFriendlyURLEntryLocalization.getLanguageId());
 		Assert.assertEquals(
-			existingFriendlyURLEntryLocalization.getUrlTitle(),
-			newFriendlyURLEntryLocalization.getUrlTitle());
-		Assert.assertEquals(
 			existingFriendlyURLEntryLocalization.getGroupId(),
 			newFriendlyURLEntryLocalization.getGroupId());
 		Assert.assertEquals(
@@ -179,6 +176,9 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 		Assert.assertEquals(
 			existingFriendlyURLEntryLocalization.getClassPK(),
 			newFriendlyURLEntryLocalization.getClassPK());
+		Assert.assertEquals(
+			existingFriendlyURLEntryLocalization.getUrlTitle(),
+			newFriendlyURLEntryLocalization.getUrlTitle());
 	}
 
 	@Test
@@ -284,7 +284,7 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 			"FriendlyURLEntryLocalization", "mvccVersion", true,
 			"ctCollectionId", true, "friendlyURLEntryLocalizationId", true,
 			"companyId", true, "friendlyURLEntryId", true, "languageId", true,
-			"urlTitle", true, "groupId", true, "classNameId", true, "classPK",
+			"groupId", true, "classNameId", true, "classPK", true, "urlTitle",
 			true);
 	}
 
@@ -619,13 +619,13 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 		friendlyURLEntryLocalization.setLanguageId(
 			RandomTestUtil.randomString());
 
-		friendlyURLEntryLocalization.setUrlTitle(RandomTestUtil.randomString());
-
 		friendlyURLEntryLocalization.setGroupId(RandomTestUtil.nextLong());
 
 		friendlyURLEntryLocalization.setClassNameId(RandomTestUtil.nextLong());
 
 		friendlyURLEntryLocalization.setClassPK(RandomTestUtil.nextLong());
+
+		friendlyURLEntryLocalization.setUrlTitle(RandomTestUtil.randomString());
 
 		_friendlyURLEntryLocalizations.add(
 			_persistence.update(friendlyURLEntryLocalization));

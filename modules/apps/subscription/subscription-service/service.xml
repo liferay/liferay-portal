@@ -39,6 +39,10 @@
 			<finder-column name="groupId" />
 			<finder-column name="userId" />
 		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
 		<finder name="U_C" return-type="Collection">
 			<finder-column name="userId" />
 			<finder-column name="classNameId" />

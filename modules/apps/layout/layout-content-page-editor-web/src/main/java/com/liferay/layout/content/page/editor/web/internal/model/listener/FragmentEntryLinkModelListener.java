@@ -15,16 +15,13 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.content.page.editor.web.internal.exception.NoninstanceablePortletException;
-import com.liferay.layout.content.page.editor.web.internal.manager.ContentManager;
-import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
-import com.liferay.layout.model.LayoutClassedModelUsage;
+import com.liferay.layout.manager.ContentManager;
 import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.util.CheckNoninstanceablePortletThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ClassName;
@@ -34,8 +31,6 @@ import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -44,7 +39,6 @@ import com.liferay.portlet.display.template.PortletDisplayTemplate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -60,7 +54,7 @@ public class FragmentEntryLinkModelListener
 	public void onAfterCreate(FragmentEntryLink fragmentEntryLink)
 		throws ModelListenerException {
 
-		_updateLayoutClassedModelUsage(fragmentEntryLink);
+		_contentManager.updateLayoutClassedModelUsage(fragmentEntryLink);
 
 		_updateDDMTemplateLink(fragmentEntryLink);
 	}
@@ -100,7 +94,7 @@ public class FragmentEntryLinkModelListener
 			FragmentEntryLink fragmentEntryLink)
 		throws ModelListenerException {
 
-		_updateLayoutClassedModelUsage(fragmentEntryLink);
+		_contentManager.updateLayoutClassedModelUsage(fragmentEntryLink);
 
 		_updateDDMTemplateLink(fragmentEntryLink);
 	}
@@ -194,8 +188,7 @@ public class FragmentEntryLinkModelListener
 			_portal.getClassNameId(FragmentEntryLink.class.getName()),
 			fragmentEntryLink.getFragmentEntryLinkId());
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
 
 		Iterator<String> keysIterator = jsonObject.keys();
 
@@ -238,51 +231,45 @@ public class FragmentEntryLinkModelListener
 			_portal.getClassNameId(FragmentEntryLink.class.getName()),
 			fragmentEntryLink.getFragmentEntryLinkId());
 
-		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
 
-			Iterator<String> keysIterator = jsonObject.keys();
+		Iterator<String> keysIterator = jsonObject.keys();
 
-			while (keysIterator.hasNext()) {
-				String key = keysIterator.next();
+		while (keysIterator.hasNext()) {
+			String key = keysIterator.next();
 
-				JSONObject editableProcessorJSONObject =
-					jsonObject.getJSONObject(key);
+			JSONObject editableProcessorJSONObject = jsonObject.getJSONObject(
+				key);
 
-				if (editableProcessorJSONObject == null) {
+			if (editableProcessorJSONObject == null) {
+				continue;
+			}
+
+			Iterator<String> editableKeysIterator =
+				editableProcessorJSONObject.keys();
+
+			while (editableKeysIterator.hasNext()) {
+				String editableKey = editableKeysIterator.next();
+
+				JSONObject editableJSONObject =
+					editableProcessorJSONObject.getJSONObject(editableKey);
+
+				if (editableJSONObject == null) {
 					continue;
 				}
 
-				Iterator<String> editableKeysIterator =
-					editableProcessorJSONObject.keys();
+				String fieldId = editableJSONObject.getString("fieldId");
 
-				while (editableKeysIterator.hasNext()) {
-					String editableKey = editableKeysIterator.next();
+				String mappedField = editableJSONObject.getString(
+					"mappedField", fieldId);
 
-					JSONObject editableJSONObject =
-						editableProcessorJSONObject.getJSONObject(editableKey);
-
-					if (editableJSONObject == null) {
-						continue;
-					}
-
-					String fieldId = editableJSONObject.getString("fieldId");
-
-					String mappedField = editableJSONObject.getString(
-						"mappedField", fieldId);
-
-					if (Validator.isNull(mappedField)) {
-						continue;
-					}
-
-					_updateDDMTemplateLink(
-						fragmentEntryLink, editableKey, mappedField);
+				if (Validator.isNull(mappedField)) {
+					continue;
 				}
+
+				_updateDDMTemplateLink(
+					fragmentEntryLink, editableKey, mappedField);
 			}
-		}
-		catch (PortalException portalException) {
-			throw new ModelListenerException(portalException);
 		}
 	}
 
@@ -317,60 +304,6 @@ public class FragmentEntryLinkModelListener
 			ddmTemplate.getTemplateId());
 	}
 
-	private void _updateLayoutClassedModelUsage(
-		FragmentEntryLink fragmentEntryLink) {
-
-		_layoutClassedModelUsageLocalService.deleteLayoutClassedModelUsages(
-			String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
-			_portal.getClassNameId(FragmentEntryLink.class.getName()),
-			fragmentEntryLink.getPlid());
-
-		Set<LayoutDisplayPageObjectProvider<?>>
-			layoutDisplayPageObjectProviders =
-				_contentManager.
-					getFragmentEntryLinkMappedLayoutDisplayPageObjectProviders(
-						fragmentEntryLink);
-
-		for (LayoutDisplayPageObjectProvider<?>
-				layoutDisplayPageObjectProvider :
-					layoutDisplayPageObjectProviders) {
-
-			LayoutClassedModelUsage layoutClassedModelUsage =
-				_layoutClassedModelUsageLocalService.
-					fetchLayoutClassedModelUsage(
-						fragmentEntryLink.getGroupId(),
-						layoutDisplayPageObjectProvider.getClassNameId(),
-						layoutDisplayPageObjectProvider.getClassPK(),
-						layoutDisplayPageObjectProvider.
-							getExternalReferenceCode(),
-						String.valueOf(
-							fragmentEntryLink.getFragmentEntryLinkId()),
-						_portal.getClassNameId(
-							FragmentEntryLink.class.getName()),
-						fragmentEntryLink.getPlid());
-
-			if (layoutClassedModelUsage != null) {
-				continue;
-			}
-
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
-			if (serviceContext == null) {
-				serviceContext = new ServiceContext();
-			}
-
-			_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-				fragmentEntryLink.getGroupId(),
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(),
-				layoutDisplayPageObjectProvider.getExternalReferenceCode(),
-				String.valueOf(fragmentEntryLink.getFragmentEntryLinkId()),
-				_portal.getClassNameId(FragmentEntryLink.class.getName()),
-				fragmentEntryLink.getPlid(), serviceContext);
-		}
-	}
-
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
@@ -392,9 +325,6 @@ public class FragmentEntryLinkModelListener
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutClassedModelUsageLocalService

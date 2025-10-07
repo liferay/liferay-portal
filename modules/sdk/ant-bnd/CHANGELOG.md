@@ -1,5 +1,53 @@
 # Liferay Ant BND Change Log
 
+## 3.2.16 - 2025-07-02
+
+### Commits
+- [LPD-59099] ant-bnd: switch implicit required packages on javax taglib URIs
+(aaf0b33b24)
+- [LPD-59099] ant-bnd: re-adds old javax strings (4d2028cf13)
+- [LPD-59099] ant-bnd: adds test case (ce4d46ea16)
+
+## 3.2.15 - 2025-05-27
+
+### Commits
+- [LPD-53852] Sort (5aa8f35954)
+- [LPD-53852] Sort (87d0cea482)
+- [LPD-56284] Full generation java (347e9a9017)
+- [LPD-56284] Full generation jsp (a38ee5d688)
+- [LPD-55089] Upgrade to latest version (d64e936946)
+- [LPD-51190] Update to postgresql155 since it should be the default DB on CI
+instead of mysql (da1c868811)
+
+## 3.2.14 - 2025-01-16
+
+### Commits
+- [LPD-41335] Rename (e0d13d1ce1)
+- [LPD-41335] Rename (28a0b95846)
+- [LPD-41335] Add unit tests to check that the old language header for 7.x
+versions (41a1b5280c)
+- [LPD-41335] Add 'module.only' only when LanguageResources header is used
+(39f3148860)
+- [LPD-41335] Check portal version and use the old language header for 7.x
+branches (61bbed7ff6)
+- [LPD-41335] SF, add method to retrieve language header (350a7bd04e)
+
+## 3.2.13 - 2024-12-27
+
+### Commits
+- [LPD-41335] Update and fix BND plugin unit tests (52aac9b40a)
+- [LPD-41335] Add 'module.only=true' for backwards compatibility (236a47e4c7)
+- [LPD-41335] Change BND plugins to use LanguageResources header (5d3402f35f)
+- [LRCI-4023] Modify rules based on batch types (4455184027)
+- [LPD-37253] Strip -jdk8 from modules.*-jdk8 test batches (0c91ba9f1e)
+- [LPD-36975] liferay-portal: auto SF (b1c315ad65)
+- [LPD-32570] SF, move variable declaration (9e8c7944b5)
+- [LRCI-4395] Update test.properties files to use new rules engine (a1e96597fc)
+- [LRCI-4420] Add additional module test.properties (ce58e967b0)
+
+### Dependencies
+- [LPD-36975] Update the ant dependency to version 1.10.14.
+
 ## 3.2.12 - 2024-06-14
 
 ### Commits
@@ -858,6 +906,15 @@ when baseline.jar.report.level=persist (78c3140369)
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
 [LPD-26915]: https://issues.liferay.com/browse/LPD-26915
 [LPD-28218]: https://issues.liferay.com/browse/LPD-28218
+[LPD-32570]: https://issues.liferay.com/browse/LPD-32570
+[LPD-36975]: https://issues.liferay.com/browse/LPD-36975
+[LPD-37253]: https://issues.liferay.com/browse/LPD-37253
+[LPD-41335]: https://issues.liferay.com/browse/LPD-41335
+[LPD-51190]: https://issues.liferay.com/browse/LPD-51190
+[LPD-53852]: https://issues.liferay.com/browse/LPD-53852
+[LPD-55089]: https://issues.liferay.com/browse/LPD-55089
+[LPD-56284]: https://issues.liferay.com/browse/LPD-56284
+[LPD-59099]: https://issues.liferay.com/browse/LPD-59099
 [LPS-50049]: https://issues.liferay.com/browse/LPS-50049
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-52032]: https://issues.liferay.com/browse/LPS-52032
@@ -960,5 +1017,8 @@ when baseline.jar.report.level=persist (78c3140369)
 [LPS-150378]: https://issues.liferay.com/browse/LPS-150378
 [LPS-152789]: https://issues.liferay.com/browse/LPS-152789
 [LPS-181508]: https://issues.liferay.com/browse/LPS-181508
+[LRCI-4023]: https://issues.liferay.com/browse/LRCI-4023
+[LRCI-4395]: https://issues.liferay.com/browse/LRCI-4395
+[LRCI-4420]: https://issues.liferay.com/browse/LRCI-4420
 [LRQA-25824]: https://issues.liferay.com/browse/LRQA-25824
 [LRQA-28693]: https://issues.liferay.com/browse/LRQA-28693

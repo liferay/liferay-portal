@@ -444,6 +444,8 @@ public class MillerColumnsDisplayContext {
 		).put(
 			"hasChild", true
 		).put(
+			"hasGuestViewPermission", !privatePages
+		).put(
 			"hasScopeGroup", true
 		).put(
 			"id", LayoutConstants.DEFAULT_PLID
@@ -596,6 +598,15 @@ public class MillerColumnsDisplayContext {
 					"id", "pending"
 				).put(
 					"label", LanguageUtil.get(_httpServletRequest, "pending")
+				));
+		}
+
+		if (layout.isTypeEmpty()) {
+			jsonArray.put(
+				JSONUtil.put(
+					"id", "empty"
+				).put(
+					"label", LanguageUtil.get(_httpServletRequest, "empty")
 				));
 		}
 

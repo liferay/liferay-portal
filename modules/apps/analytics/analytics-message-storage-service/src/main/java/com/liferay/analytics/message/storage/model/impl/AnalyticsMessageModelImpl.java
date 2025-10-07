@@ -712,7 +712,7 @@ public class AnalyticsMessageModelImpl
 	private long _userId;
 	private String _userName;
 	private Date _createDate;
-	private AnalyticsMessageBodyBlobModel _bodyBlobModel;
+	private transient AnalyticsMessageBodyBlobModel _bodyBlobModel;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<AnalyticsMessage, Object> function =

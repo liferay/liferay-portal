@@ -7,6 +7,7 @@ package com.liferay.headless.admin.workflow.internal.resource.v1_0;
 
 import com.liferay.headless.admin.workflow.dto.v1_0.Role;
 import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowLog;
+import com.liferay.headless.admin.workflow.dto.v1_0.WorkflowTask;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.RoleUtil;
 import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.WorkflowLogUtil;
@@ -18,6 +19,8 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
@@ -39,7 +42,8 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/workflow-log.properties",
-	scope = ServiceScope.PROTOTYPE, service = WorkflowLogResource.class
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = WorkflowLogResource.class
 )
 @CTAware
 public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
@@ -71,9 +75,11 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 				_kaleoLogLocalService.getKaleoLog(workflowLogId)));
 	}
 
+	@NestedField(parentClass = WorkflowTask.class, value = "workflowLogs")
 	@Override
 	public Page<WorkflowLog> getWorkflowTaskWorkflowLogsPage(
-			Long workflowTaskId, String[] types, Pagination pagination)
+			@NestedFieldId(value = "id") Long workflowTaskId, String[] types,
+			Pagination pagination)
 		throws Exception {
 
 		return Page.of(

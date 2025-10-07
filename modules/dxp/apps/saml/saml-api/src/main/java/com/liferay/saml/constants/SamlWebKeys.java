@@ -16,6 +16,8 @@ public interface SamlWebKeys {
 	public static final String FORCE_REAUTHENTICATION =
 		"FORCE_REAUTHENTICATION";
 
+	public static final String SAML_ACS_LOGIN = "SAML_ACS_LOGIN";
+
 	public static final String SAML_ASSERTION_LIFETIME =
 		"SAML_ASSERTION_LIFETIME";
 

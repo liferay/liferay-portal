@@ -52,7 +52,7 @@ public class FreeMarkerFragmentEntryValidator
 
 	@Override
 	public void validateFragmentEntryHTML(
-			String html, String configuration, Locale locale)
+			String html, JSONObject configurationJSONObject, Locale locale)
 		throws PortalException {
 
 		FreeMarkerFragmentEntryProcessorConfiguration
@@ -97,7 +97,8 @@ public class FreeMarkerFragmentEntryValidator
 
 			JSONObject configurationDefaultValuesJSONObject =
 				_fragmentEntryConfigurationParser.
-					getConfigurationDefaultValuesJSONObject(configuration);
+					getConfigurationDefaultValuesJSONObject(
+						configurationJSONObject);
 
 			Template template = TemplateManagerUtil.getTemplate(
 				TemplateConstants.LANG_TYPE_FTL,
@@ -112,6 +113,8 @@ public class FreeMarkerFragmentEntryValidator
 				).put(
 					"fragmentEntryLinkNamespace", StringPool.BLANK
 				).put(
+					"fragmentName", StringPool.BLANK
+				).put(
 					"input",
 					new InputTemplateNode(
 						StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
@@ -121,8 +124,8 @@ public class FreeMarkerFragmentEntryValidator
 					"layoutMode", Constants.VIEW
 				).putAll(
 					_fragmentEntryConfigurationParser.getContextObjects(
-						configurationDefaultValuesJSONObject, configuration,
-						null, new long[0])
+						configurationDefaultValuesJSONObject,
+						configurationJSONObject, null, new long[0])
 				).build());
 
 			template.prepareTaglib(httpServletRequest, httpServletResponse);

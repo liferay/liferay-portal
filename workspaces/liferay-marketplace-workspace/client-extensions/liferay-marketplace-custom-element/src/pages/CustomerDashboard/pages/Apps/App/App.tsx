@@ -42,8 +42,8 @@ const getPriceList = (
 			<table className="qa-table">
 				<thead>
 					<tr>
-						<th {...{width: '40%'}}>{i18n.translate('type')}</th>
-						<th {...{width: '30%'}}>{i18n.translate('qty')}</th>
+						<th width="40%">{i18n.translate('type')}</th>
+						<th width="30%">{i18n.translate('qty')}</th>
 						<th>{i18n.translate('total')}</th>
 					</tr>
 				</thead>
@@ -64,11 +64,7 @@ const getPriceList = (
 
 									<td>{order.quantity}</td>
 
-									<td>
-										{formatLocaleCurrency(
-											order.quantity * order.price.price
-										)}
-									</td>
+									<td>{order.price.priceFormatted}</td>
 								</tr>
 							);
 						}
@@ -148,17 +144,12 @@ const App = () => {
 							getPriceList(isCloud, isPaidApp, placedOrder),
 							{
 								title: i18n.translate('subtotal'),
-								value:
-									formatLocaleCurrency(
-										placedOrder.summary.subtotal
-									) || '',
+								value: placedOrder.summary.subtotalFormatted,
 							},
 							{
 								title: i18n.translate('subtotal-discount'),
-								value:
-									formatLocaleCurrency(
-										placedOrder.summary.totalDiscountValue
-									) || '',
+								value: placedOrder.summary
+									.subtotalDiscountValueFormatted,
 							},
 							{
 								title: i18n.translate('coupon-code'),
@@ -166,17 +157,11 @@ const App = () => {
 							},
 							{
 								title: i18n.translate('tax-vat'),
-								value:
-									formatLocaleCurrency(
-										placedOrder.summary.taxValue
-									) || '',
+								value: placedOrder.summary.taxValueFormatted,
 							},
 							{
 								title: i18n.translate('total'),
-								value:
-									formatLocaleCurrency(
-										placedOrder.summary.total
-									) || '-',
+								value: placedOrder.summary.totalFormatted,
 							},
 						]}
 					/>

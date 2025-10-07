@@ -90,7 +90,7 @@ public class FragmentCollectionFilterRegistryImpl
 
 			try {
 				_fragmentEntryValidator.validateConfiguration(
-					fragmentCollectionFilter.getConfiguration());
+					fragmentCollectionFilter.getConfigurationJSONObject());
 
 				return fragmentCollectionFilter;
 			}

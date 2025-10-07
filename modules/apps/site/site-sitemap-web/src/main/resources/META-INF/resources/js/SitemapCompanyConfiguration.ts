@@ -9,7 +9,9 @@ import {delegate, sub} from 'frontend-js-web';
 interface Props {
 	groupSelectorURL: string;
 	namespace: string;
-	selectEventName: string;
+	objectDefinitionSelectorURL: string;
+	selectGroupEventName: string;
+	selectObjectDefinitionEventName: string;
 }
 
 type SelectedItem = {
@@ -21,11 +23,21 @@ type SelectedItem = {
 export default function ({
 	groupSelectorURL,
 	namespace,
-	selectEventName,
+	objectDefinitionSelectorURL,
+	selectGroupEventName,
+	selectObjectDefinitionEventName,
 }: Props) {
 	const groupIdsInput = document.getElementById(
 		`${namespace}groupsSearchContainerPrimaryKeys`
 	) as HTMLInputElement;
+
+	const objectDefinitionIdsInput = document.getElementById(
+		`${namespace}objectDefinitionsSearchContainerPrimaryKeys`
+	) as HTMLInputElement;
+
+	const selectObjectDefinitionButton = document.getElementById(
+		`${namespace}selectObjectDefinitionLink`
+	) as HTMLButtonElement;
 
 	const selectSiteButton = document.getElementById(
 		`${namespace}selectSiteLink`
@@ -33,13 +45,23 @@ export default function ({
 
 	// @ts-ignore
 
-	const searchContainer = Liferay.SearchContainer.get(
+	const groupsSearchContainer = Liferay.SearchContainer.get(
 		`${namespace}groupsSearchContainer`
 	);
 
-	const searchContainerContentBox = searchContainer.get('contentBox');
+	const groupsSearchContainerContentBox =
+		groupsSearchContainer.get('contentBox');
 
-	const getGroupIds = (searchContainer: any) => {
+	// @ts-ignore
+
+	const objectDefinitionsSearchContainer = Liferay.SearchContainer.get(
+		`${namespace}objectDefinitionsSearchContainer`
+	);
+
+	const objectDefinitionsSearchContainerContentBox =
+		objectDefinitionsSearchContainer.get('contentBox');
+
+	const getSearchContainerData = (searchContainer: any) => {
 		const searchContainerData = searchContainer.getData();
 
 		return !searchContainerData.length
@@ -47,8 +69,102 @@ export default function ({
 			: searchContainerData.split(',');
 	};
 
-	const onSelectClick = () => {
-		const groupIds = getGroupIds(searchContainer);
+	const onRemoveObjectDefinition =
+		objectDefinitionsSearchContainerContentBox.delegate(
+			'click',
+			({currentTarget: removeButton}: {currentTarget: any}) => {
+				objectDefinitionsSearchContainer.deleteRow(
+					removeButton.ancestor('tr'),
+					removeButton.attr('data-rowid')
+				);
+
+				const objectDefinitionIds = getSearchContainerData(
+					objectDefinitionsSearchContainer
+				);
+
+				objectDefinitionIdsInput.value = objectDefinitionIds.join(',');
+			},
+			'.remove-button'
+		);
+
+	const onRemoveSite = groupsSearchContainerContentBox.delegate(
+		'click',
+		({currentTarget: removeButton}: {currentTarget: any}) => {
+			groupsSearchContainer.deleteRow(
+				removeButton.ancestor('tr'),
+				removeButton.attr('data-rowid')
+			);
+
+			const groupIds = getSearchContainerData(groupsSearchContainer);
+
+			groupIdsInput.value = groupIds.join(',');
+		},
+		'.remove-button'
+	);
+
+	const onSelectObjectDefinitionClick = () => {
+		const objectDefinitionIds = getSearchContainerData(
+			objectDefinitionsSearchContainer
+		);
+
+		openSelectionModal({
+			onSelect: (selectedItem) => {
+				if (selectedItem) {
+
+					// @ts-ignore
+
+					const values = JSON.parse(selectedItem.value);
+
+					const label = values.label;
+					const objectDefinitionId =
+						values.objectDefinitionId.toString();
+
+					const rowColumns = [];
+
+					const title = sub(Liferay.Language.get('remove-x'), label);
+
+					const removeIcon =
+						Liferay.Util.getLexiconIconTpl('times-circle');
+
+					const removeButton = `<button
+						aria-label="${title}"
+						class="btn btn-monospaced btn-outline-borderless btn-outline-secondary
+							btn-sm lfr-portal-tooltip remove-button text-secondary" 
+						data-rowid="${objectDefinitionId}" 
+						type="button" 
+						title="${title}"
+					>
+						<span class="inline-item">${removeIcon}</span>
+					</button>`;
+
+					rowColumns.push(
+						`<span class="text-truncate">${label}</span>`
+					);
+					rowColumns.push(removeButton);
+
+					objectDefinitionsSearchContainer.addRow(
+						rowColumns,
+						objectDefinitionId
+					);
+					objectDefinitionsSearchContainer.updateDataStore();
+
+					objectDefinitionIds.push(objectDefinitionId);
+					objectDefinitionIdsInput!.value =
+						objectDefinitionIds.join(',');
+				}
+			},
+			selectEventName: selectObjectDefinitionEventName,
+			selectedData: [objectDefinitionIds],
+			title: sub(
+				Liferay.Language.get('select-x'),
+				Liferay.Language.get('object')
+			),
+			url: objectDefinitionSelectorURL,
+		});
+	};
+
+	const onSelectSiteClick = () => {
+		const groupIds = getSearchContainerData(groupsSearchContainer);
 
 		openSelectionModal({
 			onSelect: (selectedItem: SelectedItem) => {
@@ -114,14 +230,14 @@ export default function ({
 					rowColumns.push(siteName);
 					rowColumns.push(removeButton);
 
-					searchContainer.addRow(rowColumns, entityId);
-					searchContainer.updateDataStore();
+					groupsSearchContainer.addRow(rowColumns, entityId);
+					groupsSearchContainer.updateDataStore();
 
 					groupIds.push(entityId);
 					groupIdsInput!.value = groupIds.join(',');
 				}
 			},
-			selectEventName,
+			selectEventName: selectGroupEventName,
 			selectedData: [groupIds],
 			title: sub(
 				Liferay.Language.get('select-x'),
@@ -131,32 +247,26 @@ export default function ({
 		});
 	};
 
-	const onRemoveSite = searchContainerContentBox.delegate(
+	const selectObjectDefinitionDelegate = delegate(
+		selectObjectDefinitionButton,
 		'click',
-		({currentTarget: removeButton}: {currentTarget: any}) => {
-			searchContainer.deleteRow(
-				removeButton.ancestor('tr'),
-				removeButton.attr('data-rowid')
-			);
-
-			const groupIds = getGroupIds(searchContainer);
-
-			groupIdsInput.value = groupIds.join(',');
-		},
-		'.remove-button'
+		'.btn',
+		onSelectObjectDefinitionClick
 	);
 
-	const selectDelegate = delegate(
+	const selectSiteDelegate = delegate(
 		selectSiteButton,
 		'click',
 		'.btn',
-		onSelectClick
+		onSelectSiteClick
 	);
 
 	return {
 		dispose() {
+			onRemoveObjectDefinition.detach();
 			onRemoveSite.detach();
-			selectDelegate.dispose();
+			selectObjectDefinitionDelegate.dispose();
+			selectSiteDelegate.dispose();
 		},
 	};
 }

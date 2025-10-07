@@ -94,7 +94,7 @@ const ProjectRadio: React.FC<ProjectRadioType> = ({
 									{!project?.availabilityToProduct && (
 										<small className="text-danger">
 											{i18n.translate(
-												'the-selected-project-does-not-meet-the-necessary-resource-requirements-for-this-app-Please-contact-sales-to-request-additional-resources'
+												'the-selected-project-does-not-meet-the-necessary-resource-requirements-for-this-app-please-contact-sales-to-request-additional-resources'
 											)}
 										</small>
 									)}

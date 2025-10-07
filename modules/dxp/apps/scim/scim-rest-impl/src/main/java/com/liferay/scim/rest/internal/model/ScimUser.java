@@ -5,13 +5,24 @@
 
 package com.liferay.scim.rest.internal.model;
 
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import org.wso2.charon3.core.objects.plainobjects.MultiValuedComplexType;
+import org.wso2.charon3.core.objects.plainobjects.ScimAddress;
 
 /**
  * @author Rafael Praxedes
  */
 public class ScimUser {
+
+	public List<ScimAddress> getAddresses() {
+		return _addresses;
+	}
 
 	public Date getBirthday() {
 		return _birthday;
@@ -25,8 +36,16 @@ public class ScimUser {
 		return _createDate;
 	}
 
-	public String getEmailAddress() {
-		return _emailAddress;
+	public String getDisplayName() {
+		return _displayName;
+	}
+
+	public String[] getEmailAddresses() {
+		return _emailAddresses;
+	}
+
+	public String[] getEntitlements() {
+		return _entitlements;
 	}
 
 	public String getExternalReferenceCode() {
@@ -43,6 +62,10 @@ public class ScimUser {
 
 	public String getId() {
 		return _id;
+	}
+
+	public Map<String, String> getIMs() {
+		return _ims;
 	}
 
 	public String getJobTitle() {
@@ -65,12 +88,38 @@ public class ScimUser {
 		return _modifiedDate;
 	}
 
+	public String getNickName() {
+		return _nickName;
+	}
+
 	public long[] getOrganizationIds() {
 		return _organizationIds;
 	}
 
 	public String getPassword() {
 		return _password;
+	}
+
+	public List<MultiValuedComplexType>
+		getPhoneNumberMultiValuedComplexTypes() {
+
+		return _phoneNumberMultiValuedComplexTypes;
+	}
+
+	public String[] getPhotos() {
+		return _photos;
+	}
+
+	public String getPreferredLanguage() {
+		return _preferredLanguage;
+	}
+
+	public long getPrefix() {
+		return _prefix;
+	}
+
+	public String getProfileUrl() {
+		return _profileUrl;
 	}
 
 	public long[] getRoleIds() {
@@ -81,8 +130,24 @@ public class ScimUser {
 		return _screenName;
 	}
 
+	public long getSuffix() {
+		return _suffix;
+	}
+
+	public String getTimeZoneId() {
+		return _timeZoneId;
+	}
+
 	public long[] getUserGroupIds() {
 		return _userGroupIds;
+	}
+
+	public String getUserType() {
+		return _userType;
+	}
+
+	public String[] getX509Certificates() {
+		return _x509Certificates;
 	}
 
 	public boolean isActive() {
@@ -117,6 +182,10 @@ public class ScimUser {
 		_active = active;
 	}
 
+	public void setAddresses(List<ScimAddress> addresses) {
+		_addresses = addresses;
+	}
+
 	public void setAutoPassword(boolean autoPassword) {
 		_autoPassword = autoPassword;
 	}
@@ -137,8 +206,16 @@ public class ScimUser {
 		_createDate = createDate;
 	}
 
-	public void setEmailAddress(String emailAddress) {
-		_emailAddress = emailAddress;
+	public void setDisplayName(String displayName) {
+		_displayName = displayName;
+	}
+
+	public void setEmailAddresses(String[] emailAddresses) {
+		_emailAddresses = emailAddresses;
+	}
+
+	public void setEntitlements(String[] entitlements) {
+		_entitlements = entitlements;
 	}
 
 	public void setExternalReferenceCode(String externalReferenceCode) {
@@ -155,6 +232,10 @@ public class ScimUser {
 
 	public void setId(String id) {
 		_id = id;
+	}
+
+	public void setIMs(Map<String, String> ims) {
+		_ims = ims;
 	}
 
 	public void setJobTitle(String jobTitle) {
@@ -181,6 +262,10 @@ public class ScimUser {
 		_modifiedDate = modifiedDate;
 	}
 
+	public void setNickName(String nickName) {
+		_nickName = nickName;
+	}
+
 	public void setOrganizationIds(long[] organizationIds) {
 		_organizationIds = organizationIds;
 	}
@@ -193,8 +278,33 @@ public class ScimUser {
 		_passwordReset = passwordReset;
 	}
 
+	public void setPhoneNumberMultiValuedComplexTypes(
+		List<MultiValuedComplexType> phoneNumberMultiValuedComplexTypes) {
+
+		_phoneNumberMultiValuedComplexTypes =
+			phoneNumberMultiValuedComplexTypes;
+	}
+
+	public void setPhotos(String[] photos) {
+		_photos = photos;
+	}
+
+	public void setPreferredLanguage(String preferredLanguage) {
+		_preferredLanguage = preferredLanguage;
+	}
+
+	public void setPrefix(long prefix) {
+		_prefix = prefix;
+	}
+
+	public void setProfileUrl(String profileUrl) {
+		_profileUrl = profileUrl;
+	}
+
 	public void setRoleIds(long[] roleIds) {
-		_roleIds = roleIds;
+		if (FeatureFlagManagerUtil.isEnabled("LPD-56434")) {
+			_roleIds = roleIds;
+		}
 	}
 
 	public void setScreenName(String screenName) {
@@ -205,6 +315,14 @@ public class ScimUser {
 		_sendEmail = sendEmail;
 	}
 
+	public void setSuffix(long suffix) {
+		_suffix = suffix;
+	}
+
+	public void setTimeZoneId(String timeZoneId) {
+		_timeZoneId = timeZoneId;
+	}
+
 	public void setUpdatePassword(boolean updatePassword) {
 		_updatePassword = updatePassword;
 	}
@@ -213,30 +331,52 @@ public class ScimUser {
 		_userGroupIds = userGroupIds;
 	}
 
+	public void setUserType(String userType) {
+		_userType = userType;
+	}
+
+	public void setX509Certificates(String[] x509Certificates) {
+		_x509Certificates = x509Certificates;
+	}
+
 	private boolean _active;
+	private List<ScimAddress> _addresses;
 	private boolean _autoPassword;
 	private boolean _autoScreenName;
 	private Date _birthday;
 	private long _companyId;
 	private Date _createDate;
-	private String _emailAddress;
+	private String _displayName;
+	private String[] _emailAddresses;
+	private String[] _entitlements;
 	private String _externalReferenceCode;
 	private String _firstName;
 	private long[] _groupIds;
 	private String _id;
+	private Map<String, String> _ims;
 	private String _jobTitle;
 	private String _lastName;
 	private Locale _locale;
 	private boolean _male;
 	private String _middleName;
 	private Date _modifiedDate;
+	private String _nickName;
 	private long[] _organizationIds;
 	private String _password;
 	private boolean _passwordReset;
+	private List<MultiValuedComplexType> _phoneNumberMultiValuedComplexTypes;
+	private String[] _photos;
+	private String _preferredLanguage;
+	private long _prefix;
+	private String _profileUrl;
 	private long[] _roleIds;
 	private String _screenName;
 	private boolean _sendEmail;
+	private long _suffix;
+	private String _timeZoneId;
 	private boolean _updatePassword;
 	private long[] _userGroupIds;
+	private String _userType;
+	private String[] _x509Certificates;
 
 }

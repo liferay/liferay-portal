@@ -14,6 +14,6 @@ public class LPS_195079 {
 		ServiceTrackerList<Class<T>, Class<E>> serviceTrackerList = ServiceTrackerListFactory.open(null, null);
 	}
 
-	private ServiceTrackerList<Class<T>, Class<E>> _serviceTrackerList;
+	private ServiceTrackerList<PageInclude, PageInclude> _serviceTrackerList;
 
 }

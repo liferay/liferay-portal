@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Term Web
 Bundle-SymbolicName: com.liferay.commerce.term.web
-Bundle-Version: 1.0.56
+Bundle-Version: 1.0.57
 Web-ContextPath: /commerce-term-web
 -dsannotations-options: inherit

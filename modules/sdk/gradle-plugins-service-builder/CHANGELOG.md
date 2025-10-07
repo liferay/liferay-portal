@@ -1,5 +1,121 @@
 # Liferay Gradle Plugins Service Builder Change Log
 
+## 4.0.182 - 2025-07-08
+
+### Dependencies
+- [LPD-56548] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.508.
+
+## 4.0.181 - 2025-06-27
+
+### Dependencies
+- [LPD-56601] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.507.
+
+## 4.0.179 - 2025-06-25
+
+### Dependencies
+- [LPD-58995] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.506.
+
+## 4.0.178 - 2025-06-24
+
+### Dependencies
+- [LPD-56081] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.505.
+
+## 4.0.177 - 2025-06-12
+
+### Dependencies
+- [LPD-57811] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.504.
+
+## 4.0.176 - 2025-06-10
+
+### Commits
+- [LPD-52887] Rename (1e3d0e1ddc)
+
+### Dependencies
+- [LPD-57590] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.503.
+- [LPD-44762] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.502.
+
+## 4.0.175 - 2025-03-16
+
+### Dependencies
+- [LPD-45573] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.501.
+- [LPD-45574] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.500.
+
+## 4.0.174 - 2025-03-03
+
+### Dependencies
+- [LPD-45575] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.499.
+
+## 4.0.173 - 2025-02-25
+
+### Dependencies
+- [LPD-45572] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.498.
+
+## 4.0.172 - 2025-02-20
+
+### Dependencies
+- [LPD-45806] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.497.
+
+## 4.0.171 - 2025-01-27
+
+### Dependencies
+- [LPD-47105] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.496.
+
+## 4.0.170 - 2025-01-08
+
+### Dependencies
+- [LPD-45405] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.495.
+
+## 4.0.169 - 2024-12-11
+
+### Dependencies
+- [LPD-29739] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.494.
+
+## 4.0.168 - 2024-11-25
+
+### Dependencies
+- [LPD-41800] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.493.
+
+## 4.0.166 - 2024-11-21
+
+### Dependencies
+- [LPD-41800] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.492.
+
+## 4.0.165 - 2024-11-12
+
+### Commits
+- [LPD-35517] Simplify (removed from Java 17) (29c357e8fd)
+- [LPD-35517] Configure task (4e767097b1)
+- [LPD-35517] Move to portal (488bcafa3f)
+
+## 4.0.164 - 2024-10-25
+
+### Dependencies
+- [LPD-40223] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.491.
+
+## 4.0.163 - 2024-10-24
+
+### Dependencies
+- [LPD-40223] Update the com.liferay.portal.tools.service.builder dependency to
+version 1.0.490.
+
 ## 4.0.162 - 2024-08-21
 
 ### Dependencies
@@ -2622,8 +2738,27 @@ version 2.4.
 [LPD-24744]: https://issues.liferay.com/browse/LPD-24744
 [LPD-24745]: https://issues.liferay.com/browse/LPD-24745
 [LPD-26381]: https://issues.liferay.com/browse/LPD-26381
+[LPD-29739]: https://issues.liferay.com/browse/LPD-29739
 [LPD-30302]: https://issues.liferay.com/browse/LPD-30302
 [LPD-33416]: https://issues.liferay.com/browse/LPD-33416
+[LPD-35517]: https://issues.liferay.com/browse/LPD-35517
+[LPD-40223]: https://issues.liferay.com/browse/LPD-40223
+[LPD-41800]: https://issues.liferay.com/browse/LPD-41800
+[LPD-44762]: https://issues.liferay.com/browse/LPD-44762
+[LPD-45405]: https://issues.liferay.com/browse/LPD-45405
+[LPD-45572]: https://issues.liferay.com/browse/LPD-45572
+[LPD-45573]: https://issues.liferay.com/browse/LPD-45573
+[LPD-45574]: https://issues.liferay.com/browse/LPD-45574
+[LPD-45575]: https://issues.liferay.com/browse/LPD-45575
+[LPD-45806]: https://issues.liferay.com/browse/LPD-45806
+[LPD-47105]: https://issues.liferay.com/browse/LPD-47105
+[LPD-52887]: https://issues.liferay.com/browse/LPD-52887
+[LPD-56081]: https://issues.liferay.com/browse/LPD-56081
+[LPD-56548]: https://issues.liferay.com/browse/LPD-56548
+[LPD-56601]: https://issues.liferay.com/browse/LPD-56601
+[LPD-57590]: https://issues.liferay.com/browse/LPD-57590
+[LPD-57811]: https://issues.liferay.com/browse/LPD-57811
+[LPD-58995]: https://issues.liferay.com/browse/LPD-58995
 [LPS-20176]: https://issues.liferay.com/browse/LPS-20176
 [LPS-41848]: https://issues.liferay.com/browse/LPS-41848
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081

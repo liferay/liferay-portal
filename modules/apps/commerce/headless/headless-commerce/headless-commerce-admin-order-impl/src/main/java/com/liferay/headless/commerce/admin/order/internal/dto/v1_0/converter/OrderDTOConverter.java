@@ -92,6 +92,7 @@ public class OrderDTOConverter implements DTOConverter<CommerceOrder, Order> {
 				setAccountId(commerceOrder::getCommerceAccountId);
 				setActions(dtoConverterContext::getActions);
 				setAdvanceStatus(commerceOrder::getAdvanceStatus);
+				setAuthor(commerceOrder::getUserName);
 				setBillingAddressExternalReferenceCode(
 					() -> {
 						CommerceAddress billingCommerceAddress =

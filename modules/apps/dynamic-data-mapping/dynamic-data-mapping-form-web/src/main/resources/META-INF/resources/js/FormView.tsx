@@ -25,7 +25,11 @@ const FormView: React.FC<{children?: React.ReactNode | undefined} & IProps> = ({
 				/>
 			)}
 
-			<DataEngineFormView {...{...otherProps, portletNamespace, title}} />
+			<DataEngineFormView
+				{...otherProps}
+				portletNamespace={portletNamespace}
+				title={title}
+			/>
 		</>
 	);
 };

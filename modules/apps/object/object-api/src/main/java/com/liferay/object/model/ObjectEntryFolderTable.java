@@ -63,6 +63,8 @@ public class ObjectEntryFolderTable extends BaseTable<ObjectEntryFolderTable> {
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ObjectEntryFolderTable, String> treePath = createColumn(
 		"treePath", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ObjectEntryFolderTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private ObjectEntryFolderTable() {
 		super("ObjectEntryFolder", ObjectEntryFolderTable::new);

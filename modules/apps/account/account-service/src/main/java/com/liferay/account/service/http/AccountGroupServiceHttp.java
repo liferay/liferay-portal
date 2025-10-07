@@ -412,15 +412,15 @@ public class AccountGroupServiceHttp {
 	}
 
 	public static com.liferay.account.model.AccountGroup
-			getOrAddIncompleteAccountGroup(
+			getOrAddEmptyAccountGroup(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				String name)
 		throws Exception {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				AccountGroupServiceUtil.class, "getOrAddIncompleteAccountGroup",
-				_getOrAddIncompleteAccountGroupParameterTypes9);
+				AccountGroupServiceUtil.class, "getOrAddEmptyAccountGroup",
+				_getOrAddEmptyAccountGroupParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, name);
@@ -612,10 +612,8 @@ public class AccountGroupServiceHttp {
 		_getAccountGroupsCountByAccountEntryIdParameterTypes8 = new Class[] {
 			long.class
 		};
-	private static final Class<?>[]
-		_getOrAddIncompleteAccountGroupParameterTypes9 = new Class[] {
-			String.class, String.class
-		};
+	private static final Class<?>[] _getOrAddEmptyAccountGroupParameterTypes9 =
+		new Class[] {String.class, String.class};
 	private static final Class<?>[] _searchAccountGroupsParameterTypes10 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,

@@ -1284,7 +1284,6 @@ definition {
 	@description = "LPS-100677 - Verify that searching steps containing non-ascii chars is possible"
 	@priority = 3
 	test UserCanSearchNonAsciiChars {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

@@ -1,0 +1,13 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "Select Article",
+					"name": "articleSelector",
+					"type": "itemSelector"
+				}
+			]
+		}
+	]
+}

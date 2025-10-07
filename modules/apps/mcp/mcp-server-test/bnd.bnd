@@ -1,0 +1,13 @@
+Bundle-Name: Liferay MCP Server Test
+Bundle-SymbolicName: com.liferay.mcp.server.test
+Bundle-Version: 1.0.0
+Import-Package:\
+	!com.networknt.schema.*,\
+	\
+	!javax.annotation.*,\
+	\
+	*
+-includeresource:\
+	reactor-core-[0-9.]*.jar;lib:=true,\
+	@mcp-core-[0-9.]*.jar;lib=true,\
+	@mcp-json-jackson2-[0-9.]*.jar;lib=true

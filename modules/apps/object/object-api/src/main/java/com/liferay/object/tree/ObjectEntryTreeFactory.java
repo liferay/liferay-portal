@@ -49,8 +49,9 @@ public class ObjectEntryTreeFactory extends BaseTreeFactory {
 							_objectEntryLocalService.getOneToManyObjectEntries(
 								parentObjectEntry.getGroupId(),
 								objectRelationship.getObjectRelationshipId(),
-								parentObjectEntry.getPrimaryKey(), true, null,
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+								null, false, parentObjectEntry.getPrimaryKey(),
+								true, null, QueryUtil.ALL_POS,
+								QueryUtil.ALL_POS, null),
 							objectEntry -> new Node(
 								new Edge(
 									objectRelationship.

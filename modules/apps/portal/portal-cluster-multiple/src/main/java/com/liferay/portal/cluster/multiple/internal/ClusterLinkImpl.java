@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -186,7 +186,7 @@ public class ClusterLinkImpl implements ClusterLink {
 	private Map<String, String> _getChannelSettings(String propertyPrefix) {
 		Map<String, String> channelSettings = new HashMap<>();
 
-		Properties channelProperties = _props.getProperties(
+		Properties channelProperties = PropsUtil.getProperties(
 			propertyPrefix, true);
 
 		for (Map.Entry<Object, Object> entry : channelProperties.entrySet()) {
@@ -261,8 +261,5 @@ public class ClusterLinkImpl implements ClusterLink {
 
 	@Reference
 	private PortalExecutorManager _portalExecutorManager;
-
-	@Reference
-	private Props _props;
 
 }

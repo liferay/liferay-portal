@@ -8,10 +8,10 @@ import {MultiSelectItem} from '@liferay/object-js-components-web';
 
 import {
 	getCheckedChildren,
-	getUserNotificationRoles,
-	handleMultiSelectRoleItemsChange,
+	handleMultiSelectItemsChange,
 	uncheckMultiSelectItemChildrens,
-} from '../components/SettingsContainer/rolesUtil';
+} from '../components/SettingsContainer/multiSelectUtil';
+import {getUserNotificationRoles} from '../components/SettingsContainer/rolesUtil';
 
 it('Assert role names checked items', () => {
 	const children = [
@@ -42,7 +42,7 @@ it('Assert role names checked items', () => {
 		},
 	];
 
-	const rolesNamesList = [
+	const roleNames = [
 		{roleName: 'Account Administrator'},
 		{roleName: 'Account Manager'},
 		{roleName: 'Account Member'},
@@ -53,7 +53,7 @@ it('Assert role names checked items', () => {
 		{roleName: 'Owner'},
 	];
 
-	const checkedChildren = getCheckedChildren(rolesNamesList, children);
+	const checkedChildren = getCheckedChildren(children, roleNames, 'roleName');
 
 	expect(checkedChildren).toStrictEqual([
 		{
@@ -109,18 +109,13 @@ it('Assert roles in User Notification', () => {
 		},
 	];
 
-	const itemsNamesList = {
-		recipients: [
-			{
-				roleName: 'Name1',
-			},
-		],
-	};
+	const recipients = [
+		{
+			roleName: 'Name1',
+		},
+	];
 
-	const userNotificationRoles = getUserNotificationRoles(
-		items,
-		itemsNamesList.recipients
-	);
+	const userNotificationRoles = getUserNotificationRoles(items, recipients);
 
 	expect(userNotificationRoles.children).toStrictEqual([
 		{
@@ -197,7 +192,10 @@ it('verify that handleMultiSelectRoleItemsChange generates new recipients in the
 		},
 	] as MultiSelectItem[];
 
-	const newRecipients = handleMultiSelectRoleItemsChange(itemsGroupMock);
+	const newRecipients = handleMultiSelectItemsChange(
+		itemsGroupMock,
+		'roleName'
+	);
 
 	expect(newRecipients).toStrictEqual([
 		{

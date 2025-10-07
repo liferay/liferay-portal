@@ -48,12 +48,7 @@ public class SXPBlueprintsTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaBuilder.add(
 				"collectionProvider", "collection-provider",
 				fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-					"collectionProviderCellRenderer")
-			).add(
-				"collectionProviderTypeName", "type"
-			).add(
-				"collectionProviderSubtypeName", "subtype"
-			);
+					"collectionProviderCellRenderer"));
 		}
 
 		return fdsTableSchemaBuilder.add(

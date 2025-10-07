@@ -52,6 +52,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-security:portal-security-permission-test-util")
 	testIntegrationImplementation project(":apps:portal-validation:portal-validation-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	testIntegrationImplementation project(":apps:portal:portal-local-service-tree-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-notifications-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")

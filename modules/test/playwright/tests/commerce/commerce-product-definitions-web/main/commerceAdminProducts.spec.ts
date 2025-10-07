@@ -10,6 +10,8 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import getRandomString from '../../../../utils/getRandomString';
+import {userData} from '../../../../utils/performLogin';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -137,5 +139,96 @@ test(
 				{exact: true}
 			)
 		).toBeVisible();
+	}
+);
+
+test(
+	'Product name should be created for both user language and instance language',
+	{tag: '@LPD-64086'},
+	async ({apiHelpers, commerceAdminProductPage, page}) => {
+		const user =
+			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+				'test@liferay.com'
+			);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		userData[user.alternateName] = {
+			name: user.givenName,
+			password: 'test',
+			surname: user.familyName,
+		};
+
+		const role =
+			await apiHelpers.headlessAdminUser.getRoleByName('Administrator');
+
+		await apiHelpers.headlessAdminUser.assignUserToRole(
+			role.externalReferenceCode,
+			user.id
+		);
+
+		await commerceAdminProductPage.goto();
+
+		await apiHelpers.headlessAdminUser.patchUserAccount(user, {
+			languageId: 'es_ES',
+		});
+
+		await page.reload();
+
+		const translateLink = page.getByRole('link', {
+			name: 'Mostrar la página en español (España).',
+		});
+
+		const inEnglish = await translateLink.isVisible();
+
+		if (inEnglish) {
+			await translateLink.click();
+		}
+
+		await commerceAdminProductPage.addButton.click();
+		await commerceAdminProductPage.menuItemProductType('Simple').click();
+
+		await expect(
+			commerceAdminProductPage.modalFrameLocator.getByText(
+				'Crear nuevo producto'
+			)
+		).toBeVisible();
+
+		const productName = getRandomString();
+
+		await commerceAdminProductPage.modalFrameLocator
+			.getByLabel('Nombre Requerido')
+			.fill(productName);
+		await commerceAdminProductPage.modalFrameLocator
+			.getByPlaceholder('Escriba aquí')
+			.fill(catalog.name);
+		await commerceAdminProductPage.modalMenuItem(catalog.name).click();
+		await commerceAdminProductPage.modalFrameLocator
+			.getByRole('button', {
+				exact: true,
+				name: 'Enviar',
+			})
+			.click();
+
+		await expect(page.getByText(productName)).toBeVisible();
+
+		const product = (
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq '${productName}'`,
+				})
+			)
+		).items[0];
+
+		const productNameUS = product.name['en_US'];
+		const productNameES = product.name['es_ES'];
+
+		expect(productNameUS).toBe(productName);
+		expect(productNameES).toBe(productName);
+
+		await apiHelpers.headlessAdminUser.patchUserAccount(user, {
+			languageId: 'en_US',
+		});
 	}
 );

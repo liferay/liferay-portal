@@ -429,18 +429,22 @@ public interface UserAccountResource {
 				String fieldNames)
 		throws Exception;
 
-	public UserAccount postUserAccount(UserAccount userAccount)
+	public UserAccount postUserAccount(
+			String captchaAnswer, String captchaToken, UserAccount userAccount)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postUserAccountHttpResponse(
-			UserAccount userAccount)
+			String captchaAnswer, String captchaToken, UserAccount userAccount)
 		throws Exception;
 
-	public void postUserAccountBatch(String callbackURL, Object object)
+	public void postUserAccountBatch(
+			String captchaAnswer, String captchaToken, String callbackURL,
+			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postUserAccountBatchHttpResponse(
-			String callbackURL, Object object)
+			String captchaAnswer, String captchaToken, String callbackURL,
+			Object object)
 		throws Exception;
 
 	public void postUserAccountImage(
@@ -5347,11 +5351,13 @@ public interface UserAccountResource {
 			return httpInvoker.invoke();
 		}
 
-		public UserAccount postUserAccount(UserAccount userAccount)
+		public UserAccount postUserAccount(
+				String captchaAnswer, String captchaToken,
+				UserAccount userAccount)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse = postUserAccountHttpResponse(
-				userAccount);
+				captchaAnswer, captchaToken, userAccount);
 
 			String content = httpResponse.getContent();
 
@@ -5413,6 +5419,7 @@ public interface UserAccountResource {
 		}
 
 		public HttpInvoker.HttpResponse postUserAccountHttpResponse(
+				String captchaAnswer, String captchaToken,
 				UserAccount userAccount)
 			throws Exception {
 
@@ -5439,6 +5446,16 @@ public interface UserAccountResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (captchaAnswer != null) {
+				httpInvoker.parameter(
+					"captchaAnswer", String.valueOf(captchaAnswer));
+			}
+
+			if (captchaToken != null) {
+				httpInvoker.parameter(
+					"captchaToken", String.valueOf(captchaToken));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -5452,11 +5469,14 @@ public interface UserAccountResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postUserAccountBatch(String callbackURL, Object object)
+		public void postUserAccountBatch(
+				String captchaAnswer, String captchaToken, String callbackURL,
+				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postUserAccountBatchHttpResponse(callbackURL, object);
+				postUserAccountBatchHttpResponse(
+					captchaAnswer, captchaToken, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -5507,7 +5527,8 @@ public interface UserAccountResource {
 		}
 
 		public HttpInvoker.HttpResponse postUserAccountBatchHttpResponse(
-				String callbackURL, Object object)
+				String captchaAnswer, String captchaToken, String callbackURL,
+				Object object)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -5532,6 +5553,16 @@ public interface UserAccountResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (captchaAnswer != null) {
+				httpInvoker.parameter(
+					"captchaAnswer", String.valueOf(captchaAnswer));
+			}
+
+			if (captchaToken != null) {
+				httpInvoker.parameter(
+					"captchaToken", String.valueOf(captchaToken));
+			}
 
 			if (callbackURL != null) {
 				httpInvoker.parameter(

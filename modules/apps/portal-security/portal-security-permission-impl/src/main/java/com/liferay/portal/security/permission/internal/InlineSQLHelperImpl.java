@@ -23,14 +23,15 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.ResourcePermissionTable;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
@@ -39,6 +40,8 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.permission.contributor.PermissionSQLContributor;
@@ -75,6 +78,84 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		InlineSQLHelper.class.getName() + ".findByResourcePermission";
 
 	@Override
+	public <T extends BaseModel<T>> List<T> filter(
+		List<T> list, long... groupIds) {
+
+		if (list.isEmpty()) {
+			return list;
+		}
+
+		T baseModel = list.get(0);
+
+		if (groupIds.length == 0) {
+			groupIds = new long[] {0};
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (_isSkipReplace(
+				permissionChecker, baseModel.getModelClassName(), groupIds)) {
+
+			return list;
+		}
+
+		Set<Long> permittedClassPKs = new HashSet<>();
+
+		Set<Long> roleIdsSet = _getRoleIdsSet(groupIds);
+		boolean signedIn = permissionChecker.isSignedIn();
+		long userId = permissionChecker.getUserId();
+
+		for (ResourcePermission resourcePermission :
+				_resourcePermissionLocalService.getResourcePermissions(
+					permissionChecker.getCompanyId(),
+					baseModel.getModelClassName(),
+					ResourceConstants.SCOPE_INDIVIDUAL)) {
+
+			if (resourcePermission.isViewActionId() &&
+				(roleIdsSet.contains(resourcePermission.getRoleId()) ||
+				 (signedIn && (resourcePermission.getOwnerId() == userId)))) {
+
+				permittedClassPKs.add(resourcePermission.getPrimKeyId());
+			}
+		}
+
+		_collectSharingEntryClassPKs(
+			baseModel.getModelClassName(), permissionChecker.getUserId(),
+			groupIds, permittedClassPKs);
+
+		if ((baseModel instanceof GroupedModel) && (groupIds.length > 0)) {
+			Set<Long> disabledGroupIds = new HashSet<>();
+
+			for (long groupId : groupIds) {
+				if (!isEnabled(groupId)) {
+					disabledGroupIds.add(groupId);
+				}
+			}
+
+			if (!disabledGroupIds.isEmpty()) {
+				return ListUtil.filter(
+					list,
+					t -> {
+						if (permittedClassPKs.contains(
+								(Long)t.getPrimaryKeyObj())) {
+
+							return true;
+						}
+
+						GroupedModel groupedModel = (GroupedModel)t;
+
+						return disabledGroupIds.contains(
+							groupedModel.getGroupId());
+					});
+			}
+		}
+
+		return ListUtil.filter(
+			list, t -> permittedClassPKs.contains((Long)t.getPrimaryKeyObj()));
+	}
+
+	@Override
 	public <T extends Table<T>> Predicate getPermissionWherePredicate(
 		Class<?> modelClass, Column<T, Long> classPKColumn, long... groupIds) {
 
@@ -94,9 +175,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			groupIds = new long[] {0};
 		}
 
-		if (_skipReplace(
-				permissionChecker, modelClassName, classPKColumn, groupIds)) {
-
+		if (_isSkipReplace(permissionChecker, modelClassName, groupIds)) {
 			return null;
 		}
 
@@ -191,7 +270,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		String sql, String className, String classPKField) {
 
 		return replacePermissionCheck(
-			sql, className, classPKField, null, new long[] {0}, null);
+			sql, className, classPKField, new long[] {0});
 	}
 
 	@Override
@@ -199,115 +278,32 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		String sql, String className, String classPKField, long groupId) {
 
 		return replacePermissionCheck(
-			sql, className, classPKField, null, new long[] {groupId}, null);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long groupId,
-		String bridgeJoin) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, null, new long[] {groupId},
-			bridgeJoin);
+			sql, className, classPKField, new long[] {groupId});
 	}
 
 	@Override
 	public String replacePermissionCheck(
 		String sql, String className, String classPKField, long[] groupIds) {
 
-		return replacePermissionCheck(
-			sql, className, classPKField, null, groupIds, null);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, long[] groupIds,
-		String bridgeJoin) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, null, groupIds, bridgeJoin);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField, new long[] {0}, null);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long groupId) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField, new long[] {groupId},
-			null);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long groupId, String bridgeJoin) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField, new long[] {groupId},
-			bridgeJoin);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long[] groupIds) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField, groupIds, null);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		long[] groupIds, String bridgeJoin) {
-
-		String groupIdField = classPKField.substring(
-			0, classPKField.lastIndexOf(CharPool.PERIOD));
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField,
-			groupIdField.concat(".groupId"), groupIds, bridgeJoin);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		String bridgeJoin) {
-
-		return replacePermissionCheck(
-			sql, className, classPKField, userIdField, 0, bridgeJoin);
-	}
-
-	@Override
-	public String replacePermissionCheck(
-		String sql, String className, String classPKField, String userIdField,
-		String groupIdField, long[] groupIds, String bridgeJoin) {
-
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		if ((sql == null) ||
-			_skipReplace(
-				permissionChecker, className, classPKField, groupIds)) {
+			_isSkipReplace(permissionChecker, className, groupIds)) {
 
 			return sql;
 		}
 
+		String groupIdField = classPKField.substring(
+			0, classPKField.lastIndexOf(CharPool.PERIOD));
+
+		groupIdField = groupIdField.concat(".groupId");
+
 		String resourcePermissionSQL = _getResourcePermissionSQL(
-			permissionChecker, className, userIdField, groupIds, bridgeJoin);
+			permissionChecker, className, groupIds);
 
 		return _insertResourcePermissionSQL(
-			sql, className, classPKField, userIdField, groupIdField, groupIds,
+			sql, className, classPKField, groupIdField, groupIds,
 			resourcePermissionSQL);
 	}
 
@@ -334,8 +330,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 	private void _appendPermissionSQL(
 		StringBundler sb, String className, String classPKField,
-		String userIdField, String groupIdField, long[] groupIds,
-		String permissionSQL) {
+		String groupIdField, long[] groupIds, String permissionSQL) {
 
 		List<PermissionSQLContributor> permissionSQLContributors =
 			_serviceTrackerMap.getService(className);
@@ -353,8 +348,7 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 				String contributorPermissionSQL =
 					permissionSQLContributor.getPermissionSQL(
-						className, classPKField, userIdField, groupIdField,
-						groupIds);
+						className, classPKField, groupIdField, groupIds);
 
 				if (Validator.isNull(contributorPermissionSQL)) {
 					continue;
@@ -410,6 +404,25 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			(groupAdminResourcePermissionSB != null)) {
 
 			sb.append(") ");
+		}
+	}
+
+	private void _collectSharingEntryClassPKs(
+		String className, long userId, long[] groupIds,
+		Set<Long> permittedClassPKs) {
+
+		List<PermissionSQLContributor> permissionSQLContributors =
+			_serviceTrackerMap.getService(className);
+
+		if (ListUtil.isEmpty(permissionSQLContributors)) {
+			return;
+		}
+
+		for (PermissionSQLContributor permissionSQLContributor :
+				permissionSQLContributors) {
+
+			permissionSQLContributor.collectPermittedClassPKs(
+				className, userId, groupIds, permittedClassPKs);
 		}
 	}
 
@@ -540,16 +553,12 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 	private String _getResourcePermissionSQL(
 		PermissionChecker permissionChecker, String className,
-		String userIdField, long[] groupIds, String bridgeJoin) {
+		long[] groupIds) {
 
 		String resourcePermissionSQL = _customSQL.get(
 			getClass(), FIND_BY_RESOURCE_PERMISSION);
 
-		if (Validator.isNotNull(bridgeJoin)) {
-			resourcePermissionSQL = bridgeJoin.concat(resourcePermissionSQL);
-		}
-
-		StringBundler sb = new StringBundler(8);
+		StringBundler sb = new StringBundler(7);
 
 		long[] roleIds = _getRoleIds(groupIds);
 
@@ -567,17 +576,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 				sb.append(StringPool.OPEN_PARENTHESIS);
 			}
 
-			long userId = permissionChecker.getUserId();
-
-			if (Validator.isNull(userIdField)) {
-				sb.append("ResourcePermission.ownerId = ");
-				sb.append(userId);
-			}
-			else {
-				sb.append(userIdField);
-				sb.append(" = ");
-				sb.append(userId);
-			}
+			sb.append("ResourcePermission.ownerId = ");
+			sb.append(permissionChecker.getUserId());
 
 			sb.append(StringPool.CLOSE_PARENTHESIS);
 		}
@@ -589,22 +589,15 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 
 		int scope = ResourceConstants.SCOPE_INDIVIDUAL;
 
-		String selectOptimizer = StringPool.BLANK;
-
-		if (DBManagerUtil.getDBType() == DBType.MYSQL) {
-			selectOptimizer = "/*+ SUBQUERY(MATERIALIZATION) */";
-		}
-
 		return StringUtil.replace(
 			resourcePermissionSQL,
 			new String[] {
 				"[$CLASS_NAME$]", "[$COMPANY_ID$]",
-				"[$RESOURCE_SCOPE_INDIVIDUAL$]", "[$ROLE_IDS_OR_OWNER_ID$]",
-				"[$SELECT_OPTIMIZER$]"
+				"[$RESOURCE_SCOPE_INDIVIDUAL$]", "[$ROLE_IDS_OR_OWNER_ID$]"
 			},
 			new String[] {
 				className, String.valueOf(permissionChecker.getCompanyId()),
-				String.valueOf(scope), roleIdsOrOwnerIdSQL, selectOptimizer
+				String.valueOf(scope), roleIdsOrOwnerIdSQL
 			});
 	}
 
@@ -627,15 +620,31 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			return _getRoleIds(groupIds[0]);
 		}
 
-		Set<Long> roleIds = new HashSet<>();
+		Set<Long> roleIdsSet = new HashSet<>();
 
 		for (long groupId : groupIds) {
 			for (long roleId : _getRoleIds(groupId)) {
-				roleIds.add(roleId);
+				roleIdsSet.add(roleId);
 			}
 		}
 
-		return ArrayUtil.toLongArray(roleIds);
+		return ArrayUtil.toLongArray(roleIdsSet);
+	}
+
+	private Set<Long> _getRoleIdsSet(long[] groupIds) {
+		if (groupIds.length == 1) {
+			return SetUtil.fromArray(_getRoleIds(groupIds[0]));
+		}
+
+		Set<Long> roleIdsSet = new HashSet<>();
+
+		for (long groupId : groupIds) {
+			for (long roleId : _getRoleIds(groupId)) {
+				roleIdsSet.add(roleId);
+			}
+		}
+
+		return roleIdsSet;
 	}
 
 	private DSLQuery _insertResourcePermissionQuery(
@@ -702,8 +711,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 	}
 
 	private String _insertResourcePermissionSQL(
-		String sql, String className, String classPKField, String userIdField,
-		String groupIdField, long[] groupIds, String permissionSQL) {
+		String sql, String className, String classPKField, String groupIdField,
+		long[] groupIds, String permissionSQL) {
 
 		StringBundler sb = new StringBundler(11);
 
@@ -726,8 +735,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			sb.append(_WHERE_CLAUSE);
 
 			_appendPermissionSQL(
-				sb, className, classPKField, userIdField, groupIdField,
-				groupIds, permissionSQL);
+				sb, className, classPKField, groupIdField, groupIds,
+				permissionSQL);
 
 			if (pos != -1) {
 				sb.append(sql.substring(pos));
@@ -739,8 +748,8 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 			sb.append(sql.substring(0, pos));
 
 			_appendPermissionSQL(
-				sb, className, classPKField, userIdField, groupIdField,
-				groupIds, permissionSQL);
+				sb, className, classPKField, groupIdField, groupIds,
+				permissionSQL);
 
 			sb.append("AND ");
 
@@ -750,9 +759,9 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		return sb.toString();
 	}
 
-	private boolean _skipReplace(
+	private boolean _isSkipReplace(
 		PermissionChecker permissionChecker, String className,
-		Object classPKField, long[] groupIds) {
+		long[] groupIds) {
 
 		if (!isEnabled(groupIds)) {
 			return true;
@@ -765,10 +774,6 @@ public class InlineSQLHelperImpl implements InlineSQLHelper {
 		if (Objects.equals(className, AssetTag.class.getName())) {
 			throw new IllegalArgumentException(
 				"AssetTag does not support inline permissions. See LPS-82433.");
-		}
-
-		if (Validator.isNull(classPKField)) {
-			throw new IllegalArgumentException("classPKField is null");
 		}
 
 		long companyId = permissionChecker.getCompanyId();

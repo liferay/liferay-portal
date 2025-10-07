@@ -5,11 +5,10 @@
 
 package com.liferay.object.web.internal.info.item.provider;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
-import com.liferay.info.item.provider.InfoItemDetailsProvider;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -19,7 +18,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
  * @author Guilherme Camacho
  */
 public class ObjectEntryInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<ObjectEntry> {
+	extends BaseInfoItemDetailsProvider<ObjectEntry> {
 
 	public ObjectEntryInfoItemDetailsProvider(
 		ObjectDefinition objectDefinition) {
@@ -41,21 +40,29 @@ public class ObjectEntryInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(ObjectEntry objectEntry) {
-		if (!_objectDefinition.isDefaultStorageType()) {
-			return new InfoItemDetails(
-				getInfoItemClassDetails(),
-				new InfoItemReference(
-					_objectDefinition.getClassName(),
-					new ERCInfoItemIdentifier(
-						objectEntry.getExternalReferenceCode())));
-		}
+	protected InfoItemIdentifierFactory<ObjectEntry>
+		getInfoItemIdentifierFactory() {
 
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				_objectDefinition.getClassName(),
-				objectEntry.getObjectEntryId()));
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				ObjectEntry objectEntry) {
+
+				return new ClassPKInfoItemIdentifier(
+					objectEntry.getPrimaryKey());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 	private final ObjectDefinition _objectDefinition;

@@ -6,10 +6,7 @@
 package com.liferay.journal.model.impl;
 
 import com.liferay.journal.model.JournalArticleDisplay;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 
 /**
  * @author Brian Wing Shun Chan
@@ -18,15 +15,16 @@ import com.liferay.portal.kernel.webserver.WebServerServletTokenUtil;
 public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 
 	public JournalArticleDisplayImpl(
-		long companyId, long id, long resourcePrimKey, long groupId,
-		long userId, String articleId, double version, String title,
-		String urlTitle, String description, String[] availableLocales,
-		String content, long ddmStructureId, String ddmTemplateKey,
-		boolean smallImage, long smallImageId, String smallImageURL,
-		int numberOfPages, int currentPage, boolean paginate,
-		boolean cacheable) {
+		long companyId, String externalReferenceCode, long id,
+		long resourcePrimKey, long groupId, long userId, String articleId,
+		double version, String title, String urlTitle, String description,
+		String[] availableLocales, String content, long ddmStructureId,
+		String ddmTemplateKey, boolean smallImage, long smallImageId,
+		String smallImageURL, String articleDisplayImageURL, int numberOfPages,
+		int currentPage, boolean paginate, boolean cacheable) {
 
 		_companyId = companyId;
+		_externalReferenceCode = externalReferenceCode;
 		_id = id;
 		_resourcePrimKey = resourcePrimKey;
 		_groupId = groupId;
@@ -43,6 +41,7 @@ public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 		_smallImage = smallImage;
 		_smallImageId = smallImageId;
 		_smallImageURL = smallImageURL;
+		_articleDisplayImageURL = articleDisplayImageURL;
 		_numberOfPages = numberOfPages;
 		_currentPage = currentPage;
 		_paginate = paginate;
@@ -51,18 +50,7 @@ public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 
 	@Override
 	public String getArticleDisplayImageURL(ThemeDisplay themeDisplay) {
-		if (!isSmallImage()) {
-			return null;
-		}
-
-		if (Validator.isNotNull(getSmallImageURL())) {
-			return getSmallImageURL();
-		}
-
-		return StringBundler.concat(
-			themeDisplay.getPathImage(), "/journal/article?img_id=",
-			getSmallImageId(), "&t=",
-			WebServerServletTokenUtil.getToken(getSmallImageId()));
+		return _articleDisplayImageURL;
 	}
 
 	@Override
@@ -103,6 +91,11 @@ public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 	@Override
 	public String getDescription() {
 		return _description;
+	}
+
+	@Override
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
 	}
 
 	@Override
@@ -220,6 +213,7 @@ public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 		_smallImageURL = smallImageURL;
 	}
 
+	private final String _articleDisplayImageURL;
 	private final String _articleId;
 	private final String[] _availableLocales;
 	private boolean _cacheable;
@@ -229,6 +223,7 @@ public class JournalArticleDisplayImpl implements JournalArticleDisplay {
 	private long _ddmStructureId;
 	private String _ddmTemplateKey;
 	private final String _description;
+	private final String _externalReferenceCode;
 	private final long _groupId;
 	private final long _id;
 	private int _numberOfPages;

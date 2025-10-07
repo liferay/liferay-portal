@@ -8,13 +8,15 @@ package com.liferay.object.rest.internal.dto.v1_0.converter;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
-import com.liferay.batch.engine.attachment.BatchEngineAttachmentManager;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.processor.PDFProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.exportimport.attachment.ExportImportAttachmentManager;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
@@ -34,11 +36,13 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.ObjectRelatedModelsProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
+import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.rest.dto.v1_0.AuditEvent;
 import com.liferay.object.rest.dto.v1_0.AuditFieldChange;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.Folder;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.object.rest.dto.v1_0.ObjectDefinitionBrief;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.Scope;
 import com.liferay.object.rest.dto.v1_0.Status;
@@ -63,6 +67,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -73,15 +78,19 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlParserUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -107,6 +116,8 @@ import com.liferay.portal.vulcan.jaxrs.extension.ExtendedEntity;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+import com.liferay.trash.model.TrashEntry;
+import com.liferay.trash.service.TrashEntryLocalService;
 
 import jakarta.ws.rs.core.UriInfo;
 
@@ -243,188 +254,196 @@ public class ObjectEntryDTOConverter
 		ObjectEntry contentObjectEntry = (objectEntryVersion == null) ? null :
 			ObjectEntry.unsafeToDTO(objectEntryVersion.getContent());
 
-		return new ObjectEntry() {
-			{
-				setActions(dtoConverterContext::getActions);
-				setAuditEvents(
-					() -> _toAuditEvents(
+		ObjectEntry objectEntry = _toSimplifiedObjectEntry(
+			contentObjectEntry, objectDefinition, objectEntryVersion,
+			serviceBuilderObjectEntry);
+
+		if (GetterUtil.getBoolean(
+				dtoConverterContext.getAttribute("simplifiedObjectEntry"))) {
+
+			return objectEntry;
+		}
+
+		TrashEntry trashEntry = null;
+
+		if (serviceBuilderObjectEntry.getStatus() ==
+				WorkflowConstants.STATUS_IN_TRASH) {
+
+			trashEntry = _trashEntryLocalService.fetchEntry(
+				objectDefinition.getClassName(),
+				serviceBuilderObjectEntry.getObjectEntryId());
+		}
+
+		TrashEntry finalTrashEntry = trashEntry;
+
+		objectEntry.setActions(dtoConverterContext::getActions);
+		objectEntry.setAuditEvents(
+			() -> _toAuditEvents(
+				dtoConverterContext, objectDefinition,
+				serviceBuilderObjectEntry));
+		objectEntry.setCreator(
+			() -> {
+				long userId = _getAttribute(
+					objectEntryVersion, ObjectEntryVersionModel::getUserId,
+					serviceBuilderObjectEntry, ObjectEntryModel::getUserId);
+
+				return CreatorUtil.toCreator(
+					_portal, dtoConverterContext.getUriInfo(),
+					_userLocalService.fetchUser(userId));
+			});
+		objectEntry.setDateCreated(
+			() -> _getAttribute(
+				objectEntryVersion, ObjectEntryVersionModel::getCreateDate,
+				serviceBuilderObjectEntry, ObjectEntryModel::getCreateDate));
+		objectEntry.setDateModified(
+			() -> _getAttribute(
+				objectEntryVersion, ObjectEntryVersionModel::getModifiedDate,
+				serviceBuilderObjectEntry, ObjectEntryModel::getModifiedDate));
+		objectEntry.setDefaultLanguageId(
+			() -> {
+				if (FeatureFlagManagerUtil.isEnabled(
+						objectDefinition.getCompanyId(), "LPD-32050")) {
+
+					return serviceBuilderObjectEntry.getDefaultLanguageId();
+				}
+
+				return null;
+			});
+		objectEntry.setDisplayDate(
+			() -> _getAttribute(
+				objectEntryVersion, ObjectEntryVersionModel::getDisplayDate,
+				serviceBuilderObjectEntry, ObjectEntryModel::getDisplayDate));
+		objectEntry.setExpirationDate(
+			() -> _getAttribute(
+				objectEntryVersion, ObjectEntryVersionModel::getExpirationDate,
+				serviceBuilderObjectEntry,
+				ObjectEntryModel::getExpirationDate));
+		objectEntry.setFriendlyUrlPath(
+			() -> serviceBuilderObjectEntry.getURLTitle(
+				dtoConverterContext.getLocale()));
+		objectEntry.setFriendlyUrlPath_i18n(
+			serviceBuilderObjectEntry::getURLTitleMap);
+		objectEntry.setId(serviceBuilderObjectEntry::getObjectEntryId);
+		objectEntry.setKeywords(
+			() -> {
+				if (objectEntryVersion != null) {
+					return contentObjectEntry.getKeywords();
+				}
+				else if (!objectDefinition.isEnableCategorization()) {
+					return null;
+				}
+
+				return ListUtil.toArray(
+					_assetTagLocalService.getTags(
+						objectDefinition.getClassName(),
+						serviceBuilderObjectEntry.getObjectEntryId()),
+					AssetTag.NAME_ACCESSOR);
+			});
+		objectEntry.setObjectEntryFolderExternalReferenceCode(
+			() -> {
+				ObjectEntryFolder objectEntryFolder =
+					_objectEntryFolderLocalService.fetchObjectEntryFolder(
+						serviceBuilderObjectEntry.getObjectEntryFolderId());
+
+				if (objectEntryFolder != null) {
+					return objectEntryFolder.getExternalReferenceCode();
+				}
+
+				return StringPool.BLANK;
+			});
+		objectEntry.setObjectEntryFolderId(
+			serviceBuilderObjectEntry::getObjectEntryFolderId);
+		objectEntry.setPermissions(
+			() -> _toPermissions(objectDefinition, serviceBuilderObjectEntry));
+		objectEntry.setProperties(
+			() -> {
+				if (objectEntryVersion == null) {
+					return _toProperties(
 						dtoConverterContext, objectDefinition,
-						serviceBuilderObjectEntry));
-				setCreator(
-					() -> _getAttribute(
-						objectEntryVersion,
-						objectEntryVersion -> CreatorUtil.toCreator(
-							_portal, dtoConverterContext.getUriInfo(),
-							_userLocalService.fetchUser(
-								objectEntryVersion.getUserId())),
-						serviceBuilderObjectEntry,
-						serviceBuilderObjectEntry -> CreatorUtil.toCreator(
-							_portal, dtoConverterContext.getUriInfo(),
-							_userLocalService.fetchUser(
-								serviceBuilderObjectEntry.getUserId()))));
-				setDateCreated(
-					() -> _getAttribute(
-						objectEntryVersion,
-						ObjectEntryVersionModel::getCreateDate,
-						serviceBuilderObjectEntry,
-						ObjectEntryModel::getCreateDate));
-				setDateModified(
-					() -> _getAttribute(
-						objectEntryVersion,
-						ObjectEntryVersionModel::getModifiedDate,
-						serviceBuilderObjectEntry,
-						ObjectEntryModel::getModifiedDate));
-				setDefaultLanguageId(
-					() -> {
-						if (FeatureFlagManagerUtil.isEnabled(
-								objectDefinition.getCompanyId(), "LPD-32050")) {
+						serviceBuilderObjectEntry);
+				}
 
-							return serviceBuilderObjectEntry.
-								getDefaultLanguageId();
-						}
+				Map<String, Object> properties =
+					contentObjectEntry.getProperties();
 
-						return null;
-					});
-				setDisplayDate(
-					() -> _getAttribute(
-						objectEntryVersion,
-						ObjectEntryVersionModel::getDisplayDate,
-						serviceBuilderObjectEntry,
-						ObjectEntryModel::getDisplayDate));
-				setExpirationDate(
-					() -> _getAttribute(
-						objectEntryVersion,
-						ObjectEntryVersionModel::getExpirationDate,
-						serviceBuilderObjectEntry,
-						ObjectEntryModel::getExpirationDate));
-				setExternalReferenceCode(
-					() -> {
-						if (objectEntryVersion != null) {
-							return contentObjectEntry.
-								getExternalReferenceCode();
-						}
+				com.liferay.object.model.ObjectEntry
+					clonedServiceBuilderObjectEntry =
+						(com.liferay.object.model.ObjectEntry)
+							serviceBuilderObjectEntry.clone();
 
-						return serviceBuilderObjectEntry.
-							getExternalReferenceCode();
-					});
-				setFriendlyUrlPath(
-					() -> serviceBuilderObjectEntry.getURLTitle(
-						dtoConverterContext.getLocale()));
-				setFriendlyUrlPath_i18n(
-					serviceBuilderObjectEntry::getURLTitleMap);
-				setId(serviceBuilderObjectEntry::getObjectEntryId);
-				setKeywords(
-					() -> {
-						if (objectEntryVersion != null) {
-							return contentObjectEntry.getKeywords();
-						}
-						else if (!objectDefinition.isEnableCategorization()) {
-							return null;
-						}
+				clonedServiceBuilderObjectEntry.setValues(
+					(Map<String, Serializable>)properties.get("properties"));
 
-						return ListUtil.toArray(
-							_assetTagLocalService.getTags(
-								objectDefinition.getClassName(),
-								serviceBuilderObjectEntry.getObjectEntryId()),
-							AssetTag.NAME_ACCESSOR);
-					});
-				setObjectEntryFolderExternalReferenceCode(
-					() -> {
-						ObjectEntryFolder objectEntryFolder =
-							_objectEntryFolderLocalService.
-								fetchObjectEntryFolder(
-									serviceBuilderObjectEntry.
-										getObjectEntryFolderId());
+				return _toProperties(
+					dtoConverterContext,
+					_objectDefinitionLocalService.getObjectDefinition(
+						clonedServiceBuilderObjectEntry.
+							getObjectDefinitionId()),
+					clonedServiceBuilderObjectEntry);
+			});
+		objectEntry.setRemovedBy(
+			() -> {
+				if (finalTrashEntry != null) {
+					return CreatorUtil.toCreator(
+						_portal, dtoConverterContext.getUriInfo(),
+						_userLocalService.fetchUser(
+							finalTrashEntry.getUserId()));
+				}
 
-						if (objectEntryFolder != null) {
-							return objectEntryFolder.getExternalReferenceCode();
-						}
+				return null;
+			});
+		objectEntry.setRemovedDate(
+			() -> {
+				if (finalTrashEntry != null) {
+					return finalTrashEntry.getCreateDate();
+				}
 
-						return StringPool.BLANK;
-					});
-				setObjectEntryFolderId(
-					serviceBuilderObjectEntry::getObjectEntryFolderId);
-				setPermissions(
-					() -> _toPermissions(
-						objectDefinition, serviceBuilderObjectEntry));
-				setProperties(
-					() -> {
-						if (objectEntryVersion == null) {
-							return _toProperties(
-								dtoConverterContext, objectDefinition,
-								serviceBuilderObjectEntry);
-						}
+				return null;
+			});
+		objectEntry.setReviewDate(
+			() -> _getAttribute(
+				objectEntryVersion, ObjectEntryVersionModel::getReviewDate,
+				serviceBuilderObjectEntry, ObjectEntryModel::getReviewDate));
+		objectEntry.setStatus(
+			() -> {
+				int status = _getAttribute(
+					objectEntryVersion, ObjectEntryVersionModel::getStatus,
+					serviceBuilderObjectEntry, ObjectEntryModel::getStatus);
 
-						Map<String, Object> properties =
-							contentObjectEntry.getProperties();
+				return _toStatus(dtoConverterContext.getLocale(), status);
+			});
+		objectEntry.setSystemProperties(
+			() -> {
+				if (objectEntryVersion != null) {
+					return _toSystemProperties(
+						dtoConverterContext.getLocale(), objectDefinition,
+						objectEntryVersion.getVersion());
+				}
 
-						com.liferay.object.model.ObjectEntry
-							clonedServiceBuilderObjectEntry =
-								(com.liferay.object.model.ObjectEntry)
-									serviceBuilderObjectEntry.clone();
+				return _toSystemProperties(
+					dtoConverterContext.getLocale(), objectDefinition,
+					serviceBuilderObjectEntry.getVersion());
+			});
+		objectEntry.setTaxonomyCategoryBriefs(
+			() -> {
+				if (objectEntryVersion != null) {
+					return contentObjectEntry.getTaxonomyCategoryBriefs();
+				}
+				else if (!objectDefinition.isEnableCategorization()) {
+					return null;
+				}
 
-						clonedServiceBuilderObjectEntry.setValues(
-							(Map<String, Serializable>)properties.get(
-								"properties"));
+				return TransformUtil.transformToArray(
+					_assetCategoryLocalService.getCategories(
+						objectDefinition.getClassName(),
+						serviceBuilderObjectEntry.getObjectEntryId()),
+					assetCategory ->
+						TaxonomyCategoryBriefUtil.toTaxonomyCategoryBrief(
+							assetCategory, dtoConverterContext),
+					TaxonomyCategoryBrief.class);
+			});
 
-						return _toProperties(
-							dtoConverterContext,
-							_objectDefinitionLocalService.getObjectDefinition(
-								clonedServiceBuilderObjectEntry.
-									getObjectDefinitionId()),
-							clonedServiceBuilderObjectEntry);
-					});
-				setReviewDate(
-					() -> _getAttribute(
-						objectEntryVersion,
-						ObjectEntryVersionModel::getReviewDate,
-						serviceBuilderObjectEntry,
-						ObjectEntryModel::getReviewDate));
-				setScopeId(serviceBuilderObjectEntry::getGroupId);
-				setScopeKey(
-					() -> _getScopeKey(
-						objectDefinition, serviceBuilderObjectEntry));
-				setStatus(
-					() -> _getAttribute(
-						objectEntryVersion,
-						objectEntryVersion -> _toStatus(
-							dtoConverterContext.getLocale(),
-							objectEntryVersion.getStatus()),
-						serviceBuilderObjectEntry,
-						serviceBuilderObjectEntry -> _toStatus(
-							dtoConverterContext.getLocale(),
-							serviceBuilderObjectEntry.getStatus())));
-				setSystemProperties(
-					() -> _getAttribute(
-						objectEntryVersion,
-						objectEntryVersion -> _toSystemProperties(
-							objectDefinition, objectEntryVersion.getVersion()),
-						serviceBuilderObjectEntry,
-						serviceBuilderObjectEntry -> _toSystemProperties(
-							objectDefinition,
-							serviceBuilderObjectEntry.getVersion())));
-				setTaxonomyCategoryBriefs(
-					() -> {
-						if (objectEntryVersion != null) {
-							return contentObjectEntry.
-								getTaxonomyCategoryBriefs();
-						}
-						else if (!objectDefinition.isEnableCategorization()) {
-							return null;
-						}
-
-						return TransformUtil.transformToArray(
-							_assetCategoryLocalService.getCategories(
-								objectDefinition.getClassName(),
-								serviceBuilderObjectEntry.getObjectEntryId()),
-							assetCategory ->
-								TaxonomyCategoryBriefUtil.
-									toTaxonomyCategoryBrief(
-										assetCategory, dtoConverterContext),
-							TaxonomyCategoryBrief.class);
-					});
-			}
-		};
+		return objectEntry;
 	}
 
 	private void _addManyToOneObjectRelationshipNames(
@@ -557,12 +576,29 @@ public class ObjectEntryDTOConverter
 							(Serializable)values);
 					}
 					else {
+						com.liferay.object.model.ObjectEntry
+							serviceBuilderObjectEntry =
+								_objectEntryLocalService.getObjectEntry(
+									primaryKey);
+
+						if (GetterUtil.getBoolean(
+								dtoConverterContext.getAttribute(
+									"preferApproved")) &&
+							!serviceBuilderObjectEntry.isApproved()) {
+
+							serviceBuilderObjectEntry =
+								_objectEntryLocalService.
+									fetchObjectEntryByHeadObjectEntryId(
+										primaryKey);
+						}
+
 						relatedObjectEntryAtomicReference.set(
 							toDTO(
 								_getDTOConverterContext(
-									dtoConverterContext, primaryKey),
-								_objectEntryLocalService.getObjectEntry(
-									primaryKey)));
+									dtoConverterContext,
+									serviceBuilderObjectEntry.
+										getObjectEntryId()),
+								serviceBuilderObjectEntry));
 					}
 
 					return relatedObjectEntryAtomicReference.get();
@@ -591,6 +627,50 @@ public class ObjectEntryDTOConverter
 				unsafeSuppliers.put(manyToOneRelationshipName, entry::getValue);
 			}
 		}
+	}
+
+	private Assignee _getAssignee(Map<String, Serializable> assigneeMap) {
+		if (assigneeMap.containsKey("externalReferenceCode")) {
+			return Assignee.toDTO(_jsonFactory.looseSerializeDeep(assigneeMap));
+		}
+
+		String className = _portal.fetchClassName(
+			MapUtil.getLong(assigneeMap, "classNameId"));
+
+		if (StringUtil.equals(className, Role.class.getName())) {
+			Role role = _roleLocalService.fetchRole(
+				MapUtil.getLong(assigneeMap, "classPK"));
+
+			if (role == null) {
+				return new Assignee();
+			}
+
+			return new Assignee() {
+				{
+					setExternalReferenceCode(role::getExternalReferenceCode);
+					setName(role::getName);
+					setType(() -> Type.ROLE);
+				}
+			};
+		}
+		else if (StringUtil.equals(className, User.class.getName())) {
+			User user = _userLocalService.fetchUser(
+				MapUtil.getLong(assigneeMap, "classPK"));
+
+			if (user == null) {
+				return new Assignee();
+			}
+
+			return new Assignee() {
+				{
+					setExternalReferenceCode(user::getExternalReferenceCode);
+					setName(user::getFullName);
+					setType(() -> Type.USER);
+				}
+			};
+		}
+
+		return new Assignee();
 	}
 
 	private <T> T _getAttribute(
@@ -633,12 +713,25 @@ public class ObjectEntryDTOConverter
 
 		UriInfo uriInfo = dtoConverterContext.getUriInfo();
 
-		return new DefaultDTOConverterContext(
-			dtoConverterContext.isAcceptAllLanguages(), null,
-			dtoConverterContext.getDTOConverterRegistry(),
-			dtoConverterContext.getHttpServletRequest(), objectEntryId,
-			dtoConverterContext.getLocale(), uriInfo,
-			dtoConverterContext.getUser());
+		DTOConverterContext defaultDTOConverterContext =
+			new DefaultDTOConverterContext(
+				dtoConverterContext.isAcceptAllLanguages(), null,
+				dtoConverterContext.getDTOConverterRegistry(),
+				dtoConverterContext.getHttpServletRequest(), objectEntryId,
+				dtoConverterContext.getLocale(), uriInfo,
+				dtoConverterContext.getUser());
+
+		defaultDTOConverterContext.setAttribute(
+			"preferApproved",
+			GetterUtil.getBoolean(
+				dtoConverterContext.getAttribute("preferApproved")));
+
+		if (ExportImportThreadLocal.isExportInProcess()) {
+			defaultDTOConverterContext.setAttribute(
+				"simplifiedObjectEntry", Boolean.TRUE);
+		}
+
+		return defaultDTOConverterContext;
 	}
 
 	private FileEntry _getFileEntry(
@@ -655,6 +748,12 @@ public class ObjectEntryDTOConverter
 		if (dlFileEntry == null) {
 			return fileEntry;
 		}
+
+		LiferayFileEntry liferayFileEntry = new LiferayFileEntry(dlFileEntry);
+
+		FileVersion fileVersion = liferayFileEntry.getFileVersion();
+
+		fileEntry.setAlternativeText(fileVersion::getDescription);
 
 		fileEntry.setExternalReferenceCode(
 			dlFileEntry::getExternalReferenceCode);
@@ -680,7 +779,7 @@ public class ObjectEntryDTOConverter
 					return null;
 				}
 
-				return _batchEngineAttachmentManager.getFileURL(dlFileEntry);
+				return _exportImportAttachmentManager.getFileURL(dlFileEntry);
 			});
 		fileEntry.setFolder(
 			() -> (Folder)NestedFieldsSupplier.supply(
@@ -716,19 +815,33 @@ public class ObjectEntryDTOConverter
 		fileEntry.setLink(
 			() -> LinkUtil.toLink(
 				_dlAppService, dlFileEntry, _dlURLHelper,
+				objectEntry.getGroupId(),
 				objectDefinition.getExternalReferenceCode(),
 				objectEntry.getExternalReferenceCode(), _portal));
+		fileEntry.setMetadata(
+			() -> NestedFieldsSupplier.supply(
+				objectFieldName + ".metadata",
+				fieldName -> {
+					if ((fileVersion == null) || (fileVersion.getSize() == 0) ||
+						(!PDFProcessorUtil.hasImages(fileVersion) &&
+						 !PDFProcessorUtil.isDocumentSupported(
+							 fileVersion.getMimeType()))) {
+
+						return null;
+					}
+
+					return HashMapBuilder.<String, Object>put(
+						"numberOfPages",
+						PDFProcessorUtil.getPreviewFileCount(fileVersion)
+					).build();
+				}));
+		fileEntry.setMimeType(dlFileEntry::getMimeType);
 		fileEntry.setName(dlFileEntry::getFileName);
 		fileEntry.setPreviewURL(
 			() -> NestedFieldsSupplier.supply(
 				objectFieldName + ".previewURL",
 				fieldName -> {
-					LiferayFileEntry liferayFileEntry = new LiferayFileEntry(
-						dlFileEntry);
-
-					String previewURL = _dlURLHelper.getPreviewURL(
-						liferayFileEntry, liferayFileEntry.getFileVersion(),
-						null, StringPool.BLANK, false, false);
+					String previewURL = _getPreviewURL(liferayFileEntry);
 
 					if (Validator.isNull(previewURL)) {
 						return null;
@@ -889,8 +1002,11 @@ public class ObjectEntryDTOConverter
 				List<?> relatedModels =
 					objectRelatedModelsProvider.getRelatedModels(
 						relatedObjectDefinitionGroupId,
-						objectRelationship.getObjectRelationshipId(),
-						primaryKey, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+						objectRelationship.getObjectRelationshipId(), null,
+						GetterUtil.getBoolean(
+							dtoConverterContext.getAttribute("preferApproved")),
+						primaryKey, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+						null);
 
 				if (relatedObjectDefinition.isUnmodifiableSystemObject()) {
 					SystemObjectDefinitionManager
@@ -957,6 +1073,20 @@ public class ObjectEntryDTOConverter
 		return objectDefinition;
 	}
 
+	private String _getPreviewURL(LiferayFileEntry liferayFileEntry)
+		throws PortalException {
+
+		if (StringUtil.startsWith(liferayFileEntry.getMimeType(), "video/")) {
+			return _dlURLHelper.getPreviewURL(
+				liferayFileEntry, liferayFileEntry.getFileVersion(), null,
+				"&videoEmbed=true", true, true);
+		}
+
+		return _dlURLHelper.getPreviewURL(
+			liferayFileEntry, liferayFileEntry.getFileVersion(), null,
+			StringPool.BLANK, false, false);
+	}
+
 	private String _getScopeKey(
 		ObjectDefinition objectDefinition,
 		com.liferay.object.model.ObjectEntry objectEntry) {
@@ -986,9 +1116,35 @@ public class ObjectEntryDTOConverter
 		throws Exception {
 
 		if (objectField.compareBusinessType(
-				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+				ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
 
-			long fileEntryId = GetterUtil.getLong(serializable);
+			if (serializable instanceof Assignee) {
+				return serializable;
+			}
+			else if (serializable instanceof Map) {
+				return _getAssignee((Map<String, Serializable>)serializable);
+			}
+
+			return null;
+		}
+		else if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+			if (serializable instanceof FileEntry) {
+				return serializable;
+			}
+
+			long fileEntryId = 0;
+
+			if (serializable instanceof Long) {
+				fileEntryId = GetterUtil.getLong(serializable);
+			}
+			else if (serializable instanceof Map) {
+				Map<String, Serializable> map =
+					(Map<String, Serializable>)serializable;
+
+				fileEntryId = GetterUtil.getLong(map.get("id"));
+			}
 
 			if (fileEntryId == 0) {
 				return null;
@@ -1030,6 +1186,10 @@ public class ObjectEntryDTOConverter
 				return null;
 			}
 
+			if (serializable instanceof List) {
+				return serializable;
+			}
+
 			return (Serializable)TransformUtil.transformToList(
 				StringUtil.split(
 					(String)serializable, StringPool.COMMA_AND_SPACE),
@@ -1044,8 +1204,22 @@ public class ObjectEntryDTOConverter
 				return null;
 			}
 
+			if (serializable instanceof ListEntry) {
+				return serializable;
+			}
+
+			String key = null;
+
+			if (serializable instanceof Map) {
+				key = MapUtil.getString(
+					(Map<String, String>)serializable, "key");
+			}
+			else if (serializable instanceof String) {
+				key = (String)serializable;
+			}
+
 			return _getListEntry(
-				dtoConverterContext, (String)serializable,
+				dtoConverterContext, key,
 				objectField.getListTypeDefinitionId());
 		}
 
@@ -1177,6 +1351,20 @@ public class ObjectEntryDTOConverter
 		return ExtendedEntity.extend(dto, nestedFieldsRelatedProperties, null);
 	}
 
+	private ObjectDefinitionBrief _toObjectDefinitionBrief(
+		Locale locale, ObjectDefinition objectDefinition) {
+
+		return new ObjectDefinitionBrief() {
+			{
+				setExternalReferenceCode(
+					objectDefinition::getExternalReferenceCode);
+				setLabel(() -> objectDefinition.getLabel(locale));
+				setObjectFolderExternalReferenceCode(
+					objectDefinition::getObjectFolderExternalReferenceCode);
+			}
+		};
+	}
+
 	private Permission[] _toPermissions(
 			ObjectDefinition objectDefinition,
 			com.liferay.object.model.ObjectEntry objectEntry)
@@ -1287,6 +1475,10 @@ public class ObjectEntryDTOConverter
 						fetchObjectRelationshipByObjectFieldId2(
 							objectField.getObjectFieldId());
 
+				if ((primaryKey == 0) && objectRelationship.isEdge()) {
+					continue;
+				}
+
 				if ((primaryKey > 0) &&
 					(!_hasRootModelHierarchyNestedField() ||
 					 !objectRelationship.isEdge())) {
@@ -1316,13 +1508,42 @@ public class ObjectEntryDTOConverter
 		Map<String, UnsafeSupplier<Object, Exception>>
 			nestedFieldsRelatedProperties = _getNestedFieldsRelatedProperties(
 				dtoConverterContext, objectEntry.getGroupId(), objectDefinition,
-				objectEntry.getObjectEntryId());
+				objectEntry.getHeadObjectEntryId());
 
 		if (nestedFieldsRelatedProperties != null) {
 			unsafeSuppliers.putAll(nestedFieldsRelatedProperties);
 		}
 
 		return (Map<String, Object>)(Map)unsafeSuppliers;
+	}
+
+	/**
+	 * @see com.liferay.exportimport.internal.data.handler.test.BatchEnginePortletDataHandlerTest#_toSimplifiedObjectEntryJSONObject(
+	 *      Group, com.liferay.object.model.ObjectEntry, String)
+	 */
+	private ObjectEntry _toSimplifiedObjectEntry(
+		ObjectEntry contentObjectEntry, ObjectDefinition objectDefinition,
+		ObjectEntryVersion objectEntryVersion,
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry) {
+
+		return new ObjectEntry() {
+			{
+				setExternalReferenceCode(
+					() -> {
+						if (objectEntryVersion != null) {
+							return contentObjectEntry.
+								getExternalReferenceCode();
+						}
+
+						return serviceBuilderObjectEntry.
+							getExternalReferenceCode();
+					});
+				setScopeId(serviceBuilderObjectEntry::getGroupId);
+				setScopeKey(
+					() -> _getScopeKey(
+						objectDefinition, serviceBuilderObjectEntry));
+			}
+		};
 	}
 
 	private Status _toStatus(Locale locale, int status) {
@@ -1339,22 +1560,38 @@ public class ObjectEntryDTOConverter
 	}
 
 	private SystemProperties _toSystemProperties(
-		ObjectDefinition objectDefinition, int versionInt) {
+			Locale locale, ObjectDefinition objectDefinition, int versionInt)
+		throws Exception {
 
-		if (!objectDefinition.isEnableObjectEntryVersioning()) {
+		boolean enableObjectEntryVersioning =
+			objectDefinition.isEnableObjectEntryVersioning();
+		ObjectDefinitionBrief objectDefinitionBrief =
+			NestedFieldsSupplier.supply(
+				"systemProperties.objectDefinitionBrief",
+				nestedField -> _toObjectDefinitionBrief(
+					locale, objectDefinition));
+
+		if (!enableObjectEntryVersioning && (objectDefinitionBrief == null)) {
 			return null;
 		}
 
-		return new SystemProperties() {
-			{
-				setVersion(
-					() -> new Version() {
-						{
-							setNumber(() -> versionInt);
-						}
-					});
-			}
-		};
+		SystemProperties systemProperties = new SystemProperties();
+
+		if (objectDefinitionBrief != null) {
+			systemProperties.setObjectDefinitionBrief(
+				() -> objectDefinitionBrief);
+		}
+
+		if (enableObjectEntryVersioning) {
+			systemProperties.setVersion(
+				() -> new Version() {
+					{
+						setNumber(() -> versionInt);
+					}
+				});
+		}
+
+		return systemProperties;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -1370,9 +1607,6 @@ public class ObjectEntryDTOConverter
 	private AuditEventLocalService _auditEventLocalService;
 
 	@Reference
-	private BatchEngineAttachmentManager _batchEngineAttachmentManager;
-
-	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
@@ -1383,6 +1617,9 @@ public class ObjectEntryDTOConverter
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
+
+	@Reference
+	private ExportImportAttachmentManager _exportImportAttachmentManager;
 
 	@Reference
 	private ExtensionProviderRegistry _extensionProviderRegistry;
@@ -1439,8 +1676,14 @@ public class ObjectEntryDTOConverter
 	private ResourceActionLocalService _resourceActionLocalService;
 
 	@Reference
+	private RoleLocalService _roleLocalService;
+
+	@Reference
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+
+	@Reference
+	private TrashEntryLocalService _trashEntryLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

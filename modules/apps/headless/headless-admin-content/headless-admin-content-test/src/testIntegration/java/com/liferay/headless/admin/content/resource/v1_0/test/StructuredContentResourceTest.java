@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.content.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
@@ -23,17 +24,12 @@ import com.liferay.headless.admin.content.client.dto.v1_0.ContentFieldValue;
 import com.liferay.headless.admin.content.client.dto.v1_0.StructuredContent;
 import com.liferay.headless.admin.content.client.pagination.Page;
 import com.liferay.headless.admin.content.client.pagination.Pagination;
-import com.liferay.headless.admin.content.client.serdes.v1_0.StructuredContentSerDes;
 import com.liferay.headless.delivery.client.resource.v1_0.StructuredContentResource;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.template.TemplateConstants;
@@ -44,10 +40,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.InputStream;
 
@@ -63,9 +59,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 /**
  * @author Javier Gamarra
@@ -91,7 +84,7 @@ public class StructuredContentResourceTest
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testGroup.getCompanyId());
@@ -494,136 +487,6 @@ public class StructuredContentResourceTest
 
 	@Override
 	@Test
-	public void testGraphQLGetSiteStructuredContentsPage() throws Exception {
-		super.testGraphQLGetSiteStructuredContentsPage();
-
-		Page<StructuredContent> page =
-			structuredContentResource.getSiteStructuredContentsPage(
-				testGroup.getGroupId(), null, null, null, null,
-				Pagination.of(1, 10), null);
-
-		for (StructuredContent structuredContent : page.getItems()) {
-			_structuredContentResource.deleteStructuredContent(
-				structuredContent.getId());
-		}
-
-		StructuredContent structuredContent1 = _postSiteStructuredContent(
-			testGroup.getGroupId(), randomStructuredContent());
-		StructuredContent structuredContent2 = _postSiteStructuredContent(
-			testGroup.getGroupId(), randomStructuredContent());
-
-		GraphQLField graphQLField = new GraphQLField(
-			"structuredContents",
-			HashMapBuilder.<String, Object>put(
-				"aggregation", "[\"id\"]"
-			).put(
-				"siteKey",
-				StringBundler.concat(
-					StringPool.QUOTE, testGroup.getGroupId(), StringPool.QUOTE)
-			).build(),
-			new GraphQLField(
-				"facets", new GraphQLField("facetCriteria"),
-				new GraphQLField(
-					"facetValues", new GraphQLField("numberOfOccurrences"),
-					new GraphQLField("term"))),
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("totalCount"));
-
-		JSONObject structuredContentsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/structuredContents");
-
-		Assert.assertEquals(
-			2, structuredContentsJSONObject.getLong("totalCount"));
-
-		JSONAssert.assertEquals(
-			JSONFactoryUtil.createJSONArray(
-			).put(
-				JSONUtil.put(
-					"facetCriteria", "id"
-				).put(
-					"facetValues",
-					JSONFactoryUtil.createJSONArray(
-					).put(
-						JSONUtil.put(
-							"numberOfOccurrences", 1
-						).put(
-							"term", String.valueOf(structuredContent1.getId())
-						)
-					).put(
-						JSONUtil.put(
-							"numberOfOccurrences", 1
-						).put(
-							"term", String.valueOf(structuredContent2.getId())
-						)
-					)
-				)
-			).toString(),
-			structuredContentsJSONObject.getJSONArray(
-				"facets"
-			).toString(),
-			JSONCompareMode.LENIENT);
-
-		assertEqualsIgnoringOrder(
-			Arrays.asList(structuredContent1, structuredContent2),
-			Arrays.asList(
-				StructuredContentSerDes.toDTOs(
-					structuredContentsJSONObject.getString("items"))));
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetStructuredContentByVersion() throws Exception {
-		StructuredContent structuredContent =
-			testGraphQLStructuredContent_addStructuredContent();
-
-		Assert.assertTrue(
-			equals(
-				structuredContent,
-				StructuredContentSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"admin",
-								new GraphQLField(
-									"structuredContentByVersion",
-									HashMapBuilder.<String, Object>put(
-										"structuredContentId",
-										structuredContent.getId()
-									).put(
-										"version", 1.0D
-									).build(),
-									getGraphQLFields()))),
-						"JSONObject/data", "JSONObject/admin",
-						"Object/structuredContentByVersion"))));
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetStructuredContentByVersionNotFound()
-		throws Exception {
-
-		Assert.assertEquals(
-			"null",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"admin",
-						new GraphQLField(
-							"structuredContentByVersion",
-							HashMapBuilder.<String, Object>put(
-								"structuredContentId",
-								RandomTestUtil.randomLong()
-							).put(
-								"version", RandomTestUtil.randomDouble()
-							).build(),
-							getGraphQLFields()))),
-				"JSONObject/data", "JSONObject/admin",
-				"Object/structuredContentByVersion"));
-	}
-
-	@Override
-	@Test
 	public void testPostSiteStructuredContentDraft() throws Exception {
 		super.testPostSiteStructuredContentDraft();
 
@@ -727,6 +590,20 @@ public class StructuredContentResourceTest
 
 	@Override
 	protected Double testGetStructuredContentByVersion_getVersion()
+		throws Exception {
+
+		return 1.0D;
+	}
+
+	@Override
+	protected Double testGraphQLDeleteStructuredContentByVersion_getVersion()
+		throws Exception {
+
+		return 1.0D;
+	}
+
+	@Override
+	protected Double testGraphQLGetStructuredContentByVersion_getVersion()
 		throws Exception {
 
 		return 1.0D;

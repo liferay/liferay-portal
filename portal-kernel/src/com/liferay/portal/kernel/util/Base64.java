@@ -76,11 +76,15 @@ public class Base64 {
 			return new byte[0];
 		}
 
+		char padChar = CharPool.EQUAL;
+
+		if (url) {
+			padChar = CharPool.STAR;
+		}
+
 		int pad = 0;
 
-		for (int i = base64.length() - 1; base64.charAt(i) == CharPool.EQUAL;
-			 i--) {
-
+		for (int i = base64.length() - 1; base64.charAt(i) == padChar; i--) {
 			pad++;
 		}
 
@@ -91,11 +95,11 @@ public class Base64 {
 		int rawindex = 0;
 
 		for (int i = 0; i < base64.length(); i += 4) {
-			int block = _getValue(base64.charAt(i), url) << 18;
+			int block = _getValue(base64, i, url) << 18;
 
-			block += _getValue(base64.charAt(i + 1), url) << 12;
-			block += _getValue(base64.charAt(i + 2), url) << 6;
-			block += _getValue(base64.charAt(i + 3), url);
+			block += _getValue(base64, i + 1, url) << 12;
+			block += _getValue(base64, i + 2, url) << 6;
+			block += _getValue(base64, i + 3, url);
 
 			for (int j = 0; (j < 3) && ((rawindex + j) < raw.length); j++) {
 				raw[rawindex + j] = (byte)((block >> (8 * (2 - j))) & 0xff);
@@ -201,7 +205,16 @@ public class Base64 {
 		return CharPool.SLASH;
 	}
 
-	private static int _getValue(char c, boolean url) {
+	private static int _getValue(String base64, int index, boolean url) {
+		if (index >= base64.length()) {
+
+			// Padding is missing. Pretend that it exists.
+
+			return 0;
+		}
+
+		char c = base64.charAt(index);
+
 		if ((c >= CharPool.UPPER_CASE_A) && (c <= CharPool.UPPER_CASE_Z)) {
 			return c - 65;
 		}
@@ -224,7 +237,8 @@ public class Base64 {
 			}
 
 			if (c != CharPool.STAR) {
-				return -1;
+				throw new IllegalArgumentException(
+					String.format("Found illegal character: %c", c));
 			}
 		}
 		else {
@@ -237,7 +251,8 @@ public class Base64 {
 			}
 
 			if (c != CharPool.EQUAL) {
-				return -1;
+				throw new IllegalArgumentException(
+					String.format("Found illegal character: %c", c));
 			}
 		}
 

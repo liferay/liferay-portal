@@ -29,6 +29,59 @@ export class CompanyTestEntityAPI {
 
 		/**
 		 * 
+				 * @param externalReferenceCode
+		 * @param headers Optional custom request headers
+		 */
+		public async deleteCompanyTestEntityByExternalReferenceCode(
+						externalReferenceCode: string,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body?: any;
+			response: Response;
+		}> {
+
+			const path = this._basePath + "/test/v1.0/company-test-entities/by-external-reference-code/{externalReferenceCode}"
+						.replace("{externalReferenceCode}",encodeURIComponent(externalReferenceCode))
+				;
+
+			const queryParameters: any = {};
+
+						if (externalReferenceCode === null || externalReferenceCode === undefined) {
+							throw new Error("Required parameter externalReferenceCode was null or undefined when calling deleteCompanyTestEntityByExternalReferenceCode.");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+					,headers || {}
+					),
+				method: "DELETE",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: await response.json(), response};
+					}
+					else {
+						return {body: await response.text(), response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+		/**
+		 * 
 		 * @param headers Optional custom request headers
 		 */
 		public async getCompanyTestEntitiesPage(

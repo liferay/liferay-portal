@@ -5,8 +5,8 @@
 
 package com.liferay.depot.web.internal.portlet.action;
 
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.web.internal.constants.DepotAdminWebKeys;
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
 import com.liferay.depot.web.internal.display.context.DepotAdminSelectRoleDisplayContext;
 import com.liferay.depot.web.internal.display.context.DepotAdminSelectRoleManagementToolbarDisplayContext;
 import com.liferay.portal.kernel.exception.PortalException;

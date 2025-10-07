@@ -31,6 +31,7 @@ interface ManagementToolbarProps {
 	isApproved?: boolean;
 	isRootDescendantNode?: boolean;
 	label: string;
+	loading?: boolean;
 	objectDefinitionExternalReferenceCode: string;
 	objectDefinitionExternalReferenceCodeSaveURL: string;
 	onExternalReferenceCodeChange?: (value: string) => void;
@@ -56,6 +57,7 @@ export function ManagementToolbar({
 	isApproved,
 	isRootDescendantNode,
 	label,
+	loading,
 	objectDefinitionExternalReferenceCode:
 		initialObjectDefinitionExternalReferenceCode,
 	objectDefinitionExternalReferenceCodeSaveURL,
@@ -71,18 +73,6 @@ export function ManagementToolbar({
 		setObjectDefinitionExternalReferenceCode,
 	] = useState(initialObjectDefinitionExternalReferenceCode);
 	const [visibleModal, setVisibleModal] = useState<boolean>(false);
-
-	const [disabled, setDisabled] = useState(!hasPublishPermission);
-
-	const onPublish = () => {
-		onSubmit(false);
-
-		setDisabled(true);
-
-		setTimeout(() => {
-			setDisabled(false);
-		}, 1000);
-	};
 
 	return (
 		<>
@@ -171,7 +161,7 @@ export function ManagementToolbar({
 							</ClayButton>
 
 							<ClayButton
-								disabled={!hasUpdatePermission}
+								disabled={!hasUpdatePermission || loading}
 								displayType={
 									isApproved ||
 									isApproved === undefined ||
@@ -188,10 +178,10 @@ export function ManagementToolbar({
 
 							{isApproved !== undefined && !isApproved && (
 								<ClayButton
-									disabled={!hasUpdatePermission || disabled}
+									disabled={!hasPublishPermission || loading}
 									id={`${portletNamespace}publish`}
 									name="publish"
-									onClick={() => onPublish()}
+									onClick={() => onSubmit(false)}
 								>
 									{Liferay.Language.get('publish')}
 								</ClayButton>

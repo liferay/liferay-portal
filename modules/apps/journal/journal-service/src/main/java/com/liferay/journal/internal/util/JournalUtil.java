@@ -46,7 +46,7 @@ import jakarta.portlet.PortletRequest;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.NavigableMap;
 
 /**
  * @author Brian Wing Shun Chan
@@ -125,6 +125,8 @@ public class JournalUtil {
 				ClassNameLocalServiceUtil.getClassNameId(DDMStructure.class))
 		).put(
 			"article_resource_pk", String.valueOf(article.getResourcePrimKey())
+		).put(
+			"ct_collection_id", String.valueOf(article.getCtCollectionId())
 		).put(
 			"ddm_structure_id", String.valueOf(ddmStructure.getStructureId())
 		).put(
@@ -350,7 +352,7 @@ public class JournalUtil {
 
 		String layoutSetFriendlyUrl = themeDisplay.getI18nPath();
 
-		TreeMap<String, String> virtualHostnames =
+		NavigableMap<String, String> virtualHostnames =
 			layoutSet.getVirtualHostnames();
 
 		if (virtualHostnames.isEmpty() ||
@@ -420,7 +422,7 @@ public class JournalUtil {
 
 		String layoutSetFriendlyUrl = themeDisplayModel.getI18nPath();
 
-		TreeMap<String, String> virtualHostnames =
+		NavigableMap<String, String> virtualHostnames =
 			layoutSet.getVirtualHostnames();
 
 		if (virtualHostnames.isEmpty() ||

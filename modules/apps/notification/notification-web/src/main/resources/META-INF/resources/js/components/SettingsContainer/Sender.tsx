@@ -28,7 +28,6 @@ export function Sender({
 		<div className="row">
 			<div className="col-lg-6">
 				<Input
-					disabled={values.system}
 					error={errors.from}
 					id="fromAddress"
 					label={Liferay.Language.get('email-address')}
@@ -51,7 +50,6 @@ export function Sender({
 
 			<div className="col-lg-6">
 				<InputLocalized
-					disabled={values.system}
 					error={errors.fromName}
 					id="fromName"
 					label={Liferay.Language.get('name')}

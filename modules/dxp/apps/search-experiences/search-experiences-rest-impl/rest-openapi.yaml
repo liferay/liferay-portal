@@ -146,6 +146,8 @@ components:
                             type: boolean
                         languageId:
                             type: string
+                        legacyAssetCollectionProvider:
+                            type: boolean
                         queryString:
                             type: string
                         searchableAssetTypes:
@@ -586,7 +588,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.search.experiences.rest.client', and version '3.0.37'."
+        'com.liferay.search.experiences.rest.client', and version '3.0.39'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

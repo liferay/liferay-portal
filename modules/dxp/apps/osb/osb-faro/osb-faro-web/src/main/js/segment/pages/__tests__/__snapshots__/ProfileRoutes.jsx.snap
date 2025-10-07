@@ -77,7 +77,7 @@ exports[`SegmentProfileRoutes should render 1`] = `
                 <span
                   class="label-item"
                 >
-                  Static Segment
+                  Segment
                 </span>
               </div>
             </span>

@@ -76,7 +76,7 @@ public class ContactsUtil {
 				PortalClassLoaderUtil.getClassLoader();
 
 			Class<?> targetClass = portalClassLoader.loadClass(
-				"com.liferay.portal.util.PropsValues");
+				"com.liferay.portal.kernel.util.PropsValues");
 
 			Field field = targetClass.getField(key);
 

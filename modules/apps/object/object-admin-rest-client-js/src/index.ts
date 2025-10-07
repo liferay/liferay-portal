@@ -50,3 +50,4 @@
 	export {PageObjectValidationRule} from './models/PageObjectValidationRule';
 	export {PageObjectView} from './models/PageObjectView';
 	export {Status} from './models/Status';
+	export {WorkflowDefinitionLink} from './models/WorkflowDefinitionLink';

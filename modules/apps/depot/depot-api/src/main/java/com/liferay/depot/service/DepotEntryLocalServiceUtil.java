@@ -62,12 +62,12 @@ public class DepotEntryLocalServiceUtil {
 
 	public static DepotEntry addDepotEntry(
 			Map<java.util.Locale, String> nameMap,
-			Map<java.util.Locale, String> descriptionMap,
+			Map<java.util.Locale, String> descriptionMap, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addDepotEntry(
-			nameMap, descriptionMap, serviceContext);
+			nameMap, descriptionMap, type, serviceContext);
 	}
 
 	/**
@@ -261,6 +261,10 @@ public class DepotEntryLocalServiceUtil {
 		return getService().getDepotEntries(start, end);
 	}
 
+	public static List<DepotEntry> getDepotEntries(long companyId, int type) {
+		return getService().getDepotEntries(companyId, type);
+	}
+
 	/**
 	 * Returns all the depot entries matching the UUID and company.
 	 *
@@ -301,6 +305,10 @@ public class DepotEntryLocalServiceUtil {
 		return getService().getDepotEntriesCount();
 	}
 
+	public static int getDepotEntriesCount(long companyId, int type) {
+		return getService().getDepotEntriesCount(companyId, type);
+	}
+
 	/**
 	 * Returns the depot entry with the primary key.
 	 *
@@ -327,6 +335,10 @@ public class DepotEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getDepotEntryByUuidAndGroupId(uuid, groupId);
+	}
+
+	public static List<Long> getDepotEntryGroupIds(long companyId, int type) {
+		return getService().getDepotEntryGroupIds(companyId, type);
 	}
 
 	/**
@@ -357,14 +369,17 @@ public class DepotEntryLocalServiceUtil {
 	}
 
 	public static List<DepotEntry> getGroupConnectedDepotEntries(
-			long groupId, int start, int end)
+			long groupId, int type, int start, int end)
 		throws PortalException {
 
-		return getService().getGroupConnectedDepotEntries(groupId, start, end);
+		return getService().getGroupConnectedDepotEntries(
+			groupId, type, start, end);
 	}
 
-	public static int getGroupConnectedDepotEntriesCount(long groupId) {
-		return getService().getGroupConnectedDepotEntriesCount(groupId);
+	public static int getGroupConnectedDepotEntriesCount(
+		long groupId, int type) {
+
+		return getService().getGroupConnectedDepotEntriesCount(groupId, type);
 	}
 
 	public static DepotEntry getGroupDepotEntry(long groupId)

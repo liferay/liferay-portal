@@ -13,12 +13,10 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.v7_0_0.UpgradeCompanyId;
-import com.liferay.portal.util.PropsImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -47,8 +45,6 @@ public class UpgradeCompanyIdTest {
 
 	@BeforeClass
 	public static void setUpClass() throws SQLException {
-		PropsUtil.setProps(new PropsImpl());
-
 		_connection = DataAccess.getConnection();
 
 		_dbInspector = new DBInspector(_connection);

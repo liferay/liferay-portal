@@ -30,12 +30,11 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import org.apache.commons.lang.time.StopWatch;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-
-import org.springframework.util.Assert;
 
 /**
  * @author Alejandro Tardín
@@ -99,7 +98,7 @@ public class APIPropertiesToAPIPropertiesUpgradeProcessTest
 			StartupHelperUtil.setUpgrading(false);
 		}
 
-		Assert.isNull(
+		Assert.assertNull(
 			_objectRelationshipLocalService.
 				fetchObjectRelationshipByExternalReferenceCode(
 					"L_API_PROPERTIES_TO_API_PROPERTIES",

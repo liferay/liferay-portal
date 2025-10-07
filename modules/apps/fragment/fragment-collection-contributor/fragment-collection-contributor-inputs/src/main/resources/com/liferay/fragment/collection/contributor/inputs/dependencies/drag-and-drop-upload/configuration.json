@@ -1,0 +1,24 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": "select-file",
+					"label": "button-text",
+					"localizable": true,
+					"name": "buttonText",
+					"type": "text"
+				},
+				{
+					"defaultValue": true,
+					"label": "show-supported-file-info",
+					"name": "showSupportedFileInfo",
+					"type": "checkbox",
+					"typeOptions": {
+						"displayType": "toggle"
+					}
+				}
+			]
+		}
+	]
+}

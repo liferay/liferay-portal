@@ -9,10 +9,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.EmailAddress;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.OrgLabor;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Phone;
@@ -31,6 +33,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.membershippolicy.OrganizationMembershipPolicyUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.service.CountryServiceUtil;
 import com.liferay.portal.kernel.service.EmailAddressLocalServiceUtil;
 import com.liferay.portal.kernel.service.EmailAddressServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.ListTypeServiceUtil;
 import com.liferay.portal.kernel.service.OrgLaborLocalServiceUtil;
 import com.liferay.portal.kernel.service.OrgLaborServiceUtil;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
@@ -1417,13 +1421,27 @@ public class UsersAdminUtil {
 	}
 
 	public static void updateAddresses(
-			String className, long classPK, List<Address> addresses)
+			String className, long classPK, List<Address> addresses,
+			String listTypeType)
 		throws PortalException {
 
 		Set<Long> addressIds = new HashSet<>();
 
 		for (Address address : addresses) {
 			long addressId = address.getAddressId();
+
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				addressId = 0;
+
+				Address existingAddress =
+					AddressServiceUtil.fetchAddressByExternalReferenceCode(
+						address.getExternalReferenceCode(),
+						address.getCompanyId());
+
+				if (existingAddress != null) {
+					addressId = existingAddress.getAddressId();
+				}
+			}
 
 			if (addressId <= 0) {
 				address = AddressServiceUtil.addAddress(
@@ -1454,10 +1472,15 @@ public class UsersAdminUtil {
 			addressIds.add(addressId);
 		}
 
-		addresses = AddressServiceUtil.getAddresses(className, classPK);
+		List<ListType> listTypes = ListTypeServiceUtil.getListTypes(
+			CompanyThreadLocal.getCompanyId(), listTypeType);
 
-		for (Address address : addresses) {
-			if (!addressIds.contains(address.getAddressId())) {
+		for (Address address :
+				AddressServiceUtil.getAddresses(className, classPK)) {
+
+			if (!addressIds.contains(address.getAddressId()) &&
+				listTypes.contains(address.getListType())) {
+
 				AddressServiceUtil.deleteAddress(address.getAddressId());
 			}
 		}
@@ -1471,6 +1494,20 @@ public class UsersAdminUtil {
 
 		for (EmailAddress emailAddress : emailAddresses) {
 			long emailAddressId = emailAddress.getEmailAddressId();
+
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				emailAddressId = 0;
+
+				EmailAddress existingEmailAddress =
+					EmailAddressServiceUtil.
+						fetchEmailAddressByExternalReferenceCode(
+							emailAddress.getExternalReferenceCode(),
+							emailAddress.getCompanyId());
+
+				if (existingEmailAddress != null) {
+					emailAddressId = existingEmailAddress.getEmailAddressId();
+				}
+			}
 
 			String address = emailAddress.getAddress();
 			long listTypeId = emailAddress.getListTypeId();
@@ -1492,10 +1529,9 @@ public class UsersAdminUtil {
 			emailAddressIds.add(emailAddressId);
 		}
 
-		emailAddresses = EmailAddressServiceUtil.getEmailAddresses(
-			className, classPK);
+		for (EmailAddress emailAddress :
+				EmailAddressServiceUtil.getEmailAddresses(className, classPK)) {
 
-		for (EmailAddress emailAddress : emailAddresses) {
 			if (!emailAddressIds.contains(emailAddress.getEmailAddressId())) {
 				EmailAddressServiceUtil.deleteEmailAddress(
 					emailAddress.getEmailAddressId());
@@ -1545,9 +1581,7 @@ public class UsersAdminUtil {
 			orgLaborsIds.add(orgLaborId);
 		}
 
-		orgLabors = OrgLaborServiceUtil.getOrgLabors(classPK);
-
-		for (OrgLabor orgLabor : orgLabors) {
+		for (OrgLabor orgLabor : OrgLaborServiceUtil.getOrgLabors(classPK)) {
 			if (!orgLaborsIds.contains(orgLabor.getOrgLaborId())) {
 				OrgLaborServiceUtil.deleteOrgLabor(orgLabor.getOrgLaborId());
 			}
@@ -1562,6 +1596,18 @@ public class UsersAdminUtil {
 
 		for (Phone phone : phones) {
 			long phoneId = phone.getPhoneId();
+
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				phoneId = 0;
+
+				Phone existingPhone =
+					PhoneServiceUtil.fetchPhoneByExternalReferenceCode(
+						phone.getExternalReferenceCode(), phone.getCompanyId());
+
+				if (existingPhone != null) {
+					phoneId = existingPhone.getPhoneId();
+				}
+			}
 
 			String externalReferenceCode = phone.getExternalReferenceCode();
 			String number = phone.getNumber();
@@ -1585,9 +1631,7 @@ public class UsersAdminUtil {
 			phoneIds.add(phoneId);
 		}
 
-		phones = PhoneServiceUtil.getPhones(className, classPK);
-
-		for (Phone phone : phones) {
+		for (Phone phone : PhoneServiceUtil.getPhones(className, classPK)) {
 			if (!phoneIds.contains(phone.getPhoneId())) {
 				PhoneServiceUtil.deletePhone(phone.getPhoneId());
 			}
@@ -1601,8 +1645,22 @@ public class UsersAdminUtil {
 		Set<Long> websiteIds = new HashSet<>();
 
 		for (Website website : websites) {
-			String externalReferenceCode = website.getExternalReferenceCode();
 			long websiteId = website.getWebsiteId();
+
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				websiteId = 0;
+
+				Website existingWebsite =
+					WebsiteServiceUtil.fetchWebsiteByExternalReferenceCode(
+						website.getExternalReferenceCode(),
+						website.getCompanyId());
+
+				if (existingWebsite != null) {
+					websiteId = existingWebsite.getWebsiteId();
+				}
+			}
+
+			String externalReferenceCode = website.getExternalReferenceCode();
 			String url = website.getUrl();
 			long listTypeId = website.getListTypeId();
 			boolean primary = website.isPrimary();
@@ -1622,9 +1680,9 @@ public class UsersAdminUtil {
 			websiteIds.add(websiteId);
 		}
 
-		websites = WebsiteServiceUtil.getWebsites(className, classPK);
+		for (Website website :
+				WebsiteServiceUtil.getWebsites(className, classPK)) {
 
-		for (Website website : websites) {
 			if (!websiteIds.contains(website.getWebsiteId())) {
 				WebsiteServiceUtil.deleteWebsite(website.getWebsiteId());
 			}

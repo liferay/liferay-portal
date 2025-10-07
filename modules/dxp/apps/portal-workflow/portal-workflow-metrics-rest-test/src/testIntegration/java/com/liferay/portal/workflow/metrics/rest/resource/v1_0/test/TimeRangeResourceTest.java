@@ -6,16 +6,12 @@
 package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.TimeRange;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
-import com.liferay.portal.workflow.metrics.rest.client.serdes.v1_0.TimeRangeSerDes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -40,25 +36,6 @@ public class TimeRangeResourceTest extends BaseTimeRangeResourceTestCase {
 		Assert.assertEquals(timeRanges.toString(), 7, timeRanges.size());
 
 		assertEquals(_getDefaultTimeRanges(), timeRanges);
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetTimeRangesPage() throws Exception {
-		JSONObject timeRangesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField(
-					"timeRanges", new GraphQLField("items", getGraphQLFields()),
-					new GraphQLField("page"), new GraphQLField("totalCount"))),
-			"JSONObject/data", "JSONObject/timeRanges");
-
-		Assert.assertEquals(7, timeRangesJSONObject.get("totalCount"));
-
-		assertEqualsIgnoringOrder(
-			_getDefaultTimeRanges(),
-			Arrays.asList(
-				TimeRangeSerDes.toDTOs(
-					timeRangesJSONObject.getString("items"))));
 	}
 
 	@Rule

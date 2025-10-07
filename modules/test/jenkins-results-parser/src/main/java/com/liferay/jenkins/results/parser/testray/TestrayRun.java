@@ -26,6 +26,10 @@ import org.json.JSONObject;
  */
 public class TestrayRun {
 
+	public static String getDefaultRunIDString() {
+		return _properties.getProperty("testray.environment.default[master]");
+	}
+
 	public List<Factor> getFactors() {
 		return factors;
 	}
@@ -288,9 +292,9 @@ public class TestrayRun {
 	private static final Pattern _factorValuePattern = Pattern.compile(
 		_PROPERTY_KEY_FACTOR_VALUE +
 			"\\[(?<nameKey>[^\\]]+)\\](\\[(?<valueKey>[^\\]]+)\\])?");
+	private static final Properties _properties = new Properties();
 
 	private final JSONObject _jsonObject;
-	private final Properties _properties = new Properties();
 	private final TestrayBuild _testrayBuild;
 
 }

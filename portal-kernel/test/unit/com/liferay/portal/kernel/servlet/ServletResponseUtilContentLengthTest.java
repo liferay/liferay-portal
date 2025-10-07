@@ -5,15 +5,11 @@
 
 package com.liferay.portal.kernel.servlet;
 
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.ByteArrayInputStream;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -22,11 +18,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
  * @author Hai Yu
  */
 public class ServletResponseUtilContentLengthTest {
-
-	@BeforeClass
-	public static void setUpClass() {
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
-	}
 
 	@Test
 	public void testContentLength() throws Exception {

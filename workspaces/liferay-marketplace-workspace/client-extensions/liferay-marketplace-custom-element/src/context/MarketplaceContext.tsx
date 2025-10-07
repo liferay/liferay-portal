@@ -9,19 +9,27 @@ import useSWR, {KeyedMutator} from 'swr';
 import {MarketplaceUserAccount} from '../entity/MarketplaceUserAccount';
 import {Liferay} from '../liferay/liferay';
 import HeadlessAdminUser from '../services/rest/HeadlessAdminUser';
+import {MarketplaceProperties} from '../utils/attributes';
 
 type Context = {
 	channel: Channel;
 	marketplaceUserAccount: MarketplaceUserAccount;
 	mutateMyUserAccount: KeyedMutator<UserAccount | undefined>;
 	myUserAccount: UserAccount;
-	properties: DefaultProperties;
+	properties: MarketplaceProperties;
 };
 
 type MarketplaceContextProviderProps = {
 	children: ReactNode;
-	properties: DefaultProperties;
+	properties: MarketplaceProperties;
 };
+
+const channel = {
+	channelId: Number(Liferay.CommerceContext.commerceChannelId),
+	currencyCode: Liferay.CommerceContext.currency.currencyCode,
+	externalReferenceCode: 'MARKETPLACE',
+	id: Number(Liferay.CommerceContext.commerceChannelId),
+} as Channel;
 
 const MarketplaceContext = createContext<Context>({} as Context);
 
@@ -40,15 +48,7 @@ const MarketplaceContextProvider: React.FC<MarketplaceContextProviderProps> = ({
 		<MarketplaceContext.Provider
 			value={
 				{
-					channel: {
-						channelId: Number(
-							Liferay.CommerceContext.commerceChannelId
-						),
-						currencyCode:
-							Liferay.CommerceContext.currency.currencyCode,
-						externalReferenceCode: 'MARKETPLACE',
-						id: Number(Liferay.CommerceContext.commerceChannelId),
-					} as Channel,
+					channel,
 					marketplaceUserAccount: new MarketplaceUserAccount(
 						myUserAccount as UserAccount
 					),

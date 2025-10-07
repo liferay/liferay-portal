@@ -84,7 +84,10 @@ export async function addToCart(
 
 		newCart.currencyCode = currencyCode;
 
-		Liferay.fire(CURRENT_ORDER_UPDATED, {order: newCart});
+		Liferay.fire(CURRENT_ORDER_UPDATED, {
+			order: newCart,
+			refreshItems: true,
+		});
 
 		return newCart;
 	}
@@ -104,20 +107,23 @@ export async function addToCart(
 
 		fetchedCart.currencyCode = currencyCode;
 
-		Liferay.fire(CURRENT_ORDER_UPDATED, {order: fetchedCart});
+		Liferay.fire(CURRENT_ORDER_UPDATED, {
+			order: fetchedCart,
+			refreshItems: true,
+		});
 
 		return fetchedCart;
 	}
 
 	const fetchedCart = await CartResource.getCartByIdWithItems(cartId);
 
-	const removedItems = [];
+	const itemsRemovedFromCatalog = [];
 
 	const updatedCartItems = fetchedCart.cartItems.filter((cartItem) => {
 		const isRemovedFromCatalog = !!cartItem?.errorMessages?.length;
 
 		if (isRemovedFromCatalog) {
-			removedItems.push(cartItem);
+			itemsRemovedFromCatalog.push(cartItem);
 
 			return false;
 		}
@@ -189,14 +195,14 @@ export async function addToCart(
 		cartItems: updatedCartItems,
 	});
 
-	if (removedItems.length) {
+	if (itemsRemovedFromCatalog.length) {
 		openModal({
 			bodyHTML: `
 				<div>
 					<p>${Liferay.Language.get('the-following-products-are-no-longer-available-and-were-removed-from-the-cart')}</p>
 					<p>
 						<ul>
-							${removedItems.map(({name}) => `<li>${name}</li>`).join('')}
+							${itemsRemovedFromCatalog.map(({name}) => `<li>${name}</li>`).join('')}
 						</ul>
 					</p>
 				</div>
@@ -218,7 +224,10 @@ export async function addToCart(
 
 	updatedCart.currencyCode = currencyCode;
 
-	Liferay.fire(CURRENT_ORDER_UPDATED, {order: updatedCart});
+	Liferay.fire(CURRENT_ORDER_UPDATED, {
+		order: updatedCart,
+		refreshItems: true,
+	});
 
 	return updatedCart;
 }

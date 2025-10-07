@@ -7,6 +7,7 @@ package com.liferay.object.rest.internal.resource.v1_0;
 
 import com.liferay.headless.object.dto.v1_0.Collaborator;
 import com.liferay.headless.object.util.v1_0.CollaboratorUtil;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -21,6 +22,8 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.SharingEntryLocalService;
 import com.liferay.sharing.service.SharingEntryService;
+
+import jakarta.ws.rs.core.Context;
 
 /**
  * @author Mikel Lorza
@@ -80,9 +83,10 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			externalReferenceCode, contextCompany.getCompanyId(),
+			externalReferenceCode,
 			CollaboratorUtil.getGroupId(
-				contextCompany.getCompanyId(), _groupLocalService, scopeKey));
+				contextCompany.getCompanyId(), _groupLocalService, scopeKey),
+			_objectDefinition.getObjectDefinitionId());
 
 		CollaboratorUtil.deleteCollaborator(
 			_classNameLocalService.getClassNameId(
@@ -146,9 +150,10 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			externalReferenceCode, contextCompany.getCompanyId(),
+			externalReferenceCode,
 			CollaboratorUtil.getGroupId(
-				contextCompany.getCompanyId(), _groupLocalService, scopeKey));
+				contextCompany.getCompanyId(), _groupLocalService, scopeKey),
+			_objectDefinition.getObjectDefinitionId());
 
 		return CollaboratorUtil.getCollaborator(
 			contextAcceptLanguage,
@@ -171,9 +176,10 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			externalReferenceCode, contextCompany.getCompanyId(),
+			externalReferenceCode,
 			CollaboratorUtil.getGroupId(
-				contextCompany.getCompanyId(), _groupLocalService, scopeKey));
+				contextCompany.getCompanyId(), _groupLocalService, scopeKey),
+			_objectDefinition.getObjectDefinitionId());
 
 		return CollaboratorUtil.getCollaborators(
 			contextAcceptLanguage,
@@ -219,9 +225,10 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			externalReferenceCode, contextCompany.getCompanyId(),
+			externalReferenceCode,
 			CollaboratorUtil.getGroupId(
-				contextCompany.getCompanyId(), _groupLocalService, scopeKey));
+				contextCompany.getCompanyId(), _groupLocalService, scopeKey),
+			_objectDefinition.getObjectDefinitionId());
 
 		return CollaboratorUtil.addOrUpdateCollaborators(
 			contextAcceptLanguage,
@@ -269,9 +276,10 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-			externalReferenceCode, contextCompany.getCompanyId(),
+			externalReferenceCode,
 			CollaboratorUtil.getGroupId(
-				contextCompany.getCompanyId(), _groupLocalService, scopeKey));
+				contextCompany.getCompanyId(), _groupLocalService, scopeKey),
+			_objectDefinition.getObjectDefinitionId());
 
 		return CollaboratorUtil.addOrUpdateCollaborator(
 			contextAcceptLanguage,
@@ -284,11 +292,19 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 			_userLocalService);
 	}
 
+	public void setObjectDefinition(ObjectDefinition objectDefinition) {
+		_objectDefinition = objectDefinition;
+	}
+
 	private final ClassNameLocalService _classNameLocalService;
 	private final DTOConverter<SharingEntry, Collaborator>
 		_collaboratorDTOConverter;
 	private final DTOConverterRegistry _dtoConverterRegistry;
 	private final GroupLocalService _groupLocalService;
+
+	@Context
+	private ObjectDefinition _objectDefinition;
+
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final SharingEntryLocalService _sharingEntryLocalService;
 	private final SharingEntryService _sharingEntryService;

@@ -5,7 +5,6 @@
 
 package com.liferay.portal.messaging.internal.jmx;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.Destination;
@@ -69,9 +68,8 @@ public class MessageBusManager
 		_serviceTracker = new ServiceTracker<>(
 			bundleContext,
 			bundleContext.createFilter(
-				StringBundler.concat(
-					"(&(objectClass=", Destination.class.getName(),
-					")(destination.name=*))")),
+				"(&(destination.name=*)(objectClass=" +
+					Destination.class.getName() + "))"),
 			new ServiceTrackerCustomizer
 				<Destination, ServiceRegistration<DynamicMBean>>() {
 

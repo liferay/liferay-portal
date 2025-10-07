@@ -5,7 +5,7 @@
 
 package com.liferay.depot.web.internal.portlet;
 
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.portal.kernel.portlet.BaseControlPanelEntry;
 import com.liferay.portal.kernel.portlet.ControlPanelEntry;
 

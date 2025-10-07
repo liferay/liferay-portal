@@ -53,6 +53,7 @@ function ImageEditor({
 	imageId,
 	imageSrc,
 	itemReturnType,
+	mimeType = 'image/png',
 	onCancel = noop,
 	onSave = noop,
 	saveURL,
@@ -95,7 +96,7 @@ function ImageEditor({
 				.then((response) => {
 					onSave(response);
 				});
-		});
+		}, mimeType);
 	};
 
 	const handleZoomIn = () => {
@@ -274,6 +275,7 @@ ImageEditor.propTypes = {
 	imageId: PropTypes.string.isRequired,
 	imageSrc: PropTypes.string.isRequired,
 	itemReturnType: PropTypes.string,
+	mimeType: PropTypes.string,
 	onCancel: PropTypes.func,
 	onSave: PropTypes.func,
 	saveURL: PropTypes.string.isRequired,

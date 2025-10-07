@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Export Import REST Implementation
+Bundle-SymbolicName: com.liferay.exportimport.rest.impl
+Bundle-Version: 1.0.4

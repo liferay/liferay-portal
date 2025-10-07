@@ -59,7 +59,7 @@ const DeactivateKeysModal: React.FC<DeactivateKeysModalProps> = ({
 
 					<p className="mb-6 mt-5">
 						{i18n.translate(
-							'a-request-will-be-sent-to-deactivate-the-selected-activation-key-from-now-on-it-will-be-hidden-and-no-longer-be-visible'
+							'a-request-will-be-sent-to-deactivate-the-selected-activation-key-from-now-on-it-will-be-hidden-and-no-longer-visible'
 						)}
 					</p>
 				</div>
@@ -92,7 +92,7 @@ const DeactivateKeysModal: React.FC<DeactivateKeysModalProps> = ({
 
 					<p className="m-0 text-danger text-paragraph">
 						{i18n.translate(
-							'there-was-an-unexpected-error-while-attempting-to-deactivate-key-please-try-again-in-a-few-moments'
+							'there-was-an-unexpected-error-while-attempting-to-deactivate-the-key-please-try-again-in-a-few-moments'
 						)}
 					</p>
 				</div>

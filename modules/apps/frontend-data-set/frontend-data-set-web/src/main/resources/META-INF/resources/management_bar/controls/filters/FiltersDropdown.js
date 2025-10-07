@@ -33,7 +33,19 @@ const FiltersDropdown = () => {
 
 	useEffect(() => {
 		setFilters(initialFilters);
-	}, [initialFilters]);
+
+		setActiveFilter((currentActiveFilter) => {
+			if (!currentActiveFilter) {
+				return null;
+			}
+
+			return (
+				initialFilters.find(
+					(filter) => filter.id === currentActiveFilter.id
+				) || null
+			);
+		});
+	}, [initialFilters, setActiveFilter, setFilters]);
 
 	return (
 		<ClayDropDown
@@ -100,16 +112,21 @@ const FiltersDropdown = () => {
 
 					{filters.length ? (
 						<ClayDropDown.ItemList>
-							{filters.map((filter) => (
-								<ClayDropDown.Item
-									key={filter.id}
-									onClick={() => {
-										setActiveFilter(filter);
-									}}
-								>
-									{filter.label}
-								</ClayDropDown.Item>
-							))}
+							{filters
+								.filter(
+									(filter) =>
+										!filter.clientExtensionResolutionError
+								)
+								.map((filter) => (
+									<ClayDropDown.Item
+										key={filter.id}
+										onClick={() => {
+											setActiveFilter(filter);
+										}}
+									>
+										{filter.label}
+									</ClayDropDown.Item>
+								))}
 						</ClayDropDown.ItemList>
 					) : (
 						<ClayDropDown.Caption>

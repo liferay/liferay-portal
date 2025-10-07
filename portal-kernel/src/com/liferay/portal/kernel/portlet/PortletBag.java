@@ -106,11 +106,11 @@ public interface PortletBag extends Cloneable {
 	public List<PortletConfigurationListener>
 		getPortletConfigurationListenerInstances();
 
-	public PortletDataHandler getPortletDataHandlerInstance();
+	public PortletDataHandler getPortletDataHandlerInstance(long companyId);
 
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link
-	 *             #getPortletDataHandlerInstance()}
+	 *             #getPortletDataHandlerInstance(long companyId)}
 	 */
 	@Deprecated
 	public List<PortletDataHandler> getPortletDataHandlerInstances();

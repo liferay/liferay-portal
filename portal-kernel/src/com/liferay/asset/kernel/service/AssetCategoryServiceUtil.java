@@ -191,11 +191,11 @@ public class AssetCategoryServiceUtil {
 		return getService().getChildCategoriesCount(parentCategoryId);
 	}
 
-	public static AssetCategory getOrAddIncompleteCategory(
+	public static AssetCategory getOrAddEmptyCategory(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		return getService().getOrAddIncompleteCategory(
+		return getService().getOrAddEmptyCategory(
 			externalReferenceCode, groupId);
 	}
 

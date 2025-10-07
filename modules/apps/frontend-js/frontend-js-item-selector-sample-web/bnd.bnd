@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS Item Selector Sample Web
+Bundle-SymbolicName: com.liferay.frontend.js.item.selector.sample.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-item-selector-sample-web

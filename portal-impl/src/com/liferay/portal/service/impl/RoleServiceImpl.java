@@ -93,6 +93,19 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 			new long[] {userId}, roleIds, null);
 	}
 
+	@Override
+	public Role copyRole(
+			long userId, String name, long sourceRoleId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		PortalPermissionUtil.contains(
+			getPermissionChecker(), ActionKeys.ADD_ROLE);
+
+		return roleLocalService.copyRole(
+			userId, name, sourceRoleId, serviceContext);
+	}
+
 	/**
 	 * Deletes the role with the primary key and its associated permissions.
 	 *
@@ -181,8 +194,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 			excludedTeamRoleId, teamGroupId);
 	}
 
-	@Override
-	public Role getOrAddIncompleteRole(
+	public Role getOrAddEmptyRole(
 			String externalReferenceCode, String className, long classPK,
 			String name, int type)
 		throws Exception {
@@ -198,7 +210,7 @@ public class RoleServiceImpl extends RoleServiceBaseImpl {
 
 		PortalPermissionUtil.check(getPermissionChecker(), ActionKeys.ADD_ROLE);
 
-		return roleLocalService.getOrAddIncompleteRole(
+		return roleLocalService.getOrAddEmptyRole(
 			externalReferenceCode, permissionChecker.getCompanyId(),
 			permissionChecker.getUserId(), className, classPK, name, type);
 	}

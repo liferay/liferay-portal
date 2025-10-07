@@ -1146,7 +1146,7 @@ public class CPDefinitionLocalizationPersistenceImpl
 					SanitizerUtil.sanitize(
 						companyId, groupId, userId,
 						CPDefinitionLocalization.class.getName(),
-						cpDefinitionLocalizationId, ContentTypes.TEXT_HTML,
+						cpDefinitionLocalizationId, ContentTypes.TEXT_PLAIN,
 						Sanitizer.MODE_ALL, cpDefinitionLocalization.getName(),
 						null));
 
@@ -1725,6 +1725,7 @@ public class CPDefinitionLocalizationPersistenceImpl
 		ctStrictColumnNames.add("companyId");
 		ctMergeColumnNames.add("CPDefinitionId");
 		ctMergeColumnNames.add("languageId");
+		ctMergeColumnNames.add("CProductId");
 		ctMergeColumnNames.add("name");
 		ctMergeColumnNames.add("shortDescription");
 		ctMergeColumnNames.add("description");

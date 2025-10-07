@@ -52,86 +52,95 @@ public class BundleServletContextAdapter
 
 	@Override
 	public FilterRegistration.Dynamic addFilter(
-		String s, Class<? extends Filter> aClass) {
+		String filterName, Class<? extends Filter> filterClass) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public FilterRegistration.Dynamic addFilter(String s, Filter filter) {
+	public FilterRegistration.Dynamic addFilter(
+		String filterName, Filter filter) {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public FilterRegistration.Dynamic addFilter(String s, String s1) {
+	public FilterRegistration.Dynamic addFilter(
+		String filterName, String filterClassName) {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public ServletRegistration.Dynamic addJspFile(
-		String jspName, String jspFile) {
+		String servletName, String jspFile) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addListener(Class<? extends EventListener> eventListener) {
+	public void addListener(Class<? extends EventListener> eventListenerClass) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void addListener(String s) {
+	public void addListener(String eventListenerClassName) {
 	}
 
 	@Override
-	public <T extends EventListener> void addListener(T t) {
+	public <T extends EventListener> void addListener(T eventListener) {
 	}
 
 	@Override
 	public ServletRegistration.Dynamic addServlet(
-		String s, Class<? extends Servlet> aClass) {
+		String servletName, Class<? extends Servlet> servletClass) {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ServletRegistration.Dynamic addServlet(String s, Servlet servlet) {
+	public ServletRegistration.Dynamic addServlet(
+		String servletName, Servlet servlet) {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ServletRegistration.Dynamic addServlet(String s, String s1) {
+	public ServletRegistration.Dynamic addServlet(
+		String servletName, String servletClassName) {
+
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T extends Filter> T createFilter(Class<T> aClass)
+	public <T extends Filter> T createFilter(Class<T> filterClass)
 		throws ServletException {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T extends EventListener> T createListener(Class<T> clazz)
+	public <T extends EventListener> T createListener(
+			Class<T> eventListenerClass)
 		throws ServletException {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public <T extends Servlet> T createServlet(Class<T> aClass)
+	public <T extends Servlet> T createServlet(Class<T> servletClass)
 		throws ServletException {
 
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void declareRoles(String... strings) {
+	public void declareRoles(String... roleNames) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Object getAttribute(String s) {
+	public Object getAttribute(String name) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -176,7 +185,7 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public FilterRegistration getFilterRegistration(String s) {
+	public FilterRegistration getFilterRegistration(String filterName) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -186,7 +195,7 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public String getInitParameter(String s) {
+	public String getInitParameter(String name) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -216,7 +225,7 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public RequestDispatcher getNamedDispatcher(String s) {
+	public RequestDispatcher getNamedDispatcher(String servletName) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -226,13 +235,13 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public RequestDispatcher getRequestDispatcher(String s) {
+	public RequestDispatcher getRequestDispatcher(String path) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public InputStream getResourceAsStream(String name) {
-		URL url = getResource(name);
+	public InputStream getResourceAsStream(String path) {
+		URL url = getResource(path);
 
 		if (url == null) {
 			return null;
@@ -243,7 +252,7 @@ public class BundleServletContextAdapter
 		}
 		catch (IOException ioException) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to open resource: " + name, ioException);
+				_log.debug("Unable to open resource: " + path, ioException);
 			}
 
 			return null;
@@ -266,7 +275,7 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public ServletRegistration getServletRegistration(String s) {
+	public ServletRegistration getServletRegistration(String servletName) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -293,27 +302,27 @@ public class BundleServletContextAdapter
 	}
 
 	@Override
-	public void log(String s) {
+	public void log(String message) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void log(String s, Throwable throwable) {
+	public void log(String message, Throwable throwable) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void removeAttribute(String s) {
+	public void removeAttribute(String name) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void setAttribute(String s, Object object) {
+	public void setAttribute(String name, Object value) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean setInitParameter(String s, String s1) {
+	public boolean setInitParameter(String name, String value) {
 		throw new UnsupportedOperationException();
 	}
 

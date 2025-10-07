@@ -55,7 +55,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "DIALECT-dialect-text",
+										"key": "dialect-text",
 										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
@@ -355,7 +355,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -412,7 +412,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -469,7 +469,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -526,7 +526,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -665,7 +665,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "DIALECT-dialect-text",
+																		"key": "dialect-text",
 																		"siteKey": "[$GROUP_KEY$]"
 																	},
 																	"fragmentConfig": {
@@ -735,7 +735,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "DIALECT-dialect-text",
+																		"key": "dialect-text",
 																		"siteKey": "[$GROUP_KEY$]"
 																	},
 																	"fragmentConfig": {
@@ -805,7 +805,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "DIALECT-dialect-text",
+																		"key": "dialect-text",
 																		"siteKey": "[$GROUP_KEY$]"
 																	},
 																	"fragmentConfig": {

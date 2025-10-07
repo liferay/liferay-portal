@@ -23,6 +23,25 @@
 				"update": {
 				}
 			},
+			"externalReferenceCode": "L_CMS_CONTENT_SETTINGS",
+			"label": {
+				"en_US": "CMS Content Settings"
+			},
+			"name": "CMSContentSettings",
+			"objectFolderItems": [
+			]
+		},
+		{
+			"actions": {
+				"delete": {
+				},
+				"get": {
+				},
+				"permissions": {
+				},
+				"update": {
+				}
+			},
 			"externalReferenceCode": "L_CMS_CONTENT_STRUCTURES",
 			"label": {
 				"en_US": "CMS Content Structures"
@@ -47,6 +66,25 @@
 				"en_US": "CMS File Types"
 			},
 			"name": "CMSFileTypes",
+			"objectFolderItems": [
+			]
+		},
+		{
+			"actions": {
+				"delete": {
+				},
+				"get": {
+				},
+				"permissions": {
+				},
+				"update": {
+				}
+			},
+			"externalReferenceCode": "L_CMS_STRUCTURE_REPEATABLE_GROUPS",
+			"label": {
+				"en_US": "CMS Structure Repeatable Groups"
+			},
+			"name": "CMSStructureRepeatableGroups",
 			"objectFolderItems": [
 			]
 		}

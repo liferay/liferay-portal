@@ -13,8 +13,6 @@ import java.util.Properties;
  */
 public interface Configuration {
 
-	public void addProperties(Properties properties);
-
 	public void clearCache();
 
 	public boolean contains(String key);
@@ -32,8 +30,6 @@ public interface Configuration {
 	public Properties getProperties();
 
 	public Properties getProperties(String prefix, boolean removePrefix);
-
-	public void removeProperties(Properties properties);
 
 	public void set(String key, String value);
 

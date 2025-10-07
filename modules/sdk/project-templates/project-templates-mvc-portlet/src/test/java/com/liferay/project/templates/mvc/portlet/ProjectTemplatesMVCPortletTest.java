@@ -42,7 +42,7 @@ public class ProjectTemplatesMVCPortletTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -77,18 +77,20 @@ public class ProjectTemplatesMVCPortletTest
 
 		testContains(
 			gradleProjectDir, "bnd.bnd", "Export-Package: foo.constants");
-
 		testContains(
 			gradleProjectDir, "src/main/java/foo/constants/FooPortletKeys.java",
 			"public class FooPortletKeys", "public static final String FOO");
+
+		String packagePrefix = getJavaxOrJakartaPackagePrefix(_liferayVersion);
+
 		testContains(
 			gradleProjectDir, "src/main/java/foo/portlet/FooPortlet.java",
-			"javax.portlet.display-name=Foo",
-			"javax.portlet.name=\" + FooPortletKeys.FOO",
+			packagePrefix + ".portlet.display-name=Foo",
+			packagePrefix + ".portlet.name=\" + FooPortletKeys.FOO",
 			"public class FooPortlet extends MVCPortlet {");
 		testContains(
 			gradleProjectDir, "src/main/resources/content/Language.properties",
-			"javax.portlet.title.foo_FooPortlet=Foo",
+			packagePrefix + ".portlet.title.foo_FooPortlet=Foo",
 			"foo.caption=Hello from Foo!");
 	}
 

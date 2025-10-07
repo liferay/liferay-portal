@@ -1070,7 +1070,7 @@ public class CTSQLTransformerTest {
 
 	@SafeVarargs
 	private final void _assertQuery(
-			String inputSQLFile, String expectedOutputSQLFile,
+			String inputSQLFileName, String expectedOutputSQLFileName,
 			long ctCollectionId,
 			UnsafeConsumer<PreparedStatement, Exception>
 				preparedStatementUnsafeConsumer,
@@ -1094,7 +1094,9 @@ public class CTSQLTransformerTest {
 					companyId, ctCollectionId);
 			Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				_getSQL(inputSQLFile, expectedOutputSQLFile, ctCollectionId))) {
+				_getSQL(
+					inputSQLFileName, expectedOutputSQLFileName,
+					ctCollectionId))) {
 
 			PrincipalThreadLocal.setName(userId);
 
@@ -1131,7 +1133,7 @@ public class CTSQLTransformerTest {
 	}
 
 	private void _assertUpdate(
-			String inputSQLFile, String expectedOutputSQLFile,
+			String inputSQLFileName, String expectedOutputSQLFileName,
 			long ctCollectionId,
 			UnsafeConsumer<PreparedStatement, Exception>
 				preparedStatementUnsafeConsumer)
@@ -1154,7 +1156,9 @@ public class CTSQLTransformerTest {
 					companyId, ctCollectionId);
 			Connection connection = DataAccess.getConnection();
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				_getSQL(inputSQLFile, expectedOutputSQLFile, ctCollectionId))) {
+				_getSQL(
+					inputSQLFileName, expectedOutputSQLFileName,
+					ctCollectionId))) {
 
 			PrincipalThreadLocal.setName(userId);
 
@@ -1168,18 +1172,18 @@ public class CTSQLTransformerTest {
 	}
 
 	private String _getSQL(
-			String inputSQLFile, String expectedOutputSQLFile,
+			String inputSQLFileName, String expectedOutputSQLFileName,
 			long ctCollectionId)
 		throws Exception {
 
 		String inputSQL = StreamUtil.toString(
 			CTSQLTransformerTest.class.getResourceAsStream(
-				"dependencies/" + inputSQLFile));
+				"dependencies/" + inputSQLFileName));
 
 		String expectedOutputSQL = _normalizeSQL(
 			StreamUtil.toString(
 				CTSQLTransformerTest.class.getResourceAsStream(
-					"dependencies/" + expectedOutputSQLFile)));
+					"dependencies/" + expectedOutputSQLFileName)));
 
 		expectedOutputSQL = StringUtil.replace(
 			expectedOutputSQL, "[$", "$]",

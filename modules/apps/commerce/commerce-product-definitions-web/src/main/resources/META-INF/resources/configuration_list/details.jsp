@@ -65,6 +65,19 @@ long templateCPConfigurationEntryId = cpConfigurationListDisplayContext.getTempl
 						</div>
 					</div>
 				</commerce-ui:panel>
+
+				<c:if test="<%= cpConfigurationListDisplayContext.hasCustomAttributesAvailable() %>">
+					<commerce-ui:panel
+						title='<%= LanguageUtil.get(request, "custom-attribute") %>'
+					>
+						<liferay-expando:custom-attribute-list
+							className="<%= CPConfigurationList.class.getName() %>"
+							classPK="<%= cpConfigurationList.getCPConfigurationListId() %>"
+							editable="<%= true %>"
+							label="<%= true %>"
+						/>
+					</commerce-ui:panel>
+				</c:if>
 			</div>
 		</c:if>
 
@@ -75,6 +88,19 @@ long templateCPConfigurationEntryId = cpConfigurationListDisplayContext.getTempl
 				>
 					<liferay-util:include page="/configuration_list/edit_cp_configuration_entry_form.jsp" servletContext="<%= application %>" />
 				</commerce-ui:panel>
+
+				<c:if test="<%= cpConfigurationListDisplayContext.hasCustomAttributesAvailable() %>">
+					<commerce-ui:panel
+						title='<%= LanguageUtil.get(request, "custom-attribute") %>'
+					>
+						<liferay-expando:custom-attribute-list
+							className="<%= CPConfigurationList.class.getName() %>"
+							classPK="<%= cpConfigurationList.getCPConfigurationListId() %>"
+							editable="<%= true %>"
+							label="<%= true %>"
+						/>
+					</commerce-ui:panel>
+				</c:if>
 			</div>
 		</c:if>
 	</div>

@@ -69,7 +69,7 @@ public class DepotEntryGroupRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -99,6 +99,8 @@ public class DepotEntryGroupRelCacheModel
 		sb.append(searchable);
 		sb.append(", toGroupId=");
 		sb.append(toGroupId);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
 		sb.append("}");
@@ -152,6 +154,7 @@ public class DepotEntryGroupRelCacheModel
 		depotEntryGroupRelImpl.setDepotEntryId(depotEntryId);
 		depotEntryGroupRelImpl.setSearchable(searchable);
 		depotEntryGroupRelImpl.setToGroupId(toGroupId);
+		depotEntryGroupRelImpl.setType(type);
 
 		if (lastPublishDate == Long.MIN_VALUE) {
 			depotEntryGroupRelImpl.setLastPublishDate(null);
@@ -191,6 +194,8 @@ public class DepotEntryGroupRelCacheModel
 		searchable = objectInput.readBoolean();
 
 		toGroupId = objectInput.readLong();
+
+		type = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -232,6 +237,8 @@ public class DepotEntryGroupRelCacheModel
 		objectOutput.writeBoolean(searchable);
 
 		objectOutput.writeLong(toGroupId);
+
+		objectOutput.writeInt(type);
 		objectOutput.writeLong(lastPublishDate);
 	}
 
@@ -249,6 +256,7 @@ public class DepotEntryGroupRelCacheModel
 	public long depotEntryId;
 	public boolean searchable;
 	public long toGroupId;
+	public int type;
 	public long lastPublishDate;
 
 }

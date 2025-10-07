@@ -4,7 +4,7 @@
 	justify-content: space-evenly;
 
 	h1 {
-		font-weight: 700;
+		font-weight: 700 !important;
 	}
 
 	.button-explore {
@@ -42,6 +42,45 @@
 	@media (max-width: 1287px) {
 		display: flex !important;
 		flex-direction: column !important;
+
+		.learn-welcome-container {
+			margin: 0 !important;
+		}
+	}
+}
+
+.learn-header-container {
+	align-items: center;
+	display: flex;
+	justify-content: space-evenly;
+
+	@media (max-width: 415px) {
+		font-size: 0.5rem;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+
+		.learn-home-header-buttons {
+			display: flex !important;
+			flex-direction: column !important;
+			width: 95%;
+			z-index: 1;
+		}
+	}
+
+	@media (max-width: 1287px) {
+		display: flex !important;
+		flex-direction: column !important;
+
+		.learn-welcome-container {
+			margin: 0 !important;
+		}
+	}
+}
+
+@media (max-width: 990px) {
+	.card-row {
+		flex-direction: column !important;
+		gap: 40px;
 	}
 }
 
@@ -51,6 +90,11 @@
 
 		@media (max-width: 991px) {
 			flex-direction: column !important;
+		}
+
+		@media (max-width: 1279px) {
+			flex-direction: column !important;
+			gap: 40px;
 		}
 	}
 
@@ -95,25 +139,7 @@
 
 		.home-card-icon {
 			align-items: center;
-			background:
-				linear-gradient(
-					91.07deg,
-					#001742 0%,
-					#0011a8 24.6%,
-					#0b5fff 49%,
-					#0b5fff 74.5%,
-					#0b5fff 100%
-				),
-				radial-gradient(
-						26.56% 43.82% at 0% 0%,
-						#00256b 20.83%,
-						rgba(0, 37, 107, 0) 100%
-					)
-				radial-gradient(
-					14.55% 34.6% at 100% 34.6%,
-					rgba(55, 124, 255, 0.68) 0%,
-					rgba(55, 124, 255, 0) 100%
-				);
+			background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint0_linear_3687_24766)'/%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint1_radial_3687_24766)'/%3E%3Crect width='80' height='80' rx='10' fill='url(%23paint2_radial_3687_24766)'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_3687_24766' x1='0' y1='0' x2='81.4669' y2='1.52278' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23001742'/%3E%3Cstop offset='0.246' stop-color='%230011A8'/%3E%3Cstop offset='0.49' stop-color='%230B5FFF'/%3E%3Cstop offset='0.745' stop-color='%230B5FFF'/%3E%3Cstop offset='1' stop-color='%230B5FFF'/%3E%3C/linearGradient%3E%3CradialGradient id='paint1_radial_3687_24766' cx='0' cy='0' r='1' gradientTransform='matrix(21.25 23.4286 -0.722484 35.0578 0 0)' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0.208333' stop-color='%2300256B'/%3E%3Cstop offset='1' stop-color='%2300256B' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='paint2_radial_3687_24766' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(80 27.6809) rotate(180) scale(11.6406 27.6809)'%3E%3Cstop stop-color='%23377CFF' stop-opacity='0.68'/%3E%3Cstop offset='1' stop-color='%23377CFF' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E ");
 			display: flex;
 			justify-content: center;
 		}

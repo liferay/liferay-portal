@@ -12,8 +12,9 @@ export class FormBuilderSidePanelPage {
 	readonly addSelectFromListButton: Locator;
 	readonly addSelectOptionButton: Locator;
 	readonly addSingleSelectionButton: Locator;
+	readonly addTextButton: Locator;
 	readonly advancedTab: Locator;
-	readonly allowGuestUsers: Locator;
+	readonly allowGuestUsersToggle: Locator;
 	readonly backButton: Locator;
 	readonly collapsibleToggleSwitch: Locator;
 	readonly helpText: Locator;
@@ -24,6 +25,7 @@ export class FormBuilderSidePanelPage {
 	readonly paragraphFieldTextarea: Locator;
 	readonly paragraphFieldTitle: Locator;
 	readonly predefinedValueField: Locator;
+	readonly repeatableFieldToggleSwitch: Locator;
 	readonly requireConfirmationToggleSwitch: Locator;
 	readonly requiredFieldToggleSwitch: Locator;
 
@@ -40,10 +42,15 @@ export class FormBuilderSidePanelPage {
 		this.addSingleSelectionButton = page.getByRole('button', {
 			name: 'Press enter to add Single',
 		});
+		this.addTextButton = page.getByRole('button', {
+			name: 'Press enter to add Text field',
+		});
 		this.advancedTab = page.getByRole('tab', {
 			name: 'Advanced',
 		});
-		this.allowGuestUsers = page.getByLabel('Allow Guest Users to Send');
+		this.allowGuestUsersToggle = page.getByLabel(
+			'Allow Guest Users to Send Files'
+		);
 		this.backButton = page.getByRole('button', {name: 'Back'});
 		this.collapsibleToggleSwitch = page.getByRole('switch', {
 			name: 'Collapsible',
@@ -60,6 +67,9 @@ export class FormBuilderSidePanelPage {
 			.locator('.cke_editable');
 		this.paragraphFieldTitle = page.getByPlaceholder('Enter a title.');
 		this.predefinedValueField = page.getByLabel('Predefined Value');
+		this.repeatableFieldToggleSwitch = page.getByRole('switch', {
+			name: 'Repeatable',
+		});
 		this.requiredFieldToggleSwitch = page.getByText('Required Field');
 		this.requireConfirmationToggleSwitch = page.getByLabel(
 			'Require Confirmation'

@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
@@ -8,6 +7,7 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	testIntegrationImplementation group: "org.springframework", name: "spring-web", version: "6.2.9"
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-taglib")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upload-test-util")

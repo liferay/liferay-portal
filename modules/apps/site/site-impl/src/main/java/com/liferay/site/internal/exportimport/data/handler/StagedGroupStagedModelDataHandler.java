@@ -491,6 +491,9 @@ public class StagedGroupStagedModelDataHandler
 
 		_permissionImporter.clearCache();
 
+		List<Element> batchPortletElements = new ArrayList<>();
+		List<Element> nonbatchPortletElements = new ArrayList<>();
+
 		for (Element portletElement : sitePortletElements) {
 			String portletId = portletElement.attributeValue("portlet-id");
 
@@ -501,6 +504,23 @@ public class StagedGroupStagedModelDataHandler
 				continue;
 			}
 
+			PortletDataHandler portletDataHandler =
+				portlet.getPortletDataHandlerInstance();
+
+			if (portletDataHandler.isBatch()) {
+				batchPortletElements.add(portletElement);
+			}
+			else {
+				nonbatchPortletElements.add(portletElement);
+			}
+		}
+
+		List<Element> orderedPortletElements = new ArrayList<>();
+
+		orderedPortletElements.addAll(batchPortletElements);
+		orderedPortletElements.addAll(nonbatchPortletElements);
+
+		for (Element portletElement : orderedPortletElements) {
 			long layoutId = GetterUtil.getLong(
 				portletElement.attributeValue("layout-id"));
 
@@ -517,6 +537,8 @@ public class StagedGroupStagedModelDataHandler
 			}
 
 			portletDataContext.setPlid(plid);
+
+			String portletId = portletElement.attributeValue("portlet-id");
 
 			portletDataContext.setPortletId(portletId);
 

@@ -62,21 +62,6 @@ public class FragmentCompositionSerDes {
 			sb.append(fragmentComposition.getCreator());
 		}
 
-		if (fragmentComposition.getCreatorExternalReferenceCode() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"creatorExternalReferenceCode\": ");
-
-			sb.append("\"");
-
-			sb.append(
-				_escape(fragmentComposition.getCreatorExternalReferenceCode()));
-
-			sb.append("\"");
-		}
-
 		if (fragmentComposition.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -249,16 +234,6 @@ public class FragmentCompositionSerDes {
 				"creator", String.valueOf(fragmentComposition.getCreator()));
 		}
 
-		if (fragmentComposition.getCreatorExternalReferenceCode() == null) {
-			map.put("creatorExternalReferenceCode", null);
-		}
-		else {
-			map.put(
-				"creatorExternalReferenceCode",
-				String.valueOf(
-					fragmentComposition.getCreatorExternalReferenceCode()));
-		}
-
 		if (fragmentComposition.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
@@ -370,11 +345,6 @@ public class FragmentCompositionSerDes {
 			if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				return false;
-			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -423,14 +393,6 @@ public class FragmentCompositionSerDes {
 				if (jsonParserFieldValue != null) {
 					fragmentComposition.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(
-						jsonParserFieldName, "creatorExternalReferenceCode")) {
-
-				if (jsonParserFieldValue != null) {
-					fragmentComposition.setCreatorExternalReferenceCode(
-						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {

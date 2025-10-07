@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -53,7 +56,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -270,7 +273,7 @@ public abstract class BaseObjectViewResourceTestCase {
 							put("objectViewId", objectView1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -305,7 +308,7 @@ public abstract class BaseObjectViewResourceTestCase {
 								put("objectViewId", objectView2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -711,6 +714,108 @@ public abstract class BaseObjectViewResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectViewsPage()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetObjectDefinitionByExternalReferenceCodeObjectViewsPage_getExternalReferenceCode();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionByExternalReferenceCodeObjectViews",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject
+			objectDefinitionByExternalReferenceCodeObjectViewsJSONObject =
+				JSONUtil.getValueAsJSONObject(
+					invokeGraphQLQuery(graphQLField), "JSONObject/data",
+					"JSONObject/objectDefinitionByExternalReferenceCodeObjectViews");
+
+		long totalCount =
+			objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+				getLong("totalCount");
+
+		ObjectView objectView1 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectViewsPageObjectDefinitionObjectView_addObjectView(
+				externalReferenceCode, randomObjectView());
+
+		ObjectView objectView2 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectViewsPageObjectDefinitionObjectView_addObjectView(
+				externalReferenceCode, randomObjectView());
+
+		objectDefinitionByExternalReferenceCodeObjectViewsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectViews");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectView1,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+						getString("items"))));
+		assertContains(
+			objectView2,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+						getString("items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionByExternalReferenceCodeObjectViewsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("objectAdmin_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectViews");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectView1,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+						getString("items"))));
+		assertContains(
+			objectView2,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectViewsJSONObject.
+						getString("items"))));
+	}
+
+	protected ObjectView
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectViewsPageObjectDefinitionObjectView_addObjectView(
+				String externalReferenceCode, ObjectView objectView)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetObjectDefinitionObjectViewsPage() throws Exception {
 		Long objectDefinitionId =
 			testGetObjectDefinitionObjectViewsPage_getObjectDefinitionId();
@@ -1053,6 +1158,87 @@ public abstract class BaseObjectViewResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionObjectViewsPage()
+		throws Exception {
+
+		Long objectDefinitionId =
+			testGetObjectDefinitionObjectViewsPage_getObjectDefinitionId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionObjectViews",
+			new HashMap<String, Object>() {
+				{
+					put("objectDefinitionId", objectDefinitionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject objectDefinitionObjectViewsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionObjectViews");
+
+		long totalCount = objectDefinitionObjectViewsJSONObject.getLong(
+			"totalCount");
+
+		ObjectView objectView1 =
+			testGraphQLObjectDefinitionObjectView_addObjectView(
+				objectDefinitionId, randomObjectView());
+
+		ObjectView objectView2 =
+			testGraphQLObjectDefinitionObjectView_addObjectView(
+				objectDefinitionId, randomObjectView());
+
+		objectDefinitionObjectViewsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/objectDefinitionObjectViews");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectViewsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			objectView1,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionObjectViewsJSONObject.getString("items"))));
+		assertContains(
+			objectView2,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionObjectViewsJSONObject.getString("items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionObjectViewsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("objectAdmin_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+			"JSONObject/objectDefinitionObjectViews");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectViewsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			objectView1,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionObjectViewsJSONObject.getString("items"))));
+		assertContains(
+			objectView2,
+			Arrays.asList(
+				ObjectViewSerDes.toDTOs(
+					objectDefinitionObjectViewsJSONObject.getString("items"))));
+	}
+
+	@Test
 	public void testGetObjectView() throws Exception {
 		ObjectView postObjectView = testGetObjectView_addObjectView();
 
@@ -1372,6 +1558,30 @@ public abstract class BaseObjectViewResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectView()
+		throws Exception {
+
+		ObjectView randomObjectView = randomObjectView();
+
+		ObjectView objectView =
+			testGraphQLObjectDefinitionObjectView_addObjectView(
+				testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectView_getObjectDefinitionId(
+					randomObjectView),
+				randomObjectView);
+
+		Assert.assertTrue(equals(randomObjectView, objectView));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectView_getObjectDefinitionId(
+				ObjectView objectView)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostObjectDefinitionObjectView() throws Exception {
 		ObjectView randomObjectView = randomObjectView();
 
@@ -1389,6 +1599,28 @@ public abstract class BaseObjectViewResourceTestCase {
 		return objectViewResource.postObjectDefinitionObjectView(
 			testGetObjectDefinitionObjectViewsPage_getObjectDefinitionId(),
 			objectView);
+	}
+
+	@Test
+	public void testGraphQLPostObjectDefinitionObjectView() throws Exception {
+		ObjectView randomObjectView = randomObjectView();
+
+		ObjectView objectView =
+			testGraphQLObjectDefinitionObjectView_addObjectView(
+				testGraphQLPostObjectDefinitionObjectView_getObjectDefinitionId(
+					randomObjectView),
+				randomObjectView);
+
+		Assert.assertTrue(equals(randomObjectView, objectView));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionObjectView_getObjectDefinitionId(
+				ObjectView objectView)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1493,6 +1725,132 @@ public abstract class BaseObjectViewResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected ObjectView testGraphQLObjectDefinitionObjectView_addObjectView()
+		throws Exception {
+
+		return testGraphQLObjectDefinitionObjectView_addObjectView(
+			testGraphQLObjectDefinitionObjectView_getObjectDefinitionId(),
+			randomObjectView());
+	}
+
+	protected Long testGraphQLObjectDefinitionObjectView_getObjectDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ObjectView testGraphQLObjectDefinitionObjectView_addObjectView(
+			Long objectDefinitionId, ObjectView objectView)
+		throws Exception {
+
+		JSONDeserializer<ObjectView> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(ObjectView.class)) {
+
+			if (getGraphQLValue(field.get(objectView)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(objectView)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createObjectDefinitionObjectView",
+						new HashMap<String, Object>() {
+							{
+								put("objectDefinitionId", objectDefinitionId);
+								put("objectView", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createObjectDefinitionObjectView"),
+			ObjectView.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1716,6 +2074,8 @@ public abstract class BaseObjectViewResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

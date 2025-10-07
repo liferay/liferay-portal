@@ -29,8 +29,6 @@ definition {
 
 	@priority = 3
 	test CanGetParametersOfKeywordsAndCategoriesInEndpoint {
-		property portal.acceptance = "true";
-
 		task ("when I navigate to c/university endpoint postUniversity") {
 			APIExplorer.navigateToOpenAPI(
 				api = "c",
@@ -167,8 +165,6 @@ definition {
 
 	@priority = 3
 	test CannotGetKeywordsAndCategoriesWhenCategorizationNotEnabled {
-		property portal.acceptance = "true";
-
 		task ("when I navigate to c/university endpoint postUniversity") {
 			ObjectDefinitionAPI.updateObjectDefinitionById(
 				objectDefinitionId = ${staticUniversityObjectId},
@@ -200,8 +196,6 @@ definition {
 
 	@priority = 3
 	test CannotSeeTaxonomyCategoryBriefInSchemaWhenCategorizationNotEnabled {
-		property portal.acceptance = "true";
-
 		task ("when I navigate to c/university endpoint postUniversity") {
 			ObjectDefinitionAPI.updateObjectDefinitionById(
 				objectDefinitionId = ${staticUniversityObjectId},

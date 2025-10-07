@@ -85,9 +85,11 @@ export class TestEntityAPI {
 
 		/**
 		 * 
+				 * @param filter
 		 * @param headers Optional custom request headers
 		 */
 		public async getTestEntitiesPage(
+						filter?: string,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: PageTestEntity;
@@ -95,9 +97,13 @@ export class TestEntityAPI {
 		}> {
 
 			const path = this._basePath + "/test/v1.0/test-entities"
-;
+				;
 
 			const queryParameters: any = {};
+
+						if (filter !== undefined) {
+							queryParameters["filter"] = ObjectSerializer.serialize(filter, "string");
+						}
 
 			const queryString = Object.keys(queryParameters).length ?
 				"?" + new URLSearchParams(queryParameters).toString() :
@@ -678,6 +684,108 @@ export class TestEntityAPI {
 								type: "application/json"
 							},
 										optionalParameter,
+							headers
+						);
+					}
+		/**
+		 * 
+				 * @param testEntityId
+		 		* @param requestBody Request body that can be one of multiple content types
+		 * @param headers Optional custom request headers
+		 */
+		public async putTestEntityStatusWithContentType(
+						testEntityId: number,
+					requestBody:
+							{
+								parameters: {
+										testEntity?: TestEntity
+								},
+								type: "application/json"
+							}
+								|
+							{
+								parameters: {
+										testEntity?: TestEntity
+								},
+								type: "application/xml"
+							}
+								,
+			headers?: {[name: string]: string},
+		): Promise<{
+				body: TestEntity;
+			response: Response;
+		}> {
+				let body;
+						if (requestBody.type === "application/json") {
+								body = JSON.stringify(ObjectSerializer.serialize(requestBody.parameters.testEntity, "TestEntity"));
+						}
+						if (requestBody.type === "application/xml") {
+								body = JSON.stringify(ObjectSerializer.serialize(requestBody.parameters.testEntity, "TestEntity"));
+						}
+
+			const path = this._basePath + "/test/v1.0/test-entities/{testEntityId}/status"
+						.replace("{testEntityId}",encodeURIComponent(testEntityId))
+				;
+
+			const queryParameters: any = {};
+
+						if (testEntityId === null || testEntityId === undefined) {
+							throw new Error("Required parameter testEntityId was null or undefined when calling putTestEntityStatus.");
+						}
+
+			const queryString = Object.keys(queryParameters).length ?
+				"?" + new URLSearchParams(queryParameters).toString() :
+					"";
+
+			const response = await fetch(path + queryString, {
+					body: body,
+				headers:
+					Object.assign({}, this._defaultHeaders
+						,{
+								Accept: "application/json"
+						}
+								,{"Content-Type": requestBody.type}
+					,headers || {}
+					),
+				method: "PUT",
+			});
+
+			if (response.ok) {
+				const contentType = response.headers.get("content-type") || "";
+
+					if (contentType.includes("application/json")) {
+						return {body: ObjectSerializer.deserialize(await response.json(), "TestEntity"), response};
+					}
+					else {
+						return {body: await response.text() as any, response};
+					}
+			}
+			else {
+				throw new Error("HTTP Error " + response.status + ": " + response.statusText + ". " + await response.text());
+			}
+		}
+
+					/**
+					 *  - Default method for JSON body
+							 * @param testEntityId
+						 * @param testEntity
+					 */
+					public async putTestEntityStatus(
+									testEntityId: number,
+							testEntity?: TestEntity,
+						headers?: {[name: string]: string}
+					): Promise<{
+							body: TestEntity;
+						response: Response;
+					}> {
+						return this.putTestEntityStatusWithContentType(
+										testEntityId,
+							{
+								parameters: {
+										testEntity: testEntity
+								},
+								type: "application/json"
+							},
 							headers
 						);
 					}

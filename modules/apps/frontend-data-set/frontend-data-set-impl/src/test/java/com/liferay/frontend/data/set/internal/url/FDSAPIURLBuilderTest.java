@@ -12,6 +12,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizer
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -84,6 +85,33 @@ public class FDSAPIURLBuilderTest {
 	@Test
 	public void testBuild() throws Exception {
 
+		// No interpolation
+
+		ServiceRegistration<FDSAPIURLResolver> serviceRegistration1 =
+			_registerFDSAPIURLResolver(
+				"/app", "schema", new String[] {"{foo}"}, new String[] {"bar"});
+
+		Assert.assertEquals(
+			"/o/app/{siteId}/{foo}/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{siteId}/{foo}/endpoint", "schema"
+			).build(
+				false
+			));
+		Assert.assertEquals(
+			"/o/app/{siteId}/{foo}/{bob}/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{siteId}/{foo}/{bob}/endpoint", "schema"
+			).setTokenResolutions(
+				JSONUtil.put("bob", "alice")
+			).build(
+				false
+			));
+
+		serviceRegistration1.unregister();
+
 		// No resolver
 
 		_testBuild(
@@ -130,9 +158,8 @@ public class FDSAPIURLBuilderTest {
 
 		// One resolver, one token
 
-		ServiceRegistration<FDSAPIURLResolver> serviceRegistration1 =
-			_registerFDSAPIURLResolver(
-				"/app", "schema", new String[] {"{foo}"}, new String[] {"bar"});
+		serviceRegistration1 = _registerFDSAPIURLResolver(
+			"/app", "schema", new String[] {"{foo}"}, new String[] {"bar"});
 
 		_testBuild(
 			"/o/app/12345/bar/endpoint", "/app", "/{siteId}/{foo}/endpoint",
@@ -193,6 +220,72 @@ public class FDSAPIURLBuilderTest {
 		_testBuild(
 			"/o/app/12345/bar/54321/endpoint", "/app",
 			"/{siteId}/{foo}/{userId}/endpoint", "schema");
+
+		serviceRegistration1.unregister();
+
+		// Resolved tokens, no resolvers
+
+		Assert.assertEquals(
+			"/o/app/bar/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{foo}/endpoint", "schema1"
+			).setTokenResolutions(
+				JSONUtil.put("foo", "bar")
+			).build());
+
+		// Resolved tokens, resolver
+
+		serviceRegistration1 = _registerFDSAPIURLResolver(
+			"/app", "schema", new String[] {"{foo}"}, new String[] {"bar"});
+
+		Assert.assertEquals(
+			"/o/app/baz/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{foo}/endpoint", "schema"
+			).setTokenResolutions(
+				JSONUtil.put("foo", "baz")
+			).build());
+		Assert.assertEquals(
+			"/o/app/bar/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{foo}/endpoint", "schema"
+			).setTokenResolutions(
+				JSONUtil.put("other", "baz")
+			).build());
+		Assert.assertEquals(
+			"/o/app/12345/bar/alice/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{siteId}/{foo}/{bob}/endpoint", "schema"
+			).setTokenResolutions(
+				JSONUtil.put("bob", "alice")
+			).build());
+
+		serviceRegistration1.unregister();
+
+		// Resolved tokens, resolver, default tokens
+
+		serviceRegistration1 = _registerFDSAPIURLResolver(
+			"/app", "schema", new String[] {"{siteId}"},
+			new String[] {"99999"});
+
+		Assert.assertEquals(
+			"/o/app/00000/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{siteId}/endpoint", "schema"
+			).setTokenResolutions(
+				JSONUtil.put("siteId", "00000")
+			).build());
+		Assert.assertEquals(
+			"/o/app/99999/endpoint",
+			new FDSAPIURLBuilder(
+				_fdsAPIURLResolverRegistry, _httpServletRequest, "/app",
+				"/{siteId}/endpoint", "schema"
+			).build());
 
 		serviceRegistration1.unregister();
 

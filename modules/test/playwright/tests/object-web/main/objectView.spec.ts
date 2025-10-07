@@ -15,13 +15,88 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
-import {mockObjectFields} from './utils/mockObjectFields';
+import {generateObjectEntryValues} from './utils/generateObjectEntry';
+import {generateObjectFields} from './utils/generateObjectFields';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest(),
 	objectPagesTest
 );
+
+test('can add and remove new object fields from object view while maintaining correct logic order', async ({
+	apiHelpers,
+	editObjectViewPage,
+	objectViewPage,
+	page,
+}) => {
+	const listTypeDefinition =
+		await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
+
+	apiHelpers.data.push({
+		id: listTypeDefinition.id,
+		type: 'listTypeDefinition',
+	});
+
+	const objectDefinition =
+		await apiHelpers.objectAdmin.postRandomObjectDefinition({
+			objectFields: [
+				{
+					DBType: 'String',
+					businessType: 'MultiselectPicklist',
+					externalReferenceCode: 'customPicklist',
+					indexed: true,
+					indexedAsKeyword: false,
+					indexedLanguageId: 'en_US',
+					label: {
+						en_US: 'customPicklist',
+					},
+					listTypeDefinitionExternalReferenceCode:
+						listTypeDefinition.externalReferenceCode,
+					name: 'customPicklist',
+					required: false,
+					state: false,
+				},
+			],
+			status: {code: 0},
+		});
+
+	apiHelpers.data.push({id: objectDefinition.id, type: 'objectDefinition'});
+
+	const objectViewName = getRandomString();
+
+	await objectViewPage.goto(objectDefinition.label['en_US']);
+
+	await objectViewPage.createObjectView(objectViewName);
+
+	await page.getByRole('link', {name: objectViewName}).click();
+
+	await editObjectViewPage.selectObjectFields(['Status', 'Create Date']);
+
+	const objectFields = editObjectViewPage.sidePanel.locator(
+		'li[draggable="true"]'
+	);
+
+	await expect(objectFields).toHaveCount(2);
+
+	await expect(objectFields.nth(0)).toContainText('Status');
+
+	await expect(objectFields.nth(1)).toContainText('Create Date');
+
+	await editObjectViewPage.selectObjectFields(['ID', 'customPicklist']);
+
+	await editObjectViewPage.unselectObjectFields(['Status', 'ID']);
+
+	await editObjectViewPage.selectObjectFields(['External Reference Code']);
+
+	await expect(objectFields).toHaveCount(3);
+
+	await expect(objectFields.nth(0)).toContainText('Create Date');
+
+	await expect(objectFields.nth(1)).toContainText('customPicklist');
+
+	await expect(objectFields.nth(2)).toContainText('External Reference Code');
+});
 
 test('can create an object custom view using object relationship entry', async ({
 	apiHelpers,
@@ -31,13 +106,11 @@ test('can create an object custom view using object relationship entry', async (
 }) => {
 	const objectDefinition1 =
 		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			objectFolderExternalReferenceCode: 'default',
 			status: {code: 0},
 		});
 
 	const objectDefinition2 =
 		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			objectFolderExternalReferenceCode: 'default',
 			status: {code: 0},
 		});
 	apiHelpers.data.push({id: objectDefinition1.id, type: 'objectDefinition'});
@@ -142,7 +215,6 @@ test('cannot create an object custom view using empty multiselectpicklist entry'
 					state: false,
 				},
 			],
-			objectFolderExternalReferenceCode: 'default',
 			status: {code: 0},
 		});
 
@@ -171,13 +243,9 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 	const objectDefinitionLabel = 'ObjectDefinitionLabel' + getRandomInt();
 	const objectDefinitionName = 'ObjectDefinitionName' + getRandomInt();
 
-	const {objectEntry, objectFields, titleObjectFieldName} =
-		await mockObjectFields({
-			apiHelpers,
-			objectEntryReturn: {format: 'API'},
-			objectFieldBusinessTypes: ['text'],
-			titleObjectFieldName: 'text',
-		});
+	const objectFields = generateObjectFields({
+		objectFieldBusinessTypes: ['Text'],
+	});
 
 	const objectDefinitionAPIClient =
 		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
@@ -199,7 +267,7 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 			status: {
 				code: 0,
 			},
-			titleObjectFieldName,
+			titleObjectFieldName: objectFields[0].name,
 		});
 
 	apiHelpers.data.push({
@@ -216,7 +284,7 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 			name: {en_US: getRandomString()},
 			objectViewColumns: [
 				{
-					objectFieldName: titleObjectFieldName,
+					objectFieldName: objectFields[0].name,
 					priority: 0,
 				},
 				{
@@ -233,6 +301,11 @@ test('assert that the user is able to use the ERC field in Sort, on the Custom V
 			],
 		}
 	);
+
+	const {objectEntry} = await generateObjectEntryValues({
+		objectEntryFormat: 'API',
+		objectFields,
+	});
 
 	const applicationName = 'c/' + objectDefinition.name.toLowerCase() + 's';
 	const entry1 = 'Entry A';

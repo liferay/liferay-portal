@@ -51,7 +51,6 @@ import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -357,7 +356,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 		return TempFileEntryUtil.addTempFileEntry(
 			groupId, getUserId(),
-			DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName,
+			DigesterUtil.digestHex(DigesterUtil.SHA_256, folderName), fileName,
 			inputStream, mimeType);
 	}
 
@@ -455,7 +454,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 		TempFileEntryUtil.deleteTempFileEntry(
 			groupId, getUserId(),
-			DigesterUtil.digestHex(Digester.SHA_256, folderName), fileName);
+			DigesterUtil.digestHex(DigesterUtil.SHA_256, folderName), fileName);
 	}
 
 	@Override
@@ -1038,6 +1037,26 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 	}
 
 	@Override
+	public Layout getOrAddEmptyLayout(
+			String externalReferenceCode, long groupId,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = fetchLayoutByExternalReferenceCode(
+			externalReferenceCode, groupId);
+
+		if (layout != null) {
+			return layout;
+		}
+
+		GroupPermissionUtil.check(
+			getPermissionChecker(), groupId, ActionKeys.ADD_LAYOUT);
+
+		return layoutLocalService.getOrAddEmptyLayout(
+			externalReferenceCode, getUserId(), groupId, serviceContext);
+	}
+
+	@Override
 	public String[] getTempFileNames(long groupId, String folderName)
 		throws PortalException {
 
@@ -1052,7 +1071,7 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 			return TempFileEntryUtil.getTempFileNames(
 				groupId, getUserId(),
-				DigesterUtil.digestHex(Digester.SHA_256, folderName));
+				DigesterUtil.digestHex(DigesterUtil.SHA_256, folderName));
 		}
 	}
 

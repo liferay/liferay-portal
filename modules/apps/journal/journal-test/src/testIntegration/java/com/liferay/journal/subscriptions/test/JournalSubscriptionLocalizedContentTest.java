@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -64,6 +66,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -72,6 +75,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -102,15 +110,33 @@ public class JournalSubscriptionLocalizedContentTest
 
 		_mailService = MailServiceUtil.getService();
 
-		ReflectionTestUtil.setFieldValue(
-			MailServiceUtil.class, "_mailService", _geMailService());
+		Bundle bundle = FrameworkUtil.getBundle(
+			JournalSubscriptionLocalizedContentTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		MailService mailService = _getMailService();
+
+		_serviceRegistration = bundleContext.registerService(
+			MailService.class, mailService,
+			HashMapDictionaryBuilder.<String, Object>put(
+				org.osgi.framework.Constants.SERVICE_RANKING, 100
+			).build());
+
+		_snapshot = ReflectionTestUtil.getFieldValue(
+			MailServiceUtil.class, "_mailServiceSnapshot");
+
+		_serviceSupplier = ReflectionTestUtil.getAndSetFieldValue(
+			_snapshot, "_serviceSupplier", () -> mailService);
 	}
 
 	@After
 	@Override
 	public void tearDown() throws Exception {
 		ReflectionTestUtil.setFieldValue(
-			MailServiceUtil.class, "_mailService", _mailService);
+			_snapshot, "_serviceSupplier", _serviceSupplier);
+
+		_serviceRegistration.unregister();
 
 		super.tearDown();
 	}
@@ -288,50 +314,6 @@ public class JournalSubscriptionLocalizedContentTest
 			LocaleUtil.getDefault(), false, true, serviceContext);
 	}
 
-	private MailService _geMailService() {
-		return new MailService() {
-
-			@Override
-			public void clearSession() {
-				_mailService.clearSession();
-			}
-
-			@Override
-			public void clearSession(long companyId) {
-				_mailService.clearSession(companyId);
-			}
-
-			@Override
-			public Session getSession() {
-				return _mailService.getSession();
-			}
-
-			@Override
-			public Session getSession(Account account) {
-				return _mailService.getSession(account);
-			}
-
-			@Override
-			public Session getSession(long companyId) {
-				return _mailService.getSession(companyId);
-			}
-
-			@Override
-			public void sendEmail(
-				com.liferay.mail.kernel.model.MailMessage mailMessage) {
-
-				InternetHeaders internetHeaders = new InternetHeaders();
-
-				internetHeaders.setHeader("Content-Transfer-Encoding", "8bit");
-
-				mailMessage.setInternetHeaders(internetHeaders);
-
-				_mailService.sendEmail(mailMessage);
-			}
-
-		};
-	}
-
 	private String _getExpectedMailBody(
 			String emailArticleBody, long journalArticlePrimaryKey)
 		throws Exception {
@@ -404,6 +386,72 @@ public class JournalSubscriptionLocalizedContentTest
 		return httpServletRequest;
 	}
 
+	private MailService _getMailService() {
+		return new MailService() {
+
+			@Override
+			public void clearSession() {
+				_mailService.clearSession();
+			}
+
+			@Override
+			public void clearSession(long companyId) {
+				_mailService.clearSession(companyId);
+			}
+
+			@Override
+			public String getMailId(
+				String mx, String popPortletPrefix, Object... ids) {
+
+				return _mailService.getMailId(mx, popPortletPrefix, ids);
+			}
+
+			@Override
+			public String getPOPServerSubdomain() {
+				return _mailService.getPOPServerSubdomain();
+			}
+
+			@Override
+			public Session getSession() {
+				return _mailService.getSession();
+			}
+
+			@Override
+			public Session getSession(Account account) {
+				return _mailService.getSession(account);
+			}
+
+			@Override
+			public Session getSession(long companyId) {
+				return _mailService.getSession(companyId);
+			}
+
+			@Override
+			public boolean isPOPServerNotificationsEnabled(long companyId) {
+				return _mailService.isPOPServerNotificationsEnabled(companyId);
+			}
+
+			@Override
+			public boolean isPOPServerUser(String emailAddress) {
+				return _mailService.isPOPServerUser(emailAddress);
+			}
+
+			@Override
+			public void sendEmail(
+				com.liferay.mail.kernel.model.MailMessage mailMessage) {
+
+				InternetHeaders internetHeaders = new InternetHeaders();
+
+				internetHeaders.setHeader("Content-Transfer-Encoding", "8bit");
+
+				mailMessage.setInternetHeaders(internetHeaders);
+
+				_mailService.sendEmail(mailMessage);
+			}
+
+		};
+	}
+
 	private ThemeDisplay _getThemeDisplay(User user) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -462,6 +510,10 @@ public class JournalSubscriptionLocalizedContentTest
 
 	@Inject
 	private Portal _portal;
+
+	private ServiceRegistration<?> _serviceRegistration;
+	private Supplier<MailService> _serviceSupplier;
+	private Snapshot<MailService> _snapshot;
 
 	@Inject
 	private UserLocalService _userLocalService;

@@ -121,6 +121,14 @@ public class FormRecordResourceTest extends BaseFormRecordResourceTestCase {
 	}
 
 	@Override
+	protected Long testGraphQLPostFormFormRecord_getFormId(
+			FormRecord formRecord)
+		throws Exception {
+
+		return formRecord.getFormId();
+	}
+
+	@Override
 	protected FormRecord testPutFormRecord_addFormRecord() throws Exception {
 		return _addFormRecord(randomFormRecord());
 	}

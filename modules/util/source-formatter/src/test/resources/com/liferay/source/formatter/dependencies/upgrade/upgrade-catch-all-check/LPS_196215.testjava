@@ -13,6 +13,7 @@ public class LPS_196215 {
 	public void method(
 		ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
 
+		CaptchaUtil.serveImage(null, resourceResponse);
 		CaptchaUtil.serveImage(resourceRequest, resourceResponse);
 	}
 

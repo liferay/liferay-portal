@@ -228,9 +228,9 @@ public class JournalArticleLayoutClassedModelUsageUpgradeProcessTest {
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
 			layoutClassedModelUsage.getGroupId(),
+			layoutClassedModelUsage.getClassExternalReferenceCode(),
 			layoutClassedModelUsage.getClassNameId(),
 			layoutClassedModelUsage.getClassPK(),
-			layoutClassedModelUsage.getClassedModelExternalReferenceCode(),
 			layoutClassedModelUsage.getContainerKey(),
 			layoutClassedModelUsage.getContainerType(),
 			layoutRevision.getLayoutRevisionId(),

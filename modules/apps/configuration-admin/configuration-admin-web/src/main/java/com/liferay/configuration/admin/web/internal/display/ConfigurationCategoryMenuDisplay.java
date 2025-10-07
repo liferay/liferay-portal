@@ -5,6 +5,7 @@
 
 package com.liferay.configuration.admin.web.internal.display;
 
+import com.liferay.configuration.admin.web.internal.util.ConfigurationPIDUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -75,8 +76,15 @@ public class ConfigurationCategoryMenuDisplay {
 
 					verticalNavItem.put(
 						"deprecated", curConfigurationEntry.isDeprecated());
+
+					String key = ConfigurationPIDUtil.getUnscopedPid(
+						configurationEntry.getKey());
+
 					verticalNavItem.setActive(
-						configurationEntry.equals(curConfigurationEntry));
+						key.equals(
+							ConfigurationPIDUtil.getUnscopedPid(
+								curConfigurationEntry.getKey())));
+
 					verticalNavItem.setHref(
 						curConfigurationEntry.getEditURL(
 							renderRequest, renderResponse));

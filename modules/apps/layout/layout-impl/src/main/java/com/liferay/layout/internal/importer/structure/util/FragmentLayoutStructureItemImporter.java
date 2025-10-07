@@ -28,9 +28,9 @@ import com.liferay.fragment.validator.FragmentEntryValidator;
 import com.liferay.headless.delivery.dto.v1_0.ActionExecutionResult;
 import com.liferay.headless.delivery.dto.v1_0.FragmentLink;
 import com.liferay.headless.delivery.dto.v1_0.PageElement;
+import com.liferay.layout.importer.PortletPermissionsImporter;
 import com.liferay.layout.internal.importer.LayoutStructureItemImporterContext;
 import com.liferay.layout.internal.importer.helper.PortletConfigurationImporterHelper;
-import com.liferay.layout.internal.importer.helper.PortletPermissionsImporterHelper;
 import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.model.SegmentsExperience;
@@ -100,7 +101,7 @@ public class FragmentLayoutStructureItemImporter
 		PortletConfigurationImporterHelper portletConfigurationImporterHelper,
 		PortletFileRepository portletFileRepository,
 		PortletLocalService portletLocalService,
-		PortletPermissionsImporterHelper portletPermissionsImporterHelper,
+		PortletPermissionsImporter portletPermissionsImporter,
 		SegmentsExperienceLocalService segmentsExperienceLocalService) {
 
 		_companyLocalService = companyLocalService;
@@ -116,7 +117,7 @@ public class FragmentLayoutStructureItemImporter
 			portletConfigurationImporterHelper;
 		_portletFileRepository = portletFileRepository;
 		_portletLocalService = portletLocalService;
-		_portletPermissionsImporterHelper = portletPermissionsImporterHelper;
+		_portletPermissionsImporter = portletPermissionsImporter;
 		_segmentsExperienceLocalService = segmentsExperienceLocalService;
 	}
 
@@ -339,6 +340,7 @@ public class FragmentLayoutStructureItemImporter
 		String js = StringPool.BLANK;
 		String css = StringPool.BLANK;
 		String configuration = StringPool.BLANK;
+		JSONObject configurationJSONObject = null;
 		int type = FragmentConstants.TYPE_COMPONENT;
 
 		JSONObject defaultEditableValuesJSONObject =
@@ -347,13 +349,22 @@ public class FragmentLayoutStructureItemImporter
 		if (fragmentEntry != null) {
 			js = fragmentEntry.getJs();
 			css = fragmentEntry.getCss();
+
 			configuration = fragmentEntry.getConfiguration();
+
+			configurationJSONObject = JSONFactoryUtil.safeCreateJSONObject(
+				configuration, true);
+
 			html = fragmentEntry.getHtml();
 			type = fragmentEntry.getType();
 		}
 		else {
-			configuration = fragmentRenderer.getConfiguration(
-				new DefaultFragmentRendererContext(null));
+			configurationJSONObject =
+				fragmentRenderer.getConfigurationJSONObject(
+					new DefaultFragmentRendererContext(null));
+
+			configuration = JSONFactoryUtil.toString(configurationJSONObject);
+
 			type = fragmentRenderer.getType();
 		}
 
@@ -362,11 +373,11 @@ public class FragmentLayoutStructureItemImporter
 
 		JSONObject freeMarkerFragmentEntryProcessorJSONObject =
 			_toFreeMarkerFragmentEntryProcessorJSONObject(
-				_getConfigurationTypes(configuration),
+				_getConfigurationTypes(configurationJSONObject),
 				(Map<String, Object>)definitionMap.get("fragmentConfig"));
 
 		_fragmentEntryValidator.validateConfigurationValues(
-			configuration, fragmentEntryProcessorValuesJSONObject);
+			configurationJSONObject, fragmentEntryProcessorValuesJSONObject);
 
 		if (freeMarkerFragmentEntryProcessorJSONObject.length() > 0) {
 			fragmentEntryProcessorValuesJSONObject.put(
@@ -388,7 +399,7 @@ public class FragmentLayoutStructureItemImporter
 							fragmentEntryProcessorValuesJSONObject.toString(),
 							fragmentCollection, fragmentEntry.getHtml(),
 							fragmentKey, type),
-						configuration);
+						configurationJSONObject);
 		}
 
 		Map<String, String> editableTypes =
@@ -443,6 +454,52 @@ public class FragmentLayoutStructureItemImporter
 				html, js, configuration, jsonObject.toString(),
 				StringUtil.randomId(), position, fragmentKey, type,
 				serviceContext);
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
+
+		JSONObject restoredEditableValuesJSONObject =
+			JSONFactoryUtil.createJSONObject();
+
+		String editableValues = fragmentEntryLink.getEditableValues();
+
+		if (editableValues.contains(_NAMESPACE_PLACEHOLDER)) {
+			String fragmentEntryLinkNamespace =
+				fragmentEntryLink.getNamespace();
+
+			JSONObject restoredJSONObject = JSONFactoryUtil.createJSONObject();
+
+			for (String key : editableValuesJSONObject.keySet()) {
+				Object value = editableValuesJSONObject.get(key);
+
+				if (!(value instanceof JSONObject valueJSONObject)) {
+					restoredEditableValuesJSONObject.put(key, value);
+
+					continue;
+				}
+
+				for (String curKey : valueJSONObject.keySet()) {
+					restoredJSONObject.put(
+						StringUtil.replace(
+							curKey, _NAMESPACE_PLACEHOLDER,
+							fragmentEntryLinkNamespace),
+						valueJSONObject.get(curKey));
+				}
+
+				restoredEditableValuesJSONObject.put(key, restoredJSONObject);
+			}
+		}
+
+		if (SetUtil.isEmpty(restoredEditableValuesJSONObject.keySet())) {
+			restoredEditableValuesJSONObject = editableValuesJSONObject;
+		}
+
+		fragmentEntryLink.setEditableValues(
+			String.valueOf(restoredEditableValuesJSONObject));
+
+		fragmentEntryLink =
+			_fragmentEntryLinkLocalService.updateFragmentEntryLink(
+				fragmentEntryLink);
 
 		List<Object> widgetInstances = (List<Object>)definitionMap.get(
 			"widgetInstances");
@@ -766,14 +823,18 @@ public class FragmentLayoutStructureItemImporter
 		return jsonObject3;
 	}
 
-	private Map<String, String> _getConfigurationTypes(String configuration)
+	private Map<String, String> _getConfigurationTypes(
+			JSONObject configurationJSONObject)
 		throws Exception {
 
 		Map<String, String> configurationTypes = new HashMap<>();
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(configuration);
+		if (configurationJSONObject == null) {
+			return configurationTypes;
+		}
 
-		JSONArray fieldSetsJSONArray = jsonObject.getJSONArray("fieldSets");
+		JSONArray fieldSetsJSONArray = configurationJSONObject.getJSONArray(
+			"fieldSets");
 
 		if (fieldSetsJSONArray == null) {
 			return configurationTypes;
@@ -838,6 +899,7 @@ public class FragmentLayoutStructureItemImporter
 		fragmentEntryLink.setHtml(processedHTML);
 		fragmentEntryLink.setConfiguration(configuration);
 		fragmentEntryLink.setEditableValues(editableValues);
+		fragmentEntryLink.setNamespace(_NAMESPACE_PLACEHOLDER);
 		fragmentEntryLink.setRendererKey(rendererKey);
 		fragmentEntryLink.setType(type);
 
@@ -1126,7 +1188,7 @@ public class FragmentLayoutStructureItemImporter
 				(List<Map<String, Object>>)widgetInstanceMap.get(
 					"widgetPermissions");
 
-			_portletPermissionsImporterHelper.importPortletPermissions(
+			_portletPermissionsImporter.importPortletPermissions(
 				layout.getPlid(),
 				PortletIdCodec.encode(widgetName, widgetInstanceId),
 				warningMessages, widgetPermissionsMaps);
@@ -1396,6 +1458,8 @@ public class FragmentLayoutStructureItemImporter
 		return jsonObject;
 	}
 
+	private static final String _NAMESPACE_PLACEHOLDER = "[$NAMESPACE$]";
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentLayoutStructureItemImporter.class);
 
@@ -1416,8 +1480,7 @@ public class FragmentLayoutStructureItemImporter
 		_portletConfigurationImporterHelper;
 	private final PortletFileRepository _portletFileRepository;
 	private final PortletLocalService _portletLocalService;
-	private final PortletPermissionsImporterHelper
-		_portletPermissionsImporterHelper;
+	private final PortletPermissionsImporter _portletPermissionsImporter;
 	private final SegmentsExperienceLocalService
 		_segmentsExperienceLocalService;
 

@@ -6,6 +6,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:adaptive-media:adaptive-media-api")
 	compileOnly project(":apps:document-library:document-library-api")
+	compileOnly project(":apps:trash:trash-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 }

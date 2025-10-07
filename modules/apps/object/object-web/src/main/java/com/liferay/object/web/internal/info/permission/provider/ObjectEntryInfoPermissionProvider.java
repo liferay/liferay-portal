@@ -48,7 +48,7 @@ public class ObjectEntryInfoPermissionProvider
 		if (FeatureFlagManagerUtil.isEnabled(
 				permissionChecker.getCompanyId(), "LPD-17564")) {
 
-			if (_objectDefinition.isUnmodifiableSystemObject()) {
+			if (!_objectDefinition.isEnableFormContainer()) {
 				return false;
 			}
 		}

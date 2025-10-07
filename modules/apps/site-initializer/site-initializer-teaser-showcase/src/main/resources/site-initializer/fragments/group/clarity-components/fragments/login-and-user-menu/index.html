@@ -1,13 +1,13 @@
 [@liferay_aui.style]
-	.${fragmentEntryLinkNamespace}-icon-size{
+	.${fragmentEntryLinkNamespace}-login-button .icon {
 		font-size: ${configuration.iconSize};
 	}
 [/@]
 
 [#if !themeDisplay.isSignedIn()]
-	<div class="component-button text-break">
-		<a class="btn" data-lfr-editable-id="link" data-lfr-editable-type="link" href="${configuration.loginPage}" id="fragment-${fragmentEntryLinkNamespace}-link">
-			<span class="${fragmentEntryLinkNamespace}-icon-size">
+	<div class="btn component-button text-break">
+		<a data-lfr-editable-id="link" data-lfr-editable-type="link" href="${configuration.loginPage}" id="fragment-${fragmentEntryLinkNamespace}-link">
+			<span class="icon">
 				[@clay["icon"] symbol="${configuration.iconName}" /] Log In
 			</span>
 		</a>

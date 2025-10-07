@@ -13,6 +13,7 @@ export function getProductSpecificationValues(
 		'dxp',
 		'low-code-configuration',
 		'other',
+		'ssa-saas',
 	];
 
 	const productSpecification = productSpecifications.find(({value}) => {

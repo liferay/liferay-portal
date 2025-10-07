@@ -31,8 +31,8 @@ public class FlexmarkMarkdownConverterTest {
 		String randomId = StringUtil.randomId();
 
 		String markdown = StringBundler.concat(
-			"The liferay-ui:logo-selector Tag Requires Parameter Changes ",
-			"[](id=", randomId, ")\n", "=================================");
+			"The liferay-ui:logo-selector Tag Requires Parameter Changes [](id",
+			"=", randomId, ")\n=================================");
 
 		MarkdownConverterFactory markdownConverterFactory =
 			new FlexmarkMarkdownConverterFactory();

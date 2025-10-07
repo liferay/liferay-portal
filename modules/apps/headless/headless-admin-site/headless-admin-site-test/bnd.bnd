@@ -1,4 +1,6 @@
 Bundle-Name: Liferay Headless Admin Site Test
 Bundle-SymbolicName: com.liferay.headless.admin.site.test
 Bundle-Version: 1.0.0
--includeresource: com.liferay.headless.admin.site.client.jar=com.liferay.headless.admin.site.client-*.jar;lib:=true
+-includeresource:\
+	com.liferay.headless.admin.site.client.jar=com.liferay.headless.admin.site.client-*.jar;lib:=true,\
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true

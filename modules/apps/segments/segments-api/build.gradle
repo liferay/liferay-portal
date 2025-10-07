@@ -13,5 +13,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
-	testImplementation group: "org.apache.commons", name: "commons-lang3", version: "3.6"
+	testImplementation group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 }

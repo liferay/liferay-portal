@@ -83,46 +83,9 @@ if (organization != null) {
 <liferay-ui:error exception="<%= NoSuchCountryException.class %>" message="please-select-a-country" />
 
 <div class="<%= OrganizationLocalServiceUtil.isCountryEnabled(type) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />countryDiv">
-	<aui:select label="country" name="countryId" required="<%= true %>">
-		<aui:validator errorMessage='<%= LanguageUtil.get(request, "this-field-is-required") %>' name="custom">
-			function(val) {
-				if (Number(val) !== 0) {
-					return true;
-				}
+	<aui:select label="country" name="countryId" required="<%= OrganizationLocalServiceUtil.isCountryRequired(type) %>" />
 
-				return false;
-			}
-		</aui:validator>
-	</aui:select>
-
-	<label class="control-label" for="<portlet:namespace />regionId">
-		<liferay-ui:message key="region" />
-
-		<span hidden id="<portlet:namespace />regionRequiredWrapper">
-			<clay:icon
-				cssClass="reference-mark text-warning"
-				symbol="asterisk"
-			/>
-
-			<span class="hide-accessible sr-only"><liferay-ui:message key="required" /></span>
-		</span>
-	</label>
-
-	<aui:select label="" name="regionId">
-		<aui:validator errorMessage='<%= LanguageUtil.get(request, "this-field-is-required") %>' name="custom">
-			function(val, fieldNode) {
-				if (fieldNode.length === 1) {
-					return true;
-				}
-
-				if (Number(val) !== 0) {
-					return true;
-				}
-
-				return false;
-			}
-		</aui:validator>
-	</aui:select>
+	<aui:select label="region" name="regionId" />
 </div>
 
 <liferay-frontend:component

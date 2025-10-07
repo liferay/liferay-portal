@@ -15,6 +15,7 @@ public class LPS_196215 {
 	public void method(
 		ResourceRequest resourceRequest, ResourceResponse resourceResponse) {
 
+		CaptchaUtil.serveImage(null, resourceResponse);
 		CaptchaUtil.serveImage(PortalUtil.getHttpServletRequest(resourceRequest), PortalUtil.getHttpServletResponse(resourceResponse));
 	}
 

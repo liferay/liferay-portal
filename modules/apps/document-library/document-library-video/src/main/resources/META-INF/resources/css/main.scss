@@ -34,6 +34,10 @@
 			top: 0;
 			width: 100%;
 		}
+
+		iframe[data-video-liferay] {
+			border: 0;
+		}
 	}
 
 	&-sm {

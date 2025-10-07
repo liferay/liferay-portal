@@ -73,7 +73,16 @@ public class BuildArchiverUtil {
 		}
 
 		if (outputDirPath == null) {
-			outputDirPath = _DEFAULT_OUTPUT_DIR_PATH;
+			Properties buildProperties = null;
+
+			try {
+				buildProperties = JenkinsResultsParserUtil.getBuildProperties();
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+
+			outputDirPath = buildProperties.getProperty("jenkins.tmp.dir");
 		}
 
 		archiveOneDay(startDateString, outputDirPath);
@@ -195,9 +204,6 @@ public class BuildArchiverUtil {
 			throw new RuntimeException(timeoutException);
 		}
 	}
-
-	private static final String _DEFAULT_OUTPUT_DIR_PATH =
-		"/opt/dev/projects/github/.tmp/jenkins";
 
 	private static final Properties _buildProperties;
 	private static final ExecutorService _executorService =

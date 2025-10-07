@@ -47,7 +47,7 @@ public abstract class BaseGitRepository implements GitRepository {
 	}
 
 	protected boolean getBoolean(String key) {
-		return _jsonObject.getBoolean(key);
+		return _jsonObject.optBoolean(key);
 	}
 
 	protected File getFile(String key) {

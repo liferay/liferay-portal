@@ -9,7 +9,7 @@ const getInitialColumns = () => [
 	{
 		accessor: 'ticket',
 		bodyClass: 'border-0',
-		filterIdentifier: 'zendeskTicketId',
+		filterIdentifier: 'ticketId',
 		header: {
 			name: (
 				<div className="align-items-center d-flex">

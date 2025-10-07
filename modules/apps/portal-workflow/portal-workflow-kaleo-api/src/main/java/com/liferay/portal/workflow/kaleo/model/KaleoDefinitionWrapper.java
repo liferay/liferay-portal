@@ -54,6 +54,7 @@ public class KaleoDefinitionWrapper
 		attributes.put("scope", getScope());
 		attributes.put("version", getVersion());
 		attributes.put("active", isActive());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -167,6 +168,12 @@ public class KaleoDefinitionWrapper
 
 		if (active != null) {
 			setActive(active);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -335,6 +342,16 @@ public class KaleoDefinitionWrapper
 	@Override
 	public String getScope() {
 		return model.getScope();
+	}
+
+	/**
+	 * Returns the status of this kaleo definition.
+	 *
+	 * @return the status of this kaleo definition
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -636,6 +653,16 @@ public class KaleoDefinitionWrapper
 	@Override
 	public void setScope(String scope) {
 		model.setScope(scope);
+	}
+
+	/**
+	 * Sets the status of this kaleo definition.
+	 *
+	 * @param status the status of this kaleo definition
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
 	}
 
 	/**

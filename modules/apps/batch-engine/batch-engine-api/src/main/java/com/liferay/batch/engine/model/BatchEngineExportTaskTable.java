@@ -68,12 +68,12 @@ public class BatchEngineExportTaskTable
 	public final Column<BatchEngineExportTaskTable, Clob> errorMessage =
 		createColumn(
 			"errorMessage", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
-	public final Column<BatchEngineExportTaskTable, String> fieldNames =
-		createColumn(
-			"fieldNames", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<BatchEngineExportTaskTable, String> executeStatus =
 		createColumn(
 			"executeStatus", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<BatchEngineExportTaskTable, String> fieldNames =
+		createColumn(
+			"fieldNames", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<BatchEngineExportTaskTable, Clob> parameters =
 		createColumn("parameters", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<BatchEngineExportTaskTable, Integer>

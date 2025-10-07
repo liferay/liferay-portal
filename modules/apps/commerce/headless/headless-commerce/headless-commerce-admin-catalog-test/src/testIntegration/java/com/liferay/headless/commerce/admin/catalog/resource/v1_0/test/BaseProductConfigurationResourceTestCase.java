@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -54,7 +55,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -292,7 +292,7 @@ public abstract class BaseProductConfigurationResourceTestCase {
 							put("id", productConfiguration1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -329,7 +329,7 @@ public abstract class BaseProductConfigurationResourceTestCase {
 								put("id", productConfiguration2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -456,6 +456,104 @@ public abstract class BaseProductConfigurationResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteProductConfigurationByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		ProductConfiguration productConfiguration1 =
+			testGraphQLDeleteProductConfigurationByExternalReferenceCode_addProductConfiguration();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProductConfigurationByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productConfiguration1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteProductConfigurationByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"productConfigurationByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									productConfiguration1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminCatalog_v1_0
+
+		ProductConfiguration productConfiguration2 =
+			testGraphQLDeleteProductConfigurationByExternalReferenceCode_addProductConfiguration();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminCatalog_v1_0",
+						new GraphQLField(
+							"deleteProductConfigurationByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											productConfiguration2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminCatalog_v1_0",
+				"Object/deleteProductConfigurationByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminCatalog_v1_0",
+					new GraphQLField(
+						"productConfigurationByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										productConfiguration2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected ProductConfiguration
+			testGraphQLDeleteProductConfigurationByExternalReferenceCode_addProductConfiguration()
+		throws Exception {
+
+		return testGraphQLProductConfiguration_addProductConfiguration();
 	}
 
 	@Test
@@ -612,7 +710,7 @@ public abstract class BaseProductConfigurationResourceTestCase {
 			testGraphQLGetProductByExternalReferenceCodeConfiguration_addProductConfiguration()
 		throws Exception {
 
-		return testGraphQLProductConfiguration_addProductConfiguration();
+		return testGraphQLProductProductConfiguration_addProductConfiguration();
 	}
 
 	@Test
@@ -2191,7 +2289,7 @@ public abstract class BaseProductConfigurationResourceTestCase {
 			testGraphQLGetProductIdConfiguration_addProductConfiguration()
 		throws Exception {
 
-		return testGraphQLProductConfiguration_addProductConfiguration();
+		return testGraphQLProductProductConfiguration_addProductConfiguration();
 	}
 
 	@Test
@@ -2431,6 +2529,14 @@ public abstract class BaseProductConfigurationResourceTestCase {
 
 	protected ProductConfiguration
 			testGraphQLProductConfiguration_addProductConfiguration()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ProductConfiguration
+			testGraphQLProductProductConfiguration_addProductConfiguration()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -2734,14 +2840,6 @@ public abstract class BaseProductConfigurationResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("visible", additionalAssertFieldName)) {
-				if (productConfiguration.getVisible() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -2800,6 +2898,10 @@ public abstract class BaseProductConfigurationResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
@@ -3135,17 +3237,6 @@ public abstract class BaseProductConfigurationResourceTestCase {
 				if (!Objects.deepEquals(
 						productConfiguration1.getPurchasable(),
 						productConfiguration2.getPurchasable())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("visible", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						productConfiguration1.getVisible(),
-						productConfiguration2.getVisible())) {
 
 					return false;
 				}
@@ -3582,11 +3673,6 @@ public abstract class BaseProductConfigurationResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("visible")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -3651,7 +3737,6 @@ public abstract class BaseProductConfigurationResourceTestCase {
 				lowStockAction = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				purchasable = RandomTestUtil.randomBoolean();
-				visible = RandomTestUtil.randomBoolean();
 			}
 		};
 	}

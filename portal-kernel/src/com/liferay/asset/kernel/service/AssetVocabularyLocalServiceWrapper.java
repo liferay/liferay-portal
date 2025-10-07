@@ -583,11 +583,11 @@ public class AssetVocabularyLocalServiceWrapper
 	}
 
 	@Override
-	public AssetVocabulary getOrAddIncompleteVocabulary(
+	public AssetVocabulary getOrAddEmptyVocabulary(
 			String externalReferenceCode, long userId, long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _assetVocabularyLocalService.getOrAddIncompleteVocabulary(
+		return _assetVocabularyLocalService.getOrAddEmptyVocabulary(
 			externalReferenceCode, userId, groupId);
 	}
 

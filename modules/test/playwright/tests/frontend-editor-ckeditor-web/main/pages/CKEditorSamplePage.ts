@@ -38,6 +38,12 @@ export class CKEditorSamplePage {
 		await this.page.goto(
 			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}/${title}`
 		);
+
+		const productMenuToggle = this.page.getByLabel('Close Product Menu');
+
+		if (await productMenuToggle.isVisible()) {
+			await productMenuToggle.click();
+		}
 	}
 
 	async selectTab(label: string) {

@@ -6,9 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
-import com.liferay.commerce.model.CPDAvailabilityEstimate;
 import com.liferay.commerce.model.CPDefinitionInventory;
-import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
@@ -18,14 +16,10 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPConfigurationEntryService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPDefinitionService;
-import com.liferay.commerce.service.CPDAvailabilityEstimateService;
-import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
-import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -69,174 +63,107 @@ public class ProductConfigurationDTOConverter
 
 		ProductConfiguration productConfiguration = new ProductConfiguration();
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			CPConfigurationEntry cpConfigurationEntry;
+		CPConfigurationEntry cpConfigurationEntry;
 
-			if (dtoConverterContext.getId() != null) {
-				CPDefinition cpDefinition =
-					_cpDefinitionService.getCPDefinition(
-						(Long)dtoConverterContext.getId());
+		if (dtoConverterContext.getId() != null) {
+			CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
+				(Long)dtoConverterContext.getId());
 
-				cpConfigurationEntry =
-					cpDefinition.fetchMasterCPConfigurationEntry();
-			}
-			else {
-				ProductConfigurationDTOConverterContext
-					productConfigurationDTOConverterContext =
-						(ProductConfigurationDTOConverterContext)
-							dtoConverterContext;
-
-				cpConfigurationEntry =
-					_cpConfigurationEntryService.getCPConfigurationEntry(
-						productConfigurationDTOConverterContext.
-							getCPConfigurationEntryId());
-			}
-
-			if (cpConfigurationEntry == null) {
-				return productConfiguration;
-			}
-
-			productConfiguration.setActions(dtoConverterContext::getActions);
-			productConfiguration.setAllowBackOrder(
-				cpConfigurationEntry::isBackOrders);
-			productConfiguration.setAllowedOrderQuantities(
-				cpConfigurationEntry::getAllowedOrderQuantitiesArray);
-			productConfiguration.setDifferences(
-				() -> _getDifferences(
-					cpConfigurationEntry, dtoConverterContext));
-			productConfiguration.setEntityExternalReferenceCode(
-				() -> _getEntityExternalReferenceCode(cpConfigurationEntry));
-			productConfiguration.setEntityId(cpConfigurationEntry::getClassPK);
-			productConfiguration.setEntityName(
-				() -> _getEntityName(
-					cpConfigurationEntry, dtoConverterContext.getLocale()));
-			productConfiguration.setExternalReferenceCode(
-				cpConfigurationEntry::getExternalReferenceCode);
-			productConfiguration.setId(
-				cpConfigurationEntry::getCPConfigurationEntryId);
-			productConfiguration.setInventoryEngine(
-				cpConfigurationEntry::getCPDefinitionInventoryEngine);
-			productConfiguration.setLowStockAction(
-				cpConfigurationEntry::getLowStockActivity);
-			productConfiguration.setMaxOrderQuantity(
-				() -> BigDecimalUtil.stripTrailingZeros(
-					cpConfigurationEntry.getMaxOrderQuantity()));
-			productConfiguration.setMinOrderQuantity(
-				() -> BigDecimalUtil.stripTrailingZeros(
-					cpConfigurationEntry.getMinOrderQuantity()));
-			productConfiguration.setMinStockQuantity(
-				() -> BigDecimalUtil.stripTrailingZeros(
-					cpConfigurationEntry.getMinStockQuantity()));
-			productConfiguration.setMultipleOrderQuantity(
-				() -> BigDecimalUtil.stripTrailingZeros(
-					cpConfigurationEntry.getMultipleOrderQuantity()));
-			productConfiguration.setProductShippingConfiguration(
-				() -> {
-					ProductShippingConfiguration productShippingConfiguration =
-						new ProductShippingConfiguration();
-
-					productShippingConfiguration.setDepth(
-						() -> BigDecimal.valueOf(
-							cpConfigurationEntry.getDepth()));
-					productShippingConfiguration.setFreeShipping(
-						cpConfigurationEntry::isFreeShipping);
-					productShippingConfiguration.setHeight(
-						() -> BigDecimal.valueOf(
-							cpConfigurationEntry.getHeight()));
-					productShippingConfiguration.setShippable(
-						cpConfigurationEntry::isShippable);
-					productShippingConfiguration.setShippingExtraPrice(
-						() -> BigDecimal.valueOf(
-							cpConfigurationEntry.getShippingExtraPrice()));
-					productShippingConfiguration.setShippingSeparately(
-						cpConfigurationEntry::isShipSeparately);
-					productShippingConfiguration.setWeight(
-						() -> BigDecimal.valueOf(
-							cpConfigurationEntry.getWeight()));
-					productShippingConfiguration.setWidth(
-						() -> BigDecimal.valueOf(
-							cpConfigurationEntry.getWidth()));
-
-					return productShippingConfiguration;
-				});
-			productConfiguration.setProductTaxConfiguration(
-				() -> {
-					ProductTaxConfiguration productTaxConfiguration =
-						new ProductTaxConfiguration();
-
-					productTaxConfiguration.setId(
-						cpConfigurationEntry::getCPTaxCategoryId);
-					productTaxConfiguration.setTaxable(
-						() -> !cpConfigurationEntry.isTaxExempt());
-					productTaxConfiguration.setTaxCategory(
-						() -> _getTaxCategory(
-							cpConfigurationEntry.getCPTaxCategory(),
-							dtoConverterContext.getLocale()));
-
-					return productTaxConfiguration;
-				});
-			productConfiguration.setPurchasable(
-				cpConfigurationEntry::getPurchasable);
-			productConfiguration.setVisible(cpConfigurationEntry::getVisible);
+			cpConfigurationEntry =
+				cpDefinition.fetchMasterCPConfigurationEntry();
 		}
 		else {
-			CPDAvailabilityEstimate cpdAvailabilityEstimate =
-				_cpdAvailabilityEstimateService.
-					fetchCPDAvailabilityEstimateByCPDefinitionId(
-						(Long)dtoConverterContext.getId());
-			CPDefinitionInventory cpDefinitionInventory =
-				_cpDefinitionInventoryService.
-					fetchCPDefinitionInventoryByCPDefinitionId(
-						(Long)dtoConverterContext.getId());
+			ProductConfigurationDTOConverterContext
+				productConfigurationDTOConverterContext =
+					(ProductConfigurationDTOConverterContext)
+						dtoConverterContext;
 
-			if ((cpdAvailabilityEstimate == null) &&
-				(cpDefinitionInventory == null)) {
-
-				return productConfiguration;
-			}
-
-			if (cpdAvailabilityEstimate != null) {
-				productConfiguration.setAvailabilityEstimateId(
-					cpdAvailabilityEstimate::getCommerceAvailabilityEstimateId);
-				productConfiguration.setAvailabilityEstimateName(
-					() -> {
-						CommerceAvailabilityEstimate
-							commerceAvailabilityEstimate =
-								cpdAvailabilityEstimate.
-									getCommerceAvailabilityEstimate();
-
-						if (commerceAvailabilityEstimate == null) {
-							return null;
-						}
-
-						return LanguageUtils.getLanguageIdMap(
-							commerceAvailabilityEstimate.getTitleMap());
-					});
-			}
-
-			if (cpDefinitionInventory != null) {
-				productConfiguration.setAllowBackOrder(
-					cpDefinitionInventory::isBackOrders);
-				productConfiguration.setAllowedOrderQuantities(
-					cpDefinitionInventory::getAllowedOrderQuantitiesArray);
-				productConfiguration.setInventoryEngine(
-					cpDefinitionInventory::getCPDefinitionInventoryEngine);
-				productConfiguration.setLowStockAction(
-					cpDefinitionInventory::getLowStockActivity);
-				productConfiguration.setMaxOrderQuantity(
-					() -> BigDecimalUtil.stripTrailingZeros(
-						cpDefinitionInventory.getMaxOrderQuantity()));
-				productConfiguration.setMinOrderQuantity(
-					() -> BigDecimalUtil.stripTrailingZeros(
-						cpDefinitionInventory.getMinOrderQuantity()));
-				productConfiguration.setMinStockQuantity(
-					() -> BigDecimalUtil.stripTrailingZeros(
-						cpDefinitionInventory.getMinStockQuantity()));
-				productConfiguration.setMultipleOrderQuantity(
-					() -> BigDecimalUtil.stripTrailingZeros(
-						cpDefinitionInventory.getMultipleOrderQuantity()));
-			}
+			cpConfigurationEntry =
+				_cpConfigurationEntryService.getCPConfigurationEntry(
+					productConfigurationDTOConverterContext.
+						getCPConfigurationEntryId());
 		}
+
+		if (cpConfigurationEntry == null) {
+			return productConfiguration;
+		}
+
+		productConfiguration.setActions(dtoConverterContext::getActions);
+		productConfiguration.setAllowBackOrder(
+			cpConfigurationEntry::isBackOrders);
+		productConfiguration.setAllowedOrderQuantities(
+			cpConfigurationEntry::getAllowedOrderQuantitiesArray);
+		productConfiguration.setDifferences(
+			() -> _getDifferences(cpConfigurationEntry, dtoConverterContext));
+		productConfiguration.setEntityExternalReferenceCode(
+			() -> _getEntityExternalReferenceCode(cpConfigurationEntry));
+		productConfiguration.setEntityId(cpConfigurationEntry::getClassPK);
+		productConfiguration.setEntityName(
+			() -> _getEntityName(
+				cpConfigurationEntry, dtoConverterContext.getLocale()));
+		productConfiguration.setExternalReferenceCode(
+			cpConfigurationEntry::getExternalReferenceCode);
+		productConfiguration.setId(
+			cpConfigurationEntry::getCPConfigurationEntryId);
+		productConfiguration.setInventoryEngine(
+			cpConfigurationEntry::getCPDefinitionInventoryEngine);
+		productConfiguration.setLowStockAction(
+			cpConfigurationEntry::getLowStockActivity);
+		productConfiguration.setMaxOrderQuantity(
+			() -> BigDecimalUtil.stripTrailingZeros(
+				cpConfigurationEntry.getMaxOrderQuantity()));
+		productConfiguration.setMinOrderQuantity(
+			() -> BigDecimalUtil.stripTrailingZeros(
+				cpConfigurationEntry.getMinOrderQuantity()));
+		productConfiguration.setMinStockQuantity(
+			() -> BigDecimalUtil.stripTrailingZeros(
+				cpConfigurationEntry.getMinStockQuantity()));
+		productConfiguration.setMultipleOrderQuantity(
+			() -> BigDecimalUtil.stripTrailingZeros(
+				cpConfigurationEntry.getMultipleOrderQuantity()));
+		productConfiguration.setProductShippingConfiguration(
+			() -> {
+				ProductShippingConfiguration productShippingConfiguration =
+					new ProductShippingConfiguration();
+
+				productShippingConfiguration.setDepth(
+					() -> BigDecimal.valueOf(cpConfigurationEntry.getDepth()));
+				productShippingConfiguration.setFreeShipping(
+					cpConfigurationEntry::isFreeShipping);
+				productShippingConfiguration.setHeight(
+					() -> BigDecimal.valueOf(cpConfigurationEntry.getHeight()));
+				productShippingConfiguration.setShippable(
+					cpConfigurationEntry::isShippable);
+				productShippingConfiguration.setShippingExtraPrice(
+					() -> BigDecimal.valueOf(
+						cpConfigurationEntry.getShippingExtraPrice()));
+				productShippingConfiguration.setShippingSeparately(
+					cpConfigurationEntry::isShipSeparately);
+				productShippingConfiguration.setWeight(
+					() -> BigDecimal.valueOf(cpConfigurationEntry.getWeight()));
+				productShippingConfiguration.setWidth(
+					() -> BigDecimal.valueOf(cpConfigurationEntry.getWidth()));
+
+				return productShippingConfiguration;
+			});
+		productConfiguration.setProductTaxConfiguration(
+			() -> {
+				ProductTaxConfiguration productTaxConfiguration =
+					new ProductTaxConfiguration();
+
+				productTaxConfiguration.setId(
+					cpConfigurationEntry::getCPTaxCategoryId);
+				productTaxConfiguration.setTaxable(
+					() -> !cpConfigurationEntry.isTaxExempt());
+				productTaxConfiguration.setTaxCategory(
+					() -> _getTaxCategory(
+						cpConfigurationEntry.getCPTaxCategory(),
+						dtoConverterContext.getLocale()));
+
+				return productTaxConfiguration;
+			});
+		productConfiguration.setPurchasable(
+			cpConfigurationEntry::getPurchasable);
 
 		return productConfiguration;
 	}
@@ -417,12 +344,6 @@ public class ProductConfigurationDTOConverter
 				differences.add("taxExempt");
 			}
 
-			if (jsonObject.getBoolean("visible", true) !=
-					cpConfigurationEntry.isVisible()) {
-
-				differences.add("visible");
-			}
-
 			if (jsonObject.getDouble("weight") !=
 					cpConfigurationEntry.getWeight()) {
 
@@ -497,12 +418,6 @@ public class ProductConfigurationDTOConverter
 	@Reference
 	private CPConfigurationEntrySettingLocalService
 		_cpConfigurationEntrySettingLocalService;
-
-	@Reference
-	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
-
-	@Reference
-	private CPDefinitionInventoryService _cpDefinitionInventoryService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;

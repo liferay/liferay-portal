@@ -8,10 +8,14 @@ package com.liferay.site.cms.site.initializer.internal.struts;
 import com.liferay.fragment.listener.FragmentEntryLinkListenerRegistry;
 import com.liferay.fragment.renderer.FragmentRendererRegistry;
 import com.liferay.fragment.service.FragmentEntryLinkService;
+import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.search.InfoSearchClassMapperRegistry;
 import com.liferay.layout.manager.FormManager;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.portal.kernel.struts.StrutsAction;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,14 +39,22 @@ public class EditStructureDisplayPageStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
 		httpServletResponse.sendRedirect(
 			ActionUtil.getDisplayPageEditURL(
 				_formManager, _fragmentEntryLinkListenerRegistry,
 				_fragmentEntryLinkService, _fragmentRendererRegistry,
-				httpServletRequest,
-				_objectDefinitionService.getObjectDefinition(
-					ParamUtil.getLong(
-						httpServletRequest, "objectDefinitionId"))));
+				httpServletRequest, _infoItemServiceRegistry,
+				_infoSearchClassMapperRegistry,
+				_objectDefinitionService.
+					getObjectDefinitionByExternalReferenceCode(
+						ParamUtil.getString(
+							httpServletRequest,
+							"objectDefinitionExternalReferenceCode"),
+						themeDisplay.getCompanyId())));
 
 		return null;
 	}
@@ -59,6 +71,12 @@ public class EditStructureDisplayPageStrutsAction implements StrutsAction {
 
 	@Reference
 	private FragmentRendererRegistry _fragmentRendererRegistry;
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Reference
+	private InfoSearchClassMapperRegistry _infoSearchClassMapperRegistry;
 
 	@Reference
 	private ObjectDefinitionService _objectDefinitionService;

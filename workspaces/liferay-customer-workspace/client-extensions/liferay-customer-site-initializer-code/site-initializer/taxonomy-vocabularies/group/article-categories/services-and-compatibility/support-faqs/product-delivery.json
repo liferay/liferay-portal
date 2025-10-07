@@ -1,0 +1,10 @@
+{
+	"name": "Product Delivery",
+	"name_i18n": {
+		"en_US": "Product Delivery",
+		"es-ES": "Entrega de Producto",
+		"ja-JP": "プロダクトデリバリー",
+		"pt-BR": "Entrega do Produto"
+	},
+	"viewableBy": "Anyone"
+}

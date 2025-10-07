@@ -9,9 +9,9 @@
 	"availableLanguages": [
 		"en-US"
 	],
-	"name": "Marketplace Edition",
+	"name": "Marketplace Availability",
 	"name_i18n": {
-		"en_US": "Marketplace Edition"
+		"en_US": "Marketplace Availability"
 	},
 	"viewableBy": "Anyone"
 }

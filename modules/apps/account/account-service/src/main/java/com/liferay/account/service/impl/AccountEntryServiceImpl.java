@@ -237,10 +237,9 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 		return accountEntry;
 	}
 
-	@Override
-	public AccountEntry getOrAddIncompleteAccountEntry(
+	public AccountEntry getOrAddEmptyAccountEntry(
 			String externalReferenceCode, String name, String type)
-		throws Exception {
+		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
 
@@ -254,7 +253,7 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 		PortalPermissionUtil.check(
 			permissionChecker, AccountActionKeys.ADD_ACCOUNT_ENTRY);
 
-		return accountEntryLocalService.getOrAddIncompleteAccountEntry(
+		return accountEntryLocalService.getOrAddEmptyAccountEntry(
 			externalReferenceCode, permissionChecker.getCompanyId(),
 			permissionChecker.getUserId(), name, type);
 	}

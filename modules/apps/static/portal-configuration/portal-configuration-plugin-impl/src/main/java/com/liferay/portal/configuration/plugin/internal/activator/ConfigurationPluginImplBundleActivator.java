@@ -5,8 +5,12 @@
 
 package com.liferay.portal.configuration.plugin.internal.activator;
 
+import com.liferay.portal.configuration.plugin.internal.SiteExternalReferenceCodeToGroupConfigurationPluginImpl;
 import com.liferay.portal.configuration.plugin.internal.WebIdToCompanyConfigurationPluginImpl;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,24 +24,38 @@ public class ConfigurationPluginImplBundleActivator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		_serviceRegistration = bundleContext.registerService(
-			ConfigurationPlugin.class,
-			new WebIdToCompanyConfigurationPluginImpl(bundleContext),
-			HashMapDictionaryBuilder.<String, Object>put(
-				ConfigurationPlugin.CM_RANKING, 400
-			).put(
-				"config.plugin.id",
-				WebIdToCompanyConfigurationPluginImpl.class.getName()
-			).build());
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ConfigurationPlugin.class,
+				new SiteExternalReferenceCodeToGroupConfigurationPluginImpl(
+					bundleContext),
+				HashMapDictionaryBuilder.<String, Object>put(
+					ConfigurationPlugin.CM_RANKING, 500
+				).put(
+					"config.plugin.id",
+					SiteExternalReferenceCodeToGroupConfigurationPluginImpl.
+						class.getName()
+				).build()));
+		_serviceRegistrations.add(
+			bundleContext.registerService(
+				ConfigurationPlugin.class,
+				new WebIdToCompanyConfigurationPluginImpl(bundleContext),
+				HashMapDictionaryBuilder.<String, Object>put(
+					ConfigurationPlugin.CM_RANKING, 400
+				).put(
+					"config.plugin.id",
+					WebIdToCompanyConfigurationPluginImpl.class.getName()
+				).build()));
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		_serviceRegistration.unregister();
+		_serviceRegistrations.forEach(ServiceRegistration::unregister);
 
-		_serviceRegistration = null;
+		_serviceRegistrations.clear();
 	}
 
-	private ServiceRegistration<ConfigurationPlugin> _serviceRegistration;
+	private final List<ServiceRegistration<ConfigurationPlugin>>
+		_serviceRegistrations = new ArrayList<>();
 
 }

@@ -45,9 +45,10 @@ describe('The performance by assignee page body should', () => {
 	beforeEach(async () => {
 		const renderResult = render(
 			<PerformanceByAssigneePage.Body
-				{...{items, totalCount: items.length}}
+				items={items}
 				page="1"
 				pageSize="5"
+				totalCount={items.length}
 			/>,
 			{wrapper}
 		);

@@ -201,6 +201,9 @@ public class CalendarBookingIndexerIndexedFieldsTest
 		map.put(
 			"calendarBookingId",
 			String.valueOf(calendarBooking.getCalendarBookingId()));
+		map.put(
+			"externalReferenceCode",
+			calendarBooking.getExternalReferenceCode());
 		map.put("endTime", String.valueOf(calendarBooking.getEndTime()));
 		map.put(
 			"endTime_sortable", String.valueOf(calendarBooking.getEndTime()));

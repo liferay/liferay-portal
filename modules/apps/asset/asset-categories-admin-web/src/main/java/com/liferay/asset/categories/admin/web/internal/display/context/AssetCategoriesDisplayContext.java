@@ -27,6 +27,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryServiceUtil;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
@@ -516,8 +517,8 @@ public class AssetCategoriesDisplayContext {
 
 		List<DepotEntry> depotEntries =
 			DepotEntryServiceUtil.getGroupConnectedDepotEntries(
-				_themeDisplay.getScopeGroupId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
+				_themeDisplay.getScopeGroupId(), DepotConstants.TYPE_ANY,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (DepotEntry depotEntry : depotEntries) {
 			Group group = depotEntry.getGroup();

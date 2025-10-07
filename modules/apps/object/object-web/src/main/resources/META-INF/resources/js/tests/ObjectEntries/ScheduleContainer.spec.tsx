@@ -50,6 +50,11 @@ describe('ScheduleContainer component', () => {
 				...global.Liferay?.FeatureFlags,
 				'LPD-17564': true,
 			},
+			ThemeDisplay: {
+				...global.Liferay?.ThemeDisplay,
+				getBCP47LanguageId: jest.fn(),
+				getTimeZone: jest.fn(),
+			},
 		};
 	});
 
@@ -128,6 +133,14 @@ describe('ScheduleContainer component', () => {
 				screen.getByText('the-date-entered-is-in-the-past')
 			).toBeInTheDocument()
 		);
+	});
+
+	it('displays panel with default displayType', async () => {
+		const {container} = renderScheduleContainer();
+
+		expect(
+			container.querySelector('.panel.panel-default')
+		).toBeInTheDocument();
 	});
 
 	it('shows required error on blur when no value is provided', async () => {

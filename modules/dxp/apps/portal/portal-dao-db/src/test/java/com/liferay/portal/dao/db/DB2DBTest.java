@@ -156,6 +156,13 @@ public class DB2DBTest extends BaseDBTestCase {
 			"rename table a to b;\n", buildSQL(RENAME_TABLE_QUERY));
 	}
 
+	@Test
+	public void testTextColumnType() throws Exception {
+		Assert.assertEquals(
+			"create table TestTable (largeColumnValue clob(2G))\n",
+			buildSQL("create table TestTable (largeColumnValue TEXT)"));
+	}
+
 	@Override
 	protected DB getDB() {
 		return new DB2DB(0, 0) {

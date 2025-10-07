@@ -10,12 +10,17 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.db.partition.DBPartition;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletCategory;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -32,7 +37,6 @@ import com.liferay.portal.osgi.web.portlet.container.test.util.PortletContainerT
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.util.WebAppPool;
 
 import jakarta.portlet.PortletException;
@@ -45,9 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
@@ -56,7 +58,11 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -82,36 +88,50 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		if (DBPartition.isPartitionEnabled()) {
+			_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+				PortalInstancePool.getDefaultCompanyId());
+		}
+
+		_company1 = CompanyTestUtil.addCompany();
+		_company2 = CompanyTestUtil.addCompany();
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		CompanyLocalServiceUtil.deleteCompany(_company2);
+
+		CompanyLocalServiceUtil.deleteCompany(_company1);
+
+		if (_safeCloseable != null) {
+			_safeCloseable.close();
+		}
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		if (!DBPartition.isPartitionEnabled()) {
+			super.setUp();
+		}
+	}
+
 	@Test
-	public void testLoadGetPortletsByCompany() throws Exception {
-		Company company1 = CompanyTestUtil.addCompany();
-		Company company2 = CompanyTestUtil.addCompany();
-
-		PortalInstances.initCompany(company1);
-		PortalInstances.initCompany(company2);
-
+	public void testLoadGetPortlets() throws Exception {
 		try {
+			String portletName = RandomTestUtil.randomString();
+
 			setUpPortlet(
 				_internalClassTestPortlet,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"com.liferay.portlet.company", company1.getCompanyId()
-				).put(
-					"com.liferay.portlet.display-category", "company-scope"
+					"com.liferay.portlet.display-category",
+					RandomTestUtil.randomString()
 				).build(),
-				"companyPortlet", false);
+				portletName, false);
 
-			Map<String, Portlet> portlets =
-				_portletLocalService.loadGetPortletsMap(
-					company1.getCompanyId());
-
-			Assert.assertTrue(
-				portlets.toString(), portlets.containsKey("companyPortlet"));
-
-			portlets = _portletLocalService.loadGetPortletsMap(
-				company2.getCompanyId());
-
-			Assert.assertFalse(
-				portlets.toString(), portlets.containsKey("companyPortlet"));
+			_assertPortletDeployed(_company1, portletName);
+			_assertPortletDeployed(_company2, portletName);
 		}
 		finally {
 			for (ServiceRegistration<?> serviceRegistration :
@@ -121,54 +141,59 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			}
 
 			serviceRegistrations.clear();
+		}
+	}
 
-			_companyLocalService.deleteCompany(company2);
+	@Test
+	public void testLoadGetPortletsByCompany() throws Exception {
+		try {
+			String portletName = RandomTestUtil.randomString();
 
-			_companyLocalService.deleteCompany(company1);
+			setUpPortlet(
+				_internalClassTestPortlet,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"com.liferay.portlet.company", _company1.getCompanyId()
+				).put(
+					"com.liferay.portlet.display-category",
+					RandomTestUtil.randomString()
+				).build(),
+				portletName, false);
 
-			PortalInstances.removeCompany(company1.getCompanyId());
-			PortalInstances.removeCompany(company2.getCompanyId());
+			_assertPortletDeployed(_company1, portletName);
+			_assertPortletNotDeployed(_company2, portletName);
+		}
+		finally {
+			for (ServiceRegistration<?> serviceRegistration :
+					serviceRegistrations) {
+
+				serviceRegistration.unregister();
+			}
+
+			serviceRegistrations.clear();
 		}
 	}
 
 	@Test
 	public void testLoadGetPortletsByCompanyWithReload() throws Exception {
-		List<Company> companies = new ArrayList<>();
+		Company company = null;
 
 		try {
-			Company company1 = CompanyTestUtil.addCompany();
-
-			companies.add(company1);
-
-			PortalInstances.initCompany(company1);
+			String portletName = RandomTestUtil.randomString();
 
 			setUpPortlet(
 				_internalClassTestPortlet,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"com.liferay.portlet.company", company1.getCompanyId()
+					"com.liferay.portlet.company", _company1.getCompanyId()
 				).put(
-					"com.liferay.portlet.display-category", "company-scope"
+					"com.liferay.portlet.display-category",
+					RandomTestUtil.randomString()
 				).build(),
-				"companyPortlet", false);
+				portletName, false);
 
-			Company company2 = CompanyTestUtil.addCompany();
+			company = CompanyTestUtil.addCompany();
 
-			companies.add(company2);
-
-			PortalInstances.initCompany(company2);
-
-			Map<String, Portlet> portlets =
-				_portletLocalService.loadGetPortletsMap(
-					company1.getCompanyId());
-
-			Assert.assertTrue(
-				portlets.toString(), portlets.containsKey("companyPortlet"));
-
-			portlets = _portletLocalService.loadGetPortletsMap(
-				company2.getCompanyId());
-
-			Assert.assertFalse(
-				portlets.toString(), portlets.containsKey("companyPortlet"));
+			_assertPortletDeployed(_company1, portletName);
+			_assertPortletNotDeployed(company, portletName);
 		}
 		finally {
 			for (ServiceRegistration<?> serviceRegistration :
@@ -179,24 +204,14 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 			serviceRegistrations.clear();
 
-			_companyLocalService.forEachCompany(
-				company -> {
-					_companyLocalService.deleteCompany(company);
-
-					PortalInstances.removeCompany(company.getCompanyId());
-				},
-				companies);
+			if (company != null) {
+				_companyLocalService.deleteCompany(company);
+			}
 		}
 	}
 
 	@Test
 	public void testPortletDisplayCategory() throws Exception {
-		Company company1 = CompanyTestUtil.addCompany();
-		Company company2 = CompanyTestUtil.addCompany();
-
-		PortalInstances.initCompany(company1);
-		PortalInstances.initCompany(company2);
-
 		String displayCategory = RandomTestUtil.randomString();
 
 		try {
@@ -205,34 +220,30 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 				HashMapDictionaryBuilder.<String, Object>put(
 					"com.liferay.portlet.display-category", displayCategory
 				).build(),
-				"companyPortlet", false);
+				RandomTestUtil.randomString(), false);
 
 			PortletCategory portletCategory1 = (PortletCategory)WebAppPool.get(
-				company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 			Assert.assertNotNull(portletCategory1.getCategory(displayCategory));
 
 			PortletCategory portletCategory2 = (PortletCategory)WebAppPool.get(
-				company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 			Assert.assertNotNull(portletCategory2.getCategory(displayCategory));
 
-			Company company3 = CompanyTestUtil.addCompany();
-
-			PortalInstances.initCompany(company3);
+			Company company = CompanyTestUtil.addCompany();
 
 			try {
 				PortletCategory portletCategory3 =
 					(PortletCategory)WebAppPool.get(
-						company3.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+						company.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 				Assert.assertNotNull(
 					portletCategory3.getCategory(displayCategory));
 			}
 			finally {
-				_companyLocalService.deleteCompany(company3);
-
-				PortalInstances.removeCompany(company3.getCompanyId());
+				_companyLocalService.deleteCompany(company);
 			}
 		}
 		finally {
@@ -243,63 +254,45 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			}
 
 			serviceRegistrations.clear();
-
-			_companyLocalService.deleteCompany(company1);
-
-			PortalInstances.removeCompany(company1.getCompanyId());
-
-			_companyLocalService.deleteCompany(company2);
-
-			PortalInstances.removeCompany(company2.getCompanyId());
 		}
 	}
 
 	@Test
 	public void testPortletDisplayCategoryByCompany() throws Exception {
-		Company company1 = CompanyTestUtil.addCompany();
-		Company company2 = CompanyTestUtil.addCompany();
-
-		PortalInstances.initCompany(company1);
-		PortalInstances.initCompany(company2);
-
 		String displayCategory = RandomTestUtil.randomString();
 
 		try {
 			setUpPortlet(
 				_internalClassTestPortlet,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"com.liferay.portlet.company", company1.getCompanyId()
+					"com.liferay.portlet.company", _company1.getCompanyId()
 				).put(
 					"com.liferay.portlet.display-category", displayCategory
 				).build(),
-				"companyPortlet", false);
+				RandomTestUtil.randomString(), false);
 
 			PortletCategory portletCategory1 = (PortletCategory)WebAppPool.get(
-				company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 			Assert.assertNotNull(portletCategory1.getCategory(displayCategory));
 
 			PortletCategory portletCategory2 = (PortletCategory)WebAppPool.get(
-				company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 			Assert.assertNull(portletCategory2.getCategory(displayCategory));
 
-			Company company3 = CompanyTestUtil.addCompany();
-
-			PortalInstances.initCompany(company3);
+			Company company = CompanyTestUtil.addCompany();
 
 			try {
 				PortletCategory portletCategory3 =
 					(PortletCategory)WebAppPool.get(
-						company3.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+						company.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 				Assert.assertNull(
 					portletCategory3.getCategory(displayCategory));
 			}
 			finally {
-				_companyLocalService.deleteCompany(company3);
-
-				PortalInstances.removeCompany(company3.getCompanyId());
+				_companyLocalService.deleteCompany(company);
 			}
 		}
 		finally {
@@ -310,18 +303,13 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			}
 
 			serviceRegistrations.clear();
-
-			_companyLocalService.deleteCompany(company2);
-
-			_companyLocalService.deleteCompany(company1);
-
-			PortalInstances.removeCompany(company1.getCompanyId());
-			PortalInstances.removeCompany(company2.getCompanyId());
 		}
 	}
 
 	@Test
 	public void testPortletTrackerBundleStopCleanup() throws Exception {
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+
 		Bundle bundle = FrameworkUtil.getBundle(PortletTrackerTest.class);
 
 		BundleContext bundleContext = bundle.getBundleContext();
@@ -346,39 +334,35 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 	@Test
 	public void testPortletTrackerRegistrationCompanyScope() throws Exception {
-		Company company1 = CompanyTestUtil.addCompany();
-		Company company2 = CompanyTestUtil.addCompany();
-
-		PortalInstances.initCompany(company1);
-		PortalInstances.initCompany(company2);
-
 		try {
+			String displayCategory = RandomTestUtil.randomString();
+			String portletName = RandomTestUtil.randomString();
+
 			setUpPortlet(
 				_internalClassTestPortlet,
 				HashMapDictionaryBuilder.<String, Object>put(
-					"com.liferay.portlet.company", company1.getCompanyId()
+					"com.liferay.portlet.company", _company1.getCompanyId()
 				).put(
-					"com.liferay.portlet.display-category", "company-scope"
+					"com.liferay.portlet.display-category", displayCategory
 				).build(),
-				"companyScopePortlet", false);
+				portletName, false);
 
 			PortletCategory portletCategory1 = (PortletCategory)WebAppPool.get(
-				company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company1.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
 			PortletCategory companyScopePortletCategory =
-				portletCategory1.getCategory("company-scope");
+				portletCategory1.getCategory(displayCategory);
 
 			Set<String> portletIds =
 				companyScopePortletCategory.getPortletIds();
 
 			Assert.assertTrue(
-				portletIds.toString(),
-				portletIds.contains("companyScopePortlet"));
+				portletIds.toString(), portletIds.contains(portletName));
 
 			PortletCategory portletCategory2 = (PortletCategory)WebAppPool.get(
-				company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
+				_company2.getCompanyId(), WebKeys.PORTLET_CATEGORY);
 
-			Assert.assertNull(portletCategory2.getCategory("company-scope"));
+			Assert.assertNull(portletCategory2.getCategory(displayCategory));
 		}
 		finally {
 			for (ServiceRegistration<?> serviceRegistration :
@@ -388,19 +372,14 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 			}
 
 			serviceRegistrations.clear();
-
-			_companyLocalService.deleteCompany(company2);
-
-			_companyLocalService.deleteCompany(company1);
-
-			PortalInstances.removeCompany(company1.getCompanyId());
-			PortalInstances.removeCompany(company2.getCompanyId());
 		}
 	}
 
 	@Test
 	public void testPortletTrackerRegistrationUsingPortletClassName()
 		throws Exception {
+
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
 
 		_testPortletTrackerRegistration(
 			"com_liferay_portal_osgi_web_portlet_container_test_" +
@@ -411,12 +390,16 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithDollar()
 		throws Exception {
 
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+
 		_testPortletTrackerRegistration("dollar$portlet", "dollar_portlet");
 	}
 
 	@Test
 	public void testPortletTrackerRegistrationUsingPortletNameWithDot()
 		throws Exception {
+
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
 
 		_testPortletTrackerRegistration("dot.portlet", "dot_portlet");
 	}
@@ -425,6 +408,8 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithHyphen()
 		throws Exception {
 
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+
 		_testPortletTrackerRegistration("hyphen-portlet", "hyphenportlet");
 	}
 
@@ -432,12 +417,16 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 	public void testPortletTrackerRegistrationUsingPortletNameWithSpace()
 		throws Exception {
 
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+
 		_testPortletTrackerRegistration("space portlet", "spaceportlet");
 	}
 
 	@Test
 	public void testPortletTrackerRegistrationUsingSimpleName()
 		throws Exception {
+
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
 
 		_testPortletTrackerRegistration("simplename", "simplename");
 	}
@@ -463,6 +452,44 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 		public void stop(BundleContext bundleContext) {
 		}
 
+	}
+
+	private void _assertPortletDeployed(Company company, String portletId) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			Map<String, Portlet> portlets =
+				_portletLocalService.loadGetPortletsMap(company.getCompanyId());
+
+			Assert.assertTrue(
+				portlets.toString(), portlets.containsKey(portletId));
+
+			Assert.assertNotNull(
+				_portletLocalService.getPortletById(portletId));
+		}
+	}
+
+	private void _assertPortletNotDeployed(Company company, String portletId) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			Map<String, Portlet> portlets =
+				_portletLocalService.loadGetPortletsMap(company.getCompanyId());
+
+			Assert.assertFalse(
+				portlets.toString(), portlets.containsKey(portletId));
+
+			if (DBPartition.isPartitionEnabled()) {
+				Assert.assertNull(
+					_portletLocalService.getPortletById(portletId));
+			}
+			else {
+				Assert.assertNotNull(
+					_portletLocalService.getPortletById(portletId));
+			}
+		}
 	}
 
 	private InputStream _createBundle(String bundleSymbolicName)
@@ -589,6 +616,10 @@ public class PortletTrackerTest extends BasePortletContainerTestCase {
 
 		jarOutputStream.closeEntry();
 	}
+
+	private static Company _company1;
+	private static Company _company2;
+	private static SafeCloseable _safeCloseable;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

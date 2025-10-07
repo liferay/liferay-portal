@@ -1,7 +1,7 @@
 [
 	{
 		"active": true,
-		"conditionExpression": "priceModel == \"paid\" AND productType == \"dxp\"",
+		"conditionExpression": "paymentStatus == 0 AND total != 0 AND orderTypeExternalReferenceCode == \"DXPAPP\"",
 		"externalReferenceCode": "MKT-DXP-PAID-OR-TRIAL-EMAIL",
 		"label": {
 			"en_US": "DXP Paid or Trial Email Template"
@@ -9,7 +9,7 @@
 		"name": "DXPPaidOrTrialEmailMarketPlace",
 		"objectActionExecutorKey": "notification",
 		"objectActionTriggerKey": "onAfterAdd",
-		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:GetAppInformation$]",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:CommerceOrder$]",
 		"parameters": {
 			"notificationTemplateExternalReferenceCode": "MARKETPLACE-ACTION-DXP-PAID-OR-TRIAL-EMAIL-TEMPLATE",
 			"type": "email"

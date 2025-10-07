@@ -5,14 +5,28 @@
 
 package com.liferay.marketplace.constants;
 
+import java.util.Objects;
+
 /**
  * @author Keven Leone
  */
 public class MarketplaceConstants {
 
+	public static final String ORDER_PAYMENT_METHOD_MONEY_ORDER = "money-order";
+
+	public static final String ORDER_PAYMENT_METHOD_MONEY_ORDER_LABEL =
+		"Invoice";
+
+	public static final String ORDER_PAYMENT_METHOD_PAYPAL =
+		"paypal-integration";
+
+	public static final String ORDER_PAYMENT_METHOD_PAYPAL_LABEL = "PayPal";
+
 	public static final int ORDER_PAYMENT_STATUS_COMPLETED = 0;
 
 	public static final int ORDER_PAYMENT_STATUS_NOT_REQUIRED = 23;
+
+	public static final int ORDER_PAYMENT_STATUS_PENDING = 1;
 
 	public static final int ORDER_STATUS_CANCELLED = 8;
 
@@ -41,6 +55,18 @@ public class MarketplaceConstants {
 	public static final int ORDER_STATUS_PROCESSING = 10;
 
 	public static final String ORDER_STATUS_PROCESSING_LABEL = "Processing";
+
+	public static String getOrderPaymentMethodLabel(String paymentMethod) {
+		if (Objects.equals(paymentMethod, ORDER_PAYMENT_METHOD_MONEY_ORDER)) {
+			return ORDER_PAYMENT_METHOD_MONEY_ORDER_LABEL;
+		}
+
+		if (Objects.equals(paymentMethod, ORDER_PAYMENT_METHOD_PAYPAL)) {
+			return ORDER_PAYMENT_METHOD_PAYPAL_LABEL;
+		}
+
+		return null;
+	}
 
 	public static String getOrderStatusLabel(int orderStatus) {
 		if (orderStatus == ORDER_STATUS_CANCELLED) {

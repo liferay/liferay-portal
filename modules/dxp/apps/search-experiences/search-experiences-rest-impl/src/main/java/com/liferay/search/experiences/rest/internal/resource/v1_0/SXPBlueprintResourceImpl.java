@@ -25,6 +25,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.search.experiences.constants.SXPActionKeys;
+import com.liferay.search.experiences.constants.SXPBlueprintConstants;
 import com.liferay.search.experiences.constants.SXPConstants;
 import com.liferay.search.experiences.exception.DuplicateSXPBlueprintExternalReferenceCodeException;
 import com.liferay.search.experiences.rest.dto.v1_0.SXPBlueprint;
@@ -340,7 +341,7 @@ public class SXPBlueprintResourceImpl extends BaseSXPBlueprintResourceImpl {
 			return sxpBlueprint.getSchemaVersion();
 		}
 
-		return "1.1";
+		return SXPBlueprintConstants.SCHEMA_VERSION;
 	}
 
 	private SXPBlueprint _updateSXPBlueprint(

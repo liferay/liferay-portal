@@ -10,6 +10,7 @@ import com.liferay.client.extension.util.spring.boot3.ClientExtensionUtilSpringB
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author Gregory Amerson
  * @author Brian Wing Shun Chan
  */
+@ComponentScan(basePackages = {"com.liferay.osb", "com.liferay.customer"})
 @EnableCaching
 @EnableScheduling
 @Import(ClientExtensionUtilSpringBootComponentScan.class)

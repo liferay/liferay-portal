@@ -27,6 +27,7 @@ import com.liferay.layout.util.PortalPreferencesUtil;
 import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -221,6 +222,27 @@ public class FragmentCollectionManager {
 
 		if (_hideInputFragments(permissionChecker)) {
 			layoutElementMapsListMap.remove("INPUTS");
+		}
+		else if (FeatureFlagManagerUtil.isEnabled("LPD-50377")) {
+			List<Map<String, Object>> inputs = layoutElementMapsListMap.get(
+				"INPUTS");
+
+			if (!ListUtil.exists(
+					inputs,
+					map -> Objects.equals(
+						map.get("fragmentEntryKey"), "formRelationship"))) {
+
+				inputs.add(
+					HashMapBuilder.<String, Object>put(
+						"fragmentEntryKey", "formRelationship"
+					).put(
+						"icon", "form-extensions"
+					).put(
+						"itemType", "form-relationship"
+					).put(
+						"languageKey", "form-relationship"
+					).build());
+			}
 		}
 
 		return layoutElementMapsListMap;

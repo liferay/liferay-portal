@@ -8,7 +8,7 @@ task jarPatched(type: Zip)
 task patch(type: PatchTask)
 
 dependencies {
-	api group: "org.springframework", name: "spring-tx", version: "5.3.39"
+	api group: "org.springframework", name: "spring-tx", version: "6.2.9"
 }
 
 deploy {

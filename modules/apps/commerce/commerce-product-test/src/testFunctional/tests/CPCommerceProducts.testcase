@@ -2667,7 +2667,7 @@ definition {
 			key_entryName = "Timing Chain",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2689,7 +2689,7 @@ definition {
 			key_entryName = "Hoses",
 			locator1 = "CommerceEntry#TABLE_LIST_TITLE");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2709,7 +2709,7 @@ definition {
 
 		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2729,11 +2729,7 @@ definition {
 
 		AssertElementPresent(locator1 = "CommerceNavigation#EMPTY_SEARCH_CONTAINER");
 
-		Button.click(button = "Reset Filters");
-
-		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
-
-		Click(locator1 = "CommerceEntry#FILTER_BACK_ARROW");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 	}

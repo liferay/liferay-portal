@@ -104,7 +104,8 @@ public class DeleteByQueryDocumentRequestExecutorImpl
 	@Reference
 	private OpenSearchConnectionManager _openSearchConnectionManager;
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private QueryTranslator<QueryVariant> _queryTranslator;
+	private final QueryTranslator<QueryVariant> _queryTranslator =
+		new com.liferay.portal.search.opensearch2.internal.query.
+			OpenSearchQueryTranslator();
 
 }

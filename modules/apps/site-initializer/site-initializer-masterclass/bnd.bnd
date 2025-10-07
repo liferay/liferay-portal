@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer Masterclass
 Bundle-SymbolicName: com.liferay.site.initializer.masterclass
-Bundle-Version: 1.0.75
+Bundle-Version: 1.0.76
 Liferay-Site-Initializer-Name: Masterclass
 Provide-Capability: liferay.site.initializer
 Web-ContextPath: /site-initializer-masterclass

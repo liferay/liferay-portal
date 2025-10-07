@@ -30,7 +30,7 @@ RoleTypeContributor currentRoleTypeContributor = RoleTypeContributorRetrieverUti
 				<span><%= roleDisplayContext.getAssigneesMessage(role) %></span>
 			</div>
 
-			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-47858") %>'>
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
 				<div class="list-group-text">
 					<clay:label
 						displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
@@ -74,7 +74,7 @@ RoleTypeContributor currentRoleTypeContributor = RoleTypeContributorRetrieverUti
 			value='<%= roleDisplayContext.isAutomaticallyAssigned(role) ? LanguageUtil.get(request, "not-available") : String.valueOf(roleDisplayContext.getAssigneesTotal(role.getRoleId())) %>'
 		/>
 
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-47858") %>'>
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand-smallest table-cell-ws-nowrap table-column-text-center"
 				name="status"

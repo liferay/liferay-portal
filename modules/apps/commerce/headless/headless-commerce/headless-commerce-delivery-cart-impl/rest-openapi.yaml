@@ -655,6 +655,11 @@ components:
             properties:
                 currency:
                     type: string
+                itemsCount:
+                    example: 1
+                    format: int32
+                    readOnly: true
+                    type: integer
                 itemsQuantity:
                     example: 1.1
                     format: bigdecimal
@@ -737,7 +742,7 @@ components:
 info:
     description:
         "Headless Delivery Commerce Cart API. A Java client JAR is available for use with the group ID 'com.liferay',
-        artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.51'."
+        artifact ID 'com.liferay.headless.commerce.delivery.cart.client', and version '4.0.52'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

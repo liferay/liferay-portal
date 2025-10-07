@@ -42,11 +42,14 @@ create table ObjectDefinition (
 	dbTableName VARCHAR(75) null,
 	enableCategorization BOOLEAN,
 	enableComments BOOLEAN,
+	enableFormContainer BOOLEAN,
 	enableFriendlyURLCustomization BOOLEAN,
 	enableIndexSearch BOOLEAN,
 	enableLocalization BOOLEAN,
 	enableObjectEntryDraft BOOLEAN,
 	enableObjectEntryHistory BOOLEAN,
+	enableObjectEntrySchedule BOOLEAN,
+	enableObjectEntrySubscription BOOLEAN,
 	enableObjectEntryVersioning BOOLEAN,
 	friendlyURLSeparator VARCHAR(75) null,
 	label STRING null,
@@ -90,6 +93,7 @@ create table ObjectEntry (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	headObjectEntryId LONG,
 	objectDefinitionId LONG,
 	objectEntryFolderId LONG,
 	rootObjectEntryId LONG,
@@ -121,7 +125,8 @@ create table ObjectEntryFolder (
 	description STRING null,
 	label STRING null,
 	name VARCHAR(75) null,
-	treePath STRING null
+	treePath STRING null,
+	status INTEGER
 );
 
 create table ObjectEntryVersion (

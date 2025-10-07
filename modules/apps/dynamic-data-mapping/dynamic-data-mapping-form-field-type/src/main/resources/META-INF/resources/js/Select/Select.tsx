@@ -21,6 +21,7 @@ import type {Locale} from '../types';
 
 const Select = ({
 	defaultLanguageId,
+	displayErrors,
 	fixedOptions = [],
 	label,
 	localizedValue = {},
@@ -35,6 +36,7 @@ const Select = ({
 	predefinedValue = [],
 	readOnly = false,
 	showEmptyOption = true,
+	valid,
 	value,
 	selectedKey,
 	...otherProps
@@ -99,15 +101,18 @@ const Select = ({
 
 	return (
 		<FieldBase
+			displayErrors={displayErrors}
 			label={label}
 			localizedValue={localizedValue}
 			name={name}
 			readOnly={readOnly}
+			valid={valid}
 			{...otherProps}
 		>
 			{multiple ? (
 				<MultipleSelectionComponent
 					defaultLanguageId={defaultLanguageId}
+					displayErrors={displayErrors}
 					fixedOptions={[]}
 					label={label}
 					name={name}
@@ -115,6 +120,7 @@ const Select = ({
 					options={normalizedOptions}
 					predefinedValue={predefinedValueArray}
 					readOnly={readOnly}
+					valid={valid}
 					value={
 						viewMode || !!multipleSelectValues.length
 							? multipleSelectValues
@@ -125,6 +131,7 @@ const Select = ({
 			) : (
 				<SingleSelectBase
 					defaultLanguageId={defaultLanguageId}
+					displayErrors={displayErrors}
 					fixedOptions={fixedOptions}
 					id={id}
 					label={label}
@@ -158,6 +165,7 @@ const Select = ({
 					readOnly={readOnly}
 					selectedKey={selectedKey ?? newValue}
 					showEmptyOption={showEmptyOption}
+					valid={valid}
 					viewMode={viewMode}
 					{...otherProps}
 				/>

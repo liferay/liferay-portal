@@ -141,6 +141,7 @@ public class NotificationTemplateResourceImpl
 			NotificationUtil.toNotificationContext(
 				notificationTemplate, _objectFieldLocalService);
 
+		notificationContext.setCompanyId(contextCompany.getCompanyId());
 		notificationContext.setNotificationRecipient(
 			NotificationUtil.toNotificationRecipient(contextUser, 0L));
 		notificationContext.setNotificationRecipientSettings(
@@ -166,6 +167,8 @@ public class NotificationTemplateResourceImpl
 
 		NotificationContext notificationContext = new NotificationContext();
 
+		notificationContext.setCompanyId(contextCompany.getCompanyId());
+
 		com.liferay.notification.model.NotificationTemplate
 			notificationTemplate =
 				_notificationTemplateService.getNotificationTemplate(
@@ -184,6 +187,7 @@ public class NotificationTemplateResourceImpl
 		notificationTemplate.setName(
 			StringUtil.appendParentheticalSuffix(
 				notificationTemplate.getName(), "copy"));
+		notificationTemplate.setSystem(false);
 
 		NotificationRecipient notificationRecipient =
 			notificationTemplate.getNotificationRecipient();
@@ -231,6 +235,8 @@ public class NotificationTemplateResourceImpl
 		NotificationContext notificationContext =
 			NotificationUtil.toNotificationContext(
 				notificationTemplate, _objectFieldLocalService);
+
+		notificationContext.setCompanyId(contextCompany.getCompanyId());
 
 		NotificationRecipient notificationRecipient =
 			NotificationUtil.toNotificationRecipient(

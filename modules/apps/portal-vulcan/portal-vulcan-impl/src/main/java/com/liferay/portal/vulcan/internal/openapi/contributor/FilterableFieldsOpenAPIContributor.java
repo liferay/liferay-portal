@@ -24,12 +24,17 @@ import com.liferay.portal.vulcan.openapi.contributor.OpenAPIContributor;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,10 +69,38 @@ public class FilterableFieldsOpenAPIContributor implements OpenAPIContributor {
 			return;
 		}
 
+		Map<String, List<String>> schemaNameFilterableFieldNames =
+			new HashMap<>();
+
 		for (Schema schema : schemas.values()) {
-			schema.addExtension(
-				"x-filterable",
-				_getFilterableFieldNames(openAPIContext, schema));
+			List<String> filterableFieldNames = _getFilterableFieldNames(
+				openAPIContext, schema);
+
+			schema.addExtension("x-filterable", filterableFieldNames);
+
+			schemaNameFilterableFieldNames.put(
+				schema.getName(), filterableFieldNames);
+		}
+
+		Paths paths = openAPI.getPaths();
+
+		if (MapUtil.isEmpty(paths)) {
+			return;
+		}
+
+		for (PathItem pathItem : paths.values()) {
+			_setXFilterable(
+				schemaNameFilterableFieldNames, pathItem.getDelete());
+			_setXFilterable(schemaNameFilterableFieldNames, pathItem.getGet());
+			_setXFilterable(schemaNameFilterableFieldNames, pathItem.getHead());
+			_setXFilterable(
+				schemaNameFilterableFieldNames, pathItem.getOptions());
+			_setXFilterable(
+				schemaNameFilterableFieldNames, pathItem.getPatch());
+			_setXFilterable(schemaNameFilterableFieldNames, pathItem.getPost());
+			_setXFilterable(schemaNameFilterableFieldNames, pathItem.getPut());
+			_setXFilterable(
+				schemaNameFilterableFieldNames, pathItem.getTrace());
 		}
 	}
 
@@ -267,6 +300,49 @@ public class FilterableFieldsOpenAPIContributor implements OpenAPIContributor {
 		}
 
 		return ListUtil.sort(filterableFieldNames);
+	}
+
+	private void _setXFilterable(
+		Map<String, List<String>> filterableFieldNames, Operation operation) {
+
+		if (operation == null) {
+			return;
+		}
+
+		List<String> tags = operation.getTags();
+
+		if (ListUtil.isEmpty(tags)) {
+			return;
+		}
+
+		List<Parameter> parameters = operation.getParameters();
+
+		if (ListUtil.isEmpty(parameters)) {
+			return;
+		}
+
+		Parameter filterParameter = null;
+
+		for (Parameter parameter : parameters) {
+			if (StringUtil.equals(parameter.getName(), "filter")) {
+				filterParameter = parameter;
+
+				break;
+			}
+		}
+
+		if (filterParameter == null) {
+			return;
+		}
+
+		Schema schema = filterParameter.getSchema();
+
+		if (schema == null) {
+			return;
+		}
+
+		schema.addExtension(
+			"x-filterable", filterableFieldNames.get(tags.get(0)));
 	}
 
 	private BundleContext _bundleContext;

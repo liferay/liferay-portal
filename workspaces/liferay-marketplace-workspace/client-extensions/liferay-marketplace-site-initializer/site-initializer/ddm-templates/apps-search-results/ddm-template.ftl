@@ -1,138 +1,27 @@
-<style type="text/css">
-	.adt-apps-search-results .app-search-results-card:hover {
-		color: var(--black);
-	}
-
-	.lfr-layout-structure-item-com-liferay-site-navigation-breadcrumb-web-portlet-sitenavigationbreadcrumbportlet {
-		background: #ffffff;
-		border-radius: 10px;
-		height: 40px;
-		padding: 0px 16px;
-	}
-
-	.adt-apps-search-results .card-image-title-container .image-container {
-		height: 3rem;
-	}
-
-	.adt-apps-search-results .card-image-title-container .title-container {
-		word-break: break-word;
-		word-wrap: break-word;
-	}
-
-	.adt-apps-search-results .cards-container .app-search-results-card .card-image-title-container .image-container .app-search-image {
-		height: 48px;
-		object-fit: contain;
-		width: 48px;
-	}
-
-	.adt-apps-search-results .labels .category-label-remainder:hover .category-names {
-		display: block;
-	}
-
-	.app-search-results-card {
-		border-radius: 10px;
-		border: 1px solid #E7EFFF;
-		display: flex;
-		height: 289px;
-		padding: 16px;
-	}
-
-	.banner__product-tag {
-		background-color: #e6ebf5;
-		color: #1c3667;
-		font-size: 0.8125rem;
-		white-space: nowrap;
-		width: fit-content;
-	}
-
-	.cards-container {
-		display: grid;
-		grid-column-gap: 1rem;
-		grid-row-gap: 1.5rem;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-	}
-
-	.card-image-title-container {
-		height: 48px;
-		margin-bottom: 18px;
-	}
-
-	.developer-name {
-		color: #54555F;
-		font-size: 13px;
-		font-weight: 400;
-		line-height: 16px;
-	}
-
-	.title-container {
-		font-size: 18px;
-		font-weight: 600;
-		line-height: 20px;
-	}
-
-	@media screen and (max-width: 599px) {
-		.adt-apps-search-results .cards-container {
-			grid-column-gap: .5rem;
-			grid-row-gap: .5rem;
-			grid-template-columns: 293px;
-			justify-content: center;
-		}
-
-		.adt-apps-search-results .app-search-results-card {
-			height: 281px;
-		}
-	}
-
-	@media screen and (min-width:600px) and (max-width: 899px) {
-		.adt-apps-search-results .cards-container {
-			grid-column-gap: .5rem;
-			grid-row-gap: 1.5rem;
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-</style>
-
-<#if searchContainer?has_content>
-	<div class="color-neutral-3 d-md-block d-none pb-4 pt-2">
-		<strong class="color-black">
-			${searchContainer.getTotal()}
-		</strong>
-		Applications Available
-	</div>
-</#if>
-
-<#if themeDisplay?has_content>
-	<#assign scopeGroupId = themeDisplay.getScopeGroupId() />
-</#if>
-
 <#assign
 	commerceContext = renderRequest.getAttribute("COMMERCE_CONTEXT")
 />
 
-<div class="adt-apps-search-results">
+<div class="apps-search-results">
 	<div class="cards-container pb-6">
 		<#if entries?has_content>
 			<#list entries as entry>
 				<#if entry?has_content>
 					<#assign
-						accountEntryId = commerceContext.getAccountEntry().getAccountEntryId()
-						channelId = commerceContext.getCommerceChannelId()
-						friendlyURL = cpContentHelper.getFriendlyURL(entry, themeDisplay)
-						portalURL = portalUtil.getLayoutURL(themeDisplay)
-						productId = entry.getCProductId()
-						productName = entry.getName()
-						remainingCategoriesText = []
+						product = restClient.get("/headless-commerce-delivery-catalog/v1.0/channels/"+ commerceContext.getCommerceChannelId() +"/products/"+ entry.getCProductId() +"?accountId=-1&images.accountId=-1&nestedFields=productSpecifications,categories,images")
 
-						product = restClient.get("/headless-commerce-delivery-catalog/v1.0/channels/"+ channelId +"/products/"+ productId +"?accountId=-1&images.accountId=-1&nestedFields=productSpecifications,categories,images")
-						productImage = cpContentHelper.getDefaultImageFileURL(accountEntryId, entry.getCPDefinitionId())
+						categories = product.categories![]
+						productSpecifications = product.productSpecifications![]
+
+						productAreas = categories?filter(productCategory -> productCategory.vocabulary?replace(" ", "-") == "marketplace-app-category")![]
+						productCategories = categories?filter(productCategory -> productCategory.vocabulary?replace(" ", "-") == "marketplace-category")![]
+						productCategory = productCategories[0]!""
+						productImage = cpContentHelper.getDefaultImageFileURL(commerceContext.getAccountEntry().getAccountEntryId(), entry.getCPDefinitionId())
+
+						areasListSize = productAreas?size-1
+
+						remainingAreasText = []
 					/>
-					<#if product.categories?has_content && product.productSpecifications?has_content>
-						<#assign
-							productCategories = product.categories?filter(productCategory -> productCategory.vocabulary?replace(" ", "-") == "marketplace-app-category")![]
-							categoriesListSize = productCategories?size-1
-							productSpecifications = product.productSpecifications![]
-						/>
-					</#if>
 
 					<#if product.description?has_content>
 						<#assign productDescription = stringUtil.shorten(htmlUtil.stripHtml(product.description!""), 150, "...") />
@@ -140,32 +29,41 @@
 						<#assign productDescription = "" />
 					</#if>
 
-					<a class="app-search-results-card bg-white border-radius-medium d-flex flex-column mb-0 text-dark text-decoration-none" href=${friendlyURL}>
+					<#function getSpecificationValue key default="">
+						<#local spec = productSpecifications?filter(productSpecification ->
+							stringUtil.equals(productSpecification.specificationKey, key)) />
+
+						<#return (spec?first.value)!default />
+					</#function>
+
+					<a class="app-search-results-card bg-white border-radius-medium d-flex flex-column mb-0 text-dark text-decoration-none" href=${cpContentHelper.getFriendlyURL(entry, themeDisplay)}>
 						<div class="align-items-center card-image-title-container d-flex">
 							<div class="image-container mr-2 rounded">
-								<img alt="${productName}" class="app-search-image" src="${productImage}" />
+								<img alt="${entry.getName()}" class="app-search-image" draggable="false" src="${productImage}" />
 							</div>
 
 							<div>
-								<div class="title-container">
-									${productName}
+								<span class="d-flex justify-content-end">
+									<div>
+										<#if productCategory?has_content>
+											<#if productCategory.name == 'Other'>
+	   											<div class="app-type-badge"></div>
+											<#else>
+												<div class="app-type-badge ${productCategory.name?lower_case?replace(" ", "-", "r")}">
+													${productCategory.name}
+												</div>
+											</#if>
+										</#if>
+									</div>
+								</span>
+
+								<div class="product-title">
+									${entry.getName()}
 								</div>
 
-								<#if productSpecifications?has_content>
-									<#assign productDeveloperName = productSpecifications?filter(item -> item.specificationKey == "developer-name") />
-
-									<#list productDeveloperName as developerNameItem>
-										<#if developerNameItem.value?has_content>
-											<#assign developerName = developerNameItem.value />
-										<#else>
-											<#assign developerName = "" />
-										</#if>
-
-										<div class="developer-name mt-1">
-											${developerName}
-										</div>
-									</#list>
-								</#if>
+								<div class="developer-name mt-1">
+									${getSpecificationValue("developer-name")}
+								</div>
 							</div>
 						</div>
 
@@ -175,42 +73,30 @@
 							</div>
 
 							<div class="d-flex flex-column">
-								<#if productSpecifications?has_content>
-									<#assign productPriceModels = productSpecifications?filter(item -> item.specificationKey == "price-model") />
+								<div class="font-weight-semi-bold mb-2 mt-1 text-capitalize">
+									${getSpecificationValue("price-model")}
+								</div>
 
-									<#list productPriceModels as productPriceModel>
-										<#if productPriceModel.value?has_content>
-											<#assign priceModel = productPriceModel.value />
-										<#else>
-											<#assign priceModel = "" />
-										</#if>
-
-										<div class="font-weight-semi-bold mb-2 mt-1 text-capitalize">
-											${priceModel}
-										</div>
-									</#list>
-								</#if>
-
-								<#if productCategories?has_content>
+								<#if productAreas?has_content>
 									<#assign
-										principalCategory = productCategories[0]
-										remainingCategories = productCategories?filter(category -> category.name != principalCategory.name)
+										firstArea = productAreas[0]
+										remainingAreas = productAreas?filter(area -> area.name != firstArea.name)
 									/>
 
-									<#list remainingCategories as category>
-										<#assign remainingCategoriesText = remainingCategoriesText + [category.name] />
+									<#list remainingAreas as area>
+										<#assign remainingAreasText = remainingAreasText + [area.name] />
 									</#list>
 								</#if>
 
-								<#if principalCategory?has_content>
+								<#if firstArea?has_content>
 									<div>
-										<span class="banner__product-tag rounded py-1 px-2 mr-2" title="${principalCategory.name}">
-											${principalCategory.name}
+										<span class="banner__product-tag rounded py-1 px-2 mr-2" title="${firstArea.name}">
+											${firstArea.name}
 										</span>
 
-										<#if categoriesListSize?has_content && remainingCategoriesText?has_content>
-											<span class="banner__product-tag rounded py-1 px-2" title="${remainingCategoriesText?join('\n')}">
-												+ ${categoriesListSize}
+										<#if areasListSize?has_content && remainingAreasText?has_content>
+											<span class="banner__product-tag rounded py-1 px-2" title="${remainingAreasText?join('\n')}">
+												+ ${areasListSize}
 											</span>
 										</#if>
 									</div>
@@ -223,3 +109,107 @@
 		</#if>
 	</div>
 </div>
+
+<style type="text/css">
+	.apps-search-results .app-search-results-card:hover {
+		color: var(--black);
+	}
+
+	.apps-search-results .card-image-title-container .image-container {
+		height: 3rem;
+	}
+
+	.apps-search-results .card-image-title-container .product-title {
+		word-break: break-word;
+		word-wrap: break-word;
+	}
+
+	.apps-search-results .cards-container .app-search-results-card .card-image-title-container .image-container .app-search-image {
+		height: 48px;
+		object-fit: contain;
+		width: 48px;
+	}
+
+	.apps-search-results .labels .category-label-remainder:hover .category-names {
+		display: block;
+	}
+
+	.app-search-results-card {
+		border: solid 1px #E2E2E4;
+		border-radius: 10px;
+		box-sizing: border-box;
+		cursor: pointer;
+		display: flex;
+		height: 289px;
+		padding: 24px;
+		position: relative;
+		transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+	}
+
+	.app-search-results-card:hover {
+		background: #FBFCFE !important;
+		border: solid 1px #BBD2FF;
+		box-shadow: 0 6px 6px #3C3C3C0F;
+	}
+
+	.banner__product-tag {
+		background-color: #e6ebf5;
+		color: #1c3667;
+		font-size: 0.8125rem;
+		white-space: nowrap;
+		width: fit-content;
+	}
+
+	.card-image-title-container {
+		height: 48px;
+		margin-bottom: 18px;
+	}
+
+	.cards-container {
+		display: grid;
+		grid-column-gap: 1.5rem;
+		grid-row-gap: 1.5rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.developer-name {
+		color: #54555F;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 16px;
+	}
+
+	.lfr-layout-structure-item-com-liferay-site-navigation-breadcrumb-web-portlet-sitenavigationbreadcrumbportlet {
+		background: #ffffff;
+		border-radius: 10px;
+		height: 40px;
+		padding: 0px 16px;
+	}
+
+	.product-title {
+		font-size: 18px;
+		font-weight: 600;
+		line-height: 20px;
+	}
+
+	@media screen and (max-width: 599px) {
+		.apps-search-results .app-search-results-card {
+			height: 281px;
+		}
+
+		.apps-search-results .cards-container {
+			grid-column-gap: .5rem;
+			grid-row-gap: .5rem;
+			grid-template-columns: 293px;
+			justify-content: center;
+		}
+	}
+
+	@media screen and (min-width: 600px) and (max-width: 899px) {
+		.apps-search-results .cards-container {
+			grid-column-gap: .5rem;
+			grid-row-gap: 1.5rem;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+</style>

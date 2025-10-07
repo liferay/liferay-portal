@@ -86,9 +86,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		}
 	}
 
-	private String _generateFeatureFlagProperties(String content)
-		throws IOException {
-
+	private String _generateFeatureFlagProperties(String content) {
 		List<String> featureFlagKeys = new ArrayList<>();
 
 		List<String> fileNames = SourceFormatterUtil.filterFileNames(
@@ -330,19 +328,27 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 		List<String> featureFlagKeys = new ArrayList<>();
 
-		Matcher matcher = _featureFlagManagerUtilIsEnabledPattern.matcher(
-			content);
+		int x = -1;
 
-		while (matcher.find()) {
+		while (true) {
+			x = content.indexOf("FeatureFlagManagerUtil.isEnabled(", x + 1);
+
+			if (x == -1) {
+				return featureFlagKeys;
+			}
+
+			if (javaSource && ToolsUtil.isInsideQuotes(content, x)) {
+				continue;
+			}
+
 			String methodCall = null;
 
 			if (javaSource) {
-				methodCall = JavaSourceUtil.getMethodCall(
-					content, matcher.start());
+				methodCall = JavaSourceUtil.getMethodCall(content, x);
 			}
 			else {
 				methodCall = JavaSourceUtil.getMethodCall(
-					content.substring(matcher.start()), 0);
+					content.substring(x), 0);
 			}
 
 			List<String> parameterList = JavaSourceUtil.getParameterList(
@@ -375,8 +381,6 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 			featureFlagKeys.add(unquotedParameterValue);
 		}
-
-		return featureFlagKeys;
 	}
 
 	private List<String> _getFeatureFlagKeysByMapUtilSingletonDictionaryCall(
@@ -396,7 +400,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 			String parameter = parameterList.get(0);
 
-			if (!parameter.equals("\"featureFlagKey\"")) {
+			if (!parameter.equals("\"feature.flag.key\"")) {
 				continue;
 			}
 
@@ -445,8 +449,6 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 
 	private static final Pattern _deprecationFeatureFlagPattern =
 		Pattern.compile("feature\\.flag\\.([A-Z]+-\\d+)\\.type=deprecation");
-	private static final Pattern _featureFlagManagerUtilIsEnabledPattern =
-		Pattern.compile("FeatureFlagManagerUtil\\.isEnabled\\(");
 	private static final Pattern _featureFlagPattern1 = Pattern.compile(
 		"feature\\.flag[.=]([A-Z]+-\\d+)");
 	private static final Pattern _featureFlagPattern2 = Pattern.compile(
@@ -454,7 +456,7 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 	private static final Pattern _featureFlagPattern3 = Pattern.compile(
 		"\"featureFlag\": \"(.+?)\"");
 	private static final Pattern _featureFlagPattern4 = Pattern.compile(
-		"\"featureFlagKey=([A-Z]+-\\d+)\"");
+		"\"feature\\.flag\\.key=([A-Z]+-\\d+)\"");
 	private static final Pattern _featureFlagPattern5 = Pattern.compile(
 		"featureFlagKey = \"([A-Z]+-\\d+)\"");
 	private static final Pattern _featureFlagsPattern = Pattern.compile(

@@ -57,7 +57,7 @@ export default function SiteLanguageConfiguration({
 	);
 
 	const handleItemsChange = (items) => {
-		const [nextCurrentLanguages, nextAvailableLanguages] = items;
+		const [nextAvailableLanguages, nextCurrentLanguages] = items;
 
 		const removingDefaultLanguage = nextAvailableLanguages.some(
 			(language) => language.value === defaultLanguageId
@@ -197,13 +197,13 @@ export default function SiteLanguageConfiguration({
 					/>
 
 					<ClayDualListBox
-						items={[currentLanguages, availableLanguages]}
+						items={[availableLanguages, currentLanguages]}
 						left={{
-							label: Liferay.Language.get('current'),
+							label: Liferay.Language.get('available'),
 						}}
 						onItemsChange={handleItemsChange}
 						right={{
-							label: Liferay.Language.get('available'),
+							label: Liferay.Language.get('current'),
 						}}
 						size={10}
 					/>

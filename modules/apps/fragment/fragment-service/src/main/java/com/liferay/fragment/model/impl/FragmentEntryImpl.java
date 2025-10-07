@@ -174,6 +174,10 @@ public class FragmentEntryImpl extends FragmentEntryBaseImpl {
 	public void populateZipWriter(ZipWriter zipWriter, String path)
 		throws Exception {
 
+		if (isMarketplace() || isTypeReact()) {
+			return;
+		}
+
 		path = path + StringPool.SLASH + getFragmentEntryKey();
 
 		JSONObject jsonObject = JSONUtil.put(

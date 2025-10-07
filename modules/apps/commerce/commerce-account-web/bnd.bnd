@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Account Web
 Bundle-SymbolicName: com.liferay.commerce.account.web
-Bundle-Version: 4.0.55
+Bundle-Version: 4.0.56
 Web-ContextPath: /commerce-account-web
 -dsannotations-options: inherit

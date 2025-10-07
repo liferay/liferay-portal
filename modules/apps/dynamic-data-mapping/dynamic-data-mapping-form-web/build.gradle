@@ -57,6 +57,7 @@ dependencies {
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-builder")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-evaluator-impl")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":core:osgi-service-tracker-collections")
 }
 

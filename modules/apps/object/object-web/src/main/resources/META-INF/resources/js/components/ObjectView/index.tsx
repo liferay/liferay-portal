@@ -14,6 +14,7 @@ import {
 import React, {useEffect, useState} from 'react';
 
 import {defaultLanguageId} from '../../utils/constants';
+import {getNonInheritanceObjectRelationshipFields} from '../../utils/getNonInheritanceObjectRelationshipFields';
 import BasicInfoScreen from './BasicInfoScreen/BasicInfoScreen';
 import {DefaultSortScreen} from './DefaultSortScreen/DefaultSortScreen';
 import {FilterScreen} from './FilterScreen/FilterScreen';
@@ -69,14 +70,14 @@ const CustomView: React.FC<
 				`/o/object-admin/v1.0/object-views/${objectViewId}`
 			);
 
-			const objectFields =
-				await API.getObjectDefinitionByExternalReferenceCodeObjectFields(
-					objectDefinitionExternalReferenceCode
-				);
-
 			const objectDefinition =
 				await API.getObjectDefinitionByExternalReferenceCode(
 					objectDefinitionExternalReferenceCode
+				);
+
+			const objectFields =
+				await getNonInheritanceObjectRelationshipFields(
+					objectDefinition
 				);
 
 			const objectView = {

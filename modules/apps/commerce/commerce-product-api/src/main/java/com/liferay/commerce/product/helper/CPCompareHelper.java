@@ -28,6 +28,11 @@ public interface CPCompareHelper {
 			String cpDefinitionIdsCookieValue)
 		throws PortalException;
 
+	public List<Long> getCPDefinitionIds(
+			long groupId, long commerceAccountId,
+			String cpDefinitionIdsCookieValue, boolean secure)
+		throws PortalException;
+
 	public String getCPDefinitionIdsCookieKey(long commerceChannelGroupId);
 
 }

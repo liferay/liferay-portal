@@ -49,7 +49,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1684,21 +1683,24 @@ public class DDMStructureVersionModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer
-		<com.liferay.dynamic.data.mapping.model.DDMForm>
-			ddmFormUpdateEntityCacheConsumer = ddmForm -> {
-				DDMStructureVersionCacheModel ddmStructureVersionCacheModel =
-					EntityCacheUtil.fetchCacheModel(
-						DDMStructureVersionImpl.class, _structureVersionId,
-						DDMStructureVersionCacheModel.class);
+	protected static final BiConsumer
+		<DDMStructureVersion, com.liferay.dynamic.data.mapping.model.DDMForm>
+			ddmFormUpdateEntityCacheBiConsumer =
+				(ddmStructureVersion, ddmForm) -> {
+					DDMStructureVersionCacheModel
+						ddmStructureVersionCacheModel =
+							EntityCacheUtil.fetchCacheModel(
+								DDMStructureVersionImpl.class,
+								ddmStructureVersion.getPrimaryKey(),
+								DDMStructureVersionCacheModel.class);
 
-				if ((ddmStructureVersionCacheModel != null) &&
-					(ddmStructureVersionCacheModel.getMvccVersion() ==
-						getMvccVersion())) {
+					if ((ddmStructureVersionCacheModel != null) &&
+						(ddmStructureVersionCacheModel.getMvccVersion() ==
+							ddmStructureVersion.getMvccVersion())) {
 
-					ddmStructureVersionCacheModel.ddmForm = ddmForm;
-				}
-			};
+						ddmStructureVersionCacheModel.ddmForm = ddmForm;
+					}
+				};
 
 	private static final MethodHandle _ddmFormMethodHandle;
 

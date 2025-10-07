@@ -1,12 +1,12 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/label": "3.128.0",
-		"@clayui/layout": "3.128.0",
-		"@clayui/modal": "3.139.0",
-		"@clayui/sticker": "3.138.0",
-		"@clayui/tabs": "3.139.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/icon": "3.144.1",
+		"@clayui/label": "3.144.1",
+		"@clayui/layout": "3.144.1",
+		"@clayui/modal": "3.148.0",
+		"@clayui/sticker": "3.147.0",
+		"@clayui/tabs": "3.149.2",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
@@ -23,5 +23,5 @@
 		"format": "node-scripts format",
 		"test": "USE_REACT_16=true node-scripts test"
 	},
-	"version": "2.0.78"
+	"version": "2.0.85"
 }

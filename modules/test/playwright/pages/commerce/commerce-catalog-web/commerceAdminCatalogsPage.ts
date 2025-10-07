@@ -21,7 +21,7 @@ export class CommerceAdminCatalogsPage {
 
 	constructor(page: Page) {
 		this.addCatalogsButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
 		this.catalogActionsButton = page.getByRole('button', {

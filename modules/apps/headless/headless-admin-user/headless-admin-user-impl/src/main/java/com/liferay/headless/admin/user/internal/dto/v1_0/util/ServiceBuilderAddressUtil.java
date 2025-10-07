@@ -37,6 +37,8 @@ public class ServiceBuilderAddressUtil {
 		Address address = AddressLocalServiceUtil.createAddress(
 			GetterUtil.getLong(postalAddress.getId()));
 
+		address.setExternalReferenceCode(
+			postalAddress.getExternalReferenceCode());
 		address.setCountryId(countryId);
 		address.setListTypeId(
 			ServiceBuilderListTypeUtil.toServiceBuilderListTypeId(

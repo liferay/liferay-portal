@@ -273,7 +273,9 @@ public class JournalContentDisplayContext {
 			return _articleGroupId;
 		}
 
-		_articleGroupId = ParamUtil.getLong(_portletRequest, "groupId");
+		_articleGroupId = ParamUtil.getLong(
+			_portletRequest, "groupId",
+			_journalContentPortletInstanceConfiguration.groupId());
 
 		if (_articleGroupId > 0) {
 			return _articleGroupId;

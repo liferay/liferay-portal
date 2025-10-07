@@ -105,7 +105,7 @@ for (String analyticsType : analyticsTypes) {
 
 					ga('send', 'pageview');
 
-					<c:if test="<%= PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED %>">
+					<c:if test="<%= FrontendSPAUtil.isEnabled(company.getCompanyId()) %>">
 						Liferay.on(
 							'endNavigate',
 							function(event) {

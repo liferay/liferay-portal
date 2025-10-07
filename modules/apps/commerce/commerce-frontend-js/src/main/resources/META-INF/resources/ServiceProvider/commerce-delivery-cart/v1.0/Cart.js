@@ -117,6 +117,9 @@ export default function Cart(basePath) {
 		getCartDeliveryTermsPage: (cartId) =>
 			AJAX.GET(resolveCartsPath(basePath, cartId) + '/delivery-terms'),
 
+		getCartItemsByCartId: (cartId, params = {}) =>
+			AJAX.GET(`${resolveCartsPath(basePath, cartId)}/items`, {}, params),
+
 		getCartPaymentMethodsPage: (cartId) =>
 			AJAX.GET(resolveCartsPath(basePath, cartId) + '/payment-methods'),
 

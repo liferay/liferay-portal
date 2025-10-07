@@ -15,7 +15,6 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -27,9 +26,9 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UniqueUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
@@ -134,7 +133,19 @@ public class StyleBookEntryLocalServiceImpl
 		StyleBookEntry sourceStyleBookEntry = getStyleBookEntry(
 			sourceStyleBookEntryId);
 
-		String name = _getUniqueCopyName(sourceStyleBookEntry);
+		String name = UniqueUtil.getCopyValue(
+			copyValue -> {
+				StyleBookEntry existingStyleBookEntry =
+					styleBookEntryPersistence.fetchByG_LikeN_First(
+						sourceStyleBookEntry.getGroupId(), copyValue, null);
+
+				if (existingStyleBookEntry == null) {
+					return true;
+				}
+
+				return false;
+			},
+			sourceStyleBookEntry.getName());
 
 		StyleBookEntry targetStyleBookEntry = addStyleBookEntry(
 			null, userId, groupId, false,
@@ -555,28 +566,6 @@ public class StyleBookEntryLocalServiceImpl
 		return StringPool.BLANK;
 	}
 
-	private String _getUniqueCopyName(StyleBookEntry styleBookEntry) {
-		String copy = _language.get(LocaleUtil.getSiteDefault(), "copy");
-
-		String name = StringUtil.appendParentheticalSuffix(
-			styleBookEntry.getName(), copy);
-
-		for (int i = 1;; i++) {
-			StyleBookEntry existingStyleBookEntry =
-				styleBookEntryPersistence.fetchByG_LikeN_First(
-					styleBookEntry.getGroupId(), name, null);
-
-			if (existingStyleBookEntry == null) {
-				break;
-			}
-
-			name = StringUtil.appendParentheticalSuffix(
-				styleBookEntry.getName(), copy + StringPool.SPACE + i);
-		}
-
-		return name;
-	}
-
 	private void _validate(String name) throws PortalException {
 		if (Validator.isNull(name)) {
 			throw new StyleBookEntryNameException("Name must not be null");
@@ -623,9 +612,6 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private Language _language;
 
 	@Reference
 	private LayoutSetLocalService _layoutSetLocalService;

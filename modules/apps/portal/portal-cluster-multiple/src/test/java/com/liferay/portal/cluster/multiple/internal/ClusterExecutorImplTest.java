@@ -18,26 +18,21 @@ import com.liferay.portal.kernel.cluster.FutureClusterResponses;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
 
 import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,11 +47,6 @@ public class ClusterExecutorImplTest extends BaseClusterTestCase {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
-
-	@BeforeClass
-	public static void setUpClass() {
-		PropsUtil.setProps(new PropsImpl());
-	}
 
 	@Test
 	public void testDeactivate() {
@@ -297,18 +287,13 @@ public class ClusterExecutorImplTest extends BaseClusterTestCase {
 		ReflectionTestUtil.setFieldValue(
 			clusterExecutorImpl, "_portalExecutorManager",
 			new MockPortalExecutorManager());
-		ReflectionTestUtil.setFieldValue(
-			clusterExecutorImpl, "_props",
-			PropsTestUtil.setProps(
-				HashMapBuilder.<String, Object>put(
-					PropsKeys.CLUSTER_LINK_CHANNEL_NAME_CONTROL,
-					"test-channel-name-control"
-				).put(
-					PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL,
-					"test-channel-properties-control"
-				).put(
-					"configuration.override.", new Properties()
-				).build()));
+
+		PropsUtil.set(
+			PropsKeys.CLUSTER_LINK_CHANNEL_NAME_CONTROL,
+			"test-channel-name-control");
+		PropsUtil.set(
+			PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL,
+			"test-channel-properties-control");
 
 		clusterExecutorImpl.activate(
 			SystemBundleUtil.getBundleContext(), Collections.emptyMap());

@@ -1,6 +1,6 @@
 assemble:
     -   fromTask: bootJar
-liferay-learn-etc-cron-2-oauth-application-headless-server:
+liferay-learn-etc-cron-2-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Learn Etc Cron 2 Oauth Application Headless Server

@@ -11,7 +11,7 @@ export type ModalOptions = {
 	body: string | ReactElement;
 	center?: boolean;
 	footer?: (any | ReactElement)[];
-	header?: string;
+	header?: string | ReactElement;
 	size?: Size | 'md';
 	status?: 'danger' | 'info' | 'success' | 'warning';
 };

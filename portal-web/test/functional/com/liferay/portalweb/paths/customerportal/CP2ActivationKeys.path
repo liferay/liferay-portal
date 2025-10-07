@@ -132,7 +132,7 @@
 </tr>
 <tr>
 	<td>TABLE_ELEMENT_BY_POSITION</td>
-	<td>//*[contains(@class, 'cp-activation-key-table')]/tbody/tr[${key_linePosition}]/td[${key_colunmPosition}]//*[contains(@class, 'font-weight') and text()='${key_text}']</td>
+	<td>//*[contains(@class, 'cp-activation-key-table')]/tbody/tr[${key_linePosition}]/td[${key_columnPosition}]//*[contains(@class, 'font-weight') and text()='${key_text}']</td>
 	<td></td>
 </tr>
 <tr>

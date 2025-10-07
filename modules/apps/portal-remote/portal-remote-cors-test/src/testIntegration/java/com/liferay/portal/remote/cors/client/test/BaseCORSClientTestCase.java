@@ -5,6 +5,7 @@
 
 package com.liferay.portal.remote.cors.client.test;
 
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.io.ClassLoaderObjectInputStream;
 import com.liferay.petra.lang.ClassResolverUtil;
 import com.liferay.petra.process.ClassPathUtil;
@@ -39,6 +40,9 @@ import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -312,6 +316,9 @@ public abstract class BaseCORSClientTestCase {
 		_addToClassPath(sb, ClassPathUtil.class);
 		_addToClassPath(sb, ClassResolverUtil.class);
 		_addToClassPath(sb, ClassLoaderObjectInputStream.class);
+		_addToClassPath(sb, DCLSingleton.class);
+		_addToClassPath(sb, Logger.class);
+		_addToClassPath(sb, LogManager.class);
 		_addToClassPath(sb, StringBundler.class);
 		_addToClassPath(sb, StringUtil.class);
 

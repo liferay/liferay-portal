@@ -6,6 +6,7 @@ Import-Package:\
 	com.liferay.expando.kernel.model;version="[6.0.0,9999.0.0)",\
 	com.liferay.expando.kernel.util;version="[1.8.0,9999.0.0)",\
 	com.liferay.mail.kernel.model;version="[1.0.0,9999.0.0)",\
+	com.liferay.mail.kernel.service;version="[6.0.0,9999.0.0)",\
 	com.liferay.petra.function;version="[1.5.0,9999.0.0)",\
 	com.liferay.petra.function.transform;version="[1.2.0,9999.0.0)",\
 	com.liferay.petra.lang;version="[1.3.0,9999.0.0)",\

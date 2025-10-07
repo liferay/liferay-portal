@@ -137,12 +137,12 @@ export default function TrafficSources({dataProvider, onTrafficSourceClick}) {
 	return (
 		<>
 			<div className="mt-3 sheet-subtitle">
-				{Liferay.Language.get('traffic-channels')}
+				{Liferay.Language.get('traffic-channel')}
 
 				<Hint
 					message={Liferay.Language.get('traffic-channels-help')}
 					secondary={true}
-					title={Liferay.Language.get('traffic-channels')}
+					title={Liferay.Language.get('traffic-channel')}
 				/>
 			</div>
 

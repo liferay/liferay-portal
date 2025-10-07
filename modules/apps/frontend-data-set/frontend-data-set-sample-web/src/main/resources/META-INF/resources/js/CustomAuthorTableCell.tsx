@@ -73,12 +73,14 @@ const CustomAuthorTableCell = ({
 	return (
 		<>
 			<ClayLink
-				onClick={() =>
+				onClick={(event) => {
+					event.stopPropagation();
+
 					openModal({
 						bodyComponent: ModalBody,
 						title: Liferay.Language.get('details'),
-					})
-				}
+					});
+				}}
 				style={{cursor: 'pointer'}}
 			>
 				{value}

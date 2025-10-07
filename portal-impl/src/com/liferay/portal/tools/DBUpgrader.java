@@ -38,16 +38,17 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.transaction.TransactionsUtil;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
+import com.liferay.portal.upgrade.data.cleanup.DataCleanupPreupgradeProcessSuite;
 import com.liferay.portal.upgrade.log.UpgradeLogContext;
 import com.liferay.portal.util.InitUtil;
 import com.liferay.portal.util.PortalClassPathUtil;
-import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.verify.PreupgradeVerifyProcessSuite;
 import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcessSuite;
@@ -211,9 +212,8 @@ public class DBUpgrader {
 		ServiceLatch serviceLatch = SystemBundleUtil.newServiceLatch();
 
 		serviceLatch.<Appender>waitFor(
-			StringBundler.concat(
-				"(&(appender.name=UpgradeLogAppender)(objectClass=",
-				Appender.class.getName(), "))"),
+			"(&(appender.name=UpgradeLogAppender)(objectClass=" +
+				Appender.class.getName() + "))",
 			appender -> {
 				_appender = appender;
 
@@ -322,24 +322,45 @@ public class DBUpgrader {
 			UpgradeLogContext.setContext(
 				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME);
 
-			PreupgradeVerifyProcessSuite preupgradeVerifyProcessSuite =
-				new PreupgradeVerifyProcessSuite();
+			if (PropsValues.UPGRADE_DATABASE_PREUPGRADE_VERIFY_ENABLED) {
+				PreupgradeVerifyProcessSuite preupgradeVerifyProcessSuite =
+					new PreupgradeVerifyProcessSuite();
 
-			try {
-				preupgradeVerifyProcessSuite.verify();
+				try {
+					preupgradeVerifyProcessSuite.verify();
+				}
+				catch (VerifyException verifyException) {
+					_log.error(
+						StringBundler.concat(
+							"Stopping the server because a preupgrade ",
+							"verification process has failed. No changes have ",
+							"been made to the system. Please fix the reported ",
+							"issues and rerun the upgrade: ",
+							verifyException.getMessage()));
+
+					StartupHelperUtil.setUpgrading(false);
+
+					System.exit(1);
+				}
 			}
-			catch (VerifyException verifyException) {
-				_log.error(
-					StringBundler.concat(
-						"Stopping the server because a preupgrade ",
-						"verification process has failed. No changes have ",
-						"been made to the system. Please fix the reported ",
-						"issues and rerun the upgrade: ",
-						verifyException.getMessage()));
 
-				StartupHelperUtil.setUpgrading(false);
+			if (PropsValues.UPGRADE_DATABASE_PREUPGRADE_DATA_CLEANUP_ENABLED) {
+				DataCleanupPreupgradeProcessSuite
+					dataCleanupPreupgradeProcessSuite =
+						new DataCleanupPreupgradeProcessSuite();
 
-				System.exit(1);
+				try {
+					dataCleanupPreupgradeProcessSuite.cleanUp();
+				}
+				catch (Exception exception) {
+					_log.error(
+						"Unable to execute preupgrade data cleanup process",
+						exception);
+
+					StartupHelperUtil.setUpgrading(false);
+
+					throw exception;
+				}
 			}
 
 			if (FeatureFlagManagerUtil.isEnabled("LPS-157670")) {
@@ -412,6 +433,7 @@ public class DBUpgrader {
 				}
 
 				PortalUpgradeProcess.updateBuildInfo(connection);
+				PortalUpgradeProcess.updateVersionDisplayName(connection);
 			}
 
 			CustomSQLUtil.reloadCustomSQL();

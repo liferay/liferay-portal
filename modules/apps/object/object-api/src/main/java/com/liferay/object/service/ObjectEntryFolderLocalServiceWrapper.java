@@ -382,6 +382,17 @@ public class ObjectEntryFolderLocalServiceWrapper
 			groupId, companyId, parentObjectEntryFolderId, start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.object.model.ObjectEntryFolder>
+		getObjectEntryFoldersByExternalReferenceCode(
+			String externalReferenceCode, java.util.List<Long> groupIds,
+			long companyId) {
+
+		return _objectEntryFolderLocalService.
+			getObjectEntryFoldersByExternalReferenceCode(
+				externalReferenceCode, groupIds, companyId);
+	}
+
 	/**
 	 * Returns all the object entry folders matching the UUID and company.
 	 *
@@ -438,6 +449,18 @@ public class ObjectEntryFolderLocalServiceWrapper
 			groupId, companyId, parentObjectEntryFolderId);
 	}
 
+	@Override
+	public com.liferay.object.model.ObjectEntryFolder
+			getOrAddEmptyObjectEntryFolder(
+				String externalReferenceCode, long groupId, long companyId,
+				long userId,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryFolderLocalService.getOrAddEmptyObjectEntryFolder(
+			externalReferenceCode, groupId, companyId, userId, serviceContext);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -457,6 +480,70 @@ public class ObjectEntryFolderLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectEntryFolderLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public void moveObjectEntryFoldersToTrash(
+			long userId,
+			com.liferay.object.model.ObjectEntryFolder parentObjectEntryFolder,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryFolderLocalService.moveObjectEntryFoldersToTrash(
+			userId, parentObjectEntryFolder, serviceContext);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntryFolder
+			moveObjectEntryFolderToTrash(
+				long userId,
+				com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryFolderLocalService.moveObjectEntryFolderToTrash(
+			userId, objectEntryFolder, serviceContext);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntryFolder
+			restoreObjectEntryFolderFromTrash(
+				long userId,
+				com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryFolderLocalService.restoreObjectEntryFolderFromTrash(
+			userId, objectEntryFolder, serviceContext);
+	}
+
+	@Override
+	public void restoreObjectEntryFoldersFromTrash(
+			long userId,
+			com.liferay.object.model.ObjectEntryFolder parentObjectEntryFolder,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryFolderLocalService.restoreObjectEntryFoldersFromTrash(
+			userId, parentObjectEntryFolder, serviceContext);
+	}
+
+	@Override
+	public void subscribeObjectEntryFolder(
+			long userId, long groupId, long objectEntryFolderId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryFolderLocalService.subscribeObjectEntryFolder(
+			userId, groupId, objectEntryFolderId);
+	}
+
+	@Override
+	public void unsubscribeObjectEntryFolder(
+			long userId, long groupId, long objectEntryFolderId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryFolderLocalService.unsubscribeObjectEntryFolder(
+			userId, groupId, objectEntryFolderId);
 	}
 
 	@Override
@@ -488,6 +575,16 @@ public class ObjectEntryFolderLocalServiceWrapper
 
 		return _objectEntryFolderLocalService.updateObjectEntryFolder(
 			objectEntryFolder);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntryFolder updateStatus(
+			com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
+			int status)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryFolderLocalService.updateStatus(
+			objectEntryFolder, status);
 	}
 
 	@Override

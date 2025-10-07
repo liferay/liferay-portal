@@ -1,0 +1,10 @@
+{
+	"name": "Third-Party Technology",
+	"name_i18n": {
+		"en_US": "Third-Party Technology",
+		"es-ES": "Tecnología de terceros",
+		"ja-JP": "サードパーティのテクノロジー",
+		"pt-BR": "Tecnologia de Terceiros"
+	},
+	"viewableBy": "Anyone"
+}

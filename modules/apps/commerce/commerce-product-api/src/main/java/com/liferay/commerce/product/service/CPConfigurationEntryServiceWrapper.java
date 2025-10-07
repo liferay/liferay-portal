@@ -43,8 +43,8 @@ public class CPConfigurationEntryServiceWrapper
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpConfigurationEntryService.addCPConfigurationEntry(
@@ -55,7 +55,7 @@ public class CPConfigurationEntryServiceWrapper
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	@Override
@@ -117,8 +117,8 @@ public class CPConfigurationEntryServiceWrapper
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpConfigurationEntryService.updateCPConfigurationEntry(
@@ -128,7 +128,7 @@ public class CPConfigurationEntryServiceWrapper
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	@Override

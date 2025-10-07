@@ -1793,6 +1793,10 @@ public interface UserLocalService
 		LinkedHashMap<String, Object> params, boolean andSearch);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchCountBySocial(
+		long companyId, long[] groupIds, long[] userGroupIds, String keywords);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Map<Long, Integer> searchCounts(
 		long companyId, int status, long[] groupIds);
 
@@ -2175,6 +2179,7 @@ public interface UserLocalService
 	public User updateJobTitle(long userId, String jobTitle)
 		throws PortalException;
 
+	@CTAware(onProduction = true)
 	public User updateLanguageId(long userId, String languageId)
 		throws PortalException;
 

@@ -497,10 +497,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewRuleCondition(condition = null, conditonRowNumber = null) {
+	macro viewRuleCondition(condition = null, conditionRowNumber = null) {
 		AssertTextEquals(
 			key_condition = ${condition},
-			key_conditonRowNumber = ${conditonRowNumber},
+			key_conditionRowNumber = ${conditionRowNumber},
 			locator1 = "FormRules#RULE_BUILDER_TIMELINE_RULE_CONDITION",
 			value1 = ${condition});
 	}

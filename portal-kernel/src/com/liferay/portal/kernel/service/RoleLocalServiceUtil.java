@@ -143,6 +143,15 @@ public class RoleLocalServiceUtil {
 		getService().clearUserRoles(userId);
 	}
 
+	public static Role copyRole(
+			long userId, String name, long sourceRoleId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().copyRole(
+			userId, name, sourceRoleId, serviceContext);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -483,12 +492,12 @@ public class RoleLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static Role getOrAddIncompleteRole(
+	public static Role getOrAddEmptyRole(
 			String externalReferenceCode, long companyId, long userId,
 			String className, long classPK, String name, int type)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteRole(
+		return getService().getOrAddEmptyRole(
 			externalReferenceCode, companyId, userId, className, classPK, name,
 			type);
 	}

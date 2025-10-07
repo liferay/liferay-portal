@@ -1,8 +1,8 @@
-<div class="component-button text-break">
-	<a class="btn ${configuration.buttonSize} btn-style-${configuration.style} btn-${configuration.type} [#if configuration.inverted]btn-inverted[/#if] [#if configuration.uppercase]text-uppercase[/#if]" data-lfr-editable-id="link" data-lfr-editable-type="link" href="" id="fragment-${fragmentEntryLinkNamespace}-link">
-		<span data-lfr-editable-id="text" data-lfr-editable-type="text" id="fragment-${fragmentEntryLinkNamespace}-label">Go Somewhere</span>
+<div class="btn btn-${configuration.buttonSize} btn-style-${configuration.style} btn-${configuration.type}  component-button text-break [#if configuration.inverted]btn-inverted[/#if] [#if configuration.uppercase]text-uppercase[/#if]">
+	<a class="text-white" data-lfr-editable-id="link" data-lfr-editable-type="link" href="" id="fragment-${fragmentEntryLinkNamespace}-link">
+		Go Somewhere
 
-		<span class="ml-2" id="fragment-${fragmentEntryLinkNamespace}-icon">
+		<span class="ml-2">
 			[@clay["icon"] symbol="${configuration.iconName}" /]
 		</span>
 	</a>

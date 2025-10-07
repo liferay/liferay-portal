@@ -30,6 +30,8 @@ public class LayoutConstants {
 
 	public static final String TYPE_EMBEDDED = "embedded";
 
+	public static final String TYPE_EMPTY = "empty";
+
 	public static final String TYPE_FULL_PAGE_APPLICATION =
 		"full_page_application";
 

@@ -26,7 +26,7 @@ public class OptimizeImagesStatusMessageSenderUtil {
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put(
 			AMOptimizeImagesBackgroundTaskConstants.COMPANY_ID, companyId);

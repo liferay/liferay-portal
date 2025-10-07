@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,20 +32,20 @@ import java.util.List;
  */
 public class AssetTestUtil {
 
-	public static ItemExternalReference[] randomKeywordItemExternalReferences(
-			ServiceContext serviceContext)
+	public static String[] randomKeywords(ServiceContext serviceContext)
 		throws Exception {
 
-		int length = RandomTestUtil.randomInt(1, 3);
+		int length = RandomTestUtil.randomInt(0, 3);
 
-		ItemExternalReference[] itemExternalReferences =
-			new ItemExternalReference[length];
+		String[] keywords = new String[length];
 
 		for (int i = 0; i < length; i++) {
-			ItemExternalReference itemExternalReference =
-				new ItemExternalReference();
+			if (RandomTestUtil.randomBoolean()) {
+				keywords[i] = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 
-			itemExternalReference.setClassName(AssetTag.class.getName());
+				continue;
+			}
 
 			AssetTag assetTag = AssetTagLocalServiceUtil.addTag(
 				StringUtil.toLowerCase(RandomTestUtil.randomString()),
@@ -52,13 +53,12 @@ public class AssetTestUtil {
 				StringUtil.toLowerCase(RandomTestUtil.randomString()),
 				serviceContext);
 
-			itemExternalReference.setExternalReferenceCode(
-				assetTag.getExternalReferenceCode());
-
-			itemExternalReferences[i] = itemExternalReference;
+			keywords[i] = assetTag.getName();
 		}
 
-		return itemExternalReferences;
+		Arrays.sort(keywords);
+
+		return keywords;
 	}
 
 	public static ItemExternalReference[]
@@ -133,6 +133,10 @@ public class AssetTestUtil {
 		throws Exception {
 
 		List<AssetCategory> assetCategories = new ArrayList<>();
+
+		if (RandomTestUtil.randomBoolean()) {
+			return assetCategories;
+		}
 
 		for (int i = 0; i < RandomTestUtil.randomInt(1, 3); i++) {
 			AssetVocabulary assetVocabulary =

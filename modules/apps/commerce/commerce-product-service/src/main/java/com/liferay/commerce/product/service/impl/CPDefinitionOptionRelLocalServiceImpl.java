@@ -1081,22 +1081,22 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	}
 
 	private void _updateCPDefinitionIgnoreSKUCombinations(
-			long cpDefintionId, ServiceContext serviceContext)
+			long cpDefinitionId, ServiceContext serviceContext)
 		throws PortalException {
 
 		if (_hasCPDefinitionSKUContributorCPDefinitionOptionRel(
-				cpDefintionId)) {
+				cpDefinitionId)) {
 
 			CPDefinitionLocalServiceCircularDependencyUtil.
 				updateCPDefinitionIgnoreSKUCombinations(
-					cpDefintionId, false, serviceContext);
+					cpDefinitionId, false, serviceContext);
 
 			return;
 		}
 
 		CPDefinitionLocalServiceCircularDependencyUtil.
 			updateCPDefinitionIgnoreSKUCombinations(
-				cpDefintionId, true, serviceContext);
+				cpDefinitionId, true, serviceContext);
 	}
 
 	private void _updateCPDefinitionOptionValueRels(

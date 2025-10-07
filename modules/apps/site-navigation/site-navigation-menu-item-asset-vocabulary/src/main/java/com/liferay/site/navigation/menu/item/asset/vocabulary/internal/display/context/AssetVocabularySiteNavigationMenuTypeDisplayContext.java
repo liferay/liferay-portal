@@ -76,6 +76,9 @@ public class AssetVocabularySiteNavigationMenuTypeDisplayContext {
 				GetterUtil.getLong(
 					_typeSettingsUnicodeProperties.get("classPK"))
 			).put(
+				"externalReferenceCode",
+				_typeSettingsUnicodeProperties.get("externalReferenceCode")
+			).put(
 				"groupId",
 				GetterUtil.getLong(
 					_typeSettingsUnicodeProperties.get("groupId"))

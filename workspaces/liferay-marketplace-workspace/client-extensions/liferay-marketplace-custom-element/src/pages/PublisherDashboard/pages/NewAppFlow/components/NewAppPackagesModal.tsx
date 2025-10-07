@@ -149,6 +149,7 @@ export function NewAppPackageVersionModal({
 											{
 												file: null,
 												id: getRandomID(),
+												uploaded: false,
 												versions: checkboxVersions,
 											},
 										],

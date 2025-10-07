@@ -9,20 +9,19 @@ import com.liferay.portal.cache.key.HashCodeHexStringCacheKeyGenerator;
 import com.liferay.portal.kernel.cache.key.CacheKeyGeneratorUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.minifier.MinifierUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.tools.ToolDependencies;
-import com.liferay.portal.util.PropsUtil;
 
 import java.io.StringWriter;
 
 import java.nio.CharBuffer;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -74,8 +73,8 @@ public class StripFilterTest {
 
 		StringWriter stringWriter = new StringWriter();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				StripFilter.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				StripFilter.class.getName(), LoggerTestUtil.WARN)) {
 
 			stripFilter.extractAndMinifyJavaScript(
 				"test.js", charBuffer, stringWriter, "script".toCharArray());
@@ -118,8 +117,8 @@ public class StripFilterTest {
 
 		StringWriter stringWriter = new StringWriter();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				StripFilter.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				StripFilter.class.getName(), LoggerTestUtil.WARN)) {
 
 			stripFilter.extractAndMinifyCSS(
 				null, null, charBuffer, stringWriter, styleOpenTag);
@@ -211,8 +210,8 @@ public class StripFilterTest {
 
 		StringWriter stringWriter = new StringWriter();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				StripFilter.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				StripFilter.class.getName(), LoggerTestUtil.WARN)) {
 
 			stripFilter.extractAndTrimInput(charBuffer, stringWriter);
 
@@ -276,8 +275,8 @@ public class StripFilterTest {
 
 		StringWriter stringWriter = new StringWriter();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				StripFilter.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				StripFilter.class.getName(), LoggerTestUtil.WARN)) {
 
 			stripFilter.extractAndTrimPre(charBuffer, stringWriter);
 
@@ -328,8 +327,8 @@ public class StripFilterTest {
 
 		StringWriter stringWriter = new StringWriter();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				StripFilter.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				StripFilter.class.getName(), LoggerTestUtil.WARN)) {
 
 			stripFilter.extractAndTrimTextArea(charBuffer, stringWriter);
 

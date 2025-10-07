@@ -15,11 +15,30 @@ public class TestResultFactory {
 	public static TestResult newTestResult(
 		Build build, JSONObject caseJSONObject) {
 
+		String batchName = "";
+
+		if (build instanceof AxisBuild) {
+			AxisBuild axisBuild = (AxisBuild)build;
+
+			batchName = axisBuild.getBatchName();
+		}
+		else if (build instanceof DownstreamBuild) {
+			DownstreamBuild downstreamBuild = (DownstreamBuild)build;
+
+			batchName = downstreamBuild.getBatchName();
+		}
+
+		if (batchName.startsWith("js-unit")) {
+			return new JSUnitJUnitTestResult(build, caseJSONObject);
+		}
+
 		String className = caseJSONObject.getString("className");
 
-		if (className.contains(
+		if ((className.contains(
 				"com.liferay.poshi.runner.ParallelPoshiRunner") ||
-			className.contains("com.liferay.poshi.runner.PoshiRunner")) {
+			 className.contains("com.liferay.poshi.runner.PoshiRunner")) &&
+			!className.equals(
+				"com.liferay.poshi.runner.PoshiRunnerFunctionalTest")) {
 
 			return new PoshiJUnitTestResult(build, caseJSONObject);
 		}

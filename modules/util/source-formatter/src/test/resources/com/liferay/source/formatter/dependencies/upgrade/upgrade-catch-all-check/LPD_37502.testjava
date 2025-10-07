@@ -15,7 +15,6 @@ public class LPD_37502 {
 	public void method(String externalReferenceCode, long companyId) {
 		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode("test123", 123);
 		CommercePriceListLocalServiceUtil.fetchByExternalReferenceCode(externalReferenceCode, companyId);
-		_commercePriceListLocalService.fetchByExternalReferenceCode("test123", 123);
 		_commercePriceListLocalService.fetchByExternalReferenceCode(externalReferenceCode, companyId);
 
 		CPInstanceLocalServiceUtil.fetchByExternalReferenceCode("test123", 123);

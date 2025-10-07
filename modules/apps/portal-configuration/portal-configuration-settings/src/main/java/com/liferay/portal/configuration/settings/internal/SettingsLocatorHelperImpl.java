@@ -47,7 +47,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -222,7 +222,7 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 				new ClassLoaderResourceManager(
 					PortalClassLoaderUtil.getClassLoader()),
 				this),
-			_props.getProperties());
+			PropsUtil.getProperties());
 
 		_bundleContext = bundleContext;
 
@@ -485,9 +485,6 @@ public class SettingsLocatorHelperImpl implements SettingsLocatorHelper {
 
 	@Reference
 	private PrefsProps _prefsProps;
-
-	@Reference
-	private Props _props;
 
 	private final Map<String, ScopedConfigurationManagedServiceFactory>
 		_scopedConfigurationManagedServiceFactories = new ConcurrentHashMap<>();

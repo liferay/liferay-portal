@@ -715,7 +715,7 @@ public class PortalRelease {
 			"(\\-(ep|ga|rc|sp)\\d+)?)";
 
 	private static final String _QUARTERLY_RELEASE_VERSION_REGEX =
-		"(?<portalVersion>(?<branchVersion>\\d{4}.[Qq]\\d+).\\d+)";
+		"(?<portalVersion>(?<branchVersion>\\d{4}.[Qq]\\d+).\\d+)(-lts)?";
 
 	private static final MultiPattern _bundleFileNamePattern = new MultiPattern(
 		".+\\-" + _PORTAL_VERSION_REGEX + ".*\\.(7z|tar.gz|zip)",

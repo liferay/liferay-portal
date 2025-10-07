@@ -29,6 +29,14 @@ public class PatcherBuildRelLocalServiceWrapper
 		_patcherBuildRelLocalService = patcherBuildRelLocalService;
 	}
 
+	@Override
+	public com.liferay.osb.patcher.model.PatcherBuildRel addPatcherBuildRel(
+		long childPatcherBuildId, long parentPatcherBuildId) {
+
+		return _patcherBuildRelLocalService.addPatcherBuildRel(
+			childPatcherBuildId, parentPatcherBuildId);
+	}
+
 	/**
 	 * Adds the patcher build rel to the database. Also notifies the appropriate model listeners.
 	 *

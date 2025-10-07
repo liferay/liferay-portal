@@ -55,6 +55,7 @@
 			token="&lt;session-timeout&gt;15&lt;/session-timeout&gt;"
 			value="&lt;session-timeout&gt;${test.session.timeout[tck]}&lt;/session-timeout&gt;"
 		/>
+
 		<antcall if:set="env.JENKINS_HOME" target="prepare-portal-ext-properties">
 			<param name="app.server.classes.portal.dir" value="${app.server.classes.portal.dir}" />
 		</antcall>
@@ -62,7 +63,6 @@
 		<echo append="true" file="${app.server.classes.portal.dir}/portal-ext.properties"><![CDATA[
 			browser.launcher.url=
 			enterprise.product.notification.enabled=false
-			javascript.single.page.application.enabled=false
 			module.framework.auto.deploy.interval=2000
 			passwords.default.policy.change.required=false
 			setup.wizard.enabled=false
@@ -71,6 +71,8 @@
 			users.reminder.queries.enabled=false
 			users.reminder.queries.custom.question.enabled=false
 			web.server.https.port=8443]]></echo>
+
+		<echo file="${liferay.home}/osgi/configs/com.liferay.frontend.js.spa.web.internal.configuration.SPAConfiguration.config" force="true">enabled=b"false"</echo>
 
 		<exec dir="${tck.home}/.." executable="mvn" failonerror="true">
 			<arg value="-Dmaven.javadoc.skip=true" />

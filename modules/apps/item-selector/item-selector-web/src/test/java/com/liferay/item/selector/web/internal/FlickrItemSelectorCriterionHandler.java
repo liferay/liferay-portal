@@ -7,6 +7,7 @@ package com.liferay.item.selector.web.internal;
 
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorView;
+import com.liferay.item.selector.web.internal.item.selector.FlickrItemSelectorCriterion;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.List;

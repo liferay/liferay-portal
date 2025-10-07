@@ -22,11 +22,13 @@ import com.liferay.gradle.plugins.test.integration.TestIntegrationPlugin;
 import com.liferay.gradle.plugins.test.integration.TestIntegrationTomcatExtension;
 import com.liferay.gradle.plugins.upgrade.table.builder.UpgradeTableBuilderPlugin;
 import com.liferay.gradle.plugins.workspace.FrontendPlugin;
+import com.liferay.gradle.plugins.workspace.LiferayJspCompatibilityPlugin;
 import com.liferay.gradle.plugins.workspace.WorkspaceExtension;
 import com.liferay.gradle.plugins.workspace.WorkspacePlugin;
 import com.liferay.gradle.plugins.workspace.internal.JSModuleConfigGeneratorDefaultsPlugin;
 import com.liferay.gradle.plugins.workspace.internal.util.FileUtil;
 import com.liferay.gradle.plugins.workspace.internal.util.GradleUtil;
+import com.liferay.gradle.plugins.workspace.internal.util.JakartaCompatibilityUtil;
 import com.liferay.gradle.plugins.wsdd.builder.WSDDBuilderPlugin;
 
 import groovy.json.JsonSlurper;
@@ -118,6 +120,11 @@ public class ModulesProjectConfigurator extends BaseProjectConfigurator {
 			}
 
 			GradleUtil.applyPlugin(project, LiferayOSGiPlugin.class);
+
+			if (!JakartaCompatibilityUtil.isUseJakarta(project)) {
+				GradleUtil.applyPlugin(
+					project, LiferayJspCompatibilityPlugin.class);
+			}
 
 			if (FileUtil.exists(project, "rest-config.yaml")) {
 				GradleUtil.applyPlugin(project, RESTBuilderPlugin.class);

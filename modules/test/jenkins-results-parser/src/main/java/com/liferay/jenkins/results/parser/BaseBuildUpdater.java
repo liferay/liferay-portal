@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +124,19 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 				_build.setStatus("queued");
 
 				return;
+			}
+
+			if (_build instanceof AppServerBundleDownstreamBuild) {
+				AppServerBundleDownstreamBuild appServerBundleDownstreamBuild =
+					(AppServerBundleDownstreamBuild)_build;
+
+				try {
+					appServerBundleDownstreamBuild.
+						createBuildFailureObjectRef();
+				}
+				catch (IOException ioException) {
+					throw new RuntimeException(ioException);
+				}
 			}
 		}
 

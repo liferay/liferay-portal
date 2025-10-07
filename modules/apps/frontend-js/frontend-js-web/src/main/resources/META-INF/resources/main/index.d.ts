@@ -762,7 +762,15 @@ export class RenderState {
 
 export function sub(
 	string: string,
-	data: string | number | string[] | number[] | Array<string> | Array<number>,
+	data:
+		| string
+		| number
+		| ReactNode
+		| string[]
+		| number[]
+		| Array<string>
+		| Array<number>
+		| Array<ReactNode>,
 	...args: string[] | number[]
 ): string;
 
@@ -850,7 +858,12 @@ export function isReducedMotion(): boolean;
 /**
  * Client Extensions API
  */
-export {default as loadClientExtensions} from './utils/client_extensions/loadClientExtensions';
+export {
+	ClientExtensionDefinition,
+	ClientExtensionHandler,
+	ClientExtensionResolution,
+	loadClientExtensions,
+} from './utils/client_extensions/loadClientExtensions';
 export {default as loadEditorClientExtensions} from './utils/client_extensions/loadEditorClientExtensions';
 export {loadModule} from './utils/client_extensions/loadModule';
 
@@ -858,3 +871,4 @@ export {loadModule} from './utils/client_extensions/loadModule';
  * Utils
  */
 export {default as dateUtils} from './utils/dateUtils';
+export {getObjectValueFromPath} from './utils/object/getObjectValueFromPath';

@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -59,8 +58,8 @@ public class LocalizationImplUnitTest {
 
 	@Test
 	public void testGetDefaultImportLocale4() {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				LocalizationImpl.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				LocalizationImpl.class.getName(), LoggerTestUtil.WARN)) {
 
 			_testGetDefaultImportLocale("bg_BG", "bg_BG,fr_FR", "bg_BG", true);
 

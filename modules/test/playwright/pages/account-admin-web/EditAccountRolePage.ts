@@ -13,9 +13,9 @@ export class EditAccountRolePage {
 	readonly defineGroupScopePermissionsLink: Locator;
 	readonly definePermissionsLink: Locator;
 	readonly keyInput: Locator;
-	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
+	readonly titleInput: Locator;
 
 	constructor(page: Page) {
 		this.backButton = page.getByRole('link', {exact: true, name: 'Back'});
@@ -28,14 +28,14 @@ export class EditAccountRolePage {
 		this.keyInput = page.locator(
 			'#_com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet_name'
 		);
-		this.nameInput = page.getByLabel('Name');
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.titleInput = page.getByLabel('Title').first();
 	}
 
 	async addRole({name = getRandomString()}: {name?: string}) {
 		await this.keyInput.fill(name);
-		await this.nameInput.fill(name);
+		await this.titleInput.fill(name);
 
 		await this.saveButton.click();
 

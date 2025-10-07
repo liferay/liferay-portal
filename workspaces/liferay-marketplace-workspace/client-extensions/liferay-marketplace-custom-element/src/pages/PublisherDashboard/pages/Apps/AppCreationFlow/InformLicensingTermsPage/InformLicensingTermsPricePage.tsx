@@ -152,7 +152,7 @@ export function InformLicensingTermsPricePage({
 		<div className="informing-licensing-terms-page-container">
 			<Header
 				description={i18n.translate(
-					'define-the-licensing-approach-for-your-app-this-will-impact-users-licensing-renew-experience'
+					'define-the-licensing-approach-for-your-app-this-will-impact-the-license-renewal-experience'
 				)}
 				title={i18n.translate('select-licensing-terms')}
 			/>

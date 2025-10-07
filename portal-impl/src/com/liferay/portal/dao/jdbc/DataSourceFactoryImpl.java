@@ -8,33 +8,27 @@ package com.liferay.portal.dao.jdbc;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.dao.jdbc.pool.metrics.HikariConnectionPoolMetrics;
-import com.liferay.portal.dao.jdbc.util.AntiTimeDriftDataSourceWrapper;
 import com.liferay.portal.dao.jdbc.util.DataSourceWrapper;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactory;
-import com.liferay.portal.kernel.dao.jdbc.pool.metrics.ConnectionPoolMetrics;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jndi.JNDIUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.hibernate.DialectDetector;
-import com.liferay.portal.util.DigesterImpl;
 import com.liferay.portal.util.JarUtil;
-import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -49,6 +43,8 @@ import java.nio.file.Paths;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.Arrays;
@@ -57,7 +53,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -68,9 +63,6 @@ import javax.net.ssl.SSLEngine;
 import javax.sql.DataSource;
 
 import jodd.bean.BeanUtil;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Brian Wing Shun Chan
@@ -88,13 +80,6 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 			}
 
 			dataSource = dataSourceWrapper.getWrappedDataSource();
-		}
-
-		ServiceRegistration<?> serviceRegistration =
-			_serviceRegistrations.remove(dataSource);
-
-		if (serviceRegistration != null) {
-			serviceRegistration.unregister();
 		}
 
 		if (dataSource instanceof Closeable) {
@@ -175,13 +160,11 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 			_log.debug("Created data source " + dataSource.getClass());
 		}
 
-		if (Boolean.getBoolean("jdbc.data.source.anti.time.drift")) {
-			DBType dbType = DBManagerUtil.getDBType(
-				DialectDetector.getDialect(dataSource));
+		DBType dbType = DBManagerUtil.getDBType(
+			DialectDetector.getDialect(dataSource));
 
-			if (dbType == DBType.DB2) {
-				dataSource = new AntiTimeDriftDataSourceWrapper(dataSource);
-			}
+		if (dbType == DBType.SQLSERVER) {
+			_checkSQLServer(dataSource);
 		}
 
 		return dataSource;
@@ -252,14 +235,6 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 			}
 		}
 
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		_serviceRegistrations.put(
-			hikariDataSource,
-			bundleContext.registerService(
-				ConnectionPoolMetrics.class,
-				new HikariConnectionPoolMetrics(hikariDataSource), null));
-
 		return hikariDataSource;
 	}
 
@@ -307,10 +282,6 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 			}
 
 			try {
-				DigesterUtil digesterUtil = new DigesterUtil();
-
-				digesterUtil.setDigester(new DigesterImpl());
-
 				JarUtil.downloadAndInstallJar(
 					new URL(url),
 					Paths.get(
@@ -328,6 +299,34 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 
 				throw classNotFoundException;
 			}
+		}
+	}
+
+	private void _checkSQLServer(DataSource dataSource) {
+		try (Connection connection = dataSource.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select name, is_read_committed_snapshot_on from " +
+					"sys.databases where name = db_name()");
+			ResultSet resultSet = preparedStatement.executeQuery()) {
+
+			if (!resultSet.next() ||
+				resultSet.getBoolean("is_read_committed_snapshot_on") ||
+				!_log.isWarnEnabled()) {
+
+				return;
+			}
+
+			String name = resultSet.getString("name");
+
+			_log.warn(
+				StringBundler.concat(
+					"SQL Server may have deadlocks because ",
+					"\"read_committed_snapshot\" is disabled for database \"",
+					name, "\". To enable, execute: alter database ", name,
+					" set read_committed_snapshot on"));
+		}
+		catch (Exception exception) {
+			_log.error("Unable to check SQL Server", exception);
 		}
 	}
 
@@ -490,7 +489,7 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 					StringBundler.concat(
 						"At attempt ", maxRetries - count, " of ", maxRetries,
 						" in acquiring a JDBC connection after a ", delay,
-						" second ", delay));
+						" seconds delay"));
 			}
 
 			try {
@@ -529,9 +528,6 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DataSourceFactoryImpl.class);
-
-	private final Map<DataSource, ServiceRegistration<?>>
-		_serviceRegistrations = new ConcurrentHashMap<>();
 
 	private static class JNDIDataSourceWrapper extends DataSourceWrapper {
 

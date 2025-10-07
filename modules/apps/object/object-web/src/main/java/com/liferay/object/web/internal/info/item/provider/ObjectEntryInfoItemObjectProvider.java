@@ -9,19 +9,22 @@ import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemIdentifier;
-import com.liferay.info.item.provider.InfoItemObjectProvider;
+import com.liferay.info.item.provider.BaseInfoItemObjectProvider;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.web.internal.util.ObjectEntryUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,20 +36,24 @@ import java.util.Map;
  * @author Guilherme Camacho
  */
 public class ObjectEntryInfoItemObjectProvider
-	implements InfoItemObjectProvider<ObjectEntry> {
+	extends BaseInfoItemObjectProvider<ObjectEntry> {
 
 	public ObjectEntryInfoItemObjectProvider(
-		ObjectDefinition objectDefinition,
+		GroupLocalService groupLocalService, ObjectDefinition objectDefinition,
 		ObjectEntryLocalService objectEntryLocalService,
-		ObjectEntryManagerRegistry objectEntryManagerRegistry) {
+		ObjectEntryManagerRegistry objectEntryManagerRegistry,
+		UserLocalService userLocalService) {
 
+		_groupLocalService = groupLocalService;
 		_objectDefinition = objectDefinition;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectEntryManagerRegistry = objectEntryManagerRegistry;
+		_userLocalService = userLocalService;
 	}
 
 	@Override
-	public ObjectEntry getInfoItem(InfoItemIdentifier infoItemIdentifier)
+	protected ObjectEntry doGetInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException {
 
 		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier) &&
@@ -85,21 +92,45 @@ public class ObjectEntryInfoItemObjectProvider
 			return objectEntries.get(ercInfoItemIdentifier);
 		}
 
-		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+		Group group = null;
+
+		if (Validator.isNull(
+				ercInfoItemIdentifier.getScopeExternalReferenceCode())) {
+
+			group = _groupLocalService.fetchGroup(groupId);
+
+			if (group == null) {
+				throw new NoSuchInfoItemException(
+					"No group found with group ID " + groupId);
+			}
+		}
+		else {
+			group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				ercInfoItemIdentifier.getScopeExternalReferenceCode(),
+				serviceContext.getCompanyId());
+
+			if (group == null) {
+				throw new NoSuchInfoItemException(
+					StringBundler.concat(
+						"No group found with company ID ",
+						serviceContext.getCompanyId(),
+						" and external reference code ",
+						ercInfoItemIdentifier.getScopeExternalReferenceCode()));
+			}
+		}
 
 		ObjectEntryManager objectEntryManager =
 			_objectEntryManagerRegistry.getObjectEntryManager(
 				_objectDefinition.getStorageType());
 
 		try {
-			Group group = themeDisplay.getScopeGroup();
-
 			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 				objectEntryManager.getObjectEntry(
-					themeDisplay.getCompanyId(),
+					group.getCompanyId(),
 					new DefaultDTOConverterContext(
-						false, null, null, null, null, themeDisplay.getLocale(),
-						null, themeDisplay.getUser()),
+						false, null, null, null, null,
+						serviceContext.getLocale(), null,
+						_userLocalService.getUser(serviceContext.getUserId())),
 					ercInfoItemIdentifier.getExternalReferenceCode(),
 					_objectDefinition, group.getGroupKey());
 
@@ -151,8 +182,10 @@ public class ObjectEntryInfoItemObjectProvider
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryInfoItemObjectProvider.class);
 
+	private final GroupLocalService _groupLocalService;
 	private final ObjectDefinition _objectDefinition;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectEntryManagerRegistry _objectEntryManagerRegistry;
+	private final UserLocalService _userLocalService;
 
 }

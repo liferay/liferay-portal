@@ -7,10 +7,8 @@ package com.liferay.dynamic.data.mapping.internal.io.exporter;
 
 import com.liferay.dynamic.data.mapping.io.exporter.DDMFormInstanceRecordWriterRequest;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
@@ -41,7 +39,6 @@ public class DDMFormInstanceRecordXMLWriterTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_setUpPropsUtil();
 		_setUpSAXReaderUtil();
 	}
 
@@ -290,11 +287,6 @@ public class DDMFormInstanceRecordXMLWriterTest {
 		inOrder.verify(
 			document, Mockito.times(1)
 		).asXML();
-	}
-
-	private static void _setUpPropsUtil() {
-		PropsTestUtil.setProps(
-			PropsKeys.XML_SECURITY_ENABLED, Boolean.TRUE.toString());
 	}
 
 	private static void _setUpSAXReaderUtil() {

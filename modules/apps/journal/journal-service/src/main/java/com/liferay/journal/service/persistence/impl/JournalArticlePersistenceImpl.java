@@ -2456,6 +2456,16 @@ public class JournalArticlePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2813,6 +2823,15 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByGroupId(groupId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -7435,6 +7454,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_U(groupId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_U(
+					groupId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -7813,6 +7842,15 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_U(long groupId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_U(groupId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_U(groupId, userId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -8423,6 +8461,16 @@ public class JournalArticlePersistenceImpl
 				groupId, externalReferenceCode, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_ERC(
+					groupId, externalReferenceCode, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
 
 		StringBundler sb = null;
@@ -8840,6 +8888,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_ERC(long groupId, String externalReferenceCode) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_ERC(groupId, externalReferenceCode);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_ERC(
+				groupId, externalReferenceCode);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
@@ -9429,6 +9487,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_F(groupId, folderId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_F(
+					groupId, folderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -9775,6 +9843,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_F(groupId, folderIds, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_F(
+					groupId, folderIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
 		}
 
 		if (folderIds == null) {
@@ -10242,6 +10320,15 @@ public class JournalArticlePersistenceImpl
 			return countByG_F(groupId, folderId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_F(groupId, folderId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
+		}
+
 		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_JOURNALARTICLE_WHERE);
@@ -10293,6 +10380,13 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_F(long groupId, long[] folderIds) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_F(groupId, folderIds);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = InlineSQLHelperUtil.filter(
+				findByG_F(groupId, folderIds), groupId);
+
+			return journalArticles.size();
 		}
 
 		if (folderIds == null) {
@@ -10914,6 +11008,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_A(groupId, articleId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A(
+					groupId, articleId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		articleId = Objects.toString(articleId, "");
 
 		StringBundler sb = null;
@@ -11331,6 +11435,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_A(long groupId, String articleId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_A(groupId, articleId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_A(
+				groupId, articleId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		articleId = Objects.toString(articleId, "");
@@ -11947,6 +12061,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_UT(groupId, urlTitle, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_UT(
+					groupId, urlTitle, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		urlTitle = Objects.toString(urlTitle, "");
 
 		StringBundler sb = null;
@@ -12364,6 +12488,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_UT(long groupId, String urlTitle) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_UT(groupId, urlTitle);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_UT(
+				groupId, urlTitle);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		urlTitle = Objects.toString(urlTitle, "");
@@ -12960,6 +13094,16 @@ public class JournalArticlePersistenceImpl
 				groupId, DDMStructureId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_DDMSI(
+					groupId, DDMStructureId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -13338,6 +13482,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_DDMSI(long groupId, long DDMStructureId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_DDMSI(groupId, DDMStructureId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_DDMSI(
+				groupId, DDMStructureId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -13944,6 +14098,16 @@ public class JournalArticlePersistenceImpl
 				groupId, DDMTemplateKey, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_DDMTK(
+					groupId, DDMTemplateKey, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		DDMTemplateKey = Objects.toString(DDMTemplateKey, "");
 
 		StringBundler sb = null;
@@ -14361,6 +14525,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_DDMTK(long groupId, String DDMTemplateKey) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_DDMTK(groupId, DDMTemplateKey);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_DDMTK(
+				groupId, DDMTemplateKey);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		DDMTemplateKey = Objects.toString(DDMTemplateKey, "");
@@ -14979,6 +15153,16 @@ public class JournalArticlePersistenceImpl
 				groupId, layoutUuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_L(
+					groupId, layoutUuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		layoutUuid = Objects.toString(layoutUuid, "");
 
 		StringBundler sb = null;
@@ -15396,6 +15580,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_L(long groupId, String layoutUuid) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_L(groupId, layoutUuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_L(
+				groupId, layoutUuid);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		layoutUuid = Objects.toString(layoutUuid, "");
@@ -16002,6 +16196,16 @@ public class JournalArticlePersistenceImpl
 				groupId, layoutUuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_NotL(
+					groupId, layoutUuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		layoutUuid = Objects.toString(layoutUuid, "");
 
 		StringBundler sb = null;
@@ -16375,6 +16579,16 @@ public class JournalArticlePersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_NotL(
 				groupId, layoutUuids, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_NotL(
+					groupId, layoutUuids, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
 		}
 
 		if (layoutUuids == null) {
@@ -16915,6 +17129,16 @@ public class JournalArticlePersistenceImpl
 			return countByG_NotL(groupId, layoutUuid);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_NotL(
+				groupId, layoutUuid);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
+		}
+
 		layoutUuid = Objects.toString(layoutUuid, "");
 
 		StringBundler sb = new StringBundler(3);
@@ -16979,6 +17203,13 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_NotL(long groupId, String[] layoutUuids) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_NotL(groupId, layoutUuids);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = InlineSQLHelperUtil.filter(
+				findByG_NotL(groupId, layoutUuids), groupId);
+
+			return journalArticles.size();
 		}
 
 		if (layoutUuids == null) {
@@ -17590,6 +17821,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_ST(groupId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_ST(
+					groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -17968,6 +18209,15 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_ST(long groupId, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_ST(groupId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_ST(groupId, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -21707,6 +21957,16 @@ public class JournalArticlePersistenceImpl
 				groupId, userId, classNameId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_U_C(
+					groupId, userId, classNameId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -22101,6 +22361,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_U_C(long groupId, long userId, long classNameId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_U_C(groupId, userId, classNameId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_U_C(
+				groupId, userId, classNameId);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -22985,6 +23255,16 @@ public class JournalArticlePersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_ERC_ST(
+					groupId, externalReferenceCode, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
 
 		StringBundler sb = null;
@@ -23374,6 +23654,16 @@ public class JournalArticlePersistenceImpl
 			return findByG_ERC_ST(
 				groupId, externalReferenceCode, statuses, start, end,
 				orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_ERC_ST(
+					groupId, externalReferenceCode, statuses, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
@@ -23938,6 +24228,16 @@ public class JournalArticlePersistenceImpl
 			return countByG_ERC_ST(groupId, externalReferenceCode, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_ERC_ST(
+				groupId, externalReferenceCode, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
+		}
+
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
 
 		StringBundler sb = new StringBundler(4);
@@ -24009,6 +24309,14 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_ERC_ST(groupId, externalReferenceCode, statuses);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = InlineSQLHelperUtil.filter(
+				findByG_ERC_ST(groupId, externalReferenceCode, statuses),
+				groupId);
+
+			return journalArticles.size();
 		}
 
 		externalReferenceCode = Objects.toString(externalReferenceCode, "");
@@ -24662,6 +24970,16 @@ public class JournalArticlePersistenceImpl
 				groupId, folderId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_F_ST(
+					groupId, folderId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -25023,6 +25341,16 @@ public class JournalArticlePersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_F_ST(
 				groupId, folderId, statuses, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_F_ST(
+					groupId, folderId, statuses, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		if (statuses == null) {
@@ -25519,6 +25847,16 @@ public class JournalArticlePersistenceImpl
 			return countByG_F_ST(groupId, folderId, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_F_ST(
+				groupId, folderId, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
+		}
+
 		StringBundler sb = new StringBundler(4);
 
 		sb.append(_FILTER_SQL_COUNT_JOURNALARTICLE_WHERE);
@@ -25577,6 +25915,13 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_F_ST(groupId, folderId, statuses);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = InlineSQLHelperUtil.filter(
+				findByG_F_ST(groupId, folderId, statuses), groupId);
+
+			return journalArticles.size();
 		}
 
 		if (statuses == null) {
@@ -26212,6 +26557,16 @@ public class JournalArticlePersistenceImpl
 				groupId, classNameId, classPK, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_C(
+					groupId, classNameId, classPK, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -26608,6 +26963,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_C(groupId, classNameId, classPK);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_C_C(
+				groupId, classNameId, classPK);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -27490,6 +27855,16 @@ public class JournalArticlePersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_DDMTK(
+					groupId, classNameId, DDMTemplateKey, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		DDMTemplateKey = Objects.toString(DDMTemplateKey, "");
 
 		StringBundler sb = null;
@@ -27931,6 +28306,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_DDMTK(groupId, classNameId, DDMTemplateKey);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_C_DDMTK(
+				groupId, classNameId, DDMTemplateKey);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		DDMTemplateKey = Objects.toString(DDMTemplateKey, "");
@@ -28594,6 +28979,16 @@ public class JournalArticlePersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_L(
+					groupId, classNameId, layoutUuid, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		layoutUuid = Objects.toString(layoutUuid, "");
 
 		StringBundler sb = null;
@@ -29033,6 +29428,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_L(groupId, classNameId, layoutUuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_C_L(
+				groupId, classNameId, layoutUuid);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		layoutUuid = Objects.toString(layoutUuid, "");
@@ -29916,6 +30321,16 @@ public class JournalArticlePersistenceImpl
 				groupId, articleId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A_ST(
+					groupId, articleId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		articleId = Objects.toString(articleId, "");
 
 		StringBundler sb = null;
@@ -30303,6 +30718,16 @@ public class JournalArticlePersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_A_ST(
 				groupId, articleId, statuses, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A_ST(
+					groupId, articleId, statuses, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		articleId = Objects.toString(articleId, "");
@@ -30851,6 +31276,16 @@ public class JournalArticlePersistenceImpl
 			return countByG_A_ST(groupId, articleId, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_A_ST(
+				groupId, articleId, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
+		}
+
 		articleId = Objects.toString(articleId, "");
 
 		StringBundler sb = new StringBundler(4);
@@ -30922,6 +31357,13 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_A_ST(groupId, articleId, statuses);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = InlineSQLHelperUtil.filter(
+				findByG_A_ST(groupId, articleId, statuses), groupId);
+
+			return journalArticles.size();
 		}
 
 		articleId = Objects.toString(articleId, "");
@@ -31588,6 +32030,16 @@ public class JournalArticlePersistenceImpl
 				groupId, articleId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A_NotST(
+					groupId, articleId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		articleId = Objects.toString(articleId, "");
 
 		StringBundler sb = null;
@@ -32023,6 +32475,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_A_NotST(groupId, articleId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_A_NotST(
+				groupId, articleId, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		articleId = Objects.toString(articleId, "");
@@ -32678,6 +33140,16 @@ public class JournalArticlePersistenceImpl
 				groupId, urlTitle, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_UT_ST(
+					groupId, urlTitle, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		urlTitle = Objects.toString(urlTitle, "");
 
 		StringBundler sb = null;
@@ -33111,6 +33583,16 @@ public class JournalArticlePersistenceImpl
 	public int filterCountByG_UT_ST(long groupId, String urlTitle, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_UT_ST(groupId, urlTitle, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_UT_ST(
+				groupId, urlTitle, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		urlTitle = Objects.toString(urlTitle, "");
@@ -34351,6 +34833,16 @@ public class JournalArticlePersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_F_C_NotST(
+					groupId, folderId, classNameId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -34769,6 +35261,16 @@ public class JournalArticlePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_F_C_NotST(groupId, folderId, classNameId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<JournalArticle> journalArticles = findByG_F_C_NotST(
+				groupId, folderId, classNameId, status);
+
+			journalArticles = InlineSQLHelperUtil.filter(
+				journalArticles, groupId);
+
+			return journalArticles.size();
 		}
 
 		StringBundler sb = new StringBundler(5);

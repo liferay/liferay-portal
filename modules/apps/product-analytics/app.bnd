@@ -1,0 +1,15 @@
+Liferay-Releng-App-Description:
+Liferay-Releng-App-Title: ${liferay.releng.app.title.prefix} Product Analytics
+Liferay-Releng-Bundle: true
+Liferay-Releng-Category: Productivity
+Liferay-Releng-Demo-Url:
+Liferay-Releng-Deprecated: false
+Liferay-Releng-Fix-Delivery-Method: core
+Liferay-Releng-Labs: false
+Liferay-Releng-Marketplace: true
+Liferay-Releng-Portal-Required: true
+Liferay-Releng-Public: ${liferay.releng.public}
+Liferay-Releng-Restart-Required: true
+Liferay-Releng-Suite: web-experience
+Liferay-Releng-Support-Url: http://www.liferay.com
+Liferay-Releng-Supported: ${liferay.releng.supported}

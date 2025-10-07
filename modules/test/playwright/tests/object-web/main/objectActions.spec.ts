@@ -31,7 +31,6 @@ let createdObjectDefinition: ObjectDefinition;
 test.beforeEach(async ({apiHelpers}) => {
 	const newObjectDefinition =
 		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			objectFolderExternalReferenceCode: 'default',
 			status: {code: 0},
 		});
 
@@ -221,7 +220,6 @@ test('can send notification email via download action', async ({
 	const objectDefinition =
 		await apiHelpers.objectAdmin.postRandomObjectDefinition({
 			objectFields: [mockedObjectFields.attachmentFieldUserComputer],
-			objectFolderExternalReferenceCode: 'default',
 			status: {code: 0},
 		});
 

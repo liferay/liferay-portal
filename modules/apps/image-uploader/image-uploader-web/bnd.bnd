@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Image Uploader Web
 Bundle-SymbolicName: com.liferay.image.uploader.web
-Bundle-Version: 5.0.58
+Bundle-Version: 5.0.59
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /image-uploader-web

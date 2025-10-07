@@ -12,4 +12,7 @@ public class ObjectConstants {
 
 	public static final String RESOURCE_NAME = "com.liferay.object";
 
+	public static final String RESOURCE_NAME_OBJECT_ENTRY_FOLDER =
+		"com.liferay.object.entry.folder";
+
 }

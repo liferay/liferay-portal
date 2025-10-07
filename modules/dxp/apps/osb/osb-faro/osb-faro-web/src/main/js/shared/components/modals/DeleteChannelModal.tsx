@@ -63,7 +63,9 @@ const DeleteChannelModal: React.FC<IDeleteChannelModalProps> = ({
 			}
 		>
 			<SafeResults
-				{...{data, error, loading}}
+				data={data}
+				error={error}
+				loading={loading}
 				page={false}
 				pageDisplay={false}
 				refetch={refetch}

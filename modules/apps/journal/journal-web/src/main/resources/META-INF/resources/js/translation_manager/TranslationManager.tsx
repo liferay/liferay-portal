@@ -5,7 +5,7 @@
 
 import classNames from 'classnames';
 import {TranslationAdminSelector} from 'frontend-js-components-web';
-import React from 'react';
+import React, {useRef} from 'react';
 
 import {TranslationManagerProps} from './Types';
 import useTranslationProgress from './useTranslationProgress';
@@ -29,31 +29,36 @@ export default function TranslationManager({
 		namespace,
 		selectedLanguageId: initialSelectedLanguageId,
 	});
+	const lastSelectedLanguageIdRef = useRef(selectedLanguageId);
 
 	const handleSelectedLanguageIdChange = (
 		languageId: Liferay.Language.Locale
 	) => {
-		Liferay.fire('inputLocalized:localeChanged', {
-			item: document.querySelector(
-				`[data-languageid="${languageId}"][data-value="${languageId}"]`
-			),
-		});
+		if (languageId !== lastSelectedLanguageIdRef.current) {
+			lastSelectedLanguageIdRef.current = languageId;
 
-		const descriptionMessage = document.getElementById(
-			`${namespace}descriptionNotTranslatableMessage`
-		);
-		const friendlyURLMessage = document.getElementById(
-			`${namespace}friendlyURLNotTranslatableMessage`
-		);
+			Liferay.fire('inputLocalized:localeChanged', {
+				item: document.querySelector(
+					`[data-languageid="${languageId}"][data-value="${languageId}"]`
+				),
+			});
 
-		if (descriptionMessage && friendlyURLMessage) {
-			if (selectedLanguageId !== defaultLanguageId) {
-				descriptionMessage.hidden = false;
-				friendlyURLMessage.hidden = false;
-			}
-			else {
-				descriptionMessage.hidden = true;
-				friendlyURLMessage.hidden = true;
+			const descriptionMessage = document.getElementById(
+				`${namespace}descriptionNotTranslatableMessage`
+			);
+			const friendlyURLMessage = document.getElementById(
+				`${namespace}friendlyURLNotTranslatableMessage`
+			);
+
+			if (descriptionMessage && friendlyURLMessage) {
+				if (selectedLanguageId !== defaultLanguageId) {
+					descriptionMessage.hidden = false;
+					friendlyURLMessage.hidden = false;
+				}
+				else {
+					descriptionMessage.hidden = true;
+					friendlyURLMessage.hidden = true;
+				}
 			}
 		}
 	};

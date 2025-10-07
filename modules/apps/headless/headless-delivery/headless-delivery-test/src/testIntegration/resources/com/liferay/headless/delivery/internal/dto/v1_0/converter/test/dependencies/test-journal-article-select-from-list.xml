@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<root available-locales="en_US" default-locale="en_US" version="1.0">
+	<dynamic-element field-reference="Select[$RANDOM_INT$]0" index-type="keyword" instance-id="jq6xk[$RANDOM_INT$]iy" name="Select[$RANDOM_INT$]0" type="select">
+		<dynamic-content language-id="en_US">
+			<option><![CDATA[Option[$RANDOM_INT$]1]]></option>
+			<option><![CDATA[Option[$RANDOM_INT$]2]]></option>
+			<option><![CDATA[Option[$RANDOM_INT$]3]]></option>
+		</dynamic-content>
+	</dynamic-element>
+</root>

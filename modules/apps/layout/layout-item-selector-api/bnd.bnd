@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Item Selector API
 Bundle-SymbolicName: com.liferay.layout.item.selector.api
-Bundle-Version: 6.0.1
+Bundle-Version: 7.1.3
 Export-Package:\
 	com.liferay.layout.item.selector,\
 	com.liferay.layout.item.selector.view

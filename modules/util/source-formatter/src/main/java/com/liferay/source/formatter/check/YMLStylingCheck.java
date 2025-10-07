@@ -87,6 +87,7 @@ public class YMLStylingCheck extends BaseFileCheck {
 
 			if (unquotedValue.contains("\\") ||
 				unquotedValue.matches("\\d+(\\.\\d*)?") ||
+				unquotedValue.startsWith("!") ||
 				unquotedValue.startsWith("#") ||
 				unquotedValue.startsWith("&") ||
 				unquotedValue.startsWith("*") ||

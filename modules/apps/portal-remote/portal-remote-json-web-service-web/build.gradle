@@ -1,6 +1,5 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -11,6 +10,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileOnly group: "org.springframework", name: "spring-web", version: "6.2.9"
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:portal-remote:portal-remote-json-web-service-api")
 	compileOnly project(":apps:portal:portal-aop-api")

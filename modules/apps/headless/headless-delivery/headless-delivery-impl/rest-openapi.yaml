@@ -3892,6 +3892,9 @@ components:
                         -   $ref: "#/components/schemas/PageColumnDefinition"
                         -   $ref: "#/components/schemas/PageDropZoneDefinition"
                         -   $ref: "#/components/schemas/PageFormDefinition"
+                        -   $ref: "#/components/schemas/PageFormRelationshipDefinition"
+                        -   $ref: "#/components/schemas/PageFormStepContainerDefinition"
+                        -   $ref: "#/components/schemas/PageFormStepDefinition"
                         -   $ref: "#/components/schemas/PageFragmentDropZoneDefinition"
                         -   $ref: "#/components/schemas/PageFragmentInstanceDefinition"
                         -   $ref: "#/components/schemas/PageRootDefinition"
@@ -3914,7 +3917,7 @@ components:
                     description:
                         The page element's type (collection, collection item, column, drop zone, form, fragment,
                         fragment drop zone, root, row, section or widget).
-                    enum: [Collection, CollectionItem, Column, DropZone, Form, FormStep, FormStepContainer, Fragment, FragmentDropZone, Root, Row, Section,
+                    enum: [Collection, CollectionItem, Column, DropZone, Form, FormRelationship, FormStep, FormStepContainer, Fragment, FragmentDropZone, Root, Row, Section,
                         Widget]
                     type: string
         PageFormDefinition:
@@ -4030,6 +4033,58 @@ components:
                             enum: [Fixed, Fluid]
                             type: string
                     type: object
+                name:
+                    # @review
+                    description:
+                        The custom name of of a Page form.
+                    type: string
+            type: object
+        PageFormRelationshipDefinition:
+            # @review
+            description:
+                Represents a definition of a Form Relationship.
+            properties:
+                buttonLabel:
+                    $ref: "#/components/schemas/FragmentInlineValue"
+                    # @review
+                    description:
+                        The localized button label.
+                contentType:
+                    # @review
+                    description:
+                        The content type.
+                    type: string
+                cssClasses:
+                    # @review
+                    description:
+                        A list of CSS Classes that are applied to the element.
+                    items:
+                        type: string
+                    type: array
+                customCSS:
+                    # @review
+                    description:
+                        Custom CSS that is applied on the fragment.
+                    type: string
+                customCSSViewports:
+                    # @review
+                    description:
+                        The custom CSS viewports of the page collection.
+                    items:
+                        $ref: "#/components/schemas/CustomCSSViewport"
+                    type: array
+                fragmentStyle:
+                    $ref: "#/components/schemas/FragmentStyle"
+                    # @review
+                    description:
+                        The fragment style of a Page row.
+                fragmentViewports:
+                    # @review
+                    description:
+                        A list of fragment viewports of a Page row.
+                    items:
+                        $ref: "#/components/schemas/FragmentViewport"
+                    type: array
                 name:
                     # @review
                     description:
@@ -6100,7 +6155,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.delivery.client', and version '4.0.96'."
+        'com.liferay.headless.delivery.client', and version '4.0.98'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

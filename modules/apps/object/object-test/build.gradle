@@ -2,9 +2,10 @@ dependencies {
 	testCompileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.commons", name: "commons-lang3", version: "3.11"
+	testIntegrationImplementation group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:application-list:application-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-api")
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
@@ -20,6 +21,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 	testIntegrationImplementation project(":apps:expando:expando-test-util")
+	testIntegrationImplementation project(":apps:export-import:export-import-report-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
@@ -34,6 +36,9 @@ dependencies {
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-display-page-api")
+	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
+	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
+	testIntegrationImplementation project(":apps:layout:layout-seo-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:notification:notification-api")
@@ -42,6 +47,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:object:object-admin-rest-client")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-info-api")
+	testIntegrationImplementation project(":apps:object:object-item-selector-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
 	testIntegrationImplementation project(":apps:object:object-scripting-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
@@ -58,15 +64,19 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-security:portal-security-script-management-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:portal:portal-db-partition-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upload-test-util")
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
 	testIntegrationImplementation project(":apps:sharing:sharing-test-util")
+	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":apps:trash:trash-api")
+	testIntegrationImplementation project(":apps:trash:trash-test-util")
 	testIntegrationImplementation project(":apps:upload:upload-api")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

@@ -7,8 +7,12 @@ package com.liferay.war.deploy.directory.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.db.partition.DBPartition;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.File;
 
@@ -19,6 +23,9 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +40,16 @@ import org.osgi.util.tracker.BundleTracker;
  */
 @RunWith(Arquillian.class)
 public class WarDeployDirectoryTest {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new AssumeTestRule("assume"), new LiferayIntegrationTestRule());
+
+	public static void assume() {
+		Assume.assumeFalse(DBPartition.isPartitionEnabled());
+	}
 
 	@Test
 	public void testAutoDeployDir() {

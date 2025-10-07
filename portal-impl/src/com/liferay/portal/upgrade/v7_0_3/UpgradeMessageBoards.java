@@ -69,9 +69,9 @@ public class UpgradeMessageBoards extends UpgradeProcess {
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				StringBundler.concat(
 					"select MBThread.groupId, MBDiscussion.discussionId from ",
-					"MBDiscussion inner join MBThread on ",
-					"MBDiscussion.threadId = MBThread.threadId where ",
-					"MBDiscussion.groupId = 0"))) {
+					"MBDiscussion inner join MBThread on MBDiscussion.",
+					"threadId = MBThread.threadId where MBDiscussion.groupId ",
+					"= 0"))) {
 
 			try (ResultSet resultSet = preparedStatement2.executeQuery()) {
 				while (resultSet.next()) {
@@ -95,17 +95,16 @@ public class UpgradeMessageBoards extends UpgradeProcess {
 
 		DBTypeToSQLMap dbTypeToSQLMap = new DBTypeToSQLMap(
 			StringBundler.concat(
-				"delete from AssetEntry where classPK in (",
-				"select MBMessage.messageId from MBMessage inner join ",
-				tempTableName, " on MBMessage.threadId = ", tempTableName,
+				"delete from AssetEntry where classPK in (select MBMessage.",
+				"messageId from MBMessage inner join ", tempTableName,
+				" on MBMessage.threadId = ", tempTableName,
 				".threadId) and classNameId = ", classNameId));
 
 		String sql = StringBundler.concat(
 			"delete AssetEntry from AssetEntry inner join MBMessage on ",
-			"AssetEntry.classPK = MBMessage.messageId and ",
-			"AssetEntry.classNameId = ", classNameId, " inner join ",
-			tempTableName, " on MBMessage.threadId = ", tempTableName,
-			".threadId");
+			"AssetEntry.classPK = MBMessage.messageId and AssetEntry.",
+			"classNameId = ", classNameId, " inner join ", tempTableName,
+			" on MBMessage.threadId = ", tempTableName, ".threadId");
 
 		dbTypeToSQLMap.add(DBType.MARIADB, sql);
 		dbTypeToSQLMap.add(DBType.MYSQL, sql);

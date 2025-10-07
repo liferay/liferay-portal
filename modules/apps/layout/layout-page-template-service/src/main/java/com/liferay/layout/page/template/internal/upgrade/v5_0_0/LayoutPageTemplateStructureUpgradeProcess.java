@@ -21,7 +21,12 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+		try (PreparedStatement deletePreparedStatement =
+				connection.prepareStatement(
+					"delete from LayoutPageTemplateStructure where " +
+						"ctCollectionId = ? and " +
+							"layoutPageTemplateStructureId = ?");
+			PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select ctCollectionId, layoutPageTemplateStructureId, " +
 					"classPK from LayoutPageTemplateStructure where " +
 						"classNameId = ?");
@@ -36,19 +41,28 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 				1, PortalUtil.getClassNameId(LayoutPageTemplateEntry.class));
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
-				long classNameId = PortalUtil.getClassNameId(Layout.class);
-
 				while (resultSet.next()) {
 					long ctCollectionId = resultSet.getLong("ctCollectionId");
 					long layoutPageTemplateStructureId = resultSet.getLong(
 						"layoutPageTemplateStructureId");
 					long classPK = resultSet.getLong("classPK");
 
-					preparedStatement2.setLong(1, classNameId);
+					long plid = _getPlidFromLayoutPageTemplateEntry(
+						ctCollectionId, classPK);
+
+					if (_hasLayoutPageTemplateStructure(ctCollectionId, plid)) {
+						deletePreparedStatement.setLong(1, ctCollectionId);
+						deletePreparedStatement.setLong(
+							2, layoutPageTemplateStructureId);
+
+						deletePreparedStatement.executeUpdate();
+
+						continue;
+					}
+
 					preparedStatement2.setLong(
-						2,
-						_getPlidFromLayoutPageTemplateEntry(
-							ctCollectionId, classPK));
+						1, PortalUtil.getClassNameId(Layout.class));
+					preparedStatement2.setLong(2, plid);
 					preparedStatement2.setLong(3, ctCollectionId);
 					preparedStatement2.setLong(
 						4, layoutPageTemplateStructureId);
@@ -80,6 +94,25 @@ public class LayoutPageTemplateStructureUpgradeProcess extends UpgradeProcess {
 		}
 
 		return 0;
+	}
+
+	private boolean _hasLayoutPageTemplateStructure(
+			long ctCollectionId, long classPK)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select 1 from LayoutPageTemplateStructure where " +
+					"ctCollectionId = ? and classNameId = ? and classPK = ?")) {
+
+			preparedStatement.setLong(1, ctCollectionId);
+			preparedStatement.setLong(
+				2, PortalUtil.getClassNameId(Layout.class));
+			preparedStatement.setLong(3, classPK);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				return resultSet.next();
+			}
+		}
 	}
 
 }

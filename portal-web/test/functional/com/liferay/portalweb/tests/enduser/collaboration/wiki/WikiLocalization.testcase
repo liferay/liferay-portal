@@ -3,7 +3,7 @@ definition {
 
 	property custom.properties = "feature.flag.LPD-35013=false";
 	property osgi.modules.includes = "wiki";
-	property portal.acceptance = "true";
+	property portal.acceptance = "false";
 	property portal.release = "false";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Wiki";

@@ -62,7 +62,7 @@ public class ImportTranslationMVCRenderCommand implements MVCRenderCommand {
 			renderRequest.setAttribute(
 				ImportTranslationDisplayContext.class.getName(),
 				new ImportTranslationDisplayContext(
-					ParamUtil.getLong(renderRequest, "classNameId"),
+					translationRequestHelper.getClassNameId(),
 					translationRequestHelper.getModelClassPK(),
 					themeDisplay.getCompanyId(),
 					ParamUtil.getLong(renderRequest, "groupId"),

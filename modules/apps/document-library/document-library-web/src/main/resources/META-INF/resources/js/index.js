@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export {default as AccessFromDesktop} from './document_library/AccessFromDesktop';
 export {default as DDMStructuresManagementToolbarPropsTransformer} from './document_library/DDMStructuresManagementToolbarPropsTransformer';
-
 export {default as DLFileEntryDropdownPropsTransformer} from './document_library/DLFileEntryDropdownPropsTransformer';
 export {default as DLFolderDropdownPropsTransformer} from './document_library/DLFolderDropdownPropsTransformer';
 export {default as DLFolderSelector} from './document_library/DLFolderSelector';
@@ -15,6 +15,7 @@ export {default as FileNameInput} from './document_library/FileNameInput.es';
 export {default as InfoPanel} from './document_library/InfoPanel.es';
 export {default as LanguageSelector} from './document_library/LanguageSelector';
 export {default as LocaleChangedHandler} from './document_library/LocaleChangedHandler.es';
+export {default as WebdavURLCopyButton} from './document_library/WebdavURLCopyButton';
 export {default as ConfigureAIModal} from './document_library/ai/ConfigureAIModal';
 export {default as BulkStatus} from './document_library/bulk/BulkStatus.es';
 export {default as EditCategories} from './document_library/categorization/categories/EditCategories';

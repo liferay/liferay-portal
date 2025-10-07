@@ -39,7 +39,8 @@ public class DataSourceResourceImpl extends BaseDataSourceResourceImpl {
 			_analyticsCloudClient.disconnectAnalyticsDataSource(
 				_configurationProvider.getCompanyConfiguration(
 					AnalyticsConfiguration.class,
-					contextCompany.getCompanyId()));
+					contextCompany.getCompanyId()),
+				_companyLocalService.getCompany(contextUser.getCompanyId()));
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {

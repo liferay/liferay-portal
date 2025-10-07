@@ -8,11 +8,13 @@ package com.liferay.object.service.impl;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.exception.DefaultObjectViewException;
 import com.liferay.object.exception.ObjectDefinitionModifiableException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectViewColumnFieldNameException;
 import com.liferay.object.exception.ObjectViewSortColumnException;
 import com.liferay.object.exception.ObjectViewSortColumnObjectFieldNameException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.model.ObjectView;
 import com.liferay.object.model.ObjectViewColumn;
 import com.liferay.object.model.ObjectViewFilterColumn;
@@ -378,6 +380,21 @@ public class ObjectViewLocalServiceImpl extends ObjectViewLocalServiceBaseImpl {
 				throw new ObjectViewColumnFieldNameException(
 					"There is already an object view column with the object " +
 						"field name: " + objectViewColumn.getObjectFieldName());
+			}
+
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+
+				ObjectRelationship objectRelationship =
+					objectField.getObjectRelationship();
+
+				if (objectRelationship.isEdge()) {
+					throw new ObjectRelationshipEdgeException(
+						"Edge object relationship object fields cannot be " +
+							"associated with object views",
+						"edge-object-relationship-object-fields-cannot-be-" +
+							"associated-with-object-views");
+				}
 			}
 
 			objectViewColumnFieldNames.add(

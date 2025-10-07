@@ -14,10 +14,10 @@ import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FileComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StreamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -405,7 +405,7 @@ public class FileImpl implements com.liferay.portal.kernel.util.File {
 	@Override
 	public String getMD5Checksum(File file) throws IOException {
 		try (FileInputStream fileInputStream = new FileInputStream(file)) {
-			return DigesterUtil.digestHex(Digester.MD5, fileInputStream);
+			return DigesterUtil.digestHex(DigesterUtil.MD5, fileInputStream);
 		}
 	}
 

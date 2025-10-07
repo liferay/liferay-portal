@@ -1,0 +1,76 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentStyle": {
+						"marginBottom": "4",
+						"marginTop": "4",
+						"maxWidth": "1600px",
+						"paddingLeft": "4",
+						"paddingRight": "4",
+						"width": "100%"
+					},
+					"indexed": true,
+					"layout": {
+						"align": "Start",
+						"contentDisplay": "FlexRow",
+						"justify": "Center",
+						"marginBottom": 2,
+						"marginTop": 2,
+						"paddingLeft": 2,
+						"paddingRight": 2,
+						"widthType": "Fixed"
+					}
+				},
+				"pageElements": [
+					{
+						"definition": {
+							"fragment": {
+								"key": "BASIC_COMPONENT-html"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+								{
+									"id": "element-html",
+									"value": {
+										"html": {
+											"mapping": {
+												"fieldKey": "ddmTemplate__ddmTemplate_35643117",
+												"itemReference": {
+													"contextSource": "DisplayPageItem"
+												}
+											}
+										}
+									}
+								}
+							],
+							"fragmentStyle": {
+								"maxWidth": "100%"
+							},
+							"indexed": true
+						},
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"colorSchemeName": "01",
+		"masterPage": {
+			"key": "liferay-learn"
+		},
+		"themeName": "Dialect",
+		"themeSettings": {
+			"lfr-theme:regular:show-footer": "false",
+			"lfr-theme:regular:show-header": "false",
+			"lfr-theme:regular:show-header-search": "false",
+			"lfr-theme:regular:wrap-widget-page-content": "false"
+		}
+	},
+	"version": 1.1
+}

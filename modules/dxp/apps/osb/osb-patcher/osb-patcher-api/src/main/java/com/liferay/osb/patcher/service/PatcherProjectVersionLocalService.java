@@ -293,7 +293,7 @@ public interface PatcherProjectVersionLocalService
 	public PatcherProjectVersion updatePatcherProjectVersion(
 			long patcherProjectVersionId, long patcherProductVersionId,
 			boolean combinedBranch, String committish, String fixedIssues,
-			boolean hide, String name, String repositoryName)
+			boolean hide, String repositoryName)
 		throws PortalException;
 
 	/**

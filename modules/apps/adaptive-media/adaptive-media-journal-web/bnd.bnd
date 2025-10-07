@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Journal Web
 Bundle-SymbolicName: com.liferay.adaptive.media.journal.web
-Bundle-Version: 5.0.20
+Bundle-Version: 5.0.22
 -dsannotations-options: inherit

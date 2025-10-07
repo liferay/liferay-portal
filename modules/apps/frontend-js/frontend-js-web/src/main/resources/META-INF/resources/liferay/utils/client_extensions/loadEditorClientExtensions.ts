@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import loadClientExtensions from './loadClientExtensions';
+import {
+	ClientExtensionResolution,
+	loadClientExtensions,
+} from './loadClientExtensions';
 
 interface IConfig {
 	editorTransformerURLs: Array<string>;
@@ -23,24 +26,18 @@ export default function loadEditorClientExtensions({
 					importDeclaration: `default from ${url}`,
 				})
 			),
-			onLoad: (bindingContexts) => {
+			onLoad: (resolutions: Array<ClientExtensionResolution<any>>) => {
 				let transformedConfig = JSON.parse(JSON.stringify(config));
 
-				bindingContexts.forEach(
-					({binding: editorTransformer, error}) => {
-						if (process.env.NODE_ENV === 'development' && error) {
-							console.error(error);
-						}
+				resolutions.forEach(({binding: editorTransformer}) => {
+					const editorConfigTransformer =
+						editorTransformer?.editorConfigTransformer;
 
-						const editorConfigTransformer =
-							editorTransformer?.editorConfigTransformer;
-
-						if (editorConfigTransformer) {
-							transformedConfig =
-								editorConfigTransformer(transformedConfig);
-						}
+					if (editorConfigTransformer) {
+						transformedConfig =
+							editorConfigTransformer(transformedConfig);
 					}
-				);
+				});
 
 				onLoad({transformedConfig});
 			},

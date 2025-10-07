@@ -44,7 +44,6 @@ import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -284,8 +283,8 @@ public class PublishLayoutMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink = _addPortletToLayout();
 
-		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		String encodePortletId = PortletIdCodec.encode(
 			LayoutContentPageEditorWebPortletKeys.
@@ -316,8 +315,9 @@ public class PublishLayoutMVCActionCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), _draftLayout.getPlid(),
-				_segmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_draftLayout.getPlid(), _segmentsExperienceId,
+				layoutStructure.toString());
 
 		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
 
@@ -354,8 +354,9 @@ public class PublishLayoutMVCActionCommandTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group.getGroupId(), _draftLayout.getPlid(),
-				_segmentsExperienceId, layoutStructure.toString());
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				_draftLayout.getPlid(), _segmentsExperienceId,
+				layoutStructure.toString());
 
 		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
 
@@ -412,8 +413,7 @@ public class PublishLayoutMVCActionCommandTest {
 		String content = document.get(
 			Field.getLocalizedName(locale, Field.CONTENT));
 
-		Assert.assertTrue(
-			content, StringUtil.contains(content, keywords, StringPool.BLANK));
+		Assert.assertTrue(content, content.contains(keywords));
 
 		Assert.assertEquals(
 			document.get(Field.ENTRY_CLASS_PK),

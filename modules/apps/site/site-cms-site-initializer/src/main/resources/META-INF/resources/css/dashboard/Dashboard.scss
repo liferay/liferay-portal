@@ -1,3 +1,5 @@
+@import 'atlas-variables';
+
 .cms-dashboard {
 	&__base-card {
 		&:after {
@@ -19,7 +21,7 @@
 
 	&__inventory-analysis {
 		&__bar-chart {
-			background-color: #e2e4ea;
+			background-color: $light-d1;
 			border-radius: 8px;
 			height: 42px;
 			overflow: hidden;
@@ -27,7 +29,7 @@
 			width: 100%;
 
 			&__bar {
-				background-color: #338fff;
+				background-color: $blue-l1;
 				border-radius: 8px;
 				height: 100%;
 				left: 0;
@@ -45,14 +47,13 @@
 				top: 0;
 			}
 		}
+	}
 
-		.table-responsive {
-			margin: 0 -16px;
-			width: calc(100% + 32px);
-		}
+	&__empty-state {
+		margin: 3.5rem auto 6rem;
 
-		.table td {
-			border-width: 0;
+		.c-empty-state-title {
+			margin-top: 0;
 		}
 	}
 }

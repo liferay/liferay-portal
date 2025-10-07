@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.constants.CTDestinationNames;
 import com.liferay.change.tracking.exception.CTPublishConflictException;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.model.CTEntry;
@@ -36,6 +37,9 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.messaging.Destination;
+import com.liferay.portal.kernel.messaging.DestinationStatistics;
+import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -142,10 +146,6 @@ public class CTCollectionServiceTest {
 							}
 						).build())) {
 
-			UserTestUtil.setUser(_user);
-
-			permissionChecker = PermissionThreadLocal.getPermissionChecker();
-
 			_ctCollection = _ctCollectionLocalService.addCTCollection(
 				null, TestPropsValues.getCompanyId(), _user.getUserId(), 0,
 				RandomTestUtil.randomString(), null);
@@ -226,6 +226,26 @@ public class CTCollectionServiceTest {
 			Assert.assertTrue(resultSet.next());
 
 			Assert.assertEquals(0, resultSet.getInt(1));
+		}
+
+		Destination destination = MessageBusUtil.getDestination(
+			CTDestinationNames.CT_ENTRY_REINDEX);
+
+		DestinationStatistics destinationStatistics =
+			destination.getDestinationStatistics();
+
+		int i = 0;
+
+		while ((destinationStatistics.getActiveThreadCount() > 0) ||
+			   (destinationStatistics.getPendingMessageCount() > 0)) {
+
+			if (i++ > 60) {
+				break;
+			}
+
+			Thread.sleep(500);
+
+			destinationStatistics = destination.getDestinationStatistics();
 		}
 
 		SearchRequestBuilder searchRequestBuilder =

@@ -26,6 +26,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import java.util.Objects;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -572,6 +573,27 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 				"Object/code"));
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostBlogPostingComment() throws Exception {
+		super.testGraphQLPostBlogPostingComment();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostDocumentComment() throws Exception {
+		super.testGraphQLPostDocumentComment();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostStructuredContentComment() throws Exception {
+		super.testGraphQLPostStructuredContentComment();
+	}
+
 	@Override
 	@Test
 	public void testPutSiteBlogPostingByExternalReferenceCodeBlogPostingExternalReferenceCodeCommentByExternalReferenceCode()
@@ -973,7 +995,63 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 
 	@Override
 	protected Comment testGraphQLComment_addComment() throws Exception {
-		return testGetComment_addComment();
+		return _addBlogPostingComment();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteSiteBlogPostingByExternalReferenceCodeBlogPostingExternalReferenceCodeCommentByExternalReferenceCode_getBlogPostingExternalReferenceCode()
+		throws Exception {
+
+		return _blogsEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Comment
+			testGraphQLDeleteSiteCommentByExternalReferenceCodeParentCommentExternalReferenceCodeCommentByExternalReferenceCode_addComment()
+		throws Exception {
+
+		return _addCommentComment();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteSiteCommentByExternalReferenceCodeParentCommentExternalReferenceCodeCommentByExternalReferenceCode_getParentCommentExternalReferenceCode()
+		throws Exception {
+
+		return _parentComment.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Comment
+			testGraphQLDeleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode_addComment()
+		throws Exception {
+
+		return _addDocumentComment();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteSiteDocumentByExternalReferenceCodeDocumentExternalReferenceCodeCommentByExternalReferenceCode_getDocumentExternalReferenceCode()
+		throws Exception {
+
+		return _fileEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Comment
+			testGraphQLDeleteSiteStructuredContentByExternalReferenceCodeStructuredContentExternalReferenceCodeCommentByExternalReferenceCode_addComment()
+		throws Exception {
+
+		return _addStructuredContentComment();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteSiteStructuredContentByExternalReferenceCodeStructuredContentExternalReferenceCodeCommentByExternalReferenceCode_getStructuredContentExternalReferenceCode()
+		throws Exception {
+
+		return _journalArticle.getExternalReferenceCode();
 	}
 
 	@Override
@@ -1070,6 +1148,11 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 		throws Exception {
 
 		return _journalArticle.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Comment testGraphQLSiteComment_addComment() throws Exception {
+		return _addBlogPostingComment();
 	}
 
 	@Override

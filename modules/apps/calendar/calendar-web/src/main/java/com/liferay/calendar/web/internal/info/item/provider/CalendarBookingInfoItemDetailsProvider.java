@@ -6,9 +6,10 @@
 package com.liferay.calendar.web.internal.info.item.provider;
 
 import com.liferay.calendar.model.CalendarBooking;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
 
 import org.osgi.service.component.annotations.Component;
@@ -16,9 +17,12 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = InfoItemDetailsProvider.class)
+@Component(
+	property = "item.class.name=com.liferay.calendar.model.CalendarBooking",
+	service = InfoItemDetailsProvider.class
+)
 public class CalendarBookingInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<CalendarBooking> {
+	extends BaseInfoItemDetailsProvider<CalendarBooking> {
 
 	@Override
 	public InfoItemClassDetails getInfoItemClassDetails() {
@@ -26,12 +30,29 @@ public class CalendarBookingInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(CalendarBooking calendarBooking) {
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				CalendarBooking.class.getName(),
-				calendarBooking.getCalendarBookingId()));
+	protected InfoItemIdentifierFactory<CalendarBooking>
+		getInfoItemIdentifierFactory() {
+
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				CalendarBooking calendarBooking) {
+
+				return new ClassPKInfoItemIdentifier(
+					calendarBooking.getCalendarBookingId());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 }

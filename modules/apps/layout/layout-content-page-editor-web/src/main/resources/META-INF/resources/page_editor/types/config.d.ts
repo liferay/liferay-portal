@@ -26,6 +26,7 @@ export interface Config {
 		[key: string]: {
 			languageIcon: string;
 			languageLabel: string;
+			w3cLanguageId: string;
 		};
 	};
 

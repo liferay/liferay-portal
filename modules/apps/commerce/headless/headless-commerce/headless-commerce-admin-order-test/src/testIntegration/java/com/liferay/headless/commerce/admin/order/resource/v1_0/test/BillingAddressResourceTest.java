@@ -245,13 +245,6 @@ public class BillingAddressResourceTest
 		return _addAddress();
 	}
 
-	@Override
-	protected BillingAddress testGraphQLBillingAddress_addBillingAddress()
-		throws Exception {
-
-		return _addAddress();
-	}
-
 	private BillingAddress _addAddress() throws Exception {
 		Address address = _addressLocalService.addAddress(
 			RandomTestUtil.randomString(), _user.getUserId(),

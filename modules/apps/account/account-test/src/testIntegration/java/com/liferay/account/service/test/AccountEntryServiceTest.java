@@ -52,7 +52,7 @@ public class AccountEntryServiceTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testGetOrAddIncompleteAccountEntry() throws Exception {
+	public void testGetOrAddEmptyAccountEntry() throws Exception {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
@@ -68,7 +68,7 @@ public class AccountEntryServiceTest {
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
 				AccountEntry accountEntry =
-					_accountEntryService.getOrAddIncompleteAccountEntry(
+					_accountEntryService.getOrAddEmptyAccountEntry(
 						RandomTestUtil.randomString(),
 						RandomTestUtil.randomString(),
 						AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
@@ -83,7 +83,7 @@ public class AccountEntryServiceTest {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
-				_accountEntryService.getOrAddIncompleteAccountEntry(
+				_accountEntryService.getOrAddEmptyAccountEntry(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);

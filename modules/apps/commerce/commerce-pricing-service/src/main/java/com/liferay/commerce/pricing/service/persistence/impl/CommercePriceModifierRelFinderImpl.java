@@ -90,8 +90,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			String[] keywords = _customSQL.keywords(name, true);
@@ -166,8 +165,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			String[] keywords = _customSQL.keywords(name, true);
@@ -243,8 +241,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			String[] keywords = _customSQL.keywords(title, true);
@@ -324,8 +321,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			if (Validator.isNotNull(name)) {
@@ -396,8 +392,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			if (Validator.isNotNull(name)) {
@@ -468,8 +463,7 @@ public class CommercePriceModifierRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = _inlineSQLHelper.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceModifier.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceModifier.commercePriceListId");
 			}
 
 			if (Validator.isNotNull(title)) {

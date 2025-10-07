@@ -50,9 +50,7 @@ public class ObjectEntryFolderSharingPermissionChecker
 	}
 
 	private static final Set<SharingEntryAction> _actionKeysSet = new HashSet<>(
-		Arrays.asList(
-			SharingEntryAction.ADD_DISCUSSION, SharingEntryAction.UPDATE,
-			SharingEntryAction.VIEW));
+		Arrays.asList(SharingEntryAction.UPDATE, SharingEntryAction.VIEW));
 
 	@Reference(
 		target = "(model.class.name=com.liferay.object.model.ObjectEntryFolder)"

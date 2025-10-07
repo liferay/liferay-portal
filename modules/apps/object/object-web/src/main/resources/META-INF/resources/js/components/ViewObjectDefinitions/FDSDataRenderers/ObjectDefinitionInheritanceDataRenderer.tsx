@@ -12,19 +12,26 @@ export default function ObjectDefinitionInheritanceDataRenderer({
 }: {
 	itemData: ObjectDefinition;
 }) {
-	const {externalReferenceCode, rootObjectDefinitionExternalReferenceCode} =
-		itemData;
+	const {externalReferenceCode, objectDefinitionSettings} = itemData;
 
-	const isRootNode =
-		externalReferenceCode === rootObjectDefinitionExternalReferenceCode;
+	const rootObjectDefinitionExternalReferenceCodes =
+		objectDefinitionSettings?.find(
+			(setting) =>
+				setting.name === 'rootObjectDefinitionExternalReferenceCodes'
+		)?.value;
+
+	const isRootNode = !!rootObjectDefinitionExternalReferenceCodes
+		?.split(',')
+		.includes(externalReferenceCode);
 
 	return (
 		<ClayLabel
 			className={classNames('label-inverse-secondary', {
-				'label-inverse-info': rootObjectDefinitionExternalReferenceCode,
+				'label-inverse-info':
+					rootObjectDefinitionExternalReferenceCodes,
 			})}
 		>
-			{rootObjectDefinitionExternalReferenceCode
+			{rootObjectDefinitionExternalReferenceCodes
 				? isRootNode
 					? Liferay.Language.get('root-object')
 					: Liferay.Language.get('inherited')

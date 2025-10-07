@@ -167,7 +167,10 @@ test(
 
 		await expect(guestActionViewCheckBox).not.toBeChecked();
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true})
+			.click();
 
 		// Copy page
 
@@ -334,40 +337,46 @@ test(
 
 		await page.getByRole('link', {name: layoutTitle}).hover();
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Configure'}),
-			trigger: page
+		await expect(async () => {
+			await page
 				.getByRole('treeitem')
 				.filter({hasText: layoutTitle})
-				.locator('button.dropdown-toggle'),
+				.locator('button.dropdown-toggle')
+				.click({timeout: 500});
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Configure'})
+			).toBeVisible({timeout: 500});
+
+			await page
+				.getByRole('menuitem', {name: 'Configure'})
+				.click({timeout: 500});
+
+			await expect(
+				page.locator('.nav-item').getByText('General')
+			).toBeVisible({timeout: 2000});
+		}).toPass();
+
+		// Click back button
+
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('heading', {name: layoutTitle}),
+			trigger: page.getByRole('link', {name: `Go to ${layoutTitle}`}),
+		});
+
+		// Configure pages
+
+		await clickAndExpectToBeVisible({
+			target: page.locator('.nav-item').getByText('Design'),
+			trigger: page.getByLabel('Configure Pages'),
 		});
 
 		// Click back button
 
-		await page.getByRole('link', {name: `Go to ${layoutTitle}`}).click();
-
-		// Assert page
-
-		await expect(
-			page.getByRole('heading', {name: layoutTitle})
-		).toBeVisible();
-
-		// Configure pages
-
-		await page.getByLabel('Configure Pages').click();
-
-		// Click back button
-
-		await page
-			.getByRole('link', {exact: true, name: 'Go to Pages'})
-			.click();
-
-		// Assert page
-
-		await expect(
-			page.getByRole('heading', {name: layoutTitle})
-		).toBeVisible();
+		await clickAndExpectToBeVisible({
+			target: page.getByRole('heading', {name: layoutTitle}),
+			trigger: page.getByRole('link', {exact: true, name: 'Go to Pages'}),
+		});
 	}
 );
 

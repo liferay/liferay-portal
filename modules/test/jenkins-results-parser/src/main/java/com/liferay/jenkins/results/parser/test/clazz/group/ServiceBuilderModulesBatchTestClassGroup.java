@@ -8,7 +8,6 @@ package com.liferay.jenkins.results.parser.test.clazz.group;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
-import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import java.io.IOException;
 
 import java.nio.file.PathMatcher;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -33,9 +31,7 @@ public class ServiceBuilderModulesBatchTestClassGroup
 			return 0;
 		}
 
-		if ((_buildType == BuildType.FULL) ||
-			(testClasses.isEmpty() && (_buildType == BuildType.CORE))) {
-
+		if (!containsTestClasses() && (_buildType == BuildType.CORE)) {
 			return 1;
 		}
 
@@ -82,11 +78,9 @@ public class ServiceBuilderModulesBatchTestClassGroup
 
 	@Override
 	protected void setAxisTestClassGroups() {
-		int testClassCount = testClasses.size();
-
 		int axisCount = getAxisCount();
 
-		if ((testClassCount == 0) && (axisCount == 1)) {
+		if (!containsTestClasses() && (axisCount == 1)) {
 			axisTestClassGroups.add(
 				0, TestClassGroupFactory.newAxisTestClassGroup(this));
 
@@ -165,18 +159,13 @@ public class ServiceBuilderModulesBatchTestClassGroup
 					excludesPathMatchers, includesPathMatchers));
 		}
 
-		for (File moduleDir : moduleDirsList) {
-			TestClass testClass = TestClassFactory.newTestClass(
-				this, moduleDir);
+		File portalImplBuildFile = new File(
+			portalGitWorkingDirectory.getWorkingDirectory(),
+			"portal-impl/build.xml");
 
-			if (!testClass.hasTestClassMethods()) {
-				continue;
-			}
+		addTestClass(TestClassFactory.newTestClass(this, portalImplBuildFile));
 
-			testClasses.add(testClass);
-		}
-
-		Collections.sort(testClasses);
+		addTestClasses(moduleDirsList);
 	}
 
 	private BuildType _buildType;

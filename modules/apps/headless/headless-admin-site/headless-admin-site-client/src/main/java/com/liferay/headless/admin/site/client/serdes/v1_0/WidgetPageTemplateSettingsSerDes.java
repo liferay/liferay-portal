@@ -65,16 +65,16 @@ public class WidgetPageTemplateSettingsSerDes {
 			sb.append("\"");
 		}
 
-		if (widgetPageTemplateSettings.getNavigationMenuSettings() != null) {
+		if (widgetPageTemplateSettings.getNavigationSettings() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"navigationMenuSettings\": ");
+			sb.append("\"navigationSettings\": ");
 
 			sb.append(
 				String.valueOf(
-					widgetPageTemplateSettings.getNavigationMenuSettings()));
+					widgetPageTemplateSettings.getNavigationSettings()));
 		}
 
 		if (widgetPageTemplateSettings.getType() != null) {
@@ -123,14 +123,14 @@ public class WidgetPageTemplateSettingsSerDes {
 					widgetPageTemplateSettings.getLayoutTemplateId()));
 		}
 
-		if (widgetPageTemplateSettings.getNavigationMenuSettings() == null) {
-			map.put("navigationMenuSettings", null);
+		if (widgetPageTemplateSettings.getNavigationSettings() == null) {
+			map.put("navigationSettings", null);
 		}
 		else {
 			map.put(
-				"navigationMenuSettings",
+				"navigationSettings",
 				String.valueOf(
-					widgetPageTemplateSettings.getNavigationMenuSettings()));
+					widgetPageTemplateSettings.getNavigationSettings()));
 		}
 
 		if (widgetPageTemplateSettings.getType() == null) {
@@ -163,7 +163,7 @@ public class WidgetPageTemplateSettingsSerDes {
 				return false;
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "navigationMenuSettings")) {
+						jsonParserFieldName, "navigationSettings")) {
 
 				return false;
 			}
@@ -186,11 +186,11 @@ public class WidgetPageTemplateSettingsSerDes {
 				}
 			}
 			else if (Objects.equals(
-						jsonParserFieldName, "navigationMenuSettings")) {
+						jsonParserFieldName, "navigationSettings")) {
 
 				if (jsonParserFieldValue != null) {
-					widgetPageTemplateSettings.setNavigationMenuSettings(
-						NavigationMenuSettingsSerDes.toDTO(
+					widgetPageTemplateSettings.setNavigationSettings(
+						NavigationSettingsSerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}

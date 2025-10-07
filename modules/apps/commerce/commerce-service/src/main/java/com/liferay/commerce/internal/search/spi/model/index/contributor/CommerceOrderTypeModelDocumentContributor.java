@@ -27,6 +27,13 @@ public class CommerceOrderTypeModelDocumentContributor
 		Document document, CommerceOrderType commerceOrderType) {
 
 		document.addText(Field.NAME, commerceOrderType.getName());
+		document.addDate("displayDate", commerceOrderType.getDisplayDate());
+		document.addDateSortable(
+			"displayDate", commerceOrderType.getDisplayDate());
+		document.addDate(
+			"expirationDate", commerceOrderType.getExpirationDate());
+		document.addDateSortable(
+			"expirationDate", commerceOrderType.getExpirationDate());
 	}
 
 }

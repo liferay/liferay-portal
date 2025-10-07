@@ -151,7 +151,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -182,7 +182,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -196,7 +196,7 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Welcome to your Pre-Built Trial!"
+																		"en_US": "Welcome to your Prebuilt Trial!"
 																	}
 																}
 															}
@@ -214,7 +214,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -247,7 +247,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -280,7 +280,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-text",
+														"key": "dialect-text",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
@@ -313,7 +313,7 @@
 											{
 												"definition": {
 													"fragment": {
-														"key": "DIALECT-dialect-button",
+														"key": "dialect-button",
 														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {

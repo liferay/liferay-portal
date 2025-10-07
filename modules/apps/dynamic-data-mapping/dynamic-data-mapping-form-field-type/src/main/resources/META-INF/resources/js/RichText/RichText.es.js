@@ -12,6 +12,7 @@ import {
 } from 'frontend-editor-ckeditor-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import {getImagesSrcFromHtml} from '../util/getImageSrcFromHtml.ts';
 import LocalesDropdown from '../util/localizable/LocalesDropdown';
 import {
 	convertStringToObject,
@@ -51,6 +52,7 @@ const skipsChangeValidation = (fieldName) => {
 
 const RichText = ({
 	defaultLocale = INITIAL_DEFAULT_LOCALE,
+	displayErrors,
 	editable,
 	editingLocale = INITIAL_EDITING_LOCALE,
 	editorConfig,
@@ -67,6 +69,7 @@ const RichText = ({
 	predefinedValue = '',
 	readOnly,
 	tip = '',
+	valid,
 	value,
 	visible,
 	...otherProps
@@ -231,6 +234,22 @@ const RichText = ({
 		}
 	};
 
+	const handleFileDrop = (event) => {
+		const files = event.data.dataTransfer.$.files;
+
+		if (files.length) {
+			event.stop();
+		}
+	};
+
+	const handleFilePaste = (event) => {
+		const imagesSources = getImagesSrcFromHtml(event.data.dataValue);
+
+		if (imagesSources.length) {
+			event.stop();
+		}
+	};
+
 	const onReady = (editor) => {
 		const sourceEditingPlugin = editor.plugins.get('SourceEditing');
 
@@ -264,7 +283,7 @@ const RichText = ({
 		});
 	};
 
-	function sanitezeHTML(html) {
+	function sanitizeHTML(html) {
 		if (Liferay.FeatureFlags['LPD-31212']) {
 			return html;
 		}
@@ -330,12 +349,14 @@ const RichText = ({
 	return (
 		<FieldBase
 			{...otherProps}
+			displayErrors={displayErrors}
 			fieldName={fieldName}
 			id={id}
 			label={label}
 			name={name}
 			readOnly={readOnly}
 			tip={tip}
+			valid={valid}
 			visible={visible}
 		>
 			<ClayInput.Group>
@@ -352,6 +373,7 @@ const RichText = ({
 						/>
 					) : (
 						<ClassicEditor
+							ariaInvalid={displayErrors && !valid}
 							ariaLabel={label}
 							ariaRequired={otherProps.required}
 							className="w-100"
@@ -385,14 +407,16 @@ const RichText = ({
 							name={name}
 							onBlur={onBlur}
 							onChange={(content) => handleContentChange(content)}
+							onDrop={(event) => handleFileDrop(event)}
 							onFocus={onFocus}
+							onPaste={(event) => handleFilePaste(event)}
 							onSetData={(event) => {
 								const editor = event.editor;
 
 								if (editor.mode === 'source') {
 									const value = event.data.dataValue;
 
-									const sanitizedValue = sanitezeHTML(value);
+									const sanitizedValue = sanitizeHTML(value);
 
 									handleContentChange(sanitizedValue);
 

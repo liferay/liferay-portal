@@ -249,7 +249,8 @@ public class CPFileImporterImpl implements CPFileImporter {
 			String layoutName = layoutJSONObject.getString("name");
 
 			if (layoutName.equals("Returns") &&
-				!FeatureFlagManagerUtil.isEnabled("LPD-10562")) {
+				!FeatureFlagManagerUtil.isEnabled(
+					serviceContext.getCompanyId(), "LPD-10562")) {
 
 				continue;
 			}

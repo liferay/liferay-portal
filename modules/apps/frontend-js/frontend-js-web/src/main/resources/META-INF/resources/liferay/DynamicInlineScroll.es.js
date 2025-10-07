@@ -34,6 +34,7 @@ class DynamicInlineScroll extends PortletBase {
 	 * @inheritDoc
 	 */
 	created(props) {
+		this.applyNamespaceToCurParam = props.applyNamespaceToCurParam;
 		this.cur = Number(props.cur);
 		this.curParam = props.curParam;
 		this.forcePost = props.forcePost;
@@ -95,15 +96,25 @@ class DynamicInlineScroll extends PortletBase {
 	 * @return {string} The <code>href</code> value as a string.
 	 */
 	getHREF_(pageIndex) {
-		const {curParam, formName, jsCall, url, urlAnchor} = this;
+		const {
+			applyNamespaceToCurParam,
+			curParam,
+			formName,
+			jsCall,
+			namespace,
+			url,
+			urlAnchor,
+		} = this;
 
-		let href = `javascript:document.${formName}.${curParam}.value = "${pageIndex}; ${jsCall}`;
+		const paramName = applyNamespaceToCurParam
+			? `${namespace}${curParam}`
+			: curParam;
 
-		if (this.url !== null) {
-			href = `${url}&${curParam}=${pageIndex}${urlAnchor}`;
+		if (url !== null) {
+			return `${url}&${paramName}=${pageIndex}${urlAnchor}`;
 		}
 
-		return href;
+		return `javascript:document.${formName}.${paramName}.value = "${pageIndex}; ${jsCall}`;
 	}
 
 	/**
@@ -128,10 +139,10 @@ class DynamicInlineScroll extends PortletBase {
 		if (this.forcePost) {
 			event.preventDefault();
 
-			const {curParam, namespace, randomNamespace} = this;
+			const {curParam, id, namespace, randomNamespace} = this;
 
 			const form = document.getElementById(
-				randomNamespace + namespace + 'pageIteratorFm'
+				`${randomNamespace}${namespace || id}pageIteratorFm`
 			);
 
 			form.elements[namespace + curParam].value =

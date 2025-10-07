@@ -103,9 +103,9 @@ public class LayoutTable extends BaseTable<LayoutTable> {
 		createColumn(
 			"layoutPrototypeLinkEnabled", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
-	public final Column<LayoutTable, String> sourcePrototypeLayoutUuid =
+	public final Column<LayoutTable, String> layoutSetPrototypeLayoutERC =
 		createColumn(
-			"sourcePrototypeLayoutUuid", String.class, Types.VARCHAR,
+			"layoutSetPrototypeLayoutERC", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
 	public final Column<LayoutTable, Date> publishDate = createColumn(
 		"publishDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);

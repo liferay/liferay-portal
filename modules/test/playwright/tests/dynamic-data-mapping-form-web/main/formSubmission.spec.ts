@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
 import {FormBuilderPage} from '../../../pages/dynamic-data-mapping-form-web/FormBuilderPage';
 import {FormsPage} from '../../../pages/dynamic-data-mapping-form-web/FormsPage';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import performLogin from '../../../utils/performLogin';
 import {deleteItems} from './utils/deleteItems';
 
@@ -168,5 +169,47 @@ test.describe('Manage forms through submission page', () => {
 		await formBuilderPage.entriesTab.click();
 
 		await expect(page.getByText('123456')).toBeVisible();
+	});
+
+	test('verify that a Form can require CAPTCHA before being accessed', async ({
+		formBuilderPage,
+		formBuilderSidePanelPage,
+		formsPage,
+		page,
+	}) => {
+		await formsPage.goTo();
+
+		await test.step('create a form containing a text field and CAPTCHA validation', async () => {
+			await formsPage.newFormButton.first().click();
+
+			await formBuilderPage.fillFormTitle('Form' + getRandomInt());
+
+			await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
+
+			await formBuilderPage.formSettingsButton.click();
+
+			await formBuilderPage.requireCaptchaToggle.click();
+
+			await formBuilderPage.formSettingsDoneButton.click();
+
+			await formBuilderPage.clickPublishFormButton();
+		});
+
+		await test.step('navigate to the form page and assert that CAPTCHA is reiquired', async () => {
+			const formSubmissionURL =
+				await formBuilderPage.getFormSubmissionURL();
+
+			await page.goto(formSubmissionURL, {waitUntil: 'networkidle'});
+
+			await page.getByLabel('Text').fill('Text field value');
+
+			await page.getByRole('textbox').last().fill('1');
+
+			await page.getByRole('button', {name: 'Submit'}).click();
+
+			await expect(
+				page.getByText('Close Error:Text verification')
+			).toBeVisible();
+		});
 	});
 });

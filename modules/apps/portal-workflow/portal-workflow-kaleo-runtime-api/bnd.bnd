@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Runtime API
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.runtime.api
-Bundle-Version: 17.0.1
+Bundle-Version: 17.0.2
 Export-Package:\
 	com.liferay.portal.workflow.kaleo.runtime,\
 	com.liferay.portal.workflow.kaleo.runtime.action,\

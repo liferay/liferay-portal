@@ -10,11 +10,19 @@
 <%
 ConfigurationProvider<LDAPAuthConfiguration> ldapAuthConfigurationProvider = ConfigurationProviderUtil.getLDAPAuthConfigurationProvider();
 
-LDAPAuthConfiguration ldapAuthConfiguration = ldapAuthConfigurationProvider.getConfiguration(themeDisplay.getCompanyId());
+long companyId = 0L;
+
+String portletId = PortalUtil.getPortletId(request);
+
+if (portletId.equals(ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
+	companyId = themeDisplay.getCompanyId();
+}
+
+LDAPAuthConfiguration ldapAuthConfiguration = ldapAuthConfigurationProvider.getConfiguration(companyId);
 
 ConfigurationProvider<LDAPServerConfiguration> ldapServerConfigurationProvider = ConfigurationProviderUtil.getLDAPServerConfigurationProvider();
 
-List<LDAPServerConfiguration> ldapServerConfigurations = ldapServerConfigurationProvider.getConfigurations(themeDisplay.getCompanyId(), false);
+List<LDAPServerConfiguration> ldapServerConfigurations = ldapServerConfigurationProvider.getConfigurations(companyId, false);
 
 String authenticationURL = currentURL + "#_LFR_FN_authentication";
 

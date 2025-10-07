@@ -5,7 +5,6 @@
 
 package com.liferay.jenkins.results.parser.test.clazz;
 
-import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 
 import java.io.File;
@@ -27,65 +26,16 @@ import org.json.JSONObject;
  */
 public class SemVerModulesTestClass extends ModulesTestClass {
 
-	@Override
-	public JSONObject getJSONObject() {
-		JSONObject jsonObject = super.getJSONObject();
-
-		if ((_testPropertiesFile != null) && _testPropertiesFile.exists()) {
-			jsonObject.put("test_properties_file", _testPropertiesFile);
-		}
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(
-				_testrayMainComponentName)) {
-
-			jsonObject.put(
-				"testray_main_component_name", _testrayMainComponentName);
-		}
-
-		return jsonObject;
-	}
-
-	public String getTestrayMainComponentName() {
-		return _testrayMainComponentName;
-	}
-
 	protected SemVerModulesTestClass(
 		BatchTestClassGroup batchTestClassGroup, File moduleBaseDir) {
 
 		super(batchTestClassGroup, moduleBaseDir, "baseline");
-
-		File testPropertiesBaseDir = getTestPropertiesBaseDir(
-			getTestClassFile());
-
-		if ((testPropertiesBaseDir != null) && testPropertiesBaseDir.exists()) {
-			_testPropertiesFile = new File(
-				testPropertiesBaseDir, "test.properties");
-
-			_testrayMainComponentName = JenkinsResultsParserUtil.getProperty(
-				JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
-				"testray.main.component.name");
-		}
-		else {
-			_testPropertiesFile = null;
-			_testrayMainComponentName = null;
-		}
 	}
 
 	protected SemVerModulesTestClass(
 		BatchTestClassGroup batchTestClassGroup, JSONObject jsonObject) {
 
 		super(batchTestClassGroup, jsonObject);
-
-		if (jsonObject.has("test_properties_file")) {
-			_testPropertiesFile = new File(
-				jsonObject.getString("test_properties_file"));
-		}
-		else {
-			_testPropertiesFile = null;
-		}
-
-		_testrayMainComponentName = jsonObject.optString(
-			"testray_main_component_name");
 	}
 
 	@Override
@@ -147,8 +97,5 @@ public class SemVerModulesTestClass extends ModulesTestClass {
 
 		return modulesProjectDirs;
 	}
-
-	private final File _testPropertiesFile;
-	private final String _testrayMainComponentName;
 
 }

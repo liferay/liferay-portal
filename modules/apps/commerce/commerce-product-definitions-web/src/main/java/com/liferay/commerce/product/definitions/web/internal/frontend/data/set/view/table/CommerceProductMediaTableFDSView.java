@@ -43,7 +43,7 @@ public class CommerceProductMediaTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"actionLink")
 		).add(
-			"extension", "extension"
+			"extension", "extension[file]"
 		).add(
 			"order", "order"
 		).add(

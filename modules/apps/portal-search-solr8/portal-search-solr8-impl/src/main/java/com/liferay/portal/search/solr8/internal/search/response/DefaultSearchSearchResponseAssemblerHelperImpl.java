@@ -278,6 +278,8 @@ public class DefaultSearchSearchResponseAssemblerHelperImpl
 			_documentBuilderFactory.builder(
 				document
 			).build()
+		).id(
+			document.get("uid")
 		).build();
 	}
 

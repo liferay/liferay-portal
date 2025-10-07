@@ -217,8 +217,7 @@ public class FragmentEntryLinkUpgradeProcessTest
 				fragmentEntryLink.getEditableValues(),
 				JSONUtil.equals(
 					expectedJSONObject,
-					_jsonFactory.createJSONObject(
-						fragmentEntryLink.getEditableValues())));
+					fragmentEntryLink.getEditableValuesJSONObject()));
 		}
 	}
 

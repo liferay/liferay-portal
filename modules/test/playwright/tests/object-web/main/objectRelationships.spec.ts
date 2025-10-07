@@ -284,7 +284,6 @@ test.describe('Manage object relationships through Model Builder', () => {
 
 		const objectDefinition1 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 
@@ -452,7 +451,6 @@ test.describe('Manage object relationships through Model Builder', () => {
 
 		const objectDefinition2 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 
@@ -688,7 +686,6 @@ test.describe('Manage object relationships through Model Builder', () => {
 
 		const objectDefinition2 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 		apiHelpers.data.push({
@@ -884,63 +881,154 @@ test.describe('Manage object relationships through Model Builder', () => {
 		).toContainText('Cascade');
 	});
 
-	test('cannot create relationship between the postal address object and objects without an one-to-many relationship with the account object', async ({
-		apiHelpers,
-		modelBuilderDiagramPage,
-		page,
-		viewObjectDefinitionsPage,
-	}) => {
-		const objectDefinition1 =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				status: {code: 0},
+	test(
+		'does not allow to create relationship between Postal Address system object and objects without an one-to-many relationship with Account object',
+		{tag: '@LPD-26481'},
+		async ({
+			apiHelpers,
+			modelBuilderDiagramPage,
+			page,
+			viewObjectDefinitionsPage,
+		}) => {
+			const objectDefinition1 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+			const {body: postalAddress} =
+				await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+					'L_POSTAL_ADDRESS'
+				);
+
+			apiHelpers.data.push({
+				id: objectDefinition1.id,
+				type: 'objectDefinition',
 			});
 
-		const objectDefinitionAPIClient =
-			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+			await test.step('navigate to model builder and display all nodes', async () => {
+				await viewObjectDefinitionsPage.goto();
 
-		const {body: postalAddress} =
-			await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
-				'L_POSTAL_ADDRESS'
-			);
+				await viewObjectDefinitionsPage.openObjectFolder('Default');
 
-		apiHelpers.data.push({
-			id: objectDefinition1.id,
-			type: 'objectDefinition',
-		});
+				await viewObjectDefinitionsPage.viewInModelBuilderButton.click();
 
-		await viewObjectDefinitionsPage.goto();
+				await modelBuilderDiagramPage.toggleSidebarsButton.click();
 
-		await viewObjectDefinitionsPage.openObjectFolder('Default');
+				await modelBuilderDiagramPage.fitViewButton.click();
+			});
 
-		await viewObjectDefinitionsPage.viewInModelBuilderButton.click();
+			await test.step('assert that a warning is displayed when the user drags a connection between the nodes', async () => {
+				await modelBuilderDiagramPage.connectObjectDefinitionsNodeHandles(
+					postalAddress.id,
+					objectDefinition1.id
+				);
 
-		await modelBuilderDiagramPage.toggleSidebarsButton.click();
+				await expect(
+					modelBuilderDiagramPage.postalAddressObjectRelationshipWarning
+				).toBeVisible();
+			});
 
-		await modelBuilderDiagramPage.fitViewButton.click();
+			await test.step('assert that a "Learn more" link is displayed in the warning toast and leads to a learn recource', async () => {
+				const pagePromise = page.waitForEvent('popup');
 
-		await modelBuilderDiagramPage.connectObjectDefinitionsNodeHandles(
-			postalAddress.id,
-			objectDefinition1.id
-		);
+				await page.getByRole('link', {name: 'Learn more.'}).click();
 
-		await expect(
-			modelBuilderDiagramPage.postalAddressObjectRelationshipWarning
-		).toBeVisible();
+				const liferayLearnPage = await pagePromise;
 
-		const pagePromise = page.waitForEvent('popup');
+				await liferayLearnPage.waitForLoadState();
 
-		await page.getByRole('link', {name: 'Learn more.'}).click();
+				await expect(
+					liferayLearnPage.getByRole('heading', {
+						name: 'Accessing Accounts Data from Custom Object',
+					})
+				).toBeVisible();
+			});
+		}
+	);
 
-		const liferayLearnPage = await pagePromise;
+	test(
+		'allows to create relationship with a custom object named Address',
+		{tag: '@LPD-51156'},
+		async ({
+			addNewObjectRelationshipModalPage,
+			apiHelpers,
+			modelBuilderDiagramPage,
+			page,
+			viewObjectDefinitionsPage,
+		}) => {
+			const objectDefinitionAPIClient =
+				await apiHelpers.buildRestClient(ObjectDefinitionAPI);
 
-		await liferayLearnPage.waitForLoadState();
+			const {body: customPostalAddressDefinition} =
+				await objectDefinitionAPIClient.postObjectDefinition({
+					active: true,
+					externalReferenceCode:
+						'CustomPostalAddress' + getRandomInt(),
+					label: {
+						en_US: 'Custom Postal Address',
+					},
+					name: 'Address',
+					objectFields: [],
+					pluralLabel: {
+						en_US: 'Custom Postal Addresses',
+					},
+					portlet: true,
+					scope: 'company',
+					status: {
+						code: 1,
+					},
+				});
 
-		await expect(
-			liferayLearnPage.getByRole('heading', {
-				name: 'Accessing Accounts Data from Custom Object',
-			})
-		).toBeVisible();
-	});
+			apiHelpers.data.push({
+				id: customPostalAddressDefinition.id,
+				type: 'objectDefinition',
+			});
+
+			const {body: commerceOrderDefinition} =
+				await objectDefinitionAPIClient.getObjectDefinitionByExternalReferenceCode(
+					'L_COMMERCE_ORDER'
+				);
+
+			await test.step('navigate to model builder and display all nodes', async () => {
+				await viewObjectDefinitionsPage.goto();
+
+				await viewObjectDefinitionsPage.openObjectFolder('Default');
+
+				await viewObjectDefinitionsPage.viewInModelBuilderButton.click();
+
+				await modelBuilderDiagramPage.toggleSidebarsButton.click();
+
+				await modelBuilderDiagramPage.fitViewButton.click();
+			});
+
+			await test.step('assert that creating a relationship with a custom object named Address as the source node is allowed', async () => {
+				await modelBuilderDiagramPage.connectObjectDefinitionsNodeHandles(
+					customPostalAddressDefinition.id,
+					commerceOrderDefinition.id
+				);
+
+				expect(
+					addNewObjectRelationshipModalPage.modalHeader
+				).toBeVisible();
+			});
+
+			await test.step('assert that creating a relationship with a custom object named Address as the target node is allowed', async () => {
+				await page.getByRole('button', {name: 'Cancel'}).click();
+
+				await modelBuilderDiagramPage.connectObjectDefinitionsNodeHandles(
+					commerceOrderDefinition.id,
+					customPostalAddressDefinition.id
+				);
+
+				expect(
+					addNewObjectRelationshipModalPage.modalHeader
+				).toBeVisible();
+			});
+		}
+	);
 
 	test('cannot delete the object relationship that is the only custom object field from the published object definition', async ({
 		apiHelpers,
@@ -1084,7 +1172,6 @@ test.describe('Manage object relationships through Objects Admin UI', () => {
 	}) => {
 		const objectDefinition =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				objectFolderExternalReferenceCode: 'default',
 				status: {code: 0},
 			});
 

@@ -52,6 +52,8 @@ public interface PatcherBuildRelLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherBuildRelLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher build rel local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherBuildRelLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public PatcherBuildRel addPatcherBuildRel(
+		long childPatcherBuildId, long parentPatcherBuildId);
 
 	/**
 	 * Adds the patcher build rel to the database. Also notifies the appropriate model listeners.

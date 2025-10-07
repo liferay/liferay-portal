@@ -31,6 +31,18 @@ public class NotificationRecipientSettingLocalServiceWrapper
 			notificationRecipientSettingLocalService;
 	}
 
+	@Override
+	public com.liferay.notification.model.NotificationRecipientSetting
+			addNotificationRecipientSetting(
+				long userId, long notificationRecipientId, String name,
+				Object value)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _notificationRecipientSettingLocalService.
+			addNotificationRecipientSetting(
+				userId, notificationRecipientId, name, value);
+	}
+
 	/**
 	 * Adds the notification recipient setting to the database. Also notifies the appropriate model listeners.
 	 *
@@ -392,6 +404,16 @@ public class NotificationRecipientSettingLocalServiceWrapper
 
 		return _notificationRecipientSettingLocalService.getPersistedModel(
 			primaryKeyObj);
+	}
+
+	@Override
+	public com.liferay.notification.model.NotificationRecipientSetting
+		updateNotificationRecipientSetting(
+			long notificationRecipientId, String name, Object value) {
+
+		return _notificationRecipientSettingLocalService.
+			updateNotificationRecipientSetting(
+				notificationRecipientId, name, value);
 	}
 
 	/**

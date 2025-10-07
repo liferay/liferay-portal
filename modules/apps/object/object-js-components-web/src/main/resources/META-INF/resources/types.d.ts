@@ -67,7 +67,9 @@ interface ObjectField {
 	listTypeDefinitionId: number;
 	localized: boolean;
 	name: string;
+	objectDefinitionExternalReferenceCode1?: string;
 	objectFieldSettings?: ObjectFieldSetting[];
+	objectRelationshipExternalReferenceCode: string;
 	relationshipType?: unknown;
 	required: boolean;
 	state: boolean;

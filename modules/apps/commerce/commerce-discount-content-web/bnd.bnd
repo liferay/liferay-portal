@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Discount Content Web
 Bundle-SymbolicName: com.liferay.commerce.discount.content.web
-Bundle-Version: 4.0.26
+Bundle-Version: 4.0.27
 Web-ContextPath: /commerce-discount-content-web

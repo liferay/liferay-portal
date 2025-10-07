@@ -296,8 +296,9 @@ export const List: React.FC<IListProps> = ({
 		return <RowActions actions={actions} quickActions={commonActions} />;
 	};
 
-	const pageActions = [
+	const pageAction = [
 		{
+			displayType: 'primary',
 			href: setUriQueryValues(
 				{type: SegmentTypes.Dynamic},
 				toRoute(Routes.CONTACTS_SEGMENT_CREATE, {
@@ -305,22 +306,9 @@ export const List: React.FC<IListProps> = ({
 					groupId
 				})
 			),
-			label: Liferay.Language.get('dynamic-segment')
-		},
-		{
-			deprecated: true,
-			href: setUriQueryValues(
-				{type: SegmentTypes.Static},
-				toRoute(Routes.CONTACTS_SEGMENT_CREATE, {
-					channelId,
-					groupId
-				})
-			),
-			label: Liferay.Language.get('static-segment')
+			label: Liferay.Language.get('create-segment')
 		}
 	];
-
-	const pageActionsLabel = Liferay.Language.get('create-segment');
 
 	return (
 		<BaseListPage
@@ -373,8 +361,7 @@ export const List: React.FC<IListProps> = ({
 			]}
 			orderIOMap={orderIOMap}
 			page={page}
-			pageActions={pageActions}
-			pageActionsLabel={pageActionsLabel}
+			pageActions={pageAction}
 			query={query}
 			ref={_tableRef}
 			renderRowActions={renderRowActions}

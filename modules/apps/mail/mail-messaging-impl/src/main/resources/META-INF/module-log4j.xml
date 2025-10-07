@@ -4,5 +4,6 @@
 	<Loggers>
 		<Logger level="WARN" name="com.liferay.mail.messaging" />
 		<Logger level="ERROR" name="com.liferay.mail.messaging.internal.MailEngine" />
+		<Logger level="ERROR" name="com.liferay.mail.messaging.internal.MailServiceImpl" />
 	</Loggers>
 </Configuration>

@@ -36,13 +36,13 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -416,76 +416,6 @@ public abstract class BaseSiteResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	@Test
-	public void testGraphQLGetSitesPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"sites",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject sitesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/sites");
-
-		long totalCount = sitesJSONObject.getLong("totalCount");
-
-		Site site1 = testGraphQLGetSitesPage_addSite();
-		Site site2 = testGraphQLGetSitesPage_addSite();
-
-		sitesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/sites");
-
-		Assert.assertEquals(
-			totalCount + 2, sitesJSONObject.getLong("totalCount"));
-
-		assertContains(
-			site1,
-			Arrays.asList(
-				SiteSerDes.toDTOs(sitesJSONObject.getString("items"))));
-		assertContains(
-			site2,
-			Arrays.asList(
-				SiteSerDes.toDTOs(sitesJSONObject.getString("items"))));
-
-		// Using the namespace analyticsSettings_v1_0
-
-		sitesJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField("analyticsSettings_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/analyticsSettings_v1_0",
-			"JSONObject/sites");
-
-		Assert.assertEquals(
-			totalCount + 2, sitesJSONObject.getLong("totalCount"));
-
-		assertContains(
-			site1,
-			Arrays.asList(
-				SiteSerDes.toDTOs(sitesJSONObject.getString("items"))));
-		assertContains(
-			site2,
-			Arrays.asList(
-				SiteSerDes.toDTOs(sitesJSONObject.getString("items"))));
-	}
-
-	protected Site testGraphQLGetSitesPage_addSite() throws Exception {
-		return testGraphQLSite_addSite();
-	}
-
-	protected Site testGraphQLSite_addSite() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected void assertContains(Site site, List<Site> sites) {
 		boolean contains = false;
 
@@ -634,6 +564,8 @@ public abstract class BaseSiteResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

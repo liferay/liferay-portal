@@ -31,10 +31,8 @@ public class OracleSQLTransformerLogicTest
 
 	@Override
 	public String getDropTableIfExistsTextTransformedSQL() {
-		return StringBundler.concat(
-			"BEGIN\n", "EXECUTE IMMEDIATE 'DROP TABLE Foo';\n", "EXCEPTION\n",
-			"WHEN OTHERS THEN\n", "IF SQLCODE != -942 THEN\n", "RAISE;\n",
-			"END IF;\n", "END;\n", "/");
+		return "BEGIN\nEXECUTE IMMEDIATE 'DROP TABLE Foo';\nEXCEPTION\nWHEN " +
+			"OTHERS THEN\nIF SQLCODE != -942 THEN\nRAISE;\nEND IF;\nEND;\n/";
 	}
 
 	@Override
@@ -65,6 +63,11 @@ public class OracleSQLTransformerLogicTest
 		Assert.assertEquals(
 			"select * from Foo where foo IS NOT NULL",
 			sqlTransformer.transform("select * from Foo where foo != ''"));
+	}
+
+	@Override
+	protected String getBitwiseOrTransformedSQL() {
+		return "select (foo + bar - BITAND(foo, bar)) from Foo";
 	}
 
 	@Override

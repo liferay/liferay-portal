@@ -1,0 +1,270 @@
+components:
+    schemas:
+        AssetUsage:
+            properties:
+                name:
+                    type: string
+                type:
+                    type: string
+                url:
+                    type: string
+        BulkAction:
+            discriminator:
+                mapping:
+                    DefaultPermissionBulkAction: "#/components/schemas/DefaultPermissionBulkAction"
+                    DeleteBulkAction: "#/components/schemas/DeleteBulkAction"
+                    KeywordBulkAction: "#/components/schemas/KeywordBulkAction"
+                    MoveBulkAction: "#/components/schemas/MoveBulkAction"
+                    PermissionBulkAction: "#/components/schemas/PermissionBulkAction"
+                    StatusBulkAction: "#/components/schemas/StatusBulkAction"
+                    TaxonomyCategoryBulkAction: "#/components/schemas/TaxonomyCategoryBulkAction"
+                propertyName: type
+            properties:
+                bulkActionItems:
+                    items:
+                        $ref: "#/components/schemas/BulkActionItem"
+                    type: array
+                selectAll:
+                    default: false
+                    type: boolean
+                type:
+                    enum:
+                        -   DefaultPermissionBulkAction
+                        -   DeleteBulkAction
+                        -   KeywordBulkAction
+                        -   MoveBulkAction
+                        -   PermissionBulkAction
+                        -   StatusBulkAction
+                        -   TaxonomyCategoryBulkAction
+                    type: string
+        BulkActionItem:
+            properties:
+                attributes:
+                    additionalProperties:
+                        type: object
+                    type: object
+                classExternalReferenceCode:
+                    type: string
+                className:
+                    type: string
+                classPK:
+                    format: int64
+                    type: integer
+                name:
+                    type: string
+        BulkActionTask:
+            properties:
+                actionName:
+                    type: string
+                author:
+                    type: string
+                completionDate:
+                    format: date-time
+                    type: string
+                createdDate:
+                    format: date-time
+                    type: string
+                executeStatus:
+                    type: string
+                externalReferenceCode:
+                    type: string
+                id:
+                    format: int64
+                    type: integer
+                numberOfItems:
+                    type: integer
+                type:
+                    type: string
+        DefaultPermissionBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        defaultPermissions:
+                            type: string
+                        depotGroupId:
+                            format: int64
+                            type: integer
+                        treePath:
+                            type: string
+        DeleteBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+        KeywordBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        keywords:
+                            items:
+                                type: string
+                            type: array
+        MoveBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        objectEntryFolderId:
+                            description:
+                                The object entry folder's ID.
+                            format: int64
+                            type: integer
+        PermissionBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        configuration:
+                            type: string
+                        permissions:
+                            items:
+                                type: permission
+                            type: array
+        StatusBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        status:
+                            format: int32
+                            type: integer
+        TaxonomyCategoryBulkAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        taxonomyCategoryIds:
+                            items:
+                                format: int64
+                                type: integer
+                            type: array
+info:
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: ""
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/asset-usages/{assetId}":
+        get:
+            operationId: getAssetUsagesAssetPage
+            parameters:
+                -   in: path
+                    name: assetId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AssetUsage"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AssetUsage"
+                                type: array
+            tags: ["AssetUsage"]
+    "/bulk-action":
+        post:
+            description:
+                Execute a bulk action
+            operationId: postBulkAction
+            parameters:
+                -   in: query
+                    name: filter
+                    required: false
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    required: false
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/BulkAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/BulkAction"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/BulkActionTask"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/BulkActionTask"
+            tags: ["BulkAction"]
+    "/bulk-action-item/preview":
+        post:
+            description:
+                Creates a preview for each item based on the bulk action type
+            operationId: postBulkActionItemPreviewPage
+            parameters:
+                -   in: query
+                    name: fetchChildren
+                    schema:
+                        type: boolean
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    required: true
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/BulkAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/BulkAction"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/BulkActionItem"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/BulkActionItem"
+                                type: array
+            tags: ["BulkAction"]

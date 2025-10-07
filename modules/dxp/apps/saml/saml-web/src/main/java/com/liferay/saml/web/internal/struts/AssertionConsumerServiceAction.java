@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -38,8 +40,10 @@ import org.osgi.service.component.annotations.Reference;
 public class AssertionConsumerServiceAction extends BaseSamlStrutsAction {
 
 	@Override
-	public boolean isEnabled() {
-		if (_samlProviderConfigurationHelper.isRoleSp()) {
+	public boolean isEnabled(HttpServletRequest httpServletRequest) {
+		if (!_samlProviderConfigurationHelper.isRoleIdp() &&
+			Objects.equals(httpServletRequest.getMethod(), "POST")) {
+
 			return _samlProviderConfigurationHelper.isEnabled();
 		}
 

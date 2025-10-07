@@ -1,0 +1,53 @@
+.related-announcements-container {
+	background: var(--color-neutral-1, #f7f7f8);
+	border-radius: 10px;
+	max-width: 1136px;
+	min-height: 260px;
+	padding: 1.5rem;
+}
+
+.related-card {
+	background: var(--color-brand-primary-lighten-6, #fbfcfe);
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+	padding: 1rem;
+	width: 100%;
+}
+
+.related-card-date {
+	color: #6b7280;
+	font-size: 0.8rem;
+	margin-bottom: 0;
+}
+
+.related-card-description {
+	color: var(--color-neutral-10, #282934);
+	display: -webkit-box;
+	flex-grow: 1;
+	font-size: 1rem;
+	line-clamp: 3;
+	margin-bottom: 0.5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+}
+
+.related-card-link {
+	color: inherit;
+	display: flex;
+	flex: 1; 
+	text-decoration: none;
+}
+
+.related-card-title {
+	color: var(--color-brand-primary, #0b5fff);
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.related-cards-container {
+	gap: 1rem;
+}

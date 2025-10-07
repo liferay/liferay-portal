@@ -23,7 +23,7 @@ function ContributorInputSetItem({index, onInputSetItemChange, value = {}}) {
 	};
 
 	return (
-		<ClayInput.GroupItem>
+		<ClayInput.GroupItem className="contributor-inputs">
 			{[
 				CONTRIBUTOR_TYPES.ASAH_RECENT_ASSETS_USER_ACTIVITY,
 				CONTRIBUTOR_TYPES.ASAH_RECENT_PAGES_USER_ACTIVITY,

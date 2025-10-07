@@ -96,6 +96,7 @@
 		<field name="scope" type="String" />
 		<field name="version" type="int" />
 		<field name="active" type="boolean" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion">
 		<field name="mvccVersion" type="long" />

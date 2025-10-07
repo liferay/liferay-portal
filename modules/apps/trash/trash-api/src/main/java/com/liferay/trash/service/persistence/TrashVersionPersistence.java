@@ -183,7 +183,7 @@ public interface TrashVersionPersistence
 	 * @param classNameId the class name ID
 	 * @return the matching trash versions
 	 */
-	public java.util.List<TrashVersion> findByE_C(
+	public java.util.List<TrashVersion> findByE_CN(
 		long entryId, long classNameId);
 
 	/**
@@ -199,7 +199,7 @@ public interface TrashVersionPersistence
 	 * @param end the upper bound of the range of trash versions (not inclusive)
 	 * @return the range of matching trash versions
 	 */
-	public java.util.List<TrashVersion> findByE_C(
+	public java.util.List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end);
 
 	/**
@@ -216,7 +216,7 @@ public interface TrashVersionPersistence
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
 	 * @return the ordered range of matching trash versions
 	 */
-	public java.util.List<TrashVersion> findByE_C(
+	public java.util.List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 			orderByComparator);
@@ -236,7 +236,7 @@ public interface TrashVersionPersistence
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the ordered range of matching trash versions
 	 */
-	public java.util.List<TrashVersion> findByE_C(
+	public java.util.List<TrashVersion> findByE_CN(
 		long entryId, long classNameId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 			orderByComparator,
@@ -251,7 +251,7 @@ public interface TrashVersionPersistence
 	 * @return the first matching trash version
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
-	public TrashVersion findByE_C_First(
+	public TrashVersion findByE_CN_First(
 			long entryId, long classNameId,
 			com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 				orderByComparator)
@@ -265,7 +265,7 @@ public interface TrashVersionPersistence
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the first matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
-	public TrashVersion fetchByE_C_First(
+	public TrashVersion fetchByE_CN_First(
 		long entryId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 			orderByComparator);
@@ -279,7 +279,7 @@ public interface TrashVersionPersistence
 	 * @return the last matching trash version
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
-	public TrashVersion findByE_C_Last(
+	public TrashVersion findByE_CN_Last(
 			long entryId, long classNameId,
 			com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 				orderByComparator)
@@ -293,7 +293,7 @@ public interface TrashVersionPersistence
 	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
 	 * @return the last matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
-	public TrashVersion fetchByE_C_Last(
+	public TrashVersion fetchByE_CN_Last(
 		long entryId, long classNameId,
 		com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 			orderByComparator);
@@ -308,7 +308,7 @@ public interface TrashVersionPersistence
 	 * @return the previous, current, and next trash version
 	 * @throws NoSuchVersionException if a trash version with the primary key could not be found
 	 */
-	public TrashVersion[] findByE_C_PrevAndNext(
+	public TrashVersion[] findByE_CN_PrevAndNext(
 			long versionId, long entryId, long classNameId,
 			com.liferay.portal.kernel.util.OrderByComparator<TrashVersion>
 				orderByComparator)
@@ -320,7 +320,7 @@ public interface TrashVersionPersistence
 	 * @param entryId the entry ID
 	 * @param classNameId the class name ID
 	 */
-	public void removeByE_C(long entryId, long classNameId);
+	public void removeByE_CN(long entryId, long classNameId);
 
 	/**
 	 * Returns the number of trash versions where entryId = &#63; and classNameId = &#63;.
@@ -329,7 +329,7 @@ public interface TrashVersionPersistence
 	 * @param classNameId the class name ID
 	 * @return the number of matching trash versions
 	 */
-	public int countByE_C(long entryId, long classNameId);
+	public int countByE_CN(long entryId, long classNameId);
 
 	/**
 	 * Returns the trash version where classNameId = &#63; and classPK = &#63; or throws a <code>NoSuchVersionException</code> if it could not be found.
@@ -339,7 +339,7 @@ public interface TrashVersionPersistence
 	 * @return the matching trash version
 	 * @throws NoSuchVersionException if a matching trash version could not be found
 	 */
-	public TrashVersion findByC_C(long classNameId, long classPK)
+	public TrashVersion findByCN_CPK(long classNameId, long classPK)
 		throws NoSuchVersionException;
 
 	/**
@@ -349,7 +349,7 @@ public interface TrashVersionPersistence
 	 * @param classPK the class pk
 	 * @return the matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
-	public TrashVersion fetchByC_C(long classNameId, long classPK);
+	public TrashVersion fetchByCN_CPK(long classNameId, long classPK);
 
 	/**
 	 * Returns the trash version where classNameId = &#63; and classPK = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
@@ -359,7 +359,7 @@ public interface TrashVersionPersistence
 	 * @param useFinderCache whether to use the finder cache
 	 * @return the matching trash version, or <code>null</code> if a matching trash version could not be found
 	 */
-	public TrashVersion fetchByC_C(
+	public TrashVersion fetchByCN_CPK(
 		long classNameId, long classPK, boolean useFinderCache);
 
 	/**
@@ -369,7 +369,7 @@ public interface TrashVersionPersistence
 	 * @param classPK the class pk
 	 * @return the trash version that was removed
 	 */
-	public TrashVersion removeByC_C(long classNameId, long classPK)
+	public TrashVersion removeByCN_CPK(long classNameId, long classPK)
 		throws NoSuchVersionException;
 
 	/**
@@ -379,7 +379,7 @@ public interface TrashVersionPersistence
 	 * @param classPK the class pk
 	 * @return the number of matching trash versions
 	 */
-	public int countByC_C(long classNameId, long classPK);
+	public int countByCN_CPK(long classNameId, long classPK);
 
 	/**
 	 * Caches the trash version in the entity cache if it is enabled.

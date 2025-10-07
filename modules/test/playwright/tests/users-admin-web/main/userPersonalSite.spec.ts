@@ -11,22 +11,23 @@ import {liferayConfig} from '../../../liferay.config';
 
 export const test = mergeTests(loginTest(), usersAndOrganizationsPagesTest);
 
-test('LPD-26175 Check that language selector works on private pages', async ({
-	page,
-	userPersonalSitePage,
-}) => {
-	await userPersonalSitePage.goToMyDashboard();
+test(
+	'Check that language selector works on private pages',
+	{tag: ['@LPD-26175', '@LPS-159181']},
+	async ({page, userPersonalSitePage}) => {
+		await userPersonalSitePage.goToMyDashboard();
 
-	await userPersonalSitePage.addLanguageSelectorToPage();
-	await userPersonalSitePage.switchLanguages(
-		'deutsch-Deutschland',
-		'Select a Language'
-	);
+		await userPersonalSitePage.addLanguageSelectorToPage();
+		await userPersonalSitePage.switchLanguages(
+			'deutsch-Deutschland',
+			'Select a Language'
+		);
 
-	await expect(page).toHaveURL(new RegExp(`.+/user/.+`));
+		await expect(page).toHaveURL(new RegExp(`.+/user/.+`));
 
-	await page.goto(
-		liferayConfig.environment.baseUrl +
-			'/c/portal/update_language?languageId=en_US'
-	);
-});
+		await page.goto(
+			liferayConfig.environment.baseUrl +
+				'/c/portal/update_language?languageId=en_US'
+		);
+	}
+);

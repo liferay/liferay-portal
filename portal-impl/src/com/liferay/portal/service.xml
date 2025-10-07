@@ -618,7 +618,7 @@
 		<column name="masterLayoutPlid" type="long" />
 		<column name="layoutPrototypeUuid" type="String" />
 		<column name="layoutPrototypeLinkEnabled" type="boolean" />
-		<column name="sourcePrototypeLayoutUuid" type="String" />
+		<column name="layoutSetPrototypeLayoutERC" type="String" />
 		<column name="publishDate" type="Date" />
 		<column name="lastPublishDate" type="Date" />
 		<column name="status" type="int" />
@@ -650,8 +650,8 @@
 		<finder name="LayoutPrototypeUuid" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="layoutPrototypeUuid" />
 		</finder>
-		<finder name="SourcePrototypeLayoutUuid" return-type="Collection" where="system = [$FALSE$]">
-			<finder-column name="sourcePrototypeLayoutUuid" />
+		<finder name="LayoutSetPrototypeLayoutERC" return-type="Collection" where="system = [$FALSE$]">
+			<finder-column name="layoutSetPrototypeLayoutERC" />
 		</finder>
 		<finder name="G_P" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="groupId" />
@@ -675,7 +675,7 @@
 		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
+			<finder-column arrayable-operator="OR" name="classPK" />
 		</finder>
 		<finder name="G_P_L" return-type="Layout" unique="true">
 			<finder-column name="groupId" />
@@ -697,10 +697,10 @@
 			<finder-column name="privateLayout" />
 			<finder-column name="friendlyURL" />
 		</finder>
-		<finder name="G_P_SPLU" return-type="Collection">
+		<finder name="G_P_LSPLE" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="privateLayout" />
-			<finder-column name="sourcePrototypeLayoutUuid" />
+			<finder-column name="layoutSetPrototypeLayoutERC" />
 		</finder>
 		<finder name="G_P_ST" return-type="Collection" where="system = [$FALSE$]">
 			<finder-column name="groupId" />
@@ -1244,6 +1244,9 @@
 		</finder>
 		<finder db-index="false" name="CompanyIdLocations" return-type="Collection" where="parentOrganizationId != 0">
 			<finder-column name="companyId" />
+		</finder>
+		<finder name="LogoId" return-type="Collection">
+			<finder-column name="logoId" />
 		</finder>
 		<finder name="C_P" return-type="Collection">
 			<finder-column name="companyId" />
@@ -1949,6 +1952,7 @@
 		<column name="schemaVersion" type="String" />
 		<column name="buildNumber" type="int" />
 		<column name="buildDate" type="Date" />
+		<column name="versionDisplayName" type="String" />
 		<column name="verified" type="boolean" />
 		<column name="state" type="int" />
 		<column name="testString" type="String" />
@@ -2017,6 +2021,9 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
+		</finder>
+		<finder name="PortletId" return-type="Collection">
+			<finder-column name="portletId" />
 		</finder>
 		<finder name="G_N_P" return-type="Repository" unique="true">
 			<finder-column name="groupId" />
@@ -2162,7 +2169,7 @@
 			<finder-column arrayable-operator="OR" arrayable-pagination="true" name="roleId" />
 			<finder-column name="viewActionId" />
 		</finder>
-		<finder name="C_N_S_P_R_V" return-type="Collection">
+		<finder name="C_N_S_P_R_V" return-type="Collection" skip-db-index-optimization-and-finder-generation="true">
 			<finder-column name="companyId" />
 			<finder-column name="name" />
 			<finder-column name="scope" />
@@ -3263,6 +3270,7 @@
 		<exception>MasterLayout</exception>
 		<exception>MembershipRequestComments</exception>
 		<exception>OldServiceComponent</exception>
+		<exception>OrganizationComments</exception>
 		<exception>OrganizationId</exception>
 		<exception>OrganizationName</exception>
 		<exception>OrganizationParent</exception>
@@ -3302,6 +3310,7 @@
 		<exception>SitemapPagePriority</exception>
 		<exception>TeamName</exception>
 		<exception>UserActive</exception>
+		<exception>UserComments</exception>
 		<exception>UserEmailAddress</exception>
 		<exception>UserField</exception>
 		<exception>UserGroupName</exception>

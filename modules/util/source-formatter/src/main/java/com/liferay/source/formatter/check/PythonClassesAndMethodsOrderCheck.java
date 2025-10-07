@@ -28,7 +28,7 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
-		content = _formatClassDefinationHeader(absolutePath, content);
+		content = _formatClassDefinitionHeader(absolutePath, content);
 
 		return _sortItems(fileName, content, StringPool.BLANK);
 	}
@@ -72,7 +72,7 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 		return statementsList;
 	}
 
-	private String _formatClassDefinationHeader(
+	private String _formatClassDefinitionHeader(
 		String absolutePath, String content) {
 
 		int maxLineLength = 0;
@@ -85,7 +85,7 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 			return content;
 		}
 
-		Matcher matcher = _classDefinationHeaderPattern1.matcher(content);
+		Matcher matcher = _classDefinitionHeaderPattern1.matcher(content);
 
 		while (matcher.find()) {
 			String indent = matcher.group(1);
@@ -125,7 +125,7 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 	}
 
 	private int _sortClasses(String class1, String class2) {
-		Matcher matcher = _classDefinationHeaderPattern2.matcher(class1);
+		Matcher matcher = _classDefinitionHeaderPattern2.matcher(class1);
 
 		if (!matcher.find()) {
 			return 0;
@@ -140,7 +140,7 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 			parentClassList.set(i, StringUtil.trim(parentClassList.get(i)));
 		}
 
-		matcher = _classDefinationHeaderPattern2.matcher(class2);
+		matcher = _classDefinitionHeaderPattern2.matcher(class2);
 
 		if (!matcher.find()) {
 			return 0;
@@ -283,10 +283,10 @@ public class PythonClassesAndMethodsOrderCheck extends BaseFileCheck {
 
 	private static final String _MAX_LINE_LENGTH = "maxLineLength";
 
-	private static final Pattern _classDefinationHeaderPattern1 =
+	private static final Pattern _classDefinitionHeaderPattern1 =
 		Pattern.compile(
 			"(?<=\n)(\t*)class (\\w+)(\\((.*?)\\))?:\n+", Pattern.DOTALL);
-	private static final Pattern _classDefinationHeaderPattern2 =
+	private static final Pattern _classDefinitionHeaderPattern2 =
 		Pattern.compile("class (\\w+)(\\((.*?)\\))?:", Pattern.DOTALL);
 
 }

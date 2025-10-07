@@ -29,7 +29,6 @@ export class CommerceAdminProductConfigurationEntryPage {
 	readonly shipSeparatelyInput: Locator;
 	readonly sidePanelTitle: Locator;
 	readonly taxExemptInput: Locator;
-	readonly visibleInput: Locator;
 	readonly weightInput: Locator;
 	readonly widthInput: Locator;
 
@@ -82,7 +81,6 @@ export class CommerceAdminProductConfigurationEntryPage {
 		);
 		this.sidePanelTitle = this.iframe.getByTestId('sidePanelTitle');
 		this.taxExemptInput = this.iframe.getByTestId('taxExemptInput');
-		this.visibleInput = this.iframe.getByTestId('visibleInput');
 		this.weightInput = this.iframe.getByTestId('weightInput');
 		this.widthInput = this.iframe.getByTestId('widthInput');
 	}

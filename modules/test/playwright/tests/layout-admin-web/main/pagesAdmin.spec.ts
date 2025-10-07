@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, expect, mergeTests} from '@playwright/test';
+import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -31,6 +31,14 @@ const test = mergeTests(
 	pageTemplatesPagesTest,
 	pagesAdminPagesTest,
 	pageViewModePagesTest
+);
+
+const testWithPrivatePages = mergeTests(
+	test,
+	featureFlagsTest({
+		'LPD-38869': {enabled: true},
+		'LPS-178052': {enabled: true},
+	})
 );
 
 test.describe('Keyboard movement and navigation', () => {
@@ -449,6 +457,30 @@ test.describe('Keyboard movement and navigation', () => {
 });
 
 test.describe('Miller Columns drag and drop', () => {
+	const getColumn = (page: Page, index: number) =>
+		page.locator('.miller-columns-col').nth(index);
+
+	const checkItemTitle = async ({
+		columnIndex,
+		itemIndex,
+		page,
+		title,
+	}: {
+		columnIndex: number;
+		itemIndex: number;
+		page: Page;
+		title: string;
+	}) => {
+		await expect(
+			getColumn(page, columnIndex)
+				.locator('.miller-columns-item')
+				.nth(itemIndex)
+		).toContainText(title);
+	};
+
+	const getItem = (page: Page, title: string) =>
+		page.locator('.miller-columns-item', {hasText: title});
+
 	test(
 		'Drag and drop with mouse works as expected',
 		{tag: ['@LPS-110108', '@LPS-114527', '@LPS-110108']},
@@ -486,22 +518,16 @@ test.describe('Miller Columns drag and drop', () => {
 
 			// Go to pages administration and click Page 1-1 to show its children
 
-			const getColumn = (index: number) =>
-				page.locator('.miller-columns-col').nth(index);
-
-			const getItem = (title: string) =>
-				page.locator('.miller-columns-item', {hasText: title});
-
 			await pagesAdminPage.goto(site.friendlyUrlPath);
 
-			await getItem('Page 1-1').click();
+			await getItem(page, 'Page 1-1').click();
 
-			await expect(getItem('Page 2-1')).toBeVisible();
+			await expect(getItem(page, 'Page 2-1')).toBeVisible();
 
 			// Drag Page 1-1 to second position of same level
 
-			const itemRect = await getItem('Page 1-1').evaluate((element) =>
-				element.getBoundingClientRect()
+			const itemRect = await getItem(page, 'Page 1-1').evaluate(
+				(element) => element.getBoundingClientRect()
 			);
 
 			const dragItem = async (
@@ -535,60 +561,60 @@ test.describe('Miller Columns drag and drop', () => {
 				});
 			};
 
-			const checkItemTitle = async ({
-				columnIndex,
-				itemIndex,
-				title,
-			}: {
-				columnIndex: number;
-				itemIndex: number;
-				title: string;
-			}) => {
-				await expect(
-					getColumn(columnIndex)
-						.locator('.miller-columns-item')
-						.nth(itemIndex)
-				).toContainText(title);
-			};
-
-			await dragItem(getItem('Page 1-1'), getItem('Page 1-2'), 'bottom');
+			await dragItem(
+				getItem(page, 'Page 1-1'),
+				getItem(page, 'Page 1-2'),
+				'bottom'
+			);
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 1,
+				page,
 				title: 'Page 1-1',
 			});
 
 			// Move child page to parent level
 
-			await dragItem(getItem('Page 2-1'), getItem('Page 1-2'), 'bottom');
+			await dragItem(
+				getItem(page, 'Page 2-1'),
+				getItem(page, 'Page 1-2'),
+				'bottom'
+			);
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 1,
+				page,
 				title: 'Page 2-1',
 			});
 
 			// Move two pages from different levels
 
-			await getItem('Page 1-1').click();
+			await getItem(page, 'Page 1-1').click();
 
-			await expect(getItem('Page 2-2')).toBeVisible();
+			await expect(getItem(page, 'Page 2-2')).toBeVisible();
 
 			await page.getByLabel('Select Page 1-2').click();
 			await page.getByLabel('Select Page 2-2').click();
 
-			await dragItem(getItem('Page 1-2'), getItem('Page 1-1'), 'bottom');
+			await dragItem(
+				getItem(page, 'Page 1-2'),
+				getItem(page, 'Page 1-1'),
+				'bottom'
+			);
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 2,
+				page,
 				title: 'Page 1-2',
 			});
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 3,
+				page,
 				title: 'Page 2-2',
 			});
 
@@ -597,18 +623,85 @@ test.describe('Miller Columns drag and drop', () => {
 			await page.getByLabel('Select Page 2-1').click();
 			await page.getByLabel('Select Page 1-1').click();
 
-			await dragItem(getItem('Page 2-1'), getItem('Page 2-2'), 'bottom');
+			await dragItem(
+				getItem(page, 'Page 2-1'),
+				getItem(page, 'Page 2-2'),
+				'bottom'
+			);
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 2,
+				page,
 				title: 'Page 2-1',
 			});
 
 			await checkItemTitle({
 				columnIndex: 0,
 				itemIndex: 3,
+				page,
 				title: 'Page 1-1',
+			});
+		}
+	);
+
+	test(
+		'Drag and drop a page to a white space in a column',
+		{tag: ['@LPD-62265']},
+		async ({apiHelpers, page, pagesAdminPage, site}) => {
+
+			// Create two pages at first level
+
+			const firstPage = await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
+				title: 'Page 1',
+			});
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				siteId: site.id,
+				title: 'Page to move',
+			});
+
+			// Create one page at second level as child of Page 1
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				parentSitePage: {
+					friendlyUrlPath: firstPage.friendlyUrlPath,
+				},
+				siteId: site.id,
+				title: 'Page 2',
+			});
+
+			// Go to pages administration and click Page 1 to show its children
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await getItem(page, 'Page 1').click();
+
+			await expect(getItem(page, 'Page 2')).toBeVisible();
+
+			// Drag 'Page to move' to second position of second level
+
+			const column = getColumn(page, 1);
+
+			const columnRect = await column.evaluate((element) =>
+				element.getBoundingClientRect()
+			);
+
+			const targetPosition = {
+				x: columnRect.width / 2,
+				y: columnRect.height - 2,
+			};
+
+			await getItem(page, 'Page to move')
+				.locator('.drag-handler')
+				.dragTo(column, {targetPosition});
+
+			await checkItemTitle({
+				columnIndex: 1,
+				itemIndex: 1,
+				page,
+				title: 'Page to move',
 			});
 		}
 	);
@@ -662,7 +755,7 @@ test('Changes the permissions of a group of pages', async ({
 
 	await expect(permission).toHaveValue('indeterminate');
 
-	await page.getByLabel('close', {exact: true}).click();
+	await page.getByLabel('Close', {exact: true}).click();
 
 	// Change the Guest-View permission for both pages
 
@@ -1388,5 +1481,53 @@ test(
 			'style',
 			'max-width: 652px; min-width: 652px; width: 652px;'
 		);
+	}
+);
+
+testWithPrivatePages(
+	'Restricted icon in show in private pages layout set',
+	{
+		tag: '@LPD-61197',
+	},
+	async ({apiHelpers, page, pagesAdminPage, site}) => {
+
+		// Add on private and one public page
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await page
+			.locator('li')
+			.filter({hasText: 'New'})
+			.getByRole('button')
+			.click();
+
+		await page.getByRole('menuitem', {name: 'Private Page'}).click();
+
+		const layoutTitle = getRandomString();
+
+		await pagesAdminPage.addPage({
+			name: layoutTitle,
+		});
+
+		await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Check that the icon is only displayed in private pages
+
+		await pagesAdminPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page
+				.getByRole('menuitem', {name: 'Public Pages Add Child Page'})
+				.locator('.lexicon-icon-password-policies')
+		).not.toBeVisible();
+
+		await expect(
+			page
+				.getByRole('menuitem', {name: 'Private Pages Add Child Page'})
+				.locator('.lexicon-icon-password-policies')
+		).toBeVisible();
 	}
 );

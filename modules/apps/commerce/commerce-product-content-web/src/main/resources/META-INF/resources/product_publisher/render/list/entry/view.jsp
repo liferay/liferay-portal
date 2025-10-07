@@ -79,10 +79,10 @@ boolean hasMultipleCPSkus = cpContentHelper.hasMultipleCPSkus(cpCatalogEntry);
 					</span>
 				</p>
 
-				<p class="card-title" title="<%= cpCatalogEntry.getName() %>">
+				<p class="card-title" title="<%= HtmlUtil.escape(cpCatalogEntry.getName()) %>">
 					<a href="<%= productDetailURL %>">
 						<span class="text-truncate-inline">
-							<span class="text-truncate"><%= cpCatalogEntry.getName() %></span>
+							<span class="text-truncate"><%= HtmlUtil.escape(cpCatalogEntry.getName()) %></span>
 						</span>
 					</a>
 				</p>

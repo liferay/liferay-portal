@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -751,10 +752,9 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 	public void testIllegalDatabasePartitionSchemaNamePrefix()
 		throws Exception {
 
-		try (AutoCloseable autoCloseable =
-				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					DBPartitionUtil.class,
-					"_DATABASE_PARTITION_SCHEMA_NAME_PREFIX",
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_SCHEMA_NAME_PREFIX",
 					"VeryLongIdentifier")) {
 
 			DBPartitionUtil.checkDatabasePartitionSchemaNamePrefix();

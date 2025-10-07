@@ -7,7 +7,6 @@ package com.liferay.portal.util;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.net.URL;
@@ -32,10 +31,6 @@ public class JarUtilTest {
 
 	@Test
 	public void testDownloadAndInstallJar() throws Exception {
-		DigesterUtil digesterUtil = new DigesterUtil();
-
-		digesterUtil.setDigester(new DigesterImpl());
-
 		_testDownloadAndInstallJar(_SHA1_REAL);
 		_testDownloadAndInstallJar(_SHA1_FAKE);
 	}

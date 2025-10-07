@@ -1,0 +1,15 @@
+apiDir: ../headless-cms-api/src/main/java
+apiPackagePath: com.liferay.headless.cms
+application:
+    baseURI: /headless-cms
+    className: HeadlessCMSApplication
+    name: Liferay.Headless.CMS
+author: Crescenzo Rega
+changeTrackingEnabled: true
+clientDir: ../headless-cms-client/src/main/java
+compatibilityVersion: 12
+forcePredictableOperationId: true
+generateBatch: false
+generatePermissions: true
+javaEEPackage: jakarta
+testDir: ../headless-cms-test/src/testIntegration/java

@@ -524,9 +524,11 @@ public class SharingEntryLocalServiceUtil {
 	 * @review
 	 */
 	public static List<SharingEntry> getSharingEntries(
-		long classNameId, long classPK, int start, int end) {
+		long classNameId, long classPK, int start, int end,
+		OrderByComparator<SharingEntry> orderByComparator) {
 
-		return getService().getSharingEntries(classNameId, classPK, start, end);
+		return getService().getSharingEntries(
+			classNameId, classPK, start, end, orderByComparator);
 	}
 
 	/**

@@ -149,12 +149,12 @@ public class AccountGroupLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteAccountGroup() throws Exception {
+	public void testGetOrAddEmptyAccountGroup() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_accountGroupLocalService.getOrAddIncompleteAccountGroup(
+			_accountGroupLocalService.getOrAddEmptyAccountGroup(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), RandomTestUtil.randomString());
 		}
@@ -168,13 +168,13 @@ public class AccountGroupLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AccountGroup accountGroup =
-				_accountGroupLocalService.getOrAddIncompleteAccountGroup(
+				_accountGroupLocalService.getOrAddEmptyAccountGroup(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, accountGroup.getStatus());
+				WorkflowConstants.STATUS_EMPTY, accountGroup.getStatus());
 		}
 	}
 
@@ -277,13 +277,13 @@ public class AccountGroupLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AccountGroup accountGroup =
-				_accountGroupLocalService.getOrAddIncompleteAccountGroup(
+				_accountGroupLocalService.getOrAddEmptyAccountGroup(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, accountGroup.getStatus());
+				WorkflowConstants.STATUS_EMPTY, accountGroup.getStatus());
 
 			accountGroup = _accountGroupLocalService.updateAccountGroup(
 				accountGroup.getExternalReferenceCode(),

@@ -1,19 +1,21 @@
-<button class="d-flex p-2 sites-container" data-toggle="liferay-dropdown" id="liferay-sites-id" tabindex="6">
-	<span class="align-self-center opacity-50 pr-1 sites-icon">
-		[@clay["icon"] symbol="sites"/]
-	</span>
-
-	<div class="d-flex font-weight-semi-bold liferay-sites position-relative">
-		<div class="liferay-sites-text opacity-80 text-nowrap">
-			${languageUtil.get(locale, "liferay-sites", "Liferay Sites")}
-		</div>
-
-		<span class="caret-bottom-icon">
-			[@clay["icon"] symbol="caret-bottom-l"/]
+<div class="liferay-sites">
+	<button class="d-flex dropdown-trigger p-2" tabindex="6">
+		<span class="align-self-center liferay-sites-icon ml-1 opacity-50">
+			[@clay["icon"] symbol="sites"/]
 		</span>
-	</div>
-</button>
 
-<div aria-labelledby="liferay-sites-id" class="dropdown-menu liferay-sites-dropdown">
-	<lfr-drop-zone></lfr-drop-zone>
+		<div class="d-flex font-weight-semi-bold position-relative">
+			<div class="liferay-sites-text text-nowrap">
+				${languageUtil.get(locale, "liferay-sites", "Liferay Sites")}
+			</div>
+
+			<span class="caret-bottom-icon ml-1">
+				[@clay["icon"] symbol="caret-bottom"/]
+			</span>
+		</div>
+	</button>
+
+	<div class="d-flex dropdown-menu-container flex-column py-2">
+		<lfr-drop-zone></lfr-drop-zone>
+	</div>
 </div>

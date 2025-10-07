@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Roles Admin API
 Bundle-SymbolicName: com.liferay.roles.admin.api
-Bundle-Version: 7.0.1
+Bundle-Version: 7.0.2
 Export-Package:\
 	com.liferay.roles.admin.constants,\
 	com.liferay.roles.admin.group.type.contributor,\

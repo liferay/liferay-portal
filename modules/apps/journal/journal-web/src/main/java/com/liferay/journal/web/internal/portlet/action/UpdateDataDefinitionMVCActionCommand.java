@@ -119,7 +119,17 @@ public class UpdateDataDefinitionMVCActionCommand
 		DataDefinition dataDefinition = DataDefinition.toDTO(
 			dataDefinitionString);
 
-		_restoreDefaultValues(dataDefinitionId, dataDefinition);
+		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+			dataDefinitionId);
+
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			ddmStructure.getFullHierarchyDDMFormFieldsMap(true);
+
+		for (DataDefinitionField dataDefinitionField :
+				dataDefinition.getDataDefinitionFields()) {
+
+			_restoreDefaultValues(dataDefinitionField, ddmFormFieldsMap);
+		}
 
 		dataDefinition.setDataDefinitionKey(
 			() -> ParamUtil.getString(actionRequest, "structureKey"));
@@ -143,26 +153,29 @@ public class UpdateDataDefinitionMVCActionCommand
 	}
 
 	private void _restoreDefaultValues(
-			long dataDefinitionId, DataDefinition dataDefinition)
-		throws Exception {
+		DataDefinitionField dataDefinitionField,
+		Map<String, DDMFormField> ddmFormFieldsMap) {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
-			dataDefinitionId);
+		DDMFormField ddmFormField = ddmFormFieldsMap.get(
+			dataDefinitionField.getName());
 
-		Map<String, DDMFormField> ddmFormFieldsMap =
-			ddmStructure.getFullHierarchyDDMFormFieldsMap(true);
+		if (ddmFormField != null) {
+			dataDefinitionField.setDefaultValue(
+				() -> LocalizedValueUtil.toLocalizedValuesMap(
+					ddmFormField.getPredefinedValue()));
+		}
 
-		for (DataDefinitionField dataDefinitionField :
-				dataDefinition.getDataDefinitionFields()) {
+		DataDefinitionField[] nestedDataDefinitionFields =
+			dataDefinitionField.getNestedDataDefinitionFields();
 
-			DDMFormField ddmFormField = ddmFormFieldsMap.get(
-				dataDefinitionField.getName());
+		if (nestedDataDefinitionFields == null) {
+			return;
+		}
 
-			if (ddmFormField != null) {
-				dataDefinitionField.setDefaultValue(
-					() -> LocalizedValueUtil.toLocalizedValuesMap(
-						ddmFormField.getPredefinedValue()));
-			}
+		for (DataDefinitionField nestedDataDefinitionField :
+				nestedDataDefinitionFields) {
+
+			_restoreDefaultValues(nestedDataDefinitionField, ddmFormFieldsMap);
 		}
 	}
 

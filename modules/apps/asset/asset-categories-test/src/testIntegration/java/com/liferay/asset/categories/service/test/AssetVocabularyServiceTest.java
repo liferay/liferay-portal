@@ -57,12 +57,12 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.List;
 import java.util.Locale;
@@ -503,12 +503,12 @@ public class AssetVocabularyServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteVocabulary() throws Exception {
+	public void testGetOrAddEmptyVocabulary() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_assetVocabularyService.getOrAddIncompleteVocabulary(
+			_assetVocabularyService.getOrAddEmptyVocabulary(
 				RandomTestUtil.randomString(), _group.getGroupId());
 
 			Assert.fail();
@@ -525,7 +525,7 @@ public class AssetVocabularyServiceTest {
 			// With permissions
 
 			AssetVocabulary vocabulary =
-				_assetVocabularyService.getOrAddIncompleteVocabulary(
+				_assetVocabularyService.getOrAddEmptyVocabulary(
 					RandomTestUtil.randomString(), _group.getGroupId());
 
 			Assert.assertNotNull(vocabulary);
@@ -541,7 +541,7 @@ public class AssetVocabularyServiceTest {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, permissionChecker)) {
 
-				_assetVocabularyService.getOrAddIncompleteVocabulary(
+				_assetVocabularyService.getOrAddEmptyVocabulary(
 					RandomTestUtil.randomString(), user.getGroupId());
 
 				Assert.fail();
@@ -565,7 +565,7 @@ public class AssetVocabularyServiceTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
-			vocabulary = _assetVocabularyService.getOrAddIncompleteVocabulary(
+			vocabulary = _assetVocabularyService.getOrAddEmptyVocabulary(
 				externalReferenceCode, _group.getGroupId());
 
 			Assert.assertNotNull(vocabulary);

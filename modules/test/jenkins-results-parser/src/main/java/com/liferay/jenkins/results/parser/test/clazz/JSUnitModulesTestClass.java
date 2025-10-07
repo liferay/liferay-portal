@@ -5,23 +5,16 @@
 
 package com.liferay.jenkins.results.parser.test.clazz;
 
+import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
-import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitModulesBatchTestClassGroup;
 
 import java.io.File;
-import java.io.IOException;
 
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -29,8 +22,55 @@ import org.json.JSONObject;
  */
 public class JSUnitModulesTestClass extends ModulesTestClass {
 
+	@Override
+	public DownstreamBuildReport getCachedDownstreamBuildReport() {
+		if (!_cachedTestClassReportSearched) {
+			getCachedTestClassReport();
+		}
+
+		return _cachedDownstreamBuildReport;
+	}
+
+	@Override
+	public TestClassReport getCachedTestClassReport() {
+		if (!isBuildCachingEnabled() || _cachedTestClassReportSearched) {
+			return _cachedTestClassReport;
+		}
+
+		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
+
+		_cachedTestClassReport = batchTestClassGroup.getCachedTestClassReport(
+			getName());
+
+		if (_cachedTestClassReport != null) {
+			_cachedDownstreamBuildReport =
+				_cachedTestClassReport.getDownstreamBuildReport();
+		}
+
+		_cachedTestClassReportSearched = true;
+
+		return _cachedTestClassReport;
+	}
+
+	@Override
+	public String getName() {
+		return getTestTaskName();
+	}
+
+	@Override
 	public String getTestrayMainComponentName() {
 		return _testrayMainComponentName;
+	}
+
+	@Override
+	public String getTestTaskName() {
+		String testClassFilePath = JenkinsResultsParserUtil.getCanonicalPath(
+			getTestClassFile());
+
+		String testTaskName = testClassFilePath.replaceAll(
+			".*/modules(/.+)", "$1");
+
+		return testTaskName.replaceAll("/", ":") + ":" + getTaskName();
 	}
 
 	protected JSUnitModulesTestClass(
@@ -45,8 +85,26 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 			_testPropertiesFile = new File(
 				testPropertiesBaseDir, "test.properties");
 
+			String testrayMainComponentName =
+				JenkinsResultsParserUtil.getProperty(
+					JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
+					"testray.main.component.name");
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					testrayMainComponentName)) {
+
+				_testrayMainComponentName = testrayMainComponentName;
+
+				return;
+			}
+
+			File appBaseDir = _getAppBaseDir();
+
+			File appTestPropertiesFile = new File(
+				appBaseDir, "test.properties");
+
 			_testrayMainComponentName = JenkinsResultsParserUtil.getProperty(
-				JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
+				JenkinsResultsParserUtil.getProperties(appTestPropertiesFile),
 				"testray.main.component.name");
 		}
 		else {
@@ -60,11 +118,7 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 
 		super(batchTestClassGroup, jsonObject);
 
-		if (jsonObject.has("file")) {
-			_testPropertiesFile = new File(
-				jsonObject.getString("file") + "/test.properties");
-		}
-		else if (jsonObject.has("test_properties_file")) {
+		if (jsonObject.has("test_properties_file")) {
 			_testPropertiesFile = new File(
 				jsonObject.getString("test_properties_file"));
 		}
@@ -72,147 +126,33 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 			_testPropertiesFile = null;
 		}
 
-		if (_testPropertiesFile != null) {
-			String testrayMainComponentName =
-				JenkinsResultsParserUtil.getProperty(
-					JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
-					"testray.main.component.name");
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(
-					testrayMainComponentName)) {
-
-				File parentFile = _testPropertiesFile.getParentFile();
-
-				parentFile = parentFile.getParentFile();
-
-				testrayMainComponentName = JenkinsResultsParserUtil.getProperty(
-					JenkinsResultsParserUtil.getProperties(
-						new File(parentFile + "/test.properties")),
-					"testray.main.component.name");
-			}
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(
-					testrayMainComponentName)) {
-
-				_testrayMainComponentName = null;
-			}
-			else {
-				_testrayMainComponentName = testrayMainComponentName;
-			}
+		if (jsonObject.has("testray_main_component_name")) {
+			_testrayMainComponentName = jsonObject.getString(
+				"testray_main_component_name");
 		}
 		else {
-			_testrayMainComponentName = jsonObject.optString(
-				"testray_main_component_name");
+			_testrayMainComponentName = null;
 		}
 	}
 
 	@Override
 	protected List<File> getModulesProjectDirs() {
-		final List<File> modulesProjectDirs = new ArrayList<>();
-
-		final boolean testGitrepoJSUnit = _testGitrepoJSUnit();
-
-		final File portalModulesBaseDir = getPortalModulesBaseDir();
-
-		try {
-			Files.walkFileTree(
-				getModuleBaseDirPath(),
-				new SimpleFileVisitor<Path>() {
-
-					@Override
-					public FileVisitResult preVisitDirectory(
-						Path filePath,
-						BasicFileAttributes basicFileAttributes) {
-
-						if (filePath.equals(portalModulesBaseDir.toPath())) {
-							return FileVisitResult.CONTINUE;
-						}
-
-						File file = filePath.toFile();
-
-						File currentDirectory = new File(
-							JenkinsResultsParserUtil.getCanonicalPath(file));
-
-						String currentDirectoryPath =
-							currentDirectory.getAbsolutePath();
-
-						if (currentDirectoryPath.contains("modules") &&
-							!(currentDirectoryPath.contains("modules/apps") ||
-							  currentDirectoryPath.contains("modules/dxp"))) {
-
-							return FileVisitResult.SKIP_SUBTREE;
-						}
-
-						if (!testGitrepoJSUnit) {
-							File gitrepoFile = new File(
-								currentDirectory, ".gitrepo");
-
-							if (gitrepoFile.exists() &&
-								!currentDirectoryPath.contains("osb-faro")) {
-
-								return FileVisitResult.SKIP_SUBTREE;
-							}
-						}
-
-						File buildGradleFile = new File(
-							currentDirectory, "build.gradle");
-						File packageJSONFile = new File(
-							currentDirectory, "package.json");
-
-						if (!buildGradleFile.exists() ||
-							!packageJSONFile.exists()) {
-
-							return FileVisitResult.CONTINUE;
-						}
-
-						try {
-							JSONObject packageJSONObject = new JSONObject(
-								JenkinsResultsParserUtil.read(packageJSONFile));
-
-							if (!packageJSONObject.has("scripts")) {
-								return FileVisitResult.CONTINUE;
-							}
-
-							JSONObject scriptsJSONObject =
-								packageJSONObject.getJSONObject("scripts");
-
-							if (!scriptsJSONObject.has("test")) {
-								return FileVisitResult.CONTINUE;
-							}
-
-							modulesProjectDirs.add(currentDirectory);
-
-							return FileVisitResult.SKIP_SUBTREE;
-						}
-						catch (IOException | JSONException exception) {
-							return FileVisitResult.CONTINUE;
-						}
-					}
-
-				});
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		return modulesProjectDirs;
+		return Collections.singletonList(getModuleBaseDir());
 	}
 
-	private boolean _testGitrepoJSUnit() {
-		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
-
-		if (!(batchTestClassGroup instanceof
-				JSUnitModulesBatchTestClassGroup)) {
-
-			return false;
-		}
-
-		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
-			(JSUnitModulesBatchTestClassGroup)batchTestClassGroup;
-
-		return jsUnitModulesBatchTestClassGroup.testGitrepoJSUnit();
+	protected File getTestPropertiesFile() {
+		return _testPropertiesFile;
 	}
 
+	private File _getAppBaseDir() {
+		String filePath = _testPropertiesFile.toString();
+
+		return new File(filePath.replaceAll("(.*/apps/[^/]+)/.+", "$1"));
+	}
+
+	private DownstreamBuildReport _cachedDownstreamBuildReport;
+	private TestClassReport _cachedTestClassReport;
+	private boolean _cachedTestClassReportSearched;
 	private final File _testPropertiesFile;
 	private final String _testrayMainComponentName;
 

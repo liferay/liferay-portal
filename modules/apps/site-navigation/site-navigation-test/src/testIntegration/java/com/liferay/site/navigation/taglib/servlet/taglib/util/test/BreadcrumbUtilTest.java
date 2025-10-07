@@ -74,6 +74,27 @@ public class BreadcrumbUtilTest {
 	}
 
 	@Test
+	public void testGetEmptyLayoutBreadcrumbEntries() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeEmptyLayout(_group);
+
+		_setUpThemeDisplay(_group, layout);
+
+		List<BreadcrumbEntry> breadcrumbEntries =
+			BreadcrumbUtil.getLayoutBreadcrumbEntries(
+				_mockHttpServletRequest, _themeDisplay);
+
+		Assert.assertEquals(
+			breadcrumbEntries.toString(), 1, breadcrumbEntries.size());
+
+		BreadcrumbEntry breadcrumbEntry = breadcrumbEntries.get(0);
+
+		Assert.assertFalse(breadcrumbEntry.isBrowsable());
+
+		Assert.assertEquals(
+			layout.getName(_locale), breadcrumbEntry.getTitle());
+	}
+
+	@Test
 	public void testGetGuestGroupBreadcrumbEntry() throws Exception {
 		_setUpThemeDisplay(_group, _layout);
 

@@ -70,10 +70,13 @@ public class GraphQLDTOContributorDataFetchingProcessor {
 				).build()));
 	}
 
-	public boolean delete(GraphQLDTOContributor graphQLDTOContributor, long id)
+	public boolean delete(
+			GraphQLDTOContributor graphQLDTOContributor,
+			HttpServletRequest httpServletRequest, long id)
 		throws Exception {
 
-		return graphQLDTOContributor.deleteDTO(id);
+		return graphQLDTOContributor.deleteDTO(
+			_getDTOConverterContext(httpServletRequest, null), id);
 	}
 
 	public Object get(

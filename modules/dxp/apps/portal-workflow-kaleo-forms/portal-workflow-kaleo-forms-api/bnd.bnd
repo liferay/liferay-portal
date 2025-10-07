@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Workflow Kaleo Forms API
 Bundle-SymbolicName: com.liferay.portal.workflow.kaleo.forms.api
-Bundle-Version: 8.0.7
+Bundle-Version: 8.0.8
 Export-Package:\
 	com.liferay.portal.workflow.kaleo.forms.constants,\
 	com.liferay.portal.workflow.kaleo.forms.exception,\

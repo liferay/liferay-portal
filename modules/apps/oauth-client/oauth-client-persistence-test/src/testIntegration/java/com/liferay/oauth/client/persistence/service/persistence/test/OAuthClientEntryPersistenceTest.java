@@ -136,6 +136,8 @@ public class OAuthClientEntryPersistenceTest {
 
 		newOAuthClientEntry.setClientId(RandomTestUtil.randomString());
 
+		newOAuthClientEntry.setCustomClaimsJSON(RandomTestUtil.randomString());
+
 		newOAuthClientEntry.setInfoJSON(RandomTestUtil.randomString());
 
 		newOAuthClientEntry.setMetadataCacheTime(RandomTestUtil.nextLong());
@@ -181,6 +183,9 @@ public class OAuthClientEntryPersistenceTest {
 		Assert.assertEquals(
 			existingOAuthClientEntry.getClientId(),
 			newOAuthClientEntry.getClientId());
+		Assert.assertEquals(
+			existingOAuthClientEntry.getCustomClaimsJSON(),
+			newOAuthClientEntry.getCustomClaimsJSON());
 		Assert.assertEquals(
 			existingOAuthClientEntry.getInfoJSON(),
 			newOAuthClientEntry.getInfoJSON());
@@ -570,6 +575,8 @@ public class OAuthClientEntryPersistenceTest {
 			RandomTestUtil.randomString());
 
 		oAuthClientEntry.setClientId(RandomTestUtil.randomString());
+
+		oAuthClientEntry.setCustomClaimsJSON(RandomTestUtil.randomString());
 
 		oAuthClientEntry.setInfoJSON(RandomTestUtil.randomString());
 

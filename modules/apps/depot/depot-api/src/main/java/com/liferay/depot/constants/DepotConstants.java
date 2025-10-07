@@ -14,4 +14,10 @@ public class DepotConstants {
 
 	public static final String SERVICE_NAME = "com.liferay.depot";
 
+	public static final int TYPE_ANY = -1;
+
+	public static final int TYPE_ASSET_LIBRARY = 0;
+
+	public static final int TYPE_SPACE = 1;
+
 }

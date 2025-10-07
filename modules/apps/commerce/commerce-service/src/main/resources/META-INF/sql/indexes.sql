@@ -31,6 +31,7 @@ create index IX_654BB574 on CommerceOrderItem (CIBookedQuantityId);
 create index IX_2E1BB39D on CommerceOrderItem (CPInstanceId);
 create index IX_F9E8D927 on CommerceOrderItem (CProductId);
 create index IX_415AF3E3 on CommerceOrderItem (commerceOrderId, CPInstanceId);
+create index IX_2E425475 on CommerceOrderItem (commerceOrderId, parentCommerceOrderItemId);
 create index IX_15B37023 on CommerceOrderItem (commerceOrderId, subscription);
 create index IX_F0E98FC7 on CommerceOrderItem (customerCommerceOrderItemId);
 create unique index IX_FA3620D7 on CommerceOrderItem (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
@@ -60,6 +61,7 @@ create unique index IX_88139005 on CommerceShipment (groupId, uuid_[$COLUMN_LENG
 create index IX_67979D19 on CommerceShipment (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_3615B923 on CommerceShipmentItem (commerceOrderItemId);
+create index IX_8B292722 on CommerceShipmentItem (commerceShipmentId, commerceInventoryWarehouseId, quantity);
 create unique index IX_4FAC36D0 on CommerceShipmentItem (commerceShipmentId, commerceOrderItemId, commerceInventoryWarehouseId);
 create unique index IX_29D8E379 on CommerceShipmentItem (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create index IX_DB0BB83C on CommerceShipmentItem (groupId);

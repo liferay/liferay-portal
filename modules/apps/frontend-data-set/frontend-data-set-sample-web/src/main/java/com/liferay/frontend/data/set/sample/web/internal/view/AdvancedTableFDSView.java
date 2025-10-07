@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -58,7 +59,11 @@ public class AdvancedTableFDSView extends BaseTableFDSView {
 			)
 		).add(
 			"title", "title",
-			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"actionLink"
+			).setSortable(
+				true
+			)
 		).add(
 			"creator.name", "author",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
@@ -134,7 +139,14 @@ public class AdvancedTableFDSView extends BaseTableFDSView {
 				fdsTableSchemaField.setContentRendererModuleURL(moduleName);
 			}
 		).add(
-			"size", "size"
+			"size", "size",
+			fdsTableSchemaField -> {
+				String purposefullyInvalidURL = StringUtil.randomString();
+
+				fdsTableSchemaField.setContentRendererClientExtension(true);
+				fdsTableSchemaField.setContentRendererModuleURL(
+					"default from " + purposefullyInvalidURL);
+			}
 		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(

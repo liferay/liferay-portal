@@ -8,10 +8,12 @@ import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
 
+// eslint-disable-next-line
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+
 import ContentTypeModal, {
 	ModalContent,
 } from '../../../src/main/resources/META-INF/resources/js/components/ContentTypeModal';
-import {checkAccessibility} from '../../__lib__/checkAccessibility';
 
 const DEFAULT_PROPS = {
 	mappingTypes: [

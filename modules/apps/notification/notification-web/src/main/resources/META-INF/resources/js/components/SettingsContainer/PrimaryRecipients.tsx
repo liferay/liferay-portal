@@ -6,190 +6,58 @@
 import ClayForm, {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {
-	FormError,
-	MultiSelectItem,
-	MultipleSelect,
-	SingleSelect,
-} from '@liferay/object-js-components-web';
-import {
-	ILearnResourceContext,
-	InputLocalized,
-	LearnMessage,
-	LearnResourcesContext,
-} from 'frontend-js-components-web';
-import React, {useEffect, useState} from 'react';
+import {FormError, MultiSelectItem} from '@liferay/object-js-components-web';
+import {ILearnResourceContext} from 'frontend-js-components-web';
+import React from 'react';
 
+import {useRecipient} from '../../hooks/useRecipient';
 import {NotificationTemplateError} from '../EditNotificationTemplate';
-import {
-	getCheckedChildren,
-	handleMultiSelectRoleItemsChange,
-	uncheckMultiSelectItemChildrens,
-} from './rolesUtil';
+import {Recipient} from './Recipient';
 
 interface PrimaryRecipientProps {
-	emailNotificationRoles: MultiSelectItem[];
 	errors: FormError<NotificationTemplate & NotificationTemplateError>;
 	learnResources: ILearnResourceContext;
 	recipientOptions: LabelValueObject[];
+	roles: MultiSelectItem[];
 	selectedLocale: Locale;
 	setValues: (values: Partial<NotificationTemplate>) => void;
+	userGroups: MultiSelectItem[];
 	values: NotificationTemplate;
 }
 
 export function PrimaryRecipient({
-	emailNotificationRoles,
 	errors,
 	learnResources,
 	recipientOptions,
+	roles,
 	selectedLocale,
 	setValues,
+	userGroups,
 	values,
 }: PrimaryRecipientProps) {
 	const [recipient] = values.recipients as EmailRecipients[];
-	const [toRolesList, setToRolesList] = useState<MultiSelectItem[]>([]);
 
-	useEffect(() => {
-		if (emailNotificationRoles.length && !toRolesList.length) {
-			setToRolesList(emailNotificationRoles);
-		}
-
-		if (
-			recipient.toType === 'role' &&
-			Array.isArray(recipient.to) &&
-			!!recipient.to.length &&
-			(!!toRolesList.length || !!emailNotificationRoles.length)
-		) {
-			const baseRoleList = toRolesList.length
-				? toRolesList
-				: emailNotificationRoles;
-
-			setToRolesList(
-				baseRoleList.map((baseRoleElement) => {
-					return {
-						...baseRoleElement,
-						children: getCheckedChildren(
-							recipient.to as EmailNotificationRecipients[],
-							baseRoleElement.children
-						),
-					};
-				})
-			);
-
-			return;
-		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [emailNotificationRoles, recipient.to]);
+	const {handleChange, handleTypeChange} = useRecipient(setValues, values);
 
 	return (
 		<>
-			<SingleSelect<LabelValueObject>
+			<Recipient
 				disabled={values.system}
-				id="primaryRecipientType"
-				items={recipientOptions}
-				label={Liferay.Language.get('type')}
-				onSelectionChange={(value) => {
-					if (value === 'email') {
-						const newToRoleList =
-							uncheckMultiSelectItemChildrens(toRolesList);
-						setToRolesList(newToRoleList);
-					}
-					setValues({
-						...values,
-						recipients: [
-							{
-								...recipient,
-								to: [],
-								toType: value as string,
-							},
-						],
-					});
-				}}
+				displayType="column"
+				error={errors.to}
+				id="to"
+				label={Liferay.Language.get('recipients')}
+				learnResources={learnResources}
+				onChange={handleChange}
+				onTypeChange={handleTypeChange}
+				recipientOptions={recipientOptions}
 				required
-				selectedKey={recipient.toType}
+				roles={roles}
+				selectedLocale={selectedLocale}
+				userEmailAddressLocalized
+				userGroups={userGroups}
+				values={values}
 			/>
-
-			{recipient.toType === 'email' && (
-				<div className="lfr__notification-template-email-notification-settings-primary-recipient-input-localized">
-					<InputLocalized
-						disabled={values.system}
-						error={errors.to}
-						helpMessage={Liferay.Language.get(
-							'you-can-use-a-comma-to-enter-multiple-users'
-						)}
-						id="primaryRecipients"
-						label={Liferay.Language.get('recipients')}
-						name="recipients"
-						onChange={(translation) => {
-							setValues({
-								...values,
-								recipients: [
-									{
-										...recipient,
-										to: translation,
-									},
-								],
-							});
-						}}
-						placeholder={Liferay.Language.get('type-email-address')}
-						required
-						selectedLocale={selectedLocale}
-						translations={recipient.to as LocalizedValue<string>}
-					/>
-				</div>
-			)}
-
-			{recipient.toType === 'role' && (
-				<div className="lfr__notification-template-email-notification-settings-multiple-select">
-					<MultipleSelect
-						disabled={values.system}
-						error={errors.to}
-						id="primaryRecipientRoles"
-						label={Liferay.Language.get('role')}
-						options={toRolesList}
-						placeholder={Liferay.Language.get('select-role')}
-						required
-						search
-						searchPlaceholder={Liferay.Language.get(
-							'search-for-a-role'
-						)}
-						selectAllOption
-						setOptions={(items) => {
-							const newRecipients =
-								handleMultiSelectRoleItemsChange(items);
-
-							setValues({
-								...values,
-								recipients: [
-									{
-										...recipient,
-										to: newRecipients,
-									},
-								],
-							});
-
-							setToRolesList(items);
-						}}
-					/>
-
-					<LearnResourcesContext.Provider value={learnResources}>
-						<div className="lfr__notification-template-email-notification-settings-multiple-select-help-text">
-							<span>
-								{Liferay.Language.get(
-									'account-roles-are-subject-to-account-restrictions'
-								)}
-							</span>
-							&nbsp;
-							<LearnMessage
-								className="alert-link"
-								resource="notification-web"
-								resourceKey="general"
-							/>
-						</div>
-					</LearnResourcesContext.Provider>
-				</div>
-			)}
 
 			<>
 				<ClayForm.Group className="ml-1 row">

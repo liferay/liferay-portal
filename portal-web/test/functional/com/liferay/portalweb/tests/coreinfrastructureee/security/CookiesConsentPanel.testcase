@@ -61,7 +61,7 @@ definition {
 	@description = "This is a use case for LPS-152844. Combined AC-5, AC-6, AC-7. Verify that Cookie Consent pangel could be enabled and customized."
 	@priority = 5
 	test CookiesConsentPanelCouldBeEnabledAndCustomized {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -81,7 +81,7 @@ definition {
 	@description = "This is a use case for LPS-152844. AC-8. Verify that Cookie Consent panel could be enabled and customized on a Site page."
 	@priority = 5
 	test CookiesConsentPanelCouldBeEnabledAndCustomizedOnASitePage {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -159,7 +159,7 @@ definition {
 	@description = "This is a use case for LPS-168413. TC-1: Verify that save cookie preference via Cookies Banner Configuration widget at site level."
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsViaPortletAtSiteLevel {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -230,7 +230,7 @@ definition {
 	@description = "This is a use case for LPS-142518. TC-6 Verify that Cookie Consent Panel could be used to save Cookie Preferences."
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsWhenItsOnASitePage {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

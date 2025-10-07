@@ -1,19 +1,20 @@
 [#assign
-	firstName = themeDisplay.getUser().getFirstName()
-	lastName = themeDisplay.getUser().getLastName()
 	languageId = themeDisplay.getLanguageId()
+	userFirstName = themeDisplay.getUser().getFirstName()
+	userLastName = themeDisplay.getUser().getLastName()
+	welcomeText = languageUtil.get(locale, "welcome-to-customer-portal", "Welcome to Customer Portal")
 /]
+
+[#if languageId == "ja_JP" && userLastName?has_content]
+	[#assign welcomeText = languageUtil.format(locale, "welcome-x", userLastName)]
+[#elseif userFirstName?has_content]
+	[#assign welcomeText = languageUtil.format(locale, "welcome-x", userFirstName)]
+[/#if]
 
 <div class="align-items-center customer-portal-welcome-banner d-flex position-relative">
 	<div class="customer-portal-text ml-3 pl-5 text-neutral-0">
 		<div class="mb-4 pb-2">
-			${languageUtil.get(locale, "welcome")},
-
-			[#if languageId == "ja_JP"]
-				<span class="font-weight-bold">${lastName}様!</span>
-			[#else]
-				<span class="font-weight-bold">${firstName}!</span>
-			[/#if]
+			${welcomeText}
 		</div>
 
 		<div>
@@ -30,7 +31,7 @@
 					${languageUtil.get(locale, "not-sure-how-to-start")}
 				</div>
 
-				<a href="https://help.liferay.com/hc/sections/8712397409421" target="_blank">
+				<a href="https://support.liferay.com/w/getting-started-with-your-liferay-project-video-tutorials" target="_blank">
 					<button class="w-100">
 						<img class="customer-portal-img" src="[resources:icon_left.svg]" />
 

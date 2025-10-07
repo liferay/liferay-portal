@@ -3,15 +3,17 @@ Bundle-SymbolicName: com.liferay.portal.tools.db.partition.migration.validator
 Bundle-Version: 1.0.0
 Main-Class: com.liferay.portal.tools.db.partition.migration.validator.DBPartitionMigrationValidator
 -includeresource:\
+	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/DCLSingleton.class,\
 	@com.liferay.petra.lang-*.jar!/com/liferay/petra/lang/CentralizedThreadLocal.class,\
 	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/CharPool.class,\
 	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/dao/db/DBInspector.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogContextLogWrapper.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogFactoryImpl.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogImpl.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncByteArrayInputStream.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncByteArrayOutputStream.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/UnsyncStringReader.class,\
-	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/Jdk14LogFactoryImpl.class,\
-	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/Jdk14LogImpl.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/Log.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/LogFactory.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/log/LogFactoryUtil.class,\

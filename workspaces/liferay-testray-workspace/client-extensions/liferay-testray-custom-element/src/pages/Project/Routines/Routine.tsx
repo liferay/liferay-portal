@@ -7,12 +7,12 @@ import {DisplayType as AlertDisplayType} from '@clayui/alert';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import classNames from 'classnames';
-import {useParams} from 'react-router-dom';
+import {useOutletContext, useParams} from 'react-router-dom';
 import Container from '~/components/Layout/Container';
 import ListView from '~/components/ListView';
 import ProgressBar from '~/components/ProgressBar';
 import i18n from '~/i18n';
-import {TestrayBuild} from '~/services/rest';
+import {TestrayBuild, TestrayRoutine} from '~/services/rest';
 import {testrayBuildAlertProperties} from '~/util/constants';
 import dayjs from '~/util/date';
 import {filterStatuses} from '~/util/statuses';
@@ -20,9 +20,18 @@ import {filterStatuses} from '~/util/statuses';
 import BuildHistoryChart from './Builds/BuildHistoryChart';
 import useBuildActions from './Builds/useBuildActions';
 
+type OutletContext = {
+	testrayRoutine: TestrayRoutine;
+};
+
 const Routine = () => {
 	const {actions, formModal} = useBuildActions();
 	const {routineId} = useParams();
+	const {testrayRoutine}: OutletContext = useOutletContext();
+
+	const filter = testrayRoutine.r_teamToRoutines_c_teamId
+		? `?filter=%7B"testrayTeamIds"%3A%5B${testrayRoutine.r_teamToRoutines_c_teamId}%5D%7D&filterSchema=buildResults`
+		: '';
 
 	return (
 		<Container>
@@ -232,7 +241,8 @@ const Routine = () => {
 							value: i18n.translate('metrics'),
 						},
 					],
-					navigateTo: ({testrayBuildId}) => `build/${testrayBuildId}`,
+					navigateTo: ({testrayBuildId}) =>
+						`build/${testrayBuildId}${filter}`,
 				}}
 			>
 				{({items, totalCount}) =>

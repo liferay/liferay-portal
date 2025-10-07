@@ -5,9 +5,8 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.rule.NewEnvTestRule;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
+import com.liferay.portal.kernel.configuration.Filter;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -16,32 +15,46 @@ import java.text.Collator;
 import java.text.RuleBasedCollator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Preston Crary
  */
-@NewEnv(type = NewEnv.Type.CLASSLOADER)
 public class CollatorUtilTest {
 
-	@ClassRule
-	@Rule
-	public static final TestRule testRule = NewEnvTestRule.INSTANCE;
+	@AfterClass
+	public static void tearDownClass() {
+		_propsUtilMockedStatic.close();
+	}
+
+	@Before
+	public void setUp() {
+		Map<?, ?> map = ReflectionTestUtil.getFieldValue(
+			CollatorUtil.class, "_rules");
+
+		map.clear();
+	}
 
 	@Test
 	public void testGetInstanceWithInvalidProperty() {
-		PropsTestUtil.setProps("collator.rules", "<<<");
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(
+				Mockito.eq("collator.rules"), Mockito.any(Filter.class))
+		).thenReturn(
+			"<<<"
+		);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				CollatorUtil.class.getName(), Level.ALL)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CollatorUtil.class.getName(), LoggerTestUtil.ALL)) {
 
 			CollatorUtil.getInstance(LocaleUtil.getDefault());
 
@@ -61,7 +74,12 @@ public class CollatorUtilTest {
 
 	@Test
 	public void testGetInstanceWithoutProperty() {
-		PropsTestUtil.setProps(Collections.emptyMap());
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(
+				Mockito.eq("collator.rules"), Mockito.any(Filter.class))
+		).thenReturn(
+			""
+		);
 
 		Collator collator = CollatorUtil.getInstance(LocaleUtil.US);
 
@@ -84,7 +102,12 @@ public class CollatorUtilTest {
 
 	@Test
 	public void testGetInstanceWithProperty() {
-		PropsTestUtil.setProps("collator.rules", _RULES);
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(
+				Mockito.eq("collator.rules"), Mockito.any(Filter.class))
+		).thenReturn(
+			_RULES
+		);
 
 		Collator collator = CollatorUtil.getInstance(LocaleUtil.getDefault());
 
@@ -108,5 +131,8 @@ public class CollatorUtilTest {
 	}
 
 	private static final String _RULES = "=A<b,' '<A";
+
+	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
+		Mockito.mockStatic(PropsUtil.class);
 
 }

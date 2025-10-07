@@ -62,7 +62,7 @@ const PublisherGateSummary: React.FC<PublisherGateSummaryProps> = ({
 							</a>
 							<span className="ml-2">
 								{i18n.translate(
-									'apply-to-your-use-of-this-service-the-name-on-your-liferay-account-will-be-used-in-this-liferay-marketplace-publisher-profile-it-may-appear-where-you-contribute-and-be-changed-at-any-time'
+									'apply-to-your-use-of-this-service-the-name-on-your-liferay-account-will-be-used-in-this-liferay-marketplace-publisher-profile-it-may-appear-where-you-contribute-and-can-be-changed-at-any-time'
 								)}
 							</span>
 							.

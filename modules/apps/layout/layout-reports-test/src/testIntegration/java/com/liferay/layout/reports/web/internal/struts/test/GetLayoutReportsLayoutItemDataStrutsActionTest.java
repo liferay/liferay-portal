@@ -134,7 +134,8 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_layout.getGroupId(), _layout.getPlid(),
+				TestPropsValues.getUserId(), _layout.getGroupId(),
+				_layout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				layoutStructure.toString());
@@ -204,6 +205,7 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
+				TestPropsValues.getUserId(),
 				masterLayoutPageTemplateEntry.getGroupId(),
 				masterLayoutPageTemplateEntry.getPlid(),
 				_segmentsExperienceLocalService.
@@ -299,7 +301,8 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_layout.getGroupId(), _layout.getPlid(),
+				TestPropsValues.getUserId(), _layout.getGroupId(),
+				_layout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				layoutStructure.toString());
@@ -412,7 +415,8 @@ public class GetLayoutReportsLayoutItemDataStrutsActionTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_layout.getGroupId(), _layout.getPlid(),
+				TestPropsValues.getUserId(), _layout.getGroupId(),
+				_layout.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(_layout.getPlid()),
 				layoutStructure.toString());

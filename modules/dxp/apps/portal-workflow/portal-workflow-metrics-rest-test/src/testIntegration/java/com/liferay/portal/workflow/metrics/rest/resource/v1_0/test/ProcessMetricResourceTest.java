@@ -7,8 +7,6 @@ package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeBiConsumer;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -23,19 +21,17 @@ import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.Process;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.ProcessMetric;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Pagination;
-import com.liferay.portal.workflow.metrics.rest.client.serdes.v1_0.ProcessMetricSerDes;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.test.helper.WorkflowMetricsRESTTestHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -164,35 +160,11 @@ public class ProcessMetricResourceTest
 			});
 	}
 
+	@Ignore
 	@Override
 	@Test
-	public void testGraphQLGetProcessMetricsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"processMetrics", new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		JSONObject processMetricsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/processMetrics");
-
-		Assert.assertEquals(0, processMetricsJSONObject.get("totalCount"));
-
-		ProcessMetric processMetric1 =
-			testGetProcessMetricsPage_addProcessMetric(randomProcessMetric());
-		ProcessMetric processMetric2 =
-			testGetProcessMetricsPage_addProcessMetric(randomProcessMetric());
-
-		processMetricsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/processMetrics");
-
-		Assert.assertEquals(2, processMetricsJSONObject.get("totalCount"));
-
-		assertEqualsIgnoringOrder(
-			Arrays.asList(processMetric1, processMetric2),
-			Arrays.asList(
-				ProcessMetricSerDes.toDTOs(
-					processMetricsJSONObject.getString("items"))));
+	public void testGraphQLGetProcessMetric() throws Exception {
+		super.testGraphQLGetProcessMetric();
 	}
 
 	@Rule

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay SAML Persistence Service
 Bundle-SymbolicName: com.liferay.saml.persistence.service
-Bundle-Version: 5.0.65
+Bundle-Version: 5.0.66
 Import-Package:\
 	!com.sun.*,\
 	\
@@ -28,6 +28,6 @@ Import-Package:\
 	\
 	*
 Liferay-Releng-Module-Group-Title: SAML
-Liferay-Require-SchemaVersion: 3.1.0
+Liferay-Require-SchemaVersion: 3.2.0
 Liferay-Service: true
 -dsannotations-options: inherit

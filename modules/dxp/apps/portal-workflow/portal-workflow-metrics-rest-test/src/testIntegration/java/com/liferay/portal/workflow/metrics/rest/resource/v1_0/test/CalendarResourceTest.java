@@ -6,14 +6,10 @@
 package com.liferay.portal.workflow.metrics.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.Calendar;
 import com.liferay.portal.workflow.metrics.rest.client.pagination.Page;
-import com.liferay.portal.workflow.metrics.rest.client.serdes.v1_0.CalendarSerDes;
 import com.liferay.portal.workflow.metrics.rest.resource.v1_0.test.helper.WorkflowMetricsRESTTestHelper;
 import com.liferay.portal.workflow.metrics.sla.calendar.WorkflowMetricsSLACalendar;
 
@@ -87,39 +83,6 @@ public class CalendarResourceTest extends BaseCalendarResourceTestCase {
 		assertEqualsIgnoringOrder(
 			Arrays.asList(_getDefaultCalendar(), _getCustomCalendar()),
 			calendars);
-	}
-
-	@Override
-	@Test
-	public void testGraphQLGetCalendarsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"calendars", new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		JSONObject calendarsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/calendars");
-
-		Assert.assertEquals(1, calendarsJSONObject.get("totalCount"));
-
-		JSONArray itemsJSONArray = calendarsJSONObject.getJSONArray("items");
-
-		equals(
-			_getDefaultCalendar(),
-			CalendarSerDes.toDTO(itemsJSONArray.getString(0)));
-
-		_registerCustomCalendar();
-
-		calendarsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/calendars");
-
-		Assert.assertEquals(2, calendarsJSONObject.get("totalCount"));
-
-		assertEqualsIgnoringOrder(
-			Arrays.asList(_getDefaultCalendar(), _getCustomCalendar()),
-			Arrays.asList(
-				CalendarSerDes.toDTOs(calendarsJSONObject.getString("items"))));
 	}
 
 	@Rule

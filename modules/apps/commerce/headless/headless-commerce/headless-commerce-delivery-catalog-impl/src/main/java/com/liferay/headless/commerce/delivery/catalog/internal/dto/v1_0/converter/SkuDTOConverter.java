@@ -12,6 +12,7 @@ import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.inventory.CPDefinitionInventoryEngine;
@@ -23,6 +24,7 @@ import com.liferay.commerce.price.CommerceProductPrice;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
 import com.liferay.commerce.price.CommerceProductPriceRequest;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
+import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalService;
 import com.liferay.commerce.price.list.util.comparator.CommerceTierPriceEntryMinQuantityComparator;
@@ -385,6 +387,30 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		};
 	}
 
+	private BigDecimal _getConvertedPrice(
+			CommerceCurrency commerceCurrency,
+			CommercePriceList commercePriceList, BigDecimal price)
+		throws PortalException {
+
+		CommerceCurrency priceListCommerceCurrency =
+			_commerceCurrencyLocalService.getCommerceCurrency(
+				commercePriceList.getCompanyId(),
+				commercePriceList.getCommerceCurrencyCode());
+
+		if (priceListCommerceCurrency.getCommerceCurrencyId() !=
+				commerceCurrency.getCommerceCurrencyId()) {
+
+			price = price.divide(
+				priceListCommerceCurrency.getRate(),
+				RoundingMode.valueOf(
+					priceListCommerceCurrency.getRoundingMode()));
+
+			price = price.multiply(commerceCurrency.getRate());
+		}
+
+		return price;
+	}
+
 	private String[] _getFormattedDiscountPercentages(
 			BigDecimal[] discountPercentages, Locale locale)
 		throws Exception {
@@ -521,8 +547,9 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 	}
 
 	private CommerceMoney _getPricingQuantityUnitPriceCommerceMoney(
-		CommerceCurrency commerceCurrency,
-		CommercePriceEntry commercePriceEntry) {
+			CommerceCurrency commerceCurrency,
+			CommercePriceEntry commercePriceEntry)
+		throws Exception {
 
 		if (commercePriceEntry == null) {
 			return _commerceMoneyFactory.create(
@@ -546,7 +573,10 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		);
 
 		return _commerceMoneyFactory.create(
-			commerceCurrency, pricingQuantityUnitPrice);
+			commerceCurrency,
+			_getConvertedPrice(
+				commerceCurrency, commercePriceEntry.getCommercePriceList(),
+				pricingQuantityUnitPrice));
 	}
 
 	private CommerceMoney _getPricingQuantityUnitPriceCommerceMoney(
@@ -579,7 +609,10 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		);
 
 		return _commerceMoneyFactory.create(
-			commerceCurrency, pricingQuantityUnitPrice);
+			commerceCurrency,
+			_getConvertedPrice(
+				commerceCurrency, commercePriceEntry.getCommercePriceList(),
+				pricingQuantityUnitPrice));
 	}
 
 	private SkuOption[] _getSkuOptions(
@@ -743,8 +776,6 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 							return null;
 						}
 
-						BigDecimal commercePriceEntryPrice =
-							commercePriceEntry.getPrice();
 						CommerceMoney pricingQuantityUnitPriceCommerceMoney =
 							_getPricingQuantityUnitPriceCommerceMoney(
 								commerceCurrency, commercePriceEntry);
@@ -753,11 +784,22 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 							{
 								setCurrency(
 									() -> commerceCurrency.getName(locale));
-								setPrice(commercePriceEntryPrice::doubleValue);
+								setPrice(
+									() -> _getConvertedPrice(
+										commerceCurrency,
+										commercePriceEntry.
+											getCommercePriceList(),
+										commercePriceEntry.getPrice()
+									).doubleValue());
 								setPriceFormatted(
 									() -> _commercePriceFormatter.format(
 										commerceCurrency,
-										commercePriceEntryPrice, locale));
+										_getConvertedPrice(
+											commerceCurrency,
+											commercePriceEntry.
+												getCommercePriceList(),
+											commercePriceEntry.getPrice()),
+										locale));
 								setPriceOnApplication(
 									commercePriceEntry::isPriceOnApplication);
 								setPricingQuantityPrice(
@@ -853,6 +895,8 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 			CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure, Locale locale)
 		throws PortalException {
 
+		CommercePriceEntry commercePriceEntry =
+			commerceTierPriceEntry.getCommercePriceEntry();
 		BigDecimal commerceTierPriceEntryPrice =
 			commerceTierPriceEntry.getPrice();
 		CommerceMoney pricingQuantityUnitPriceCommerceMoney =
@@ -862,10 +906,20 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 		return new TierPrice() {
 			{
 				setCurrency(() -> commerceCurrency.getName(locale));
-				setPrice(commerceTierPriceEntryPrice::doubleValue);
+				setPrice(
+					() -> _getConvertedPrice(
+						commerceCurrency,
+						commercePriceEntry.getCommercePriceList(),
+						commerceTierPriceEntryPrice
+					).doubleValue());
 				setPriceFormatted(
 					() -> _commercePriceFormatter.format(
-						commerceCurrency, commerceTierPriceEntryPrice, locale));
+						commerceCurrency,
+						_getConvertedPrice(
+							commerceCurrency,
+							commercePriceEntry.getCommercePriceList(),
+							commerceTierPriceEntryPrice),
+						locale));
 				setPricingQuantityPrice(
 					() -> {
 						if (pricingQuantityUnitPriceCommerceMoney == null) {
@@ -913,6 +967,9 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CommerceInventoryEngine _commerceInventoryEngine;

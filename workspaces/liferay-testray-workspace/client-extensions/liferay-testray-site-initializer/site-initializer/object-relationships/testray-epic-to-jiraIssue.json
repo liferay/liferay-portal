@@ -1,0 +1,12 @@
+{
+	"deletionType": "prevent",
+	"label": {
+		"en_US": "Epic"
+	},
+	"name": "epic",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:JiraIssue$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:JiraIssue$]",
+	"objectDefinitionName2": "JiraIssue",
+	"system": false,
+	"type": "oneToMany"
+}

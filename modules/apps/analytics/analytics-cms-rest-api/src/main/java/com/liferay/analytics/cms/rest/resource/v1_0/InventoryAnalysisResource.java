@@ -43,9 +43,10 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface InventoryAnalysisResource {
 
 	public InventoryAnalysis getInventoryAnalysis(
-			Long categoryId, String groupBy, String languageId, String rangeEnd,
-			Integer rangeKey, String rangeStart, Long spaceId, Long structureId,
-			Long tagId, Long vocabularyId, Pagination pagination)
+			Long categoryId, Long depotEntryId, String groupBy,
+			String languageId, String rangeEnd, Integer rangeKey,
+			String rangeStart, Long structureId, Long tagId, Long vocabularyId,
+			Pagination pagination)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

@@ -68,8 +68,9 @@ public class StructureBuilderComponentSectionFragmentRenderer
 
 	@Override
 	protected Map<String, Object> getProps(
-		FragmentRendererContext fragmentRendererContext,
-		HttpServletRequest httpServletRequest) {
+			FragmentRendererContext fragmentRendererContext,
+			HttpServletRequest httpServletRequest)
+		throws Exception {
 
 		StructureBuilderDisplayContext structureBuilderDisplayContext =
 			new StructureBuilderDisplayContext(

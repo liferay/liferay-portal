@@ -24,7 +24,7 @@ export function NotificationQueueEntryToDataRenderer({value}: {value: string}) {
 		<ClayPopover
 			data-testid="clayPopover"
 			disableScroll
-			header={Liferay.Language.get('to')}
+			header={Liferay.Language.get('to[recipient]')}
 			onShowChange={setPopoverVisible}
 			show={isPopoverVisible}
 			style={{width: 256}}

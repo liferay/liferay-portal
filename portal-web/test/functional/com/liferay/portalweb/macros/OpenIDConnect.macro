@@ -103,42 +103,42 @@ definition {
 	macro addProvider(openIdConnectClientSecret = null, openIdConnectClientId = null, customTokenRequestParameters = null, customAuthorizationRequestParameters = null, discoveryEndpoint = null, providerName = null) {
 		Button.clickAdd();
 
-		FormFields.editTextMultiline(
+		FormFields.editText(
 			fieldName = "providerName",
 			fieldValue = ${providerName});
 
-		FormFields.editTextMultiline(
+		FormFields.editText(
 			fieldName = "openIdConnectClientId",
 			fieldValue = ${openIdConnectClientId});
 
-		FormFields.editTextMultiline(
+		FormFields.editText(
 			fieldName = "openIdConnectClientSecret",
 			fieldValue = ${openIdConnectClientSecret});
 
 		if (isSet(discoveryEndpoint)) {
-			FormFields.editTextMultiline(
-				fieldName = "discoveryEndPoint",
+			FormFields.editText(
+				fieldName = "discoveryEndpoint",
 				fieldValue = ${discoveryEndpoint});
 		}
 		else {
-			FormFields.editTextMultiline(
-				fieldName = "discoveryEndPoint",
+			FormFields.editText(
+				fieldName = "discoveryEndpoint",
 				fieldValue = "https://accounts.google.com/.well-known/openid-configuration");
 		}
 
 		if (isSet(customAuthorizationRequestParameters)) {
-			FormFields.editTextMultiline(
+			FormFields.editText(
 				fieldName = "customAuthorizationRequestParameters",
 				fieldValue = ${customAuthorizationRequestParameters});
 		}
 
 		if (isSet(customTokenRequestParameters)) {
-			FormFields.editTextMultiline(
+			FormFields.editText(
 				fieldName = "customTokenRequestParameters",
 				fieldValue = ${customTokenRequestParameters});
 		}
 
-		FormFields.editTextMultiline(
+		FormFields.editText(
 			fieldName = "registeredIdTokenSigningAlg",
 			fieldValue = "RS256");
 

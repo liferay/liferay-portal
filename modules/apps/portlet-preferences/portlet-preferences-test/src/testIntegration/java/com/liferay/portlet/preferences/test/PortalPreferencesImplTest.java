@@ -87,8 +87,8 @@ public class PortalPreferencesImplTest {
 		_platformTransactionManager = ReflectionTestUtil.getFieldValue(
 			_originalTransactionExecutor, "_platformTransactionManager");
 
-		_synchronizeThreadLocal = ReflectionTestUtil.getFieldValue(
-			SynchronousInvocationHandler.class, "_synchronizeThreadLocal");
+		_synchronized = ReflectionTestUtil.getFieldValue(
+			SynchronousInvocationHandler.class, "_synchronized");
 	}
 
 	@Before
@@ -444,7 +444,7 @@ public class PortalPreferencesImplTest {
 			TransactionAttributeAdapter transactionAttributeAdapter,
 			TransactionStatusAdapter transactionStatusAdapter) {
 
-			if (!_synchronizeThreadLocal.get()) {
+			if (!_synchronized.get()) {
 				_originalTransactionExecutor.commit(
 					transactionAttributeAdapter, transactionStatusAdapter);
 
@@ -509,7 +509,7 @@ public class PortalPreferencesImplTest {
 	@Inject
 	private static PortalPreferencesLocalService _portalPreferencesLocalService;
 
-	private static ThreadLocal<Boolean> _synchronizeThreadLocal;
+	private static ThreadLocal<Boolean> _synchronized;
 	private static TransactionInterceptor _transactionInterceptor;
 	private static Method _updatePreferencesMethod;
 

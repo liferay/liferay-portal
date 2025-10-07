@@ -54,7 +54,9 @@ import com.liferay.portal.search.aggregation.pipeline.PipelineAggregation;
 import com.liferay.portal.search.aggregation.pipeline.PipelineAggregationTranslator;
 import com.liferay.portal.search.opensearch2.internal.geolocation.GeoTranslator;
 import com.liferay.portal.search.opensearch2.internal.highlight.HighlightTranslator;
+import com.liferay.portal.search.opensearch2.internal.query.OpenSearchQueryTranslator;
 import com.liferay.portal.search.opensearch2.internal.script.ScriptTranslator;
+import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.ConversionUtil;
 import com.liferay.portal.search.opensearch2.internal.util.OpenSearchStringUtil;
 import com.liferay.portal.search.opensearch2.internal.util.SetterUtil;
@@ -1783,10 +1785,9 @@ public class OpenSearchAggregationTranslator
 		<org.opensearch.client.opensearch._types.aggregations.Aggregation>
 			_pipelineAggregationTranslator;
 
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private QueryTranslator<QueryVariant> _queryTranslator;
-
-	@Reference(target = "(search.engine.impl=OpenSearch)")
-	private SortFieldTranslator<SortOptions> _sortFieldTranslator;
+	private final QueryTranslator<QueryVariant> _queryTranslator =
+		new OpenSearchQueryTranslator();
+	private final SortFieldTranslator<SortOptions> _sortFieldTranslator =
+		new OpenSearchSortFieldTranslator();
 
 }

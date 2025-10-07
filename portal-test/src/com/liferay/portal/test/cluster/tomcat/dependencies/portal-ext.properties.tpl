@@ -1,0 +1,11 @@
+cluster.link.channel.name.control=${CLUSTER_NAME}-channel-control
+cluster.link.channel.name.transport.0=${CLUSTER_NAME}-channel-transport-0
+cluster.link.enabled=true
+configuration.override.com.liferay.portal.bundle.blacklist.internal.configuration.BundleBlacklistConfiguration_blacklistBundleSymbolicNames=["com.liferay.arquillian.extension.junit.bridge.connector", "com.liferay.data.guard.connector"]
+configuration.override.com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration_networkHostAddresses=["${NETWORK_HOST_ADDRESSES}"]
+configuration.override.com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration_productionModeEnabled=B"true"
+module.framework.properties.osgi.console=${GOGO_SHELL_PORT}
+module.framework.base.dir=${OSGI_BASE}
+module.framework.configs.dir=${OSGI_CONFIGS}
+module.framework.state.dir=${OSGI_STATE}
+setup.wizard.enabled=false

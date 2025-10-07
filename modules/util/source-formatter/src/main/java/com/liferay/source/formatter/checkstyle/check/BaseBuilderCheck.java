@@ -691,7 +691,7 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 		DetailAST variableDefinitionDetailAST, DetailAST parentDetailAST,
 		String builderClassName, List<String> supportsFunctionMethodNames,
 		Map<String, List<DetailAST>> expressionDetailASTMap,
-		int startLineNumber, int endlineNumber) {
+		int startLineNumber, int endLineNumber) {
 
 		DetailAST identDetailAST = variableDefinitionDetailAST.findFirstToken(
 			TokenTypes.IDENT);
@@ -721,7 +721,7 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 				i);
 
 			if (variableName.equals(dependentIdentDetailAST.getText()) &&
-				(dependentIdentDetailAST.getLineNo() > endlineNumber)) {
+				(dependentIdentDetailAST.getLineNo() > endLineNumber)) {
 
 				return;
 			}
@@ -819,7 +819,7 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 						if (assignVariableName.equals(
 								dependentIdentDetailAST.getText()) &&
 							(dependentIdentDetailAST.getLineNo() >
-								endlineNumber)) {
+								endLineNumber)) {
 
 							return;
 						}

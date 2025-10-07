@@ -928,6 +928,20 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 		throw new UnsupportedOperationException();
 	}
 
+	protected boolean isPermissionsInMemoryFilterEnabled() {
+		if (_permissionsInMemoryFilterEnabled == null) {
+			Class<?> modelClass = getModelClass();
+
+			_permissionsInMemoryFilterEnabled = GetterUtil.getBoolean(
+				PropsUtil.get(
+					"permissions.in.memory.filter.enabled",
+					new Filter(modelClass.getName())),
+				_PERMISSIONS_IN_MEMORY_FILTER_ENABLED);
+		}
+
+		return _permissionsInMemoryFilterEnabled;
+	}
+
 	/**
 	 * Removes the model instance from the database. {@link #update(BaseModel,
 	 * boolean)} depends on this method to implement the remove operation; it
@@ -1229,6 +1243,10 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 		return queryTable.getDslQuery();
 	}
 
+	private static final boolean _PERMISSIONS_IN_MEMORY_FILTER_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get("permissions.in.memory.filter.enabled"), true);
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		BasePersistenceImpl.class);
 
@@ -1263,6 +1281,7 @@ public class BasePersistenceImpl<T extends BaseModel<T>>
 	private Class<T> _modelClass;
 	private Class<? extends T> _modelImplClass;
 	private ModelPKType _modelPKType = ModelPKType.COMPOUND;
+	private Boolean _permissionsInMemoryFilterEnabled;
 	private SessionFactory _sessionFactory;
 	private Table<?> _table;
 

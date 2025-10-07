@@ -198,12 +198,14 @@ interface ObjectDefinition {
 	defaultLanguageId: Liferay.Language.Locale;
 	enableCategorization: boolean;
 	enableComments: boolean;
+	enableFormContainer: boolean;
 	enableFriendlyURLCustomization: boolean;
 	enableIndexSearch: boolean;
 	enableLocalization: boolean;
 	enableObjectEntryDraft: boolean;
 	enableObjectEntryHistory: boolean;
 	enableObjectEntrySchedule: boolean;
+	enableObjectEntrySubscription: boolean;
 	externalReferenceCode: string;
 	friendlyURLSeparator: string;
 	id: number;
@@ -211,6 +213,7 @@ interface ObjectDefinition {
 	modifiable?: boolean;
 	name: string;
 	objectActions: [];
+	objectDefinitionSettings?: NameValueObject[];
 	objectFields: ObjectField[];
 	objectFolderExternalReferenceCode: string;
 	objectLayouts: [];
@@ -263,6 +266,7 @@ interface ObjectEntry {
 	};
 	dateCreated: string;
 	dateModified: string;
+	displayDate?: string | null;
 	externalReferenceCode: string;
 	id: number;
 	name: string;
@@ -270,6 +274,11 @@ interface ObjectEntry {
 		code: number;
 		label: string;
 		label_i18n: string;
+	};
+	systemProperties?: {
+		version?: {
+			number: number;
+		};
 	};
 	[key: string]: string | number | unknown;
 }
@@ -288,7 +297,9 @@ interface ObjectField {
 	listTypeDefinitionId?: number;
 	localized: boolean;
 	name: string;
+	objectDefinitionExternalReferenceCode1: string;
 	objectFieldSettings?: ObjectFieldSetting[];
+	objectRelationshipExternalReferenceCode?: string;
 	readOnly: ReadOnlyFieldValue;
 	readOnlyConditionExpression: string;
 	relationshipId?: number;
@@ -299,6 +310,7 @@ interface ObjectField {
 }
 
 type ObjectFieldBusinessTypeName =
+	| 'Assignee'
 	| 'Aggregation'
 	| 'Attachment'
 	| 'AutoIncrement'

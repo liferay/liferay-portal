@@ -10,6 +10,7 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -69,6 +71,12 @@ public class JournalContentDisplayContextTest {
 		_testGetArticleWithoutParameters();
 	}
 
+	@Test
+	public void testGetArticleGroupId() throws Exception {
+		_testGetArticleGroupIdFromRenderParameter();
+		_testGetArticleGroupIdFromPortletPreferencesRenderParameter();
+	}
+
 	private JournalArticle _getArticle(RenderRequest renderRequest)
 		throws Exception {
 
@@ -80,6 +88,17 @@ public class JournalContentDisplayContextTest {
 		return ReflectionTestUtil.invoke(
 			renderRequest.getAttribute("JOURNAL_CONTENT_DISPLAY_CONTEXT#"),
 			"getArticle", new Class<?>[0]);
+	}
+
+	private long _getArticleGroupIdFromJournalContentDisplayContext(
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest) {
+
+		Object journalContentDisplayContext =
+			mockLiferayPortletRenderRequest.getAttribute(
+				"JOURNAL_CONTENT_DISPLAY_CONTEXT#");
+
+		return ReflectionTestUtil.invoke(
+			journalContentDisplayContext, "getArticleGroupId", new Class<?>[0]);
 	}
 
 	private MockLiferayPortletRenderRequest
@@ -124,6 +143,54 @@ public class JournalContentDisplayContextTest {
 		mockLiferayPortletRenderRequest.setParameter("mvcPath", path);
 
 		return mockLiferayPortletRenderRequest;
+	}
+
+	private void _testGetArticleGroupIdFromPortletPreferencesRenderParameter()
+		throws Exception {
+
+		Group childGroup = GroupTestUtil.addGroup(_group.getGroupId());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.journal.content.web.internal.configuration." +
+						"JournalContentPortletInstanceConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"groupId", String.valueOf(childGroup.getGroupId())
+					).build())) {
+
+			MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+				_getMockLiferayPortletRenderRequest();
+
+			mvcPortlet.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse());
+
+			Assert.assertEquals(
+				_getArticleGroupIdFromJournalContentDisplayContext(
+					mockLiferayPortletRenderRequest),
+				childGroup.getGroupId());
+		}
+	}
+
+	private void _testGetArticleGroupIdFromRenderParameter() throws Exception {
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"groupId", String.valueOf(_group.getGroupId()));
+
+		mvcPortlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		Assert.assertEquals(
+			_getArticleGroupIdFromJournalContentDisplayContext(
+				mockLiferayPortletRenderRequest),
+			_group.getGroupId());
 	}
 
 	private void _testGetArticleWithArticleId() throws Exception {

@@ -24,6 +24,8 @@ import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
+import java.util.Arrays;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -56,6 +58,8 @@ public class DeleteArticlesMVCActionCommand extends BaseMVCActionCommand {
 			deleteArticleIds = ParamUtil.getParameterValues(
 				actionRequest, "rowIds");
 		}
+
+		Arrays.sort(deleteArticleIds);
 
 		for (String deleteArticleId : deleteArticleIds) {
 			ActionUtil.deleteArticle(

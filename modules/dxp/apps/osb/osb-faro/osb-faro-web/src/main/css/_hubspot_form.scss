@@ -4,15 +4,15 @@
 	}
 
 	.hs-input {
-		background-color: $input-bg;
-		border: $input-border-width solid $input-border-color;
-		border-radius: $input-border-radius;
-		color: $input-color;
+		background-color: $cadmin-input-bg;
+		border: $cadmin-input-border-width solid $cadmin-input-border-color;
+		border-radius: $cadmin-input-border-radius;
+		color: $cadmin-input-color;
 		display: block;
-		font-size: $font-size-base;
+		font-size: $cadmin-font-size-base;
 		height: 2.5rem;
-		line-height: $input-line-height;
-		padding: $input-padding-y $input-padding-x;
+		line-height: $cadmin-input-line-height;
+		padding: $cadmin-input-padding-y $cadmin-input-padding-x;
 		width: 100%;
 
 		&:focus {

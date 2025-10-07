@@ -6,8 +6,6 @@
 package com.liferay.mentions.internal.util;
 
 import com.liferay.mentions.matcher.MentionsMatcher;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
@@ -32,10 +30,6 @@ public class DefaultMentionsMatcherTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PropsTestUtil.setProps(
-			PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS,
-			_SCREEN_NAME_SPECIAL_CHARS);
-
 		_mentionsMatcher = new DefaultMentionsMatcher();
 	}
 

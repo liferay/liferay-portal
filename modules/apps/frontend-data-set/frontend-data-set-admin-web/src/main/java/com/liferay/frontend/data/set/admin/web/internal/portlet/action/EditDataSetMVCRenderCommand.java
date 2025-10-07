@@ -6,6 +6,7 @@
 package com.liferay.frontend.data.set.admin.web.internal.portlet.action;
 
 import com.liferay.frontend.data.set.admin.web.internal.constants.FDSAdminPortletKeys;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.exception.NoSuchObjectDefinitionException;
 import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectDefinition;
@@ -63,7 +64,8 @@ public class EditDataSetMVCRenderCommand implements MVCRenderCommand {
 			}
 
 			ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
-				dataSetERC, objectDefinition.getObjectDefinitionId());
+				dataSetERC, ObjectDefinitionConstants.GROUP_ID_DEFAULT,
+				objectDefinition.getObjectDefinitionId());
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Collection Filter Keyword
 Bundle-SymbolicName: com.liferay.fragment.collection.filter.keyword
-Bundle-Version: 1.0.28
+Bundle-Version: 1.0.29
 Web-ContextPath: /fragment-collection-filter-keyword

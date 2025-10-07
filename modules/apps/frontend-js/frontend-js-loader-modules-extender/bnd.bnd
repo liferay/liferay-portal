@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Frontend JS Loader Modules Extender
 Bundle-SymbolicName: com.liferay.frontend.js.loader.modules.extender
-Bundle-Version: 6.0.63
+Bundle-Version: 6.0.64
 Web-ContextPath: /frontend-js-loader-modules-extender
 -includeresource: META-INF/resources=tmp/META-INF/resources

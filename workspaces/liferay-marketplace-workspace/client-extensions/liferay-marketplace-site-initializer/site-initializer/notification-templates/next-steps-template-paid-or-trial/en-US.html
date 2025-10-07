@@ -1,12 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
 	<head>
-		<title>
-			DXP App Next Steps Template Paid or Trial
-		</title>
+		<title>Next Steps Paid DXP</title>
 
-		<style data-lfr-nonce>
+		<style data-lfr-nonce="" type="text/css">
 			.next-steps-class-45 {
 				display: flex;
 				margin-left: auto;
@@ -29,9 +27,9 @@
 				font-weight: bold;
 				height: 2.5rem;
 				margin-right: 1rem;
+				padding: 0.5rem 1.5rem;
 				text-decoration: none;
 				width: 10rem;
-				padding: .5rem 1.5rem;
 			}
 
 			.next-steps-class-353 {
@@ -40,16 +38,16 @@
 			}
 
 			.next-steps-class-381 {
-				background-image: url('[$PORTAL_URL$]/documents/d/[$GROUP_KEY$]/backgroud-png');
-				background-size: cover;
+				background-image: url('http://localhost:8080/documents/d/Marketplace/backgroud-png');
 				background-position: left;
+				background-size: cover;
 				display: flex;
 				font-family: 'Source Sans Pro', sans-serif;
 			}
 
 			.next-steps-class-539 {
 				display: flex;
-				gap: .75rem;
+				gap: 0.75rem;
 			}
 
 			.next-steps-class-639 {
@@ -57,9 +55,9 @@
 				border: 1px solid #6b6c7e;
 				border-radius: 16px;
 				height: 710px;
-				width: 925px;
 				margin: 4rem auto;
 				padding: 3rem;
+				width: 925px;
 			}
 
 			.next-steps-class-771 {
@@ -68,9 +66,9 @@
 				color: #ffffff;
 				font-weight: bold;
 				height: 2.5rem;
+				padding: 0.5rem 1.5rem;
 				text-decoration: none;
 				width: 10rem;
-				padding: .5rem 1.5rem;
 			}
 
 			.next-steps-class-835 {
@@ -80,15 +78,15 @@
 			}
 
 			.next-steps-class-869 {
-				text-align: center;
 				margin: 2.5rem;
 				padding: 10px;
+				text-align: center;
 			}
 
 			.next-steps-class-891 {
 				color: #54555f;
-				text-align: center;
 				margin: 1rem 7rem;
+				text-align: center;
 			}
 
 			.next-steps-class-909 {
@@ -96,9 +94,9 @@
 			}
 
 			.next-steps-class-948 {
-				text-align: center;
 				margin: 1rem 7rem;
 				padding: 5px;
+				text-align: center;
 			}
 		</style>
 	</head>
@@ -107,43 +105,35 @@
 		<div class="next-steps-class-381">
 			<div class="next-steps-class-639">
 				<div class="next-steps-class-45">
-					<img alt="Liferay Logo" class="next-steps-class-353" height="58" src="[$PORTAL_URL$]/documents/d/[$GROUP_KEY$]/liferay_logo-png" />
+					<img alt="Liferay Logo" class="next-steps-class-353" height="58" src="http://localhost:8080/documents/d/Marketplace/liferay_logo-png" />
 				</div>
 
 				<div>
 					<main>
 						<div class="next-steps-class-539">
-							<h2 class="next-steps-class-835">
-								Next Steps
-							</h2>
+							<h2 class="next-steps-class-835">Next Steps</h2>
 						</div>
 
 						<div class="next-steps-class-891">
 							<p>
-								Congratulations on the purchase of <b>[%GETAPPINFORMATION_PRODUCTNAME%]</b>!
+								Congratulations on your recent purchase!
 							</p>
 
 							<p>
-								You will need to create a license your app before
-								deploying to your DXP instance.
+								Before deploying to your DXP instance, you'll need to create a license for your app.
 							</p>
 
 							<p>
-								Your Order ID is: <b class="next-steps-class-909">[%GETAPPINFORMATION_ORDERID%]</b>
+								Your Order ID is: <strong>[%COMMERCEORDER_ID%]</strong>
 							</p>
 
 							<p>
-								To license your app, you can click Continue
-								Configuration below. To access the Dashboard
-								click the button below, find your Order ID and choose
-								Create License. In either case, you
-								must have your instance details - IP address, MAC
-								address or hostname available.
+								Click <strong data-end="403" data-start="377">Continue Configuration</strong> below to license your app, or visit your Dashboard to locate your Order ID and create a license. Be sure to have your instance details (IP address, MAC address, or hostname) ready.
 							</p>
 						</div>
 
 						<div class="next-steps-class-869">
-							<a class="next-steps-class-221" href="[%GETAPPINFORMATION_DASHBOARDLINK%]">
+							<a class="next-steps-class-221" href="http://localhost:8080/web/marketplace/customer-dashboard">
 								Go to Dashboard
 							</a>
 

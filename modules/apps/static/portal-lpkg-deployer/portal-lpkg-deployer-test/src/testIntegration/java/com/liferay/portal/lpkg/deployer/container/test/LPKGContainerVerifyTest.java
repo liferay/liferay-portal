@@ -6,7 +6,7 @@
 package com.liferay.portal.lpkg.deployer.container.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

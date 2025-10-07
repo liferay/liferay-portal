@@ -1,0 +1,472 @@
+components:
+    schemas:
+        ImportProcess:
+            properties:
+                creator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
+                dateCreated:
+                    description:
+                        The import process's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The import process's last modification date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        The import process's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                status:
+                    $ref: "#/components/schemas/Status"
+                    description:
+                        The import process's end status.
+                    readOnly: true
+                title:
+                    description:
+                        The import process's title.
+                    readOnly: true
+                    type: string
+            type: object
+        Origin:
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                label:
+                    type: string
+            type: object
+        ReportEntry:
+            properties:
+                classExternalReferenceCode:
+                    description:
+                        The reported item's external reference code.
+                    readOnly: true
+                    type:
+                        string
+                classNameId:
+                    description:
+                        The reported item's class name id.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                classPK:
+                    description:
+                        The reported item's class primary key.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                configurationId:
+                    description:
+                        The report entry's configuration ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                creator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
+                dateCreated:
+                    description:
+                        The report entry's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The report entry's latest modification date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                errorMessage:
+                    description:
+                        The error message.
+                    readOnly: true
+                    type: string
+                errorStacktrace:
+                    description:
+                        Optional field with the full stack trace of the error, can be embedded with nestedFields.
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        The report entry's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                modelName:
+                    description:
+                        The reported item's model name.
+                    readOnly: true
+                    type: string
+                origin:
+                    $ref: "#/components/schemas/Origin"
+                    description:
+                        The report entry's origin.
+                    readOnly: true
+                scope:
+                    $ref: "#/components/schemas/Scope"
+                    description:
+                        The reported item's scope.
+                    readOnly: true
+                status:
+                    $ref: "#/components/schemas/Status"
+                    description:
+                        The report entry's 's status.
+                    readOnly: true
+                type:
+                    $ref: "#/components/schemas/Type"
+                    description:
+                        The report entry's type.
+                    readOnly: true
+            type: object
+        Scope:
+            properties:
+                key:
+                    type: string
+                label:
+                    type: string
+                type:
+                    type: string
+            type: object
+        Status:
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                label:
+                    type: string
+        Type:
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                label:
+                    type: string
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
+        'com.liferay.exportimport.report.rest', and version '1.0.0'.. A Java client JAR is available for use with the
+        group ID 'com.liferay', artifact ID 'com.liferay.exportimport.rest.client', and version '1.0.2'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: ""
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/asset-libraries/{assetLibraryId}/import-processes":
+        description:
+            Retrieves the import process entries for the specified asset library.
+        get:
+            operationId: getAssetLibraryImportProcessesPage
+            parameters:
+                -   in: path
+                    name: assetLibraryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: creatorId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: query
+                    name: status
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+            tags: ["ImportProcess"]
+    "/import-processes":
+        description:
+            Retrieves all the import process entries.
+        get:
+            operationId: getImportProcessesPage
+            parameters:
+                -   in: query
+                    name: creatorId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: query
+                    name: status
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+            tags: ["ImportProcess"]
+    "/import-processes/{importProcessId}":
+        get:
+            description:
+                Retrieves the import process entry with the specified ID.
+            operationId: getImportProcess
+            parameters:
+                -   in: path
+                    name: importProcessId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ImportProcess"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ImportProcess"
+            tags: ["ImportProcess"]
+    "/import-processes/{importProcessId}/errors":
+        get:
+            description:
+                Retrieves the errors report entries associated with the specified import process ID.
+            operationId: getImportProcessErrorsPage
+            parameters:
+                -   in: path
+                    name: importProcessId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ReportEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ReportEntry"
+                                type: array
+            tags: ["ReportEntry"]
+    "/report-entry/{reportEntryId}":
+        get:
+            description:
+                Retrieves the error report entry with the specified ID.
+            operationId: getReportEntry
+            parameters:
+                -   in: path
+                    name: reportEntryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ReportEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ReportEntry"
+            tags: ["ReportEntry"]
+    "/sites/{siteId}/import-processes":
+        description:
+            Retrieves the import process entries for the specified site.
+        get:
+            operationId: getSiteImportProcessesPage
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: creatorId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: query
+                    name: status
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ImportProcess"
+                                type: array
+            tags: ["ImportProcess"]

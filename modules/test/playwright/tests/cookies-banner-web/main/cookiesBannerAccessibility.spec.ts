@@ -16,10 +16,9 @@ test('LPD-30822 Cookie Banner Accessibility', async ({
 	systemSettingsPage,
 }) => {
 	await test.step('Enable Third Party Cookies', async () => {
-		await systemSettingsPage.goToSystemSetting(
-			'Cookies',
-			'Preference Handling'
-		);
+		await systemSettingsPage.goToSystemSetting('Privacy', 'Cookie Manager');
+
+		await systemSettingsPage.page.waitForTimeout(1000);
 
 		const enabledButton = page.getByLabel('Enabled');
 

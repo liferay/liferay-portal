@@ -147,7 +147,7 @@ public class LayoutSetPrototypeHelperTest {
 
 		boolean hasConflicts =
 			_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
-				layoutSetPrototypeLayout.getUuid(),
+				layoutSetPrototypeLayout.getExternalReferenceCode(),
 				layoutSetPrototypeLayout.getGroupId(),
 				layoutSetPrototypeLayout.isPrivateLayout(), "/test");
 
@@ -195,7 +195,8 @@ public class LayoutSetPrototypeHelperTest {
 
 		boolean hasConflicts =
 			_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
-				_prototypeLayout.getUuid(), _prototypeLayout.getGroupId(),
+				_prototypeLayout.getExternalReferenceCode(),
+				_prototypeLayout.getGroupId(),
 				_prototypeLayout.isPrivateLayout(),
 				_prototypeLayout.getFriendlyURL());
 
@@ -214,7 +215,7 @@ public class LayoutSetPrototypeHelperTest {
 
 		boolean hasConflicts =
 			_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
-				siteLayout.getUuid(), siteLayout.getGroupId(),
+				siteLayout.getExternalReferenceCode(), siteLayout.getGroupId(),
 				siteLayout.isPrivateLayout(), "/test");
 
 		Assert.assertTrue(hasConflicts);
@@ -262,8 +263,9 @@ public class LayoutSetPrototypeHelperTest {
 
 		boolean hasConflicts =
 			_layoutSetPrototypeHelper.hasDuplicatedFriendlyURLs(
-				_siteLayout.getUuid(), _siteLayout.getGroupId(),
-				_siteLayout.isPrivateLayout(), _siteLayout.getFriendlyURL());
+				_siteLayout.getExternalReferenceCode(),
+				_siteLayout.getGroupId(), _siteLayout.isPrivateLayout(),
+				_siteLayout.getFriendlyURL());
 
 		Assert.assertFalse(hasConflicts);
 	}

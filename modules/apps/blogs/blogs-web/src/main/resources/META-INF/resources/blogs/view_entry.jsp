@@ -52,7 +52,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, blogsViewEntryDisplayContext.getBl
 	<aui:input name="<%= Constants.CMD %>" type="hidden" />
 	<aui:input name="entryId" type="hidden" value="<%= String.valueOf(blogsViewEntryDisplayContext.getBlogsEntryId()) %>" />
 
-	<div class="widget-mode-detail" data-analytics-asset-id="<%= String.valueOf(blogsViewEntryDisplayContext.getBlogsEntryId()) %>" data-analytics-asset-title="<%= HtmlUtil.escapeAttribute(blogsViewEntryDisplayContext.getBlogsEntryTitle()) %>" data-analytics-asset-type="blog">
+	<div class="widget-mode-detail" data-analytics-asset-id="<%= String.valueOf(blogsViewEntryDisplayContext.getBlogsEntryId()) %>" data-analytics-asset-title="<%= HtmlUtil.escapeAttribute(blogsViewEntryDisplayContext.getBlogsEntryTitle()) %>" data-analytics-asset-type="blog" data-analytics-external-reference-code="<%= blogsViewEntryDisplayContext.getBlogEntryExternalReferenceCode() %>">
 		<liferay-util:include page="/blogs/view_entry_content_detail.jsp" servletContext="<%= application %>" />
 	</div>
 </aui:form>

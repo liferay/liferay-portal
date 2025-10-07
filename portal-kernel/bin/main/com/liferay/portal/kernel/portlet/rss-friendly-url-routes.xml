@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 7.4.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_7_4_0.dtd">
+
+<routes>
+	<route>
+		<pattern>/rss</pattern>
+		<implicit-parameter name="rss">true</implicit-parameter>
+		<overridden-parameter name="p_p_state">exclusive</overridden-parameter>
+	</route>
+	<route>
+		<pattern>/rss</pattern>
+		<implicit-parameter name="rss">t</implicit-parameter>
+		<overridden-parameter name="p_p_state">exclusive</overridden-parameter>
+	</route>
+	<route>
+		<pattern>/rss</pattern>
+		<implicit-parameter name="rss">y</implicit-parameter>
+		<overridden-parameter name="p_p_state">exclusive</overridden-parameter>
+	</route>
+	<route>
+		<pattern>/rss</pattern>
+		<implicit-parameter name="rss">on</implicit-parameter>
+		<overridden-parameter name="p_p_state">exclusive</overridden-parameter>
+	</route>
+	<route>
+		<pattern>/rss</pattern>
+		<implicit-parameter name="rss">1</implicit-parameter>
+		<overridden-parameter name="p_p_state">exclusive</overridden-parameter>
+	</route>
+</routes>

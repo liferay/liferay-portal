@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.vulcan.extension.ExtensionProvider;
 import com.liferay.portal.vulcan.extension.PropertyDefinition;
+import com.liferay.portal.vulcan.extension.validation.DefaultPropertyValidator;
 
 import java.io.Serializable;
 
@@ -101,6 +102,18 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 						PropertyDefinition.PropertyType.TEXT,
 						objectField.isRequired()));
 			}
+
+			if (!objectField.isLocalized()) {
+				continue;
+			}
+
+			extendedPropertyDefinitions.put(
+				objectField.getI18nObjectFieldName(),
+				new PropertyDefinition(
+					Collections.singleton(Map.class), null, Map.class.getName(),
+					null, objectField.getI18nObjectFieldName(),
+					PropertyDefinition.PropertyType.SINGLE_ELEMENT,
+					new DefaultPropertyValidator(), objectField.isRequired()));
 		}
 
 		return extendedPropertyDefinitions;

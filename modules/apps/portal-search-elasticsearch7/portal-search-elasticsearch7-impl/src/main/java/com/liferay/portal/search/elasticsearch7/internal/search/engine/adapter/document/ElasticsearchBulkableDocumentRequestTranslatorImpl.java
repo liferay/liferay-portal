@@ -27,7 +27,6 @@ import org.elasticsearch.xcontent.XContentBuilder;
 import org.elasticsearch.xcontent.XContentType;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Michael C. Han
@@ -236,9 +235,8 @@ public class ElasticsearchBulkableDocumentRequestTranslatorImpl
 		}
 	}
 
-	@Reference
-	private ElasticsearchDocumentFactory _elasticsearchDocumentFactory;
-
+	private final ElasticsearchDocumentFactory _elasticsearchDocumentFactory =
+		new ElasticsearchDocumentFactory();
 	private final ScriptTranslator _scriptTranslator = new ScriptTranslator();
 
 }

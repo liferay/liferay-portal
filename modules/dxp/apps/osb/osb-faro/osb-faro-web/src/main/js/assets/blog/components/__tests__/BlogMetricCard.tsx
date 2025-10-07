@@ -121,7 +121,7 @@ describe('BlogMetricCard', () => {
 		expect(linkToTheDocumentation).toBeInTheDocument();
 		expect(linkToTheDocumentation).toHaveAttribute(
 			'href',
-			'https://learn.liferay.com/w/analytics-cloud/touchpoints/assets/blogs#visitor-behavior'
+			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/assets-analytics/blogs-analytics#visitor-behavior'
 		);
 	});
 });

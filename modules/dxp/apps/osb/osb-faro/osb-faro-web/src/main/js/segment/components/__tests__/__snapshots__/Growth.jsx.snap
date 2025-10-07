@@ -30,7 +30,7 @@ exports[`SegmentGrowthChart should render 1`] = `
           </span>
           <a
             class=""
-            href="https://learn.liferay.com/analytics-cloud/latest/en/people/segments/segments.html#overview-tab"
+            href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/people/segments-analytics#overview-tab"
             rel="noreferrer noopener"
             target="_blank"
           >

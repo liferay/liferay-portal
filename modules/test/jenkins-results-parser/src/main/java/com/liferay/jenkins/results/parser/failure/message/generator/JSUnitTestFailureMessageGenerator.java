@@ -46,11 +46,11 @@ public class JSUnitTestFailureMessageGenerator
 		sb.append(packageFailureList.size());
 		sb.append(" failures");
 
-		int i = 0;
+		for (int i = 0;
+			 i < Math.min(packageFailureList.size(), _FAILURE_ITEMS_MAX); i++) {
 
-		while (i <= 7) {
-			sb.append("\n* " + packageFailureList.get(i));
-			i++;
+			sb.append("\n* ");
+			sb.append(packageFailureList.get(i));
 		}
 
 		return sb.toString();
@@ -90,8 +90,10 @@ public class JSUnitTestFailureMessageGenerator
 				"b", null,
 				"Build completed with " + packageFailureList.size() +
 					" failures."),
-			Dom4JUtil.getOrderedListElement(elementList, 7));
+			Dom4JUtil.getOrderedListElement(elementList, _FAILURE_ITEMS_MAX));
 	}
+
+	private static final int _FAILURE_ITEMS_MAX = 7;
 
 	private static final Pattern _packageFailurePattern = Pattern.compile(
 		"Execution failed for task '[\\D]+:packageRunTest'");

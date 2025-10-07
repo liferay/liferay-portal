@@ -1,7 +1,7 @@
 const button = fragmentElement.querySelector('button');
 
 const isMultistepButton = fragmentElement.querySelector(
-	`#fragment-${fragmentNamespace}-form-button`
+	`#fragment-${fragmentElementId}-form-button`
 );
 
 button.addEventListener('click', ({target}) => {

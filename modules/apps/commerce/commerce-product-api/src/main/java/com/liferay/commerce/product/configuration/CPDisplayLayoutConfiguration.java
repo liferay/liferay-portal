@@ -23,13 +23,14 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface CPDisplayLayoutConfiguration {
 
 	@Meta.AD(
-		description = "todo", name = "asset-category-layout-uuid",
-		required = false
+		description = "asset-category-layout-uuid-help",
+		name = "asset-category-layout-uuid", required = false
 	)
 	public String assetCategoryLayoutUuid();
 
 	@Meta.AD(
-		description = "todo", name = "product-layout-uuid", required = false
+		description = "product-layout-uuid-help", name = "product-layout-uuid",
+		required = false
 	)
 	public String productLayoutUuid();
 

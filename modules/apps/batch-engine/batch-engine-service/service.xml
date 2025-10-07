@@ -25,8 +25,8 @@
 		<column name="contentType" type="String" />
 		<column name="endTime" type="Date" />
 		<column name="errorMessage" type="String" />
-		<column name="fieldNames" type="String" />
 		<column name="executeStatus" type="String" />
+		<column name="fieldNames" type="String" />
 		<column name="parameters" type="Map" />
 		<column name="processedItemsCount" type="int" />
 		<column name="startTime" type="Date" />

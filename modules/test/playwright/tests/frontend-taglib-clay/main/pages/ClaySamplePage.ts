@@ -5,22 +5,41 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {liferayConfig} from '../../../../liferay.config';
+import POM from '../../../../utils/POM';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import getRandomString from '../../../../utils/getRandomString';
-import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
-import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
-export class ClaySamplePage {
+export enum TabName {
+	ALERTS = 'Alerts',
+	BADGES = 'Badges',
+	BUTTONS = 'Buttons',
+	CARDS = 'Cards',
+	DROPDOWNS = 'Dropdowns',
+	FORM_ELEMENTS = 'Form Elements',
+	ICONS = 'Icons',
+	LABELS = 'Labels',
+	LINKS = 'Links',
+	MANAGEMENT_TOOLBARS = 'Management Toolbars',
+	NAVIGATION_BARS = 'Navigation Bars',
+	PAGINATION_BARS = 'Pagination Bars',
+	PANEL = 'Panel',
+	PROGRESS_BARS = 'Progress Bars',
+	STICKERS = 'Stickers',
+	TABS = 'Tabs',
+	TOGGLE = 'Toggle',
+	VERTICAL_NAV = 'Vertical Nav',
+}
+
+export class ClaySamplePage extends POM {
 	readonly managementToolbarActiveState: Locator;
 	readonly managementToolbarDefaultState: Locator;
 	readonly managementToolbarUsingDisplayContext: Locator;
 	readonly managementToolbarWithResultsBar: Locator;
-	readonly page: Page;
 	readonly tablist: Locator;
 	readonly tooltip: Locator;
 
-	constructor(page: Page) {
+	constructor(page: Page, url: string) {
+		super(page, url);
+
 		this.managementToolbarActiveState = page.locator(
 			'#managementToolbarActiveState'
 		);
@@ -33,13 +52,86 @@ export class ClaySamplePage {
 		this.managementToolbarWithResultsBar = page.locator(
 			'#managementToolbarWithResultsBar'
 		);
-		this.page = page;
 		this.tablist = page.getByRole('tablist');
 		this.tooltip = page.locator('.tooltip-inner');
 	}
 
-	async selectTab(tabName: string, target) {
+	async selectTab(tabName: TabName) {
 		const tabHeading = this.tablist.getByText(tabName);
+
+		const target: Locator | undefined = {
+			[TabName.ALERTS]: this.page.getByRole('heading', {
+				name: 'EMBEDDED',
+			}),
+
+			[TabName.BADGES]: this.page.getByText('Primary'),
+
+			[TabName.BUTTONS]: this.page.getByRole('heading', {name: 'TYPES'}),
+
+			[TabName.CARDS]: this.page.getByRole('heading', {
+				name: 'Image Cards',
+			}),
+
+			[TabName.DROPDOWNS]: this.page.getByRole('heading', {
+				name: 'DROPDOWN MENU',
+			}),
+
+			[TabName.FORM_ELEMENTS]: this.page.getByRole('heading', {
+				name: 'CHECKBOX',
+			}),
+
+			[TabName.ICONS]: this.page.getByRole('heading', {
+				name: 'Liferay Icon Library',
+			}),
+
+			[TabName.LABELS]: this.page.getByRole('heading', {
+				name: 'LABEL REMOVABLE',
+			}),
+
+			[TabName.LINKS]: this.page.getByRole('heading', {
+				name: 'SINGLE LINK',
+			}),
+
+			[TabName.MANAGEMENT_TOOLBARS]: this.page.getByRole('heading', {
+				name: 'DEFAULT STATE',
+			}),
+
+			[TabName.NAVIGATION_BARS]: this.page.getByRole('heading', {
+				name: 'NAVIGATION BARS USING DISPLAY CONTEXT',
+			}),
+
+			[TabName.PAGINATION_BARS]: this.page.getByRole('heading', {
+				name: 'Default',
+			}),
+
+			[TabName.PANEL]: this.page.getByRole('heading', {
+				name: 'DEFAULT PANEL',
+			}),
+
+			[TabName.PROGRESS_BARS]: this.page.getByText(
+				'Progress bar is a progress indicator used to show the completion percentage of a task.'
+			),
+
+			[TabName.STICKERS]: this.page.getByRole('heading', {
+				name: 'SQUARE',
+			}),
+
+			[TabName.TABS]: this.page.getByRole('heading', {
+				name: 'DEFAULT TABS',
+			}),
+
+			[TabName.TOGGLE]: this.page.getByRole('heading', {
+				name: 'DEFAULT TOGGLE',
+			}),
+
+			[TabName.VERTICAL_NAV]: this.page.getByRole('heading', {
+				name: 'DEFAULT VERTICAL NAV',
+			}),
+		}[tabName];
+
+		if (target === undefined) {
+			throw new Error(`Unknown tab name ${tabName}`);
+		}
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -48,20 +140,9 @@ export class ClaySamplePage {
 		});
 	}
 
-	async setupClaySampleWidget({apiHelpers, site}) {
-		const widgetDefinition = getWidgetDefinition({
-			id: getRandomString(),
-			widgetName: 'com_liferay_clay_sample_web_portlet_ClaySamplePortlet',
-		});
-
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([widgetDefinition]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		await this.page.goto(
-			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
-		);
+	override async waitFor() {
+		await this.page
+			.getByRole('heading', {name: 'EMBEDDED'})
+			.waitFor({state: 'visible'});
 	}
 }

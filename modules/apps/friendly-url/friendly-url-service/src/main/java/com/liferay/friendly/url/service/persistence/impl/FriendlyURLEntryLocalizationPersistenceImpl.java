@@ -4743,10 +4743,10 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 		ctStrictColumnNames.add("companyId");
 		ctMergeColumnNames.add("friendlyURLEntryId");
 		ctMergeColumnNames.add("languageId");
-		ctMergeColumnNames.add("urlTitle");
 		ctStrictColumnNames.add("groupId");
 		ctStrictColumnNames.add("classNameId");
 		ctStrictColumnNames.add("classPK");
+		ctMergeColumnNames.add("urlTitle");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);

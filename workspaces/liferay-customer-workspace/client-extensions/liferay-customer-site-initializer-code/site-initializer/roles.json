@@ -1,5 +1,9 @@
 [
 	{
+		"name": "Article Admin",
+		"type": 2
+	},
+	{
 		"name": "Critical Incident Contact",
 		"type": 6
 	},
@@ -10,6 +14,10 @@
 	{
 		"name": "Data Breach Contact",
 		"type": 6
+	},
+	{
+		"name": "Documentation Admin",
+		"type": 2
 	},
 	{
 		"name": "Liferay Staff",

@@ -22,7 +22,7 @@ export class SXPBlueprintsAndElementsViewPage {
 
 	constructor(page: Page) {
 		this.addBlueprintButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.getByLabel('New Search Blueprint');
 		this.addBlueprintElementModal = page.locator('.modal-dialog');
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);

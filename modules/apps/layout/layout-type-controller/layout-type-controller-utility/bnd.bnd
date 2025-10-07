@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout Type Controller Utility
 Bundle-SymbolicName: com.liferay.layout.type.controller.utility
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Web-ContextPath: /layout-type-controller-utility
 -dsannotations-options: inherit

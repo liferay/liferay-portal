@@ -104,7 +104,7 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 		this.commerceAdminProductDetailsPage =
 			new CommerceAdminProductDetailsPage(page);
 		this.creationMenuNewButton = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.getByRole('button', {name: 'New'});
 		this.deleteBulkButton = page
 			.locator('nav')

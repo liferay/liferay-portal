@@ -15,6 +15,7 @@ import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.layout.util.structure.collection.EmptyCollectionOptions;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.Objects;
 
@@ -50,24 +51,31 @@ public class CollectionLayoutStructureItemImporter
 		}
 
 		collectionStyledLayoutStructureItem.setDisplayAllItems(
-			collectionPageElementDefinition.getDisplayAllItems());
+			GetterUtil.getBoolean(
+				collectionPageElementDefinition.getDisplayAllItems()));
 		collectionStyledLayoutStructureItem.setEmptyCollectionOptions(
 			_toEmptyCollectionOptions(
 				collectionPageElementDefinition.getEmptyCollectionConfig()));
 		collectionStyledLayoutStructureItem.setDisplayAllPages(
-			collectionPageElementDefinition.getDisplayAllPages());
+			GetterUtil.getBoolean(
+				collectionPageElementDefinition.getDisplayAllPages(),
+				Boolean.TRUE));
 		collectionStyledLayoutStructureItem.setListItemStyle(
 			collectionPageElementDefinition.getListItemStyle());
 		collectionStyledLayoutStructureItem.setListStyle(
 			collectionPageElementDefinition.getListStyle());
 		collectionStyledLayoutStructureItem.setNumberOfColumns(
-			collectionPageElementDefinition.getNumberOfColumns());
+			GetterUtil.getInteger(
+				collectionPageElementDefinition.getNumberOfColumns(), 1));
 		collectionStyledLayoutStructureItem.setNumberOfItems(
-			collectionPageElementDefinition.getNumberOfItems());
+			GetterUtil.getInteger(
+				collectionPageElementDefinition.getNumberOfItems(), 5));
 		collectionStyledLayoutStructureItem.setNumberOfItemsPerPage(
-			collectionPageElementDefinition.getNumberOfItemsPerPage());
+			GetterUtil.getInteger(
+				collectionPageElementDefinition.getNumberOfItemsPerPage(), 5));
 		collectionStyledLayoutStructureItem.setNumberOfPages(
-			collectionPageElementDefinition.getNumberOfPages());
+			GetterUtil.getInteger(
+				collectionPageElementDefinition.getNumberOfPages(), 20));
 		collectionStyledLayoutStructureItem.setPaginationType(
 			_toPaginationType(
 				collectionPageElementDefinition.getPaginationType()));

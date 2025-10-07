@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Builder
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.builder
-Bundle-Version: 4.0.70
+Bundle-Version: 4.0.71
 Web-ContextPath: /dynamic-data-mapping-form-builder

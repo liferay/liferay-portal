@@ -50,12 +50,12 @@ export class CommerceAdminProductDetailsPage {
 
 	constructor(page: Page) {
 		this.addSpecification = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 		this.addSpecificationFrame = page.frameLocator('iframe >> nth=2');
 		this.addExistingSpecificationValueTextbox =
 			this.addSpecificationFrame.getByRole('textbox');
-		this.backLink = page.getByRole('link', {exact: true, name: 'Back'});
+		this.backLink = page.locator('span[title="Back"]');
 		this.closeEditFrame = page
 			.frameLocator('iframe >> nth=1')
 			.getByRole('button')

@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Arrays;
@@ -30,16 +30,15 @@ public class OrganizationTypesConfigurationUpgradeProcess
 	extends UpgradeProcess {
 
 	public OrganizationTypesConfigurationUpgradeProcess(
-		ConfigurationAdmin configurationAdmin, Props props) {
+		ConfigurationAdmin configurationAdmin) {
 
 		_configurationAdmin = configurationAdmin;
-		_props = props;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		for (String organizationType :
-				_props.getArray(
+				PropsUtil.getArray(
 					LegacyOrganizationTypesKeys.ORGANIZATIONS_TYPES)) {
 
 			_upgradeOrganizationTypeConfiguration(organizationType);
@@ -73,12 +72,12 @@ public class OrganizationTypesConfigurationUpgradeProcess
 
 		Filter filter = new Filter(organizationType);
 
-		if (_props.contains(
+		if (PropsUtil.contains(
 				_getPropertyName(
 					LegacyOrganizationTypesKeys.ORGANIZATIONS_CHILDREN_TYPES,
 					organizationType))) {
 
-			String[] childrenTypes = _props.getArray(
+			String[] childrenTypes = PropsUtil.getArray(
 				LegacyOrganizationTypesKeys.ORGANIZATIONS_CHILDREN_TYPES,
 				filter);
 
@@ -94,7 +93,7 @@ public class OrganizationTypesConfigurationUpgradeProcess
 			_organizationTypeConfiguration.countryEnabled();
 
 		boolean countryEnabled = GetterUtil.getBoolean(
-			_props.get(
+			PropsUtil.get(
 				LegacyOrganizationTypesKeys.ORGANIZATIONS_COUNTRY_ENABLED,
 				filter),
 			defaultCountryEnabled);
@@ -107,7 +106,7 @@ public class OrganizationTypesConfigurationUpgradeProcess
 			_organizationTypeConfiguration.countryRequired();
 
 		boolean countryRequired = GetterUtil.getBoolean(
-			_props.get(
+			PropsUtil.get(
 				LegacyOrganizationTypesKeys.ORGANIZATIONS_COUNTRY_REQUIRED,
 				filter),
 			defaultCountryRequired);
@@ -119,7 +118,7 @@ public class OrganizationTypesConfigurationUpgradeProcess
 		boolean defaultRootable = _organizationTypeConfiguration.rootable();
 
 		boolean rootable = GetterUtil.getBoolean(
-			_props.get(
+			PropsUtil.get(
 				LegacyOrganizationTypesKeys.ORGANIZATIONS_ROOTABLE, filter),
 			defaultRootable);
 
@@ -150,6 +149,5 @@ public class OrganizationTypesConfigurationUpgradeProcess
 		ConfigurableUtil.createConfigurable(
 			OrganizationTypeConfiguration.class,
 			new HashMapDictionary<String, Object>());
-	private final Props _props;
 
 }

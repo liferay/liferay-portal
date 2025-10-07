@@ -6,7 +6,7 @@ dependencies {
 	compileInclude group: "com.liferay", name: "org.springframework.web", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileInclude group: "joda-time", name: "joda-time", version: "2.12.1"
-	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.12.0"
+	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileInclude group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileInclude group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileInclude group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"

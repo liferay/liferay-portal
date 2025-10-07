@@ -74,86 +74,31 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 			RandomTestUtil.randomString() + "@liferay.com",
 			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
 			_serviceContext);
+
 		_accountEntry2 = CommerceAccountTestUtil.addBusinessAccountEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString() + "@liferay.com",
 			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
 			_serviceContext);
-		_accountEntry3 = CommerceAccountTestUtil.addBusinessAccountEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
-			_serviceContext);
 
-		_accountEntry4 = CommerceAccountTestUtil.addBusinessAccountEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
-			_serviceContext);
-		_accountEntry5 = CommerceAccountTestUtil.addBusinessAccountEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
-			_serviceContext);
-		_accountEntry6 = CommerceAccountTestUtil.addBusinessAccountEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), new long[] {_user.getUserId()}, null,
-			_serviceContext);
+		_accountGroup = CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+			_group.getCompanyId(), RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+			_accountEntry2.getAccountEntryId(), _serviceContext);
 
-		_accountGroup1 = CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
-			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
-			_accountEntry4.getAccountEntryId(), _serviceContext);
-		_accountGroup2 = CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
-			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
-			_accountEntry5.getAccountEntryId(), _serviceContext);
-		_accountGroup3 = CommerceAccountTestUtil.addAccountGroupAndAccountRel(
-			_group.getCompanyId(), RandomTestUtil.randomString(),
-			AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
-			_accountEntry6.getAccountEntryId(), _serviceContext);
 		_commerceCatalog = _commerceCatalogService.addCommerceCatalog(
 			RandomTestUtil.randomString(),
 			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
 			RandomTestUtil.randomString(), "USD", "en_US", _serviceContext);
 
-		_commerceChannel1 = CommerceTestUtil.addCommerceChannel(
-			_group.getGroupId(), "USD");
-		_commerceChannel2 = CommerceTestUtil.addCommerceChannel(
-			_group.getGroupId(), "USD");
-		_commerceChannel3 = CommerceTestUtil.addCommerceChannel(
+		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), "USD");
 
 		Date date = new Date();
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar(date.getTime());
 
-		_commerceOrderType1 =
-			_commerceOrderTypeLocalService.addCommerceOrderType(
-				RandomTestUtil.randomString(), _user.getUserId(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(), true,
-				calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), 1, calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, _serviceContext);
-		_commerceOrderType2 =
-			_commerceOrderTypeLocalService.addCommerceOrderType(
-				RandomTestUtil.randomString(), _user.getUserId(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(), true,
-				calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), 1, calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DAY_OF_MONTH),
-				calendar.get(Calendar.YEAR), calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), true, _serviceContext);
-		_commerceOrderType3 =
+		_commerceOrderType =
 			_commerceOrderTypeLocalService.addCommerceOrderType(
 				RandomTestUtil.randomString(), _user.getUserId(),
 				RandomTestUtil.randomLocaleStringMap(),
@@ -179,7 +124,9 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
+
 		_cpConfigurationList2 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -187,7 +134,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList3 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -195,7 +143,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList4 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -203,7 +152,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList5 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -211,7 +161,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList6 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -219,7 +170,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList7 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -227,7 +179,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList8 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -235,7 +188,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList9 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -243,7 +197,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList10 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -251,7 +206,8 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList11 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
@@ -259,96 +215,98 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 		_cpConfigurationList12 =
 			_cpConfigurationListLocalService.addCPConfigurationList(
 				RandomTestUtil.randomString(), _user.getUserId(),
 				_commerceCatalog.getGroupId(), 0, false,
-				RandomTestUtil.randomString(), 2D, calendar.get(Calendar.MONTH),
+				RandomTestUtil.randomString(), 1D, calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH),
 				calendar.get(Calendar.YEAR), displayDateHour,
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true);
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true,
+				new ServiceContext());
 
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), AccountEntry.class.getName(),
 			_accountEntry1.getAccountEntryId(),
-			_cpConfigurationList1.getCPConfigurationListId());
+			_cpConfigurationList2.getCPConfigurationListId());
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), AccountGroup.class.getName(),
-			_accountGroup1.getAccountGroupId(),
-			_cpConfigurationList2.getCPConfigurationListId());
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList3.getCPConfigurationListId());
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CPConfigurationList.class.getName(),
-			_cpConfigurationList3.getCPConfigurationListId(),
-			_commerceChannel1.getCommerceChannelId(), _serviceContext);
+			_cpConfigurationList4.getCPConfigurationListId(),
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType1.getCommerceOrderTypeId(),
-			_cpConfigurationList4.getCPConfigurationListId());
-		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), AccountEntry.class.getName(),
-			_accountEntry2.getAccountEntryId(),
+			_commerceOrderType.getCommerceOrderTypeId(),
 			_cpConfigurationList5.getCPConfigurationListId());
-		_commerceChannelRelLocalService.addCommerceChannelRel(
-			CPConfigurationList.class.getName(),
-			_cpConfigurationList5.getCPConfigurationListId(),
-			_commerceChannel2.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), AccountEntry.class.getName(),
-			_accountEntry2.getAccountEntryId(),
-			_cpConfigurationList6.getCPConfigurationListId());
-		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType2.getCommerceOrderTypeId(),
+			_accountEntry1.getAccountEntryId(),
 			_cpConfigurationList6.getCPConfigurationListId());
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CPConfigurationList.class.getName(),
-			_cpConfigurationList7.getCPConfigurationListId(),
-			_commerceChannel2.getCommerceChannelId(), _serviceContext);
+			_cpConfigurationList6.getCPConfigurationListId(),
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType2.getCommerceOrderTypeId(),
+			_user.getUserId(), AccountEntry.class.getName(),
+			_accountEntry1.getAccountEntryId(),
 			_cpConfigurationList7.getCPConfigurationListId());
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), AccountGroup.class.getName(),
-			_accountGroup2.getAccountGroupId(),
-			_cpConfigurationList8.getCPConfigurationListId());
+			_user.getUserId(), CommerceOrderType.class.getName(),
+			_commerceOrderType.getCommerceOrderTypeId(),
+			_cpConfigurationList7.getCPConfigurationListId());
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CPConfigurationList.class.getName(),
 			_cpConfigurationList8.getCPConfigurationListId(),
-			_commerceChannel2.getCommerceChannelId(), _serviceContext);
-		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), AccountGroup.class.getName(),
-			_accountGroup2.getAccountGroupId(),
-			_cpConfigurationList9.getCPConfigurationListId());
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType2.getCommerceOrderTypeId(),
-			_cpConfigurationList9.getCPConfigurationListId());
+			_commerceOrderType.getCommerceOrderTypeId(),
+			_cpConfigurationList8.getCPConfigurationListId());
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), AccountEntry.class.getName(),
-			_accountEntry3.getAccountEntryId(),
-			_cpConfigurationList10.getCPConfigurationListId());
+			_user.getUserId(), AccountGroup.class.getName(),
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList9.getCPConfigurationListId());
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CPConfigurationList.class.getName(),
-			_cpConfigurationList10.getCPConfigurationListId(),
-			_commerceChannel3.getCommerceChannelId(), _serviceContext);
-		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
-			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType3.getCommerceOrderTypeId(),
-			_cpConfigurationList10.getCPConfigurationListId());
+			_cpConfigurationList9.getCPConfigurationListId(),
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), AccountGroup.class.getName(),
-			_accountGroup3.getAccountGroupId(),
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList10.getCPConfigurationListId());
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), CommerceOrderType.class.getName(),
+			_commerceOrderType.getCommerceOrderTypeId(),
+			_cpConfigurationList10.getCPConfigurationListId());
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), AccountEntry.class.getName(),
+			_accountEntry1.getAccountEntryId(),
 			_cpConfigurationList11.getCPConfigurationListId());
 		_commerceChannelRelLocalService.addCommerceChannelRel(
 			CPConfigurationList.class.getName(),
 			_cpConfigurationList11.getCPConfigurationListId(),
-			_commerceChannel3.getCommerceChannelId(), _serviceContext);
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
 		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
 			_user.getUserId(), CommerceOrderType.class.getName(),
-			_commerceOrderType3.getCommerceOrderTypeId(),
+			_commerceOrderType.getCommerceOrderTypeId(),
 			_cpConfigurationList11.getCPConfigurationListId());
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), AccountGroup.class.getName(),
+			_accountGroup.getAccountGroupId(),
+			_cpConfigurationList12.getCPConfigurationListId());
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			CPConfigurationList.class.getName(),
+			_cpConfigurationList12.getCPConfigurationListId(),
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
+		_cpConfigurationListRelLocalService.addCPConfigurationListRel(
+			_user.getUserId(), CommerceOrderType.class.getName(),
+			_commerceOrderType.getCommerceOrderTypeId(),
+			_cpConfigurationList12.getCPConfigurationListId());
 	}
 
 	@Test
@@ -373,7 +331,7 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				0, 0, 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList12.getCPConfigurationListId(),
+			_cpConfigurationList1.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -398,7 +356,7 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 				_accountEntry1.getAccountEntryId(), 0, 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList1.getCPConfigurationListId(),
+			_cpConfigurationList2.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -422,11 +380,11 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry2.getAccountEntryId(),
-				_commerceChannel2.getCommerceChannelId(), 0);
+				_accountEntry1.getAccountEntryId(),
+				_commerceChannel.getCommerceChannelId(), 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList5.getCPConfigurationListId(),
+			_cpConfigurationList6.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -450,12 +408,12 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry3.getAccountEntryId(),
-				_commerceChannel3.getCommerceChannelId(),
-				_commerceOrderType3.getCommerceOrderTypeId());
+				_accountEntry1.getAccountEntryId(),
+				_commerceChannel.getCommerceChannelId(),
+				_commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList10.getCPConfigurationListId(),
+			_cpConfigurationList11.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -479,11 +437,11 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry2.getAccountEntryId(), 0,
-				_commerceOrderType2.getCommerceOrderTypeId());
+				_accountEntry1.getAccountEntryId(), 0,
+				_commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList6.getCPConfigurationListId(),
+			_cpConfigurationList7.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -507,10 +465,10 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry4.getAccountEntryId(), 0, 0);
+				_accountEntry2.getAccountEntryId(), 0, 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList2.getCPConfigurationListId(),
+			_cpConfigurationList3.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -534,11 +492,11 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry5.getAccountEntryId(),
-				_commerceChannel2.getCommerceChannelId(), 0);
+				_accountEntry2.getAccountEntryId(),
+				_commerceChannel.getCommerceChannelId(), 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList8.getCPConfigurationListId(),
+			_cpConfigurationList9.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -562,12 +520,12 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry6.getAccountEntryId(),
-				_commerceChannel3.getCommerceChannelId(),
-				_commerceOrderType3.getCommerceOrderTypeId());
+				_accountEntry2.getAccountEntryId(),
+				_commerceChannel.getCommerceChannelId(),
+				_commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList11.getCPConfigurationListId(),
+			_cpConfigurationList12.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -591,11 +549,11 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				_accountEntry5.getAccountEntryId(), 0,
-				_commerceOrderType2.getCommerceOrderTypeId());
+				_accountEntry2.getAccountEntryId(), 0,
+				_commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList9.getCPConfigurationListId(),
+			_cpConfigurationList10.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -617,10 +575,10 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				0, _commerceChannel1.getCommerceChannelId(), 0);
+				0, _commerceChannel.getCommerceChannelId(), 0);
 
 		Assert.assertEquals(
-			_cpConfigurationList3.getCPConfigurationListId(),
+			_cpConfigurationList4.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -644,11 +602,11 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				0, _commerceChannel2.getCommerceChannelId(),
-				_commerceOrderType2.getCommerceOrderTypeId());
+				0, _commerceChannel.getCommerceChannelId(),
+				_commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList7.getCPConfigurationListId(),
+			_cpConfigurationList8.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -670,10 +628,10 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 		CPConfigurationList discoveredCPConfigurationList =
 			_cpConfigurationListDiscovery.getCPConfigurationList(
 				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				0, 0, _commerceOrderType1.getCommerceOrderTypeId());
+				0, 0, _commerceOrderType.getCommerceOrderTypeId());
 
 		Assert.assertEquals(
-			_cpConfigurationList4.getCPConfigurationListId(),
+			_cpConfigurationList5.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 
@@ -687,25 +645,7 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 	private AccountEntry _accountEntry2;
 
 	@DeleteAfterTestRun
-	private AccountEntry _accountEntry3;
-
-	@DeleteAfterTestRun
-	private AccountEntry _accountEntry4;
-
-	@DeleteAfterTestRun
-	private AccountEntry _accountEntry5;
-
-	@DeleteAfterTestRun
-	private AccountEntry _accountEntry6;
-
-	@DeleteAfterTestRun
-	private AccountGroup _accountGroup1;
-
-	@DeleteAfterTestRun
-	private AccountGroup _accountGroup2;
-
-	@DeleteAfterTestRun
-	private AccountGroup _accountGroup3;
+	private AccountGroup _accountGroup;
 
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
@@ -714,25 +654,13 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 	private CommerceCatalogService _commerceCatalogService;
 
 	@DeleteAfterTestRun
-	private CommerceChannel _commerceChannel1;
-
-	@DeleteAfterTestRun
-	private CommerceChannel _commerceChannel2;
-
-	@DeleteAfterTestRun
-	private CommerceChannel _commerceChannel3;
+	private CommerceChannel _commerceChannel;
 
 	@Inject
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	@DeleteAfterTestRun
-	private CommerceOrderType _commerceOrderType1;
-
-	@DeleteAfterTestRun
-	private CommerceOrderType _commerceOrderType2;
-
-	@DeleteAfterTestRun
-	private CommerceOrderType _commerceOrderType3;
+	private CommerceOrderType _commerceOrderType;
 
 	@Inject
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;

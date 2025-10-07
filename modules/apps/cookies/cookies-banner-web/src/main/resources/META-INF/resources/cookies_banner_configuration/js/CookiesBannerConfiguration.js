@@ -53,11 +53,11 @@ export default function ({
 		const acceptAllButton = document.getElementById(
 			`${namespace}acceptAllButton`
 		);
-		const confirmButton = document.getElementById(
-			`${namespace}confirmButton`
+		const acceptSelectedButton = document.getElementById(
+			`${namespace}acceptSelectedButton`
 		);
-		const declineAllButton = document.getElementById(
-			`${namespace}declineAllButton`
+		const useNecessaryCookiesOnlyButton = document.getElementById(
+			`${namespace}useNecessaryCookiesOnlyButton`
 		);
 
 		acceptAllButton.addEventListener('click', () => {
@@ -71,7 +71,7 @@ export default function ({
 			window.location.reload();
 		});
 
-		confirmButton.addEventListener('click', () => {
+		acceptSelectedButton.addEventListener('click', () => {
 			toggleSwitches.forEach((toggleSwitch) => {
 				setCookie(
 					toggleSwitch.dataset.cookieKey,
@@ -90,7 +90,7 @@ export default function ({
 			window.location.reload();
 		});
 
-		declineAllButton.addEventListener('click', () => {
+		useNecessaryCookiesOnlyButton.addEventListener('click', () => {
 			declineAllCookies(
 				optionalConsentCookieTypeNames,
 				requiredConsentCookieTypeNames

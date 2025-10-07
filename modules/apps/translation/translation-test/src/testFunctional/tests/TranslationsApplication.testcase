@@ -396,6 +396,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanViewEntryModifiedDate {
+		property portal.acceptance = "false";
+
 		JSONWebcontent.addWebContent(
 			content = "WC WebContent Content",
 			groupName = "Guest",

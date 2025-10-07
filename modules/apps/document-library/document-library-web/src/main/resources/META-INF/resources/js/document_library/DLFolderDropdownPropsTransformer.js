@@ -4,47 +4,21 @@
  */
 
 import {openConfirmModal, openModal} from 'frontend-js-components-web';
+import React from 'react';
 
-const _webDAVHTML = (
-	learnMessage,
-	learnURL,
-	portletNamespace,
-	webDavURL
-) => `<div class="portlet-document-library">
-		${Liferay.Language.get('webdav-help')}
-
-		<a href="${learnURL}" target="_blank">${learnMessage}</a>
-
-		<br/><br/>
-
-		<div class="form-group input-resource-wrapper">
-			<label class="control-label" for="${portletNamespace}webDavURL">
-				${Liferay.Language.get('web-dav-url')}
-			</label>
-
-			<input class="form-control lfr-input-resource" disabled id="${portletNamespace}webDavURL" name="${portletNamespace}webDavURL" type="text" value="${webDavURL}"/>
-		</div>
-	</div>`;
+import AccessFromDesktop from './AccessFromDesktop';
 
 const ACTIONS = {
 	accessFromDesktop({learnMessage, learnURL, webDavURL}, portletNamespace) {
 		openModal({
-			bodyHTML: _webDAVHTML(
-				learnMessage,
-				learnURL,
-				portletNamespace,
-				webDavURL
+			contentComponent: () => (
+				<AccessFromDesktop
+					learnMessage={learnMessage}
+					learnURL={learnURL}
+					portletNamespace={portletNamespace}
+					webDavURL={webDavURL}
+				/>
 			),
-			onOpen() {
-				const webdavURLInput = document.getElementById(
-					`${portletNamespace}webDavURL`
-				);
-
-				if (webdavURLInput) {
-					webdavURLInput.focus();
-				}
-			},
-			title: Liferay.Language.get('access-from-desktop'),
 		});
 	},
 

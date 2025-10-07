@@ -734,15 +734,15 @@ public class AssetCategoryServiceHttp {
 	}
 
 	public static com.liferay.asset.kernel.model.AssetCategory
-			getOrAddIncompleteCategory(
+			getOrAddEmptyCategory(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				long groupId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				AssetCategoryServiceUtil.class, "getOrAddIncompleteCategory",
-				_getOrAddIncompleteCategoryParameterTypes17);
+				AssetCategoryServiceUtil.class, "getOrAddEmptyCategory",
+				_getOrAddEmptyCategoryParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, groupId);
@@ -1741,10 +1741,8 @@ public class AssetCategoryServiceHttp {
 		};
 	private static final Class<?>[] _getChildCategoriesCountParameterTypes16 =
 		new Class[] {long.class};
-	private static final Class<?>[]
-		_getOrAddIncompleteCategoryParameterTypes17 = new Class[] {
-			String.class, long.class
-		};
+	private static final Class<?>[] _getOrAddEmptyCategoryParameterTypes17 =
+		new Class[] {String.class, long.class};
 	private static final Class<?>[] _getVocabularyCategoriesParameterTypes18 =
 		new Class[] {
 			long.class, int.class, int.class,

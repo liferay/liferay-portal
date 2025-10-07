@@ -1,5 +1,10 @@
 # Liferay Gradle Plugins CSS Builder Change Log
 
+## 5.0.15 - 2025-01-16
+
+### Dependencies
+- [LPD-45812] Update the com.liferay.css.builder dependency to version 3.1.6.
+
 ## 5.0.13 - 2024-05-24
 
 ### Commits
@@ -612,6 +617,7 @@ version 2.4.
 - [LPS-51081] Update the groovy-all dependency to version 2.3.10.
 
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
+[LPD-45812]: https://issues.liferay.com/browse/LPD-45812
 [LPS-51038]: https://issues.liferay.com/browse/LPS-51038
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-51801]: https://issues.liferay.com/browse/LPS-51801

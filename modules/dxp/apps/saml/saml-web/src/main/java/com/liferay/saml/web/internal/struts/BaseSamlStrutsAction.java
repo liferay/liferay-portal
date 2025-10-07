@@ -30,7 +30,7 @@ public abstract class BaseSamlStrutsAction implements StrutsAction {
 			HttpServletResponse httpServletResponse)
 		throws Exception {
 
-		if (!isEnabled()) {
+		if (!isEnabled(httpServletRequest)) {
 			return "/common/referer_js.jsp";
 		}
 
@@ -73,7 +73,7 @@ public abstract class BaseSamlStrutsAction implements StrutsAction {
 		return null;
 	}
 
-	public abstract boolean isEnabled();
+	public abstract boolean isEnabled(HttpServletRequest httpServletRequest);
 
 	protected abstract String doExecute(
 			HttpServletRequest httpServletRequest,

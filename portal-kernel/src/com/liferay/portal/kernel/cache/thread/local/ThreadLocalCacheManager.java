@@ -73,6 +73,13 @@ public class ThreadLocalCacheManager {
 		_eternalThreadLocalCaches.remove();
 	}
 
+	public static void disable() {
+		_disabled = true;
+
+		disable(Lifecycle.ETERNAL);
+		disable(Lifecycle.REQUEST);
+	}
+
 	public static void disable(Lifecycle lifecycle) {
 		ThreadLocalCaches threadLocalCaches = _getThreadLocalCaches(lifecycle);
 
@@ -84,6 +91,13 @@ public class ThreadLocalCacheManager {
 
 			threadLocalCacheMaps.clear();
 		}
+	}
+
+	public static void enable() {
+		_disabled = false;
+
+		enable(Lifecycle.ETERNAL);
+		enable(Lifecycle.REQUEST);
 	}
 
 	public static void enable(Lifecycle lifecycle) {
@@ -99,7 +113,9 @@ public class ThreadLocalCacheManager {
 
 		ThreadLocalCaches threadLocalCaches = _getThreadLocalCaches(lifecycle);
 
-		if ((threadLocalCaches == null) || threadLocalCaches._disabled) {
+		if (_disabled || (threadLocalCaches == null) ||
+			threadLocalCaches._disabled) {
+
 			return (ThreadLocalCache<T>)_emptyThreadLocalCache;
 		}
 
@@ -137,6 +153,7 @@ public class ThreadLocalCacheManager {
 		return null;
 	}
 
+	private static boolean _disabled;
 	private static final EmptyThreadLocalCache<?> _emptyThreadLocalCache =
 		new EmptyThreadLocalCache<>();
 	private static final ThreadLocal<ThreadLocalCaches>

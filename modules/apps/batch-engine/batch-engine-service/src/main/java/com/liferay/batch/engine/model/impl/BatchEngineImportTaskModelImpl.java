@@ -1428,7 +1428,7 @@ public class BatchEngineImportTaskModelImpl
 	private long _batchSize;
 	private String _callbackURL;
 	private String _className;
-	private BatchEngineImportTaskContentBlobModel _contentBlobModel;
+	private transient BatchEngineImportTaskContentBlobModel _contentBlobModel;
 	private String _contentType;
 	private Date _endTime;
 	private String _errorMessage;

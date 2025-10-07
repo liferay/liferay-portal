@@ -10,6 +10,7 @@ export const LAYOUT_DATA_ITEM_TYPES = {
 	container: 'container',
 	dropZone: 'drop-zone',
 	form: 'form',
+	formRelationship: 'form-relationship',
 	formStep: 'form-step',
 	formStepContainer: 'form-step-container',
 	fragment: 'fragment',

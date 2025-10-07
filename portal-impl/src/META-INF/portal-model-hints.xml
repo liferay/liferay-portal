@@ -814,7 +814,7 @@
 		<field name="masterLayoutPlid" type="long" />
 		<field name="layoutPrototypeUuid" type="String" />
 		<field name="layoutPrototypeLinkEnabled" type="boolean" />
-		<field name="sourcePrototypeLayoutUuid" type="String" />
+		<field name="layoutSetPrototypeLayoutERC" type="String" />
 		<field name="publishDate" type="Date" />
 		<field name="lastPublishDate" type="Date" />
 		<field name="status" type="int" />
@@ -1057,6 +1057,7 @@
 		<field name="comments" type="String">
 			<hint-collection name="TEXTAREA" />
 			<hint name="display-width">400</hint>
+			<hint name="max-length">4000</hint>
 		</field>
 		<field name="logoId" type="long" />
 		<field name="status" type="int" />
@@ -1344,6 +1345,7 @@
 		<field name="schemaVersion" type="String" />
 		<field name="buildNumber" type="int" />
 		<field name="buildDate" type="Date" />
+		<field name="versionDisplayName" type="String" />
 		<field name="verified" type="boolean" />
 		<field name="state" type="int" />
 		<field name="testString" type="String">
@@ -1590,6 +1592,7 @@
 		<field name="comments" type="String">
 			<hint-collection name="TEXTAREA" />
 			<hint name="display-width">400</hint>
+			<hint name="max-length">4000</hint>
 		</field>
 		<field name="firstName" type="String">
 			<validator name="required" />

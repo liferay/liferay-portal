@@ -314,6 +314,10 @@ public class RepositoryLocalServiceUtil {
 		return getService().getRepositories(start, end);
 	}
 
+	public static List<Repository> getRepositories(String portletId) {
+		return getService().getRepositories(portletId);
+	}
+
 	/**
 	 * Returns all the repositories matching the UUID and company.
 	 *

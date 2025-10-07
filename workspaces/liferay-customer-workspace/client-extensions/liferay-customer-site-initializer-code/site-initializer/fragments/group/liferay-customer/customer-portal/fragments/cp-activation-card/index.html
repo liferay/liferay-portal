@@ -1,0 +1,38 @@
+[#assign
+	baseURL = themeDisplay.getURLCurrent()?replace('/[v]/.*', '', 'r')
+	koroneikiAccounts = restClient.get("/c/koroneikiaccounts?pageSize=1&sort=dateCreated:desc")
+	lastCreatedProjectERC = ""
+	lastViewedProjectERC = ""
+/]
+
+[#if request?has_content]
+	[#list request.getCookies() as cookie]
+		[#if cookie.getName() == "CP_LAST_VIEWED_PROJECT_" + themeDisplay.getUserId()]
+			[#assign lastViewedProjectERC = cookie.getValue()!""]
+
+			[#break]
+		[/#if]
+	[/#list]
+[/#if]
+
+[#if koroneikiAccounts?is_hash && koroneikiAccounts.items?? && koroneikiAccounts.totalCount??]
+	[#assign lastCreatedProjectERC = (koroneikiAccounts.items[0].externalReferenceCode)!"" /]
+[/#if]
+
+[#assign projectERC = lastViewedProjectERC?has_content?then(lastViewedProjectERC, lastCreatedProjectERC) /]
+
+[#if projectERC?has_content]
+	<a class="cp-activation-card-anchor text-decoration-none" href="${baseURL}/project/#/${projectERC}/activation">
+		<div class="align-items-center card card-flat d-flex flex-column justify-content-center p-4">
+			<img class="cp-activation-card-thumbnail" src="/documents/d/customer-portal/support_faq-svg" />
+
+			<h5 class="h5 mb-3 mt-2">
+				${languageUtil.get(locale, "activation")}
+			</h5>
+
+			<p class="text-paragraph">
+				${languageUtil.get(locale, "activate-your-liferay-saas-liferay-paas-or-liferay-self-hosted-instance")}
+			</p>
+		</div>
+	</a>
+[/#if]

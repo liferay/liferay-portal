@@ -57,7 +57,7 @@
 </tr>
 <tr>
 	<td>MENU_ITEMS_IN_ORDER</td>
-	<td>//*[@class="nav nav-nested"]/li/a[contains(.,'Preference Handling')]/../following-sibling::li/a[contains(.,'Banner')]/../following-sibling::li/a[contains(.,'Consent Panel')]</td>
+	<td>//*[@class="nav nav-nested"]/li/a[contains(.,'Cookie Manager')]/../following-sibling::li/a[contains(.,'Cookie Banner')]/../following-sibling::li/a[contains(.,'Cookie Panel')]</td>
 	<td></td>
 </tr>
 </tbody>

@@ -8,7 +8,10 @@ import {resolve} from 'path';
 
 import {backendPageTest} from '../../../../fixtures/backendPageTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
-import {PAGE_MANAGEMENT_SITE_ERC} from './constants/site';
+import {
+	PAGE_MANAGEMENT_SITE_ERC,
+	PAGE_MANAGEMENT_SITE_NAME,
+} from './constants/site';
 
 export const test = mergeTests(backendPageTest);
 
@@ -20,7 +23,7 @@ test('Setup: Create site with required data for Page Management tests', async ({
 	const site = await apiHelpers.headlessSite.createSiteFromZip(
 		{
 			externalReferenceCode: PAGE_MANAGEMENT_SITE_ERC,
-			name: 'Page Management Site',
+			name: PAGE_MANAGEMENT_SITE_NAME,
 		},
 		resolve(__dirname, 'site-initializer')
 	);

@@ -1,10 +1,10 @@
 liferay-dotcom-site-initializer-content:
     name: Liferay Dotcom Site Initializer Content
-    oAuthApplicationHeadlessServer: liferay-dotcom-site-initializer-content-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-dotcom-site-initializer-content-oahs
     siteExternalReferenceCode: liferayDotcom
     siteName: Liferay Dotcom
     type: siteInitializer
-liferay-dotcom-site-initializer-content-oauth-application-headless-server:
+liferay-dotcom-site-initializer-content-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Dotcom Content OAuth Application Headless Server

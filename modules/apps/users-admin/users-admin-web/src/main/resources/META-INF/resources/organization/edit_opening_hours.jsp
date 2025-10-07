@@ -81,7 +81,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, editContactInformationDisplayConte
 								</aui:select>
 							</td>
 							<td>
-								<div class="h5"><%= StringUtil.lowerCase(LanguageUtil.get(request, "to")) %></div>
+								<div class="h5"><%= StringUtil.lowerCase(LanguageUtil.get(request, "to[date-time]")) %></div>
 							</td>
 							<td>
 								<aui:select cssClass="input-container" label="" name='<%= dayRowDisplay.getShortDayName() + "Close" %>'>

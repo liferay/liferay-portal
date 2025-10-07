@@ -1,12 +1,13 @@
 {
 	"dependencies": {
-		"@clayui/autocomplete": "3.139.1",
-		"@clayui/button": "3.136.0",
-		"@clayui/drop-down": "3.139.1",
-		"@clayui/form": "3.139.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/loading-indicator": "3.128.0",
-		"@clayui/shared": "3.139.0",
+		"@clayui/autocomplete": "3.149.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/data-provider": "3.148.0",
+		"@clayui/drop-down": "3.149.0",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
+		"@clayui/loading-indicator": "3.144.1",
+		"@clayui/shared": "3.148.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/object-js-components-web": "*",
 		"data-engine-js-components-web": "*",
@@ -17,6 +18,9 @@
 		"react-dom": "18.2.0"
 	},
 	"jest": {
+		"setupFiles": [
+			"<rootDir>/jest-setup.config.ts"
+		],
 		"testMatch": [
 			"<rootDir>/src/main/resources/META-INF/resources/tests/**/*.spec.*"
 		]
@@ -30,5 +34,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.69"
+	"version": "1.0.76"
 }

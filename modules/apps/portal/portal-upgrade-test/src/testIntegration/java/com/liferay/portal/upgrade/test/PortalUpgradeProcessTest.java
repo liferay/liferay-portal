@@ -6,7 +6,10 @@
 package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
@@ -15,12 +18,15 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeVersionTreeMap;
+import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.Iterator;
@@ -64,6 +70,47 @@ public class PortalUpgradeProcessTest {
 		_updateSchemaVersion(_currentSchemaVersion);
 
 		_innerPortalUpgradeProcess.close();
+	}
+
+	@Test
+	public void testCreatePortalReleaseSavesDisplayName() throws Exception {
+		DB db = DBManagerUtil.getDB();
+
+		db.runSQL(
+			StringBundler.concat(
+				"update Release_ set releaseId = -1, servletContextName = '",
+				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+				"-backup' where servletContextName = '",
+				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME, "'"));
+
+		try (Connection connection = DataAccess.getConnection()) {
+			PortalUpgradeProcess.createPortalRelease(connection);
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select versionDisplayName from Release_ where ",
+							"servletContextName = '",
+							ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+							"' and versionDisplayName = '",
+							ReleaseInfo.getVersionDisplayName(), "'"));
+				ResultSet resultSet = preparedStatement.executeQuery()) {
+
+				Assert.assertTrue(resultSet.next());
+			}
+		}
+		finally {
+			db.runSQL(
+				"delete from Release_ where servletContextName = '" +
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME + "'");
+			db.runSQL(
+				StringBundler.concat(
+					"update Release_ set releaseId = ",
+					ReleaseConstants.DEFAULT_ID, ", servletContextName = '",
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					"' where servletContextName = '",
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME, "-backup'"));
+		}
 	}
 
 	@Test
@@ -264,6 +311,33 @@ public class PortalUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpdateVersionDisplayName() throws Exception {
+		DB db = DBManagerUtil.getDB();
+
+		db.runSQL(
+			StringBundler.concat(
+				"update Release_ set versionDisplayName = ",
+				"'wrongVersionDisplayName' where servletContextName = '",
+				ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME, "'"));
+
+		try (Connection connection = DataAccess.getConnection()) {
+			_updateVersionDisplayName();
+
+			Assert.assertEquals(
+				ReleaseInfo.getVersionDisplayName(),
+				PortalUpgradeProcess.getCurrentVersionDisplayName(connection));
+		}
+		finally {
+			db.runSQL(
+				StringBundler.concat(
+					"update Release_ set versionDisplayName = '",
+					ReleaseInfo.getVersionDisplayName(),
+					"' where servletContextName = '",
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME, "'"));
+		}
+	}
+
+	@Test
 	public void testUpgradeWhenCoreIsInLatestSchemaVersion() throws Exception {
 		_updateSchemaVersion(PortalUpgradeProcess.getLatestSchemaVersion());
 
@@ -346,6 +420,10 @@ public class PortalUpgradeProcessTest {
 		_innerPortalUpgradeProcess.updateSchemaVersion(version);
 	}
 
+	private void _updateVersionDisplayName() throws Exception {
+		_innerPortalUpgradeProcess.updateVersionDisplayName();
+	}
+
 	private static final Version _ORIGINAL_SCHEMA_VERSION = new Version(
 		0, 0, 0);
 
@@ -368,6 +446,10 @@ public class PortalUpgradeProcessTest {
 
 			PortalUpgradeProcess.updateSchemaVersion(
 				connection, newSchemaVersion);
+		}
+
+		public void updateVersionDisplayName() throws SQLException {
+			PortalUpgradeProcess.updateVersionDisplayName(connection);
 		}
 
 		private InnerPortalUpgradeProcess() throws SQLException {

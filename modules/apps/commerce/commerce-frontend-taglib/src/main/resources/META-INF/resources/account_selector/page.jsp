@@ -39,6 +39,8 @@
 				).put(
 					"hasManageAccountsPermission", hasManageAccountsPermission
 				).put(
+					"orderSelectionDisabled", orderSelectionDisabled
+				).put(
 					"refreshPageOnAccountSelected", true
 				).put(
 					"selectOrderURL", selectOrderURL

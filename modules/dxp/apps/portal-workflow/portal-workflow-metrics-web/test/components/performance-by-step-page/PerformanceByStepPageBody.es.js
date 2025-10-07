@@ -46,8 +46,9 @@ describe('The performance by step page body should', () => {
 	beforeEach(async () => {
 		const renderResult = render(
 			<PerformanceByStepPage.Body
-				{...{items, totalCount: items.length}}
 				filtered={false}
+				items={items}
+				totalCount={items.length}
 			/>,
 			{wrapper}
 		);

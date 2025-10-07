@@ -7,6 +7,8 @@ package com.liferay.object.internal.upgrade.v9_2_1.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.constants.NotificationConstants;
+import com.liferay.notification.model.NotificationTemplate;
+import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -90,13 +92,30 @@ public class ObjectActionUpgradeProcessTest {
 			).put(
 				"type", NotificationConstants.TYPE_EMAIL
 			).build());
+
+		NotificationTemplate notificationTemplate =
+			_notificationTemplateLocalService.addNotificationTemplate(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				NotificationConstants.TYPE_USER_NOTIFICATION);
+
 		ObjectAction objectAction4 = _addObjectAction(
+			ObjectActionExecutorConstants.KEY_NOTIFICATION,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE, objectDefinition,
+			UnicodePropertiesBuilder.put(
+				"notificationTemplateId",
+				notificationTemplate.getNotificationTemplateId()
+			).build());
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			notificationTemplate);
+
+		ObjectAction objectAction5 = _addObjectAction(
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
 			ObjectActionTriggerConstants.KEY_ON_AFTER_ADD, objectDefinition,
 			UnicodePropertiesBuilder.put(
 				"url", RandomTestUtil.randomString()
 			).build());
-		ObjectAction objectAction5 = _addObjectAction(
+		ObjectAction objectAction6 = _addObjectAction(
 			ObjectActionExecutorConstants.KEY_WEBHOOK,
 			ObjectActionTriggerConstants.KEY_ON_AFTER_UPDATE, objectDefinition,
 			UnicodePropertiesBuilder.put(
@@ -124,6 +143,8 @@ public class ObjectActionUpgradeProcessTest {
 			objectAction4.getObjectActionId());
 		_assertNullUsePreferredLanguageForGuestsParameter(
 			objectAction5.getObjectActionId());
+		_assertNullUsePreferredLanguageForGuestsParameter(
+			objectAction6.getObjectActionId());
 	}
 
 	private ObjectAction _addObjectAction(
@@ -178,6 +199,9 @@ public class ObjectActionUpgradeProcessTest {
 
 	@Inject
 	private MultiVMPool _multiVMPool;
+
+	@Inject
+	private NotificationTemplateLocalService _notificationTemplateLocalService;
 
 	@Inject
 	private ObjectActionLocalService _objectActionLocalService;

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Script Management API
 Bundle-SymbolicName: com.liferay.portal.security.script.management.api
-Bundle-Version: 4.0.1
+Bundle-Version: 4.0.2
 Export-Package:\
 	com.liferay.portal.security.script.management.configuration,\
 	com.liferay.portal.security.script.management.configuration.helper,\

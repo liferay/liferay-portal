@@ -275,7 +275,7 @@ components:
                     type: number
                 mvccVersion:
                     example: 0
-                    type: number
+                    type: integer
                 name:
                     additionalProperties:
                         type: string

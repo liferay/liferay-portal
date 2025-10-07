@@ -1,14 +1,25 @@
 [
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "CLASSIC-AVIATOR-SUNGLASSES",
-		"description": "Specifies the material of the frame.",
+		"cpDefinitionExternalReferenceCode": "CAT-EYE-SUNGLASSES",
+		"description": "Specifies the color of the frame.",
 		"facetable": true,
-		"key": "frame-material",
+		"key": "frame-color",
 		"productSpecificationValue": {
-			"en_US": "Metal"
+			"en_US": "Pink"
 		},
-		"title": "Frame Material"
+		"title": "Frame Color"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "CLASSIC-AVIATOR",
+		"description": "Specifies the color of the frame.",
+		"facetable": true,
+		"key": "frame-color",
+		"productSpecificationValue": {
+			"en_US": "Orange"
+		},
+		"title": "Frame Color"
 	},
 	{
 		"categoryKey": "frame-description",
@@ -24,6 +35,17 @@
 	{
 		"categoryKey": "frame-description",
 		"cpDefinitionExternalReferenceCode": "CLASSIC-AVIATOR-SUNGLASSES",
+		"description": "Specifies the material of the frame.",
+		"facetable": true,
+		"key": "frame-material",
+		"productSpecificationValue": {
+			"en_US": "Metal"
+		},
+		"title": "Frame Material"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "CLASSIC-AVIATOR-SUNGLASSES",
 		"description": "Specifies the size of the frame (in default units).",
 		"facetable": false,
 		"key": "frame-size",
@@ -34,12 +56,78 @@
 	},
 	{
 		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "CLEARVISION-1-DAY-CONTACT-LENSES",
+		"description": "Specifies the color of the frame.",
+		"facetable": true,
+		"key": "frame-color",
+		"productSpecificationValue": {
+			"en_US": "Transparent"
+		},
+		"title": "Frame Color"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "ELEGANT-CAT-EYE",
+		"description": "Specifies the color of the frame.",
+		"facetable": true,
+		"key": "frame-color",
+		"productSpecificationValue": {
+			"en_US": "Red"
+		},
+		"title": "Frame Color"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "FAMILY-PRESCRIPTION-EYEGLASSES",
+		"description": "Specifies the color of the frame.",
+		"facetable": true,
+		"key": "frame-color",
+		"productSpecificationValue": {
+			"en_US": "Black"
+		},
+		"title": "Frame Color"
+	},
+	{
+		"categoryKey": "frame-description",
 		"cpDefinitionExternalReferenceCode": "FAMILY-PRESCRIPTION-SUNGLASSES",
 		"description": "Specifies the material of the frame.",
 		"facetable": true,
 		"key": "frame-material",
 		"productSpecificationValue": {
 			"en_US": "Metal"
+		},
+		"title": "Frame Material"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "HARD-CONTACTS",
+		"description": "Specifies the material of the frame.",
+		"facetable": true,
+		"key": "frame-material",
+		"productSpecificationValue": {
+			"en_US": "Hard"
+		},
+		"title": "Frame Material"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "KIDS-PRESCRIPTION-EYEGLASSES",
+		"description": "Specifies the color of the frame.",
+		"facetable": true,
+		"key": "frame-color",
+		"productSpecificationValue": {
+			"en_US": "Pink"
+		},
+		"title": "Frame Color"
+	},
+	{
+		"categoryKey": "frame-description",
+		"cpDefinitionExternalReferenceCode": "KIDS-PRESCRIPTION-EYEGLASSES",
+		"description": "Specifies the material of the frame.",
+		"facetable": true,
+		"key": "frame-material",
+		"productSpecificationValue": {
+			"en_US": "Plastic"
 		},
 		"title": "Frame Material"
 	},
@@ -67,29 +155,7 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "KIDS-PRESCRIPTION-EYEGLASSES",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
-		"productSpecificationValue": {
-			"en_US": "Pink"
-		},
-		"title": "Frame Color"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "KIDS-PRESCRIPTION-EYEGLASSES",
-		"description": "Specifies the material of the frame.",
-		"facetable": true,
-		"key": "frame-material",
-		"productSpecificationValue": {
-			"en_US": "Plastic"
-		},
-		"title": "Frame Material"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "FAMILY-PRESCRIPTION-EYEGLASSES",
+		"cpDefinitionExternalReferenceCode": "MODERN-RECTANGLE",
 		"description": "Specifies the color of the frame.",
 		"facetable": true,
 		"key": "frame-color",
@@ -100,36 +166,14 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "SOFT-CONTACTS",
-		"description": "Specifies the material of the frame.",
+		"cpDefinitionExternalReferenceCode": "OVERSIZED-SQUARE-SUNGLASSES",
+		"description": "Specifies the color of the frame.",
 		"facetable": true,
-		"key": "frame-material",
+		"key": "frame-color",
 		"productSpecificationValue": {
-			"en_US": "Soft"
+			"en_US": "Gold"
 		},
-		"title": "Frame Material"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "HARD-CONTACTS",
-		"description": "Specifies the material of the frame.",
-		"facetable": true,
-		"key": "frame-material",
-		"productSpecificationValue": {
-			"en_US": "Hard"
-		},
-		"title": "Frame Material"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "TINTED-LENSES",
-		"description": "Specifies the size of the frame (in default units).",
-		"facetable": false,
-		"key": "frame-size",
-		"productSpecificationValue": {
-			"en_US": "One-Size"
-		},
-		"title": "Frame Size"
+		"title": "Frame Color"
 	},
 	{
 		"categoryKey": "frame-description",
@@ -144,7 +188,7 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "SPORTS-SUNGLASSES",
+		"cpDefinitionExternalReferenceCode": "PROGRESSIVE-LENSES",
 		"description": "Specifies the color of the frame.",
 		"facetable": true,
 		"key": "frame-color",
@@ -161,28 +205,6 @@
 		"key": "frame-color",
 		"productSpecificationValue": {
 			"en_US": "Black"
-		},
-		"title": "Frame Color"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "CAT-EYE-SUNGLASSES",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
-		"productSpecificationValue": {
-			"en_US": "Pink"
-		},
-		"title": "Frame Color"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "OVERSIZED-SQUARE-SUNGLASSES",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
-		"productSpecificationValue": {
-			"en_US": "Gold"
 		},
 		"title": "Frame Color"
 	},
@@ -210,25 +232,14 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "CLEARVISION-1-DAY-CONTACT-LENSES",
-		"description": "Specifies the color of the frame.",
+		"cpDefinitionExternalReferenceCode": "SOFT-CONTACTS",
+		"description": "Specifies the material of the frame.",
 		"facetable": true,
-		"key": "frame-color",
+		"key": "frame-material",
 		"productSpecificationValue": {
-			"en_US": "Transparent"
+			"en_US": "Soft"
 		},
-		"title": "Frame Color"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "PROGRESSIVE-LENSES",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
-		"productSpecificationValue": {
-			"en_US": "Black"
-		},
-		"title": "Frame Color"
+		"title": "Frame Material"
 	},
 	{
 		"categoryKey": "frame-description",
@@ -243,7 +254,7 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "TRENDY-OVERSIZED",
+		"cpDefinitionExternalReferenceCode": "SPORTS-SUNGLASSES",
 		"description": "Specifies the color of the frame.",
 		"facetable": true,
 		"key": "frame-color",
@@ -254,18 +265,18 @@
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "ELEGANT-CAT-EYE",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
+		"cpDefinitionExternalReferenceCode": "TINTED-LENSES",
+		"description": "Specifies the size of the frame (in default units).",
+		"facetable": false,
+		"key": "frame-size",
 		"productSpecificationValue": {
-			"en_US": "Red"
+			"en_US": "One-Size"
 		},
-		"title": "Frame Color"
+		"title": "Frame Size"
 	},
 	{
 		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "MODERN-RECTANGLE",
+		"cpDefinitionExternalReferenceCode": "TRENDY-OVERSIZED",
 		"description": "Specifies the color of the frame.",
 		"facetable": true,
 		"key": "frame-color",
@@ -282,17 +293,6 @@
 		"key": "frame-color",
 		"productSpecificationValue": {
 			"en_US": "Transparent"
-		},
-		"title": "Frame Color"
-	},
-	{
-		"categoryKey": "frame-description",
-		"cpDefinitionExternalReferenceCode": "CLASSIC-AVIATOR",
-		"description": "Specifies the color of the frame.",
-		"facetable": true,
-		"key": "frame-color",
-		"productSpecificationValue": {
-			"en_US": "Orange"
 		},
 		"title": "Frame Color"
 	}

@@ -1,0 +1,10 @@
+{
+	"name": "Customization",
+	"name_i18n": {
+		"en_US": "Customization",
+		"es-ES": "Personalización",
+		"ja-JP": "カスタマイズ",
+		"pt-BR": "Customização"
+	},
+	"viewableBy": "Anyone"
+}

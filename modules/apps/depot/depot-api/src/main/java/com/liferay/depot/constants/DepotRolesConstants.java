@@ -23,6 +23,4 @@ public class DepotRolesConstants {
 
 	public static final String ASSET_LIBRARY_OWNER = "Asset Library Owner";
 
-	public static final String CMS_CONSUMER = "CMS Consumer";
-
 }

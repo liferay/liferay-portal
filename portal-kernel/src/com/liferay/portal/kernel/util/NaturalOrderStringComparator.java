@@ -9,6 +9,8 @@ import com.liferay.petra.string.StringPool;
 
 import java.io.Serializable;
 
+import java.text.Collator;
+
 import java.util.Comparator;
 
 /**
@@ -24,8 +26,15 @@ public class NaturalOrderStringComparator
 	public NaturalOrderStringComparator(
 		boolean ascending, boolean caseSensitive) {
 
+		this(ascending, caseSensitive, null);
+	}
+
+	public NaturalOrderStringComparator(
+		boolean ascending, boolean caseSensitive, Collator collator) {
+
 		_ascending = ascending;
 		_caseSensitive = caseSensitive;
+		_collator = collator;
 	}
 
 	@Override
@@ -56,13 +65,18 @@ public class NaturalOrderStringComparator
 				String leadingDigitsAsString2 = StringUtil.extractLeadingDigits(
 					s2.substring(i2));
 
-				int leadingNumber1 = GetterUtil.getInteger(
+				long leadingNumber1 = GetterUtil.getLong(
 					leadingDigitsAsString1);
-				int leadingNumber2 = GetterUtil.getInteger(
+				long leadingNumber2 = GetterUtil.getLong(
 					leadingDigitsAsString2);
 
 				if (leadingNumber1 != leadingNumber2) {
-					value = leadingNumber1 - leadingNumber2;
+					if (leadingNumber1 < leadingNumber2) {
+						value = -1;
+					}
+					else {
+						value = 1;
+					}
 
 					break;
 				}
@@ -91,6 +105,23 @@ public class NaturalOrderStringComparator
 				}
 			}
 
+			if (_caseSensitive) {
+				if (Character.isUpperCase(c1) ^ Character.isUpperCase(c2)) {
+					if (Character.isUpperCase(c1)) {
+						value = -1;
+					}
+					else {
+						value = 1;
+					}
+
+					break;
+				}
+			}
+			else {
+				c1 = Character.toUpperCase(c1);
+				c2 = Character.toUpperCase(c2);
+			}
+
 			if (c1 == c2) {
 				i1++;
 				i2++;
@@ -98,23 +129,13 @@ public class NaturalOrderStringComparator
 				continue;
 			}
 
-			if (_caseSensitive) {
-				value = c1 - c2;
+			if (_collator != null) {
+				value = _collator.compare(s1.substring(i1), s2.substring(i2));
 
 				break;
 			}
 
-			char c1UpperCase = Character.toUpperCase(c1);
-			char c2UpperCase = Character.toUpperCase(c2);
-
-			if (c1UpperCase == c2UpperCase) {
-				i1++;
-				i2++;
-
-				continue;
-			}
-
-			value = c1UpperCase - c2UpperCase;
+			value = c1 - c2;
 
 			break;
 		}
@@ -149,5 +170,6 @@ public class NaturalOrderStringComparator
 
 	private final boolean _ascending;
 	private final boolean _caseSensitive;
+	private final Collator _collator;
 
 }

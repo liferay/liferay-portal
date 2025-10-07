@@ -6,8 +6,9 @@
 	}
 
 	.app-category {
-		display: block;
+		display: block !important;
 		flex: 1;
+		font-size: 11px;
 		max-width: 200px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -17,10 +18,15 @@
 	.app-container .app-category {
 		background-color: #e6ebf5;
 		color: #1c3667;
-		padding: 4px 8px;
+		font-weight: 600;
+		height: 20px;
+		padding: 3px 8px;
 	}
 
 	.app-container .app-product-type {
+		font-size: 11px;
+		font-weight: 600;
+		height: 20px;
 		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -130,7 +136,7 @@
 
 					<#if appType?has_content>
 						<div class="align-items-center app-product-type border border-radius-small d-flex mb-1 mr-2 px-2 rounded-lg ${productType.value}-product-type">
-							<div class="bg-neutral-8">${appType}</div>
+							<span class="bg-neutral-8">${appType}</span>
 						</div>
 					</#if>
 				</#if>

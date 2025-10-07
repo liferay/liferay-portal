@@ -66,6 +66,8 @@ public class KaleoDefinitionTable extends BaseTable<KaleoDefinitionTable> {
 		"version", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<KaleoDefinitionTable, Boolean> active = createColumn(
 		"active_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<KaleoDefinitionTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private KaleoDefinitionTable() {
 		super("KaleoDefinition", KaleoDefinitionTable::new);

@@ -353,6 +353,15 @@ public class DataDefinitionResourceTest
 
 	@Override
 	@Test
+	public DataDefinition testGraphQLSiteDataDefinition_addDataDefinition()
+		throws Exception {
+
+		return dataDefinitionResource.postSiteDataDefinitionByContentType(
+			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+	}
+
+	@Override
+	@Test
 	public void testPostDataDefinitionByContentType() throws Exception {
 		super.testPostDataDefinitionByContentType();
 

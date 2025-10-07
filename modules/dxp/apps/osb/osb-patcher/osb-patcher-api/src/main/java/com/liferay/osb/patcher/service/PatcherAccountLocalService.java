@@ -52,6 +52,10 @@ public interface PatcherAccountLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.osb.patcher.service.impl.PatcherAccountLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the patcher account local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PatcherAccountLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherAccount addPatcherAccount(
+			long userId, long accountEntryId, String accountEntryCode)
+		throws PortalException;
 
 	/**
 	 * Adds the patcher account to the database. Also notifies the appropriate model listeners.
@@ -274,6 +278,9 @@ public interface PatcherAccountLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPatcherAccountsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPatcherAccountsCount(long companyId, String keyword);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherAccount> getPatcherBuildPatcherAccounts(

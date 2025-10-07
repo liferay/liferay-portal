@@ -33,13 +33,13 @@ public class ServletAbsolutePortalURLBuilderTest
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Parameterized.Parameters(name = "{0}: context={1}, proxy={2}, cdnHost={3}")
+	@Parameterized.Parameters(name = "{0}: cdnHost={1}, context={2}, proxy={3}")
 	public static Collection<Object[]> data() {
 		return Arrays.asList(
 			new Object[][] {
 				{0, false, false, false}, {1, false, false, true},
-				{2, true, false, false}, {3, true, true, false},
-				{4, false, true, false}
+				{2, false, true, false}, {3, false, true, true},
+				{4, true, false, false}
 			});
 	}
 
@@ -48,8 +48,8 @@ public class ServletAbsolutePortalURLBuilderTest
 		super.setUp();
 
 		_absolutePortalURLBuilder = new AbsolutePortalURLBuilderImpl(
-			mockCacheHelper(), mockPortal(context, proxy, cdnHost),
-			mockHttpServletRequest());
+			mockCacheHelper(), mockHashedFilesRegistry(),
+			mockPortal(context, proxy, cdnHost), mockHttpServletRequest());
 
 		_servletAbsolutePortalURLBuilder = _absolutePortalURLBuilder.forServlet(
 			"path/to/resource");
@@ -66,22 +66,22 @@ public class ServletAbsolutePortalURLBuilderTest
 			_RESULTS[index], _servletAbsolutePortalURLBuilder.build());
 	}
 
-	@Parameterized.Parameter(3)
+	@Parameterized.Parameter(1)
 	public boolean cdnHost;
 
-	@Parameterized.Parameter(1)
+	@Parameterized.Parameter(2)
 	public boolean context;
 
 	@Parameterized.Parameter
 	public int index;
 
-	@Parameterized.Parameter(2)
+	@Parameterized.Parameter(3)
 	public boolean proxy;
 
 	private static final String[] _RESULTS = {
-		"/o/path/to/resource", "/o/path/to/resource",
+		"/o/path/to/resource", "/proxy/o/path/to/resource",
 		"/context/o/path/to/resource", "/proxy/context/o/path/to/resource",
-		"/proxy/o/path/to/resource"
+		"/o/path/to/resource"
 	};
 
 	private AbsolutePortalURLBuilder _absolutePortalURLBuilder;

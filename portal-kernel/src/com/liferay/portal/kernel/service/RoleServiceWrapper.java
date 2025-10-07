@@ -52,6 +52,16 @@ public class RoleServiceWrapper
 		_roleService.addUserRoles(userId, roleIds);
 	}
 
+	@Override
+	public Role copyRole(
+			long userId, String name, long sourceRoleId,
+			ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _roleService.copyRole(
+			userId, name, sourceRoleId, serviceContext);
+	}
+
 	/**
 	 * Deletes the role with the primary key and its associated permissions.
 	 *
@@ -123,12 +133,12 @@ public class RoleServiceWrapper
 	}
 
 	@Override
-	public Role getOrAddIncompleteRole(
+	public Role getOrAddEmptyRole(
 			String externalReferenceCode, String className, long classPK,
 			String name, int type)
 		throws Exception {
 
-		return _roleService.getOrAddIncompleteRole(
+		return _roleService.getOrAddEmptyRole(
 			externalReferenceCode, className, classPK, name, type);
 	}
 

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset List API
 Bundle-SymbolicName: com.liferay.asset.list.api
-Bundle-Version: 18.2.2
+Bundle-Version: 18.2.3
 Export-Package:\
 	com.liferay.asset.list.asset.entry.provider,\
 	com.liferay.asset.list.constants,\

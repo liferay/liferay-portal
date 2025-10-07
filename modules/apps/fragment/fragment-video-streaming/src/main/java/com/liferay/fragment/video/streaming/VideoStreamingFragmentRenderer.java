@@ -40,7 +40,7 @@ public class VideoStreamingFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
 
 		return JSONUtil.put(
@@ -62,8 +62,7 @@ public class VideoStreamingFragmentRenderer implements FragmentRenderer {
 					_language.format(
 						fragmentRendererContext.getLocale(), "x-options",
 						"video-streaming", true)
-				))
-		).toString();
+				)));
 	}
 
 	@Override
@@ -102,54 +101,57 @@ public class VideoStreamingFragmentRenderer implements FragmentRenderer {
 			FragmentEntryLink fragmentEntryLink =
 				fragmentRendererContext.getFragmentEntryLink();
 
+			JSONObject configurationJSONObject = getConfigurationJSONObject(
+				fragmentRendererContext);
+
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_AUTOPLAY,
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "autoplay")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_LOOP,
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "loop")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_MUTED,
 				GetterUtil.getBoolean(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "mute")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_SOURCE_URL,
 				GetterUtil.getString(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "url")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_SUBTITLES,
 				GetterUtil.getString(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "subtitles")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_VIDEO_HEIGHT,
 				GetterUtil.getString(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "videoHeight")));
 			httpServletRequest.setAttribute(
 				VideoStreamingWebKeys.VIDEO_STREAMING_VIDEO_WIDTH,
 				GetterUtil.getString(
 					_fragmentEntryConfigurationParser.getFieldValue(
-						getConfiguration(fragmentRendererContext),
-						fragmentEntryLink.getEditableValues(),
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
 						fragmentRendererContext.getLocale(), "videoWidth")));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);

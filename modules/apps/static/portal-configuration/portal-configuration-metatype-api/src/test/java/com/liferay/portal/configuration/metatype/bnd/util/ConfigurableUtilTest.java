@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.AdviseWith;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
 
 import java.util.Collections;
 import java.util.concurrent.Callable;
@@ -30,7 +29,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,11 +43,6 @@ public class ConfigurableUtilTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			CodeCoverageAssertor.INSTANCE, LiferayUnitTestRule.INSTANCE);
-
-	@Before
-	public void setUp() {
-		PropsUtil.setProps(new PropsImpl());
-	}
 
 	@Test
 	public void testBigString() {
@@ -165,7 +158,7 @@ public class ConfigurableUtilTest {
 
 		// Test dictionary override
 
-		com.liferay.portal.util.PropsUtil.set(
+		PropsUtil.set(
 			"configuration.override." + TestConfiguration.class.getName() +
 				"_testReqiredString",
 			"\"testReqiredString3\"");

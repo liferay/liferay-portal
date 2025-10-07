@@ -79,8 +79,8 @@ export default function AttachmentBase({
 				selectedItemValue.extension
 			) ??
 			validateFileSize(
-				selectedItemValue.size,
-				maximumFileSize,
+				Number(selectedItemValue.size),
+				Number(maximumFileSize),
 				Number(overallMaximumUploadRequestSize)
 			);
 
@@ -105,8 +105,8 @@ export default function AttachmentBase({
 		const selectedFile = files?.[0];
 		if (selectedFile) {
 			const fileSizeError = validateFileSize(
-				selectedFile.size,
-				maximumFileSize,
+				Number(selectedFile.size),
+				Number(maximumFileSize),
 				Number(overallMaximumUploadRequestSize)
 			);
 

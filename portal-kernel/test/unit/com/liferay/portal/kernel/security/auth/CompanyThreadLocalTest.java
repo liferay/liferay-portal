@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.TimeZoneThreadLocal;
 
@@ -45,8 +43,6 @@ public class CompanyThreadLocalTest {
 		bundleContext.registerService(
 			CTCollectionIdSupplier.class,
 			ProxyFactory.newDummyInstance(CTCollectionIdSupplier.class), null);
-
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
 	}
 
 	@Test

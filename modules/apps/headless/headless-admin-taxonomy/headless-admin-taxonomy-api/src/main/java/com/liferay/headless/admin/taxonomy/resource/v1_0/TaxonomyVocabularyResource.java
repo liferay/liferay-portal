@@ -96,14 +96,6 @@ public interface TaxonomyVocabularyResource {
 				Long siteId, String roleNames)
 		throws Exception;
 
-	public Page<TaxonomyVocabulary> getTaxonomyVocabulariesPage(
-			String search,
-			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
-			com.liferay.portal.kernel.search.filter.Filter filter,
-			Pagination pagination,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws Exception;
-
 	public TaxonomyVocabulary getTaxonomyVocabulary(Long taxonomyVocabularyId)
 		throws Exception;
 
@@ -144,21 +136,6 @@ public interface TaxonomyVocabularyResource {
 
 	public Response postSiteTaxonomyVocabularyBatch(
 			Long siteId, String callbackURL, Object object)
-		throws Exception;
-
-	public Response postTaxonomyVocabulariesPageExportBatch(
-			String search,
-			com.liferay.portal.kernel.search.filter.Filter filter,
-			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
-			String contentType, String fieldNames)
-		throws Exception;
-
-	public TaxonomyVocabulary postTaxonomyVocabulary(
-			TaxonomyVocabulary taxonomyVocabulary)
-		throws Exception;
-
-	public Response postTaxonomyVocabularyBatch(
-			String callbackURL, Object object)
 		throws Exception;
 
 	public TaxonomyVocabulary

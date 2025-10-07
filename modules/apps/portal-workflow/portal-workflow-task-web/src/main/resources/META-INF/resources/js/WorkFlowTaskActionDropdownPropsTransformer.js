@@ -8,18 +8,26 @@ import {openSimpleInputModal} from 'frontend-js-components-web';
 const ACTIONS = {
 	taskAssign({assignURL, namespace, title}) {
 		Liferay.Util.openModal({
+			center: true,
+			className: 'workflow-tasks-modal',
 			containerProps: {},
+			height: 370,
 			id: namespace + 'assignToDialog',
 			iframeBodyCssClass: 'task-dialog',
+			size: 'lg',
 			title,
 			url: assignURL,
 		});
 	},
 	taskAssignToMe({assignToMeURL, namespace, title}) {
 		Liferay.Util.openModal({
+			center: true,
+			className: 'workflow-tasks-modal',
 			containerProps: {},
+			height: 280,
 			id: namespace + 'assignToDialog',
 			iframeBodyCssClass: 'task-dialog',
+			size: 'lg',
 			title,
 			url: assignToMeURL,
 		});
@@ -42,9 +50,13 @@ const ACTIONS = {
 	},
 	updateDueDate({namespace, title, updateDueDateURL}) {
 		Liferay.Util.openModal({
+			center: true,
+			className: 'workflow-tasks-modal',
 			containerProps: {},
+			height: 370,
 			id: namespace + 'updateDialog',
 			iframeBodyCssClass: 'task-dialog',
+			size: 'lg',
 			title,
 			url: updateDueDateURL,
 		});

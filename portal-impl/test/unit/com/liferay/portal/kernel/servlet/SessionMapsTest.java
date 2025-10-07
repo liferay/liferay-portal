@@ -104,8 +104,8 @@ public class SessionMapsTest extends BaseSessionMapsTestCase {
 
 		httpSessionInvocationHandler.setInvalidated(true);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				SessionMaps.class.getName(), Level.SEVERE)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				SessionMaps.class.getName(), LoggerTestUtil.ERROR)) {
 
 			Assert.assertTrue(_sessionMaps.isEmpty(httpSession, _MAP_KEY));
 

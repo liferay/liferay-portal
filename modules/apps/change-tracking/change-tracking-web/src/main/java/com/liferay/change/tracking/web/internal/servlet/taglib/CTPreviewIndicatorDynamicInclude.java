@@ -118,10 +118,10 @@ public class CTPreviewIndicatorDynamicInclude extends BaseDynamicInclude {
 				StringBundler.concat(
 					"<nav aria-label=\"",
 					_language.get(httpServletRequest, "control-menu"),
-					"\" class=\"cadmin control-menu-container\"><div ",
-					"class=\"change-tracking-indicator\"><div>",
-					"<button class=\"change-tracking-indicator-button\">",
-					"<span className=\"change-tracking-indicator-title\">"));
+					"\" class=\"cadmin control-menu-container\"><div class=\"",
+					"change-tracking-indicator\"><div><button class=\"",
+					"change-tracking-indicator-button\"><span className=\"",
+					"change-tracking-indicator-title\">"));
 
 			CTCollection previewCTCollection =
 				_ctCollectionLocalService.fetchCTCollection(

@@ -5,8 +5,9 @@
 
 import React from 'react';
 
-import './OrderDetailsHeader.scss';
 import OrderDetailsStatusDescription from './OrderDetailsStatusDescription';
+
+import './OrderDetailsHeader.scss';
 
 type OrderDetailsProps = {
 	className?: string;
@@ -34,6 +35,7 @@ const OrderDetailsHeader: React.FC<OrderDetailsProps> = ({
 			<img
 				alt="App Icon"
 				className="order-details-publisher-icon"
+				draggable={false}
 				src={image}
 			/>
 

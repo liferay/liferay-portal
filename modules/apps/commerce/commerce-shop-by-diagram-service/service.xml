@@ -4,7 +4,7 @@
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" change-tracking-enabled="true" mvcc-enabled="true" package-path="com.liferay.commerce.shop.by.diagram">
 	<author>Alessio Antonio Rendina</author>
 	<namespace>Commerce</namespace>
-	<entity local-service="true" name="CSDiagramEntry" remote-service="true">
+	<entity external-reference-code="company" local-service="true" name="CSDiagramEntry" remote-service="true">
 
 		<!-- PK fields -->
 

@@ -25,12 +25,15 @@ import aQute.lib.filter.Filter;
 import com.liferay.ant.bnd.jsp.JspAnalyzerPlugin;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployException;
 import com.liferay.portal.kernel.deploy.auto.AutoDeployListener;
 import com.liferay.portal.kernel.deploy.auto.context.AutoDeploymentContext;
 import com.liferay.portal.kernel.deploy.hot.DependencyManagementThreadLocal;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.PortletConstants;
@@ -51,6 +54,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -61,10 +65,10 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
 import com.liferay.portal.kernel.xml.XPath;
 import com.liferay.portal.plugin.PluginPackageUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.util.JS;
 import com.liferay.whip.util.ReflectionUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
@@ -347,9 +351,32 @@ public class WabProcessor {
 				if (!name.contains("/") &&
 					name.endsWith(".client-extension-config.json")) {
 
-					Files.copy(
-						zipFile.getInputStream(zipEntry),
-						osgiInfConfiguratorPath.resolve(name));
+					try (InputStream inputStream = zipFile.getInputStream(
+							zipEntry)) {
+
+						JSONObject jsonObject =
+							JSONFactoryUtil.createJSONObject(
+								new String(inputStream.readAllBytes()));
+
+						for (String key : jsonObject.keySet()) {
+							JSONObject configurationJSONObject =
+								jsonObject.getJSONObject(key);
+
+							configurationJSONObject.put(
+								ReloadablePersistenceManager.STORAGE_POLICY_KEY,
+								ReloadablePersistenceManager.
+									STORAGE_POLICY_VALUE_EPHEMERAL);
+						}
+
+						String json = jsonObject.toString();
+
+						Files.copy(
+							new ByteArrayInputStream(json.getBytes()),
+							osgiInfConfiguratorPath.resolve(name));
+
+						_pluginPackageProperties.setProperty(
+							"Liferay-Configurator-Policy", "always");
+					}
 				}
 				else if (name.startsWith(batchPathString)) {
 					Files.copy(
@@ -533,24 +560,28 @@ public class WabProcessor {
 		}
 
 		try (ZipFile zipFile = new ZipFile(_file)) {
+			_pluginPackageProperties = new Properties();
+
 			ZipEntry zipEntry = zipFile.getEntry(
 				"WEB-INF/liferay-plugin-package.properties");
 
 			if (zipEntry == null) {
-				return _pluginPackageProperties = new Properties();
+				return _pluginPackageProperties;
 			}
 
 			try {
-				return _pluginPackageProperties = PropertiesUtil.load(
+				_pluginPackageProperties = PropertiesUtil.load(
 					zipFile.getInputStream(zipEntry),
 					StandardCharsets.UTF_8.name());
+
+				return _pluginPackageProperties;
 			}
 			catch (IOException ioException) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(ioException);
 				}
 
-				return _pluginPackageProperties = new Properties();
+				return _pluginPackageProperties;
 			}
 		}
 	}
@@ -1798,9 +1829,8 @@ public class WabProcessor {
 	static {
 		List<AutoDeployListener> autoDeployListeners = new ArrayList<>();
 
-		String[] autoDeployListenerClassNames =
-			com.liferay.portal.util.PropsUtil.getArray(
-				PropsKeys.AUTO_DEPLOY_LISTENERS);
+		String[] autoDeployListenerClassNames = PropsUtil.getArray(
+			PropsKeys.AUTO_DEPLOY_LISTENERS);
 
 		for (String autoDeployListenerClassName :
 				autoDeployListenerClassNames) {

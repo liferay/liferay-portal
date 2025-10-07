@@ -19,8 +19,6 @@ definition {
 			PortalInstances.tearDownCP();
 		}
 		else {
-			Navigator.openURL();
-
 			User.logoutAndLoginPG(
 				password = PropsUtil.get("default.admin.password"),
 				userLoginEmailAddress = "test@liferay.com",
@@ -100,7 +98,6 @@ definition {
 	@description = "This is a use case for LPS-51432 and LPS-95113. Pages associated with a site template cannot be deleted and removing a parent page on a site template will delete the same page and the child page also on the connected sites, if propagation is enabled."
 	@priority = 3
 	test AdminCanNotAddASubpageOfAChildPageLinkedToSiteTemplatePage {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -215,51 +212,6 @@ definition {
 			Navigator.gotoSitePage(
 				pageName = "Page1 Name",
 				siteName = "Site Name");
-		}
-	}
-
-	@description = "This is a use case for LPS-180299. Change localization after Site Template is added in virtual instance."
-	@priority = 3
-	test ChangeLocalizationAfterSiteTemplateIsAddedInVirtualInstance {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Add virtual instance able.com") {
-			HeadlessPortalInstanceAPI.addPortalInstance(
-				domain = "www.able.com",
-				portalInstanceId = "www.able.com",
-				virtualHost = "www.able.com");
-
-			User.firstLoginPG(
-				password = PropsUtil.get("default.admin.password"),
-				userEmailAddress = "test@www.able.com",
-				virtualHostsURL = "http://www.able.com:8080");
-		}
-
-		task ("And: Remove all the locales for the virtual instance except the default locale") {
-			PortalSettings.gotoConfiguration(
-				baseURL = "http://www.able.com:8080",
-				configurationCategory = "Localization",
-				configurationName = "Language",
-				configurationScope = "Virtual Instance Scope");
-
-			PortalSettings.configureCurrentLanguagesCP(currentPortalLanguages = "English (United States)");
-		}
-
-		task ("When: Create a site template") {
-			SiteTemplates.addCP(
-				baseURL = "http://www.able.com:8080",
-				siteTemplateName = "Site Template Name");
-		}
-
-		task ("Then: User is able to add new locale in virtual instance") {
-			PortalSettings.gotoConfiguration(
-				baseURL = "http://www.able.com:8080",
-				configurationCategory = "Localization",
-				configurationName = "Language",
-				configurationScope = "Virtual Instance Scope");
-
-			PortalSettings.configureCurrentLanguagesCP(currentPortalLanguages = "English (United States),Spanish (Spain)");
 		}
 	}
 
@@ -443,7 +395,6 @@ definition {
 	@priority = 3
 	test SitesDynamicTemplateInheritance {
 		property custom.properties = "jsonws.web.service.paths.excludes=";
-		property portal.acceptance = "true";
 
 		var siteName = TestCase.getSiteName(siteName = ${siteName});
 

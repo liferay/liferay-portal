@@ -27,8 +27,9 @@
 	}
 	&-logo-icon {
 		border-radius: 4px;
-		height: 48px;
-		width: 48px;
+		height: 3rem;
+		object-fit: contain;
+		width: 3rem;
 	}
 
 	&-name {
@@ -93,6 +94,7 @@
 		&-container {
 			img {
 				height: 64px;
+				object-fit: contain;
 				width: 110px;
 			}
 

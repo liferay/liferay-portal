@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Metrics Demo Data Creator Implementation
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.demo.data.creator.impl
-Bundle-Version: 2.0.21
+Bundle-Version: 2.0.22
 -dsannotations-options: inherit

@@ -64,8 +64,8 @@ public class CPConfigurationEntryLocalServiceWrapper
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpConfigurationEntryLocalService.addCPConfigurationEntry(
@@ -76,7 +76,7 @@ public class CPConfigurationEntryLocalServiceWrapper
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	/**
@@ -379,14 +379,6 @@ public class CPConfigurationEntryLocalServiceWrapper
 			classNameId, classPK);
 	}
 
-	@Override
-	public java.util.List<CPConfigurationEntry> getCPConfigurationEntries(
-		long classNameId, long classPK, boolean visible) {
-
-		return _cpConfigurationEntryLocalService.getCPConfigurationEntries(
-			classNameId, classPK, visible);
-	}
-
 	/**
 	 * Returns all the cp configuration entries matching the UUID and company.
 	 *
@@ -559,8 +551,8 @@ public class CPConfigurationEntryLocalServiceWrapper
 			java.math.BigDecimal minStockQuantity,
 			java.math.BigDecimal multipleOrderQuantity, boolean purchasable,
 			boolean shippable, double shippingExtraPrice,
-			boolean shipSeparately, boolean taxExempt, boolean visible,
-			double weight, double width)
+			boolean shipSeparately, boolean taxExempt, double weight,
+			double width)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpConfigurationEntryLocalService.updateCPConfigurationEntry(
@@ -570,7 +562,7 @@ public class CPConfigurationEntryLocalServiceWrapper
 			displayStockQuantity, freeShipping, height, lowStockActivity,
 			maxOrderQuantity, minOrderQuantity, minStockQuantity,
 			multipleOrderQuantity, purchasable, shippable, shippingExtraPrice,
-			shipSeparately, taxExempt, visible, weight, width);
+			shipSeparately, taxExempt, weight, width);
 	}
 
 	@Override

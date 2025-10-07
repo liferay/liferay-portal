@@ -1,0 +1,20 @@
+{
+	"name": "Compatibility Matrix",
+	"name_i18n": {
+		"en_US": "Compatibility Matrix",
+		"es-ES": "Matriz de compatibilidad",
+		"ja-JP": "互換性マトリクス",
+		"pt-BR": "Matriz de compatibilidade"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "supported-configurations-for-major-liferay-products-and-releases"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/compatibility_matrix.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

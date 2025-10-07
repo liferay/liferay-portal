@@ -1,0 +1,10 @@
+{
+	"name": "Support Policy Knowledge Base",
+	"name_i18n": {
+		"en_US": "Support Policy Knowledge Base",
+		"es-ES": "Base de conocimiento de la política de soporte",
+		"ja-JP": "サポートポリシー ナレッジベース",
+		"pt-BR": "Base de Conhecimento da Política de Suporte"
+	},
+	"viewableBy": "Anyone"
+}

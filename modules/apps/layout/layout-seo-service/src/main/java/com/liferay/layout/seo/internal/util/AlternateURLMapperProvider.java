@@ -25,8 +25,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * @author Lourdes Fernández Besada
@@ -159,7 +159,7 @@ public class AlternateURLMapperProvider {
 		}
 
 		private String _getPortalURL(ThemeDisplay themeDisplay) {
-			TreeMap<String, String> virtualHostnames =
+			NavigableMap<String, String> virtualHostnames =
 				_portal.getVirtualHostnames(themeDisplay.getLayoutSet());
 
 			String virtualHostname = null;

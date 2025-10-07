@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import DropDown from '@clayui/drop-down/lib/DropDown';
+import DropDown from '@clayui/drop-down';
 import ClayForm, {ClayCheckbox} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {Fragment, useState} from 'react';

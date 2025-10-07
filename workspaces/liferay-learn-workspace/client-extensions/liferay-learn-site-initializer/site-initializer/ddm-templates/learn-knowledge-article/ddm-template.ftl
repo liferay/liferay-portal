@@ -1,165 +1,126 @@
-<#assign assetId = ObjectEntry_objectEntryId.getData()?number />
-
-<#if stringUtil.equals(locale, "en_US")>
-	<#assign createDate = ObjectEntry_createDate.getData()?datetime("M/d/yy h:mm a") />
-<#else>
-	<#assign createDate = ObjectEntry_createDate.getData()?datetime("yy/MM/dd HH:mm") />
+<#if (ObjectEntry_objectEntryId.getData())?? && ObjectEntry_objectEntryId.getData()?has_content>
+	<#assign assetId = ObjectEntry_objectEntryId.getData()?number />
 </#if>
 
-<div class="learn-knowledge-article-container">
-	<div class="d-flex header-navigation justify-content-between mb-3 px-3">
-		<div class="d-flex justify-content-between">
-			<ul aria-label="breadcrumb navigation" class="learn-breadcrumb" role="navigation">
-				<li>
-					<a href="/">
-						<@clay["icon"] symbol="home-full" />
-					</a>
-				</li>
-				<li>
-					${ObjectField_title.getData()}
-				</li>
-			</ul>
+<#if ObjectEntry_status.getData()?? && ObjectEntry_status.getData() == 'approved'>
+	<#if stringUtil.equals(locale, "en_US")>
+		<#assign createDate = ObjectEntry_createDate.getData()?datetime("M/d/yy h:mm a") />
+	<#else>
+		<#assign createDate = ObjectEntry_createDate.getData()?datetime("yy/MM/dd HH:mm") />
+	</#if>
+
+	<div class="learn-knowledge-article-container">
+		<div class="d-flex header-navigation justify-content-between mb-3 px-3">
+			<div class="d-flex justify-content-between">
+				<ul aria-label="breadcrumb navigation" class="learn-breadcrumb" role="navigation">
+					<li>
+						<a href="/">
+							<@clay["icon"] symbol="home-full" />
+						</a>
+					</li>
+					<li>
+						${ObjectField_title.getData()}
+					</li>
+				</ul>
+			</div>
+
+			<div class="component-button learn-submit-feedback text-break">
+				<a
+					class="btn btn-link btn-nm page-editor__editable" data-lfr-editable-id="link" data-lfr-editable-type="link"
+					data-tooltip-floating="true"
+					href="https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new"
+					id="fragment-txnc-link">
+						<@liferay_ui["message"] key="submit-feedback" />
+				</a>
+			</div>
 		</div>
 
-		<div class="component-button learn-submit-feedback text-break">
-			<a
-				class="btn btn-link btn-nm page-editor__editable" data-lfr-editable-id="link" data-lfr-editable-type="link"
-				data-tooltip-floating="true"
-				href="https://liferay.dev/c/portal/login?redirect=https://liferay.dev/ask/questions/liferay-learn-feedback/new"
-				id="fragment-txnc-link">
-					<@liferay_ui["message"] key="submit-feedback" />
-			</a>
-		</div>
-	</div>
+		<div class="d-flex knowledge-article-page-container">
+			<div class="container knowledge-article-main" id="left-panel">
+				<div class="disclaimers-container">
+					<div class="disclaimer">
+						<div class="container-fluid">
+							<div class="d-flex disclaimer-header">
+								<div class="col knowledge-article-dialect">
+									<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
+										<@liferay_ui["message"] key="legacy-knowledge-base" />
+									<#else>
+										<@liferay_ui["message"] key="knowledge-base" />
+									</#if>
+								</div>
 
-	<div class="d-flex knowledge-article-page-container">
-		<div class="container knowledge-article-main" id="left-panel">
-			<div class="disclaimers-container">
-				<div class="disclaimer">
-					<div class="container-fluid">
-						<div class="d-flex disclaimer-header">
-							<div class="col knowledge-article-dialect">
-								<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
-									<@liferay_ui["message"] key="legacy-knowledge-base" />
-								<#else>
-									<@liferay_ui["message"] key="knowledge-base" />
-								</#if>
+								<span>
+									<@liferay_ui["message"] key="published" />
+									${createDate?string("MMM. d, yyyy")}
+								</span>
 							</div>
 
-							<span>
-								<@liferay_ui["message"] key="published" />
+							<#if (ObjectField_title.getData())??>
+								<h3 class="disclaimer-title mb-3">
+									${ObjectField_title.getData()}
+								</h3>
+							</#if>
 
-								${createDate?string("MMM. d, yyyy")}
-							</span>
-						</div>
+							<div class="d-flex description-container">
+								<div class="author-container d-flex">
+									<img class="publisher-avatar rounded-circle" src="${ObjectEntry_userProfileImage.getData()}" />
 
-						<#if (ObjectField_title.getData())??>
-							<h3 class="disclaimer-title mb-3">
-								${ObjectField_title.getData()}
-							</h3>
-						</#if>
+									<div class="col-1.5 mx-3">
+										<@liferay_ui["message"] key="written-by" />
 
-						<div class="d-flex description-container">
-							<div class="author-container d-flex">
-								<img class="publisher-avatar rounded-circle" src="${ObjectEntry_userProfileImage.getData()}" />
+										<p class="author">
+											<#if (ObjectField_authorName.getData())??>
+												${ObjectField_authorName.getData()}
+											</#if>
+										</p>
+									</div>
+								</div>
 
-								<div class="col-1.5 mx-3">
-									<@liferay_ui["message"] key="written-by" />
+								<div class="col paragraph">
+									<p class="disclaimer-how-to d-none">
+										<@liferay_ui["message"] key="knowledge-article-header-disclaimer-how-to" />
+									</p>
 
-									<p class="author">
-										${ObjectEntry_author.getData()}
+									<p class="disclaimer-default d-none">
+										<@liferay_ui["message"] key="knowledge-article-header-disclaimer" />
 									</p>
 								</div>
 							</div>
+						</div>
+					</div>
 
-							<div class="col paragraph">
-								<p class="d-none disclaimer-how-to">
-									<@liferay_ui["message"] key="knowledge-article-header-disclaimer-how-to" />
+					<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
+						<div class="d-flex warning-disclaimer">
+							<div>
+								<span class="icon-warning"></span>
+							</div>
+
+							<div class="col">
+								<p>
+									<@liferay_ui["message"] key="legacy-article" />
 								</p>
 
-								<p class="d-none disclaimer-default">
-									<@liferay_ui["message"] key="knowledge-article-header-disclaimer" />
-								</p>
+								<@liferay_ui["message"] key="learn-legacy-article-disclaimer-text" />
 							</div>
 						</div>
-					</div>
+					</#if>
 				</div>
 
-				<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
-					<div class="d-flex warning-disclaimer">
-						<div>
-							<span class="icon-warning"></span>
-						</div>
+				<article class="knowledge-article-content">
+					<#if (ObjectField_content.getData())??>
+						${ObjectField_content.getData()}
+					</#if>
+				</article>
 
-						<div class="col">
-							<p>
-								<@liferay_ui["message"] key="legacy-article" />
-							</p>
-
-							<@liferay_ui["message"] key="learn-legacy-article-disclaimer-text" />
-						</div>
-					</div>
-				</#if>
-			</div>
-
-			<article class="knowledge-article-content">
-				<#if (ObjectField_content.getData())??>
-					${ObjectField_content.getData()}
-				</#if>
-			</article>
-
-			<div class="knowledge-article-attachments-container">
-			</div>
-
-			<div class="align-items-center bold d-flex flex-row p-3 rating-box">
-				<div>
-					<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
+				<div class="knowledge-article-attachments-container">
 				</div>
 
-				<div class="<#if themeDisplay.isSignedIn()>enabled<#else>disabled</#if>">
-					<@liferay_ratings["ratings"]
-						className="com.liferay.journal.model.JournalArticle"
-						classPK=assetId
-						type="thumbs"
-					/>
-				</div>
-			</div>
-
-			<div class="learn-category-section-bottom">
-				<hr class="my-5" />
-			</div>
-		</div>
-
-		<div class="col-md-3 knowledge-article-sidemenu" id="right-panel">
-			<div class="sticky-panel">
-				<div class="container-fluid">
-					<div class="row sidemenu-header">
-						<div class="col knowledge-article-dialect">
-							<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
-								<@liferay_ui["message"] key="legacy-knowledge-base" />
-							<#else>
-								<@liferay_ui["message"] key="knowledge-base" />
-							</#if>
-						</div>
-					</div>
-				</div>
-
-				<div class="article-nav-menu page-nav-menu">
-				</div>
-
-				<div class="page-nav-menu">
-					<div class="category-container mb-3">
-						<div class="learn-category-section-side">
-						</div>
+				<div class="align-items-center bold d-flex flex-row p-3 rating-box">
+					<div>
+						<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
 					</div>
 
-					<hr />
-
-					<div class="align-items-center d-flex flex-row rating-box">
-						<div>
-							<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
-						</div>
-
+					<div class="<#if themeDisplay.isSignedIn()>enabled<#else>disabled</#if>">
 						<@liferay_ratings["ratings"]
 							className="com.liferay.journal.model.JournalArticle"
 							classPK=assetId
@@ -167,10 +128,56 @@
 						/>
 					</div>
 				</div>
+
+				<div class="learn-category-section-bottom">
+					<hr class="my-5" />
+				</div>
+			</div>
+
+			<div class="col-md-3 knowledge-article-sidemenu" id="right-panel">
+				<div class="sticky-panel">
+					<div class="container-fluid">
+						<div class="row sidemenu-header">
+							<div class="col knowledge-article-dialect">
+								<#if getterUtil.getBoolean(ObjectField_legacy.getData())>
+									<@liferay_ui["message"] key="legacy-knowledge-base" />
+								<#else>
+									<@liferay_ui["message"] key="knowledge-base" />
+								</#if>
+							</div>
+						</div>
+					</div>
+
+					<div class="article-nav-menu page-nav-menu">
+					</div>
+
+					<div class="page-nav-menu">
+						<div class="category-container mb-3">
+							<div class="learn-category-section-side">
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="align-items-center d-flex flex-row rating-box">
+							<div>
+								<@liferay_ui["message"] key="did-this-article-resolve-your-issue" />
+							</div>
+
+							<@liferay_ratings["ratings"]
+								className="com.liferay.journal.model.JournalArticle"
+								classPK=assetId
+								type="thumbs"
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+<#else>
+	<meta content="0; URL='/not-found'" http-equiv="refresh" />
+</#if>
 
 <script>
 	async function main() {
@@ -658,6 +665,10 @@
 	}
 
 	article h2 {
+		scroll-margin-top: 11rem;
+	}
+
+	article h3 {
 		scroll-margin-top: 11rem;
 	}
 

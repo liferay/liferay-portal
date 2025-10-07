@@ -30,7 +30,7 @@ components:
                     type: string
                     writeOnly: true
                 role:
-                    enum: [idp, sp]
+                    enum: [ib, idp, sp]
                     type: string
                 signMetadata:
                     type: boolean
@@ -62,7 +62,7 @@ components:
 info:
     description:
         "SAML configuration. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.saml.admin.rest.client', and version '1.0.16'."
+        'com.liferay.saml.admin.rest.client', and version '1.0.17'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -108,7 +108,7 @@ paths:
                                 $ref: "#/components/schemas/SamlProvider"
                     # @review
                     description:
-                        SAML provider configuration was successfully created
+                        SAML provider configuration was successfully created.
             tags: ["SamlProvider"]
         post:
             description:
@@ -133,5 +133,5 @@ paths:
                                 $ref: "#/components/schemas/SamlProvider"
                     # @review
                     description:
-                        SAML provider configuration was successfully created
+                        SAML provider configuration was successfully created.
             tags: ["SamlProvider"]

@@ -213,7 +213,8 @@ public class PoshiDependenciesFileLocationCheck extends BaseFileCheck {
 				});
 
 			for (String fileName : fileNames) {
-				if (!fileName.contains("/poshi/") &&
+				if (!fileName.contains("/playwright/") &&
+					!fileName.contains("/poshi/") &&
 					!fileName.contains("/source-formatter/")) {
 
 					_dependenciesFileReferencesMap.put(

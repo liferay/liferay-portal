@@ -10,8 +10,7 @@ ON
  (ReferenceTable.ctCollectionId = 0 OR ReferenceTable.ctCollectionId IS NULL)
 WHERE
  ReferenceTable.mainTableId IS NULL AND
- (MainTable.ctCollectionId = 0 OR MainTable.ctCollectionId IS NULL) AND
- (ReferenceTable.ctCollectionId = 0 OR ReferenceTable.ctCollectionId IS NULL)
+ (MainTable.ctCollectionId = 0 OR MainTable.ctCollectionId IS NULL)
 ORDER BY
  MainTable.mainTableId
 ASC

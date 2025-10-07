@@ -1,11 +1,29 @@
+@import 'atlas-variables';
 @import 'cadmin-variables';
 @import 'variables';
 
 // View mode
 
 #wrapper {
-	&:has(.content-editor__side-panel) {
-		margin-right: $contentEditorSidePanelWidth;
+	&:not(.page-editor__wrapper--sidebar--hidden):has(
+			.content-editor__side-panel
+		) {
+		margin-right: $contentEditorSidePanelBarWidth;
+		transition: margin-right 0.5s ease;
+	}
+
+	@include media-breakpoint-up(lg) {
+		#content {
+			&:has(.content-editor__side-panel > .sidebar) {
+				padding-right: $contentEditorSidePanelWidth;
+				transition: padding 0.3s ease-in-out;
+			}
+
+			&:has(.content-editor__side-panel > .c-slideout-transition-out) {
+				padding-right: 0;
+				transition: padding 0.2s ease-in;
+			}
+		}
 	}
 
 	.content-editor__side-panel {
@@ -13,6 +31,19 @@
 			var(--control-menu-container-height) +
 				$contentEditorManagementBarHeight
 		);
+
+		.form-control.lfr-ck {
+			&:has(> .ck-focused) {
+				background-color: $input-focus-bg;
+				border-color: $input-focus-border-color;
+				box-shadow: $input-focus-box-shadow;
+			}
+
+			.ck-focused {
+				border-color: transparent;
+				box-shadow: none;
+			}
+		}
 	}
 }
 
@@ -21,17 +52,28 @@
 html#{$cadmin-selector} {
 	.page-editor__wrapper {
 		&:has(.content-editor__side-panel) {
-			margin-right: $pageEditorSidebarWidth + $contentEditorSidePanelWidth;
+			margin-right: $contentEditorSidePanelBarWidth;
+
+			&:not(.page-editor__wrapper--sidebar--hidden) {
+				margin-right: $pageEditorSidebarWidth +
+					$contentEditorSidePanelBarWidth;
+			}
+		}
+
+		&:not(.page-editor__wrapper--sidebar--hidden)
+			.content-editor__side-panel {
+			margin-right: $pageEditorSidebarWidth;
 		}
 
 		.content-editor__side-panel {
-			margin-right: $pageEditorSidebarWidth;
+			margin-right: 0;
 			margin-top: calc(
 				var(--control-menu-container-height) +
 					$contentEditorManagementBarHeight +
 					$pageEditorManagamentBarHeight
 			);
 			opacity: 50%;
+			transition: margin-right 0.5s ease;
 		}
 	}
 

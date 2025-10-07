@@ -10,7 +10,7 @@ import FrontendDataSetContext, {
 } from '../FrontendDataSetContext';
 import filterItemActions from '../utils/actionItems/filterItemActions';
 import handleActionClick from '../utils/actionItems/handleActionClick';
-import {IItemsActions} from '../utils/types';
+import {EItemActionsType, IItemsActions} from '../utils/types';
 import ViewsContext from '../views/ViewsContext';
 import ActionsDropdown from './ActionsDropdown';
 import QuickActions from './QuickActions';
@@ -21,21 +21,28 @@ function Actions({
 	actions,
 	itemData,
 	itemId,
+	items,
+	onItemSelectionChange,
 }: {
 	actions: Array<IItemsActions>;
 	itemData: any;
 	itemId: string | number;
+	items: any[];
+	onItemSelectionChange?: Function;
 }) {
 	const {
 		allItemsSelectedActive,
 		executeAsyncItemAction,
 		highlightItems,
+		infoPanelOpen,
 		inlineEditingSettings,
 		loadData,
 		onActionDropdownItemClick,
 		onInfoPanelToggleButtonClick,
 		openModal,
 		openSidePanel,
+		selectable,
+		selectedItemsKey,
 		selectedItemsValue,
 		toggleItemInlineEdit,
 	}: IFrontendDataSetContext = useContext(FrontendDataSetContext);
@@ -61,10 +68,18 @@ function Actions({
 	const inlineEditingAlwaysOn =
 		inlineEditingAvailable && inlineEditingSettings.alwaysOn;
 
-	const formattedActions = filterItemActions(actions, itemData);
+	const formattedActions = filterItemActions({
+		actions,
+		infoPanelOpen,
+		itemData,
+		selectable,
+		selectedItemsKey,
+		selectedItemsValue,
+	});
 
 	if (inlineEditingAvailable && !inlineEditingAlwaysOn) {
 		formattedActions.unshift({
+			disabled: false,
 			icon: 'fieldset',
 			label: Liferay.Language.get('inline-edit'),
 			target: 'inlineEdit',
@@ -86,11 +101,14 @@ function Actions({
 			event,
 			executeAsyncItemAction,
 			highlightItems,
+			infoPanelOpen,
 			itemData,
 			itemId,
+			items,
 			loadData,
 			onActionDropdownItemClick,
 			onInfoPanelToggleButtonClick,
+			onItemSelectionChange,
 			openModal,
 			openSidePanel,
 			setLoading,
@@ -98,16 +116,19 @@ function Actions({
 		});
 	};
 
+	const quickActions =
+		formattedActions[0]?.type === EItemActionsType.GROUP
+			? formattedActions[0].items?.slice(0, QUICK_ACTIONS_MAX_NUMBER) ||
+				[]
+			: formattedActions.slice(0, QUICK_ACTIONS_MAX_NUMBER);
+
 	return (
 		<>
 			{quickActionsEnabled &&
-				formattedActions.length > 1 &&
+				quickActions.length > 1 &&
 				!isRowSelected && (
 					<QuickActions
-						actions={formattedActions.slice(
-							0,
-							QUICK_ACTIONS_MAX_NUMBER
-						)}
+						actions={quickActions}
 						itemData={itemData}
 						itemId={itemId}
 						onClick={handleClick}

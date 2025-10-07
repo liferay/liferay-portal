@@ -3,9 +3,9 @@ assemble:
         into: batch
 liferay-jethr0-batch:
     name: Liferay Jethr0 Batch
-    oAuthApplicationHeadlessServer: liferay-jethr0-batch-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-jethr0-batch-oahs
     type: batch
-liferay-jethr0-batch-oauth-application-headless-server:
+liferay-jethr0-batch-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Jethr0 Batch OAuth Application Headless Server

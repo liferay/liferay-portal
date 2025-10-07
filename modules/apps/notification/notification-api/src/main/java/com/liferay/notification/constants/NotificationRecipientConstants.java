@@ -14,8 +14,12 @@ public class NotificationRecipientConstants {
 
 	public static final String TYPE_ROLE = "role";
 
+	public static final String TYPE_SUBSCRIBERS = "subscribers";
+
 	public static final String TYPE_TERM = "term";
 
 	public static final String TYPE_USER = "user";
+
+	public static final String TYPE_USER_GROUP = "user-group";
 
 }

@@ -87,12 +87,12 @@ public class LayoutClassedModelUsageCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", classExternalReferenceCode=");
+		sb.append(classExternalReferenceCode);
 		sb.append(", classNameId=");
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
-		sb.append(", classedModelExternalReferenceCode=");
-		sb.append(classedModelExternalReferenceCode);
 		sb.append(", containerKey=");
 		sb.append(containerKey);
 		sb.append(", containerType=");
@@ -142,17 +142,16 @@ public class LayoutClassedModelUsageCacheModel
 			layoutClassedModelUsageImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
-		layoutClassedModelUsageImpl.setClassNameId(classNameId);
-		layoutClassedModelUsageImpl.setClassPK(classPK);
-
-		if (classedModelExternalReferenceCode == null) {
-			layoutClassedModelUsageImpl.setClassedModelExternalReferenceCode(
-				"");
+		if (classExternalReferenceCode == null) {
+			layoutClassedModelUsageImpl.setClassExternalReferenceCode("");
 		}
 		else {
-			layoutClassedModelUsageImpl.setClassedModelExternalReferenceCode(
-				classedModelExternalReferenceCode);
+			layoutClassedModelUsageImpl.setClassExternalReferenceCode(
+				classExternalReferenceCode);
 		}
+
+		layoutClassedModelUsageImpl.setClassNameId(classNameId);
+		layoutClassedModelUsageImpl.setClassPK(classPK);
 
 		if (containerKey == null) {
 			layoutClassedModelUsageImpl.setContainerKey("");
@@ -192,11 +191,11 @@ public class LayoutClassedModelUsageCacheModel
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		classExternalReferenceCode = objectInput.readUTF();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		classedModelExternalReferenceCode = objectInput.readUTF();
 		containerKey = objectInput.readUTF();
 
 		containerType = objectInput.readLong();
@@ -228,16 +227,16 @@ public class LayoutClassedModelUsageCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
-		objectOutput.writeLong(classNameId);
-
-		objectOutput.writeLong(classPK);
-
-		if (classedModelExternalReferenceCode == null) {
+		if (classExternalReferenceCode == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
-			objectOutput.writeUTF(classedModelExternalReferenceCode);
+			objectOutput.writeUTF(classExternalReferenceCode);
 		}
+
+		objectOutput.writeLong(classNameId);
+
+		objectOutput.writeLong(classPK);
 
 		if (containerKey == null) {
 			objectOutput.writeUTF("");
@@ -262,9 +261,9 @@ public class LayoutClassedModelUsageCacheModel
 	public long companyId;
 	public long createDate;
 	public long modifiedDate;
+	public String classExternalReferenceCode;
 	public long classNameId;
 	public long classPK;
-	public String classedModelExternalReferenceCode;
 	public String containerKey;
 	public long containerType;
 	public long plid;

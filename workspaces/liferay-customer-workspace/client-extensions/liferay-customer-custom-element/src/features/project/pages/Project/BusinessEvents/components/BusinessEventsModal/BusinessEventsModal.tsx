@@ -48,7 +48,7 @@ const BusinessEventsModal = ({
 		}
 
 		if (modalType === 'editEvent') {
-			return !reason?.trim();
+			return !reason?.trim() || isLoadingSubmitButton;
 		}
 
 		if (modalType === 'goLiveEvent') {

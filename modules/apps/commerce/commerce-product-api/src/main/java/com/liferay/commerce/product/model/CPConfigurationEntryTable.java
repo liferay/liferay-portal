@@ -138,9 +138,6 @@ public class CPConfigurationEntryTable
 	public final Column<CPConfigurationEntryTable, Boolean> taxExempt =
 		createColumn(
 			"taxExempt", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
-	public final Column<CPConfigurationEntryTable, Boolean> visible =
-		createColumn(
-			"visible", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<CPConfigurationEntryTable, Double> weight =
 		createColumn("weight", Double.class, Types.DOUBLE, Column.FLAG_DEFAULT);
 	public final Column<CPConfigurationEntryTable, Double> width = createColumn(

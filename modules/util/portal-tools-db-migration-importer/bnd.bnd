@@ -1,0 +1,18 @@
+Bundle-Name: Liferay Portal Tools DB Migration Importer
+Bundle-SymbolicName: com.liferay.portal.tools.db.migration.importer
+Bundle-Version: 1.0.0
+Main-Class: com.liferay.portal.tools.db.migration.importer.DBMigrationImport
+-includeresource:\
+	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/ConcurrentMapperHashMap.class,\
+	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/ConcurrentReferenceKeyHashMap.class,\
+	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/ConcurrentReferenceKeyHashMap$*.class,\
+	@com.liferay.petra.lang-*.jar!/com/liferay/petra/lang/CentralizedThreadLocal.class,\
+	@com.liferay.petra.lang-*.jar!/com/liferay/petra/lang/CentralizedThreadLocal$*.class,\
+	@com.liferay.petra.reflect-*.jar!/com/liferay/petra/reflect/ReflectionUtil.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/CharPool.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler.class,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler$*,\
+	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringPool.class,\
+	@com.liferay.portal.impl-*.jar!/com/liferay/portal/dao/jdbc/postgresql/PostgreSQLJDBCUtil.class,\
+	@org.springframework.beans-*.jar!/org/springframework/beans/factory/InitializingBean.class,\
+	@spring-jdbc-*.jar!/org/springframework/jdbc/datasource/DelegatingDataSource.class

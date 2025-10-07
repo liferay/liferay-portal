@@ -88,7 +88,7 @@ public class ObjectActionTicketRestController extends BaseRestController {
 					).put(
 						"includeAssetSearchSummary", true
 					).put(
-						"includeassetURL", true
+						"includeAssetURL", true
 					).put(
 						"sxpBlueprintId", 3628599
 					));

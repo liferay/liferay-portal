@@ -430,37 +430,41 @@ components:
                             description:
                                 A physical mailing address for this user.
                             items:
-                                allOf:
-                                    -   $ref: "#/components/schemas/MultiValuedAttribute"
-                                    -   properties:
-                                            country:
-                                                description:
-                                                    The country name component.
-                                                type: string
-                                            formatted:
-                                                description:
-                                                    The full mailing address, formatted for display or use with a
-                                                    mailing label.
-                                                type: string
-                                            locality:
-                                                description:
-                                                    The city or locality component.
-                                                type: string
-                                            postalCode:
-                                                description:
-                                                    The zip code or postal code component.
-                                                type: string
-                                            region:
-                                                description:
-                                                    The state or region component.
-                                                type: string
-                                            streetAddress:
-                                                description:
-                                                    The full street address component, which may include house number,
-                                                    street name, P.O. box, and multi-line extended street address
-                                                    information.
-                                                type: string
-                                        type: object
+                                $ref: "#/components/schemas/MultiValuedAttribute"
+                                properties:
+                                    country:
+                                        description:
+                                            The country name component.
+                                        type: string
+                                    formatted:
+                                        description:
+                                            The full mailing address, formatted for display or use with a mailing label.
+                                        type: string
+                                    locality:
+                                        description:
+                                            The city or locality component.
+                                        type: string
+                                    postalCode:
+                                        description:
+                                            The zip code or postal code component.
+                                        type: string
+                                    primary:
+                                        description:
+                                            The preferred mailing address.
+                                        type: boolean
+                                    region:
+                                        description:
+                                            The state or region component.
+                                        type: string
+                                    streetAddress:
+                                        description:
+                                            The full street address component, which may include house number, street
+                                            name, P.O. box, and multi-line extended street address information.
+                                        type: string
+                                    type:
+                                        description:
+                                            The type of address, e.g., 'business', 'other', or 'personal'.
+                                        type: string
                                 type: object
                             type: array
                         displayName:
@@ -598,7 +602,7 @@ components:
 info:
     description:
         "Liferay SCIM endpoints. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.scim.rest.client', and version '1.0.15'."
+        'com.liferay.scim.rest.client', and version '1.0.16'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

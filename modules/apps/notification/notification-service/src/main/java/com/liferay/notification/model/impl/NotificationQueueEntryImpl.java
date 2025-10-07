@@ -7,6 +7,9 @@ package com.liferay.notification.model.impl;
 
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 /**
  * @author Gabriel Albuquerque
@@ -14,9 +17,26 @@ import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
 public class NotificationQueueEntryImpl extends NotificationQueueEntryBaseImpl {
 
 	@Override
+	public String getClassName() {
+		try {
+			return super.getClassName();
+		}
+		catch (RuntimeException runtimeException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(runtimeException);
+			}
+
+			return StringPool.BLANK;
+		}
+	}
+
+	@Override
 	public NotificationRecipient getNotificationRecipient() {
 		return NotificationRecipientLocalServiceUtil.
 			getNotificationRecipientByClassPK(getNotificationQueueEntryId());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		NotificationQueueEntryImpl.class);
 
 }

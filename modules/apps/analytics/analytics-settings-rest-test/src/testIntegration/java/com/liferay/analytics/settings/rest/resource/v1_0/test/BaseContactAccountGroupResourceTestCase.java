@@ -36,13 +36,13 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -489,91 +489,6 @@ public abstract class BaseContactAccountGroupResourceTestCase {
 			"This method needs to be implemented");
 	}
 
-	@Test
-	public void testGraphQLGetContactAccountGroupsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"contactAccountGroups",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject contactAccountGroupsJSONObject =
-			JSONUtil.getValueAsJSONObject(
-				invokeGraphQLQuery(graphQLField), "JSONObject/data",
-				"JSONObject/contactAccountGroups");
-
-		long totalCount = contactAccountGroupsJSONObject.getLong("totalCount");
-
-		ContactAccountGroup contactAccountGroup1 =
-			testGraphQLGetContactAccountGroupsPage_addContactAccountGroup();
-		ContactAccountGroup contactAccountGroup2 =
-			testGraphQLGetContactAccountGroupsPage_addContactAccountGroup();
-
-		contactAccountGroupsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/contactAccountGroups");
-
-		Assert.assertEquals(
-			totalCount + 2,
-			contactAccountGroupsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			contactAccountGroup1,
-			Arrays.asList(
-				ContactAccountGroupSerDes.toDTOs(
-					contactAccountGroupsJSONObject.getString("items"))));
-		assertContains(
-			contactAccountGroup2,
-			Arrays.asList(
-				ContactAccountGroupSerDes.toDTOs(
-					contactAccountGroupsJSONObject.getString("items"))));
-
-		// Using the namespace analyticsSettings_v1_0
-
-		contactAccountGroupsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField("analyticsSettings_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/analyticsSettings_v1_0",
-			"JSONObject/contactAccountGroups");
-
-		Assert.assertEquals(
-			totalCount + 2,
-			contactAccountGroupsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			contactAccountGroup1,
-			Arrays.asList(
-				ContactAccountGroupSerDes.toDTOs(
-					contactAccountGroupsJSONObject.getString("items"))));
-		assertContains(
-			contactAccountGroup2,
-			Arrays.asList(
-				ContactAccountGroupSerDes.toDTOs(
-					contactAccountGroupsJSONObject.getString("items"))));
-	}
-
-	protected ContactAccountGroup
-			testGraphQLGetContactAccountGroupsPage_addContactAccountGroup()
-		throws Exception {
-
-		return testGraphQLContactAccountGroup_addContactAccountGroup();
-	}
-
-	protected ContactAccountGroup
-			testGraphQLContactAccountGroup_addContactAccountGroup()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
 	protected void assertContains(
 		ContactAccountGroup contactAccountGroup,
 		List<ContactAccountGroup> contactAccountGroups) {
@@ -740,6 +655,8 @@ public abstract class BaseContactAccountGroupResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

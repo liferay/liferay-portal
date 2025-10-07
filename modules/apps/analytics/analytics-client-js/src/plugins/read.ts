@@ -94,7 +94,11 @@ function read(analytics: Analytics) {
 			() =>
 				analytics.send(
 					AnalyticsType.EventId.PageRead,
-					AnalyticsType.ApplicationId.Page
+					AnalyticsType.ApplicationId.Page,
+					{
+						externalReferenceCode:
+							analytics._getContext().layoutExternalReferenceCode,
+					}
 				),
 			getExpectedViewDuration(content)
 		);
@@ -106,7 +110,12 @@ function read(analytics: Analytics) {
 				readTracker.onDepthReached(() => {
 					analytics.send(
 						AnalyticsType.EventId.PageRead,
-						AnalyticsType.ApplicationId.Page
+						AnalyticsType.ApplicationId.Page,
+						{
+							externalReferenceCode:
+								analytics._getContext()
+									.layoutExternalReferenceCode,
+						}
 					);
 				});
 			}

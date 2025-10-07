@@ -145,6 +145,7 @@
 		<column name="scope" type="String" />
 		<column name="version" type="int" />
 		<column name="active" type="boolean" />
+		<column name="status" type="int" />
 
 		<!-- Order -->
 

@@ -1,0 +1,20 @@
+[
+	{
+		"externalReferenceCode": "PAID",
+		"key": "0",
+		"name": "Paid",
+		"name_i18n": {
+			"en-US": "Paid"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "UNPAID",
+		"key": "1",
+		"name": "Unpaid",
+		"name_i18n": {
+			"en-US": "Unpaid"
+		},
+		"type": "string"
+	}
+]

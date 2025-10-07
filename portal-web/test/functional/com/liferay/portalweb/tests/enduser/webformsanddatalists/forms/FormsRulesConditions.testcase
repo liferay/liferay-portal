@@ -1093,7 +1093,7 @@ definition {
 
 		FormRules.viewRuleCondition(
 			condition = "AND",
-			conditonRowNumber = 1);
+			conditionRowNumber = 1);
 
 		FormRules.configureConditionOptions(
 			conditionField = "Text Field 1",

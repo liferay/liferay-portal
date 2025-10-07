@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay MVC portlet with NPM and React support as a module project.
 Bundle-Name: Liferay Project Templates NPM React Portlet
 Bundle-SymbolicName: com.liferay.project.templates.npm.react.portlet
-Bundle-Version: 1.0.197
+Bundle-Version: 1.0.199
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

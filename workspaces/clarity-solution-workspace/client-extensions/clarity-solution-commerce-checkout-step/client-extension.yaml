@@ -1,0 +1,23 @@
+assemble:
+    -   from: assets
+        into: static
+    -   fromTask: bootJar
+clarity-solution-commerce-checkout-step:
+    active: true
+    checkoutStepLabel: clarity-solution-commerce-checkout-step-label
+    checkoutStepName: clarity-solution-commerce-checkout-step-name
+    checkoutStepOrder: 25
+    name: Clarity Solution Commerce Checkout Step
+    oAuth2ApplicationExternalReferenceCode: clarity-solution-commerce-checkout-step-oaua
+    order: true
+    sennaDisabled: true
+    showControls: true
+    type: commerceCheckoutStep
+    visible: true
+clarity-solution-commerce-checkout-step-oaua:
+    .serviceAddress: localhost:58081
+    .serviceScheme: http
+    name: Clarity Solution Commerce Checkout Step OAuth Application User Agent
+    scopes:
+        -   Liferay.Headless.Admin.Workflow.everything
+    type: oAuthApplicationUserAgent

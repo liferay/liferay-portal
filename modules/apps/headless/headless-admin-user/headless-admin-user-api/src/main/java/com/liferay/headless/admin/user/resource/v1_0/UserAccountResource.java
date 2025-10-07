@@ -251,10 +251,13 @@ public interface UserAccountResource {
 			String contentType, String fieldNames)
 		throws Exception;
 
-	public UserAccount postUserAccount(UserAccount userAccount)
+	public UserAccount postUserAccount(
+			String captchaAnswer, String captchaToken, UserAccount userAccount)
 		throws Exception;
 
-	public Response postUserAccountBatch(String callbackURL, Object object)
+	public Response postUserAccountBatch(
+			String captchaAnswer, String captchaToken, String callbackURL,
+			Object object)
 		throws Exception;
 
 	public Response postUserAccountImage(

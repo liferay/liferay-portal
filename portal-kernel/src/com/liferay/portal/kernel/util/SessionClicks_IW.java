@@ -38,12 +38,14 @@ public class SessionClicks_IW {
 		return SessionClicks.get(httpSession, namespace, key, defaultValue);
 	}
 
-	public void put(jakarta.servlet.http.HttpServletRequest httpServletRequest,
+	public void put(
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpServletRequest, key, value);
 	}
 
-	public void put(jakarta.servlet.http.HttpServletRequest httpServletRequest,
+	public void put(
+		jakarta.servlet.http.HttpServletRequest httpServletRequest,
 		java.lang.String namespace, java.lang.String key, java.lang.String value) {
 		SessionClicks.put(httpServletRequest, namespace, key, value);
 	}

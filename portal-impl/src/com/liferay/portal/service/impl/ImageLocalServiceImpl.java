@@ -54,9 +54,10 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
 		Store store = _storeSnapshot.get();
 
-		store.deleteDirectory(
+		store.deleteFile(
 			image.getCompanyId(), _REPOSITORY_ID,
-			_getFileName(image.getImageId(), image.getType()));
+			_getFileName(image.getImageId(), image.getType()),
+			Store.VERSION_DEFAULT);
 
 		return image;
 	}
@@ -149,72 +150,6 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 		return image;
 	}
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[])}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, byte[] bytes)
-		throws PortalException {
-
-		return updateImage(CompanyConstants.SYSTEM, imageId, bytes);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, byte[], String, int, int, int)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(
-			long imageId, byte[] bytes, String type, int height, int width,
-			int size)
-		throws PortalException {
-
-		return updateImage(
-			CompanyConstants.SYSTEM, imageId, bytes, type, height, width, size);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, File)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, File file) throws PortalException {
-		return updateImage(CompanyConstants.SYSTEM, imageId, file);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(long imageId, InputStream inputStream)
-		throws PortalException {
-
-		return updateImage(CompanyConstants.SYSTEM, imageId, inputStream);
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), replaced by {@link #updateImage(long, long, InputStream, boolean)}
-	 */
-	@Deprecated
-	@Override
-	public Image updateImage(
-			long imageId, InputStream inputStream, boolean cleanUpStream)
-		throws PortalException {
-
-		try {
-			Image image = ImageToolUtil.getImage(inputStream, cleanUpStream);
-
-			return updateImage(
-				imageId, image.getTextObj(), image.getType(), image.getHeight(),
-				image.getWidth(), image.getSize());
-		}
-		catch (IOException ioException) {
-			throw new SystemException(ioException);
-		}
-	}
-
 	@Override
 	public Image updateImage(long companyId, long imageId, byte[] bytes)
 		throws PortalException {
@@ -269,8 +204,9 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 				image.getCompanyId(), _REPOSITORY_ID, fileName,
 				Store.VERSION_DEFAULT)) {
 
-			store.deleteDirectory(
-				image.getCompanyId(), _REPOSITORY_ID, fileName);
+			store.deleteFile(
+				image.getCompanyId(), _REPOSITORY_ID, fileName,
+				Store.VERSION_DEFAULT);
 		}
 
 		try (InputStream inputStream = new UnsyncByteArrayInputStream(bytes)) {

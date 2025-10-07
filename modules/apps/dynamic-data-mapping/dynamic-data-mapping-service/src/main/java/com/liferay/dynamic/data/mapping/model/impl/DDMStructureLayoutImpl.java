@@ -28,7 +28,8 @@ public class DDMStructureLayoutImpl extends DDMStructureLayoutBaseImpl {
 					DDMStructureLayoutLocalServiceUtil.
 						getStructureLayoutDDMFormLayout(this);
 
-				ddmFormLayoutUpdateEntityCacheConsumer.accept(_ddmFormLayout);
+				ddmFormLayoutUpdateEntityCacheBiConsumer.accept(
+					this, _ddmFormLayout);
 			}
 			catch (Exception exception) {
 				_log.error(exception);

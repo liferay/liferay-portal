@@ -196,6 +196,11 @@ public class RepositoryWrapper implements Repository {
 	}
 
 	@Override
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
+		return _repository.fetchFileEntry(fileEntryId);
+	}
+
+	@Override
 	public FileEntry fetchFileEntry(long folderId, String title)
 		throws PortalException {
 

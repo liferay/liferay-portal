@@ -96,11 +96,11 @@ public class AccountGroupServiceUtil {
 			accountEntryId);
 	}
 
-	public static AccountGroup getOrAddIncompleteAccountGroup(
+	public static AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, String name)
 		throws Exception {
 
-		return getService().getOrAddIncompleteAccountGroup(
+		return getService().getOrAddEmptyAccountGroup(
 			externalReferenceCode, name);
 	}
 

@@ -603,6 +603,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -996,6 +1005,14 @@ public class DispatchTriggerPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByUuid(uuid);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1606,6 +1623,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2019,6 +2045,15 @@ public class DispatchTriggerPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByUuid_C(
+				uuid, companyId);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2575,6 +2610,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2930,6 +2974,14 @@ public class DispatchTriggerPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByCompanyId(companyId);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3454,6 +3506,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByActive(active, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByActive(
+					active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3809,6 +3870,14 @@ public class DispatchTriggerPersistenceImpl
 	public int filterCountByActive(boolean active) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByActive(active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByActive(active);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -4372,6 +4441,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByC_U(companyId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4746,6 +4824,15 @@ public class DispatchTriggerPersistenceImpl
 	public int filterCountByC_U(long companyId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_U(companyId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByC_U(
+				companyId, userId);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5357,6 +5444,15 @@ public class DispatchTriggerPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_DTET(
+					companyId, dispatchTaskExecutorType, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		dispatchTaskExecutorType = Objects.toString(
 			dispatchTaskExecutorType, "");
 
@@ -5782,6 +5878,15 @@ public class DispatchTriggerPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_DTET(companyId, dispatchTaskExecutorType);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByC_DTET(
+				companyId, dispatchTaskExecutorType);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
 		}
 
 		dispatchTaskExecutorType = Objects.toString(
@@ -6579,6 +6684,15 @@ public class DispatchTriggerPersistenceImpl
 				active, dispatchTaskClusterMode, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByA_DTCM(
+					active, dispatchTaskClusterMode, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -6933,6 +7047,15 @@ public class DispatchTriggerPersistenceImpl
 			return findByA_DTCM(
 				active, dispatchTaskClusterModes, start, end,
 				orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByA_DTCM(
+					active, dispatchTaskClusterModes, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
 		}
 
 		if (dispatchTaskClusterModes == null) {
@@ -7394,6 +7517,15 @@ public class DispatchTriggerPersistenceImpl
 			return countByA_DTCM(active, dispatchTaskClusterMode);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = findByA_DTCM(
+				active, dispatchTaskClusterMode);
+
+			dispatchTriggers = InlineSQLHelperUtil.filter(dispatchTriggers);
+
+			return dispatchTriggers.size();
+		}
+
 		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_DISPATCHTRIGGER_WHERE);
@@ -7447,6 +7579,13 @@ public class DispatchTriggerPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByA_DTCM(active, dispatchTaskClusterModes);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DispatchTrigger> dispatchTriggers = InlineSQLHelperUtil.filter(
+				findByA_DTCM(active, dispatchTaskClusterModes));
+
+			return dispatchTriggers.size();
 		}
 
 		if (dispatchTaskClusterModes == null) {

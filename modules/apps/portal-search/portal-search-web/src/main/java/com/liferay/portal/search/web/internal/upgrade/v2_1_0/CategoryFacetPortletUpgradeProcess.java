@@ -92,8 +92,19 @@ public class CategoryFacetPortletUpgradeProcess
 		for (String vocabularyId : vocabularyIds) {
 			try {
 				AssetVocabulary assetVocabulary =
-					_assetVocabularyLocalService.getAssetVocabulary(
+					_assetVocabularyLocalService.fetchAssetVocabulary(
 						Long.parseLong(vocabularyId));
+
+				if (assetVocabulary == null) {
+					_log.error(
+						StringBundler.concat(
+							"Removing vocabulary ", vocabularyId,
+							" from portlet preferences for portlet ", portletId,
+							" because vocabulary ", vocabularyId,
+							" does not exist"));
+
+					continue;
+				}
 
 				Group group = _groupLocalService.getGroup(
 					assetVocabulary.getGroupId());

@@ -1441,4 +1441,128 @@ test.describe('Visualization Modes in Data Set Manager', () => {
 			});
 		}
 	);
+
+	test('Check more than 20 fields can be added @LPD-61085', async ({
+		page,
+		visualizationModesPage,
+	}) => {
+		await test.step('Add 21 fields', async () => {
+			await visualizationModesPage.goto({
+				dataSetLabel,
+			});
+
+			await visualizationModesPage.selectTab('Table');
+
+			await page.getByText('Add Fields', {exact: true}).click();
+
+			await page
+				.getByRole('menuitem', {name: 'Assign from Data Source'})
+				.click();
+
+			await page
+				.getByRole('treeitem', {name: 'auditEvents'})
+				.getByRole('checkbox')
+				.click();
+
+			await page
+				.getByRole('treeitem', {name: 'creator'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'dateCreated'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'dateModified'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'defaultLanguageId'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'displayDate'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'expirationDate'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {
+					exact: true,
+					name: 'externalReferenceCode',
+				})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'friendlyUrlPath'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {exact: true, name: 'id'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'keywords'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {
+					name: 'objectEntryFolderExternalReferenceCode',
+				})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'objectEntryFolderId'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'permissions'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'reviewDate'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'scopeId'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'status'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'taxonomyCategoryBriefs'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'taxonomyCategoryIds'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'active'})
+				.getByRole('checkbox')
+				.click();
+			await page
+				.getByRole('treeitem', {name: 'fieldName'})
+				.getByRole('checkbox')
+				.click();
+
+			await page.getByRole('button', {name: 'Save'}).click();
+
+			const toastContainer = page.locator('.alert-container');
+
+			await expect(toastContainer.getByText('Success')).toBeInViewport();
+
+			await page.getByTitle('New').click();
+
+			await page
+				.getByRole('menuitem', {name: 'Assign from Data Source'})
+				.click();
+
+			await expect(page.getByText('Items Selected')).toContainText('21');
+		});
+	});
 });

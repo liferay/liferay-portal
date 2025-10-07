@@ -1,0 +1,253 @@
+{{- if .Values.createClusterResources -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+    labels:
+        {{- include "liferayAWSBackupRestore.labels" . | nindent 8 }}
+    name: {{ include "liferayAWSBackupRestore.name" . }}
+spec:
+    arguments:
+        parameters:
+            -   name: recovery-point-arn
+    artifactGC:
+        {{- .Values.argo.workflowSpec.artifactGC | toYaml | nindent 8 }}
+    artifactRepositoryRef:
+        configMap: {{ include "liferayAWSBackupRestore.artifactRepositoryConfigMapName" . }}
+    entrypoint: main
+    podGC:
+        {{- .Values.argo.workflowSpec.podGC | toYaml | nindent 8 }}
+    templates:
+        -   inputs:
+                artifacts:
+                    -   name: git-repository
+                        path: /src
+                parameters:
+                    -   name: commit-message
+                    -   name: tfvars-content
+            name: apply-terraform-dependencies-module
+            script:
+                command: [sh]
+                image: "{{ .Values.images.terraform.repository }}:{{ .Values.images.terraform.tag }}"
+                resources:
+                    {{- .Values.resources.applyTerraformDependenciesModule | toYaml | nindent 20 }}
+                source: |-
+                    {{- include "liferayAWSBackupRestore.script.applyTerraformModule" . | nindent 20 }}
+                {{- include "liferayAWSBackupRestore.gitCredentials.volumeMount" . | nindent 16 }}
+                workingDir: {{ printf "/src/%s" .Values.git.repository.paths.dependenciesModule }}
+        -   name: checkout-git-repository
+            outputs:
+                artifacts:
+                    -   name: git-repository
+                        path: /src
+            script:
+                command: [sh]
+                image: "{{ .Values.images.terraform.repository }}:{{ .Values.images.terraform.tag }}"
+                resources:
+                    {{- .Values.resources.checkoutGitRepository | toYaml | nindent 20 }}
+                source: |-
+                    {{- include "liferayAWSBackupRestore.script.checkoutGitRepository" . | nindent 20 }}
+                {{- include "liferayAWSBackupRestore.gitCredentials.volumeMount" . | nindent 16 }}
+        -   container:
+                args:
+                    -   "s3"
+                    -   "rm"
+                    -   "s3://{{ "{{" }}inputs.parameters.s3-bucket-id}}/"
+                    -   "--only-show-errors"
+                    -   "--recursive"
+                command: ["aws"]
+                image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
+                resources:
+                    {{- .Values.resources.cleanUpS3Bucket | toYaml | nindent 20 }}
+            inputs:
+                parameters:
+                    -   name: s3-bucket-id
+            name: clean-up-s3-bucket
+        -   inputs:
+                artifacts:
+                    -   name: git-repository
+                        path: /src
+            name: get-dependencies-module-outputs
+            outputs:
+                parameters:
+                    -   name: data-active
+                        valueFrom:
+                            path: /tmp/data-active.txt
+                    -   name: data-inactive
+                        valueFrom:
+                            path: /tmp/data-inactive.txt
+                    -   name: s3-bucket-id-active
+                        valueFrom:
+                            path: /tmp/s3-bucket-id-active.txt
+                    -   name: s3-bucket-id-inactive
+                        valueFrom:
+                            path: /tmp/s3-bucket-id-inactive.txt
+            script:
+                command: [sh]
+                image: "{{ .Values.images.terraform.repository }}:{{ .Values.images.terraform.tag }}"
+                resources:
+                    {{- .Values.resources.getDependenciesModuleOutputs | toYaml | nindent 20 }}
+                source: |-
+                    {{- include "liferayAWSBackupRestore.script.getDependenciesModuleOutputs" . | nindent 20 }}
+                workingDir: {{ printf "/src/%s" .Values.git.repository.paths.dependenciesModule }}
+        -   name: get-peer-recovery-points
+            outputs:
+                parameters:
+                    -   name: rds-snapshot-id
+                        valueFrom:
+                            path: /tmp/rds-snapshot-id.txt
+                    -   name: s3-recovery-point-arn
+                        valueFrom:
+                            path: /tmp/s3-recovery-point-arn.txt
+            script:
+                command: [sh]
+                image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
+                resources:
+                    {{- .Values.resources.getPeerRecoveryPoints | toYaml | nindent 20 }}
+                source: |-
+                    {{- include "liferayAWSBackupRestore.script.getPeerRecoveryPoints" . | nindent 20 }}
+        -   container:
+                args:
+                    -   rollout
+                    -   restart
+                    -   statefulset
+                    -   "{{ .Values.liferayWorkload.name }}"
+                image: "{{ .Values.images.kubectl.repository }}:{{ .Values.images.kubectl.tag }}"
+                resources:
+                    {{- .Values.resources.kubectlRolloutRestart | toYaml | nindent 20 }}
+            name: kubectl-rollout-restart
+        -   container:
+                args:
+                    -   rollout
+                    -   status
+                    -   statefulset
+                    -   "{{ .Values.liferayWorkload.name }}"
+                    -   --timeout={{ .Values.liferayWorkload.rolloutTimeout }}
+                image: "{{ .Values.images.kubectl.repository }}:{{ .Values.images.kubectl.tag }}"
+                resources:
+                    {{- .Values.resources.kubectlRolloutStatus | toYaml | nindent 20 }}
+            name: kubectl-rollout-status
+        -   dag:
+                tasks:
+                    -   name: checkout-git-repository
+                        template: checkout-git-repository
+                    -   arguments:
+                            artifacts:
+                                -   from: "{{ "{{" }}tasks.checkout-git-repository.outputs.artifacts.git-repository}}"
+                                    name: git-repository
+                            parameters:
+                                -   name: commit-message
+                                    value: Clean up inactive RDS instance
+                                -   name: tfvars-content
+                                    value: |-
+                                        data_active = "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.data-inactive}}"
+                                        is_restoring = false
+                        depends: restart-liferay
+                        name: clean-up-rds-instance
+                        template: apply-terraform-dependencies-module
+                    -   arguments:
+                            parameters:
+                                -   name: s3-bucket-id
+                                    value: "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.s3-bucket-id-active}}"
+                        depends: restart-liferay
+                        name: clean-up-s3-bucket
+                        template: clean-up-s3-bucket
+                    -   arguments:
+                            artifacts:
+                                -   from: "{{ "{{" }}tasks.checkout-git-repository.outputs.artifacts.git-repository}}"
+                                    name: git-repository
+                        depends: checkout-git-repository
+                        name: get-dependencies-module-outputs
+                        template: get-dependencies-module-outputs
+                    -   name: get-peer-recovery-points
+                        template: get-peer-recovery-points
+                    -   depends: update-kubernetes-secret
+                        name: restart-liferay
+                        template: restart-liferay
+                    -   arguments:
+                            artifacts:
+                                -   from: "{{ "{{" }}tasks.checkout-git-repository.outputs.artifacts.git-repository}}"
+                                    name: git-repository
+                            parameters:
+                                -   name: commit-message
+                                    value: Provision inactive RDS instance from database snapshot identifier
+                                -   name: tfvars-content
+                                    value: |-
+                                        data_active = "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.data-active}}"
+                                        db_restore_snapshot_identifier = "{{ "{{" }}tasks.get-peer-recovery-points.outputs.parameters.rds-snapshot-id}}"
+                                        is_restoring = true
+                        depends: get-dependencies-module-outputs && get-peer-recovery-points
+                        name: restore-rds-instance
+                        template: apply-terraform-dependencies-module
+                    -   arguments:
+                            parameters:
+                                -   name: s3-recovery-point-arn
+                                    value: "{{ "{{" }}tasks.get-peer-recovery-points.outputs.parameters.s3-recovery-point-arn}}"
+                                -   name: s3-bucket-id
+                                    value: "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.s3-bucket-id-inactive}}"
+                        depends: get-dependencies-module-outputs && get-peer-recovery-points
+                        name: restore-s3-bucket
+                        template: restore-s3-bucket
+                    -   arguments:
+                            artifacts:
+                                -   from: "{{ "{{" }}tasks.checkout-git-repository.outputs.artifacts.git-repository}}"
+                                    name: git-repository
+                            parameters:
+                                -   name: commit-message
+                                    value: Roll back RDS instance
+                                -   name: tfvars-content
+                                    value: |-
+                                        data_active = "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.data-active}}"
+                                        is_restoring = false
+                        depends: "!restore-rds-instance.Skipped && !update-kubernetes-secret.Succeeded"
+                        name: roll-back-rds-instance
+                        template: apply-terraform-dependencies-module
+                    -   arguments:
+                            parameters:
+                                -   name: s3-bucket-id
+                                    value: "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.s3-bucket-id-inactive}}"
+                        depends: "!restore-s3-bucket.Skipped && !update-kubernetes-secret.Succeeded"
+                        name: roll-back-s3-bucket
+                        template: clean-up-s3-bucket
+                    -   arguments:
+                            artifacts:
+                                -   from: "{{ "{{" }}tasks.checkout-git-repository.outputs.artifacts.git-repository}}"
+                                    name: git-repository
+                            parameters:
+                                -   name: commit-message
+                                    value: Update Liferay configuration to restored data plane
+                                -   name: tfvars-content
+                                    value: |-
+                                        data_active = "{{ "{{" }}tasks.get-dependencies-module-outputs.outputs.parameters.data-inactive}}"
+                                        db_restore_snapshot_identifier = null
+                                        is_restoring = true
+                        depends: restore-rds-instance && restore-s3-bucket
+                        name: update-kubernetes-secret
+                        template: apply-terraform-dependencies-module
+            name: main
+        -   inputs:
+                parameters:
+                    -   name: s3-bucket-id
+                    -   name: s3-recovery-point-arn
+            name: restore-s3-bucket
+            script:
+                command: [sh]
+                image: "{{ .Values.images.awsCli.repository }}:{{ .Values.images.awsCli.tag }}"
+                resources:
+                    {{- .Values.resources.restoreS3Bucket | toYaml | nindent 20 }}
+                source: |-
+                    {{- include "liferayAWSBackupRestore.script.restoreS3Bucket" . | nindent 20 }}
+        -   name: restart-liferay
+            steps:
+                -   -   name: kubectl-rollout-restart
+                        template: kubectl-rollout-restart
+                -   -   name: kubectl-rollout-status
+                        template: kubectl-rollout-status
+    ttlStrategy:
+        {{- .Values.argo.workflowSpec.ttlStrategy | toYaml | nindent 8 }}
+    {{- if and .Values.git.credentials.token .Values.git.credentials.username }}
+    volumes:
+        -   name: git-credentials
+            secret:
+                secretName: {{ include "liferayAWSBackupRestore.gitCredentials.secretName" . }}
+    {{- end -}}
+{{- end -}}

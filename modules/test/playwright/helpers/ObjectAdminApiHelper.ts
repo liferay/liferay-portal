@@ -13,19 +13,6 @@ import {
 
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers} from './ApiHelpers';
-
-export interface CreateObjectField {
-	attachmentSource?: string;
-	formulaFieldOutput?: 'Decimal' | 'Integer';
-	listTypeDefinitionName?: string;
-	mandatory?: boolean;
-	objectDefinitionLabel?: string;
-
-	objectDefinitionNodes: unknown;
-	objectFieldBusinessType: string;
-	objectFieldLabel: string;
-}
-
 export class ObjectAdminApiHelper {
 	readonly apiHelpers: ApiHelpers;
 	readonly basePath: string;

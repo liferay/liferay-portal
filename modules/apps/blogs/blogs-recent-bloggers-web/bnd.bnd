@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Blogs Recent Bloggers Web
 Bundle-SymbolicName: com.liferay.blogs.recent.bloggers.web
-Bundle-Version: 6.0.39
+Bundle-Version: 6.0.40
 Web-ContextPath: /blogs-recent-bloggers-web

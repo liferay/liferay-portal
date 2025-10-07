@@ -18,6 +18,12 @@ export const ALLOWED_MIME_TYPES = {
 	},
 };
 
+export const DOCUMENT_FOLDER_PERMISSIONS = {
+	ANYONE: 'Anyone',
+	OWNER: 'Owner',
+	SITE_MEMBERS: 'Members',
+};
+
 export const PUBLISH_APP_UPLOAD_MAX_FILES = 10;
 
 export const PUBLISH_APP_UPLOAD_MAX_SIZE = 500_000_000;

@@ -63,9 +63,9 @@ public class FriendlyURLEntryLocalizationModelImpl
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
 		{"friendlyURLEntryLocalizationId", Types.BIGINT},
 		{"companyId", Types.BIGINT}, {"friendlyURLEntryId", Types.BIGINT},
-		{"languageId", Types.VARCHAR}, {"urlTitle", Types.VARCHAR},
-		{"groupId", Types.BIGINT}, {"classNameId", Types.BIGINT},
-		{"classPK", Types.BIGINT}
+		{"languageId", Types.VARCHAR}, {"groupId", Types.BIGINT},
+		{"classNameId", Types.BIGINT}, {"classPK", Types.BIGINT},
+		{"urlTitle", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -78,14 +78,14 @@ public class FriendlyURLEntryLocalizationModelImpl
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("friendlyURLEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("languageId", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("urlTitle", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classPK", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("urlTitle", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table FriendlyURLEntryLocalization (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,friendlyURLEntryLocalizationId LONG not null,companyId LONG,friendlyURLEntryId LONG,languageId VARCHAR(75) null,urlTitle VARCHAR(255) null,groupId LONG,classNameId LONG,classPK LONG,primary key (friendlyURLEntryLocalizationId, ctCollectionId))";
+		"create table FriendlyURLEntryLocalization (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,friendlyURLEntryLocalizationId LONG not null,companyId LONG,friendlyURLEntryId LONG,languageId VARCHAR(75) null,groupId LONG,classNameId LONG,classPK LONG,urlTitle VARCHAR(255) null,primary key (friendlyURLEntryLocalizationId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table FriendlyURLEntryLocalization";
@@ -289,13 +289,13 @@ public class FriendlyURLEntryLocalizationModelImpl
 			attributeGetterFunctions.put(
 				"languageId", FriendlyURLEntryLocalization::getLanguageId);
 			attributeGetterFunctions.put(
-				"urlTitle", FriendlyURLEntryLocalization::getUrlTitle);
-			attributeGetterFunctions.put(
 				"groupId", FriendlyURLEntryLocalization::getGroupId);
 			attributeGetterFunctions.put(
 				"classNameId", FriendlyURLEntryLocalization::getClassNameId);
 			attributeGetterFunctions.put(
 				"classPK", FriendlyURLEntryLocalization::getClassPK);
+			attributeGetterFunctions.put(
+				"urlTitle", FriendlyURLEntryLocalization::getUrlTitle);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -341,10 +341,6 @@ public class FriendlyURLEntryLocalizationModelImpl
 				(BiConsumer<FriendlyURLEntryLocalization, String>)
 					FriendlyURLEntryLocalization::setLanguageId);
 			attributeSetterBiConsumers.put(
-				"urlTitle",
-				(BiConsumer<FriendlyURLEntryLocalization, String>)
-					FriendlyURLEntryLocalization::setUrlTitle);
-			attributeSetterBiConsumers.put(
 				"groupId",
 				(BiConsumer<FriendlyURLEntryLocalization, Long>)
 					FriendlyURLEntryLocalization::setGroupId);
@@ -356,6 +352,10 @@ public class FriendlyURLEntryLocalizationModelImpl
 				"classPK",
 				(BiConsumer<FriendlyURLEntryLocalization, Long>)
 					FriendlyURLEntryLocalization::setClassPK);
+			attributeSetterBiConsumers.put(
+				"urlTitle",
+				(BiConsumer<FriendlyURLEntryLocalization, String>)
+					FriendlyURLEntryLocalization::setUrlTitle);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -494,34 +494,6 @@ public class FriendlyURLEntryLocalizationModelImpl
 	}
 
 	@Override
-	public String getUrlTitle() {
-		if (_urlTitle == null) {
-			return "";
-		}
-		else {
-			return _urlTitle;
-		}
-	}
-
-	@Override
-	public void setUrlTitle(String urlTitle) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_urlTitle = urlTitle;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalUrlTitle() {
-		return getColumnOriginalValue("urlTitle");
-	}
-
-	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
@@ -611,6 +583,34 @@ public class FriendlyURLEntryLocalizationModelImpl
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("classPK"));
 	}
 
+	@Override
+	public String getUrlTitle() {
+		if (_urlTitle == null) {
+			return "";
+		}
+		else {
+			return _urlTitle;
+		}
+	}
+
+	@Override
+	public void setUrlTitle(String urlTitle) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_urlTitle = urlTitle;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalUrlTitle() {
+		return getColumnOriginalValue("urlTitle");
+	}
+
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -677,10 +677,10 @@ public class FriendlyURLEntryLocalizationModelImpl
 		friendlyURLEntryLocalizationImpl.setFriendlyURLEntryId(
 			getFriendlyURLEntryId());
 		friendlyURLEntryLocalizationImpl.setLanguageId(getLanguageId());
-		friendlyURLEntryLocalizationImpl.setUrlTitle(getUrlTitle());
 		friendlyURLEntryLocalizationImpl.setGroupId(getGroupId());
 		friendlyURLEntryLocalizationImpl.setClassNameId(getClassNameId());
 		friendlyURLEntryLocalizationImpl.setClassPK(getClassPK());
+		friendlyURLEntryLocalizationImpl.setUrlTitle(getUrlTitle());
 
 		friendlyURLEntryLocalizationImpl.resetOriginalValues();
 
@@ -705,14 +705,14 @@ public class FriendlyURLEntryLocalizationModelImpl
 			this.<Long>getColumnOriginalValue("friendlyURLEntryId"));
 		friendlyURLEntryLocalizationImpl.setLanguageId(
 			this.<String>getColumnOriginalValue("languageId"));
-		friendlyURLEntryLocalizationImpl.setUrlTitle(
-			this.<String>getColumnOriginalValue("urlTitle"));
 		friendlyURLEntryLocalizationImpl.setGroupId(
 			this.<Long>getColumnOriginalValue("groupId"));
 		friendlyURLEntryLocalizationImpl.setClassNameId(
 			this.<Long>getColumnOriginalValue("classNameId"));
 		friendlyURLEntryLocalizationImpl.setClassPK(
 			this.<Long>getColumnOriginalValue("classPK"));
+		friendlyURLEntryLocalizationImpl.setUrlTitle(
+			this.<String>getColumnOriginalValue("urlTitle"));
 
 		return friendlyURLEntryLocalizationImpl;
 	}
@@ -814,6 +814,12 @@ public class FriendlyURLEntryLocalizationModelImpl
 			friendlyURLEntryLocalizationCacheModel.languageId = null;
 		}
 
+		friendlyURLEntryLocalizationCacheModel.groupId = getGroupId();
+
+		friendlyURLEntryLocalizationCacheModel.classNameId = getClassNameId();
+
+		friendlyURLEntryLocalizationCacheModel.classPK = getClassPK();
+
 		friendlyURLEntryLocalizationCacheModel.urlTitle = getUrlTitle();
 
 		String urlTitle = friendlyURLEntryLocalizationCacheModel.urlTitle;
@@ -821,12 +827,6 @@ public class FriendlyURLEntryLocalizationModelImpl
 		if ((urlTitle != null) && (urlTitle.length() == 0)) {
 			friendlyURLEntryLocalizationCacheModel.urlTitle = null;
 		}
-
-		friendlyURLEntryLocalizationCacheModel.groupId = getGroupId();
-
-		friendlyURLEntryLocalizationCacheModel.classNameId = getClassNameId();
-
-		friendlyURLEntryLocalizationCacheModel.classPK = getClassPK();
 
 		return friendlyURLEntryLocalizationCacheModel;
 	}
@@ -897,10 +897,10 @@ public class FriendlyURLEntryLocalizationModelImpl
 	private long _companyId;
 	private long _friendlyURLEntryId;
 	private String _languageId;
-	private String _urlTitle;
 	private long _groupId;
 	private long _classNameId;
 	private long _classPK;
+	private String _urlTitle;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<FriendlyURLEntryLocalization, Object> function =
@@ -937,10 +937,10 @@ public class FriendlyURLEntryLocalizationModelImpl
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("friendlyURLEntryId", _friendlyURLEntryId);
 		_columnOriginalValues.put("languageId", _languageId);
-		_columnOriginalValues.put("urlTitle", _urlTitle);
 		_columnOriginalValues.put("groupId", _groupId);
 		_columnOriginalValues.put("classNameId", _classNameId);
 		_columnOriginalValues.put("classPK", _classPK);
+		_columnOriginalValues.put("urlTitle", _urlTitle);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -966,13 +966,13 @@ public class FriendlyURLEntryLocalizationModelImpl
 
 		columnBitmasks.put("languageId", 32L);
 
-		columnBitmasks.put("urlTitle", 64L);
+		columnBitmasks.put("groupId", 64L);
 
-		columnBitmasks.put("groupId", 128L);
+		columnBitmasks.put("classNameId", 128L);
 
-		columnBitmasks.put("classNameId", 256L);
+		columnBitmasks.put("classPK", 256L);
 
-		columnBitmasks.put("classPK", 512L);
+		columnBitmasks.put("urlTitle", 512L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

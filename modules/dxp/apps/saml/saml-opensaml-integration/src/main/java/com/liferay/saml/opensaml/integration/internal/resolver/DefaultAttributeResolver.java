@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanProperties;
 import com.liferay.portal.kernel.configuration.Filter;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -598,28 +599,46 @@ public class DefaultAttributeResolver implements AttributeResolver {
 		boolean namespaceEnabled) {
 
 		try {
-			List<UserGroup> userGroups = user.getUserGroups();
-
-			if (userGroups.isEmpty()) {
-				return;
-			}
-
 			String name = null;
 			String nameFormat = null;
+			String oldName = null;
 
 			if (namespaceEnabled) {
 				name = "urn:liferay:membership:userGroups";
 				nameFormat = Attribute.URI_REFERENCE;
+				oldName = "urn:liferay:userGroups";
 			}
 			else {
 				name = "membership:userGroups";
 				nameFormat = Attribute.UNSPECIFIED;
+				oldName = "userGroups";
+			}
+
+			if (FeatureFlagManagerUtil.isEnabled("LPD-66611")) {
+				if (_log.isWarnEnabled()) {
+					StringBundler sb = new StringBundler(6);
+
+					sb.append("Publishing the attribute \"userGroups\" with ");
+					sb.append("and without membership namespace. If using a ");
+					sb.append("non-Liferay SP, please reconfigure the SP IdP ");
+					sb.append("connection to use the new format of ");
+					sb.append("\"membership:userGroups\", as the previous ");
+					sb.append("format is deprecated and will be removed.");
+
+					_log.warn(sb.toString());
+				}
+
+				attributePublisher.publish(
+					oldName, nameFormat,
+					TransformUtil.transformToArray(
+						user.getUserGroups(), UserGroup::getName,
+						String.class));
 			}
 
 			attributePublisher.publish(
 				name, nameFormat,
 				TransformUtil.transformToArray(
-					userGroups, UserGroup::getName, String.class));
+					user.getUserGroups(), UserGroup::getName, String.class));
 		}
 		catch (Exception exception) {
 			String message = StringBundler.concat(

@@ -22,14 +22,12 @@ import com.github.javafaker.Pokemon;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.model.FaroProject;
+import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -153,10 +151,7 @@ public abstract class DataCreator {
 	}
 
 	protected static String formatDate(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-		return dateFormat.format(date);
+		return DateUtil.formatDate(date, DateUtil.PATTERN_DATE_TIME);
 	}
 
 	protected void addData(List<Map<String, Object>> objects) {

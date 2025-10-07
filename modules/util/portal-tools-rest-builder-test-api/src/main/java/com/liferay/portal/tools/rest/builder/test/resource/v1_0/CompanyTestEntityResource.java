@@ -49,6 +49,10 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CompanyTestEntityResource {
 
+	public void deleteCompanyTestEntityByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public Page<CompanyTestEntity> getCompanyTestEntitiesPage()
 		throws Exception;
 

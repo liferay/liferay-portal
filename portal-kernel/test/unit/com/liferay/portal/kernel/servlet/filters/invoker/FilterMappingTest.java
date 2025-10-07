@@ -312,8 +312,8 @@ public class FilterMappingTest {
 	}
 
 	private void _testWithLog(String[] expectedMessages, Runnable runnable) {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				FilterMapping.class.getName(), Level.INFO)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				FilterMapping.class.getName(), LoggerTestUtil.INFO)) {
 
 			runnable.run();
 

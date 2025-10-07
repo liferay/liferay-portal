@@ -66,11 +66,13 @@ public class ViewCategoriesDisplayContext {
 		return getCategoriesByCategoryIdAPIURL();
 	}
 
-	public Map<String, Object> getBreadcrumbReactData() throws Exception {
+	public Map<String, Object> getBreadcrumbProps() throws Exception {
 		return HashMapBuilder.<String, Object>put(
 			"breadcrumbItems",
 			CategorizationBreadcrumbUtil.getNavigationBreadcrumbsJSONArray(
 				getVocabularyId(), getCategoryId(), _themeDisplay)
+		).put(
+			"hideSpace", true
 		).build();
 	}
 
@@ -108,7 +110,7 @@ public class ViewCategoriesDisplayContext {
 							_portal.getLayoutFullURL(
 								_layoutLocalService.getLayoutByFriendlyURL(
 									_themeDisplay.getScopeGroupId(), false,
-									"/categorization/new_category"),
+									"/categorization/new-category"),
 								_themeDisplay),
 							"vocabularyId", getVocabularyId()));
 
@@ -125,7 +127,7 @@ public class ViewCategoriesDisplayContext {
 						_portal.getLayoutFullURL(
 							_layoutLocalService.getLayoutByFriendlyURL(
 								_themeDisplay.getScopeGroupId(), false,
-								"/categorization/new_category"),
+								"/categorization/new-category"),
 							_themeDisplay),
 						"parentCategoryId", parentCategoryId, "vocabularyId",
 						getVocabularyId()));
@@ -157,7 +159,7 @@ public class ViewCategoriesDisplayContext {
 					_portal.getLayoutFullURL(
 						_layoutLocalService.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/edit_category"),
+							"/categorization/edit-category"),
 						_themeDisplay),
 					"categoryId", "{id}", "parentCategoryId", getCategoryId(),
 					"vocabularyId", "{taxonomyVocabularyId}"),
@@ -168,7 +170,7 @@ public class ViewCategoriesDisplayContext {
 					_portal.getLayoutFullURL(
 						_layoutLocalService.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/edit_category"),
+							"/categorization/edit-category"),
 						_themeDisplay),
 					"parentCategoryId", "{id}", "vocabularyId",
 					"{taxonomyVocabularyId}"),
@@ -180,7 +182,7 @@ public class ViewCategoriesDisplayContext {
 					PortalUtil.getLayoutFullURL(
 						LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/view_categories"),
+							"/categorization/view-categories"),
 						_themeDisplay),
 					"categoryId", "{id}", "vocabularyId",
 					"{taxonomyVocabularyId}"),
@@ -192,7 +194,7 @@ public class ViewCategoriesDisplayContext {
 					PortalUtil.getLayoutFullURL(
 						_layoutLocalService.getLayoutByFriendlyURL(
 							_themeDisplay.getScopeGroupId(), false,
-							"/categorization/view_category_usages"),
+							"/categorization/view-category-usages"),
 						_themeDisplay),
 					"categoryId", "{id}"),
 				null, "view-category-usages",

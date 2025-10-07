@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.contributor.sort.SortFieldNameTranslator;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -50,14 +49,6 @@ public class SortFieldBuilderImplTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_sortFieldBuilderImpl, "_indexerRegistry", _indexerRegistry);
-		ReflectionTestUtil.setFieldValue(
-			_sortFieldBuilderImpl, "_props",
-			PropsTestUtil.setProps(
-				"index.sortable.text.fields",
-				new String[] {
-					"firstName", "jobTitle", "lastName", "name", "screenName",
-					"title"
-				}));
 
 		_bundleContext = SystemBundleUtil.getBundleContext();
 

@@ -18,7 +18,6 @@ import Projects from './features/projects';
 import SecurityVulnerabilities from './features/security-vulnerabilities';
 import useApollo from './hooks/useApollo';
 import useGlobalNetworkIndicator from './hooks/useGlobalNetworkIndicator';
-import {Liferay} from './services/liferay';
 import getIconSpriteMap from './utils/getIconSpriteMap';
 import swrCacheProvider from './utils/swrCacheProvider';
 
@@ -42,9 +41,12 @@ type Properties = {
 	articleGettingStartedWithLiferayEnterpriseSearchURL: string | null;
 	articleNotifiedWhenMyActivationKeyIsAboutToExpireURL: string | null;
 	articleWhatIsMyInstanceSizingValueURL: string | null;
+	createTicketURL: string | null;
 	featureFlags?: string[];
-	helpCenterURL: string | null;
 	importDate?: Date | null;
+	jiraFLSPortalURL: string | null;
+	jiraFLSProject: string | null;
+	jiraHCPortalURL: string | null;
 	submitSupportTicketURL: string | null;
 	theOverviewPageURL: string | null;
 };
@@ -121,13 +123,16 @@ class CustomerPortalWebComponent extends HTMLElement {
 			articleWhatIsMyInstanceSizingValueURL: super.getAttribute(
 				'article-what-is-my-instance-sizing-value-url'
 			),
+			createTicketURL: super.getAttribute('create-ticket-url'),
 			featureFlags: (super.getAttribute('feature-flags') ?? '')
 				.split(',')
 				.map((featureflag) => featureflag.trim()),
-			helpCenterURL: super.getAttribute('help-center-url'),
 			importDate: super.getAttribute('import-date')
 				? new Date(super.getAttribute('import-date') as string)
 				: undefined,
+			jiraFLSPortalURL: super.getAttribute('jira-fls-portal-url'),
+			jiraFLSProject: super.getAttribute('jira-fls-project'),
+			jiraHCPortalURL: super.getAttribute('jira-hc-portal-url'),
 			submitSupportTicketURL: super.getAttribute(
 				'submit-support-ticket-url'
 			),
@@ -135,13 +140,6 @@ class CustomerPortalWebComponent extends HTMLElement {
 				'about-the-overview-page-url'
 			),
 		};
-
-		if (
-			!properties.featureFlags.includes('LPS-153478') &&
-			(Liferay.FeatureFlags as any)['LPS-153478']
-		) {
-			properties.featureFlags.push('LPS-153478');
-		}
 
 		const apis = {
 			gravatarAPI: super.getAttribute('gravatar-api'),

@@ -11,6 +11,7 @@ export {default as addCpConfigurationList} from './addCpConfigurationList';
 export {default as addCpDefinition} from './addCpDefinition';
 export {default as addCPDefinitionSpecificationOptionValue} from './add_cp_definition_specification_option_value';
 export {default as addCpInstanceUnitOfMeasure} from './add_cp_instance_unit_of_measure';
+export {default as changeLocalizedInputs} from './changeLocalizedInputs';
 export {default as channels} from './channels';
 export {default as CPConfigurationEntryFDSPropsTransformer} from './cpConfigurationEntryFDSPropsTransformer';
 export {default as CPConfigurationListAutocomplete} from './cpConfigurationListAutocomplete';

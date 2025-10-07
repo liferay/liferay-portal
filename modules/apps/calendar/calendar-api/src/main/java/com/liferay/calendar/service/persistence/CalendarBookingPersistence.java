@@ -1451,6 +1451,59 @@ public interface CalendarBookingPersistence
 	public int countByP_S(long parentCalendarBookingId, int status);
 
 	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or throws a <code>NoSuchBookingException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching calendar booking
+	 * @throws NoSuchBookingException if a matching calendar booking could not be found
+	 */
+	public CalendarBooking findByERC_G(
+			String externalReferenceCode, long groupId)
+		throws NoSuchBookingException;
+
+	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching calendar booking, or <code>null</code> if a matching calendar booking could not be found
+	 */
+	public CalendarBooking fetchByERC_G(
+		String externalReferenceCode, long groupId);
+
+	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching calendar booking, or <code>null</code> if a matching calendar booking could not be found
+	 */
+	public CalendarBooking fetchByERC_G(
+		String externalReferenceCode, long groupId, boolean useFinderCache);
+
+	/**
+	 * Removes the calendar booking where externalReferenceCode = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the calendar booking that was removed
+	 */
+	public CalendarBooking removeByERC_G(
+			String externalReferenceCode, long groupId)
+		throws NoSuchBookingException;
+
+	/**
+	 * Returns the number of calendar bookings where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the number of matching calendar bookings
+	 */
+	public int countByERC_G(String externalReferenceCode, long groupId);
+
+	/**
 	 * Caches the calendar booking in the entity cache if it is enabled.
 	 *
 	 * @param calendarBooking the calendar booking

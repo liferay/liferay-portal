@@ -1,0 +1,7 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"element-text": {
+			"collectionFieldId": "LayoutPageTemplateEntry_${LAYOUT_PAGE_TEMPLATE_ENTRY_ID}"
+		}
+	}
+}

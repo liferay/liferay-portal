@@ -77,7 +77,7 @@ public class ListTypeDefinitionResourceImpl
 
 		return _toListTypeDefinition(
 			_listTypeDefinitionService.
-				fetchListTypeDefinitionByExternalReferenceCode(
+				getListTypeDefinitionByExternalReferenceCode(
 					externalReferenceCode, contextCompany.getCompanyId()));
 	}
 

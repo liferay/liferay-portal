@@ -2,9 +2,10 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
 	property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
 	property dummy.socket.proxy.disabled = "true";
+	property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+	property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property test.liferay.virtual.instance = "false";

@@ -25,3 +25,9 @@ liferay-sample-instance-settings-e9b8w3:
     pid: com.liferay.redirect.internal.configuration.RedirectURLConfiguration
     securityMode: domain
     type: instanceSettings
+liferay-sample-instance-settings-gp50a2:
+    enableAccessibilityMenu: true
+    name: Liferay Sample Instance Settings GP50A2
+    pid: com.liferay.accessibility.menu.web.internal.configuration.AccessibilityMenuConfiguration
+    siteExternalReferenceCode: L_GUEST
+    type: instanceSettings

@@ -8,12 +8,14 @@ import {mergeTests, test} from '@playwright/test';
 import {ApiHelpers} from '../helpers/ApiHelpers';
 import {ChangeTrackingInstanceSettingsPage} from '../pages/change-tracking-web/ChangeTrackingInstanceSettingsPage';
 import {ChangeTrackingPage} from '../pages/change-tracking-web/ChangeTrackingPage';
+import {ChangeTrackingTemplatesPage} from '../pages/change-tracking-web/ChangeTrackingTemplatesPage';
 import getRandomString from '../utils/getRandomString';
 import {loginTest} from './loginTest';
 
 const changeTrackingPages = test.extend<{
 	ChangeTrackingInstanceSettingsPage: ChangeTrackingInstanceSettingsPage;
 	changeTrackingPage: ChangeTrackingPage;
+	changeTrackingTemplatesPage: ChangeTrackingTemplatesPage;
 	ctCollection;
 }>({
 	ChangeTrackingInstanceSettingsPage: async ({page}, use) => {
@@ -21,6 +23,9 @@ const changeTrackingPages = test.extend<{
 	},
 	changeTrackingPage: async ({page}, use) => {
 		await use(new ChangeTrackingPage(page));
+	},
+	changeTrackingTemplatesPage: async ({page}, use) => {
+		await use(new ChangeTrackingTemplatesPage(page));
 	},
 	ctCollection: [
 		async ({page}, use) => {

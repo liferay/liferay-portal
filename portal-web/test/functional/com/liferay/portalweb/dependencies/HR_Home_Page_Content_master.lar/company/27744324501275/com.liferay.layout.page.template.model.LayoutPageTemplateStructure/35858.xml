@@ -1,0 +1,17 @@
+<com.liferay.layout.page.template.model.impl.LayoutPageTemplateStructureImpl>
+  <__cachedModel>false</__cachedModel>
+  <__new>false</__new>
+  <__mvccVersion>0</__mvccVersion>
+  <__ctCollectionId>0</__ctCollectionId>
+  <__uuid>1b00720c-6c5c-6aaa-e7ea-847b27f859da</__uuid>
+  <__layoutPageTemplateStructureId>35858</__layoutPageTemplateStructureId>
+  <__groupId>35791</__groupId>
+  <__companyId>27744324501275</__companyId>
+  <__userId>20132</__userId>
+  <__userName>Test Test</__userName>
+  <__createDate class="sql-timestamp">2025-08-29 10:34:31.535</__createDate>
+  <__modifiedDate class="sql-timestamp">2025-08-29 10:34:31.464</__modifiedDate>
+  <__setModifiedDate>false</__setModifiedDate>
+  <__plid>100</__plid>
+  <__columnBitmask>0</__columnBitmask>
+</com.liferay.layout.page.template.model.impl.LayoutPageTemplateStructureImpl>

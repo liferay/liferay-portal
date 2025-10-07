@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Display Page API
 Bundle-SymbolicName: com.liferay.layout.display.page.api
-Bundle-Version: 5.1.1
+Bundle-Version: 5.4.1
 Export-Package:\
 	com.liferay.layout.display.page,\
 	com.liferay.layout.display.page.constants

@@ -5,6 +5,7 @@
 
 import ClayPanel from '@clayui/panel';
 import {API, openToast, stringUtils} from '@liferay/object-js-components-web';
+import {ILearnResourceContext} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
 import {Error, handleErrors} from '../../utils/errors';
@@ -13,10 +14,12 @@ import {AccountRestrictionContainer} from './AccountRestrictionContainer';
 import {ConfigurationContainer} from './ConfigurationContainer';
 import {EntryDisplayContainer} from './EntryDisplayContainer';
 import {ExternalDataSourceContainer} from './ExternalDataSourceContainer';
+import {InheritanceObjectDefinitionAlert} from './InheritanceObjectDefinitionAlert';
 import {ObjectDataContainer} from './ObjectDataContainer';
 import {ScopeContainer} from './ScopeContainer';
 import {SeoContainer} from './SeoContainer';
 import Sheet from './Sheet';
+import {SubscriptionsContainer} from './SubscriptionsContainer';
 import {TranslationsContainer} from './TranslationsContainer';
 import {useObjectDetailsForm} from './useObjectDetailsForm';
 
@@ -34,9 +37,11 @@ interface EditObjectDetailsProps {
 	hasPublishObjectPermission: boolean;
 	hasUpdateObjectDefinitionPermission: boolean;
 	isApproved: boolean;
+	isEnableObjectEntrySchedule: boolean;
 	isRootDescendantNode: boolean;
 	isRootNode: boolean;
 	label: LocalizedValue<string>;
+	learnResources: ILearnResourceContext;
 	nonRelationshipObjectFieldsInfo: {
 		label: LocalizedValue<string>;
 		name: string;
@@ -79,9 +84,11 @@ export default function EditObjectDetails({
 	hasPublishObjectPermission,
 	hasUpdateObjectDefinitionPermission,
 	isApproved,
+	isEnableObjectEntrySchedule,
 	isRootDescendantNode,
 	isRootNode,
 	label,
+	learnResources,
 	nonRelationshipObjectFieldsInfo,
 	objectDefinitionExternalReferenceCode,
 	objectDefinitionId,
@@ -92,8 +99,8 @@ export default function EditObjectDetails({
 	storageTypes,
 }: EditObjectDetailsProps) {
 	const [backEndErrors, setBackEndErrors] = useState<Error>({});
+	const [loading, setLoading] = useState(true);
 	const [objectFields, setObjectFields] = useState<ObjectField[]>([]);
-
 	const {errors, handleChange, handleValidate, setValues, values} =
 		useObjectDetailsForm({
 			initialValues: {
@@ -111,6 +118,7 @@ export default function EditObjectDetails({
 		const validationErrors = handleValidate();
 
 		if (!Object.keys(validationErrors).length) {
+			setLoading(true);
 			let objectDefinition = values;
 
 			if (values.accountEntryRestricted) {
@@ -128,6 +136,8 @@ export default function EditObjectDetails({
 				const {detail, title} = error as Error;
 
 				handleErrors({detail, title}, setBackEndErrors);
+
+				setLoading(false);
 
 				return;
 			}
@@ -162,6 +172,8 @@ export default function EditObjectDetails({
 
 					handleErrors({detail, title}, setBackEndErrors);
 
+					setLoading(false);
+
 					return;
 				}
 			}
@@ -190,6 +202,7 @@ export default function EditObjectDetails({
 
 			setValues(objectDefinitionResponse);
 			setObjectFields(objectFieldsResponse);
+			setLoading(false);
 		};
 
 		makeFetch();
@@ -205,6 +218,10 @@ export default function EditObjectDetails({
 				values.storageType !== 'default') ||
 			(!values.modifiable && values.system)
 		);
+
+	const showSubscriptionSection =
+		Liferay.FeatureFlags['LPD-17564'] &&
+		!(!values.modifiable && values.system);
 
 	return (
 		<>
@@ -224,6 +241,7 @@ export default function EditObjectDetails({
 							values.defaultLanguageId as Liferay.Language.Locale,
 						labels: values.label,
 					})}
+					loading={loading}
 					objectDefinitionExternalReferenceCode={
 						objectDefinitionExternalReferenceCode
 					}
@@ -237,6 +255,12 @@ export default function EditObjectDetails({
 
 			<div className="lfr-objects__object-definition-details">
 				<Sheet title={Liferay.Language.get('basic-information')}>
+					{isRootDescendantNode && (
+						<InheritanceObjectDefinitionAlert
+							learnResources={learnResources}
+						/>
+					)}
+
 					<ClayPanel
 						displayTitle={Liferay.Language.get(
 							'object-definition-data'
@@ -318,7 +342,6 @@ export default function EditObjectDetails({
 									hasUpdateObjectDefinitionPermission
 								}
 								isApproved={isApproved}
-								isRootDescendantNode={isRootDescendantNode}
 								setValues={setValues}
 								sites={sites}
 								values={values}
@@ -339,7 +362,6 @@ export default function EditObjectDetails({
 								<AccountRestrictionContainer
 									errors={errors}
 									isApproved={isApproved}
-									isRootDescendantNode={isRootDescendantNode}
 									objectFields={objectFields}
 									setValues={setValues}
 									values={values}
@@ -359,7 +381,9 @@ export default function EditObjectDetails({
 								hasUpdateObjectDefinitionPermission={
 									hasUpdateObjectDefinitionPermission
 								}
-								isRootDescendantNode={isRootDescendantNode}
+								isEnableObjectEntrySchedule={
+									isEnableObjectEntrySchedule
+								}
 								setValues={setValues}
 								values={values}
 							/>
@@ -390,6 +414,25 @@ export default function EditObjectDetails({
 							<ClayPanel.Body>
 								<SeoContainer
 									errors={backEndErrors}
+									hasUpdateObjectDefinitionPermission={
+										hasUpdateObjectDefinitionPermission
+									}
+									setValues={setValues}
+									values={values}
+								/>
+							</ClayPanel.Body>
+						</ClayPanel>
+					)}
+
+					{showSubscriptionSection && (
+						<ClayPanel
+							collapsable
+							defaultExpanded
+							displayTitle={Liferay.Language.get('subscriptions')}
+							displayType="unstyled"
+						>
+							<ClayPanel.Body>
+								<SubscriptionsContainer
 									hasUpdateObjectDefinitionPermission={
 										hasUpdateObjectDefinitionPermission
 									}

@@ -65,8 +65,7 @@ public class CommercePriceListAccountRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceList.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceList.commercePriceListId");
 			}
 
 			String[] keywords = _customSQL.keywords(name, true);
@@ -142,8 +141,7 @@ public class CommercePriceListAccountRelFinderImpl
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, CommercePriceList.class.getName(),
-					"CommercePriceList.commercePriceListId", null, null,
-					new long[] {0}, null);
+					"CommercePriceList.commercePriceListId");
 			}
 
 			if (Validator.isNotNull(name)) {

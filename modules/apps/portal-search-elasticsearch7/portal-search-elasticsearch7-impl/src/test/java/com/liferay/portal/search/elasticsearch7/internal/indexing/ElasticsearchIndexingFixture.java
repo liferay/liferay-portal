@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration;
 import com.liferay.portal.search.elasticsearch7.internal.ElasticsearchIndexSearcher;
 import com.liferay.portal.search.elasticsearch7.internal.ElasticsearchIndexWriter;
@@ -34,7 +34,6 @@ import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.internal.legacy.searcher.SearchRequestBuilderFactoryImpl;
 import com.liferay.portal.search.internal.legacy.searcher.SearchResponseBuilderFactoryImpl;
 import com.liferay.portal.search.test.util.indexing.IndexingFixture;
-import com.liferay.portal.util.DigesterImpl;
 import com.liferay.portal.util.LocalizationImpl;
 
 import java.util.Map;
@@ -197,8 +196,6 @@ public class ElasticsearchIndexingFixture implements IndexingFixture {
 		ElasticsearchSpellCheckIndexWriter elasticsearchSpellCheckIndexWriter =
 			new ElasticsearchSpellCheckIndexWriter() {
 				{
-					digester = new DigesterImpl();
-
 					setLocalization(localization);
 				}
 			};
@@ -255,8 +252,9 @@ public class ElasticsearchIndexingFixture implements IndexingFixture {
 					getElasticsearchConfigurationProperties()));
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchIndexSearcher, "_indexNameBuilder", indexNameBuilder);
-		ReflectionTestUtil.setFieldValue(
-			elasticsearchIndexSearcher, "_props", _createProps());
+
+		_setUpIndexSearchLimit();
+
 		ReflectionTestUtil.setFieldValue(
 			elasticsearchIndexSearcher, "_querySuggester",
 			_createElasticsearchQuerySuggester(
@@ -303,20 +301,6 @@ public class ElasticsearchIndexingFixture implements IndexingFixture {
 		return elasticsearchIndexWriter;
 	}
 
-	private Props _createProps() {
-		Props props = Mockito.mock(Props.class);
-
-		Mockito.doReturn(
-			"20"
-		).when(
-			props
-		).get(
-			PropsKeys.INDEX_SEARCH_LIMIT
-		);
-
-		return props;
-	}
-
 	private SearchEngineInformation _createSearchEngineInformation() {
 		SearchEngineInformation searchEngineInformation = Mockito.mock(
 			SearchEngineInformation.class);
@@ -328,6 +312,10 @@ public class ElasticsearchIndexingFixture implements IndexingFixture {
 		);
 
 		return searchEngineInformation;
+	}
+
+	private void _setUpIndexSearchLimit() {
+		PropsUtil.set(PropsKeys.INDEX_SEARCH_LIMIT, "20");
 	}
 
 	private final long _companyId;

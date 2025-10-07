@@ -44,6 +44,9 @@ public class SamlIdpSpConnectionTable
 	public final Column<SamlIdpSpConnectionTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<SamlIdpSpConnectionTable, String> samlSpEntityId =
+		createColumn(
+			"samlSpEntityId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SamlIdpSpConnectionTable, Integer> assertionLifetime =
 		createColumn(
 			"assertionLifetime", Integer.class, Types.INTEGER,
@@ -66,16 +69,16 @@ public class SamlIdpSpConnectionTable
 		createColumn(
 			"encryptionForced", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
+	public final Column<SamlIdpSpConnectionTable, Date> metadataUpdatedDate =
+		createColumn(
+			"metadataUpdatedDate", Date.class, Types.TIMESTAMP,
+			Column.FLAG_DEFAULT);
 	public final Column<SamlIdpSpConnectionTable, String> metadataUrl =
 		createColumn(
 			"metadataUrl", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SamlIdpSpConnectionTable, Clob> metadataXml =
 		createColumn(
 			"metadataXml", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
-	public final Column<SamlIdpSpConnectionTable, Date> metadataUpdatedDate =
-		createColumn(
-			"metadataUpdatedDate", Date.class, Types.TIMESTAMP,
-			Column.FLAG_DEFAULT);
 	public final Column<SamlIdpSpConnectionTable, String> name = createColumn(
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<SamlIdpSpConnectionTable, String> nameIdAttribute =
@@ -85,9 +88,6 @@ public class SamlIdpSpConnectionTable
 	public final Column<SamlIdpSpConnectionTable, String> nameIdFormat =
 		createColumn(
 			"nameIdFormat", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<SamlIdpSpConnectionTable, String> samlSpEntityId =
-		createColumn(
-			"samlSpEntityId", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 
 	private SamlIdpSpConnectionTable() {
 		super("SamlIdpSpConnection", SamlIdpSpConnectionTable::new);

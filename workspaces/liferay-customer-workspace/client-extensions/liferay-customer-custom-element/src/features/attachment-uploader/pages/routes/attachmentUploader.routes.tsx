@@ -5,18 +5,16 @@
 
 import {HashRouter, Route, Routes} from 'react-router-dom';
 
-import AttachmentUploadConfirmation from '../AttachmentUploadConfirmation';
-import AttachmentUploader from '../AttachmentUploader';
+import Layout from '../../components/Layout';
+import AttachmentOutlet from './Outlets/AttachmentOutlet';
 
 const AttachmentUploaderRoutes = () => {
 	return (
 		<HashRouter>
 			<Routes>
-				<Route element={<AttachmentUploader />} path="/:ticketId" />
-				<Route
-					element={<AttachmentUploadConfirmation />}
-					path=":ticketId/upload-confirmation"
-				/>
+				<Route element={<Layout />} path="/:ticketId">
+					<Route element={<AttachmentOutlet />} index />
+				</Route>
 			</Routes>
 		</HashRouter>
 	);

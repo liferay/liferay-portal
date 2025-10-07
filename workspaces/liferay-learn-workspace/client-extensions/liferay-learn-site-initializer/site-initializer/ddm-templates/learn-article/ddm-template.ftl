@@ -14,19 +14,34 @@
 						"",
 						"#" + element.getAttribute("id").replace("toc-", "")
 					);
-
-					window.scrollTo({
-						behavior: "smooth",
-						top: anchorElement.getBoundingClientRect().top + window.scrollY - 190,
-					});
+					scrollToElement(anchorElement);
 				}
 			});
 		});
 	}
 
+	const scrollToElement = (element) => {
+		if (!element) return;
+
+		window.scrollTo({
+			behavior: "smooth",
+			top: element.getBoundingClientRect().top + window.scrollY - 190,
+		});
+	};
+
 	window.addEventListener('load', function() {
 		_addEventListener("h1 a, h2 a, h3 a");
 		_addEventListener(".toc li a");
+
+		if (window.location.hash) {
+			const hashLocation = document.getElementById(window.location.hash.substring(1));
+
+			if (hashLocation) {
+				setTimeout(() => {
+					scrollToElement(hashLocation);
+				}, 100);
+			}
+		}
 	});
 </script>
 
@@ -139,11 +154,13 @@
 
 									<div class="mt-2 subsection">
 										<#list 0..grandchildrenJSONArray.length()-1 as j>
-											<#assign grandchildJSONObject = grandchildrenJSONArray.getJSONObject(j) />
+											<#assign grandchildJSONObject = grandchildrenJSONArray.getJSONObject(j)! />
 
-											<a href="${grandchildJSONObject.getString("url")}">
-												${grandchildJSONObject.getString("title")}
-											</a>
+											<#if grandchildJSONObject?? && grandchildJSONObject["title"]?has_content && grandchildJSONObject["url"]?has_content>
+												<a href="${grandchildJSONObject["url"]!}">
+													${grandchildJSONObject["title"]!}
+												</a>
+											</#if>
 										</#list>
 									</div>
 								</#if>

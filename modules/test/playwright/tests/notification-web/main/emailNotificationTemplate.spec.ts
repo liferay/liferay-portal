@@ -11,19 +11,26 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {notificationPagesTest} from '../../../fixtures/notificationPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-50091': {enabled: true},
+	}),
 	loginTest(),
 	notificationPagesTest
 );
 
 let objectDefinition: ObjectDefinition;
+
+let userGroups;
 
 const notificationTemplateInfo = {
 	bcc: 'test3@liferay.com',
@@ -38,7 +45,6 @@ const notificationTemplateInfo = {
 
 test.beforeEach(async ({apiHelpers}) => {
 	objectDefinition = await apiHelpers.objectAdmin.postRandomObjectDefinition({
-		objectFolderExternalReferenceCode: 'default',
 		status: {code: 0},
 	});
 });
@@ -66,12 +72,21 @@ test.afterEach(async ({apiHelpers, notificationTemplatesPage, page}) => {
 
 				if (deleteButton) {
 					await deleteButton.click();
+					await waitForAlert(page);
 				}
 			}
 		}
 		catch (error) {
 			throw new Error(error);
 		}
+	}
+
+	if (userGroups !== undefined) {
+		for (const userGroup of userGroups) {
+			await apiHelpers.headlessAdminUser.deleteUserGroup(userGroup.id);
+		}
+
+		userGroups = [];
 	}
 });
 
@@ -113,15 +128,15 @@ test.describe('Email notification template', () => {
 		);
 
 		await expect(
-			emailNotificationTemplatePage.primaryRecipientUserEmailAddress
+			emailNotificationTemplatePage.primaryRecipients
 		).toHaveValue(notificationTemplateInfo.recipients);
 
 		await expect(
-			emailNotificationTemplatePage.secondaryRecipientsCCInput
+			emailNotificationTemplatePage.secondaryRecipientsCC
 		).toHaveValue(notificationTemplateInfo.cc);
 
 		await expect(
-			emailNotificationTemplatePage.secondaryRecipientsBCCInput
+			emailNotificationTemplatePage.secondaryRecipientsBCC
 		).toHaveValue(notificationTemplateInfo.bcc);
 
 		await expect(emailNotificationTemplatePage.contentSubject).toHaveValue(
@@ -149,6 +164,10 @@ test.describe('Email notification template', () => {
 		await notificationTemplatesPage
 			.getFrontEndDatasetItemLocator(notificationTemplate.name)
 			.click();
+
+		await emailNotificationTemplatePage.page
+			.getByRole('heading', {name: notificationTemplate.name})
+			.waitFor();
 
 		const editedNotificationTemplateInfo = {
 			bcc: getRandomString(),
@@ -191,17 +210,15 @@ test.describe('Email notification template', () => {
 			.toHaveValue(editedNotificationTemplateInfo.senderName);
 
 		await expect
-			.soft(
-				emailNotificationTemplatePage.primaryRecipientUserEmailAddress
-			)
+			.soft(emailNotificationTemplatePage.primaryRecipients)
 			.toHaveValue(editedNotificationTemplateInfo.recipients);
 
 		await expect
-			.soft(emailNotificationTemplatePage.secondaryRecipientsCCInput)
+			.soft(emailNotificationTemplatePage.secondaryRecipientsCC)
 			.toHaveValue(editedNotificationTemplateInfo.cc);
 
 		await expect
-			.soft(emailNotificationTemplatePage.secondaryRecipientsBCCInput)
+			.soft(emailNotificationTemplatePage.secondaryRecipientsBCC)
 			.toHaveValue(editedNotificationTemplateInfo.bcc);
 
 		await expect
@@ -235,7 +252,7 @@ test.describe('Email notification template', () => {
 
 		await emailNotificationTemplatePage.senderName.fill('test user');
 
-		await emailNotificationTemplatePage.primaryRecipientUserEmailAddress.fill(
+		await emailNotificationTemplatePage.primaryRecipients.fill(
 			'test@liferay.com'
 		);
 
@@ -309,7 +326,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.primaryRecipientRoles.click();
+		await emailNotificationTemplatePage.primaryRecipients.click();
 
 		for (const role of primaryRecipientsRoles) {
 			await page
@@ -322,7 +339,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsCC.click();
 
 		for (const role of secondaryRecipientsRolesCC) {
 			await page
@@ -335,7 +352,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesBCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsBCC.click();
 
 		for (const role of secondaryRecipientsRolesBCC) {
 			await page
@@ -354,7 +371,7 @@ test.describe('Email notification template', () => {
 			.getFrontEndDatasetItemLocator(notificationTemplateName)
 			.click();
 
-		await emailNotificationTemplatePage.primaryRecipientRoles.click();
+		await emailNotificationTemplatePage.primaryRecipients.click();
 
 		for (const role of primaryRecipientsRoles) {
 			await expect(
@@ -362,7 +379,7 @@ test.describe('Email notification template', () => {
 			).toBeChecked();
 		}
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsCC.click();
 
 		for (const role of secondaryRecipientsRolesCC) {
 			await expect(
@@ -370,7 +387,7 @@ test.describe('Email notification template', () => {
 			).toBeChecked();
 		}
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesBCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsBCC.click();
 
 		for (const role of secondaryRecipientsRolesBCC) {
 			await expect(
@@ -389,7 +406,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.primaryRecipientRoles.click();
+		await emailNotificationTemplatePage.primaryRecipients.click();
 
 		await expect(
 			emailNotificationTemplatePage.accountRolesGroupTitle
@@ -409,7 +426,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsCC.click();
 
 		await expect(
 			emailNotificationTemplatePage.accountRolesGroupTitle
@@ -429,7 +446,7 @@ test.describe('Email notification template', () => {
 
 		await page.getByRole('option', {name: 'Roles'}).click();
 
-		await emailNotificationTemplatePage.secondaryRecipientRolesBCC.click();
+		await emailNotificationTemplatePage.secondaryRecipientsBCC.click();
 
 		await expect(
 			emailNotificationTemplatePage.accountRolesGroupTitle
@@ -446,8 +463,8 @@ test.describe('Email notification template', () => {
 
 	test('can see cc/bcc fields in UI when creating notification via API without passing them', async ({
 		apiHelpers,
+		emailNotificationTemplatePage,
 		notificationTemplatesPage,
-		page,
 	}) => {
 		const notificationTemplate =
 			await apiHelpers.notification.postNotificationTemplate({
@@ -480,8 +497,12 @@ test.describe('Email notification template', () => {
 			notificationTemplate.name
 		);
 
-		await expect(page.locator('#secondaryRecipientsCC')).toBeVisible();
-		await expect(page.locator('#secondaryRecipientsBCC')).toBeVisible();
+		await expect(
+			emailNotificationTemplatePage.secondaryRecipientsBCC
+		).toBeVisible();
+		await expect(
+			emailNotificationTemplatePage.secondaryRecipientsCC
+		).toBeVisible();
 	});
 
 	test('can use notification terms and freeMarker variables', async ({
@@ -504,7 +525,7 @@ test.describe('Email notification template', () => {
 
 		await emailNotificationTemplatePage.senderName.fill('test user');
 
-		await emailNotificationTemplatePage.primaryRecipientUserEmailAddress.fill(
+		await emailNotificationTemplatePage.primaryRecipients.fill(
 			'[%CURRENT_USER_EMAIL_ADDRESS%]'
 		);
 
@@ -575,7 +596,7 @@ test.describe('Email notification template', () => {
 			.click();
 
 		await expect(
-			emailNotificationTemplatePage.primaryRecipientUserEmailAddress
+			emailNotificationTemplatePage.primaryRecipients
 		).toHaveValue('[%CURRENT_USER_EMAIL_ADDRESS%]');
 
 		await expect(
@@ -635,4 +656,169 @@ test.describe('Email notification template', () => {
 				.getByText(`{ObjectField_${objectFieldName}.getData()}`)
 		).toBeVisible();
 	});
+
+	test(
+		'Verify User Groups are now supported for Email Notification Templates',
+		{tag: '@LPD-57577'},
+		async ({
+			apiHelpers,
+			emailNotificationTemplatePage,
+			notificationTemplatesPage,
+			page,
+		}) => {
+			const recipientUserGroupFields = [
+				emailNotificationTemplatePage.primaryRecipients,
+				emailNotificationTemplatePage.secondaryRecipientsBCC,
+				emailNotificationTemplatePage.secondaryRecipientsCC,
+			];
+
+			userGroups = [
+				await apiHelpers.headlessAdminUser.postUserGroup(),
+				await apiHelpers.headlessAdminUser.postUserGroup(),
+			];
+
+			await test.step('AC1: User Group option is available', async () => {
+				await emailNotificationTemplatePage.goto();
+
+				await emailNotificationTemplatePage.primaryRecipientType.click();
+
+				expect(
+					await page.getByRole('option', {name: 'User Groups'})
+				).toBeVisible();
+
+				await page.getByRole('option', {name: 'User Groups'}).click();
+
+				await emailNotificationTemplatePage.secondaryRecipientTypeCC.click();
+
+				expect(
+					await page.getByRole('option', {name: 'User Groups'})
+				).toBeVisible();
+
+				await page.getByRole('option', {name: 'User Groups'}).click();
+
+				await emailNotificationTemplatePage.secondaryRecipientTypeBCC.click();
+
+				expect(
+					await page.getByRole('option', {name: 'User Groups'})
+				).toBeVisible();
+
+				await page.getByRole('option', {name: 'User Groups'}).click();
+			});
+
+			await test.step('AC2: Existing User Groups are displayed', async () => {
+				for (const recipientUserGroupField of recipientUserGroupFields) {
+					await recipientUserGroupField.click();
+
+					for (const userGroup of userGroups) {
+						await expect(
+							page.getByRole('menuitem', {name: userGroup.name})
+						).toBeVisible();
+					}
+
+					await page.keyboard.press('Escape');
+				}
+			});
+
+			await test.step('AC3: All selected User Groups will be displayed', async () => {
+				for (const recipientUserGroupField of recipientUserGroupFields) {
+					await recipientUserGroupField.click();
+
+					for (const userGroup of userGroups) {
+						await page
+							.getByRole('checkbox', {name: userGroup.name})
+							.check();
+					}
+
+					await page.keyboard.press('Escape');
+				}
+
+				for (const userGroup of userGroups) {
+					await expect(
+						await page
+							.getByRole('row', {name: userGroup.name})
+							.count()
+					).toBe(recipientUserGroupFields.length);
+				}
+			});
+
+			await test.step('AC4: Typing in the User Group selection field will filter results', async () => {
+				for (const recipientUserGroupField of recipientUserGroupFields) {
+					await recipientUserGroupField.click();
+
+					await page
+						.getByRole('textbox', {
+							name: 'Search for a user group.',
+						})
+						.fill('UserGroup');
+
+					for (const userGroup of userGroups) {
+						await expect(
+							await page.getByRole('checkbox', {
+								name: userGroup.name,
+							})
+						).toBeVisible();
+					}
+
+					await page
+						.getByRole('textbox', {
+							name: 'Search for a user group.',
+						})
+						.fill('foobar');
+
+					for (const userGroup of userGroups) {
+						await expect(
+							await page.getByRole('checkbox', {
+								name: userGroup.name,
+							})
+						).not.toBeVisible();
+					}
+
+					await page.keyboard.press('Escape');
+				}
+			});
+
+			await test.step('AC5: Verify User Group selections are saved', async () => {
+				const notificationTemplateName =
+					'Notification Template Name' + getRandomInt();
+
+				await emailNotificationTemplatePage.basicInfoName.fill(
+					notificationTemplateName
+				);
+
+				await emailNotificationTemplatePage.senderEmailAddress.fill(
+					'test@liferay.com'
+				);
+
+				await emailNotificationTemplatePage.senderName.fill(
+					'test user'
+				);
+
+				await emailNotificationTemplatePage.contentSubject.fill(
+					'Content subject'
+				);
+
+				await emailNotificationTemplatePage.saveButton.click();
+
+				await notificationTemplatesPage
+					.getFrontEndDatasetItemLocator(notificationTemplateName)
+					.click();
+
+				// We waitFor() a previously selected user group since the page can
+				// take 2+ seconds to render the entries, causing a race condition
+
+				await emailNotificationTemplatePage.page
+					.getByRole('row', {name: userGroups[0].name})
+					.first()
+					.waitFor();
+
+				for (const userGroup of userGroups) {
+					await expect(
+						await emailNotificationTemplatePage.page
+							.getByRole('row', {name: userGroup.name})
+							.count()
+					).toBe(recipientUserGroupFields.length);
+				}
+			});
+		}
+	);
 });

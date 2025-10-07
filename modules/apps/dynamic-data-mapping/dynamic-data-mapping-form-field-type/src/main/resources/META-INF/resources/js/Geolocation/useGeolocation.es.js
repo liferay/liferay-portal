@@ -89,6 +89,7 @@ const setupGoogleMaps = (googleMapsAPIKey, callback) => {
 
 export function useGeolocation({
 	disabled,
+	editingLanguageId,
 	googleMapsAPIKey,
 	instanceId,
 	mapProviderKey,
@@ -183,4 +184,22 @@ export function useGeolocation({
 			}
 		}
 	}, [instanceId, value]);
+
+	useEffect(() => {
+		if (mapRef.current && editingLanguageId) {
+			const location = value ? parseJSONValue(value) : {lat: 0, lng: 0};
+
+			if (typeof mapRef.current._geocoder?.reverse === 'function') {
+				mapRef.current._geocoder.reverse(location, ({data}) => {
+					const address = data?.address ?? '';
+
+					mapRef.current.emit('positionChange', {
+						newVal: {address, location},
+					});
+				});
+			}
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [editingLanguageId]);
 }

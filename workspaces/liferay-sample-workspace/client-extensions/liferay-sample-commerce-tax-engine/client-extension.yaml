@@ -3,7 +3,7 @@ assemble:
 liferay-sample-commerce-tax-engine:
     key: liferay-sample-commerce-tax-engine
     name: Liferay Sample Commerce Tax Engine
-    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-tax-engine-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-sample-commerce-tax-engine-oaua
     taxEngineTypeSettings:
         key1: value1
         key2: value2
@@ -11,7 +11,7 @@ liferay-sample-commerce-tax-engine:
         key4: value4
         key5: value5
     type: commerceTaxEngine
-liferay-sample-commerce-tax-engine-oauth-application-user-agent:
+liferay-sample-commerce-tax-engine-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Sample Commerce Tax Engine OAuth Application User Agent

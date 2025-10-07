@@ -69,7 +69,7 @@ public class ObjectEntryFolderCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -101,6 +101,8 @@ public class ObjectEntryFolderCacheModel
 		sb.append(name);
 		sb.append(", treePath=");
 		sb.append(treePath);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -185,6 +187,8 @@ public class ObjectEntryFolderCacheModel
 			objectEntryFolderImpl.setTreePath(treePath);
 		}
 
+		objectEntryFolderImpl.setStatus(status);
+
 		objectEntryFolderImpl.resetOriginalValues();
 
 		return objectEntryFolderImpl;
@@ -212,6 +216,8 @@ public class ObjectEntryFolderCacheModel
 		label = objectInput.readUTF();
 		name = objectInput.readUTF();
 		treePath = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -279,6 +285,8 @@ public class ObjectEntryFolderCacheModel
 		else {
 			objectOutput.writeUTF(treePath);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -296,5 +304,6 @@ public class ObjectEntryFolderCacheModel
 	public String label;
 	public String name;
 	public String treePath;
+	public int status;
 
 }

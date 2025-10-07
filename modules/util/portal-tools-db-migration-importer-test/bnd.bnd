@@ -1,0 +1,17 @@
+Bundle-Name: Liferay Portal Tools DB Migration Importer Test
+Bundle-SymbolicName: com.liferay.portal.tools.db.migration.importer.test
+Bundle-Version: 1.0.0
+Import-Package:\
+	!com.codahale.metrics.*,\
+	\
+	!io.micrometer.core.instrument.*,\
+	\
+	!io.prometheus.client.*,\
+	\
+	!javassist.*
+-includeresource:\
+	@com.liferay.portal.tools.db.migration.importer.jar!/com/liferay/portal/tools/db/migration/importer/*.class,\
+	@com.liferay.portal.tools.db.migration.importer.jar!/com/liferay/portal/tools/db/migration/importer/jdbc/*.class,\
+	@com.liferay.portal.tools.db.migration.importer.jar!/com/zaxxer/hikari/*.class,\
+	@com.liferay.portal.tools.db.migration.importer.jar!/org/apache/commons/cli/*.class
+-removeheaders: Require-Capability

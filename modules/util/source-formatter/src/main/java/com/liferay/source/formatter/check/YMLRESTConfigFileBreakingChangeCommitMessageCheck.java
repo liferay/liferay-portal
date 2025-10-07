@@ -77,6 +77,10 @@ public class YMLRESTConfigFileBreakingChangeCommitMessageCheck
 				}
 			}
 
+			if (oldCompatibilityVersion == null) {
+				continue;
+			}
+
 			return !StringUtil.equals(
 				newCompatibilityVersion, oldCompatibilityVersion);
 		}

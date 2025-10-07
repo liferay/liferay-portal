@@ -1249,6 +1249,47 @@ public class OrderItem implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _printedNoteSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getProductId() {
+		if (_productIdSupplier != null) {
+			productId = _productIdSupplier.get();
+
+			_productIdSupplier = null;
+		}
+
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+
+		_productIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProductId(
+		UnsafeSupplier<Long, Exception> productIdUnsafeSupplier) {
+
+		_productIdSupplier = () -> {
+			try {
+				return productIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long productId;
+
+	@JsonIgnore
+	private Supplier<Long> _productIdSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(example = "101")
 	@Valid
@@ -2572,6 +2613,18 @@ public class OrderItem implements Serializable {
 			sb.append(_escape(printedNote));
 
 			sb.append("\"");
+		}
+
+		Long productId = getProductId();
+
+		if (productId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productId\": ");
+
+			sb.append(productId);
 		}
 
 		BigDecimal promoPrice = getPromoPrice();

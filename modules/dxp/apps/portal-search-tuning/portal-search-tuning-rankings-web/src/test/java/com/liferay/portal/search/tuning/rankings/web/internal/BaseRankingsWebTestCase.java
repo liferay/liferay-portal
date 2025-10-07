@@ -24,8 +24,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.document.DocumentBuilderFactory;
@@ -74,7 +72,6 @@ import java.text.SimpleDateFormat;
 
 import java.util.Collections;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.function.Consumer;
 
 import org.junit.AfterClass;
@@ -535,28 +532,6 @@ public abstract class BaseRankingsWebTestCase {
 		).getParameter(
 			Mockito.eq(paramName)
 		);
-	}
-
-	protected void setUpPropsUtil() {
-		Props props = Mockito.mock(Props.class);
-
-		Mockito.doReturn(
-			""
-		).when(
-			props
-		).get(
-			Mockito.anyString()
-		);
-
-		Mockito.doReturn(
-			Mockito.mock(Properties.class)
-		).when(
-			props
-		).getProperties(
-			Mockito.anyString(), Mockito.anyBoolean()
-		);
-
-		PropsUtil.setProps(props);
 	}
 
 	protected void setUpQuery() {

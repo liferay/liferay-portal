@@ -13,7 +13,10 @@ export default class ProductPurchaseSolutionTrial extends ProductPurchase {
 	public async createOrder(cart?: Cart): Promise<Cart> {
 		const order = await super.createOrder(cart);
 
-		await trialOAuth2.provisioningTrial(order.id);
+		// No need to await the following request
+		// Will be processed as a Job.
+
+		trialOAuth2.provisioningTrial(order.id);
 
 		return order;
 	}

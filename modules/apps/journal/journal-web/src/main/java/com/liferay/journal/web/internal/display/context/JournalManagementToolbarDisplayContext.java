@@ -7,6 +7,7 @@ package com.liferay.journal.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorCriterion;
@@ -243,9 +244,9 @@ public class JournalManagementToolbarDisplayContext
 			).buildString()
 		).put(
 			"changePermissionsURL",
-			() -> PortletURLBuilder.createRenderURL(
+			() -> PortletURLBuilder.createActionURL(
 				liferayPortletResponse
-			).setMVCRenderCommandName(
+			).setActionName(
 				"/journal/change_articles_permissions"
 			).setWindowState(
 				LiferayWindowState.POP_UP
@@ -912,8 +913,11 @@ public class JournalManagementToolbarDisplayContext
 		).setParameter(
 			"vocabularyIds",
 			() -> ListUtil.toString(
-				_assetVocabularyLocalService.getGroupsVocabularies(
-					_getGroupIds()),
+				_assetVocabularyLocalService.getGroupVocabularies(
+					_getGroupIds(),
+					new int[] {
+						AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
+					}),
 				AssetVocabulary.VOCABULARY_ID_ACCESSOR)
 		).buildString();
 	}

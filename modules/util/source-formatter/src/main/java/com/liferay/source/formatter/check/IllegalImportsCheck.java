@@ -173,7 +173,7 @@ public class IllegalImportsCheck extends BaseFileCheck {
 					"org.slf4j.Logger");
 		}
 
-		if (!absolutePath.contains("/modules/etl/") &&
+		if (!absolutePath.contains("/modules/integrations/") &&
 			!absolutePath.contains("/modules/sdk/")) {
 
 			if (isAttributeValue(_AVOID_OPTIONAL_KEY, absolutePath) &&

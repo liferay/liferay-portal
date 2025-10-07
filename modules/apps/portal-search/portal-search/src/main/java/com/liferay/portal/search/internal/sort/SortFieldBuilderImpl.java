@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.search.contributor.sort.SortFieldNameTranslator;
 import com.liferay.portal.search.sort.SortFieldBuilder;
@@ -59,7 +59,7 @@ public class SortFieldBuilderImpl implements SortFieldBuilder {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_defaultSortableTextFields = SetUtil.fromArray(
-			_props.getArray(PropsKeys.INDEX_SORTABLE_TEXT_FIELDS));
+			PropsUtil.getArray(PropsKeys.INDEX_SORTABLE_TEXT_FIELDS));
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, SortFieldNameTranslator.class, null,
 			ServiceReferenceMapperFactory.create(
@@ -90,9 +90,6 @@ public class SortFieldBuilderImpl implements SortFieldBuilder {
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;
-
-	@Reference
-	private Props _props;
 
 	private ServiceTrackerMap<Class<?>, SortFieldNameTranslator>
 		_serviceTrackerMap;

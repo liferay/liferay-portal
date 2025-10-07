@@ -88,9 +88,10 @@ describe('The workload by assignee body should', () => {
 			const renderResult = render(
 				<WorkloadByAssigneeCard.Body
 					currentTab="total"
-					{...{items: [items[0]], totalCount: 1}}
+					items={[items[0]]}
 					processId={12345}
 					processStepKey="review"
+					totalCount={1}
 				/>,
 				{wrapper}
 			);
@@ -122,9 +123,10 @@ describe('The workload by assignee body should', () => {
 			const renderResult = render(
 				<WorkloadByAssigneeCard.Body
 					currentTab="onTime"
-					{...{items: [items[1]], totalCount: 1}}
+					items={[items[1]]}
 					processId={12345}
 					processStepKey="update"
+					totalCount={1}
 				/>,
 				{wrapper}
 			);

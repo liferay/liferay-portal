@@ -31,6 +31,7 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -49,10 +50,10 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -108,7 +109,8 @@ public class CustomFDSSerializer
 
 	@Override
 	public String serializeAdditionalAPIURLParameters(
-		String fdsName, HttpServletRequest httpServletRequest) {
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject) {
 
 		Map<String, Object> properties = getDataSetObjectEntryProperties(
 			fdsName, httpServletRequest);
@@ -120,12 +122,17 @@ public class CustomFDSSerializer
 			String.valueOf(properties.get("restSchema"))
 		).addQueryString(
 			String.valueOf(properties.get("additionalAPIURLParameters"))
-		).buildQueryString();
+		).setTokenResolutions(
+			tokenResolutionsJSONObject
+		).buildQueryString(
+			interpolate
+		);
 	}
 
 	@Override
 	public String serializeAPIURL(
-		String fdsName, HttpServletRequest httpServletRequest) {
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject) {
 
 		Map<String, Object> properties = getDataSetObjectEntryProperties(
 			fdsName, httpServletRequest);
@@ -134,14 +141,17 @@ public class CustomFDSSerializer
 			httpServletRequest,
 			String.valueOf(properties.get("restApplication")),
 			String.valueOf(properties.get("restEndpoint")),
-			String.valueOf(properties.get("restSchema")));
+			String.valueOf(properties.get("restSchema"))
+		).setTokenResolutions(
+			tokenResolutionsJSONObject
+		);
 
 		List<ObjectEntry> objectEntries = getSortedRelatedObjectEntries(
 			fdsName, httpServletRequest, (Predicate)null, "tableSectionsOrder",
 			"dataSetToDataSetTableSections");
 
 		if (objectEntries == null) {
-			return fdsAPIURLBuilder.build();
+			return fdsAPIURLBuilder.build(interpolate);
 		}
 
 		String nestedFields = StringPool.BLANK;
@@ -169,7 +179,7 @@ public class CustomFDSSerializer
 		}
 
 		if (nestedFields.equals(StringPool.BLANK)) {
-			return fdsAPIURLBuilder.build();
+			return fdsAPIURLBuilder.build(interpolate);
 		}
 
 		fdsAPIURLBuilder.addParameter(
@@ -182,7 +192,7 @@ public class CustomFDSSerializer
 				"nestedFieldsDepth", String.valueOf(nestedFieldsDepth));
 		}
 
-		return fdsAPIURLBuilder.build();
+		return fdsAPIURLBuilder.build(interpolate);
 	}
 
 	@Override
@@ -790,11 +800,14 @@ public class CustomFDSSerializer
 
 		try {
 			Page<ObjectEntry> relatedObjectEntriesPage =
-				defaultObjectEntryManager.getObjectEntryRelatedObjectEntries(
+				defaultObjectEntryManager.getRelatedObjectEntries(
 					new DefaultDTOConverterContext(
 						false, null, null, null, null,
 						LocaleUtil.getMostRelevantLocale(), null, null),
-					objectDefinition, objectEntry.getId(), relationshipName,
+					objectEntry.getId(),
+					_objectRelationshipLocalService.getObjectRelationship(
+						objectDefinition.getObjectDefinitionId(),
+						relationshipName),
 					Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 			objectEntries = relatedObjectEntriesPage.getItems();
@@ -1160,6 +1173,9 @@ public class CustomFDSSerializer
 
 	@Reference
 	private ObjectEntryManagerRegistry _objectEntryManagerRegistry;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference(
 		target = "(frontend.data.set.serializer.type=" + FDSSerializer.TYPE_SYSTEM + ")"

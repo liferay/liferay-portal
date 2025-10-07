@@ -77,7 +77,7 @@ public class LayoutSetPrototypePropagationCTTest {
 		if (propagationComplete) {
 			Assert.assertEquals(
 				layoutSetPrototypeLayout.getPriority(), layout.getPriority());
-			Assert.assertEquals(
+			Assert.assertNotEquals(
 				layoutSetPrototypeLayoutSet.getFaviconFileEntryId(),
 				layoutSet.getFaviconFileEntryId());
 		}

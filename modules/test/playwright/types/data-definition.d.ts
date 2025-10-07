@@ -22,7 +22,12 @@ type DefinitionField = {
 		options?: Options;
 	};
 	defaultValue: {[keys: string]: string};
-	fieldType: 'journal_article' | 'select' | 'text';
+	fieldType:
+		| 'document_library'
+		| 'image'
+		| 'journal_article'
+		| 'select'
+		| 'text';
 	indexType: 'keyword' | 'text' | 'none';
 	label: {[keys: string]: string};
 	localizable: boolean;

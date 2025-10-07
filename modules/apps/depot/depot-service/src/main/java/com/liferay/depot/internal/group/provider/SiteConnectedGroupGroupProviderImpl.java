@@ -5,6 +5,7 @@
 
 package com.liferay.depot.internal.group.provider;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -35,7 +36,8 @@ public class SiteConnectedGroupGroupProviderImpl
 			_portal.getAncestorSiteGroupIds(groupId),
 			ListUtil.toLongArray(
 				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+					groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS),
 				DepotEntry::getGroupId));
 	}
 
@@ -70,7 +72,8 @@ public class SiteConnectedGroupGroupProviderImpl
 				groupId, checkContentSharingWithChildrenEnabled),
 			ListUtil.toLongArray(
 				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+					groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS),
 				DepotEntry::getGroupId));
 	}
 
@@ -107,7 +110,8 @@ public class SiteConnectedGroupGroupProviderImpl
 		for (long groupId : groupIds) {
 			depotEntries.addAll(
 				_depotEntryLocalService.getGroupConnectedDepotEntries(
-					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+					groupId, DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS));
 		}
 
 		return ArrayUtil.append(

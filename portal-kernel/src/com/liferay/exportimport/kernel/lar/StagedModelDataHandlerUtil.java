@@ -5,12 +5,16 @@
 
 package com.liferay.exportimport.kernel.lar;
 
+import com.liferay.exportimport.kernel.exception.handler.ImportStagedModelExceptionHandler;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
@@ -377,8 +381,20 @@ public class StagedModelDataHandlerUtil {
 			return;
 		}
 
-		stagedModelDataHandler.importStagedModel(
-			portletDataContext, stagedModel);
+		try {
+			stagedModelDataHandler.importStagedModel(
+				portletDataContext, stagedModel);
+		}
+		catch (PortletDataException portletDataException) {
+			for (ImportStagedModelExceptionHandler
+					importStagedModelExceptionHandler : _serviceTrackerList) {
+
+				importStagedModelExceptionHandler.handle(
+					portletDataContext, portletDataException, stagedModel);
+			}
+
+			throw portletDataException;
+		}
 
 		LastSessionRecorderHelperUtil.syncLastSessionState();
 	}
@@ -620,5 +636,10 @@ public class StagedModelDataHandlerUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StagedModelDataHandlerUtil.class);
+
+	private static final ServiceTrackerList<ImportStagedModelExceptionHandler>
+		_serviceTrackerList = ServiceTrackerListFactory.open(
+			SystemBundleUtil.getBundleContext(),
+			ImportStagedModelExceptionHandler.class);
 
 }

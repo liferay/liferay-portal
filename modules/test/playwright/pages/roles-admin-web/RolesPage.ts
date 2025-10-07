@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {DataTablePage} from '../account-admin-web/DataTablePage';
 import {ApplicationsMenuPage} from '../product-navigation-applications-menu/ApplicationsMenuPage';
@@ -15,7 +15,13 @@ export class RolesPage {
 	readonly accountRolesLink: Locator;
 	readonly applicationsMenuButton: Locator;
 	readonly applicationsMenuPage: ApplicationsMenuPage;
+	readonly copyFrame: FrameLocator;
+	readonly copyFrameEmptyErrorMessage: Locator;
+	readonly copyFrameErrorMessage: Locator;
+	readonly copyFrameNewRoleNameInput: Locator;
+	readonly copyFrameSaveButton: Locator;
 	readonly deleteButton: Locator;
+	readonly duplicateMenuItem: Locator;
 	readonly noPermissionMessage: Locator;
 	readonly numberAssigneesCell: (
 		roleName: string,
@@ -27,6 +33,7 @@ export class RolesPage {
 	readonly roleAssigneesPage: RoleAssigneesPage;
 	readonly roleCell: (value: string, exact?: boolean) => Locator;
 	readonly rolePage: RolePage;
+	readonly rolesLink: (name: string) => Locator;
 	readonly roleUserGroupSelectorPage: RoleUserGroupSelectorPage;
 	readonly rolesTable: DataTablePage;
 	readonly siteRolesLink: Locator;
@@ -42,9 +49,24 @@ export class RolesPage {
 			'Open Applications MenuCtrl+'
 		);
 		this.applicationsMenuPage = new ApplicationsMenuPage(page);
+		this.copyFrame = page.frameLocator('iframe[id="modalIframe"]');
+		this.copyFrameEmptyErrorMessage = this.copyFrame.getByText(
+			'Please enter a valid name'
+		);
+		this.copyFrameErrorMessage = this.copyFrame.getByText(
+			'Please enter a unique name'
+		);
+		this.copyFrameNewRoleNameInput =
+			this.copyFrame.getByLabel('New Role Name');
+		this.copyFrameSaveButton = this.copyFrame.getByRole('button', {
+			name: 'Save',
+		});
 		this.deleteButton = page
 			.getByRole('menuitem', {name: 'Delete'})
 			.or(page.getByRole('link', {name: 'Delete'}));
+		this.duplicateMenuItem = page.getByRole('menuitem', {
+			name: 'Duplicate',
+		});
 		this.noPermissionMessage = page
 			.getByText(
 				'You do not have the roles required to access this portlet.'
@@ -68,6 +90,11 @@ export class RolesPage {
 				name: value,
 			});
 		this.rolePage = new RolePage(page);
+		this.rolesLink = (name) =>
+			page.getByRole('link', {
+				exact: true,
+				name: `${name} Roles`,
+			});
 		this.roleUserGroupSelectorPage = new RoleUserGroupSelectorPage(page);
 		this.rolesTable = new DataTablePage(
 			page,

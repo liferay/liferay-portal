@@ -11,6 +11,7 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.net.URL;
 
@@ -86,23 +87,37 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 		if ((buildReport == null) ||
 			JenkinsResultsParserUtil.isNullOrEmpty(key) ||
 			JenkinsResultsParserUtil.isNullOrEmpty(name) ||
-			!TestrayS3Bucket.hasGoogleApplicationCredentials()) {
+			!TestrayCloudBucket.hasGoogleApplicationCredentials()) {
 
 			return null;
 		}
 
-		for (URL testrayS3AttachmentURL :
+		for (URL testrayAttachmentURL :
 				buildReport.getTestrayAttachmentURLs()) {
 
-			String testrayS3AttachmentURLString = String.valueOf(
-				testrayS3AttachmentURL);
+			String testrayAttachmentURLString = String.valueOf(
+				testrayAttachmentURL);
 
-			if (!testrayS3AttachmentURLString.contains(key)) {
+			if (!testrayAttachmentURLString.endsWith(key)) {
 				continue;
 			}
 
-			TestrayAttachment testrayAttachment = new S3TestrayAttachment(
-				this, name, key);
+			String cloudObjectPath = null;
+
+			try {
+				String buildBaseArtifactURL =
+					JenkinsResultsParserUtil.getBuildProperty(
+						"build.base.artifact.url");
+
+				cloudObjectPath = testrayAttachmentURLString.replace(
+					buildBaseArtifactURL + "/", "");
+			}
+			catch (IOException ioException) {
+				continue;
+			}
+
+			TestrayAttachment testrayAttachment =
+				new CloudObjectTestrayAttachment(this, name, cloudObjectPath);
 
 			_testrayAttachments.put(key, testrayAttachment);
 
@@ -231,7 +246,7 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 			return null;
 		}
 
-		TestrayAttachment testrayAttachment = _uploadS3TestrayAttachment(
+		TestrayAttachment testrayAttachment = _uploadTestrayAttachment(
 			name, key, file);
 
 		if (testrayAttachment == null) {
@@ -243,7 +258,7 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 		return testrayAttachment;
 	}
 
-	private TestrayAttachment _uploadS3TestrayAttachment(
+	private TestrayAttachment _uploadTestrayAttachment(
 		String name, String key, File file) {
 
 		if (!file.exists()) {
@@ -251,20 +266,20 @@ public abstract class BuildTestrayCaseResult extends TestrayCaseResult {
 		}
 
 		try {
-			TestrayS3Bucket testrayS3Bucket = TestrayS3Bucket.getInstance();
+			TestrayCloudBucket testrayCloudBucket =
+				TestrayCloudBucket.getInstance();
 
-			testrayS3Bucket.createTestrayS3Object(key, file);
+			testrayCloudBucket.createTestrayCloudObject(key, file);
 
-			return new S3TestrayAttachment(this, name, key);
+			return new CloudObjectTestrayAttachment(this, name, key);
 		}
 		catch (Exception exception) {
 			return null;
 		}
 	}
 
-	private static final Map<String, TestrayAttachment> _testrayAttachments =
+	private final Map<String, TestrayAttachment> _testrayAttachments =
 		new HashMap<>();
-
 	private final File _testrayUploadBaseDir;
 	private final TopLevelBuildReport _topLevelBuildReport;
 

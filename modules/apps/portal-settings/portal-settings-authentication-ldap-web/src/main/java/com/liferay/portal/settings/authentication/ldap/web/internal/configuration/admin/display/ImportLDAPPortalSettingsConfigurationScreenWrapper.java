@@ -5,8 +5,9 @@
 
 package com.liferay.portal.settings.authentication.ldap.web.internal.configuration.admin.display;
 
-import com.liferay.configuration.admin.display.ConfigurationScreen;
-import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.security.ldap.exportimport.configuration.LDAPImportConfiguration;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
@@ -15,30 +16,31 @@ import jakarta.servlet.ServletContext;
 
 import java.util.Locale;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Drew Brokke
  */
-@Component(service = ConfigurationScreen.class)
 public class ImportLDAPPortalSettingsConfigurationScreenWrapper
-	extends ConfigurationScreenWrapper {
+	extends BaseLDAPPortalSettingsConfigurationScreenWrapper {
 
-	@Override
-	protected ConfigurationScreen getConfigurationScreen() {
-		return _portalSettingsConfigurationScreenFactory.create(
-			new ImportLDAPPortalSettingsConfigurationScreenContributor());
+	public ImportLDAPPortalSettingsConfigurationScreenWrapper(
+		PortalSettingsConfigurationScreenFactory
+			portalSettingsConfigurationScreenFactory,
+		ExtendedObjectClassDefinition.Scope scope,
+		ServletContext servletContext) {
+
+		super(portalSettingsConfigurationScreenFactory, scope);
+
+		_servletContext = servletContext;
 	}
 
-	@Reference
-	private PortalSettingsConfigurationScreenFactory
-		_portalSettingsConfigurationScreenFactory;
+	@Override
+	protected PortalSettingsConfigurationScreenContributor
+		getPortalSettingsConfigurationScreenContributor() {
 
-	@Reference(
-		target = "(osgi.web.symbolicname=com.liferay.portal.settings.authentication.ldap.web)"
-	)
-	private ServletContext _servletContext;
+		return new ImportLDAPPortalSettingsConfigurationScreenContributor();
+	}
+
+	private final ServletContext _servletContext;
 
 	private class ImportLDAPPortalSettingsConfigurationScreenContributor
 		implements PortalSettingsConfigurationScreenContributor {
@@ -56,7 +58,9 @@ public class ImportLDAPPortalSettingsConfigurationScreenWrapper
 
 		@Override
 		public String getKey() {
-			return LDAPImportConfiguration.class.getName();
+			return StringBundler.concat(
+				LDAPImportConfiguration.class.getName(), StringPool.POUND,
+				getScope());
 		}
 
 		@Override

@@ -249,9 +249,9 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		var clientVersion = Elasticsearch.getClientVersion();
+		var sidecarVersion = Elasticsearch.getSidecarVersion();
 
-		AssertConsoleTextPresent(value1 = "Sidecar Elasticsearch ${clientVersion} liferay_sidecar started at [\d\.]+:9201");
+		AssertConsoleTextPresent(value1 = "Sidecar Elasticsearch ${sidecarVersion} liferay_sidecar started at [\d\.]+:9201");
 
 		JSONWebcontent.addWebContent(
 			content = "WC Content",
@@ -483,6 +483,7 @@ definition {
 	@priority = 4
 	test PerformConcurrentReindexAndSwitchElasticsearchConnections {
 		property embedded.elasticsearch.only = "true";
+		property portal.acceptance = "quarantine";
 		property search.environment.suite.exclude = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -609,6 +610,7 @@ definition {
 	@description = "This is a use case for LPS-177665."
 	@priority = 4
 	test ReindexWithConcurrentExecutionMode {
+		property portal.acceptance = "quarantine";
 		property portal.release = "false";
 		property search.environment.suite.exclude = "true";
 		property test.liferay.virtual.instance = "false";
@@ -789,45 +791,10 @@ definition {
 		}
 	}
 
-	@description = "Assert search is functional after Elasticsearch connector is redeployed from GogoShell"
-	@priority = 3
-	test SearchAfterRedeployingElasticsearchConnector {
-		property operating.system.types = "centos";
-		property remote.elasticsearch.enabled = "true";
-		property test.assert.warning.exceptions = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		GogoShell.openGogoShellAdmin();
-
-		var moduleId = GogoShell.getModuleID(moduleName = "com.liferay.portal.search.elasticsearch7.impl");
-
-		GogoShell.stopModule(moduleId = ${moduleId});
-
-		GogoShell.viewModuleStatus(
-			moduleName = "com.liferay.portal.search.elasticsearch7.impl",
-			moduleStatus = "Resolved");
-
-		GogoShell.startModule(moduleId = ${moduleId});
-
-		GogoShell.viewModuleStatus(
-			moduleName = "com.liferay.portal.search.elasticsearch7.impl",
-			moduleStatus = "Active");
-
-		SearchAdministration.executeReindex();
-
-		Navigator.gotoPage(pageName = "Home");
-
-		SearchPage.searchEmbedded(searchTerm = "test");
-
-		AssertElementPresent(
-			key_searchAssetTitle = "Test Test",
-			locator1 = "SearchPage#RESULT_TITLE");
-	}
-
 	@priority = 5
 	test SearchWithNonLiferayIndex {
 		property embedded.elasticsearch.only = "true";
+		property portal.acceptance = "quarantine";
 		property search.environment.suite.exclude = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -961,6 +928,7 @@ definition {
 	@priority = 3
 	test UpdateSystemSettingsWithoutPortalRestart {
 		property embedded.elasticsearch.only = "true";
+		property portal.acceptance = "quarantine";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

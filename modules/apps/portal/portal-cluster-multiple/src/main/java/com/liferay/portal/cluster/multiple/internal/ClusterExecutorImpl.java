@@ -34,8 +34,8 @@ import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.PortalInetSocketAddressEventListener;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -194,9 +194,9 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 			bundleContext, ClusterEventListener.class);
 
 		initialize(
-			_props.get(PropsKeys.CLUSTER_LINK_CHANNEL_LOGIC_NAME_CONTROL),
-			_props.get(PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL),
-			_props.get(PropsKeys.CLUSTER_LINK_CHANNEL_NAME_CONTROL));
+			PropsUtil.get(PropsKeys.CLUSTER_LINK_CHANNEL_LOGIC_NAME_CONTROL),
+			PropsUtil.get(PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL),
+			PropsUtil.get(PropsKeys.CLUSTER_LINK_CHANNEL_NAME_CONTROL));
 
 		_serviceRegistration = bundleContext.registerService(
 			PortalInetSocketAddressEventListener.class,
@@ -456,7 +456,8 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	private void _configurePortalInstanceCommunications() {
 		if ((_localClusterNodeStatus == null) ||
-			Validator.isNull(_props.get(PropsKeys.PORTAL_INSTANCE_PROTOCOL))) {
+			Validator.isNull(
+				PropsUtil.get(PropsKeys.PORTAL_INSTANCE_PROTOCOL))) {
 
 			return;
 		}
@@ -464,9 +465,9 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 		ClusterNode localClusterNode = _localClusterNodeStatus.getClusterNode();
 
 		localClusterNode.setPortalProtocol(
-			_props.get(PropsKeys.PORTAL_INSTANCE_PROTOCOL));
+			PropsUtil.get(PropsKeys.PORTAL_INSTANCE_PROTOCOL));
 		localClusterNode.setPortalInetSocketAddress(
-			_getConfiguredPortalInetSocketAddress(_props));
+			_getConfiguredPortalInetSocketAddress());
 	}
 
 	private String _generateClusterNodeId() {
@@ -476,10 +477,8 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 		return uuid.toString();
 	}
 
-	private InetSocketAddress _getConfiguredPortalInetSocketAddress(
-		Props props) {
-
-		String portalInstanceInetSocketAddress = props.get(
+	private InetSocketAddress _getConfiguredPortalInetSocketAddress() {
+		String portalInstanceInetSocketAddress = PropsUtil.get(
 			PropsKeys.PORTAL_INSTANCE_INET_SOCKET_ADDRESS);
 
 		if (Validator.isNull(portalInstanceInetSocketAddress)) {
@@ -573,9 +572,6 @@ public class ClusterExecutorImpl implements ClusterExecutor {
 
 	@Reference
 	private PortalExecutorManager _portalExecutorManager;
-
-	@Reference
-	private Props _props;
 
 	private ServiceRegistration<PortalInetSocketAddressEventListener>
 		_serviceRegistration;

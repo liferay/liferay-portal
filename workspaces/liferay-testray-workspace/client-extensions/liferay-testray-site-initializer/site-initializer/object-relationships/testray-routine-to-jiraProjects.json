@@ -1,0 +1,12 @@
+{
+	"deletionType": "disassociate",
+	"label": {
+		"en_US": "Testray Jira Project"
+	},
+	"name": "routineToJiraProject",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:Routine$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:JiraProject$]",
+	"objectDefinitionName2": "JiraProject",
+	"system": false,
+	"type": "oneToMany"
+}

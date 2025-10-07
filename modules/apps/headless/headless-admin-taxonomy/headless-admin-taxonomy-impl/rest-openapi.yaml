@@ -465,7 +465,7 @@ components:
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.admin.taxonomy.client', and version '4.0.42'."
+        'com.liferay.headless.admin.taxonomy.client', and version '4.0.43'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -1112,78 +1112,6 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["TaxonomyVocabulary"]
-    "/keywords":
-        get:
-            operationId: getKeywordsPage
-            parameters:
-                -   in: query
-                    name: aggregationTerms
-                    schema:
-                        items:
-                            type: string
-                        type: array
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/Keyword"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/Keyword"
-                                type: array
-            tags: ["Keyword"]
-        post:
-            operationId: postKeyword
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/Keyword"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/Keyword"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/Keyword"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/Keyword"
-            tags: ["Keyword"]
     "/keywords/ranked":
         get:
             operationId: getKeywordsRankedPage
@@ -2282,87 +2210,6 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["TaxonomyCategory"]
-    "/taxonomy-vocabularies":
-        get:
-            description:
-                Gets all taxonomy vocabularies that were created in CMS. Does not retrieve vocabularies created in DXP.
-                CMS vocabularies are distinguished by having a `groupId = 0`.
-            operationId: getTaxonomyVocabulariesPage
-            parameters:
-                -   in: query
-                    name: aggregationTerms
-                    schema:
-                        items:
-                            type: string
-                        type: array
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: filter
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/TaxonomyVocabulary"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/TaxonomyVocabulary"
-                                type: array
-                    description:
-                        successful operation
-            tags: ["TaxonomyVocabulary"]
-        post:
-            description:
-                Creates the asset library's taxonomy vocabulary in the given spaces.
-            operationId: postTaxonomyVocabulary
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/TaxonomyVocabulary"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/TaxonomyVocabulary"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/TaxonomyVocabulary"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/TaxonomyVocabulary"
-                    description:
-                        successful operation
-            tags: ["TaxonomyVocabulary"]
     "/taxonomy-vocabularies/{taxonomyVocabularyId}":
         delete:
             description:

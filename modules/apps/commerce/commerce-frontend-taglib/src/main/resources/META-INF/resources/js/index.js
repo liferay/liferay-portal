@@ -36,6 +36,7 @@ export function accountSelectorTag({
 	hasAddCommerceOrderPermission,
 	hasCommerceOpenOrderContentPortlet,
 	hasManageAccountsPermission,
+	orderSelectionDisabled,
 	refreshPageOnAccountSelected,
 	selectOrderURL,
 	setCurrentAccountURL,
@@ -54,6 +55,7 @@ export function accountSelectorTag({
 		hasAddCommerceOrderPermission,
 		hasCommerceOpenOrderContentPortlet,
 		hasManageAccountsPermission,
+		orderSelectionDisabled,
 		refreshPageOnAccountSelected,
 		selectOrderURL,
 		setCurrentAccountURL,
@@ -202,7 +204,9 @@ export function cart({
 	requestQuoteEnabled,
 	signInURL,
 	siteDefaultURL,
+	slowConnectionOrderFlowEnabled,
 	toggleable,
+	undoCartItemDeletionDisabled,
 }) {
 	const props = {
 		accountId: Number(accountId),
@@ -227,7 +231,9 @@ export function cart({
 		itemsQuantity: Number(itemsQuantity),
 		orderId: Number(orderId),
 		requestQuoteEnabled,
+		slowConnectionOrderFlowEnabled,
 		toggleable,
+		undoCartItemDeletionDisabled,
 	};
 
 	const customCartViews = Object.entries(cartViews);

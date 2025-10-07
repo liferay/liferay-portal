@@ -449,6 +449,14 @@ public class PatcherFixPackLocalServiceUtil {
 			patcherFixId, patcherFixPackIds);
 	}
 
+	public static PatcherFixPack updatePatcherFixPack(
+			long patcherFixPackId, String requirements, int status)
+		throws Exception {
+
+		return getService().updatePatcherFixPack(
+			patcherFixPackId, requirements, status);
+	}
+
 	/**
 	 * Updates the patcher fix pack in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

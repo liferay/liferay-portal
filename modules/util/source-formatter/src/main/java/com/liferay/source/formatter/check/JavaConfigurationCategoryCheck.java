@@ -5,21 +5,17 @@
 
 package com.liferay.source.formatter.check;
 
-import com.liferay.source.formatter.check.util.SourceUtil;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.util.FileUtil;
+import com.liferay.source.formatter.util.SourceFormatterUtil;
 
 import java.io.File;
 import java.io.IOException;
 
-import java.nio.file.FileVisitOption;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,11 +26,26 @@ import java.util.regex.Pattern;
 public class JavaConfigurationCategoryCheck extends BaseFileCheck {
 
 	@Override
+	public boolean isModuleSourceCheck() {
+		return true;
+	}
+
+	@Override
 	protected String doProcess(
 			String fileName, String absolutePath, String content)
 		throws IOException {
 
-		if (!fileName.endsWith("Configuration.java")) {
+		int x = fileName.lastIndexOf(StringPool.SLASH);
+
+		if ((x == -1) ||
+			!StringUtil.endsWith(fileName.substring(0, x), "/configuration")) {
+
+			return content;
+		}
+
+		String shortFileName = fileName.substring(x + 1);
+
+		if (!shortFileName.endsWith("Configuration.java")) {
 			return content;
 		}
 
@@ -57,69 +68,49 @@ public class JavaConfigurationCategoryCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private List<String> _getCategoryKeys() throws IOException {
+	private synchronized List<String> _getCategoryKeys() throws IOException {
 		if (_categoryKeys != null) {
 			return _categoryKeys;
 		}
 
-		final List<String> categoryKeys = new ArrayList<>();
+		_categoryKeys = new ArrayList<>();
 
-		File configurationCategoriesDir = getFile(
-			_CONFIGURATION_CATEGORIES_DIR_NAME, getMaxDirLevel());
+		File portalDir = getPortalDir();
 
-		if (configurationCategoriesDir == null) {
-			_categoryKeys = categoryKeys;
-
-			return _categoryKeys;
+		if (portalDir == null) {
+			return Collections.emptyList();
 		}
 
-		Files.walkFileTree(
-			configurationCategoriesDir.toPath(),
-			EnumSet.noneOf(FileVisitOption.class), 1,
-			new SimpleFileVisitor<Path>() {
+		List<String> fileNames =
+			SourceFormatterUtil.matchFileContentsForFileNames(
+				Arrays.asList("-E", "implements ConfigurationCategory"),
+				portalDir.getCanonicalPath(),
+				new String[] {"modules/**/*.java"});
 
-				@Override
-				public FileVisitResult visitFile(
-						Path filePath, BasicFileAttributes basicFileAttributes)
-					throws IOException {
+		if (fileNames.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-					String absolutePath = SourceUtil.getAbsolutePath(filePath);
+		for (String fileName : fileNames) {
+			String content = FileUtil.read(new File(fileName));
 
-					if (!absolutePath.endsWith(".java")) {
-						return FileVisitResult.CONTINUE;
-					}
+			Matcher matcher = _categoryKeyPattern1.matcher(content);
 
-					File file = new File(absolutePath);
+			if (matcher.find()) {
+				_categoryKeys.add(matcher.group(1));
 
-					String content = FileUtil.read(file);
+				continue;
+			}
 
-					Matcher matcher = _categoryKeyPattern1.matcher(content);
+			matcher = _categoryKeyPattern2.matcher(content);
 
-					if (matcher.find()) {
-						categoryKeys.add(matcher.group(1));
-
-						return FileVisitResult.CONTINUE;
-					}
-
-					matcher = _categoryKeyPattern2.matcher(content);
-
-					if (matcher.find()) {
-						categoryKeys.add(matcher.group(1));
-					}
-
-					return FileVisitResult.CONTINUE;
-				}
-
-			});
-
-		_categoryKeys = categoryKeys;
+			if (matcher.find()) {
+				_categoryKeys.add(matcher.group(1));
+			}
+		}
 
 		return _categoryKeys;
 	}
-
-	private static final String _CONFIGURATION_CATEGORIES_DIR_NAME =
-		"modules/apps/configuration-admin/configuration-admin-web/src/main" +
-			"/java/com/liferay/configuration/admin/web/internal/category";
 
 	private static final Pattern _categoryKeyPattern1 = Pattern.compile(
 		"String\\s+_CATEGORY_KEY\\s+=\\s+\"(\\w+)\"");

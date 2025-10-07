@@ -78,6 +78,7 @@ public interface LayoutUtilityPageEntryLocalService
 	public LayoutUtilityPageEntry addLayoutUtilityPageEntry(
 		LayoutUtilityPageEntry layoutUtilityPageEntry);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public LayoutUtilityPageEntry addLayoutUtilityPageEntry(
 			String externalReferenceCode, long userId, long groupId, long plid,
 			long previewFileEntryId, boolean defaultLayoutUtilityPageEntry,
@@ -420,6 +421,7 @@ public interface LayoutUtilityPageEntryLocalService
 	public LayoutUtilityPageEntry updateLayoutUtilityPageEntry(
 		long layoutUtilityPageEntryId, long previewFileEntryId);
 
+	@Indexable(type = IndexableType.REINDEX)
 	public LayoutUtilityPageEntry updateLayoutUtilityPageEntry(
 			long layoutUtilityPageEntryId, String name)
 		throws PortalException;

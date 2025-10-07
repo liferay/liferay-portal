@@ -7,6 +7,7 @@ package com.liferay.fragment.model.impl;
 
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -263,6 +267,17 @@ public class FragmentEntryLinkCacheModel
 
 		fragmentEntryLinkImpl.resetOriginalValues();
 
+		try {
+			_configurationJSONObjectMethodHandle.invokeExact(
+				fragmentEntryLinkImpl, configurationJSONObject);
+
+			_editableValuesJSONObjectMethodHandle.invokeExact(
+				fragmentEntryLinkImpl, editableValuesJSONObject);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return fragmentEntryLinkImpl;
 	}
 
@@ -313,6 +328,12 @@ public class FragmentEntryLinkCacheModel
 		type = objectInput.readInt();
 		lastPropagationDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
+
+		configurationJSONObject =
+			(com.liferay.portal.kernel.json.JSONObject)objectInput.readObject();
+
+		editableValuesJSONObject =
+			(com.liferay.portal.kernel.json.JSONObject)objectInput.readObject();
 	}
 
 	@Override
@@ -421,6 +442,10 @@ public class FragmentEntryLinkCacheModel
 		objectOutput.writeInt(type);
 		objectOutput.writeLong(lastPropagationDate);
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeObject(configurationJSONObject);
+
+		objectOutput.writeObject(editableValuesJSONObject);
 	}
 
 	public long mvccVersion;
@@ -452,5 +477,29 @@ public class FragmentEntryLinkCacheModel
 	public int type;
 	public long lastPropagationDate;
 	public long lastPublishDate;
+	public volatile com.liferay.portal.kernel.json.JSONObject
+		configurationJSONObject;
+	public volatile com.liferay.portal.kernel.json.JSONObject
+		editableValuesJSONObject;
+
+	private static final MethodHandle _configurationJSONObjectMethodHandle;
+	private static final MethodHandle _editableValuesJSONObjectMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_configurationJSONObjectMethodHandle = lookup.findSetter(
+				FragmentEntryLinkImpl.class, "_configurationJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+
+			_editableValuesJSONObjectMethodHandle = lookup.findSetter(
+				FragmentEntryLinkImpl.class, "_editableValuesJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

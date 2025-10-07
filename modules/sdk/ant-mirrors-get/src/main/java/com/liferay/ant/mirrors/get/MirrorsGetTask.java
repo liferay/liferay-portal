@@ -26,8 +26,11 @@ import java.net.URLDecoder;
 
 import java.nio.charset.StandardCharsets;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -343,10 +346,10 @@ public class MirrorsGetTask extends Task {
 				catch (IOException ioException) {
 					System.out.println(
 						"Unable to connect to " + sourceURL +
-							", will retry in 30 seconds.");
+							", will retry in 10 seconds.");
 
 					try {
-						Thread.sleep(30000);
+						Thread.sleep(10000);
 					}
 					catch (InterruptedException interruptedException) {
 					}
@@ -491,55 +494,52 @@ public class MirrorsGetTask extends Task {
 				return;
 			}
 
-			String mirrorsHostname = _getMirrorsHostname();
+			List<URL> urls = new ArrayList<>();
 
-			if (_tryLocalNetwork && !mirrorsHostname.isEmpty()) {
-				URL mirrorsURL = _getMirrorsURL();
+			if (_tryLocalNetwork) {
+				String mirrorsHostname = _getMirrorsHostname();
+				URL nexusTomcatURL = _getNexusTomcatURL();
 
-				try {
-					_downloadFile(mirrorsURL, mirrorsCacheTempFile, _retries);
+				if (nexusTomcatURL != null) {
+					urls.add(nexusTomcatURL);
 				}
-				catch (IOException ioException1) {
-					URL localURL = _getLocalURL();
-
-					if (_verbose) {
-						System.out.println(
-							"Unable to connect to " + mirrorsURL +
-								", defaulting to " + localURL + ".");
-					}
-
-					try {
-						_downloadFile(localURL, mirrorsCacheTempFile, _retries);
-					}
-					catch (IOException ioException2) {
-						URL remoteURL = _getRemoteURL();
-
-						if (_verbose) {
-							System.out.println(
-								"Unable to connect to " + localURL +
-									", defaulting to " + remoteURL + ".");
-						}
-
-						_downloadFile(remoteURL, mirrorsCacheTempFile, 0);
-					}
+				else if (!mirrorsHostname.isEmpty()) {
+					urls.add(_getMirrorsURL());
 				}
 			}
-			else {
-				URL localURL = _getLocalURL();
+
+			URL localURL = _getLocalURL();
+
+			urls.add(localURL);
+
+			URL remoteURL = _getRemoteURL();
+
+			if (!Objects.equals(localURL, remoteURL)) {
+				urls.add(remoteURL);
+			}
+
+			urls.removeAll(Collections.singleton(null));
+
+			for (int i = 0; i < urls.size(); i++) {
+				URL url = urls.get(i);
 
 				try {
-					_downloadFile(localURL, mirrorsCacheTempFile, _retries);
+					_downloadFile(url, mirrorsCacheTempFile, _retries);
 				}
 				catch (IOException ioException) {
-					URL remoteURL = _getRemoteURL();
+					if (i >= (urls.size() - 1)) {
+						throw ioException;
+					}
 
 					if (_verbose) {
 						System.out.println(
-							"Unable to connect to " + localURL +
-								", defaulting to " + remoteURL + ".");
+							"Unable to connect to " + url + ", defaulting to " +
+								urls.get(i + 1) + ".");
 					}
+				}
 
-					_downloadFile(remoteURL, mirrorsCacheTempFile, 0);
+				if (mirrorsCacheTempFile.exists()) {
+					break;
 				}
 			}
 
@@ -719,6 +719,31 @@ public class MirrorsGetTask extends Task {
 		sb.append(_path);
 		sb.append("/");
 		sb.append(_fileName);
+
+		try {
+			return new URL(sb.toString());
+		}
+		catch (MalformedURLException malformedURLException) {
+			throw new RuntimeException(malformedURLException);
+		}
+	}
+
+	private URL _getNexusTomcatURL() {
+		Matcher matcher = _nexusTomcatURLPattern.matcher(
+			String.valueOf(_getRemoteURL()));
+
+		if (!matcher.find()) {
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(_getURLScheme());
+		sb.append("repository.liferay.com/");
+		sb.append("nexus/content/groups/public/org/apache/tomcat/tomcat/");
+		sb.append(matcher.group("tomcatVersion"));
+		sb.append("/");
+		sb.append(matcher.group("tomcatFileName"));
 
 		try {
 			return new URL(sb.toString());
@@ -1185,6 +1210,10 @@ public class MirrorsGetTask extends Task {
 			"(?<hostName>[^/]+(/\\d+)?)/(?<path>.+/)(?<fileName>.+)");
 	private static final Pattern _mirrorsHostNamePattern = Pattern.compile(
 		"^mirrors\\.[^\\.]+\\.liferay.com/");
+	private static final Pattern _nexusTomcatURLPattern = Pattern.compile(
+		"http://archive.apache.org/dist/tomcat/tomcat-\\d+/" +
+			"v(?<tomcatVersion>[^/]+)/bin/" +
+				"apache-(?<tomcatFileName>.+(\\.tar\\.gz|\\.zip))");
 	private static final Pattern _releaseHostNamePattern = Pattern.compile(
 		"(release-\\d+|release.liferay.com)/(?<id>\\d+)");
 	private static final Pattern _testHostNamePattern = Pattern.compile(

@@ -111,7 +111,7 @@ describe('WebContentMetricCard', () => {
 		expect(linkToTheDocumentation).toBeInTheDocument();
 		expect(linkToTheDocumentation).toHaveAttribute(
 			'href',
-			'https://learn.liferay.com/w/analytics-cloud/touchpoints/assets/web-content#visitor-behavior'
+			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/assets-analytics/web-content-analytics#visitor-behavior'
 		);
 	});
 });

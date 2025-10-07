@@ -1,31 +1,31 @@
-<div class="text-input" data-localizable="${input.localizable?string('true', 'false')}">
-	<div class="form-group [#if  input.errorMessage?has_content]has-error[/#if] mb-0" id="${fragmentEntryLinkNamespace}-form-group">
-		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentEntryLinkNamespace}-text-input" id="${fragmentEntryLinkNamespace}-text-input-label">${htmlUtil.escape(input.label)}
+<div class="text-input">
+	<div class="form-group [#if  input.errorMessage?has_content]has-error[/#if] mb-0" id="${fragmentElementId}-form-group">
+		<label class="[#if !input.showLabel || !input.label?has_content]sr-only[/#if]" for="${fragmentElementId}-text-input" id="${fragmentElementId}-text-input-label">${htmlUtil.escape(input.label)}
 
-			<span id="${fragmentEntryLinkNamespace}-text-input-readonly" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
+			<span id="${fragmentElementId}-text-input-readonly" class="[#if !input.readOnly]d-none[/#if]">(${languageUtil.get(locale, "read-only")})</span>
 
 			[#if input.required][@clay["icon"] className="reference-mark" symbol="asterisk" /][/#if]</label>
 		<div class="d-flex">
-			<input aria-describedby="${fragmentEntryLinkNamespace}-text-input-help-text" aria-labelledby="${fragmentEntryLinkNamespace}-text-input-label [#if  input.errorMessage?has_content]${fragmentEntryLinkNamespace}-text-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentEntryLinkNamespace}-text-input" name="${input.name}" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="text" [#if input.value??]value="${input.value}"[/#if] />
+			<input aria-describedby="${fragmentElementId}-text-input-help-text" aria-labelledby="${fragmentElementId}-text-input-label [#if  input.errorMessage?has_content]${fragmentElementId}-text-input-error-message[/#if]" class="form-control" [#if input.attributes.disabled?? && input.attributes.disabled]disabled[/#if] id="${fragmentElementId}-text-input" name="${input.name}" placeholder="${configuration.placeholder}" [#if input.readOnly]readonly[/#if] ${input.required?then('required', '')} type="text" [#if input.value??]value="${input.value}"[/#if] />
 
 			[#if !input.localizable && input.attributes.unlocalizedFieldsMessage??]
-				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentEntryLinkNamespace}-unlocalized-info" role="tooltip" tabindex="0">
+				<div aria-label="${input.attributes.unlocalizedFieldsMessage}" class="d-none lfr-portal-tooltip mt-1 pt-2" data-title="${input.attributes.unlocalizedFieldsMessage}" id="${fragmentElementId}-unlocalized-info" role="tooltip" tabindex="0">
 					[@clay["icon"] className="ml-2 mt-0 text-secondary" symbol="question-circle-full" /]
 				</div>
 			[/#if]
 		</div>
 
-		<p class="mt-1 text-secondary [#if input.errorMessage?has_content || !configuration.showCharactersCount]sr-only[/#if]" id="${fragmentEntryLinkNamespace}-length-info">
-			<span class="sr-only" id="${fragmentEntryLinkNamespace}-length-warning">
+		<p class="mt-1 text-secondary [#if input.errorMessage?has_content || !configuration.showCharactersCount]sr-only[/#if]" id="${fragmentElementId}-length-info">
+			<span class="sr-only" id="${fragmentElementId}-length-warning">
 				[@clay["icon"] symbol="info-circle" /]
 
-				<span aria-live="assertive" data-error-message="${languageUtil.get(locale, "maximum-number-of-characters-exceeded")}" data-valid-message="${languageUtil.get(locale, "current-text-length-is-valid")}" id="${fragmentEntryLinkNamespace}-length-warning-text"></span>:
+				<span aria-live="assertive" data-error-message="${languageUtil.get(locale, "maximum-number-of-characters-exceeded")}" data-valid-message="${languageUtil.get(locale, "current-text-length-is-valid")}" id="${fragmentElementId}-length-warning-text"></span>:
 			</span>
-			<span id="${fragmentEntryLinkNamespace}-current-length">0</span> / [#if input.attributes.maxLength??]${input.attributes.maxLength}[/#if]
+			<span id="${fragmentElementId}-current-length">0</span> / [#if input.attributes.maxLength??]${input.attributes.maxLength}[/#if]
 		</p>
 
 		[#if input.errorMessage?has_content]
-			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentEntryLinkNamespace}-text-input-error-message">
+			<p class="font-weight-semi-bold mt-1 text-danger" id="${fragmentElementId}-text-input-error-message">
 				[@clay["icon"] symbol="info-circle" /]
 
 				<span>
@@ -35,7 +35,7 @@
 		[/#if]
 
 		[#if input.showHelpText && input.helpText?has_content]
-			<p class="mb-0 mt-1 text-secondary" id="${fragmentEntryLinkNamespace}-text-input-help-text">${htmlUtil.escape(input.helpText)}</p>
+			<p class="mb-0 mt-1 text-secondary" id="${fragmentElementId}-text-input-help-text">${htmlUtil.escape(input.helpText)}</p>
 		[/#if]
 	</div>
 </div>

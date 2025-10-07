@@ -6,12 +6,17 @@
 package com.liferay.object.rest.internal.dto.v1_0.converter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.list.type.entry.util.ListTypeEntryUtil;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
-import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -22,8 +27,9 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -34,7 +40,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -55,16 +62,29 @@ public class ObjectEntryDTOConverterTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@FeatureFlag("LPD-17564")
 	@Test
 	public void testToDTO() throws Exception {
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, TestPropsValues.getUserId(),
+				RandomTestUtil.randomLocaleStringMap(), false,
+				Arrays.asList(
+					ListTypeEntryUtil.createListTypeEntry("listTypeEntryKey1"),
+					ListTypeEntryUtil.createListTypeEntry(
+						"listTypeEntryKey2")));
+
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
-			Collections.singletonList(
-				new TextObjectFieldBuilder(
+			false, false, true,
+			ListUtil.fromArray(
+				new PicklistObjectFieldBuilder(
 				).labelMap(
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString())
+				).listTypeDefinitionId(
+					listTypeDefinition.getListTypeDefinitionId()
 				).name(
-					"name"
+					"picklist"
 				).build()),
 			ObjectDefinitionConstants.SCOPE_SITE);
 
@@ -76,15 +96,21 @@ public class ObjectEntryDTOConverterTest {
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				null,
 				HashMapBuilder.<String, Serializable>put(
-					"name", StringUtil.randomString()
+					"picklist", "listTypeEntryKey1"
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId()));
 
+		ObjectEntry objectEntry = _toDTO(serviceBuilderObjectEntry);
+
+		Map<String, Object> properties = objectEntry.getProperties();
+
+		ListEntry listEntry = (ListEntry)properties.get("picklist");
+
+		Assert.assertEquals("listTypeEntryKey1", listEntry.getKey());
+
 		Group group = _groupLocalService.getGroup(
 			serviceBuilderObjectEntry.getGroupId());
-
-		ObjectEntry objectEntry = _toDTO(serviceBuilderObjectEntry);
 
 		Assert.assertEquals(
 			group.getGroupId(), GetterUtil.getLong(objectEntry.getScopeId()));
@@ -110,6 +136,10 @@ public class ObjectEntryDTOConverterTest {
 				LocaleUtil.getDefault(), null, null);
 
 		dtoConverterContext.setAttribute("objectDefinition", _objectDefinition);
+		dtoConverterContext.setAttribute(
+			"objectEntryVersion",
+			_objectEntryVersionLocalService.getObjectEntryVersion(
+				serviceBuilderObjectEntry.getObjectEntryId(), 1));
 
 		return dtoConverter.toDTO(
 			dtoConverterContext, serviceBuilderObjectEntry);
@@ -121,10 +151,16 @@ public class ObjectEntryDTOConverterTest {
 	@Inject
 	private GroupLocalService _groupLocalService;
 
+	@Inject
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
 
 }

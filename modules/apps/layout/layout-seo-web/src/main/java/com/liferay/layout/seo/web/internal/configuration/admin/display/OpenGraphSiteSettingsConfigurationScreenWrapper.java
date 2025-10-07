@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -53,9 +52,6 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapper
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OpenGraphSiteSettingsConfigurationScreenWrapper.class);
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;
@@ -123,8 +119,7 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapper
 			try {
 				if (group.isCompany() ||
 					!_openGraphConfiguration.isOpenGraphEnabled(
-						_companyLocalService.getCompany(
-							group.getCompanyId()))) {
+						group.getCompanyId())) {
 
 					return false;
 				}

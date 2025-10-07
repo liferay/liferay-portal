@@ -129,6 +129,7 @@ public class CommerceOrderUpgradeProcess extends UpgradeProcess {
 			}
 
 			preparedStatement1.executeBatch();
+
 			preparedStatement2.executeBatch();
 		}
 	}

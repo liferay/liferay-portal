@@ -48,6 +48,27 @@ public class Summary implements Cloneable, Serializable {
 
 	protected String currency;
 
+	public Integer getItemsCount() {
+		return itemsCount;
+	}
+
+	public void setItemsCount(Integer itemsCount) {
+		this.itemsCount = itemsCount;
+	}
+
+	public void setItemsCount(
+		UnsafeSupplier<Integer, Exception> itemsCountUnsafeSupplier) {
+
+		try {
+			itemsCount = itemsCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer itemsCount;
+
 	public BigDecimal getItemsQuantity() {
 		return itemsQuantity;
 	}

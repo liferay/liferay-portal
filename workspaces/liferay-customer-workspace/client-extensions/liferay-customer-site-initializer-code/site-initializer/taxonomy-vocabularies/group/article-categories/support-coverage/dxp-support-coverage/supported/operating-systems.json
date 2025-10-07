@@ -1,0 +1,10 @@
+{
+	"name": "Operating Systems",
+	"name_i18n": {
+		"en_US": "Operating Systems",
+		"es-ES": "Sistemas operativos",
+		"ja-JP": "オペレーティング・システム",
+		"pt-BR": "Sistemas Operacionais"
+	},
+	"viewableBy": "Anyone"
+}

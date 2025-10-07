@@ -11,18 +11,42 @@ import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
 
-import java.util.List;
-
 /**
  * @author Javier Gamarra
  */
 public class PostalAddressUtil {
 
+	public static long[] getAccountEntryAddressListTypeIds(
+		long companyId, ListTypeLocalService listTypeLocalService) {
+
+		return TransformUtil.transformToLongArray(
+			ListUtil.fromArray(
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING,
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_ADDRESS_TYPE_BILLING_AND_SHIPPING,
+				AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS_TYPE_SHIPPING),
+			name -> {
+				ListType listType = listTypeLocalService.getListType(
+					companyId, name,
+					AccountListTypeConstants.ACCOUNT_ENTRY_ADDRESS);
+
+				return listType.getListTypeId();
+			});
+	}
+
 	public static long[] getAccountEntryContactAddressListTypeIds(
 		long companyId, ListTypeLocalService listTypeLocalService) {
 
 		return TransformUtil.transformToLongArray(
-			_names,
+			ListUtil.fromArray(
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_BILLING,
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_OTHER,
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_P_O_BOX,
+				AccountListTypeConstants.
+					ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_SHIPPING),
 			name -> {
 				ListType listType = listTypeLocalService.getListType(
 					companyId, name,
@@ -31,11 +55,5 @@ public class PostalAddressUtil {
 				return listType.getListTypeId();
 			});
 	}
-
-	private static final List<String> _names = ListUtil.fromArray(
-		AccountListTypeConstants.ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_BILLING,
-		AccountListTypeConstants.ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_OTHER,
-		AccountListTypeConstants.ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_P_O_BOX,
-		AccountListTypeConstants.ACCOUNT_ENTRY_CONTACT_ADDRESS_TYPE_SHIPPING);
 
 }

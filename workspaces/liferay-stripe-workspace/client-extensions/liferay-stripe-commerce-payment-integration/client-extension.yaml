@@ -3,12 +3,12 @@ assemble:
 liferay-stripe-commerce-payment-integration:
     key: liferay-stripe-commerce-payment-integration
     name: Liferay Stripe Commerce Payment Integration
-    oAuth2ApplicationExternalReferenceCode: liferay-stripe-commerce-payment-integration-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-stripe-commerce-payment-integration-oaua
     paymentIntegrationType: 4
     paymentIntegrationTypeSettings:
         apiKey:
     type: commercePaymentIntegration
-liferay-stripe-commerce-payment-integration-oauth-application-user-agent:
+liferay-stripe-commerce-payment-integration-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Stripe Commerce Payment Integration OAuth Application User Agent

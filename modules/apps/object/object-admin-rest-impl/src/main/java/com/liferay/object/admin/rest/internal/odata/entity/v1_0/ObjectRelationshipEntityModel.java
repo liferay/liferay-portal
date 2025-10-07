@@ -23,6 +23,7 @@ public class ObjectRelationshipEntityModel implements EntityModel {
 
 	public ObjectRelationshipEntityModel() {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
+			new BooleanEntityField("edge", locale -> "edge"),
 			new BooleanEntityField("system", locale -> "system"),
 			new DateTimeEntityField(
 				"dateCreated",

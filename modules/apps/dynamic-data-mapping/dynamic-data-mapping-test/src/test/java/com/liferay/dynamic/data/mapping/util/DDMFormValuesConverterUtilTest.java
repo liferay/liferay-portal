@@ -6,17 +6,15 @@
 package com.liferay.dynamic.data.mapping.util;
 
 import com.liferay.dynamic.data.mapping.BaseDDMTestCase;
+import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-
-import org.hamcrest.CoreMatchers;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -35,46 +33,67 @@ public class DDMFormValuesConverterUtilTest extends BaseDDMTestCase {
 
 	@Test
 	public void testAddMissingNestedDDMFormFieldValues() {
-		DDMFormField ddmFormField = new DDMFormField("Fieldset", "fieldset");
+		DDMFormField fieldset1DDMFormField = new DDMFormField(
+			"Fieldset1", DDMFormFieldTypeConstants.FIELDSET);
 
-		addNestedTextDDMFormFields(ddmFormField, "Text1", "Text2");
+		addNestedTextDDMFormFields(fieldset1DDMFormField, "Text1", "Text2");
 
-		DDMFormFieldValue textDDMFormFieldValue = createDDMFormFieldValue(
+		DDMFormField fieldset2DDMFormField = new DDMFormField(
+			"Fieldset2", DDMFormFieldTypeConstants.FIELDSET);
+
+		addNestedTextDDMFormFields(fieldset2DDMFormField, "Text3");
+
+		fieldset1DDMFormField.addNestedDDMFormField(fieldset2DDMFormField);
+
+		DDMFormFieldValue text1DDMFormFieldValue = createDDMFormFieldValue(
 			"Text1");
+		DDMFormFieldValue text3DDMFormFieldValue = createDDMFormFieldValue(
+			"Text3");
 
 		List<DDMFormFieldValue> ddmFormFieldValues =
 			DDMFormValuesConverterUtil.addMissingDDMFormFieldValues(
-				ListUtil.fromArray(ddmFormField),
+				Collections.singletonList(fieldset1DDMFormField),
 				HashMapBuilder.<String, List<DDMFormFieldValue>>put(
-					"Text1", ListUtil.fromArray(textDDMFormFieldValue)
+					"Text1", Collections.singletonList(text1DDMFormFieldValue)
+				).put(
+					"Text3", Collections.singletonList(text3DDMFormFieldValue)
 				).build());
 
 		Assert.assertEquals(
 			ddmFormFieldValues.toString(), 1, ddmFormFieldValues.size());
 
-		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(0);
+		_assertDDMFormFieldValueName(ddmFormFieldValues.get(0), "Fieldset1");
 
-		Assert.assertEquals("Fieldset", ddmFormFieldValue.getName());
-
-		List<DDMFormFieldValue> nestedDDMFormFieldValues =
-			ddmFormFieldValue.getNestedDDMFormFieldValues();
+		List<DDMFormFieldValue> fieldset1NestedDDMFormFieldValues =
+			_getNestedDDMFormFieldValues(ddmFormFieldValues.get(0));
 
 		Assert.assertEquals(
-			nestedDDMFormFieldValues.toString(), 2,
-			nestedDDMFormFieldValues.size());
+			fieldset1NestedDDMFormFieldValues.toString(), 3,
+			fieldset1NestedDDMFormFieldValues.size());
 
-		Set<String> names = new HashSet<>();
-
-		for (DDMFormFieldValue nestedDDMFormFieldValue :
-				nestedDDMFormFieldValues) {
-
-			names.add(nestedDDMFormFieldValue.getName());
-		}
-
-		Assert.assertThat(names, CoreMatchers.hasItems("Text1", "Text2"));
+		_assertDDMFormFieldValueName(
+			fieldset1NestedDDMFormFieldValues.get(0), "Text1");
+		_assertDDMFormFieldValueName(
+			fieldset1NestedDDMFormFieldValues.get(1), "Text2");
+		_assertDDMFormFieldValueName(
+			fieldset1NestedDDMFormFieldValues.get(2), "Fieldset2");
 
 		Assert.assertEquals(
-			nestedDDMFormFieldValues.get(0), textDDMFormFieldValue);
+			fieldset1NestedDDMFormFieldValues.get(0), text1DDMFormFieldValue);
+
+		List<DDMFormFieldValue> fieldset2NestedDDMFormFieldValues =
+			_getNestedDDMFormFieldValues(
+				fieldset1NestedDDMFormFieldValues.get(2));
+
+		Assert.assertEquals(
+			fieldset2NestedDDMFormFieldValues.toString(), 1,
+			fieldset2NestedDDMFormFieldValues.size());
+
+		_assertDDMFormFieldValueName(
+			fieldset2NestedDDMFormFieldValues.get(0), "Text3");
+
+		Assert.assertEquals(
+			fieldset2NestedDDMFormFieldValues.get(0), text3DDMFormFieldValue);
 	}
 
 	@Test
@@ -132,6 +151,12 @@ public class DDMFormValuesConverterUtilTest extends BaseDDMTestCase {
 			nestedDDMFormFieldValues.get(0), textDDMFormFieldValue);
 	}
 
+	private void _assertDDMFormFieldValueName(
+		DDMFormFieldValue ddmFormFieldValue, String expectedName) {
+
+		Assert.assertEquals(expectedName, ddmFormFieldValue.getName());
+	}
+
 	private DDMFormFieldValue _getDDMFormFieldValue(
 		String name, DDMFormFieldValue... nestedDDMFormFieldValues) {
 
@@ -145,6 +170,12 @@ public class DDMFormValuesConverterUtilTest extends BaseDDMTestCase {
 		}
 
 		return ddmFormFieldValue;
+	}
+
+	private List<DDMFormFieldValue> _getNestedDDMFormFieldValues(
+		DDMFormFieldValue ddmFormFieldValue) {
+
+		return ddmFormFieldValue.getNestedDDMFormFieldValues();
 	}
 
 }

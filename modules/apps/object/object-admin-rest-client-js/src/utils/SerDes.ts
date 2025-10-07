@@ -36,6 +36,7 @@
 	import {PageObjectValidationRule} from '../models/PageObjectValidationRule';
 	import {PageObjectView} from '../models/PageObjectView';
 	import {Status} from '../models/Status';
+	import {WorkflowDefinitionLink} from '../models/WorkflowDefinitionLink';
 
 /**
  * @author Javier Gamarra
@@ -103,6 +104,7 @@ const typeMap: {[index: string]: any} = {
 	PageObjectValidationRule,
 	PageObjectView,
 	Status,
+	WorkflowDefinitionLink,
 };
 
 export class ObjectSerializer {

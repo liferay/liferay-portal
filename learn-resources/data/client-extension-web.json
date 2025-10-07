@@ -2,25 +2,25 @@
 	"browser-based-client-extensions": {
 		"en_US": {
 			"message": "Learn more about browser based client extensions.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/customizing-liferays-look-and-feel"
+			"url": "https://learn.liferay.com/w/dxp/development/customizing-liferays-look-and-feel"
 		}
 	},
 	"custom-element": {
 		"en_US": {
 			"message": "Learn more about custom element client extensions.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/integrating-external-applications#using-the-custom-element-type"
+			"url": "https://learn.liferay.com/w/dxp/development/integrating-external-applications#using-the-custom-element-type"
 		}
 	},
 	"frontend-token-definitions": {
 		"en_US": {
 			"message": "Learn more about frontend token definitions.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/site-appearance/style-books/developer-guide/frontend-token-definitions"
+			"url": "https://learn.liferay.com/w/dxp/sites/site-appearance/style-books/developer-guide/frontend-token-definitions"
 		}
 	},
 	"iframe": {
 		"en_US": {
 			"message": "Learn more about IFrame client extensions.",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/integrating-external-applications#using-the-iframe-type"
+			"url": "https://learn.liferay.com/w/dxp/development/integrating-external-applications#using-the-iframe-type"
 		}
 	}
 }

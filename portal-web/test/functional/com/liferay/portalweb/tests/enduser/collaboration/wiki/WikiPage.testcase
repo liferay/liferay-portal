@@ -135,6 +135,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddChildPagesToFrontPage {
+		property portal.acceptance = "false";
+
 		JSONWiki.updateWikiPage(
 			groupName = "Guest",
 			wikiNodeName = "Main",
@@ -355,6 +357,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanCancelAddingAPage {
+		property portal.acceptance = "false";
+
 		WikiNavigator.openToAddPage(
 			groupName = "Guest",
 			layoutURLKey = "wiki-test-page",
@@ -376,6 +380,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanCancelEditingAPage {
+		property portal.acceptance = "false";
+
 		JSONWiki.addWikiPage(
 			groupName = "Guest",
 			wikiNodeName = "Main",
@@ -716,6 +722,8 @@ definition {
 	@description = "This test covers LPS-67282. It ensures that a user cannot rename the draft wiki page."
 	@priority = 3
 	test CannotRenameDraftPage {
+		property portal.acceptance = "false";
+
 		JSONWiki.addWikiPage(
 			groupName = "Guest",
 			wikiNodeName = "Main",
@@ -1032,6 +1040,8 @@ definition {
 	@description = "This is a test for LPS-190823. It checks that Javascript will not be executed from the child wiki page content when viewing the parent wiki page."
 	@priority = 3
 	test XSSCannotBeExecutedFromChildWikiPageContent {
+		property portal.acceptance = "false";
+
 		JSONWiki.addWikiPage(
 			groupName = "Guest",
 			wikiNodeName = "Main",
@@ -1058,6 +1068,8 @@ definition {
 	@description = "This test checks that the javascript in the user name will not be executed when viewing a new wiki page on page."
 	@priority = 3
 	test XSSIsNotExecutedWhenViewingUsernameInEntry {
+		property portal.acceptance = "false";
+
 		Navigator.openURL();
 
 		UserBar.gotoDropdownItem(dropdownItem = "Account Settings");

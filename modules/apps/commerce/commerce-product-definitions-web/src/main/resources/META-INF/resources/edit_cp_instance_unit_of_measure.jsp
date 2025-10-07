@@ -79,7 +79,7 @@ CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = cpInstanceUnitOfMeasureDisplay
 								</div>
 
 								<div class="col-6">
-									<aui:input helpMessage="base-unit-quantity-help" label="base-unit-quantity" name="incrementalOrderQuantity" required="<%= true %>" type="text">
+									<aui:input helpMessage="base-unit-quantity-help" ignoreRequestValue="<%= true %>" label="base-unit-quantity" name="incrementalOrderQuantity" required="<%= true %>" type="text" value='<%= BeanParamUtil.getDouble(cpInstanceUnitOfMeasure, request, "incrementalOrderQuantity", BigDecimal.ZERO.doubleValue()) %>'>
 										<aui:validator name="number" />
 										<aui:validator name="min">0</aui:validator>
 									</aui:input>
@@ -94,7 +94,7 @@ CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = cpInstanceUnitOfMeasureDisplay
 								</div>
 
 								<div class="col-6">
-									<aui:input helpMessage="pricing-quantity-help" label="pricing-quantity" name="pricingQuantity" type="text">
+									<aui:input helpMessage="pricing-quantity-help" ignoreRequestValue="<%= true %>" label="pricing-quantity" name="pricingQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpInstanceUnitOfMeasure, request, "pricingQuantity", BigDecimal.ZERO.doubleValue()) %>'>
 										<aui:validator name="number" />
 										<aui:validator name="min">0</aui:validator>
 									</aui:input>
@@ -129,7 +129,7 @@ CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = cpInstanceUnitOfMeasureDisplay
 
 							<div class="row">
 								<div class="col-6">
-									<aui:input helpMessage="base-unit-quantity-help" label="base-unit-quantity" name="incrementalOrderQuantity" required="<%= true %>" type="text">
+									<aui:input helpMessage="base-unit-quantity-help" ignoreRequestValue="<%= true %>" label="base-unit-quantity" name="incrementalOrderQuantity" required="<%= true %>" type="text" value='<%= BeanParamUtil.getDouble(cpInstanceUnitOfMeasure, request, "incrementalOrderQuantity", BigDecimal.ZERO.doubleValue()) %>'>
 										<aui:validator name="number" />
 										<aui:validator name="min">0</aui:validator>
 									</aui:input>
@@ -144,7 +144,7 @@ CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure = cpInstanceUnitOfMeasureDisplay
 
 							<div class="row">
 								<div class="col-6">
-									<aui:input helpMessage="pricing-quantity-help" label="pricing-quantity" name="pricingQuantity" type="text">
+									<aui:input helpMessage="pricing-quantity-help" ignoreRequestValue="<%= true %>" label="pricing-quantity" name="pricingQuantity" type="text" value='<%= BeanParamUtil.getDouble(cpInstanceUnitOfMeasure, request, "pricingQuantity", BigDecimal.ZERO.doubleValue()) %>'>
 										<aui:validator name="number" />
 										<aui:validator name="min">0</aui:validator>
 									</aui:input>

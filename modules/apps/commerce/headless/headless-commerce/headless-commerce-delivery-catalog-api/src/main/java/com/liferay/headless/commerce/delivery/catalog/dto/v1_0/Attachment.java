@@ -41,7 +41,6 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName("Attachment")
-@io.swagger.v3.oas.annotations.media.Schema(requiredProperties = {"sku"})
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Attachment")
 public class Attachment implements Serializable {

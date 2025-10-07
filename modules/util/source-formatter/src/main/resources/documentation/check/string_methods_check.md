@@ -44,3 +44,23 @@ we should write
 ```java
 String mergedActions = StringUtil.merge(getActions(), "-");
 ```
+
+---
+
+No need to use "StringUtil.contains" when the last parameter is an empty string.
+
+#### Example
+
+Instead of
+
+```java
+Assert.assertTrue(StringUtil.contains(url.getQuery(), "-", StringPool.BLANK));
+```
+
+we should write
+
+```java
+String query = url.getQuery();
+
+Assert.assertTrue(query.contains("-"));
+```

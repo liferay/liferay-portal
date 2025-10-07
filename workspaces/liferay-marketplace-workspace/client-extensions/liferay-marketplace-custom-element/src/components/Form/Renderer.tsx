@@ -94,16 +94,16 @@ const RenderField = ({
 				<Form.DateRange
 					label={label}
 					onChange={(
-						event: string,
+						value: string,
 						setValue: React.Dispatch<React.SetStateAction<string>>
 					) => {
-						setValue(event);
+						setValue(value);
 
 						onChange({
 							target: {
 								name,
 								type: 'date-range',
-								value: event,
+								value,
 							},
 						});
 					}}

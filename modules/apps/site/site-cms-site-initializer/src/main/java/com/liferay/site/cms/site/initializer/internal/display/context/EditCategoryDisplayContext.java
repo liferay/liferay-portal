@@ -49,7 +49,7 @@ public class EditCategoryDisplayContext {
 				_portal.getLayoutFullURL(
 					_layoutLocalService.getLayoutByFriendlyURL(
 						_themeDisplay.getScopeGroupId(), false,
-						"/categorization/view_categories"),
+						"/categorization/view-categories"),
 					_themeDisplay),
 				"vocabularyId", getVocabularyId());
 		}
@@ -58,7 +58,7 @@ public class EditCategoryDisplayContext {
 			_portal.getLayoutFullURL(
 				_layoutLocalService.getLayoutByFriendlyURL(
 					_themeDisplay.getScopeGroupId(), false,
-					"/categorization/view_categories"),
+					"/categorization/view-categories"),
 				_themeDisplay),
 			"categoryId", getParentCategoryId(), "vocabularyId",
 			getVocabularyId());

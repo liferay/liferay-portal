@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.DuplicateOrganizationException;
 import com.liferay.portal.kernel.exception.NoSuchCountryException;
 import com.liferay.portal.kernel.exception.NoSuchListTypeException;
 import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
+import com.liferay.portal.kernel.exception.OrganizationCommentsException;
 import com.liferay.portal.kernel.exception.OrganizationNameException;
 import com.liferay.portal.kernel.exception.OrganizationParentException;
 import com.liferay.portal.kernel.exception.RequiredOrganizationException;
@@ -123,6 +124,7 @@ public class EditOrganizationMVCActionCommand
 			else if (exception instanceof DuplicateOrganizationException ||
 					 exception instanceof NoSuchCountryException ||
 					 exception instanceof NoSuchListTypeException ||
+					 exception instanceof OrganizationCommentsException ||
 					 exception instanceof OrganizationNameException ||
 					 exception instanceof OrganizationParentException ||
 					 exception instanceof RequiredOrganizationException) {

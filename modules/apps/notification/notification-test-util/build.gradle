@@ -2,6 +2,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly project(":apps:notification:notification-api")
+	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 }
 
 liferay {

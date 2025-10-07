@@ -5,12 +5,14 @@
 
 import {
 	FIRST_DAY_OF_WEEK_MAP,
+	MONTHS_LONG_MAP,
 	SECONDS_IN_DAY,
 	SECONDS_IN_HOUR,
 	SECONDS_IN_MINUTE,
 	SECONDS_IN_MONTH,
 	SECONDS_IN_WEEK,
 	SECONDS_IN_YEAR,
+	WEEKDAYS_SHORT_MAP,
 } from './constants';
 import {format} from './format';
 import {parse} from './parse';
@@ -28,6 +30,10 @@ function getFirstDayOfWeek(
 }
 
 function getWeekdaysShort(locale = Liferay.ThemeDisplay.getBCP47LanguageId()) {
+	if (locale in WEEKDAYS_SHORT_MAP) {
+		return WEEKDAYS_SHORT_MAP[locale as keyof typeof WEEKDAYS_SHORT_MAP];
+	}
+
 	const weekdaysShort = Array.from({length: 7}, (_, i) => {
 		const date = new Date(2025, 0, i + 5); // 2025-01-05 is a Sunday
 
@@ -38,6 +44,10 @@ function getWeekdaysShort(locale = Liferay.ThemeDisplay.getBCP47LanguageId()) {
 }
 
 function getMonthsLong(locale = Liferay.ThemeDisplay.getBCP47LanguageId()) {
+	if (locale in MONTHS_LONG_MAP) {
+		return MONTHS_LONG_MAP[locale as keyof typeof MONTHS_LONG_MAP];
+	}
+
 	const weekdaysShort = Array.from({length: 12}, (_, i) => {
 		const date = new Date(2025, i);
 

@@ -65,4 +65,36 @@ export class DocumentLibraryEditDocumentTypesPage {
 		await fillAndClickOutside(this.page, this.titleSelector, title);
 		await this.saveButton.click();
 	}
+
+	async createNewDLTypeWithTextField(
+		title: string,
+		isRequired: boolean,
+		siteUrl?: Site['friendlyUrlPath']
+	) {
+		await this.goto(siteUrl);
+		await this.addField('Text', siteUrl);
+		await this.page.getByRole('tab', {name: 'Basic'}).click();
+		await fillAndClickOutside(this.page, this.titleSelector, title);
+		if (isRequired) {
+			await this.page.getByLabel('Required Field').check();
+		}
+		await this.saveButton.click();
+		await this.documentLibraryPage.waitForSuccessAlert();
+	}
+
+	async updateDLTypeTextField(
+		title: string,
+		isRequired: boolean,
+		siteUrl?: Site['friendlyUrlPath']
+	) {
+		await this.goto(siteUrl);
+		await this.documentLibraryPage.changeTab('Document Types');
+		await this.page.locator('a', {hasText: title}).click();
+		await this.page.locator('.ddm-drag').first().click();
+		await this.page.getByRole('tab', {name: 'Basic'}).click();
+		if (isRequired) {
+			await this.page.getByLabel('Required Field').check();
+		}
+		await this.saveButton.click();
+	}
 }

@@ -52,7 +52,7 @@ export class CompanyExportImportPage {
 	}
 
 	async export(
-		itemLabel: string,
+		itemLabel: string[],
 		includePermissions: boolean = false,
 		dateOptions?: DateOptions,
 		taskName?: string
@@ -61,7 +61,9 @@ export class CompanyExportImportPage {
 
 		await this.page.getByTestId('creationMenuNewButton').nth(1).click();
 
-		await this.page.getByLabel(itemLabel, {exact: true}).click();
+		for (const label of itemLabel) {
+			await this.page.getByLabel(label, {exact: true}).click();
+		}
 
 		taskName
 			? await this.exportImportPage.title.fill(taskName)

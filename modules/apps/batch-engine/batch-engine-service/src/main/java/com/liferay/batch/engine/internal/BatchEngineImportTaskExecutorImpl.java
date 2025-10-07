@@ -33,13 +33,13 @@ import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskErrorLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.batch.engine.strategy.BatchEngineImportStrategy;
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -128,6 +128,8 @@ public class BatchEngineImportTaskExecutorImpl
 		}
 
 		try (SafeCloseable safeCloseable2 = SearchContext.openBatchMode()) {
+			BatchEngineThreadLocal.setBatchImportInProcess(true);
+
 			batchEngineImportTask.setExecuteStatus(
 				BatchEngineTaskExecuteStatus.STARTED.toString());
 			batchEngineImportTask.setStartTime(new Date());
@@ -166,6 +168,8 @@ public class BatchEngineImportTaskExecutorImpl
 				throwable);
 		}
 		finally {
+			BatchEngineThreadLocal.setBatchImportInProcess(false);
+
 			file.delete();
 
 			// LPS-167011 Because of call to _updateBatchEngineImportTask when
@@ -340,9 +344,7 @@ public class BatchEngineImportTaskExecutorImpl
 		try (InputStream inputStream = new FileInputStream(file);
 			BatchEngineImportTaskItemReader batchEngineImportTaskItemReader =
 				_getBatchEngineImportTaskItemReader(
-					batchEngineImportTask, inputStream, parameters);
-			SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+					batchEngineImportTask, inputStream, parameters)) {
 
 			BatchEngineTaskItemDelegateExecutor
 				batchEngineTaskItemDelegateExecutor =

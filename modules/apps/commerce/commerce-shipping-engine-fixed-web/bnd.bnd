@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Shipping Engine Fixed Web
 Bundle-SymbolicName: com.liferay.commerce.shipping.engine.fixed.web
-Bundle-Version: 4.0.63
+Bundle-Version: 4.0.64
 Web-ContextPath: /commerce-shipping-engine-fixed-web
 -dsannotations-options: inherit

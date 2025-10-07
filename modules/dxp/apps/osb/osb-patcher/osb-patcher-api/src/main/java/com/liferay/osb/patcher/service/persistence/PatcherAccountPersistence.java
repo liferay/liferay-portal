@@ -33,6 +33,213 @@ public interface PatcherAccountPersistence
 	 */
 
 	/**
+	 * Returns all the patcher accounts where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the matching patcher accounts
+	 */
+	public java.util.List<PatcherAccount> findByCompanyId(long companyId);
+
+	/**
+	 * Returns a range of all the patcher accounts where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @return the range of matching patcher accounts
+	 */
+	public java.util.List<PatcherAccount> findByCompanyId(
+		long companyId, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the patcher accounts where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher accounts
+	 */
+	public java.util.List<PatcherAccount> findByCompanyId(
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+			orderByComparator);
+
+	/**
+	 * Returns an ordered range of all the patcher accounts where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching patcher accounts
+	 */
+	public java.util.List<PatcherAccount> findByCompanyId(
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+			orderByComparator,
+		boolean useFinderCache);
+
+	/**
+	 * Returns the first patcher account in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher account
+	 * @throws NoSuchPatcherAccountException if a matching patcher account could not be found
+	 */
+	public PatcherAccount findByCompanyId_First(
+			long companyId,
+			com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+				orderByComparator)
+		throws NoSuchPatcherAccountException;
+
+	/**
+	 * Returns the first patcher account in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	public PatcherAccount fetchByCompanyId_First(
+		long companyId,
+		com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+			orderByComparator);
+
+	/**
+	 * Returns the last patcher account in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher account
+	 * @throws NoSuchPatcherAccountException if a matching patcher account could not be found
+	 */
+	public PatcherAccount findByCompanyId_Last(
+			long companyId,
+			com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+				orderByComparator)
+		throws NoSuchPatcherAccountException;
+
+	/**
+	 * Returns the last patcher account in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the last matching patcher account, or <code>null</code> if a matching patcher account could not be found
+	 */
+	public PatcherAccount fetchByCompanyId_Last(
+		long companyId,
+		com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+			orderByComparator);
+
+	/**
+	 * Returns the patcher accounts before and after the current patcher account in the ordered set where companyId = &#63;.
+	 *
+	 * @param patcherAccountId the primary key of the current patcher account
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher account
+	 * @throws NoSuchPatcherAccountException if a patcher account with the primary key could not be found
+	 */
+	public PatcherAccount[] findByCompanyId_PrevAndNext(
+			long patcherAccountId, long companyId,
+			com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+				orderByComparator)
+		throws NoSuchPatcherAccountException;
+
+	/**
+	 * Returns all the patcher accounts that the user has permission to view where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the matching patcher accounts that the user has permission to view
+	 */
+	public java.util.List<PatcherAccount> filterFindByCompanyId(long companyId);
+
+	/**
+	 * Returns a range of all the patcher accounts that the user has permission to view where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @return the range of matching patcher accounts that the user has permission to view
+	 */
+	public java.util.List<PatcherAccount> filterFindByCompanyId(
+		long companyId, int start, int end);
+
+	/**
+	 * Returns an ordered range of all the patcher accounts that the user has permissions to view where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PatcherAccountModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of patcher accounts
+	 * @param end the upper bound of the range of patcher accounts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching patcher accounts that the user has permission to view
+	 */
+	public java.util.List<PatcherAccount> filterFindByCompanyId(
+		long companyId, int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+			orderByComparator);
+
+	/**
+	 * Returns the patcher accounts before and after the current patcher account in the ordered set of patcher accounts that the user has permission to view where companyId = &#63;.
+	 *
+	 * @param patcherAccountId the primary key of the current patcher account
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the previous, current, and next patcher account
+	 * @throws NoSuchPatcherAccountException if a patcher account with the primary key could not be found
+	 */
+	public PatcherAccount[] filterFindByCompanyId_PrevAndNext(
+			long patcherAccountId, long companyId,
+			com.liferay.portal.kernel.util.OrderByComparator<PatcherAccount>
+				orderByComparator)
+		throws NoSuchPatcherAccountException;
+
+	/**
+	 * Removes all the patcher accounts where companyId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 */
+	public void removeByCompanyId(long companyId);
+
+	/**
+	 * Returns the number of patcher accounts where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the number of matching patcher accounts
+	 */
+	public int countByCompanyId(long companyId);
+
+	/**
+	 * Returns the number of patcher accounts that the user has permission to view where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the number of matching patcher accounts that the user has permission to view
+	 */
+	public int filterCountByCompanyId(long companyId);
+
+	/**
 	 * Returns the patcher account where accountEntryCode = &#63; or throws a <code>NoSuchPatcherAccountException</code> if it could not be found.
 	 *
 	 * @param accountEntryCode the account entry code

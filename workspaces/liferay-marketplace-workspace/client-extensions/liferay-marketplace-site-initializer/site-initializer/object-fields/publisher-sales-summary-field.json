@@ -1,0 +1,29 @@
+{
+	"object-fields": [
+		{
+			"DBType": "String",
+			"businessType": "Picklist",
+			"externalReferenceCode": "PAYMENT-STATUS",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "en_US",
+			"label": {
+				"en_US": "Payment Status"
+			},
+			"listTypeDefinitionExternalReferenceCode": "PAYMENT-STATUS",
+			"localized": false,
+			"name": "paymentStatus",
+			"objectFieldSettings": [
+				{
+					"name": "defaultValueType",
+					"value": "inputAsValue"
+				}
+			],
+			"required": true,
+			"state": false,
+			"type": "String",
+			"unique": false
+		}
+	],
+	"objectDefinitionId": "[$OBJECT_DEFINITION_ID:PublisherSalesSummary$]"
+}

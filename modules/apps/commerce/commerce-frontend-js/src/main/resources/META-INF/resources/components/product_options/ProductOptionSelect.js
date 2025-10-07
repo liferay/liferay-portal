@@ -19,11 +19,11 @@ import {
 } from '../../utilities/eventsDefinitions';
 import Asterisk from './Asterisk';
 import {
+	INITIAL_SKU_OPTIONS_ATOM_STATE,
 	getInitialProductOptionValue,
 	getName,
 	getProductOptionName,
 	getSkuOptionsErrors,
-	initialSkuOptionsAtomState,
 	isRequired,
 } from './utils';
 
@@ -129,7 +129,6 @@ const ProductOptionSelect = ({
 							price: initialProductOptionValue?.price,
 							priceType: initialProductOptionValue?.priceType,
 							quantity: initialProductOptionValue?.quantity,
-							required: productOption.required,
 							skuId: initialProductOptionValue?.skuId,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
@@ -149,7 +148,7 @@ const ProductOptionSelect = ({
 						miniCartErrors: [],
 						miniCartSkuOptions: [],
 					})
-				: setSkuOptionsAtomState(initialSkuOptionsAtomState);
+				: setSkuOptionsAtomState(INITIAL_SKU_OPTIONS_ATOM_STATE);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -247,7 +246,6 @@ const ProductOptionSelect = ({
 							price: currentProductOptionValue.price,
 							priceType: currentProductOptionValue.priceType,
 							quantity: currentProductOptionValue.quantity,
-							required: productOption.required,
 							skuId: currentProductOptionValue.skuId,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
@@ -270,7 +268,6 @@ const ProductOptionSelect = ({
 						price: currentProductOptionValue.price,
 						priceType: currentProductOptionValue.priceType,
 						quantity: currentProductOptionValue.quantity,
-						required: productOption.required,
 						skuId: currentProductOptionValue.skuId,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,

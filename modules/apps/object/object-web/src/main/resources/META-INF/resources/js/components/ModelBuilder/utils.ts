@@ -10,13 +10,10 @@ export function checkPostalAddressUnsupportedObjectRelationship(
 	sourceNode: Node<ObjectDefinitionNodeData>,
 	targetNode: Node<ObjectDefinitionNodeData>
 ) {
-	const {name: sourceName} = sourceNode.data || {};
-	const {
-		externalReferenceCode: targetExternalReferenceCode,
-		name: targetName,
-	} = targetNode.data || {};
+	const isTargetNodePostalAddress =
+		targetNode.data?.dbTableName === 'Address';
 
-	if (targetName === 'Address') {
+	if (isTargetNodePostalAddress) {
 		return true;
 	}
 
@@ -30,13 +27,16 @@ export function checkPostalAddressUnsupportedObjectRelationship(
 			(objectRelationship) => {
 				return (
 					objectRelationship.objectDefinitionExternalReferenceCode2 ===
-						targetExternalReferenceCode &&
+						targetNode.data?.externalReferenceCode &&
 					objectRelationship.type === 'oneToMany'
 				);
 			}
 		);
 
-	return sourceName === 'Address' && !targetHasAccountRelationship;
+	const isSourceNodePostalAddress =
+		sourceNode.data?.dbTableName === 'Address';
+
+	return isSourceNodePostalAddress && !targetHasAccountRelationship;
 }
 
 // this helper function returns the intersection point

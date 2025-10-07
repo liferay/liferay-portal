@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderRequest;
-import jakarta.portlet.RenderResponse;
 
 import java.util.Locale;
 import java.util.Map;
@@ -39,17 +38,17 @@ public class CookiesBannerDisplayContext
 		CookiesConfigurationProvider cookiesConfigurationProvider,
 		LayoutUtilityPageEntryLayoutProvider
 			layoutUtilityPageEntryLayoutProvider,
-		RenderRequest renderRequest, RenderResponse renderResponse) {
+		RenderRequest renderRequest) {
 
 		super(
-			cookiesConfigurationProvider, layoutUtilityPageEntryLayoutProvider,
-			renderRequest, renderResponse);
+			cookiesConfigurationProvider,
+			PortalUtil.getHttpServletRequest(renderRequest),
+			layoutUtilityPageEntryLayoutProvider);
 	}
 
 	public Object getConfigurationURL() {
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				PortalUtil.getLiferayPortletRequest(renderRequest));
+			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
 
 		return PortletURLBuilder.create(
 			requestBackedPortletURLFactory.createRenderURL(
@@ -105,8 +104,9 @@ public class CookiesBannerDisplayContext
 			return privacyPolicyLink;
 		}
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		Layout layout =
 			layoutUtilityPageEntryLayoutProvider.

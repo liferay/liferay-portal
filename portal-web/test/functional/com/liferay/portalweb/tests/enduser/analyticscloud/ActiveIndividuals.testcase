@@ -212,53 +212,6 @@ definition {
 		}
 	}
 
-	@description = "Assert an Individual's Segments"
-	@priority = 5
-	test CanAssertIndividualSegment {
-		ACDXPSettings.connectDXPtoAnalyticsCloud(siteName = "Site Name");
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		ACDXPSettings.syncNewContactData();
-
-		ACUtils.navigateToSitePageWithUser(
-			actionType = "View WC",
-			documentTitleList = "1,2,3,4",
-			emailList = "userea@liferay.com",
-			pageName = "AC Page",
-			siteName = "Site Name");
-
-		ACUtils.closeAllSessionsAndWait();
-
-		ACUtils.launchAC();
-
-		ACProperties.switchProperty(propertyName = ${assignedPropertyName});
-
-		ACNavigation.goToSegments();
-
-		ACSegments.createStaticSegment();
-
-		ACUtils.setItemName(itemName = "Static Segment Test");
-
-		ACSegments.addStaticMember(tableMember = "userfn userln");
-
-		ACSegments.saveSegment();
-
-		ACNavigation.goToIndividuals();
-
-		ACNavigation.switchTab(tabName = "Known Individuals");
-
-		ACIndividualsDashboard.goToKnownIndividualDetails(individualName = "userfn userln");
-
-		ACNavigation.switchTab(tabName = "Segments");
-
-		ACIndividualsDashboard.assertIndividualAttribute(individualAttribute = "Static Segment Test");
-	}
-
 	@description = "Assert Individual Activities Custom Range (when changing to an valida data time period)"
 	@ignore = "true"
 	@priority = 5

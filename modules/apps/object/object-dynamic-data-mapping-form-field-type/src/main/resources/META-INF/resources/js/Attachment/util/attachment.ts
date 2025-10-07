@@ -36,7 +36,7 @@ export function validateFileSize(
 	maxFileSize: number,
 	overallMaximumUploadRequestSize: number
 ) {
-	if (maxFileSize === 0 && fileSize > overallMaximumUploadRequestSize) {
+	if (fileSize > overallMaximumUploadRequestSize) {
 		return {
 			displayErrors: true,
 			errorMessage: sub(
@@ -49,17 +49,14 @@ export function validateFileSize(
 		};
 	}
 
-	if (
-		maxFileSize > 0 &&
-		fileSize > maxFileSize * overallMaximumUploadRequestSize
-	) {
+	if (fileSize > maxFileSize) {
 		return {
 			displayErrors: true,
 			errorMessage: sub(
 				Liferay.Language.get(
 					'please-enter-a-file-with-a-valid-file-size-no-larger-than-x'
 				),
-				`${maxFileSize} MB`
+				`${maxFileSize / 1048576} MB`
 			),
 			valid: false,
 		};

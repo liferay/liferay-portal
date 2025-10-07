@@ -1,3 +1,5 @@
+create index IX_847AC537 on SamlIbSloMessage (samlIdpSessionIndex[$COLUMN_LENGTH:200$]);
+
 create index IX_87463CFB on SamlIdpSpConnection (companyId, samlSpEntityId[$COLUMN_LENGTH:1024$]);
 
 create index IX_545F7B35 on SamlIdpSpSession (createDate);
@@ -5,6 +7,7 @@ create index IX_8EDF9D43 on SamlIdpSpSession (samlIdpSsoSessionId);
 
 create index IX_E5D1CDD3 on SamlIdpSsoSession (createDate);
 create index IX_5E8BFDF9 on SamlIdpSsoSession (samlIdpSsoSessionKey[$COLUMN_LENGTH:75$]);
+create index IX_933DA9CF on SamlIdpSsoSession (userId);
 
 create index IX_A082E91 on SamlPeerBinding (companyId, deleted, samlNameIdValue[$COLUMN_LENGTH:1024$]);
 create index IX_D9FD7C38 on SamlPeerBinding (companyId, deleted, userId, samlPeerEntityId[$COLUMN_LENGTH:1024$]);

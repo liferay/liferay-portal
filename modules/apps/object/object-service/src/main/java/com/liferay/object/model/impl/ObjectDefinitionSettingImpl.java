@@ -17,9 +17,19 @@ public class ObjectDefinitionSettingImpl
 
 	@Override
 	public boolean isReadOnly() {
-		return Objects.equals(
-			getName(),
-			ObjectDefinitionSettingConstants.NAME_ROOT_OBJECT_DEFINITION_IDS);
+		if (Objects.equals(
+				getName(),
+				ObjectDefinitionSettingConstants.
+					NAME_ROOT_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODES) ||
+			Objects.equals(
+				getName(),
+				ObjectDefinitionSettingConstants.
+					NAME_ROOT_OBJECT_DEFINITION_IDS)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 }

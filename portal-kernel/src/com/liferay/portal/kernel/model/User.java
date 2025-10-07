@@ -364,6 +364,8 @@ public interface User extends PersistedModel, UserModel {
 
 	public boolean isGuestUser();
 
+	public boolean isLayoutsUpdated();
+
 	public boolean isMale()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
@@ -388,6 +390,8 @@ public interface User extends PersistedModel, UserModel {
 	public void setGroupId(long groupId);
 
 	public void setGroupIds(long[] groupIds);
+
+	public void setLayoutsUpdated(boolean layoutsUpdated);
 
 	public void setOrganizationIds(long[] organizationIds);
 

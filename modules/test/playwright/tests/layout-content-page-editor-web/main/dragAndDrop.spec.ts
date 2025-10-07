@@ -351,7 +351,7 @@ test(
 
 		const secondInputId = getRandomString();
 
-		const secondInputDefintion = getFragmentDefinition({
+		const secondInputDefinition = getFragmentDefinition({
 			id: secondInputId,
 			key: 'INPUTS-text-input',
 		});
@@ -360,7 +360,7 @@ test(
 			id: getRandomString(),
 			objectDefinitionClassName,
 			pageElements: [stepperFragment],
-			steps: [[firstInputDefinition, secondInputDefintion], []],
+			steps: [[firstInputDefinition, secondInputDefinition], []],
 		});
 
 		// Create page and go to edit mode

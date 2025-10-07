@@ -1,6 +1,6 @@
 assemble:
     -   fromTask: bootJar
-liferay-ticket-etc-spring-boot-oauth-application-user-agent:
+liferay-ticket-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Ticket Etc Spring Boot OAuth Application User Agent
@@ -9,6 +9,6 @@ liferay-ticket-etc-spring-boot-oauth-application-user-agent:
     type: oAuthApplicationUserAgent
 liferay-ticket-etc-spring-boot-object-action-ticket:
     name: Liferay Ticket Etc Spring Boot Object Action Ticket
-    oAuth2ApplicationExternalReferenceCode: liferay-ticket-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-ticket-etc-spring-boot-oaua
     resourcePath: /object/action/ticket
     type: objectAction

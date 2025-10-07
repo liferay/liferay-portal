@@ -7,13 +7,84 @@
 	src: url('/documents/d/marketplace/sourcesans3-regular-ttf');
 }
 
+/* ---------- Marketplace app tags ---------- */
+.app-type-badge {
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	height: 20px;
+	line-height: 20px;
+	padding: 0 8px;
+	position: absolute;
+	right: 32px;
+	top: -6px;
+}
+
+.app-type-badge.batch {
+	--badge-color: #ffb46e;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.checkout {
+	--badge-color: #9be169;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.fragments {
+	--badge-color: #ff5f5f;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.object-action {
+	--badge-color: #5fc8ff;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.payment-methods {
+	--badge-color: #4b9bff;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.site-initializer {
+	--badge-color: #50d2a0;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.theme {
+	--badge-color: #af78ff;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+}
+
+.app-type-badge.workflow-action {
+	--badge-color: #7785ff;
+	background-color: color-mix(in srgb, var(--badge-color) 70%, white 60%);
+	color: color-mix(in srgb, var(--badge-color) 70%, black 50%);
+	src: url(/documents/d/marketplace/sourcesans3-regular-ttf);
+}
+
+.card.main-image {
+	border-radius: 10px !important;
+}
+
 .child-menu.dropdown-menu {
 	border-radius: 8px !important;
 	padding: 0px !important;
 }
 
-.card.main-image {
-	border-radius: 10px !important;
+.lfr-cookie-banner-text {
+	font-size: 13px;
+	margin-bottom: 6px;
 }
 
 .lfr-layout-structure-item-com-liferay-portal-search-web-category-facet-portlet-categoryfacetportlet,
@@ -28,7 +99,7 @@
 }
 
 .lfr-nav-item.nav-item .nav-link {
-	border-bottom: transparent solid 3px !important;
+	padding: 14px 18px;
 }
 
 .lfr-nav-item.nav-item:hover {
@@ -36,7 +107,8 @@
 	font-weight: none !important;
 }
 
-.lfr-nav-item.nav-item.dropdown:has(.child-menu.dropdown-menu .active.selected) .nav-link {
+.lfr-nav-item.nav-item.dropdown:has(.child-menu.dropdown-menu .active.selected)
+	.nav-link {
 	border-bottom: #004AD7 solid 3px !important;
 	color: #0053F0 !important;
 	font-weight: 600;

@@ -370,7 +370,7 @@ public class SubscriptionSender implements Serializable {
 				_mailIdIds, PortalUUIDUtil.generate());
 		}
 
-		mailId = PortalUtil.getMailId(
+		mailId = MailServiceUtil.getMailId(
 			company.getMx(), _mailIdPopPortletPrefix, _mailIdIds);
 	}
 

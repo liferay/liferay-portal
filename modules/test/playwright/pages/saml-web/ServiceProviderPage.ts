@@ -42,7 +42,9 @@ export class ServiceProviderPage {
 
 	async goTo(forceReload = false) {
 		await this.applicationsMenuPage.goToSamlAdmin(forceReload);
-		await this.page.getByRole('tab', {name: 'Service Provider'}).click();
+		await this.page
+			.getByRole('tab', {exact: true, name: 'Service Provider'})
+			.click();
 
 		await this.signMetadata.waitFor();
 	}

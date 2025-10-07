@@ -30,8 +30,6 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
@@ -224,8 +222,6 @@ public class UIItemsBuilderTest {
 	}
 
 	private static void _setUpGroupPermissionUtil() {
-		PropsUtil.setProps(Mockito.mock(Props.class));
-
 		_groupPermissionUtilMockedStatic = Mockito.mockStatic(
 			GroupPermissionUtil.class);
 	}

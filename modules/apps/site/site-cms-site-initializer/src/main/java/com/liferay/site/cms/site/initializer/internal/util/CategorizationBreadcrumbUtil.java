@@ -91,7 +91,7 @@ public class CategorizationBreadcrumbUtil {
 						PortalUtil.getLayoutFullURL(
 							LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 								themeDisplay.getScopeGroupId(), false,
-								"/categorization/view_categories"),
+								"/categorization/view-categories"),
 							themeDisplay),
 						"vocabularyId", category.getVocabularyId(),
 						"categoryId", category.getCategoryId())
@@ -116,7 +116,7 @@ public class CategorizationBreadcrumbUtil {
 				() -> PortalUtil.getLayoutFullURL(
 					LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 						themeDisplay.getScopeGroupId(), false,
-						"/categorization/view_vocabularies"),
+						"/categorization/view-vocabularies"),
 					themeDisplay)
 			).put(
 				"label",
@@ -141,7 +141,7 @@ public class CategorizationBreadcrumbUtil {
 						PortalUtil.getLayoutFullURL(
 							LayoutLocalServiceUtil.getLayoutByFriendlyURL(
 								themeDisplay.getScopeGroupId(), false,
-								"/categorization/view_categories"),
+								"/categorization/view-categories"),
 							themeDisplay),
 						"vocabularyId", assetVocabularyId);
 				}

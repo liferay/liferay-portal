@@ -1,0 +1,10 @@
+{
+	"name": "Security Alert",
+	"name_i18n": {
+		"en_US": "Security Alert",
+		"es-ES": "Alerta de seguridad",
+		"ja-JP": "セキュリティアラート",
+		"pt-BR": "Alerta de Segurança"
+	},
+	"viewableBy": "Anyone"
+}

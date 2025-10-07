@@ -1,5 +1,15 @@
 components:
     schemas:
+        Assignee:
+            properties:
+                externalReferenceCode:
+                    type: string
+                name:
+                    type: string
+                type:
+                    enum: [Role, User]
+                    type: string
+            type: object
         AuditEvent:
             properties:
                 auditFieldChanges:
@@ -27,6 +37,9 @@ components:
                     type: object
         FileEntry:
             properties:
+                alternativeText:
+                    readOnly: true
+                    type: string
                 externalReferenceCode:
                     type: string
                 fileBase64:
@@ -49,6 +62,18 @@ components:
                 link:
                     $ref: "#/components/schemas/Link"
                     readOnly: true
+                metadata:
+                    additionalProperties:
+                        type: object
+                    # @review
+                    description:
+                        optional field that specifies the metadata of the file, can be embedded with nestedFields (the
+                        format of the nested field must be `<attachment field name>.metadata`)
+                    readOnly: true
+                    type: object
+                mimeType:
+                    readOnly: true
+                    type: string
                 name:
                     type: string
                 previewURL:
@@ -93,6 +118,24 @@ components:
                         type: string
                     readOnly: true
                     type: object
+        ObjectDefinitionBrief:
+            properties:
+                externalReferenceCode:
+                    description:
+                        The object definition's external reference code.
+                    readOnly: true
+                    type: string
+                label:
+                    description:
+                        The object definition's label.
+                    readOnly: true
+                    type: string
+                objectFolderExternalReferenceCode:
+                    description:
+                        The object folder's external reference code.
+                    readOnly: true
+                    type: string
+            type: object
         ObjectEntry:
             properties:
                 actions:
@@ -162,6 +205,13 @@ components:
                         type: object
                     type: object
                     x-json-map: true
+                removedBy:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
+                removedDate:
+                    format: date
+                    readOnly: true
+                    type: string
                 reviewDate:
                     format: date
                     type: string
@@ -198,7 +248,7 @@ components:
                 externalReferenceCode:
                     type: string
                 type:
-                    enum: [AssetLibrary, Site]
+                    enum: [AssetLibrary, CMS, Site]
                     type: string
             type: object
         Status:
@@ -215,6 +265,8 @@ components:
             type: object
         SystemProperties:
             properties:
+                objectDefinitionBrief:
+                    $ref: "#/components/schemas/ObjectDefinitionBrief"
                 version:
                     $ref: "#/components/schemas/Version"
             type: object
@@ -332,10 +384,6 @@ paths:
                     schema:
                         type: string
                 -   in: query
-                    name: flatten
-                    schema:
-                        type: boolean
-                -   in: query
                     name: nestedFields
                     schema:
                         type: string
@@ -397,23 +445,85 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ObjectEntry"
             tags: ["ObjectEntry"]
-    "/by-external-reference-code/{currentExternalReferenceCode}/{objectRelationshipName}/{relatedExternalReferenceCode}":
-        put:
-            operationId: putByExternalReferenceCodeCurrentExternalReferenceCodeObjectRelationshipNameRelatedExternalReferenceCode
+    "/approved":
+        get:
+            operationId: getApprovedPage
+            parameters:
+                -   in: query
+                    name: aggregationTerms
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: header
+                    name: Accept-Language
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
+            tags: ["ObjectEntry"]
+    "/approved/by-external-reference-code/{externalReferenceCode}":
+        get:
+            operationId: getApprovedByExternalReferenceCode
             parameters:
                 -   in: path
-                    name: currentExternalReferenceCode
+                    name: externalReferenceCode
                     required: true
                     schema:
                         type: string
-                -   in: path
-                    name: objectRelationshipName
-                    required: true
+                -   in: query
+                    name: fields
                     schema:
                         type: string
-                -   in: path
-                    name: relatedExternalReferenceCode
-                    required: true
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
                     schema:
                         type: string
             responses:
@@ -663,6 +773,55 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["ObjectEntry"]
+    "/by-external-reference-code/{externalReferenceCode}/restore":
+        put:
+            operationId: putByExternalReferenceCodeRestore
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/by-external-reference-code/{externalReferenceCode}/subscribe":
+        post:
+            operationId: postByExternalReferenceCodeSubscribe
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntry"]
+    "/by-external-reference-code/{externalReferenceCode}/unsubscribe":
+        post:
+            operationId: postByExternalReferenceCodeUnsubscribe
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntry"]
     "/by-external-reference-code/{externalReferenceCode}/versions":
         get:
             operationId: getByExternalReferenceCodeVersionsPage
@@ -670,6 +829,10 @@ paths:
                 -   in: path
                     name: externalReferenceCode
                     required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
                     schema:
                         type: string
                 -   in: query
@@ -693,6 +856,42 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/ObjectEntry"
                                 type: array
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/approved/by-external-reference-code/{externalReferenceCode}":
+        get:
+            operationId: getScopeScopeKeyApprovedByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
             tags: ["ObjectEntry"]
     "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}":
         delete:
@@ -801,6 +1000,151 @@ paths:
                     application/xml:
                         schema:
                             $ref: "#/components/schemas/ObjectEntry"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/by-version/{version}":
+        delete:
+            operationId: deleteScopeScopeKeyByExternalReferenceCodeByVersion
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: version
+                    required: true
+                    schema:
+                        format: int32
+                        type: integer
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntry"]
+        get:
+            operationId: getScopeScopeKeyByExternalReferenceCodeByVersion
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: version
+                    required: true
+                    schema:
+                        format: int32
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/by-version/{version}/copy":
+        post:
+            operationId: postScopeScopeKeyByExternalReferenceCodeByVersionCopy
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: version
+                    required: true
+                    schema:
+                        format: int32
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/by-version/{version}/expire":
+        post:
+            operationId: postScopeScopeKeyByExternalReferenceCodeByVersionExpire
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: version
+                    required: true
+                    schema:
+                        format: int32
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/by-version/{version}/restore":
+        put:
+            operationId: putScopeScopeKeyByExternalReferenceCodeByVersionRestore
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: version
+                    required: true
+                    schema:
+                        format: int32
+                        type: integer
             responses:
                 200:
                     content:
@@ -1029,6 +1373,30 @@ paths:
                             schema:
                                 $ref: ../../headless/headless-object/headless-object-impl/rest-openapi.yaml#Collaborator
             tags: ["Collaborator"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/expire":
+        post:
+            operationId: postScopeScopeKeyByExternalReferenceCodeExpire
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
     "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/object-actions/{objectActionName}":
         put:
             operationId: putScopeScopeKeyByExternalReferenceCodeObjectActionObjectActionName
@@ -1052,6 +1420,110 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/restore":
+        put:
+            operationId: putScopeScopeKeyByExternalReferenceCodeRestore
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/subscribe":
+        post:
+            operationId: postScopeScopeKeyByExternalReferenceCodeSubscribe
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/unsubscribe":
+        post:
+            operationId: postScopeScopeKeyByExternalReferenceCodeUnsubscribe
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntry"]
+    "/scopes/{scopeKey}/by-external-reference-code/{externalReferenceCode}/versions":
+        get:
+            operationId: getScopeScopeKeyByExternalReferenceCodeVersionsPage
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
             tags: ["ObjectEntry"]
     "/scopes/{scopeKey}/validate":
         post:
@@ -1528,6 +2000,26 @@ paths:
                             schema:
                                 $ref: ../../headless/headless-object/headless-object-impl/rest-openapi.yaml#Collaborator
             tags: ["Collaborator"]
+    "/{objectEntryId}/expire":
+        post:
+            operationId: postObjectEntryExpire
+            parameters:
+                -   in: path
+                    name: objectEntryId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
     "/{objectEntryId}/object-actions/{objectActionName}":
         put:
             operationId: putObjectEntryObjectActionObjectActionName
@@ -1611,6 +2103,10 @@ paths:
                         format: int64
                         type: integer
                 -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
                     name: page
                     schema:
                         type: integer
@@ -1631,26 +2127,6 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/ObjectEntry"
                                 type: array
-            tags: ["ObjectEntry"]
-    "{objectEntryId}/expire":
-        post:
-            operationId: postObjectEntryExpire
-            parameters:
-                -   in: path
-                    name: objectEntryId
-                    required: true
-                    schema:
-                        format: int64
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ObjectEntry"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ObjectEntry"
             tags: ["ObjectEntry"]
     /scopes/{scopeKey}:
         get:
@@ -1674,10 +2150,6 @@ paths:
                     name: filter
                     schema:
                         type: string
-                -   in: query
-                    name: flatten
-                    schema:
-                        type: boolean
                 -   in: query
                     name: nestedFields
                     schema:
@@ -1744,4 +2216,68 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/ObjectEntry"
+            tags: ["ObjectEntry"]
+    /scopes/{scopeKey}/approved:
+        get:
+            operationId: getScopeScopeKeyApprovedPage
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    schema:
+                        type: string
+                -   in: query
+                    name: aggregationTerms
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: filter
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+                -   in: header
+                    name: Accept-Language
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ObjectEntry"
+                                type: array
             tags: ["ObjectEntry"]

@@ -253,24 +253,30 @@ public class Main {
 		_initFlexmark();
 
 		if (_offline) {
+			_globalSiteId = 0;
 			_liferayContentStructureId = 0;
 			_liferaySiteId = 0;
 		}
 		else {
 			_initResourceBuilders(_getOAuthAuthorization());
 
-			Site site = _siteResource.getSiteByFriendlyUrlPath(
+			Site globalSite = _siteResource.getSiteByFriendlyUrlPath("global");
+
+			_globalSiteId = globalSite.getId();
+
+			Site liferaySite = _siteResource.getSiteByFriendlyUrlPath(
 				liferaySiteFriendlyUrlPath);
 
-			_liferaySiteId = site.getId();
+			_liferaySiteId = liferaySite.getId();
 
-			System.out.println("Liferay site ID: " + site.getId());
-			System.out.println("Liferay site name: " + site.getName());
+			System.out.println("Liferay site ID: " + liferaySite.getId());
+			System.out.println("Liferay site name: " + liferaySite.getName());
 
 			DataDefinition dataDefinition =
 				_dataDefinitionResource.
 					getSiteDataDefinitionByContentTypeByDataDefinitionKey(
-						site.getId(), "journal", liferayDataDefinitionKey);
+						liferaySite.getId(), "journal",
+						liferayDataDefinitionKey);
 
 			_liferayContentStructureId = dataDefinition.getId();
 
@@ -1089,18 +1095,9 @@ public class Main {
 		List<Long> taxonomyCategoryIds = new ArrayList<>();
 
 		try {
-			TaxonomyVocabulary taxonomyVocabulary =
-				_taxonomyVocabularyResource.
-					getSiteTaxonomyVocabularyByExternalReferenceCode(
-						_liferaySiteId, "RESOURCE_TYPE");
-
-			TaxonomyCategory taxonomyCategory =
-				_taxonomyCategoryResource.
-					getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
-						taxonomyVocabulary.getId(), "OFFICIAL_DOCUMENTATION");
-
 			taxonomyCategoryIds.add(
-				GetterUtil.getLong(taxonomyCategory.getId()));
+				_taxonomyCategoriesJSONObject.getLong(
+					"OFFICIAL_DOCUMENTATION"));
 		}
 		catch (Exception exception) {
 			_error(exception.getMessage());
@@ -1391,13 +1388,30 @@ public class Main {
 		com.liferay.headless.admin.taxonomy.client.pagination.Page
 			<TaxonomyVocabulary> taxonomyVocabulariesPage =
 				_taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
-					_liferaySiteId, null, null, null,
+					_globalSiteId, null, null, null,
 					com.liferay.headless.admin.taxonomy.client.pagination.
 						Pagination.of(-1, -1),
 					null);
 
 		for (TaxonomyVocabulary taxonomyVocabulary :
 				taxonomyVocabulariesPage.getItems()) {
+
+			if (StringUtil.equals(
+					taxonomyVocabulary.getExternalReferenceCode(),
+					"RESOURCE_TYPE")) {
+
+				TaxonomyCategory taxonomyCategory =
+					_taxonomyCategoryResource.
+						getTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+							taxonomyVocabulary.getId(),
+							"OFFICIAL_DOCUMENTATION");
+
+				_taxonomyCategoriesJSONObject.put(
+					taxonomyCategory.getExternalReferenceCode(),
+					taxonomyCategory.getId());
+
+				continue;
+			}
 
 			existingTaxonomyVocabularies.put(
 				taxonomyVocabulary.getName(), taxonomyVocabulary.getId());
@@ -1438,7 +1452,7 @@ public class Main {
 
 				taxonomyVocabulary =
 					_taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
-						_liferaySiteId, taxonomyVocabulary);
+						_globalSiteId, taxonomyVocabulary);
 
 				taxonomyVocabularyId = taxonomyVocabulary.getId();
 			}
@@ -1515,6 +1529,7 @@ public class Main {
 							_isShowChildrenCards(englishFile)));
 				}
 			};
+
 		String englishTitle = _getTitle(englishText);
 
 		File japaneseFile = new File(
@@ -1717,6 +1732,7 @@ public class Main {
 	private final String _docsDirName;
 	private final List<String> _errorMessages = new ArrayList<>();
 	private final Set<String> _fileNames = new TreeSet<>();
+	private final long _globalSiteId;
 	private final String _lastestHashFileName;
 	private final long _liferayContentStructureId;
 	private final String _liferayOAuthClientId;

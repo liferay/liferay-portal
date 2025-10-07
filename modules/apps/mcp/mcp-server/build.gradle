@@ -1,0 +1,18 @@
+dependencies {
+	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
+	compileInclude group: "com.networknt", name: "json-schema-validator", version: "1.5.5"
+	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-core", version: "0.13.1"
+	compileInclude group: "io.modelcontextprotocol.sdk", name: "mcp-json-jackson2", version: "0.13.1"
+	compileInclude group: "io.projectreactor", name: "reactor-core", version: "3.6.5"
+	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.2"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
+	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:object:object-api")
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-string")
+}

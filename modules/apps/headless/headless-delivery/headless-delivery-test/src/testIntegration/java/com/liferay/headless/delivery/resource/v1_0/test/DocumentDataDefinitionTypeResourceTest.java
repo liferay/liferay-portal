@@ -142,6 +142,23 @@ public class DocumentDataDefinitionTypeResourceTest
 					new Long[] {ddmStructure1.getStructureId()}));
 	}
 
+	@Override
+	protected DocumentDataDefinitionType
+			testGraphQLSiteDocumentDataDefinitionType_addDocumentDataDefinitionType(
+				Long siteId,
+				DocumentDataDefinitionType documentDataDefinitionType)
+		throws Exception {
+
+		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
+			siteId, DLFileEntryMetadata.class.getName());
+
+		return documentDataDefinitionTypeResource.
+			postSiteDocumentDataDefinitionType(
+				siteId,
+				_createDocumentDataDefinitionType(
+					new Long[] {ddmStructure1.getStructureId()}));
+	}
+
 	private void _assertDataDefinitionField(
 		DataDefinitionField actualDataDefinitionField,
 		DataDefinitionField expectedDataDefinitionField) {

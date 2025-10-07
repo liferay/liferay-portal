@@ -23,36 +23,34 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface FragmentEntryConfigurationParser {
 
 	public JSONObject getConfigurationDefaultValuesJSONObject(
-		String configuration);
+		JSONObject configurationJSONObject);
 
 	public Object getConfigurationFieldValue(
-		String editableValues, String fieldName,
+		JSONObject editableValuesJSONObject, String fieldName,
 		FragmentConfigurationFieldDataType fragmentConfigurationFieldDataType);
 
 	public JSONObject getConfigurationJSONObject(
-			String configuration, String editableValues, Locale locale)
+			JSONObject configurationJSONObject,
+			JSONObject editableValuesJSONObject, Locale locale)
 		throws JSONException;
 
 	public Map<String, Object> getContextObjects(
-		JSONObject configurationValuesJSONObject, String configuration,
-		Object displayObject, long[] segmentsEntryIds);
+		JSONObject configurationValuesJSONObject,
+		JSONObject configurationJSONObject, Object displayObject,
+		long[] segmentsEntryIds);
 
 	public Object getFieldValue(
-		FragmentConfigurationField fragmentConfigurationField, Locale locale,
-		String value);
-
-	public Object getFieldValue(
-		String editableValues,
+		JSONObject editableValuesJSONObject,
 		FragmentConfigurationField fragmentConfigurationField, Locale locale);
 
 	public Object getFieldValue(
-		String configuration, String editableValues, Locale locale,
-		String name);
+		JSONObject configurationJSONObject, JSONObject editableValuesJSONObject,
+		Locale locale, String name);
 
 	public List<FragmentConfigurationField> getFragmentConfigurationFields(
-		String configuration);
+		JSONObject configurationJSONObject);
 
-	public String translateConfiguration(
+	public JSONObject translateConfiguration(
 		JSONObject jsonObject, ResourceBundle resourceBundle);
 
 }

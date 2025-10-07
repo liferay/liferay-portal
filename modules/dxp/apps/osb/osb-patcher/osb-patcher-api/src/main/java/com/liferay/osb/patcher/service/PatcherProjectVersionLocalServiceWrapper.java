@@ -412,12 +412,12 @@ public class PatcherProjectVersionLocalServiceWrapper
 			updatePatcherProjectVersion(
 				long patcherProjectVersionId, long patcherProductVersionId,
 				boolean combinedBranch, String committish, String fixedIssues,
-				boolean hide, String name, String repositoryName)
+				boolean hide, String repositoryName)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _patcherProjectVersionLocalService.updatePatcherProjectVersion(
 			patcherProjectVersionId, patcherProductVersionId, combinedBranch,
-			committish, fixedIssues, hide, name, repositoryName);
+			committish, fixedIssues, hide, repositoryName);
 	}
 
 	/**

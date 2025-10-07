@@ -276,17 +276,6 @@ public class AxisBuild extends BaseBuild {
 			List<Element> failureElements = getTestResultGitHubElements(
 				getUniqueFailureTestResults());
 
-			List<Element> upstreamJobFailureElements =
-				getTestResultGitHubElements(getUpstreamJobFailureTestResults());
-
-			if (!upstreamJobFailureElements.isEmpty()) {
-				upstreamJobFailureMessageElement = messageElement.createCopy();
-
-				Dom4JUtil.getOrderedListElement(
-					upstreamJobFailureElements,
-					upstreamJobFailureMessageElement, 3);
-			}
-
 			Dom4JUtil.getOrderedListElement(failureElements, messageElement, 3);
 
 			if (failureElements.isEmpty()) {

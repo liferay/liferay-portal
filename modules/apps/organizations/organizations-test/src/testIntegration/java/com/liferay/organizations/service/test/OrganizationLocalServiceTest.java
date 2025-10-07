@@ -434,12 +434,12 @@ public class OrganizationLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteOrganization() throws Exception {
+	public void testGetOrAddEmptyOrganization() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_organizationLocalService.getOrAddIncompleteOrganization(
+			_organizationLocalService.getOrAddEmptyOrganization(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), RandomTestUtil.randomString());
 
@@ -455,13 +455,13 @@ public class OrganizationLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			Organization organization =
-				_organizationLocalService.getOrAddIncompleteOrganization(
+				_organizationLocalService.getOrAddEmptyOrganization(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, organization.getStatus());
+				WorkflowConstants.STATUS_EMPTY, organization.getStatus());
 		}
 	}
 
@@ -1065,13 +1065,13 @@ public class OrganizationLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			Organization organization =
-				_organizationLocalService.getOrAddIncompleteOrganization(
+				_organizationLocalService.getOrAddEmptyOrganization(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					RandomTestUtil.randomString());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, organization.getStatus());
+				WorkflowConstants.STATUS_EMPTY, organization.getStatus());
 
 			organization = _organizationLocalService.updateOrganization(
 				organization.getExternalReferenceCode(),

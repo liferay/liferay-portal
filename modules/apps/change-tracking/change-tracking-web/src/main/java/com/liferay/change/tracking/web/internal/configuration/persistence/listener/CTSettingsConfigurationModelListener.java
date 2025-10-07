@@ -42,9 +42,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,14 +94,14 @@ public class CTSettingsConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPS-186360")) {
-			properties.put("remoteEnabled", false);
-		}
-
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
 			long companyId = GetterUtil.getLong(properties.get("companyId"));
+
+			if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPS-186360")) {
+				properties.put("remoteEnabled", false);
+			}
 
 			boolean enabled = GetterUtil.getBoolean(properties.get("enabled"));
 

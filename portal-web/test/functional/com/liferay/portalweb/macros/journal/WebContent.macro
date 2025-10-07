@@ -2159,23 +2159,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewAvailableLanguages(availableLanguageList = null, unavailableLanguageList = null) {
-		Click(locator1 = "Button#LOCALIZATION_TRANSLATED");
-
-		for (var availableLanguage : list ${availableLanguageList}) {
-			AssertElementPresent(
-				key_locale = ${availableLanguage},
-				locator1 = "Translation#LOCALIZATION_NAME");
-		}
-
-		for (var unavailableLanguage : list ${unavailableLanguageList}) {
-			AssertElementNotPresent(
-				key_locale = ${unavailableLanguage},
-				locator1 = "Translation#LOCALIZATION_NAME");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewCategorizationCategoriesOrderCP(vocabularyName = null, categoryNameList = null) {
 		Panel.expandPanel(panel = "Categorization");
 

@@ -38,15 +38,13 @@ const SideMenu = () => {
 		);
 	const loggedUserAccount = myUserAccountData?.myUserAccount;
 
-	const productActivationMenuRef = useRef();
+	const activationMenuRef = useRef();
 
 	const activationSubscriptionGroups = useMemo(
 		() =>
 			subscriptionGroups?.filter((subscriptionGroup) => {
 				return (
-					subscriptionGroup.hasActivation &&
-					subscriptionGroup.name !== MENU_TYPES.liferayPaaS &&
-					subscriptionGroup.name !== MENU_TYPES.liferaySaaS
+					subscriptionGroup.hasActivation
 				);
 			}),
 		[subscriptionGroups]
@@ -72,8 +70,8 @@ const SideMenu = () => {
 			? activationSubscriptionGroups?.length * 48
 			: 0;
 
-		if (productActivationMenuRef?.current) {
-			productActivationMenuRef.current.style.maxHeight = `${expandedHeightProducts}px`;
+		if (activationMenuRef?.current) {
+			activationMenuRef.current.style.maxHeight = `${expandedHeightProducts}px`;
 		}
 	}, [
 		activationSubscriptionGroups?.length,
@@ -81,21 +79,33 @@ const SideMenu = () => {
 		isOpenedProductsMenu,
 	]);
 
-	const hasProductSubscription = useMemo(
-		() => (productType) =>
-			subscriptionGroups?.some(({name}) => name === productType),
-		[subscriptionGroups]
-	);
-
 	const accountSubscriptionGroupsMenuItem = useMemo(
 		() =>
-			activationSubscriptionGroups?.map(
+			activationSubscriptionGroups?.sort(
+				(a, b) => {
+					const aDisplayName = a.activationProductName
+						? a.activationProductName
+						: a.name;
+
+					const bDisplayName = b.activationProductName
+						? b.activationProductName
+						: b.name;
+
+					return aDisplayName.localeCompare(bDisplayName);
+				}
+			).map(
 				({activationProductName, name}, index) => {
 					const displayName = activationProductName
 						? activationProductName
 						: name;
 
 					const redirectPage = getKebabCase(displayName);
+
+					const iconKey = name === PRODUCT_TYPES.dxpCloud
+						? 'lxc'
+						: name === PRODUCT_TYPES.liferayExperienceCloud
+							? 'experienceCloud'
+							: redirectPage.split('-')[0];
 
 					const menuUpdateStatus = (isActive) =>
 						setMenuItemActiveStatus(
@@ -115,7 +125,7 @@ const SideMenu = () => {
 
 					return (
 						<MenuItem
-							iconKey={redirectPage.split('-')[0]}
+							iconKey={iconKey}
 							key={`${displayName}-${index}`}
 							setActive={menuUpdateStatus}
 							to={`${ACTIVATION_PATH}/${redirectPage}`}
@@ -141,33 +151,6 @@ const SideMenu = () => {
 					</MenuItem>
 				</div>
 
-				{featureFlags.includes('LPS-153478') &&
-					hasProductSubscription(
-						PRODUCT_TYPES.liferayExperienceCloud
-					) && (
-						<div className="d-flex">
-							<MenuItem
-								iconKey="experienceCloud"
-								to={getKebabCase(
-									PRODUCT_TYPES.liferayExperienceCloud
-								)}
-							>
-								{MENU_TYPES.liferaySaaS}
-							</MenuItem>
-						</div>
-					)}
-
-				{hasProductSubscription(PRODUCT_TYPES.dxpCloud) && (
-					<div className="d-flex">
-						<MenuItem
-							iconKey="lxc"
-							to={getKebabCase(PRODUCT_TYPES.dxpCloud)}
-						>
-							{MENU_TYPES.liferayPaaS}
-						</MenuItem>
-					</div>
-				)}
-
 				{accountSubscriptionGroupsMenuItem.length > 0 && (
 					<li>
 						<div className="d-flex">
@@ -180,7 +163,7 @@ const SideMenu = () => {
 								className={classNames(
 									'align-items-center btn-borderless d-flex px-2 py-2 rounded w-100',
 									{
-										'cp-product-activation-active':
+										'cp-activation-active':
 											isOpenedProductsMenu,
 										'text-neutral-4':
 											activationSubscriptionGroups.length <
@@ -192,7 +175,7 @@ const SideMenu = () => {
 								disabled={
 									activationSubscriptionGroups.length < 1
 								}
-								iconKey="productActivation"
+								iconKey="activation"
 								onClick={() =>
 									setIsOpenedProductsMenu(
 										(previousIsOpenedProductsMenu) =>
@@ -201,7 +184,7 @@ const SideMenu = () => {
 								}
 							>
 								{i18n.translate(
-									getKebabCase(MENU_TYPES.productActivation)
+									getKebabCase(MENU_TYPES.activation)
 								)}
 							</Button>
 						</div>
@@ -214,7 +197,7 @@ const SideMenu = () => {
 										isOpenedProductsMenu,
 								}
 							)}
-							ref={productActivationMenuRef}
+							ref={activationMenuRef}
 						>
 							{accountSubscriptionGroupsMenuItem}
 						</ul>

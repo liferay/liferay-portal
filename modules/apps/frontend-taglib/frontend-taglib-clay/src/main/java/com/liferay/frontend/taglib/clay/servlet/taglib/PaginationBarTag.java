@@ -221,17 +221,8 @@ public class PaginationBarTag extends BaseContainerTag {
 		}
 
 		jspWriter.write("<div class=\"pagination-results\">");
-		jspWriter.write(LanguageUtil.get(resourceBundle, "showing"));
-		jspWriter.write(StringPool.SPACE);
 
 		Integer from = ((_activePage - 1) * _activeDelta) + 1;
-
-		jspWriter.write(from.toString());
-
-		jspWriter.write(StringPool.SPACE);
-		jspWriter.write(
-			StringUtil.toLowerCase(LanguageUtil.get(resourceBundle, "to")));
-		jspWriter.write(StringPool.SPACE);
 
 		Integer to = _activePage * _activeDelta;
 
@@ -239,14 +230,14 @@ public class PaginationBarTag extends BaseContainerTag {
 			to = _totalItems;
 		}
 
-		jspWriter.write(to.toString());
-
-		jspWriter.write(StringPool.SPACE);
 		jspWriter.write(
-			StringUtil.toLowerCase(LanguageUtil.get(resourceBundle, "of")));
-		jspWriter.write(StringPool.SPACE);
-		jspWriter.write(_totalItems.toString());
-		jspWriter.write(StringPool.SPACE);
+			LanguageUtil.format(
+				PortalUtil.getLocale(getRequest()),
+				"showing-x-to-x-of-x-entries",
+				new String[] {
+					from.toString(), to.toString(), _totalItems.toString()
+				}));
+
 		jspWriter.write("</div><ul class=\"pagination pagination-root\">");
 		jspWriter.write("<li class=\"");
 

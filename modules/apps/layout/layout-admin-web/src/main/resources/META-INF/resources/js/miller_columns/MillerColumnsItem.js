@@ -34,6 +34,7 @@ const ITEM_HOVER_TIMEOUT = 500;
 const ITEM_STATES_COLORS = {
 	'conversion-draft': 'info',
 	'draft': 'secondary',
+	'empty': 'warning',
 	'pending': 'info',
 };
 

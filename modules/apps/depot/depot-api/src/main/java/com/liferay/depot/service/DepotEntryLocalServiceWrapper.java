@@ -58,12 +58,12 @@ public class DepotEntryLocalServiceWrapper
 	@Override
 	public DepotEntry addDepotEntry(
 			java.util.Map<java.util.Locale, String> nameMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
+			java.util.Map<java.util.Locale, String> descriptionMap, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _depotEntryLocalService.addDepotEntry(
-			nameMap, descriptionMap, serviceContext);
+			nameMap, descriptionMap, type, serviceContext);
 	}
 
 	/**
@@ -285,6 +285,13 @@ public class DepotEntryLocalServiceWrapper
 		return _depotEntryLocalService.getDepotEntries(start, end);
 	}
 
+	@Override
+	public java.util.List<DepotEntry> getDepotEntries(
+		long companyId, int type) {
+
+		return _depotEntryLocalService.getDepotEntries(companyId, type);
+	}
+
 	/**
 	 * Returns all the depot entries matching the UUID and company.
 	 *
@@ -330,6 +337,11 @@ public class DepotEntryLocalServiceWrapper
 		return _depotEntryLocalService.getDepotEntriesCount();
 	}
 
+	@Override
+	public int getDepotEntriesCount(long companyId, int type) {
+		return _depotEntryLocalService.getDepotEntriesCount(companyId, type);
+	}
+
 	/**
 	 * Returns the depot entry with the primary key.
 	 *
@@ -358,6 +370,13 @@ public class DepotEntryLocalServiceWrapper
 
 		return _depotEntryLocalService.getDepotEntryByUuidAndGroupId(
 			uuid, groupId);
+	}
+
+	@Override
+	public java.util.List<Long> getDepotEntryGroupIds(
+		long companyId, int type) {
+
+		return _depotEntryLocalService.getDepotEntryGroupIds(companyId, type);
 	}
 
 	/**
@@ -393,17 +412,17 @@ public class DepotEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<DepotEntry> getGroupConnectedDepotEntries(
-			long groupId, int start, int end)
+			long groupId, int type, int start, int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _depotEntryLocalService.getGroupConnectedDepotEntries(
-			groupId, start, end);
+			groupId, type, start, end);
 	}
 
 	@Override
-	public int getGroupConnectedDepotEntriesCount(long groupId) {
+	public int getGroupConnectedDepotEntriesCount(long groupId, int type) {
 		return _depotEntryLocalService.getGroupConnectedDepotEntriesCount(
-			groupId);
+			groupId, type);
 	}
 
 	@Override

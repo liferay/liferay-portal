@@ -44,6 +44,10 @@ public class SamlSpIdpConnectionTable
 	public final Column<SamlSpIdpConnectionTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<SamlSpIdpConnectionTable, String> samlIdpEntityId =
+		createColumn(
+			"samlIdpEntityId", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<SamlSpIdpConnectionTable, Boolean>
 		assertionSignatureRequired = createColumn(
 			"assertionSignatureRequired", Boolean.class, Types.BOOLEAN,
@@ -76,10 +80,6 @@ public class SamlSpIdpConnectionTable
 	public final Column<SamlSpIdpConnectionTable, String> nameIdFormat =
 		createColumn(
 			"nameIdFormat", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<SamlSpIdpConnectionTable, String> samlIdpEntityId =
-		createColumn(
-			"samlIdpEntityId", String.class, Types.VARCHAR,
-			Column.FLAG_DEFAULT);
 	public final Column<SamlSpIdpConnectionTable, Boolean> signAuthnRequest =
 		createColumn(
 			"signAuthnRequest", Boolean.class, Types.BOOLEAN,

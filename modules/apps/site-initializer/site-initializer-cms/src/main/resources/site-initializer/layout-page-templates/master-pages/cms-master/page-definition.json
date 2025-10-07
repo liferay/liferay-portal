@@ -95,6 +95,29 @@
 											}
 										],
 										"type": "FragmentDropZone"
+									},
+									{
+										"definition": {
+											"fragmentDropZoneId": "bulkActionsMonitor"
+										},
+										"id": "cd36fbad-a608-817b-96dd-4002fb31f75d",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.BulkActionsMonitorComponentSectionFragmentRender"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"indexed": true
+												},
+												"id": "0fe4485a-736c-6aeb-5a2c-069ce85ca8ef",
+												"type": "Fragment"
+											}
+										],
+										"type": "FragmentDropZone"
 									}
 								],
 								"type": "Fragment"
@@ -118,7 +141,7 @@
 										"displayStyle": "stacked",
 										"hoveredItemColor": "",
 										"selectedItemColor": "",
-										"source": "",
+										"source": "{\"parentSiteNavigationMenuItemId\": \"0\", \"privateLayout\": \"false\", \"siteNavigationMenuExternalReferenceCode\": \"CMSPRIMARYNAVIGATION\", \"title\": \"CMS Primary Navigation\", \"type\": \"class com.liferay.site.navigation.item.selector.SiteNavigationMenuItemSelectorReturnType\"}",
 										"sublevels": "-1"
 									},
 									"fragmentFields": [

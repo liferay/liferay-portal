@@ -1,0 +1,27 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "key",
+					"name": "key",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"errorMessage": "please-enter-a-valid-key",
+							"minLength": 1,
+							"type": "text"
+						}
+					}
+				},
+				{
+					"label": "title",
+					"localizable": true,
+					"name": "title",
+					"type": "text"
+				}
+			],
+			"label": "account-selector-panel-options"
+		}
+	]
+}

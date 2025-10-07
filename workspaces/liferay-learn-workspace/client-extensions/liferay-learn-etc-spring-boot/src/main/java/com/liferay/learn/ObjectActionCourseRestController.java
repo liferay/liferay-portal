@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,7 +38,7 @@ public class ObjectActionCourseRestController extends BaseRestController {
 			get(
 				"Bearer " + jwt.getTokenValue(),
 				UriComponentsBuilder.fromPath(
-					"/o/c/courses/scopes/" + _siteGroupId
+					"/o/c/courses"
 				).queryParam(
 					"fields",
 					"id,module.lessonDurationMinutes,module.lessons," +
@@ -118,8 +117,5 @@ public class ObjectActionCourseRestController extends BaseRestController {
 
 	private static final Log _log = LogFactory.getLog(
 		ObjectActionCourseRestController.class);
-
-	@Value("${liferay.learn.dxp.site.group.id}")
-	private long _siteGroupId;
 
 }

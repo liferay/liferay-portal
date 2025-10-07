@@ -172,6 +172,10 @@ const doEvaluate = debounce((fieldName, evaluatorContext, callback) => {
 			}),
 			trigger: fieldName,
 		}),
+		headers: {
+			'Accept': 'application/json',
+			'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
+		},
 		signal: controller && controller.signal,
 		url: EVALUATOR_URL,
 	})

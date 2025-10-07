@@ -6,7 +6,7 @@
 package com.liferay.portal.properties.swapper.internal;
 
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Workflow Metrics Demo Data Creator API
 Bundle-SymbolicName: com.liferay.portal.workflow.metrics.demo.data.creator.api
-Bundle-Version: 2.0.18
+Bundle-Version: 2.0.19
 Export-Package: com.liferay.portal.workflow.metrics.demo.data.creator

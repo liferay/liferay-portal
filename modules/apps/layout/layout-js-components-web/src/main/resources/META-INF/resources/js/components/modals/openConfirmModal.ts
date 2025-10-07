@@ -10,6 +10,7 @@ type Props = {
 	center?: boolean;
 	hideCancel?: boolean;
 	onCancel?: () => Promise<void>;
+	onCloseFocusElement?: HTMLButtonElement | null;
 	onConfirm?: () => Promise<void>;
 	status: 'danger' | 'info' | 'warning';
 	text?: string;
@@ -21,6 +22,7 @@ export default function openConfirmModal({
 	center,
 	hideCancel,
 	onCancel = () => Promise.resolve(),
+	onCloseFocusElement,
 	onConfirm = () => Promise.resolve(),
 	status,
 	text,
@@ -57,6 +59,11 @@ export default function openConfirmModal({
 			bodyHTML: text,
 			buttons,
 			center,
+			onClose: () => {
+				if (onCloseFocusElement) {
+					onCloseFocusElement.focus();
+				}
+			},
 			status,
 			title,
 		});

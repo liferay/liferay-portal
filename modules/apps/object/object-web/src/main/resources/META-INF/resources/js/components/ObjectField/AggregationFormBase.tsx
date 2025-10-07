@@ -388,6 +388,7 @@ export function AggregationFormBase({
 			<SingleSelect
 				disabled={disabled}
 				error={errors.function}
+				id="objectFieldAggregationFunction"
 				items={aggregationFunctions}
 				label={Liferay.Language.get('function')}
 				onSelectionChange={(value) =>

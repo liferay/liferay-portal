@@ -201,6 +201,8 @@ public class LayoutIndexerIndexedFieldsTest {
 		).put(
 			"statusByUserId", String.valueOf(layout.getStatusByUserId())
 		).put(
+			"systemLayout", String.valueOf(layout.isSystem())
+		).put(
 			"title_ja_JP", layout.getName(LocaleUtil.JAPAN)
 		).put(
 			"userExternalReferenceCode", user.getExternalReferenceCode()

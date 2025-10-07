@@ -1,0 +1,19 @@
+@import 'atlas-variables';
+
+.info-box-message.alert-fluid {
+	.container {
+		max-width: 100% !important;
+	}
+}
+
+.toolbar-search,
+.toolbar-tabs {
+	.container-fluid {
+		max-width: 100% !important;
+	}
+}
+
+.role-name-column {
+	padding-right: 10rem !important;
+	width: 0% !important;
+}

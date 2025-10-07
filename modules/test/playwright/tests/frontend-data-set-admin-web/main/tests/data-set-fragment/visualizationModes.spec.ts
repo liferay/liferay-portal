@@ -171,7 +171,12 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual(['Data Set Label', 'Table Section Label', 'Id', '']);
+			).toEqual([
+				'Data Set Label',
+				'Table Section Label',
+				'Id',
+				'Manage Columns Visibility',
+			]);
 		});
 
 		await test.step('Data Set request URL contains additionalAPIURLParameters and nestedFields', async () => {
@@ -253,7 +258,7 @@ test.describe('Visualization Modes in Data Set fragment', () => {
 				await dataSetFragmentPage.table.headRow
 					.locator('th')
 					.allInnerTexts()
-			).toEqual([SAMPLE_SCALAR_ARRAY_FIELD, '']);
+			).toEqual([SAMPLE_SCALAR_ARRAY_FIELD, 'Manage Columns Visibility']);
 
 			expect(
 				await dataSetFragmentPage.table.bodyRows

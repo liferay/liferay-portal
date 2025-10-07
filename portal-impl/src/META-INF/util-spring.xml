@@ -58,11 +58,6 @@
 			<bean class="com.liferay.portal.util.CustomJspRegistryImpl" />
 		</property>
 	</bean>
-	<bean class="com.liferay.portal.kernel.util.DigesterUtil" id="com.liferay.portal.kernel.util.DigesterUtil">
-		<property name="digester">
-			<bean class="com.liferay.portal.util.DigesterImpl" />
-		</property>
-	</bean>
 	<bean class="com.liferay.portal.util.FastDateFormatFactoryImpl" id="com.liferay.portal.kernel.util.FastDateFormatFactory" />
 	<bean class="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" id="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil">
 		<property name="fastDateFormatFactory" ref="com.liferay.portal.kernel.util.FastDateFormatFactory" />

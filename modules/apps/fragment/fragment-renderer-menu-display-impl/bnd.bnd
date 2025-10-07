@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Renderer Menu Display Implementation
 Bundle-SymbolicName: com.liferay.fragment.renderer.menu.display.impl
-Bundle-Version: 2.0.29
+Bundle-Version: 2.0.31
 Web-ContextPath: /fragment-renderer-menu-display-impl

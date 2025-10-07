@@ -37,7 +37,7 @@ export default function setDataRecord(
 	}
 
 	if (!visible) {
-		_value = '';
+		_value = localizable ? '' : _value;
 	}
 
 	if (localizable) {

@@ -14,6 +14,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
+import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.internal.vulcan.openapi.contributor.util.OpenAPIContributorUtil;
@@ -297,6 +298,14 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 			objectDefinition.isUnmodifiableSystemObject(), openAPI);
 	}
 
+	private void _addSchema(
+		Class<?> entityClass, Schema schema, Map<String, Schema> schemas) {
+
+		_addSchemas(entityClass, schemas);
+
+		schema.$ref(entityClass.getSimpleName());
+	}
+
 	private void _addSchemas(
 		Class<?> entityClass, Map<String, Schema> schemas) {
 
@@ -385,21 +394,38 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 
 		if (operations.containsKey(PathItem.HttpMethod.DELETE)) {
 			pathItem.delete(
-				_getObjectRelationshipDeleteOperation(
-					objectRelationship, existingPathItem.getDelete(),
+				_getObjectRelationshipOperation(
+					objectRelationship, existingPathItem.getDelete(), null,
 					schemaName));
 		}
 
 		if (operations.containsKey(PathItem.HttpMethod.GET)) {
 			pathItem.get(
-				_getObjectRelationshipGetOperation(
-					objectRelationship, existingPathItem.getGet(), schemaName));
+				_getObjectRelationshipOperation(
+					objectRelationship, existingPathItem.getGet(),
+					OpenAPIContributorUtil.getPageSchemaName(schemaName),
+					schemaName));
+		}
+
+		if (operations.containsKey(PathItem.HttpMethod.PATCH)) {
+			pathItem.patch(
+				_getObjectRelationshipOperation(
+					objectRelationship, existingPathItem.getPatch(), schemaName,
+					schemaName));
+		}
+
+		if (operations.containsKey(PathItem.HttpMethod.POST)) {
+			pathItem.post(
+				_getObjectRelationshipOperation(
+					objectRelationship, existingPathItem.getPost(), schemaName,
+					schemaName));
 		}
 
 		if (operations.containsKey(PathItem.HttpMethod.PUT)) {
 			pathItem.put(
-				_getObjectRelationshipPutOperation(
-					objectRelationship, existingPathItem.getPut(), schemaName));
+				_getObjectRelationshipOperation(
+					objectRelationship, existingPathItem.getPut(), schemaName,
+					schemaName));
 		}
 
 		return pathItem;
@@ -552,62 +578,31 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 		return apiResponses;
 	}
 
-	private Operation _getObjectRelationshipDeleteOperation(
+	private Operation _getObjectRelationshipOperation(
 		ObjectRelationship objectRelationship, Operation operation,
-		String schemaName) {
+		String responseSchemaName, String schemaName) {
 
 		return new Operation() {
 			{
 				operationId(
-					StringBundler.concat(
-						"delete", _objectDefinition.getShortName(),
-						StringUtil.upperCaseFirstLetter(
-							objectRelationship.getName()),
-						schemaName));
+					StringUtil.replace(
+						operation.getOperationId(),
+						new String[] {
+							"CurrentExternalReferenceCode",
+							"ObjectRelationshipName",
+							"RelatedExternalReferenceCode", "RelatedObjectEntry"
+						},
+						new String[] {
+							_objectDefinition.getShortName(),
+							StringUtil.upperCaseFirstLetter(
+								objectRelationship.getName()),
+							schemaName, schemaName
+						}));
 				parameters(_getParameters(operation, schemaName));
-				responses(_getObjectRelationshipApiResponses(operation, null));
-				tags(operation.getTags());
-			}
-		};
-	}
-
-	private Operation _getObjectRelationshipGetOperation(
-		ObjectRelationship objectRelationship, Operation operation,
-		String schemaName) {
-
-		return new Operation() {
-			{
-				operationId(
-					StringBundler.concat(
-						"get", _objectDefinition.getShortName(),
-						StringUtil.upperCaseFirstLetter(
-							objectRelationship.getName()),
-						schemaName, "Page"));
-				parameters(_getParameters(operation, schemaName));
+				requestBody(operation.getRequestBody());
 				responses(
 					_getObjectRelationshipApiResponses(
-						operation,
-						OpenAPIContributorUtil.getPageSchemaName(schemaName)));
-				tags(operation.getTags());
-			}
-		};
-	}
-
-	private Operation _getObjectRelationshipPutOperation(
-		ObjectRelationship objectRelationship, Operation operation,
-		String schemaName) {
-
-		return new Operation() {
-			{
-				operationId(
-					StringBundler.concat(
-						"put", _objectDefinition.getShortName(),
-						StringUtil.upperCaseFirstLetter(
-							objectRelationship.getName()),
-						schemaName));
-				parameters(_getParameters(operation, schemaName));
-				responses(
-					_getObjectRelationshipApiResponses(operation, schemaName));
+						operation, responseSchemaName));
 				tags(operation.getTags());
 			}
 		};
@@ -795,23 +790,21 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 
 			if (Objects.equals(
 					objectField.getBusinessType(),
-					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+					ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
 
-				_addSchemas(FileEntry.class, schemas);
+				_addSchema(Assignee.class, entry.getValue(), schemas);
+			}
+			else if (Objects.equals(
+						objectField.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
-				Schema schema = entry.getValue();
-
-				schema.$ref(FileEntry.class.getSimpleName());
+				_addSchema(FileEntry.class, entry.getValue(), schemas);
 			}
 			else if (Objects.equals(
 						objectField.getBusinessType(),
 						ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
 
-				_addSchemas(ListEntry.class, schemas);
-
-				Schema schema = entry.getValue();
-
-				schema.$ref(ListEntry.class.getSimpleName());
+				_addSchema(ListEntry.class, entry.getValue(), schemas);
 			}
 			else if (Objects.equals(
 						objectField.getBusinessType(),

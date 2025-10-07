@@ -13,6 +13,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.testray.rest.dto.v1_0.TestrayRoutineDurationReport;
 import com.liferay.testray.rest.internal.util.TestrayUtil;
+import com.liferay.testray.rest.manager.TestrayManager;
 import com.liferay.testray.rest.resource.v1_0.TestrayRoutineDurationReportResource;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
 
 /**
@@ -42,7 +44,8 @@ public class TestrayRoutineDurationReportResourceImpl
 				Pagination pagination)
 		throws Exception {
 
-		StringBundler sb = new StringBundler(34);
+		List<Object> params = new ArrayList<>();
+		StringBundler sb = new StringBundler(36);
 
 		sb.append("select c.c_caseid_ , c.flaky_ , c.name_ , c.priority_, ");
 		sb.append("ct.name_ as casetypeName, co.name_ as componentName, ");
@@ -59,12 +62,14 @@ public class TestrayRoutineDurationReportResourceImpl
 		sb.append("and cr.r_teamtocaseresult_c_teamid = t.c_teamid_ and ");
 		sb.append("cr.r_buildtocaseresult_c_buildid in (select b.c_buildid_ ");
 		sb.append("from o_[%COMPANY_ID%]_build b where ");
-		sb.append("b.r_routinetobuilds_c_routineid = ? order by b.duedate_ ");
-		sb.append("desc limit 20) and cr.duestatus_ != 'UNTESTED' ");
-
-		List<Object> params = new ArrayList<>();
-
-		params.add(testrayRoutineId);
+		sb.append("b.r_routinetobuilds_c_routineid in (");
+		sb.append(
+			TestrayUtil.interpolateParams(
+				params,
+				_testrayManager.getRelatedTestrayRoutineIds(
+					contextCompany.getCompanyId(), testrayRoutineId)));
+		sb.append(") order by b.duedate_ desc limit 20) and cr.duestatus_ != ");
+		sb.append("'UNTESTED' ");
 
 		if (flaky != null) {
 			sb.append("and c.flaky_ = ? ");
@@ -161,5 +166,8 @@ public class TestrayRoutineDurationReportResourceImpl
 				}),
 			pagination, totalCount);
 	}
+
+	@Reference
+	private TestrayManager _testrayManager;
 
 }

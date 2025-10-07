@@ -133,6 +133,8 @@ public class ObjectEntryPersistenceTest {
 
 		newObjectEntry.setModifiedDate(RandomTestUtil.nextDate());
 
+		newObjectEntry.setHeadObjectEntryId(RandomTestUtil.nextLong());
+
 		newObjectEntry.setObjectDefinitionId(RandomTestUtil.nextLong());
 
 		newObjectEntry.setObjectEntryFolderId(RandomTestUtil.nextLong());
@@ -191,6 +193,9 @@ public class ObjectEntryPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingObjectEntry.getModifiedDate()),
 			Time.getShortTimestamp(newObjectEntry.getModifiedDate()));
+		Assert.assertEquals(
+			existingObjectEntry.getHeadObjectEntryId(),
+			newObjectEntry.getHeadObjectEntryId());
 		Assert.assertEquals(
 			existingObjectEntry.getObjectDefinitionId(),
 			newObjectEntry.getObjectDefinitionId());
@@ -260,6 +265,13 @@ public class ObjectEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByHeadObjectEntryId() throws Exception {
+		_persistence.countByHeadObjectEntryId(RandomTestUtil.nextLong());
+
+		_persistence.countByHeadObjectEntryId(0L);
+	}
+
+	@Test
 	public void testCountByObjectDefinitionId() throws Exception {
 		_persistence.countByObjectDefinitionId(RandomTestUtil.nextLong());
 
@@ -307,23 +319,12 @@ public class ObjectEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByERC_G_C() throws Exception {
-		_persistence.countByERC_G_C(
-			"", RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+	public void testCountByG_C_OEFI() throws Exception {
+		_persistence.countByG_C_OEFI(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong());
 
-		_persistence.countByERC_G_C("null", 0L, 0L);
-
-		_persistence.countByERC_G_C((String)null, 0L, 0L);
-	}
-
-	@Test
-	public void testCountByERC_C_ODI() throws Exception {
-		_persistence.countByERC_C_ODI(
-			"", RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByERC_C_ODI("null", 0L, 0L);
-
-		_persistence.countByERC_C_ODI((String)null, 0L, 0L);
+		_persistence.countByG_C_OEFI(0L, 0L, 0L);
 	}
 
 	@Test
@@ -342,6 +343,17 @@ public class ObjectEntryPersistenceTest {
 			RandomTestUtil.nextLong());
 
 		_persistence.countByU_GtCD_ODI(0L, RandomTestUtil.nextDate(), 0L);
+	}
+
+	@Test
+	public void testCountByERC_G_C_ODI() throws Exception {
+		_persistence.countByERC_G_C_ODI(
+			"", RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+			RandomTestUtil.nextLong());
+
+		_persistence.countByERC_G_C_ODI("null", 0L, 0L, 0L);
+
+		_persistence.countByERC_G_C_ODI((String)null, 0L, 0L, 0L);
 	}
 
 	@Test
@@ -372,12 +384,13 @@ public class ObjectEntryPersistenceTest {
 			"ObjectEntry", "mvccVersion", true, "uuid", true,
 			"externalReferenceCode", true, "objectEntryId", true, "groupId",
 			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "objectDefinitionId",
-			true, "objectEntryFolderId", true, "rootObjectEntryId", true,
-			"defaultLanguageId", true, "displayDate", true, "expirationDate",
-			true, "reviewDate", true, "treePath", true, "version", true,
-			"lastPublishDate", true, "status", true, "statusByUserId", true,
-			"statusByUserName", true, "statusDate", true);
+			"createDate", true, "modifiedDate", true, "headObjectEntryId", true,
+			"objectDefinitionId", true, "objectEntryFolderId", true,
+			"rootObjectEntryId", true, "defaultLanguageId", true, "displayDate",
+			true, "expirationDate", true, "reviewDate", true, "treePath", true,
+			"version", true, "lastPublishDate", true, "status", true,
+			"statusByUserId", true, "statusByUserName", true, "statusDate",
+			true);
 	}
 
 	@Test
@@ -654,6 +667,12 @@ public class ObjectEntryPersistenceTest {
 				new Class<?>[] {String.class}, "groupId"));
 
 		Assert.assertEquals(
+			Long.valueOf(objectEntry.getHeadObjectEntryId()),
+			ReflectionTestUtil.<Long>invoke(
+				objectEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "headObjectEntryId"));
+
+		Assert.assertEquals(
 			objectEntry.getExternalReferenceCode(),
 			ReflectionTestUtil.invoke(
 				objectEntry, "getColumnOriginalValue",
@@ -663,17 +682,6 @@ public class ObjectEntryPersistenceTest {
 			ReflectionTestUtil.<Long>invoke(
 				objectEntry, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "groupId"));
-		Assert.assertEquals(
-			Long.valueOf(objectEntry.getCompanyId()),
-			ReflectionTestUtil.<Long>invoke(
-				objectEntry, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "companyId"));
-
-		Assert.assertEquals(
-			objectEntry.getExternalReferenceCode(),
-			ReflectionTestUtil.invoke(
-				objectEntry, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "externalReferenceCode"));
 		Assert.assertEquals(
 			Long.valueOf(objectEntry.getCompanyId()),
 			ReflectionTestUtil.<Long>invoke(
@@ -708,6 +716,8 @@ public class ObjectEntryPersistenceTest {
 		objectEntry.setCreateDate(RandomTestUtil.nextDate());
 
 		objectEntry.setModifiedDate(RandomTestUtil.nextDate());
+
+		objectEntry.setHeadObjectEntryId(RandomTestUtil.nextLong());
 
 		objectEntry.setObjectDefinitionId(RandomTestUtil.nextLong());
 

@@ -223,10 +223,10 @@ public class PatcherProductVersionPersistenceTest {
 
 	protected OrderByComparator<PatcherProductVersion> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"PProductVersion", "mvccVersion", true, "patcherProductVersionId",
-			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "fixDeliveryMethod", true,
-			"moduleFolderName", true, "name", true);
+			"OSBPatcher_PProductVersion", "mvccVersion", true,
+			"patcherProductVersionId", true, "companyId", true, "userId", true,
+			"userName", true, "createDate", true, "modifiedDate", true,
+			"fixDeliveryMethod", true, "moduleFolderName", true, "name", true);
 	}
 
 	@Test

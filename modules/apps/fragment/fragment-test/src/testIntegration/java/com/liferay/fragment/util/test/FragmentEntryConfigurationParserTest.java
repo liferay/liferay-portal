@@ -40,11 +40,10 @@ public class FragmentEntryConfigurationParserTest {
 		JSONObject configurationDefaultValuesJSONObject =
 			_fragmentEntryConfigurationParser.
 				getConfigurationDefaultValuesJSONObject(
-					_read("configuration.json"));
+					_readJSONObject("configuration.json"));
 
 		JSONObject expectedConfigurationDefaultValuesJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				_read("expected-configuration-default-values.json"));
+			_readJSONObject("expected-configuration-default-values.json");
 
 		Assert.assertEquals(
 			expectedConfigurationDefaultValuesJSONObject.toString(),
@@ -71,26 +70,25 @@ public class FragmentEntryConfigurationParserTest {
 			new Locale(language), clazz);
 	}
 
-	private String _read(String fileName) throws Exception {
-		return new String(
-			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
+	private JSONObject _readJSONObject(String fileName) throws Exception {
+		return JSONFactoryUtil.createJSONObject(
+			new String(
+				FileUtil.getBytes(getClass(), "dependencies/" + fileName)));
 	}
 
 	private void _testTranslateConfiguration(String language) throws Exception {
-		JSONObject configurationJSONObject = JSONFactoryUtil.createJSONObject(
-			_read("configuration_untranslated.json"));
+		JSONObject configurationJSONObject = _readJSONObject(
+			"configuration_untranslated.json");
 
-		JSONObject expectedConfigurationTranslatedJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				_read(
-					String.format(
-						"expected_configuration_translated_%s.json",
-						language)));
+		JSONObject expectedConfigurationTranslatedJSONObject = _readJSONObject(
+			String.format(
+				"expected_configuration_translated_%s.json", language));
 
 		Assert.assertEquals(
 			expectedConfigurationTranslatedJSONObject.toString(),
-			_fragmentEntryConfigurationParser.translateConfiguration(
-				configurationJSONObject, _getResourceBundle(language)));
+			String.valueOf(
+				_fragmentEntryConfigurationParser.translateConfiguration(
+					configurationJSONObject, _getResourceBundle(language))));
 	}
 
 	@Inject

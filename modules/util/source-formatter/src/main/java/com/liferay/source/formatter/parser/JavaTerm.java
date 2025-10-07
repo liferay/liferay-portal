@@ -41,6 +41,8 @@ public interface JavaTerm {
 
 	public JavaClass getParentJavaClass();
 
+	public JavaMethod getParentJavaMethod();
+
 	public JavaSignature getSignature();
 
 	public boolean hasAnnotation();
@@ -72,5 +74,7 @@ public interface JavaTerm {
 	public boolean isStatic();
 
 	public void setParentJavaClass(JavaClass javaClass);
+
+	public void setParentJavaMethod(JavaMethod javaMethod);
 
 }

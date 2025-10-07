@@ -108,8 +108,8 @@ public class DeleteByQueryDocumentRequestExecutorImpl
 
 	private com.liferay.portal.kernel.search.query.QueryTranslator<QueryBuilder>
 		_legacyQueryTranslator;
-
-	@Reference(target = "(search.engine.impl=Elasticsearch)")
-	private QueryTranslator<QueryBuilder> _queryTranslator;
+	private final QueryTranslator<QueryBuilder> _queryTranslator =
+		new com.liferay.portal.search.elasticsearch7.internal.query.
+			ElasticsearchQueryTranslator();
 
 }

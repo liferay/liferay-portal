@@ -133,6 +133,12 @@ public class CommerceShipmentItemTest {
 		Assert.assertEquals(
 			commerceShipmentItems.toString(), 1, commerceShipmentItems.size());
 
+		Assert.assertEquals(
+			commerceShipmentItems.toString(), 1,
+			_commerceShipmentItemLocalService.
+				getValidCommerceShipmentItemsCount(
+					_commerceShipment.getCommerceShipmentId()));
+
 		CommerceShipmentItem actualCommerceShipmentItem =
 			commerceShipmentItems.get(0);
 

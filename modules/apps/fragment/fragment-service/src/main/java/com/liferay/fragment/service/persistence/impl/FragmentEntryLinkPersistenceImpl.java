@@ -13955,11 +13955,28 @@ public class FragmentEntryLinkPersistenceImpl
 					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 						fragmentEntryLink.getCtCollectionId())) {
 
-				if (entityCache.getResult(
+				FragmentEntryLink cachedFragmentEntryLink =
+					(FragmentEntryLink)entityCache.getResult(
 						FragmentEntryLinkImpl.class,
-						fragmentEntryLink.getPrimaryKey()) == null) {
+						fragmentEntryLink.getPrimaryKey());
 
+				if (cachedFragmentEntryLink == null) {
 					cacheResult(fragmentEntryLink);
+				}
+				else {
+					FragmentEntryLinkModelImpl fragmentEntryLinkModelImpl =
+						(FragmentEntryLinkModelImpl)fragmentEntryLink;
+					FragmentEntryLinkModelImpl
+						cachedFragmentEntryLinkModelImpl =
+							(FragmentEntryLinkModelImpl)cachedFragmentEntryLink;
+
+					fragmentEntryLinkModelImpl.setConfigurationJSONObject(
+						cachedFragmentEntryLinkModelImpl.
+							getConfigurationJSONObject());
+
+					fragmentEntryLinkModelImpl.setEditableValuesJSONObject(
+						cachedFragmentEntryLinkModelImpl.
+							getEditableValuesJSONObject());
 				}
 			}
 		}

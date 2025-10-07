@@ -109,13 +109,6 @@ public class ObjectActionResourceTest extends BaseObjectActionResourceTestCase {
 		return _addObjectAction();
 	}
 
-	protected ObjectAction
-			testGetObjectActionByExternalReferenceCode_addObjectAction()
-		throws Exception {
-
-		return _addObjectAction();
-	}
-
 	@Override
 	protected ObjectAction
 			testGetObjectDefinitionByExternalReferenceCodeObjectActionsPage_addObjectAction(
@@ -144,10 +137,37 @@ public class ObjectActionResourceTest extends BaseObjectActionResourceTestCase {
 	}
 
 	@Override
+	protected ObjectAction
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectActionsPageObjectDefinitionObjectAction_addObjectAction(
+				String externalReferenceCode, ObjectAction objectAction)
+		throws Exception {
+
+		return objectActionResource.
+			postObjectDefinitionByExternalReferenceCodeObjectAction(
+				externalReferenceCode, objectAction);
+	}
+
+	@Override
 	protected ObjectAction testGraphQLObjectAction_addObjectAction()
 		throws Exception {
 
 		return _addObjectAction();
+	}
+
+	@Override
+	protected Long
+			testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectAction_getObjectDefinitionId()
+		throws Exception {
+
+		return _objectDefinition.getObjectDefinitionId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLPostObjectDefinitionObjectAction_getObjectDefinitionId()
+		throws Exception {
+
+		return _objectDefinition.getObjectDefinitionId();
 	}
 
 	@Override

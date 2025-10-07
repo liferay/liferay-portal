@@ -48,6 +48,13 @@ public abstract class BaseSQLTransformerLogicTestCase {
 	}
 
 	@Test
+	public void testReplaceBitwiseOr() {
+		Assert.assertEquals(
+			getBitwiseOrTransformedSQL(),
+			sqlTransformer.transform(getBitwiseOrOriginalSQL()));
+	}
+
+	@Test
 	public void testReplaceBoolean() {
 		Assert.assertEquals(
 			getBooleanTransformedSQL(),
@@ -178,6 +185,13 @@ public abstract class BaseSQLTransformerLogicTestCase {
 		Assert.assertEquals(sql, sqlTransformer.transform(sql));
 	}
 
+	@Test
+	public void testTruncateTable() {
+		Assert.assertEquals(
+			getTruncateTableTransformedSQL(),
+			sqlTransformer.transform(getTruncateTableOriginalSQL()));
+	}
+
 	protected String getAggregationOriginalSQL() {
 		return "select foo from Foo order by AGGREGATION_STRING_MIN(foo)";
 	}
@@ -192,6 +206,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 
 	protected String getBitwiseCheckTransformedSQL() {
 		return getBitwiseCheckOriginalSQL();
+	}
+
+	protected String getBitwiseOrOriginalSQL() {
+		return "select BITOR(foo, bar) from Foo";
+	}
+
+	protected String getBitwiseOrTransformedSQL() {
+		return getBitwiseOrOriginalSQL();
 	}
 
 	protected String getBooleanOriginalSQL() {
@@ -297,6 +319,14 @@ public abstract class BaseSQLTransformerLogicTestCase {
 
 	protected String getSubstrTransformedSQL() {
 		return getSubstrOriginalSQL();
+	}
+
+	protected String getTruncateTableOriginalSQL() {
+		return "truncate table Foo";
+	}
+
+	protected String getTruncateTableTransformedSQL() {
+		return "TRUNCATE TABLE Foo";
 	}
 
 	protected SQLTransformer sqlTransformer;

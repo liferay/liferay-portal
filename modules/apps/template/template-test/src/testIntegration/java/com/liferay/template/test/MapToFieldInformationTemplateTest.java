@@ -272,8 +272,7 @@ public class MapToFieldInformationTemplateTest {
 
 		for (String string : strings) {
 			Assert.assertTrue(
-				html + " not contains " + string,
-				StringUtil.contains(html, string, StringPool.BLANK));
+				html + " not contains " + string, html.contains(string));
 		}
 	}
 

@@ -66,39 +66,38 @@
 
 		List<KeyValuePair> leftList = new ArrayList<>();
 
-		String[] currentLanguageIds = ArrayUtil.unique(PrefsPropsUtil.getStringArray(company.getCompanyId(), PropsKeys.LOCALES, StringPool.COMMA, PropsValues.LOCALES_ENABLED));
-
-		for (String currentLanguageId : currentLanguageIds) {
-			Locale currentLocale = LocaleUtil.fromLanguageId(currentLanguageId);
-
-			leftList.add(new KeyValuePair(currentLanguageId, currentLocale.getDisplayName(locale)));
-		}
-
-		// Right list
-
-		List<KeyValuePair> rightList = new ArrayList<>();
-
 		for (String propsValuesLanguageId : SetUtil.fromArray(PropsValues.LOCALES)) {
 			if (!ArrayUtil.contains(availableLanguageIds, propsValuesLanguageId)) {
 				Locale propsValuesLocale = LocaleUtil.fromLanguageId(propsValuesLanguageId, false);
 
 				if (propsValuesLocale != null) {
-					rightList.add(new KeyValuePair(propsValuesLanguageId, propsValuesLocale.getDisplayName(locale)));
+					leftList.add(new KeyValuePair(propsValuesLanguageId, propsValuesLocale.getDisplayName(locale)));
 				}
 			}
 		}
 
-		rightList = ListUtil.sort(rightList, new KeyValuePairComparator(false, true));
+		leftList = ListUtil.sort(leftList, new KeyValuePairComparator(false, true));
+
+		// Right list
+
+		List<KeyValuePair> rightList = new ArrayList<>();
+
+		String[] currentLanguageIds = ArrayUtil.unique(PrefsPropsUtil.getStringArray(company.getCompanyId(), PropsKeys.LOCALES, StringPool.COMMA, PropsValues.LOCALES_ENABLED));
+
+		for (String currentLanguageId : currentLanguageIds) {
+			Locale currentLocale = LocaleUtil.fromLanguageId(currentLanguageId);
+
+			rightList.add(new KeyValuePair(currentLanguageId, currentLocale.getDisplayName(locale)));
+		}
 		%>
 
 		<liferay-ui:input-move-boxes
-			leftBoxName="currentLanguageIds"
+			leftBoxName="availableLanguageIds"
 			leftList="<%= leftList %>"
-			leftReorder="<%= Boolean.TRUE.toString() %>"
-			leftTitle="current"
-			rightBoxName="availableLanguageIds"
+			leftTitle="available"
+			rightBoxName="currentLanguageIds"
 			rightList="<%= rightList %>"
-			rightTitle="available"
+			rightTitle="current"
 		/>
 	</aui:fieldset>
 </aui:fieldset>

@@ -64,14 +64,14 @@ public class SamlIdpSpConnectionModelImpl
 		{"samlIdpSpConnectionId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"assertionLifetime", Types.INTEGER}, {"attributeNames", Types.VARCHAR},
-		{"attributesEnabled", Types.BOOLEAN},
+		{"samlSpEntityId", Types.VARCHAR}, {"assertionLifetime", Types.INTEGER},
+		{"attributeNames", Types.VARCHAR}, {"attributesEnabled", Types.BOOLEAN},
 		{"attributesNamespaceEnabled", Types.BOOLEAN},
 		{"enabled", Types.BOOLEAN}, {"encryptionForced", Types.BOOLEAN},
+		{"metadataUpdatedDate", Types.TIMESTAMP},
 		{"metadataUrl", Types.VARCHAR}, {"metadataXml", Types.CLOB},
-		{"metadataUpdatedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
-		{"nameIdAttribute", Types.VARCHAR}, {"nameIdFormat", Types.VARCHAR},
-		{"samlSpEntityId", Types.VARCHAR}
+		{"name", Types.VARCHAR}, {"nameIdAttribute", Types.VARCHAR},
+		{"nameIdFormat", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -84,23 +84,23 @@ public class SamlIdpSpConnectionModelImpl
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("samlSpEntityId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("assertionLifetime", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("attributeNames", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("attributesEnabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("attributesNamespaceEnabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("enabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("encryptionForced", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("metadataUpdatedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("metadataUrl", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("metadataXml", Types.CLOB);
-		TABLE_COLUMNS_MAP.put("metadataUpdatedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("nameIdAttribute", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("nameIdFormat", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("samlSpEntityId", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table SamlIdpSpConnection (samlIdpSpConnectionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,assertionLifetime INTEGER,attributeNames STRING null,attributesEnabled BOOLEAN,attributesNamespaceEnabled BOOLEAN,enabled BOOLEAN,encryptionForced BOOLEAN,metadataUrl VARCHAR(1024) null,metadataXml TEXT null,metadataUpdatedDate DATE null,name VARCHAR(75) null,nameIdAttribute VARCHAR(1024) null,nameIdFormat VARCHAR(1024) null,samlSpEntityId VARCHAR(1024) null)";
+		"create table SamlIdpSpConnection (samlIdpSpConnectionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,samlSpEntityId VARCHAR(1024) null,assertionLifetime INTEGER,attributeNames STRING null,attributesEnabled BOOLEAN,attributesNamespaceEnabled BOOLEAN,enabled BOOLEAN,encryptionForced BOOLEAN,metadataUpdatedDate DATE null,metadataUrl VARCHAR(1024) null,metadataXml TEXT null,name VARCHAR(75) null,nameIdAttribute VARCHAR(1024) null,nameIdFormat VARCHAR(1024) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table SamlIdpSpConnection";
@@ -260,6 +260,8 @@ public class SamlIdpSpConnectionModelImpl
 			attributeGetterFunctions.put(
 				"modifiedDate", SamlIdpSpConnection::getModifiedDate);
 			attributeGetterFunctions.put(
+				"samlSpEntityId", SamlIdpSpConnection::getSamlSpEntityId);
+			attributeGetterFunctions.put(
 				"assertionLifetime", SamlIdpSpConnection::getAssertionLifetime);
 			attributeGetterFunctions.put(
 				"attributeNames", SamlIdpSpConnection::getAttributeNames);
@@ -273,19 +275,17 @@ public class SamlIdpSpConnectionModelImpl
 			attributeGetterFunctions.put(
 				"encryptionForced", SamlIdpSpConnection::getEncryptionForced);
 			attributeGetterFunctions.put(
+				"metadataUpdatedDate",
+				SamlIdpSpConnection::getMetadataUpdatedDate);
+			attributeGetterFunctions.put(
 				"metadataUrl", SamlIdpSpConnection::getMetadataUrl);
 			attributeGetterFunctions.put(
 				"metadataXml", SamlIdpSpConnection::getMetadataXml);
-			attributeGetterFunctions.put(
-				"metadataUpdatedDate",
-				SamlIdpSpConnection::getMetadataUpdatedDate);
 			attributeGetterFunctions.put("name", SamlIdpSpConnection::getName);
 			attributeGetterFunctions.put(
 				"nameIdAttribute", SamlIdpSpConnection::getNameIdAttribute);
 			attributeGetterFunctions.put(
 				"nameIdFormat", SamlIdpSpConnection::getNameIdFormat);
-			attributeGetterFunctions.put(
-				"samlSpEntityId", SamlIdpSpConnection::getSamlSpEntityId);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -330,6 +330,10 @@ public class SamlIdpSpConnectionModelImpl
 				(BiConsumer<SamlIdpSpConnection, Date>)
 					SamlIdpSpConnection::setModifiedDate);
 			attributeSetterBiConsumers.put(
+				"samlSpEntityId",
+				(BiConsumer<SamlIdpSpConnection, String>)
+					SamlIdpSpConnection::setSamlSpEntityId);
+			attributeSetterBiConsumers.put(
 				"assertionLifetime",
 				(BiConsumer<SamlIdpSpConnection, Integer>)
 					SamlIdpSpConnection::setAssertionLifetime);
@@ -354,6 +358,10 @@ public class SamlIdpSpConnectionModelImpl
 				(BiConsumer<SamlIdpSpConnection, Boolean>)
 					SamlIdpSpConnection::setEncryptionForced);
 			attributeSetterBiConsumers.put(
+				"metadataUpdatedDate",
+				(BiConsumer<SamlIdpSpConnection, Date>)
+					SamlIdpSpConnection::setMetadataUpdatedDate);
+			attributeSetterBiConsumers.put(
 				"metadataUrl",
 				(BiConsumer<SamlIdpSpConnection, String>)
 					SamlIdpSpConnection::setMetadataUrl);
@@ -361,10 +369,6 @@ public class SamlIdpSpConnectionModelImpl
 				"metadataXml",
 				(BiConsumer<SamlIdpSpConnection, String>)
 					SamlIdpSpConnection::setMetadataXml);
-			attributeSetterBiConsumers.put(
-				"metadataUpdatedDate",
-				(BiConsumer<SamlIdpSpConnection, Date>)
-					SamlIdpSpConnection::setMetadataUpdatedDate);
 			attributeSetterBiConsumers.put(
 				"name",
 				(BiConsumer<SamlIdpSpConnection, String>)
@@ -377,10 +381,6 @@ public class SamlIdpSpConnectionModelImpl
 				"nameIdFormat",
 				(BiConsumer<SamlIdpSpConnection, String>)
 					SamlIdpSpConnection::setNameIdFormat);
-			attributeSetterBiConsumers.put(
-				"samlSpEntityId",
-				(BiConsumer<SamlIdpSpConnection, String>)
-					SamlIdpSpConnection::setSamlSpEntityId);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -510,6 +510,34 @@ public class SamlIdpSpConnectionModelImpl
 	}
 
 	@Override
+	public String getSamlSpEntityId() {
+		if (_samlSpEntityId == null) {
+			return "";
+		}
+		else {
+			return _samlSpEntityId;
+		}
+	}
+
+	@Override
+	public void setSamlSpEntityId(String samlSpEntityId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_samlSpEntityId = samlSpEntityId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSamlSpEntityId() {
+		return getColumnOriginalValue("samlSpEntityId");
+	}
+
+	@Override
 	public int getAssertionLifetime() {
 		return _assertionLifetime;
 	}
@@ -621,6 +649,20 @@ public class SamlIdpSpConnectionModelImpl
 	}
 
 	@Override
+	public Date getMetadataUpdatedDate() {
+		return _metadataUpdatedDate;
+	}
+
+	@Override
+	public void setMetadataUpdatedDate(Date metadataUpdatedDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_metadataUpdatedDate = metadataUpdatedDate;
+	}
+
+	@Override
 	public String getMetadataUrl() {
 		if (_metadataUrl == null) {
 			return "";
@@ -656,20 +698,6 @@ public class SamlIdpSpConnectionModelImpl
 		}
 
 		_metadataXml = metadataXml;
-	}
-
-	@Override
-	public Date getMetadataUpdatedDate() {
-		return _metadataUpdatedDate;
-	}
-
-	@Override
-	public void setMetadataUpdatedDate(Date metadataUpdatedDate) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_metadataUpdatedDate = metadataUpdatedDate;
 	}
 
 	@Override
@@ -727,34 +755,6 @@ public class SamlIdpSpConnectionModelImpl
 		}
 
 		_nameIdFormat = nameIdFormat;
-	}
-
-	@Override
-	public String getSamlSpEntityId() {
-		if (_samlSpEntityId == null) {
-			return "";
-		}
-		else {
-			return _samlSpEntityId;
-		}
-	}
-
-	@Override
-	public void setSamlSpEntityId(String samlSpEntityId) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_samlSpEntityId = samlSpEntityId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalSamlSpEntityId() {
-		return getColumnOriginalValue("samlSpEntityId");
 	}
 
 	public long getColumnBitmask() {
@@ -822,6 +822,7 @@ public class SamlIdpSpConnectionModelImpl
 		samlIdpSpConnectionImpl.setUserName(getUserName());
 		samlIdpSpConnectionImpl.setCreateDate(getCreateDate());
 		samlIdpSpConnectionImpl.setModifiedDate(getModifiedDate());
+		samlIdpSpConnectionImpl.setSamlSpEntityId(getSamlSpEntityId());
 		samlIdpSpConnectionImpl.setAssertionLifetime(getAssertionLifetime());
 		samlIdpSpConnectionImpl.setAttributeNames(getAttributeNames());
 		samlIdpSpConnectionImpl.setAttributesEnabled(isAttributesEnabled());
@@ -829,14 +830,13 @@ public class SamlIdpSpConnectionModelImpl
 			isAttributesNamespaceEnabled());
 		samlIdpSpConnectionImpl.setEnabled(isEnabled());
 		samlIdpSpConnectionImpl.setEncryptionForced(isEncryptionForced());
-		samlIdpSpConnectionImpl.setMetadataUrl(getMetadataUrl());
-		samlIdpSpConnectionImpl.setMetadataXml(getMetadataXml());
 		samlIdpSpConnectionImpl.setMetadataUpdatedDate(
 			getMetadataUpdatedDate());
+		samlIdpSpConnectionImpl.setMetadataUrl(getMetadataUrl());
+		samlIdpSpConnectionImpl.setMetadataXml(getMetadataXml());
 		samlIdpSpConnectionImpl.setName(getName());
 		samlIdpSpConnectionImpl.setNameIdAttribute(getNameIdAttribute());
 		samlIdpSpConnectionImpl.setNameIdFormat(getNameIdFormat());
-		samlIdpSpConnectionImpl.setSamlSpEntityId(getSamlSpEntityId());
 
 		samlIdpSpConnectionImpl.resetOriginalValues();
 
@@ -860,6 +860,8 @@ public class SamlIdpSpConnectionModelImpl
 			this.<Date>getColumnOriginalValue("createDate"));
 		samlIdpSpConnectionImpl.setModifiedDate(
 			this.<Date>getColumnOriginalValue("modifiedDate"));
+		samlIdpSpConnectionImpl.setSamlSpEntityId(
+			this.<String>getColumnOriginalValue("samlSpEntityId"));
 		samlIdpSpConnectionImpl.setAssertionLifetime(
 			this.<Integer>getColumnOriginalValue("assertionLifetime"));
 		samlIdpSpConnectionImpl.setAttributeNames(
@@ -872,20 +874,18 @@ public class SamlIdpSpConnectionModelImpl
 			this.<Boolean>getColumnOriginalValue("enabled"));
 		samlIdpSpConnectionImpl.setEncryptionForced(
 			this.<Boolean>getColumnOriginalValue("encryptionForced"));
+		samlIdpSpConnectionImpl.setMetadataUpdatedDate(
+			this.<Date>getColumnOriginalValue("metadataUpdatedDate"));
 		samlIdpSpConnectionImpl.setMetadataUrl(
 			this.<String>getColumnOriginalValue("metadataUrl"));
 		samlIdpSpConnectionImpl.setMetadataXml(
 			this.<String>getColumnOriginalValue("metadataXml"));
-		samlIdpSpConnectionImpl.setMetadataUpdatedDate(
-			this.<Date>getColumnOriginalValue("metadataUpdatedDate"));
 		samlIdpSpConnectionImpl.setName(
 			this.<String>getColumnOriginalValue("name"));
 		samlIdpSpConnectionImpl.setNameIdAttribute(
 			this.<String>getColumnOriginalValue("nameIdAttribute"));
 		samlIdpSpConnectionImpl.setNameIdFormat(
 			this.<String>getColumnOriginalValue("nameIdFormat"));
-		samlIdpSpConnectionImpl.setSamlSpEntityId(
-			this.<String>getColumnOriginalValue("samlSpEntityId"));
 
 		return samlIdpSpConnectionImpl;
 	}
@@ -997,6 +997,14 @@ public class SamlIdpSpConnectionModelImpl
 			samlIdpSpConnectionCacheModel.modifiedDate = Long.MIN_VALUE;
 		}
 
+		samlIdpSpConnectionCacheModel.samlSpEntityId = getSamlSpEntityId();
+
+		String samlSpEntityId = samlIdpSpConnectionCacheModel.samlSpEntityId;
+
+		if ((samlSpEntityId != null) && (samlSpEntityId.length() == 0)) {
+			samlIdpSpConnectionCacheModel.samlSpEntityId = null;
+		}
+
 		samlIdpSpConnectionCacheModel.assertionLifetime =
 			getAssertionLifetime();
 
@@ -1017,6 +1025,16 @@ public class SamlIdpSpConnectionModelImpl
 
 		samlIdpSpConnectionCacheModel.encryptionForced = isEncryptionForced();
 
+		Date metadataUpdatedDate = getMetadataUpdatedDate();
+
+		if (metadataUpdatedDate != null) {
+			samlIdpSpConnectionCacheModel.metadataUpdatedDate =
+				metadataUpdatedDate.getTime();
+		}
+		else {
+			samlIdpSpConnectionCacheModel.metadataUpdatedDate = Long.MIN_VALUE;
+		}
+
 		samlIdpSpConnectionCacheModel.metadataUrl = getMetadataUrl();
 
 		String metadataUrl = samlIdpSpConnectionCacheModel.metadataUrl;
@@ -1031,16 +1049,6 @@ public class SamlIdpSpConnectionModelImpl
 
 		if ((metadataXml != null) && (metadataXml.length() == 0)) {
 			samlIdpSpConnectionCacheModel.metadataXml = null;
-		}
-
-		Date metadataUpdatedDate = getMetadataUpdatedDate();
-
-		if (metadataUpdatedDate != null) {
-			samlIdpSpConnectionCacheModel.metadataUpdatedDate =
-				metadataUpdatedDate.getTime();
-		}
-		else {
-			samlIdpSpConnectionCacheModel.metadataUpdatedDate = Long.MIN_VALUE;
 		}
 
 		samlIdpSpConnectionCacheModel.name = getName();
@@ -1065,14 +1073,6 @@ public class SamlIdpSpConnectionModelImpl
 
 		if ((nameIdFormat != null) && (nameIdFormat.length() == 0)) {
 			samlIdpSpConnectionCacheModel.nameIdFormat = null;
-		}
-
-		samlIdpSpConnectionCacheModel.samlSpEntityId = getSamlSpEntityId();
-
-		String samlSpEntityId = samlIdpSpConnectionCacheModel.samlSpEntityId;
-
-		if ((samlSpEntityId != null) && (samlSpEntityId.length() == 0)) {
-			samlIdpSpConnectionCacheModel.samlSpEntityId = null;
 		}
 
 		return samlIdpSpConnectionCacheModel;
@@ -1144,19 +1144,19 @@ public class SamlIdpSpConnectionModelImpl
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
+	private String _samlSpEntityId;
 	private int _assertionLifetime;
 	private String _attributeNames;
 	private boolean _attributesEnabled;
 	private boolean _attributesNamespaceEnabled;
 	private boolean _enabled;
 	private boolean _encryptionForced;
+	private Date _metadataUpdatedDate;
 	private String _metadataUrl;
 	private String _metadataXml;
-	private Date _metadataUpdatedDate;
 	private String _name;
 	private String _nameIdAttribute;
 	private String _nameIdFormat;
-	private String _samlSpEntityId;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<SamlIdpSpConnection, Object> function =
@@ -1193,6 +1193,7 @@ public class SamlIdpSpConnectionModelImpl
 		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
+		_columnOriginalValues.put("samlSpEntityId", _samlSpEntityId);
 		_columnOriginalValues.put("assertionLifetime", _assertionLifetime);
 		_columnOriginalValues.put("attributeNames", _attributeNames);
 		_columnOriginalValues.put("attributesEnabled", _attributesEnabled);
@@ -1200,13 +1201,12 @@ public class SamlIdpSpConnectionModelImpl
 			"attributesNamespaceEnabled", _attributesNamespaceEnabled);
 		_columnOriginalValues.put("enabled", _enabled);
 		_columnOriginalValues.put("encryptionForced", _encryptionForced);
+		_columnOriginalValues.put("metadataUpdatedDate", _metadataUpdatedDate);
 		_columnOriginalValues.put("metadataUrl", _metadataUrl);
 		_columnOriginalValues.put("metadataXml", _metadataXml);
-		_columnOriginalValues.put("metadataUpdatedDate", _metadataUpdatedDate);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("nameIdAttribute", _nameIdAttribute);
 		_columnOriginalValues.put("nameIdFormat", _nameIdFormat);
-		_columnOriginalValues.put("samlSpEntityId", _samlSpEntityId);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1232,31 +1232,31 @@ public class SamlIdpSpConnectionModelImpl
 
 		columnBitmasks.put("modifiedDate", 32L);
 
-		columnBitmasks.put("assertionLifetime", 64L);
+		columnBitmasks.put("samlSpEntityId", 64L);
 
-		columnBitmasks.put("attributeNames", 128L);
+		columnBitmasks.put("assertionLifetime", 128L);
 
-		columnBitmasks.put("attributesEnabled", 256L);
+		columnBitmasks.put("attributeNames", 256L);
 
-		columnBitmasks.put("attributesNamespaceEnabled", 512L);
+		columnBitmasks.put("attributesEnabled", 512L);
 
-		columnBitmasks.put("enabled", 1024L);
+		columnBitmasks.put("attributesNamespaceEnabled", 1024L);
 
-		columnBitmasks.put("encryptionForced", 2048L);
+		columnBitmasks.put("enabled", 2048L);
 
-		columnBitmasks.put("metadataUrl", 4096L);
+		columnBitmasks.put("encryptionForced", 4096L);
 
-		columnBitmasks.put("metadataXml", 8192L);
+		columnBitmasks.put("metadataUpdatedDate", 8192L);
 
-		columnBitmasks.put("metadataUpdatedDate", 16384L);
+		columnBitmasks.put("metadataUrl", 16384L);
 
-		columnBitmasks.put("name", 32768L);
+		columnBitmasks.put("metadataXml", 32768L);
 
-		columnBitmasks.put("nameIdAttribute", 65536L);
+		columnBitmasks.put("name", 65536L);
 
-		columnBitmasks.put("nameIdFormat", 131072L);
+		columnBitmasks.put("nameIdAttribute", 131072L);
 
-		columnBitmasks.put("samlSpEntityId", 262144L);
+		columnBitmasks.put("nameIdFormat", 262144L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

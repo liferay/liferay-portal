@@ -114,7 +114,9 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.headingDeliveryGroupModal = (name: string) => {
 			return page.getByRole('heading', {exact: true, name});
 		};
-		this.iframeOkButton = page.getByLabel('close', {exact: true});
+		this.iframeOkButton = page
+			.locator('.modal')
+			.getByLabel('Close', {exact: true});
 		this.goToOrderDetailsButton = page.getByRole('button', {
 			name: 'Go to Order Details',
 		});

@@ -7,6 +7,7 @@ package com.liferay.search.experiences.internal.feature.flag;
 
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.calendar.service.CalendarBookingLocalService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureService;
@@ -41,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Shuyang Zhou
  */
 @Component(
-	enabled = false, property = "featureFlagKey=LPS-129412",
+	enabled = false, property = "feature.flag.key=LPS-129412",
 	service = FeatureFlagListener.class
 )
 public class SXPBlueprintFeatureFlagListener implements FeatureFlagListener {
@@ -60,12 +61,13 @@ public class SXPBlueprintFeatureFlagListener implements FeatureFlagListener {
 					new SXPBlueprintInfoCollectionProviderSXPBlueprintModelListener(
 						_assetHelper, _assetSubtypeIdentifierBuilder,
 						_blogsEntryLocalService, _bundleContext,
-						_classNameLocalService, _companyLocalService,
-						_ddmStructureService, _dlFileEntryTypeLocalService,
-						_dlAppLocalService, _groupService,
-						_journalArticleService, _kbArticleLocalService,
-						_objectDefinitionLocalService, _objectEntryLocalService,
-						_searcher, _searchRequestBuilderFactory,
+						_calendarBookingLocalService, _classNameLocalService,
+						_companyLocalService, _ddmStructureService,
+						_dlFileEntryTypeLocalService, _dlAppLocalService,
+						_groupService, _journalArticleService,
+						_kbArticleLocalService, _objectDefinitionLocalService,
+						_objectEntryLocalService, _searcher,
+						_searchRequestBuilderFactory,
 						_sxpBlueprintLocalService);
 
 			infoCollectionProviderSXPBlueprintModelListener.start();
@@ -111,6 +113,9 @@ public class SXPBlueprintFeatureFlagListener implements FeatureFlagListener {
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	private BundleContext _bundleContext;
+
+	@Reference
+	private CalendarBookingLocalService _calendarBookingLocalService;
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

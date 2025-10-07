@@ -39,8 +39,8 @@ public class IPDetector {
 	}
 
 	public static boolean isSupportsV6() {
-		if (_suppportsV6 != null) {
-			return _suppportsV6.booleanValue();
+		if (_supportsV6 != null) {
+			return _supportsV6.booleanValue();
 		}
 
 		try {
@@ -50,7 +50,7 @@ public class IPDetector {
 				String hostAddress = inetAddress.getHostAddress();
 
 				if (hostAddress.contains(":")) {
-					_suppportsV6 = Boolean.TRUE;
+					_supportsV6 = Boolean.TRUE;
 
 					break;
 				}
@@ -60,17 +60,17 @@ public class IPDetector {
 			_log.error(unknownHostException);
 		}
 
-		if (_suppportsV6 == null) {
-			_suppportsV6 = Boolean.FALSE;
+		if (_supportsV6 == null) {
+			_supportsV6 = Boolean.FALSE;
 		}
 
-		return _suppportsV6.booleanValue();
+		return _supportsV6.booleanValue();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(IPDetector.class);
 
 	private static Boolean _prefersV4;
 	private static Boolean _prefersV6;
-	private static Boolean _suppportsV6;
+	private static Boolean _supportsV6;
 
 }

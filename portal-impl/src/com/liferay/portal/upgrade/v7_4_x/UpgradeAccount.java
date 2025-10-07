@@ -126,8 +126,11 @@ public class UpgradeAccount extends UpgradeProcess {
 			updateCompanyPreparedStatement.executeBatch();
 
 			updateAddressPreparedStatement.executeBatch();
+
 			updateEmailAddressPreparedStatement.executeBatch();
+
 			updatePhonePreparedStatement.executeBatch();
+
 			updateWebsitePreparedStatement.executeBatch();
 		}
 

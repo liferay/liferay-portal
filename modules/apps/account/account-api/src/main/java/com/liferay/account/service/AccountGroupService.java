@@ -84,7 +84,7 @@ public interface AccountGroupService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AccountGroup getOrAddIncompleteAccountGroup(
+	public AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, String name)
 		throws Exception;
 

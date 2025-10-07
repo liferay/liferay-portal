@@ -9,6 +9,7 @@
 	"description": "",
 	"devDependencies": {
 		"@axe-core/playwright": "^4.9.1",
+		"@liferay/layout-js-components-web": "../../apps/layout/layout-js-components-web/",
 		"@liferay/object-admin-rest-client-js": "../../apps/object/object-admin-rest-client-js",
 		"@liferay/portal-tools-rest-builder-test-client-js": "../../util/portal-tools-rest-builder-test-client-js",
 		"@playwright/test": "1.45.2",

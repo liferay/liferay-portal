@@ -1,0 +1,74 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"description": "",
+					"label": "default-panel-key",
+					"name": "defaultPanelKey",
+					"type": "text"
+				},
+				{
+					"dataType": "int",
+					"defaultValue": "500",
+					"label": "dropdown-max-height-px",
+					"name": "dropdownMaxHeight",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"min": 1,
+							"type": "number"
+						}
+					}
+				},
+				{
+					"dataType": "int",
+					"defaultValue": "400",
+					"label": "dropdown-width-px",
+					"name": "dropdownWidth",
+					"type": "text",
+					"typeOptions": {
+						"validation": {
+							"min": 1,
+							"type": "number"
+						}
+					}
+				},
+				{
+					"dataType": "int",
+					"defaultValue": "2",
+					"label": "number-of-panels",
+					"name": "numberOfPanels",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "1"
+							},
+							{
+								"value": "2"
+							},
+							{
+								"value": "3"
+							},
+							{
+								"value": "4"
+							},
+							{
+								"value": "5"
+							}
+						]
+					}
+				},
+				{
+					"dataType": "double",
+					"defaultValue": "0.1",
+					"label": "panel-animation-duration-seconds",
+					"name": "panelAnimationDuration",
+					"type": "text"
+				}
+			],
+			"label": "account-selector-options"
+		}
+	]
+}

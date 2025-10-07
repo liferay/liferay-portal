@@ -31,6 +31,7 @@ export const test = mergeTests(
 	accountSettingsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
+		'LPD-35914': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,
@@ -570,5 +571,755 @@ test(
 		await expect(
 			usersAndOrganizationsPage.usersTableCell(user.alternateName)
 		).toBeVisible();
+	}
+);
+
+test(
+	'Can add comment when creating user',
+	{tag: '@LPD-58336'},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const comment = getRandomString();
+
+		await usersAndOrganizationsPage.createUser(
+			apiHelpers,
+			`user${getRandomInt()}`,
+			comment
+		);
+
+		await expect(usersAndOrganizationsPage.commentsInput).toBeVisible();
+
+		await expect(usersAndOrganizationsPage.commentsInput).toHaveValue(
+			comment
+		);
+	}
+);
+
+test(
+	'Can add widget to my profile page',
+	{tag: ['@LPD-58336', '@LPS-159181']},
+	async ({page, userPersonalSitePage}) => {
+		await userPersonalSitePage.userPersonalMenuButton.click();
+		await userPersonalSitePage.myProfileMenuItem.click();
+
+		await userPersonalSitePage.addLanguageSelectorToPage();
+
+		await expect(page.getByTitle('Select a language')).toBeVisible();
+	}
+);
+
+test(
+	'Can filter by unassociated users after deleting the associated accounts',
+	{tag: ['@LPD-58336', '@LPS-196309']},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const account = await apiHelpers.headlessAdminUser.postAccount();
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			[user.emailAddress]
+		);
+
+		await usersAndOrganizationsPage.goto();
+
+		await usersAndOrganizationsPage.filterUsers('Unassociated Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user.alternateName)
+		).not.toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('test')
+		).toBeVisible();
+
+		await apiHelpers.headlessAdminUser.deleteAccount(account.id);
+
+		await usersAndOrganizationsPage.goto(true);
+
+		await usersAndOrganizationsPage.filterUsers('Unassociated Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user.alternateName)
+		).toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('test')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can filter by unassociated users after removing user from organization',
+	{tag: ['@LPD-58336', '@LPS-196309']},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+
+		await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+			organization.id,
+			user.emailAddress
+		);
+
+		await usersAndOrganizationsPage.goto();
+
+		await usersAndOrganizationsPage.filterUsers('Unassociated Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user.alternateName)
+		).not.toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('test')
+		).toBeVisible();
+
+		await apiHelpers.headlessAdminUser.deleteOrganizationUserAccountAssociation(
+			organization.id,
+			user.emailAddress
+		);
+
+		await usersAndOrganizationsPage.goto(true);
+
+		await usersAndOrganizationsPage.filterUsers('Unassociated Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell(user.alternateName)
+		).toBeVisible();
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('test')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Cannot view site settings in user personal site',
+	{tag: '@LPD-58336'},
+	async ({productMenuPage, userPersonalSitePage}) => {
+		await userPersonalSitePage.userPersonalMenuButton.click();
+		await userPersonalSitePage.myProfileMenuItem.click();
+
+		await productMenuPage.openProductMenuIfClosed();
+
+		await productMenuPage.configurationButton.click();
+
+		await expect(productMenuPage.siteSettingsButton).not.toBeVisible();
+	}
+);
+
+test(
+	'Can assign an organization to a user',
+	{tag: '@LPD-59030'},
+	async ({apiHelpers, editUserPage, usersAndOrganizationsPage}) => {
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await expect(editUserPage.membershipsLink).toBeVisible();
+		await expect(editUserPage.organizationsLink).toBeVisible();
+
+		await editUserPage.organizationsLink.click();
+
+		await editUserPage.selectOrganizationsButton.click();
+
+		await expect(
+			editUserPage.selectOrganizationsTable.cell('Approved')
+		).toBeVisible();
+
+		await (
+			await editUserPage.selectOrganizationsTable.rowCheckbox(
+				organization.name
+			)
+		).check();
+		await editUserPage.selectOrganizationsAddButton.click();
+
+		await expect(
+			editUserPage.organizationsTable.getByText(organization.name)
+		).toBeVisible();
+		await expect(
+			editUserPage.organizationsTable.getByText('Approved')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can add different roles to a user and view their status',
+	{tag: ['@LPD-59032']},
+	async ({apiHelpers, editUserPage, site, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization({
+				name: 'Organization' + getRandomInt(),
+			});
+
+		await apiHelpers.headlessAdminUser.assignUserToOrganizationByEmailAddress(
+			organization.id,
+			user.emailAddress
+		);
+
+		apiHelpers.data.push({
+			id: `${organization.id}_${user.emailAddress}`,
+			type: 'organizationUserAccountAssociation',
+		});
+
+		await apiHelpers.jsonWebServicesUser.assignUsersToSite(
+			site.id,
+			user.id
+		);
+
+		await usersAndOrganizationsPage.goToUsers();
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await expect(editUserPage.rolesLink).toBeVisible();
+
+		await editUserPage.rolesLink.click();
+		await editUserPage.selectRegularRolesButton.click();
+
+		await expect(editUserPage.selectRegularRolesSearchInput).toBeEnabled();
+		await expect(
+			editUserPage.selectRegularRolesTable.cell('Approved')
+		).toBeVisible();
+
+		await editUserPage
+			.selectRegularRolesChooseButton('Administrator')
+			.click();
+		await editUserPage.selectOrganizationRolesButton.click();
+
+		await expect(
+			editUserPage.selectOrganizationRolesSearchBar
+		).toBeEnabled();
+		await expect(
+			(
+				await editUserPage.selectOrganizationRolesTableRow(
+					0,
+					'Organization Owner'
+				)
+			).row.getByText('Approved')
+		).toBeVisible();
+
+		await (
+			await editUserPage.selectOrganizationRolesChooseButton(
+				'Organization Owner'
+			)
+		).click();
+		await editUserPage.selectSiteRolesButton.click();
+
+		await expect(editUserPage.selectSiteRolesSearchBar).toBeEnabled();
+		await expect(
+			(
+				await editUserPage.selectSiteRolesTableRow(0, 'Site Owner')
+			).row.getByText('Approved')
+		).toBeVisible();
+
+		await (
+			await editUserPage.selectSiteRolesChooseButton('Site Owner')
+		).click();
+		await editUserPage.saveButton.click();
+
+		await expect(
+			(await editUserPage.regularRolesTable.firstRow()).getByText(
+				'Approved'
+			)
+		).toBeVisible();
+		await expect(
+			(await editUserPage.organizationRolesTable.firstRow()).getByText(
+				'Approved'
+			)
+		).toBeVisible();
+		await expect(
+			(await editUserPage.siteRolesTable.firstRow()).getByText('Approved')
+		).toBeVisible();
+	}
+);
+
+test(
+	'The Account Users filter persists through pagination',
+	{tag: ['@LPD-2049']},
+	async ({apiHelpers, page, usersAndOrganizationsPage}) => {
+		test.setTimeout(120000);
+
+		const account = await apiHelpers.headlessAdminUser.postAccount();
+
+		for (let i = 1; i < 22; i++) {
+			const user = await apiHelpers.headlessAdminUser.postUserAccount({
+				alternateName: `user${String(i).padStart(2, '0')}`,
+				emailAddress: `user${String(i).padStart(2, '0')}@liferay.com`,
+				familyName: `User${String(i).padStart(2, '0')}`,
+				givenName: `User${String(i).padStart(2, '0')}`,
+			});
+
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				[user.emailAddress]
+			);
+		}
+
+		await usersAndOrganizationsPage.goto();
+
+		await usersAndOrganizationsPage.filterUsers('Account Users');
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('user20')
+		).toBeVisible();
+		await expect(
+			page.getByText('Showing 1 to 20 of 21 entries.')
+		).toBeVisible();
+
+		await nextPage(page);
+
+		await expect(
+			usersAndOrganizationsPage.usersTableCell('user21')
+		).toBeVisible();
+		await expect(
+			page.getByText('Showing 21 to 21 of 21 entries.')
+		).toBeVisible();
+	}
+);
+
+test(
+	'Site selection modal when editing user should not allow XSS',
+	{tag: '@LPD-62301'},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const name = '<img src=x onerror=alert(origin)>';
+		const site = await apiHelpers.headlessSite.createSite({
+			name,
+		});
+
+		apiHelpers.data.push({id: site.id, type: 'site'});
+
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.membershipsLink.click();
+		await editUserPage.selectSiteButton.click();
+
+		await editUserPage.selectSiteSearchBar.fill(site.name);
+		await editUserPage.selectSiteSearchBarButton.click();
+
+		let alertTriggered = false;
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				alertTriggered = true;
+				await dialog.dismiss();
+			}
+		});
+
+		await editUserPage.selectSiteFrameSiteLink(site.name).click();
+		expect(alertTriggered).toBe(false);
+	}
+);
+
+test(
+	'Can edit user additional email addresses',
+	{tag: ['@LPD-62065']},
+	async ({apiHelpers, editUserPage, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.contactLink.click();
+		await editUserPage.contactInformationLink.click();
+
+		const emailAddress1 = `${getRandomString().substring(0, 8)}@liferay.com`;
+		const emailAddress2 = `${getRandomString().substring(0, 8)}@liferay.com`;
+		const emailAddress3 = `${getRandomString().substring(0, 8)}@liferay.com`;
+
+		await expect(async () => {
+			await editUserPage.addAdditionalEmailAddressesButton.click();
+			await editUserPage.additionalEmailAddressInput.fill(emailAddress1);
+			await editUserPage.saveButton.click();
+		}).toPass();
+
+		await expect(
+			(
+				await editUserPage.additionalEmailAddressesTableRow(
+					0,
+					emailAddress1,
+					true
+				)
+			).row
+		).toBeVisible();
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress1
+			)
+		).toBeVisible();
+
+		await expect(async () => {
+			await editUserPage.addAdditionalEmailAddressesButton.click();
+			await editUserPage.makePrimaryCheckbox.check();
+			await editUserPage.additionalEmailAddressInput.fill(emailAddress2);
+			await editUserPage.saveButton.click();
+		}).toPass();
+
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress2
+			)
+		).toBeVisible();
+
+		await expect(async () => {
+			await editUserPage.addAdditionalEmailAddressesButton.click();
+			await editUserPage.additionalEmailAddressInput.fill(emailAddress3);
+			await editUserPage.saveButton.click();
+		}).toPass();
+
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress1
+			)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress2
+			)
+		).toBeVisible();
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress3
+			)
+		).not.toBeVisible();
+
+		await expect(async () => {
+			await (
+				await editUserPage.additionalEmailAddressesTableRowActions(
+					emailAddress2
+				)
+			).click();
+			await editUserPage.editMenuItem.click();
+			await editUserPage.makePrimaryCheckbox.uncheck();
+			await editUserPage.saveButton.click();
+		}).toPass();
+
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress1
+			)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress2
+			)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.additionalEmailAddressesTablePrimaryText(
+				emailAddress3
+			)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can edit user addresses',
+	{tag: ['@LPD-62065']},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+		await editUserPage.contactLink.click();
+
+		const streetName1 = '123 Main St';
+		const streetName2 = '456 Main St';
+		const streetName3 = '789 Main St';
+
+		await editUserPage.addNewAddress(false, streetName1);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).toBeVisible();
+
+		await editUserPage.addNewAddress(true, streetName2);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).not.toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName2)
+		).toBeVisible();
+
+		await editUserPage.addNewAddress(false, streetName3);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).not.toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName2)
+		).toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName3)
+		).not.toBeVisible();
+
+		await editUserPage.addressActions(streetName2).click();
+		await editUserPage.editMenuItem.click();
+		await editUserPage.makePrimaryCheckbox.uncheck();
+		await editUserPage.saveButton.click();
+		await waitForAlert(page);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).not.toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName2)
+		).not.toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName3)
+		).toBeVisible();
+
+		await editUserPage.addressActions(streetName2).click();
+		await editUserPage.makePrimaryMenuItem.click();
+		await waitForAlert(page);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).not.toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName2)
+		).toBeVisible();
+		await expect(
+			editUserPage.addressPrimaryText(streetName3)
+		).not.toBeVisible();
+
+		await editUserPage.addressActions(streetName3).click();
+		await editUserPage.removeMenuItem.click();
+		await waitForAlert(page);
+
+		await editUserPage.addressActions(streetName2).click();
+		await editUserPage.removeMenuItem.click();
+		await waitForAlert(page);
+
+		await expect(
+			editUserPage.addressPrimaryText(streetName1)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can edit user display settings',
+	{tag: ['@LPD-62065']},
+	async ({apiHelpers, editUserPage, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.preferencesLink.click();
+		await editUserPage.displaySettingsLink.click();
+
+		const newGreeting = getRandomString();
+
+		await editUserPage.greetingInput.fill(newGreeting);
+		await editUserPage.saveButton.click();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.preferencesLink.click();
+		await editUserPage.displaySettingsLink.click();
+
+		await expect(editUserPage.greetingInput).toHaveValue(newGreeting);
+	}
+);
+
+test(
+	'Can edit user phone numbers',
+	{tag: ['@LPD-62065']},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.contactLink.click();
+		await editUserPage.contactInformationLink.click();
+
+		const phoneNumber1 = getRandomInt().toString();
+		const phoneNumber2 = getRandomInt().toString();
+		const phoneNumber3 = getRandomInt().toString();
+
+		await editUserPage.addNewPhoneNumber(false, phoneNumber1);
+
+		await expect(
+			(await editUserPage.phoneNumbersTableRow(0, phoneNumber1, true)).row
+		).toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber1)
+		).toBeVisible();
+
+		await editUserPage.addNewPhoneNumber(true, phoneNumber2);
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber2)
+		).toBeVisible();
+
+		await editUserPage.addNewPhoneNumber(false, phoneNumber3);
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber1)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber2)
+		).toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber3)
+		).not.toBeVisible();
+
+		await expect(async () => {
+			await (
+				await editUserPage.phoneNumbersTableRowActions(phoneNumber2)
+			).click();
+			await editUserPage.editMenuItem.click();
+			await editUserPage.makePrimaryCheckbox.uncheck();
+			await editUserPage.saveButton.click();
+			await waitForAlert(page);
+		}).toPass();
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber2)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber3)
+		).toBeVisible();
+
+		await (
+			await editUserPage.phoneNumbersTableRowActions(phoneNumber2)
+		).click();
+		await editUserPage.makePrimaryMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber2)
+		).toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber3)
+		).not.toBeVisible();
+
+		await (
+			await editUserPage.phoneNumbersTableRowActions(phoneNumber3)
+		).click();
+		await editUserPage.removeMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber1)
+		).not.toBeVisible();
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber2)
+		).toBeVisible();
+
+		await (
+			await editUserPage.phoneNumbersTableRowActions(phoneNumber2)
+		).click();
+		await editUserPage.removeMenuItem.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			await editUserPage.phoneNumbersTablePrimaryText(phoneNumber1)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Can edit alerts and announcements delivery',
+	{tag: ['@LPD-62605', '@LPS-121271']},
+	async ({apiHelpers, editUserPage, page, usersAndOrganizationsPage}) => {
+		const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.preferencesLink.click();
+
+		await (
+			await editUserPage.alertsAndAnnouncementsDeliveryTable.rowCheckbox(
+				'General',
+				0,
+				true
+			)
+		).check();
+		await (
+			await editUserPage.alertsAndAnnouncementsDeliveryTable.rowCheckbox(
+				'Test',
+				0,
+				true
+			)
+		).check();
+		await editUserPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await usersAndOrganizationsPage.goto();
+
+		await (
+			await usersAndOrganizationsPage.usersTableRowLink(
+				user.alternateName
+			)
+		).click();
+
+		await editUserPage.preferencesLink.click();
+
+		await expect(
+			await editUserPage.alertsAndAnnouncementsDeliveryTable.rowCheckbox(
+				'General',
+				0,
+				true
+			)
+		).toBeChecked();
+		await expect(
+			await editUserPage.alertsAndAnnouncementsDeliveryTable.rowCheckbox(
+				'Test',
+				0,
+				true
+			)
+		).toBeChecked();
 	}
 );

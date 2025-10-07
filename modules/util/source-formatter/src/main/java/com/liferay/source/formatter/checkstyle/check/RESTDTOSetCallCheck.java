@@ -256,7 +256,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		parentDetailAST = parentDetailAST.getParent();
 
 		if ((parentDetailAST.getType() != TokenTypes.SLIST) ||
-			!_hasReplacableMethodSignature(methodName, javaClass)) {
+			!_hasReplaceableMethodSignature(methodName, javaClass)) {
 
 			return;
 		}
@@ -316,7 +316,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		return _rootDirName;
 	}
 
-	private boolean _hasReplacableMethodSignature(
+	private boolean _hasReplaceableMethodSignature(
 		String methodName, JavaClass javaClass) {
 
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {

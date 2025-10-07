@@ -40,9 +40,10 @@ describe('The performance by assignee page body should', () => {
 		const renderResult = render(
 			<MockRouter>
 				<ProcessListPage.Body
-					{...{items, totalCount: items.length}}
+					items={items}
 					page="1"
 					pageSize="5"
+					totalCount={items.length}
 				/>
 			</MockRouter>
 		);

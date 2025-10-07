@@ -5,16 +5,16 @@
 
 package com.liferay.message.boards.web.internal.util;
 
+import com.liferay.mail.kernel.service.MailService;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.portlet.PortletRequest;
 
@@ -59,10 +59,11 @@ public class MBMailUtil {
 		).put(
 			"[$MAILING_LIST_ADDRESS$]",
 			() -> {
-				if (!PrefsPropsUtil.getBoolean(
-						themeDisplay.getCompanyId(),
-						PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED,
-						PropsValues.POP_SERVER_NOTIFICATIONS_ENABLED)) {
+				MailService mailService = _mailServiceSnapshot.get();
+
+				if ((mailService == null) ||
+					!mailService.isPOPServerNotificationsEnabled(
+						themeDisplay.getCompanyId())) {
 
 					return null;
 				}
@@ -169,10 +170,11 @@ public class MBMailUtil {
 		).put(
 			"[$MAILING_LIST_ADDRESS$]",
 			() -> {
-				if (!PrefsPropsUtil.getBoolean(
-						themeDisplay.getCompanyId(),
-						PropsKeys.POP_SERVER_NOTIFICATIONS_ENABLED,
-						PropsValues.POP_SERVER_NOTIFICATIONS_ENABLED)) {
+				MailService mailService = _mailServiceSnapshot.get();
+
+				if ((mailService == null) ||
+					!mailService.isPOPServerNotificationsEnabled(
+						themeDisplay.getCompanyId())) {
 
 					return null;
 				}
@@ -205,5 +207,8 @@ public class MBMailUtil {
 				"the-site-name-associated-with-the-message-board")
 		).build();
 	}
+
+	private static final Snapshot<MailService> _mailServiceSnapshot =
+		new Snapshot<>(MBMailUtil.class, MailService.class);
 
 }

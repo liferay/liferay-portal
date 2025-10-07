@@ -8,12 +8,14 @@ import {ReactNode} from 'react';
 
 type HeaderProps = {
 	description?: ReactNode | string;
+	icon?: ReactNode | string;
 	title?: ReactNode | string;
 };
 
-export function Header({description, title}: HeaderProps) {
+export function Header({description, icon, title}: HeaderProps) {
 	return (
 		<div className="d-flex flex-column mb-4">
+			<span>{icon}</span>
 			<Text size={9} weight="semi-bold">
 				{title}
 			</Text>

@@ -28,7 +28,7 @@ export class CommerceAdminProductConfigurationListsPage extends CommerceDNDTable
 			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPConfigurationListsPortlet_fm .fds table'
 		);
 		this.addConfigurationList = page
-			.getByTestId('management-toolbar')
+			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
 
 		this.frame = page.frameLocator(

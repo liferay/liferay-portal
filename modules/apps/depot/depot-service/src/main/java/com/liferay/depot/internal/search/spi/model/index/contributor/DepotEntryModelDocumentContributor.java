@@ -38,6 +38,7 @@ public class DepotEntryModelDocumentContributor
 
 		document.addDate(Field.MODIFIED_DATE, depotEntry.getModifiedDate());
 		document.addText(Field.NAME, group.getName());
+		document.addKeyword(Field.TYPE, depotEntry.getType());
 
 		for (Locale locale :
 				_language.getAvailableLocales(depotEntry.getGroupId())) {

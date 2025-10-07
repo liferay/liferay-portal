@@ -32,6 +32,7 @@ CurrentCommerceAccountModel currentCommerceAccount = (CurrentCommerceAccountMode
 CurrentCommerceOrderModel currentCommerceOrder = (CurrentCommerceOrderModel)request.getAttribute("liferay-commerce:account-selector:currentCommerceOrder");
 boolean hasAddCommerceOrderPermission = (boolean)request.getAttribute("liferay-commerce:account-selector:hasAddCommerceOrderPermission");
 boolean hasManageAccountsPermission = (boolean)request.getAttribute("liferay-commerce:account-selector:hasManageAccountsPermission");
+boolean orderSelectionDisabled = (boolean)request.getAttribute("liferay-commerce:account-selector:orderSelectionDisabled");
 String selectOrderURL = (String)request.getAttribute("liferay-commerce:account-selector:selectOrderURL");
 String setCurrentAccountURL = (String)request.getAttribute("liferay-commerce:account-selector:setCurrentAccountURL");
 

@@ -198,7 +198,7 @@ int index = 0;
 							id='<%= randomNamespace + "customRangeTo" %>'
 							md="6"
 						>
-							<aui:field-wrapper label="to">
+							<aui:field-wrapper label="to[date-time]">
 								<liferay-ui:input-date
 									dayParam='<%= HtmlUtil.escapeJS(facet.getFieldId()) + "dayTo" %>'
 									dayValue="<%= toCalendar.get(Calendar.DATE) %>"

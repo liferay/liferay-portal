@@ -193,7 +193,8 @@ public class EditPublishConfigurationMVCActionCommand
 		throws PortalException {
 
 		long backgroundTaskId = ParamUtil.getLong(
-			actionRequest, BackgroundTaskConstants.BACKGROUND_TASK_ID);
+			actionRequest,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID);
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskManager.getBackgroundTask(backgroundTaskId);

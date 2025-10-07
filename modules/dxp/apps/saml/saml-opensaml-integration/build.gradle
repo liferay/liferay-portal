@@ -61,6 +61,7 @@ dependencies {
 	testImplementation project(":apps:portal-cache:portal-cache-api")
 	testImplementation project(":apps:portal-cache:portal-cache-test-util")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":dxp:apps:saml:saml-persistence-service")
 }
 

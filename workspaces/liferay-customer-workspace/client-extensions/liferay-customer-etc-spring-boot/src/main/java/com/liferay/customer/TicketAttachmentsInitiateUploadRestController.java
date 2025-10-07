@@ -5,17 +5,13 @@
 
 package com.liferay.customer;
 
-import com.liferay.client.extension.util.spring.boot3.BaseRestController;
 import com.liferay.customer.exception.FileServerUnavailableException;
-import com.liferay.customer.exception.ZendeskOrganizationNotFoundException;
-import com.liferay.customer.exception.ZendeskTicketClosedException;
-import com.liferay.customer.exception.ZendeskTicketNotFoundException;
+import com.liferay.customer.exception.JiraIssueClosedException;
+import com.liferay.customer.exception.JiraIssueNotFoundException;
+import com.liferay.customer.exception.JiraOrganizationNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.GoogleCloudStorageService;
 import com.liferay.customer.service.TicketAttachmentService;
-import com.liferay.osb.spring.boot.client.zendesk.model.ZendeskOrganization;
-import com.liferay.osb.spring.boot.client.zendesk.model.ZendeskTicket;
-import com.liferay.osb.spring.boot.client.zendesk.service.ZendeskService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +30,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 /**
  * @author Amos Fong
  */
-@ComponentScan(basePackages = "com.liferay.osb")
 @RequestMapping("/ticket-attachments/initiate-upload")
 @RestController
 public class TicketAttachmentsInitiateUploadRestController
@@ -59,14 +52,14 @@ public class TicketAttachmentsInitiateUploadRestController
 			String gcsSessionURL = jsonObject.optString("gcsSessionURL");
 			String md5Checksum = jsonObject.optString("md5Checksum");
 
-			long zendeskTicketId = jsonObject.getLong("zendeskTicketId");
+			String ticketId = jsonObject.getString("ticketId");
 
-			String accountKey = _getAccountKey(zendeskTicketId);
+			String accountKey = getAccountKey(ticketId);
 
 			TicketAttachment ticketAttachment =
 				_ticketAttachmentService.fetchTicketAttachment(
-					"Bearer " + jwt.getTokenValue(), fileName, md5Checksum,
-					zendeskTicketId);
+					"Bearer " + jwt.getTokenValue(), fileName, ticketId,
+					md5Checksum);
 
 			if (ticketAttachment != null) {
 				if (ticketAttachment.isApproved()) {
@@ -81,8 +74,8 @@ public class TicketAttachmentsInitiateUploadRestController
 
 				ticketAttachment = _ticketAttachmentService.addTicketAttachment(
 					"Bearer " + jwt.getTokenValue(), accountKey,
-					externalReferenceCode, fileName, fileSize, md5Checksum,
-					TicketAttachment.STATUS_DRAFT, type, zendeskTicketId);
+					externalReferenceCode, fileName, fileSize, ticketId,
+					md5Checksum, TicketAttachment.STATUS_DRAFT, type);
 			}
 
 			JSONObject responseJSONObject = new JSONObject();
@@ -120,65 +113,33 @@ public class TicketAttachmentsInitiateUploadRestController
 			return new ResponseEntity<>(
 				"FORBIDDEN_ACCESS", HttpStatus.FORBIDDEN);
 		}
-		catch (ZendeskOrganizationNotFoundException
-					zendeskOrganizationNotFoundException) {
-
-			_log.error(
-				zendeskOrganizationNotFoundException,
-				zendeskOrganizationNotFoundException);
-
-			return new ResponseEntity<>(
-				"ZENDESK_ORGANIZATION_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		catch (ZendeskTicketClosedException zendeskTicketClosedException) {
-			_log.error(
-				zendeskTicketClosedException, zendeskTicketClosedException);
+		catch (JiraIssueClosedException jiraIssueClosedException) {
+			_log.error(jiraIssueClosedException, jiraIssueClosedException);
 
 			return new ResponseEntity<>(
 				"TICKET_IS_CLOSED", HttpStatus.BAD_REQUEST);
 		}
-		catch (ZendeskTicketNotFoundException zendeskTicketNotFoundException) {
-			_log.error(
-				zendeskTicketNotFoundException, zendeskTicketNotFoundException);
+		catch (JiraIssueNotFoundException jiraIssueNotFoundException) {
+			_log.error(jiraIssueNotFoundException, jiraIssueNotFoundException);
 
 			return new ResponseEntity<>(
 				"INVALID_TICKET_NUMBER", HttpStatus.NOT_FOUND);
+		}
+		catch (JiraOrganizationNotFoundException
+					jiraOrganizationNotFoundException) {
+
+			_log.error(
+				jiraOrganizationNotFoundException,
+				jiraOrganizationNotFoundException);
+
+			return new ResponseEntity<>(
+				"JIRA_ORGANIZATION_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
 
 			return new ResponseEntity<>(
 				"UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	private String _getAccountKey(long zendeskTicketId) throws Exception {
-		try {
-			ZendeskTicket zendeskTicket = _zendeskService.getZendeskTicket(
-				zendeskTicketId);
-
-			if (zendeskTicket == null) {
-				throw new ZendeskTicketNotFoundException();
-			}
-
-			if (zendeskTicket.isClosed()) {
-				throw new ZendeskTicketClosedException();
-			}
-
-			ZendeskOrganization zendeskOrganization =
-				_zendeskService.getZendeskOrganization(
-					zendeskTicket.getZendeskOrganizationId());
-
-			if (zendeskOrganization == null) {
-				throw new ZendeskOrganizationNotFoundException();
-			}
-
-			return zendeskOrganization.getAccountKey();
-		}
-		catch (WebClientResponseException.NotFound webClientResponseException) {
-			_log.error(webClientResponseException, webClientResponseException);
-
-			throw new ZendeskTicketNotFoundException();
 		}
 	}
 
@@ -190,8 +151,5 @@ public class TicketAttachmentsInitiateUploadRestController
 
 	@Autowired
 	private TicketAttachmentService _ticketAttachmentService;
-
-	@Autowired
-	private ZendeskService _zendeskService;
 
 }

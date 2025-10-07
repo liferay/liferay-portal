@@ -143,6 +143,10 @@ const ACTIONS = {
 		});
 	},
 
+	revertArticle({itemData}) {
+		this.send(itemData.revertURL);
+	},
+
 	send(url) {
 		submitForm(document.hrefFm, url);
 	},

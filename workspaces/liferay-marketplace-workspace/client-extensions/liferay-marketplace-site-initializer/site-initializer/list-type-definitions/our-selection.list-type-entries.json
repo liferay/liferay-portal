@@ -1,0 +1,29 @@
+[
+	{
+		"externalReferenceCode": "HIGHLIGHTS",
+		"key": "Highlights",
+		"name": "Highlights",
+		"name_i18n": {
+			"en-US": "Highlights"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "BEST-SELLERS",
+		"key": "BestSellers",
+		"name": "Best Sellers",
+		"name_i18n": {
+			"en-US": "Best Sellers"
+		},
+		"type": "string"
+	},
+	{
+		"externalReferenceCode": "RISING-STARS",
+		"key": "RisingStars",
+		"name": "Rising Stars",
+		"name_i18n": {
+			"en-US": "Rising Stars"
+		},
+		"type": "string"
+	}
+]

@@ -5,6 +5,10 @@
 
 package com.liferay.portal.workflow.task.web.internal.portlet;
 
+import com.liferay.change.tracking.constants.CTConstants;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -16,6 +20,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
@@ -136,6 +141,23 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 	private boolean _hasWorkflowTaskViewPermission(
 		ThemeDisplay themeDisplay, WorkflowTask workflowTask) {
 
+		long ctCollectionId = MapUtil.getLong(
+			workflowTask.getOptionalAttributes(), "ctCollectionId",
+			CTConstants.CT_COLLECTION_ID_PRODUCTION);
+
+		CTCollection ctCollection = _ctCollectionLocalService.fetchCTCollection(
+			ctCollectionId);
+
+		if ((ctCollection != null) &&
+			(ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED)) {
+
+			ctCollectionId = CTConstants.CT_COLLECTION_ID_PRODUCTION;
+		}
+
+		if (ctCollectionId != CTCollectionThreadLocal.getCTCollectionId()) {
+			return false;
+		}
+
 		long groupId = MapUtil.getLong(
 			workflowTask.getOptionalAttributes(), "groupId",
 			themeDisplay.getSiteGroupId());
@@ -176,6 +198,9 @@ public class MyWorkflowTaskPortlet extends MVCPortlet {
 				!_hasWorkflowTaskViewPermission(themeDisplay, workflowTask));
 		}
 	}
+
+	@Reference
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Reference
 	private Portal _portal;

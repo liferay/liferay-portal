@@ -78,6 +78,20 @@ create table OSBFaro_FaroProjectEmailDomain (
 	emailDomain VARCHAR(75) null
 );
 
+create table OSBFaro_FaroProjectUsage (
+	mvccVersion LONG default 0 not null,
+	faroProjectUsageId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	createTime LONG,
+	modifiedTime LONG,
+	faroProjectId LONG,
+	knownIndividualsCount LONG,
+	monthDateKey VARCHAR(75) null,
+	pageViewsCount LONG,
+	usageTime LONG
+);
+
 create table OSBFaro_FaroUser (
 	mvccVersion LONG default 0 not null,
 	faroUserId LONG not null primary key,

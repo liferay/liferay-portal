@@ -14,6 +14,7 @@ import com.liferay.message.boards.exception.NoSuchMessageException;
 import com.liferay.message.boards.exception.RequiredMessageException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.comment.Comment;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -83,10 +84,15 @@ public class EditDiscussionStrutsAction implements StrutsAction {
 					namespacedHttpServletRequest, "ajax", true);
 
 				if (ajax) {
+					Comment comment = _commentManager.fetchComment(commentId);
+
 					_writeJSON(
 						httpServletResponse,
 						JSONUtil.put(
 							"commentId", commentId
+						).put(
+							"externalReferenceCode",
+							comment.getExternalReferenceCode()
 						).put(
 							"randomNamespace",
 							ParamUtil.getString(

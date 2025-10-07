@@ -7,12 +7,15 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.portlet.MockPortletRequest;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -23,7 +26,16 @@ public class ParamUtilTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		PropsTestUtil.setProps(PropsKeys.UNICODE_TEXT_NORMALIZER_FORM, "NFC");
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(PropsKeys.UNICODE_TEXT_NORMALIZER_FORM)
+		).thenReturn(
+			"NFC"
+		);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		_propsUtilMockedStatic.close();
 	}
 
 	@Test
@@ -94,5 +106,8 @@ public class ParamUtilTest {
 
 		Assert.assertSame(defaultString, value);
 	}
+
+	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
+		Mockito.mockStatic(PropsUtil.class);
 
 }

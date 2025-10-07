@@ -1,10 +1,10 @@
 liferay-tryitnow-site-initializer:
     name: Liferay Try It Now Site Initializer
-    oAuthApplicationHeadlessServer: liferay-tryitnow-site-initializer-oauth-application-headless-server
+    oAuthApplicationHeadlessServer: liferay-tryitnow-site-initializer-oahs
     siteExternalReferenceCode: L_GUEST
     siteName: Liferay Try It Now
     type: siteInitializer
-liferay-tryitnow-site-initializer-oauth-application-headless-server:
+liferay-tryitnow-site-initializer-oahs:
     .serviceAddress: localhost:8080
     .serviceScheme: http
     name: Liferay Try It Now Site Initializer OAuth Application Headless Server

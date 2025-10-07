@@ -11,10 +11,16 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
+import {liferayConfig} from '../../../../liferay.config';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {performLogout} from '../../../../utils/performLogin';
+import {
+	performLoginViaApi,
+	performLogout,
+} from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {commerceReturnSetUp, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -23,6 +29,7 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-10562': {enabled: true},
+		'LPS-178052': {enabled: true},
 	}),
 	loginTest(),
 	pageViewModePagesTest
@@ -33,13 +40,19 @@ test('LPD-21633 Returns widget to show return and refunds', async ({
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, payment, site} =
 		await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
@@ -51,9 +64,10 @@ test('LPD-21633 Returns widget to show return and refunds', async ({
 		type: 1,
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -83,18 +97,25 @@ test('LPD-32515 Returns widget displays amount fields with correct currency patt
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site, sku} = await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await expect(
 		(await returnsPage.tableRow(1, '$ 0.00', true)).row
@@ -123,7 +144,6 @@ test('LPD-32522 Returns widget displays status field on return items table when 
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(
 		apiHelpers,
@@ -134,14 +154,22 @@ test('LPD-32522 Returns widget displays status field on return items table when 
 		'draft'
 	);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -168,7 +196,6 @@ test('LPD-32519 Warning message before submitting a return should not be shown o
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(
 		apiHelpers,
@@ -179,14 +206,22 @@ test('LPD-32519 Warning message before submitting a return should not be shown o
 		'draft'
 	);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -219,18 +254,25 @@ test('LPD-32514 Return external reference code can not be edited in returns widg
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -246,24 +288,28 @@ test('LPD-32514 Return external reference code can not be edited in returns widg
 
 test('LPD-32521 Returns widget details page will only show returns status', async ({
 	apiHelpers,
-	applicationsMenuPage,
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await applicationsMenuPage.goToSite(site.name);
-
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -288,18 +334,26 @@ test('LPD-32524 Returns widget to show comments for return items', async ({
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
-	await widgetPagePage.addPortlet('Returns');
 	await (
 		await returnsPage.tableRowLink({
 			colIndex: 0,
@@ -331,18 +385,25 @@ test('LPD-32523 Returns widget to show received quantity label localized', async
 	page,
 	returnDetailsPage,
 	returnsPage,
-	widgetPagePage,
 }) => {
 	const {commerceReturn, site} = await commerceReturnSetUp(apiHelpers);
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
+	const layout = await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_order_content_web_internal_portlet_CommerceReturnContentPortlet',
+			}),
+		]),
+		siteId: site.id,
 		title: getRandomString(),
 	});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-	await widgetPagePage.addPortlet('Returns');
+	await page.goto(
+		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+		{waitUntil: 'networkidle'}
+	);
 
 	await (
 		await returnsPage.tableRowLink({
@@ -363,14 +424,14 @@ test('LPD-41539 Buyer users are missing permissions to view refunds', async ({
 	page,
 	returnDetailsPage,
 }) => {
-	test.setTimeout(180000);
+	test.setTimeout(120000);
 
 	const siteName = 'minium-' + getRandomInt();
 
 	const {channel, site} = await miniumSetUp(apiHelpers, siteName);
 
 	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'Account Business',
+		name: getRandomString(),
 		type: 'business',
 	});
 
@@ -378,61 +439,30 @@ test('LPD-41539 Buyer users are missing permissions to view refunds', async ({
 		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 			'demo.unprivileged@liferay.com'
 		);
-
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['demo.unprivileged@liferay.com']
+	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
+		account.id
 	);
 
-	const companyId = await page.evaluate(() => {
-		return Liferay.ThemeDisplay.getCompanyId();
+	const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+		return role.name === 'Buyer';
 	});
 
-	const role = await apiHelpers.headlessAdminUser.postRole({
-		name: 'Buyer ' + getRandomString(),
-		rolePermissions: [
-			{
-				actionIds: ['MANAGE_ADDRESSES', 'VIEW_ADDRESSES'],
-				primaryKey: '0',
-				resourceName: 'com.liferay.account.model.AccountEntry',
-				scope: 3,
-			},
-			{
-				actionIds: ['VIEW'],
-				primaryKey: companyId,
-				resourceName: 'com.liferay.commerce.model.CommerceOrderType',
-				scope: 1,
-			},
-			{
-				actionIds: [
-					'ADD_COMMERCE_ORDER',
-					'CHECKOUT_OPEN_COMMERCE_ORDERS',
-					'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
-					'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
-					'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
-					'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
-					'VIEW_BILLING_ADDRESS',
-					'VIEW_COMMERCE_ORDERS',
-					'VIEW_OPEN_COMMERCE_ORDERS',
-				],
-				primaryKey: '0',
-				resourceName: 'com.liferay.commerce.order',
-				scope: 3,
-			},
-		],
-	});
-
-	await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
-		role.id,
+	await apiHelpers.headlessAdminUser.assignAccountRoles(
+		account.externalReferenceCode,
+		accountRoleBuyer[0].id,
+		user.emailAddress
+	);
+	const siteRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+	await apiHelpers.headlessAdminUser.assignUserToSite(
+		siteRole.id,
+		site.id,
 		user.id
 	);
-
-	apiHelpers.data.push({
-		id: `${role.id}_${user.id}`,
-		type: 'roleUserAccountAssociation',
-	});
-
-	await apiHelpers.jsonWebServicesUser.addGroupUsers(site.id, [user.id]);
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		[user.emailAddress]
+	);
 
 	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
 		account.id
@@ -544,12 +574,13 @@ test('LPD-41539 Buyer users are missing permissions to view refunds', async ({
 	);
 
 	await performLogout(page);
+	await performLoginViaApi({page, screenName: user.alternateName});
 
-	await performLogin(page, user.alternateName);
-
-	await page.goto(`/web/${site.name}/returns`);
+	await page.goto(`/web/${site.name}/returns`, {waitUntil: 'networkidle'});
 
 	await page.getByLabel('View').click();
+
+	await expect(returnDetailsPage.returnActionsButton).toBeVisible();
 
 	await returnDetailsPage.returnActionsButton.click();
 
@@ -572,7 +603,7 @@ test('LPD-41539 Returns Manager users are missing permissions to manage refunds'
 	commercePaymentsPage,
 	page,
 }) => {
-	test.setTimeout(180000);
+	test.setTimeout(120000);
 
 	const siteName = 'minium-' + getRandomInt();
 
@@ -695,8 +726,7 @@ test('LPD-41539 Returns Manager users are missing permissions to manage refunds'
 	});
 
 	await performLogout(page);
-
-	await performLogin(page, 'demo.unprivileged');
+	await performLoginViaApi({page, screenName: 'demo.unprivileged'});
 
 	await commercePaymentsPage.goto(false);
 	await commercePaymentsPage.makeRefundButton.click();

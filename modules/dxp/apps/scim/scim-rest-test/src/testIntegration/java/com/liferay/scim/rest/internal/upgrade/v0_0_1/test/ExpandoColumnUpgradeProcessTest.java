@@ -12,6 +12,7 @@ import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
@@ -35,7 +37,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.scim.rest.client.dto.v1_0.Group;
 import com.liferay.scim.rest.client.dto.v1_0.MultiValuedAttribute;
 import com.liferay.scim.rest.client.dto.v1_0.Name;
@@ -175,6 +176,13 @@ public class ExpandoColumnUpgradeProcessTest {
 	private com.liferay.scim.rest.client.dto.v1_0.User _randomUser()
 		throws Exception {
 
+		StringBundler profileUrlSB = new StringBundler(3);
+
+		profileUrlSB.append("http://");
+		profileUrlSB.append(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		profileUrlSB.append(".com");
+
 		String randomUserName = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
 
@@ -208,8 +216,7 @@ public class ExpandoColumnUpgradeProcessTest {
 					RandomTestUtil.randomString());
 				preferredLanguage = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
-				profileUrl = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				profileUrl = profileUrlSB.toString();
 				schemas = new String[] {
 					"urn:ietf:params:scim:schemas:core:2.0:User",
 					"urn:ietf:params:scim:schemas:extension:liferay:2.0:User"

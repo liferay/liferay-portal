@@ -237,6 +237,18 @@ else {
 						/>
 					</liferay-ui:search-container-column-text>
 
+					<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand table-cell-minw-200"
+							name="status"
+						>
+							<clay:label
+								displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
+								label="<%= WorkflowConstants.getStatusLabel(role.getStatus()) %>"
+							/>
+						</liferay-ui:search-container-column-text>
+					</c:if>
+
 					<liferay-ui:search-container-column-text>
 						<c:if test="<%= Validator.isNull(p_u_i_d) || OrganizationMembershipPolicyUtil.isRoleAllowed((selUser != null) ? selUser.getUserId() : 0, selectedOrganization.getOrganizationId(), role.getRoleId()) %>">
 

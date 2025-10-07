@@ -73,7 +73,7 @@ public class ResourcePermissionUtil {
 				className = roleTypeContributor.getClassName();
 			}
 
-			Role role = roleService.getOrAddIncompleteRole(
+			Role role = roleService.getOrAddEmptyRole(
 				externalReferenceCode, className, 0, name,
 				RoleConstants.getLabelType(permission.getRoleType()));
 

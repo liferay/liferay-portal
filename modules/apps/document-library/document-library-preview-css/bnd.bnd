@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Document Library Preview CSS
 Bundle-SymbolicName: com.liferay.document.library.preview.css
-Bundle-Version: 1.0.27
+Bundle-Version: 1.0.28
 Web-ContextPath: /document-library-preview-css

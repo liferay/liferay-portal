@@ -46,7 +46,8 @@ public class ObjectEntryDisplayPageFriendlyURLResolver
 
 	@Override
 	public boolean isURLSeparatorConfigurable() {
-		return !FeatureFlagManagerUtil.isEnabled("LPD-21926");
+		return !FeatureFlagManagerUtil.isEnabled(
+			portal.getDefaultCompanyId(), "LPD-21926");
 	}
 
 	public void setObjectDefinition(ObjectDefinition objectDefinition) {

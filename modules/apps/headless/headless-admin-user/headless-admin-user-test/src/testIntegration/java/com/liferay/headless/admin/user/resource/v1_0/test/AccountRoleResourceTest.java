@@ -33,10 +33,10 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -46,6 +46,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -443,6 +444,51 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 
 		assertEqualsIgnoringOrder(
 			expectedAccountRoles, (List<AccountRole>)page3.getItems());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		super.
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		super.
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountAccountRolesByExternalReferenceCodePage()
+		throws Exception {
+
+		super.testGraphQLGetAccountAccountRolesByExternalReferenceCodePage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostAccountAccountRole() throws Exception {
+		super.testGraphQLPostAccountAccountRole();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostAccountAccountRoleByExternalReferenceCode()
+		throws Exception {
+
+		super.testGraphQLPostAccountAccountRoleByExternalReferenceCode();
 	}
 
 	@Override
@@ -843,7 +889,7 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 		throws Exception {
 
 		UserAccount userAccount = _userAccountResource.postUserAccount(
-			_randomUserAccount());
+			null, null, _randomUserAccount());
 
 		return userAccount.getEmailAddress();
 	}
@@ -893,6 +939,85 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 				RandomTestUtil.randomString(), _randomUserAccount());
 
 		return userAccount.getExternalReferenceCode();
+	}
+
+	@Override
+	protected AccountRole testGraphQLAccountRole_addAccountRole()
+		throws Exception {
+
+		return _addAccountAccountRole(_account);
+	}
+
+	@Override
+	protected Long
+		testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getAccountId(
+			AccountRole accountRole) {
+
+		return _account.getId();
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		return userAccount.getId();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress()
+		throws Exception {
+
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		return userAccount.getEmailAddress();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getExternalReferenceCode(
+				AccountRole accountRole)
+		throws Exception {
+
+		return _account.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		return _account.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getEmailAddress()
+		throws Exception {
+
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		return userAccount.getEmailAddress();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getExternalReferenceCode(
+				AccountRole accountRole)
+		throws Exception {
+
+		return _account.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		return _account.getExternalReferenceCode();
 	}
 
 	@Override

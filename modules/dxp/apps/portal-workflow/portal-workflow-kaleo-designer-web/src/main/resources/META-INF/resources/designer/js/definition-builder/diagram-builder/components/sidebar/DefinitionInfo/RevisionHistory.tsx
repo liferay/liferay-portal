@@ -22,16 +22,6 @@ export function RevisionHistory({
 }: RevisionHistoryProps) {
 	return (
 		<>
-			<div className="info-group">
-				<label>
-					{Liferay.Language.get('current-version')}:{' '}
-
-					{workflowDefinitionVersions.length + 1}
-				</label>
-
-				<div className="sheet-subtitle" />
-			</div>
-
 			{workflowDefinitionVersions.map(
 				({creatorName, dateCreated, version}, index) => (
 					<VersionRow

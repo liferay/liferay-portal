@@ -1,0 +1,29 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"label": "Show Articles",
+					"name": "showArticles",
+					"type": "checkbox"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"label": "Show Categories",
+					"name": "showCategories",
+					"type": "checkbox"
+				},
+				{
+					"dataType": "string",
+					"defaultValue": true,
+					"label": "Show Parent Category",
+					"name": "showParentCategory",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}

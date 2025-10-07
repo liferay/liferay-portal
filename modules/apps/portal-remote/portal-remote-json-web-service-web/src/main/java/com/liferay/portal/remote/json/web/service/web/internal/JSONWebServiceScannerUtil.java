@@ -5,12 +5,6 @@
 
 package com.liferay.portal.remote.json.web.service.web.internal;
 
-import com.liferay.portal.kernel.bean.ClassLoaderBeanHandler;
-import com.liferay.portal.kernel.service.ServiceWrapper;
-import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.spring.aop.AopInvocationHandler;
-
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import java.util.ArrayList;
@@ -22,7 +16,8 @@ import java.util.List;
 public class JSONWebServiceScannerUtil {
 
 	public static Method[] scan(Object service) {
-		Class<?> clazz = _getTargetClass(service);
+		Class<?> clazz = JSONWebServiceActionsManagerImpl.getTargetClass(
+			service);
 
 		Method[] methods = clazz.getMethods();
 
@@ -39,37 +34,6 @@ public class JSONWebServiceScannerUtil {
 		}
 
 		return serviceMethods.toArray(new Method[0]);
-	}
-
-	private static Class<?> _getTargetClass(Object service) {
-		while (ProxyUtil.isProxyClass(service.getClass())) {
-			InvocationHandler invocationHandler =
-				ProxyUtil.getInvocationHandler(service);
-
-			if (invocationHandler instanceof AopInvocationHandler) {
-				AopInvocationHandler aopInvocationHandler =
-					(AopInvocationHandler)invocationHandler;
-
-				service = aopInvocationHandler.getTarget();
-			}
-			else if (invocationHandler instanceof ClassLoaderBeanHandler) {
-				ClassLoaderBeanHandler classLoaderBeanHandler =
-					(ClassLoaderBeanHandler)invocationHandler;
-
-				Object bean = classLoaderBeanHandler.getBean();
-
-				if (bean instanceof ServiceWrapper) {
-					ServiceWrapper<?> serviceWrapper = (ServiceWrapper<?>)bean;
-
-					service = serviceWrapper.getWrappedService();
-				}
-				else {
-					service = bean;
-				}
-			}
-		}
-
-		return service.getClass();
 	}
 
 }

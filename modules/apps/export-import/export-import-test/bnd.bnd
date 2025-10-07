@@ -1,3 +1,4 @@
 Bundle-Name: Liferay Export Import Test
 Bundle-SymbolicName: com.liferay.exportimport.test
 Bundle-Version: 1.0.0
+-includeresource: @jsonassert-[0-9.]*.jar

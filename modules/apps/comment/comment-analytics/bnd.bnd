@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Comment Analytics
 Bundle-SymbolicName: com.liferay.comment.analytics
-Bundle-Version: 4.0.12
+Bundle-Version: 4.0.13
 Web-ContextPath: /comment-analytics

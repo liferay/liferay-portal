@@ -19,7 +19,7 @@ const createObjectEntryElement = (action: AnalyticsTypes.ElementAction) => {
 	const objectEntryElement = document.createElement('div');
 
 	objectEntryElement.dataset.analyticsAssetAction = action;
-	objectEntryElement.dataset.analyticsAssetExternalReferenceCode =
+	objectEntryElement.dataset.analyticsExternalReferenceCode =
 		'a66d047e-3203-401a-890c-b881a9c54648';
 	objectEntryElement.dataset.analyticsObjectDefinitionName =
 		'my-custom-object-definition-name';
@@ -39,7 +39,7 @@ const createObjectEntryLinkElement = () => {
 	objectEntryElement.href = '#';
 	objectEntryElement.dataset.analyticsAssetAction =
 		AnalyticsTypes.ElementAction.Download;
-	objectEntryElement.dataset.analyticsAssetExternalReferenceCode =
+	objectEntryElement.dataset.analyticsExternalReferenceCode =
 		'a66d047e-3203-401a-890c-b881a9c54648';
 	objectEntryElement.dataset.analyticsObjectDefinitionName =
 		'my-custom-object-definition-name';
@@ -209,9 +209,9 @@ describe('ObjectEntry Plugin', () => {
 
 			setDataset(objectEntryElement, {
 				analyticsAssetAction: action,
-				analyticsAssetExternalReferenceCode:
-					'a66d047e-3203-401a-890c-b881a9c54648',
 				analyticsAssetType: AnalyticsTypes.ElementType.ObjectEntry,
+				analyticsExternalReferenceCode:
+					'a66d047e-3203-401a-890c-b881a9c54648',
 				analyticsObjectDefinitionName:
 					'my-custom-object-definition-name',
 			});

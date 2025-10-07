@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -272,8 +271,8 @@ public class UnicodePropertiesTest {
 	private void _testPutLine(boolean safe) {
 		UnicodeProperties unicodeProperties = new UnicodeProperties(safe);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				UnicodeProperties.class.getName(), Level.ALL)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				UnicodeProperties.class.getName(), LoggerTestUtil.ALL)) {
 
 			unicodeProperties.put(_TEST_KEY_1);
 

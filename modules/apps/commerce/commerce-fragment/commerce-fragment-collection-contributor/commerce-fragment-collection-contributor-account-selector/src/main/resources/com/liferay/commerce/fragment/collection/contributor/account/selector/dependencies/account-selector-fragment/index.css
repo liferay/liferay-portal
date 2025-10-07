@@ -1,0 +1,6 @@
+.account-selector-container.show .account-selector-button-icon {
+	transform: rotateZ(180deg);
+}
+.account-selector-panel-content {
+	flex-shrink: 0;
+}

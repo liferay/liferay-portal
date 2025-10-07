@@ -5,10 +5,10 @@
 
 package com.liferay.object.internal.system.info.item.provider;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemReference;
-import com.liferay.info.item.provider.InfoItemDetailsProvider;
+import com.liferay.info.item.provider.BaseInfoItemDetailsProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.system.SystemObjectEntry;
@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
  * @author Carolina Barbosa
  */
 public class SystemObjectEntryInfoItemDetailsProvider
-	implements InfoItemDetailsProvider<SystemObjectEntry> {
+	extends BaseInfoItemDetailsProvider<SystemObjectEntry> {
 
 	public SystemObjectEntryInfoItemDetailsProvider(
 		String itemClassName, ObjectDefinition objectDefinition) {
@@ -41,13 +41,29 @@ public class SystemObjectEntryInfoItemDetailsProvider
 	}
 
 	@Override
-	public InfoItemDetails getInfoItemDetails(
-		SystemObjectEntry systemObjectEntry) {
+	protected InfoItemIdentifierFactory<SystemObjectEntry>
+		getInfoItemIdentifierFactory() {
 
-		return new InfoItemDetails(
-			getInfoItemClassDetails(),
-			new InfoItemReference(
-				_itemClassName, systemObjectEntry.getClassPK()));
+		return new InfoItemIdentifierFactory<>() {
+
+			@Override
+			public ClassPKInfoItemIdentifier createClassPKInfoItemIdentifier(
+				SystemObjectEntry systemObjectEntry) {
+
+				return new ClassPKInfoItemIdentifier(
+					systemObjectEntry.getClassPK());
+			}
+
+			@Override
+			public ERCInfoItemIdentifier createERCInfoItemIdentifier(
+				String externalReferenceCode,
+				String scopeExternalReferenceCode) {
+
+				return new ERCInfoItemIdentifier(
+					externalReferenceCode, scopeExternalReferenceCode);
+			}
+
+		};
 	}
 
 	private final String _itemClassName;

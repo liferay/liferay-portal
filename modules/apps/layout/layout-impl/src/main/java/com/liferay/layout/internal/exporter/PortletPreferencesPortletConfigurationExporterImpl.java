@@ -18,8 +18,8 @@ import com.liferay.portal.kernel.util.PortletKeys;
 
 import jakarta.portlet.PortletPreferences;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,7 +59,7 @@ public class PortletPreferencesPortletConfigurationExporterImpl
 			return null;
 		}
 
-		Map<String, Object> portletConfigurationMap = new HashMap<>();
+		Map<String, Object> portletConfigurationMap = new TreeMap<>();
 
 		Map<String, String[]> portletPreferencesMap =
 			portletPreferences.getMap();

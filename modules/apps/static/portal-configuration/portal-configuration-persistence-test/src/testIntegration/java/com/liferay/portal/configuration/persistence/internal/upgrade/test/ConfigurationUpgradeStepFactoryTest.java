@@ -15,8 +15,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -54,7 +54,7 @@ public class ConfigurationUpgradeStepFactoryTest {
 	@Before
 	public void setUp() {
 		_configsDir = new File(
-			_props.get(PropsKeys.MODULE_FRAMEWORK_CONFIGS_DIR));
+			PropsUtil.get(PropsKeys.MODULE_FRAMEWORK_CONFIGS_DIR));
 	}
 
 	@After
@@ -309,8 +309,5 @@ public class ConfigurationUpgradeStepFactoryTest {
 
 	@Inject
 	private PersistenceManager _persistenceManager;
-
-	@Inject
-	private Props _props;
 
 }

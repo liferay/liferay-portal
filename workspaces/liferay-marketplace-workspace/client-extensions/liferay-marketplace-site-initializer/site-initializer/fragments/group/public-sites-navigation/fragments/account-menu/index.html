@@ -1,5 +1,5 @@
 <div class="account position-relative" tabindex="9">
-	<button class="account-info align-items-center d-flex ${themeDisplay.isSignedIn()?then('py-1 pl-2', '')}" data-toggle="liferay-dropdown" id="account-menu-id">
+	<button class="account-info align-items-center d-flex ${themeDisplay.isSignedIn()?then('pl-2 py-1', '')}" data-toggle="liferay-dropdown" id="account-menu-id">
 		[#if themeDisplay.isSignedIn()]
 			<div class="user-avatar">
 				<img class="h-100 mx-100" src="${user.fetchPortraitURL(themeDisplay)}" />
@@ -14,23 +14,14 @@
 				</span>
 			</div>
 		[/#if]
-		<span class="account-dropdown-icon opacity-30 pr-2">
+
+		<span class="account-dropdown-icon opacity-30">
 			[@clay["icon"] symbol="caret-bottom-l"/]
 		</span>
 	</button>
 
 	<div aria-labelledby="language-selector-id" class="account-dropdown dropdown-menu position-absolute pt-2">
 		<div class="dropdown-wrapper">
-			<div class="account-configurables mb-1 pb-2 pl-2 pr-2">
-				[@liferay_site_navigation["navigation-menu"]
-					ddmTemplateGroupId=(scopeGroupId)
-					ddmTemplateKey="NAVIGATION-ACCOUNT-MENU" displayDepth=0
-					expandedLevels="auto" preview=false rootItemLevel=0
-					rootLayoutType="absolute"
-					siteNavigationMenuId=(configuration.accountMenuId)!0
-				/]
-			</div>
-
 			<div class="account-content p-2">
 				<div class="create-account-settings">
 					[#if themeDisplay.isSignedIn()]
@@ -60,7 +51,7 @@
 									[@clay["icon"] symbol="user-plus"/]
 								</span>
 
-								<a href="https://login.liferay.com/signin/register" id="createAccountBtn">
+								<a class="text-nowrap" href="https://login.liferay.com/signin/register" id="createAccountBtn">
 									${languageUtil.get(locale, "create-an-account", "Create An Account")}
 								</a>
 							</div>
@@ -69,9 +60,8 @@
 								<span class="account-menu-item align-items-center d-flex opacity-70 pr-2 pt-1 sign-in-icon">
 									[@clay["icon"] symbol="user"/]
 								</span>
-								<span>
-									${languageUtil.get(locale, "sign-in", "Sign In")}
-								</span>
+
+								${languageUtil.get(locale, "sign-in", "Sign In")}
 							</a>
 						</div>
 					[/#if]

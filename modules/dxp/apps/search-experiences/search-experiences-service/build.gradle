@@ -20,6 +20,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:blogs:blogs-api")
+	compileOnly project(":apps:calendar:calendar-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:journal:journal-api")
@@ -56,5 +57,6 @@ dependencies {
 	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.2"
 	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testImplementation project(":apps:portal-search:portal-search")
+	testImplementation project(":apps:portal-search:portal-search-test-util")
 	testImplementation project(":apps:users-admin:users-admin-test-util")
 }

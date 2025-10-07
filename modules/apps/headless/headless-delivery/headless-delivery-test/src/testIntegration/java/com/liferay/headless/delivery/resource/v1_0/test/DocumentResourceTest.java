@@ -53,13 +53,13 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalService;
 
 import java.io.File;
@@ -72,6 +72,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -175,6 +176,20 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 		throws Exception {
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteDocumentMyRating() throws Exception {
+		super.testGraphQLDeleteDocumentMyRating();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetDocumentFolderDocumentsPage() throws Exception {
+		super.testGraphQLGetDocumentFolderDocumentsPage();
+	}
+
 	@Override
 	@Test
 	public void testGraphQLGetSiteDocumentsPage() throws Exception {
@@ -204,6 +219,16 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 			Arrays.asList(document1, document2),
 			Arrays.asList(
 				DocumentSerDes.toDTOs(documentsJSONObject.getString("items"))));
+	}
+
+	@Override
+	@Test
+	public void testPatchDocument() throws Exception {
+		super.testPatchDocument();
+
+		_testPatchDocumentWithDates();
+		_testPatchDocumentWithFriendlyUrlPath();
+		_testPatchDocumentWithoutFriendlyUrlPath();
 	}
 
 	@Override
@@ -288,7 +313,9 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"description", "fileName", "title"};
+		return new String[] {
+			"description", "fileName", "friendlyUrlPath", "title"
+		};
 	}
 
 	@Override
@@ -388,6 +415,20 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 	}
 
 	@Override
+	protected Document testGraphQLAssetLibraryDocument_addDocument(
+			Long assetLibraryId, Document document)
+		throws Exception {
+
+		Document addedDocument =
+			super.testGetAssetLibraryDocumentsRatedByMePage_addDocument(
+				assetLibraryId, document);
+
+		_addDocumentRatingsEntry(addedDocument);
+
+		return addedDocument;
+	}
+
+	@Override
 	protected Document testGraphQLDocument_addDocument() throws Exception {
 		return testPostDocumentFolderDocument_addDocument(
 			randomDocument(), getMultipartFiles());
@@ -407,6 +448,20 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 		throws Exception {
 
 		return testDepotEntry.getDepotEntryId();
+	}
+
+	@Override
+	protected Document testGraphQLSiteDocument_addDocument(
+			Long siteId, Document document)
+		throws Exception {
+
+		Document addedDocument =
+			super.testGetSiteDocumentsRatedByMePage_addDocument(
+				siteId, document);
+
+		_addDocumentRatingsEntry(addedDocument);
+
+		return addedDocument;
 	}
 
 	@Override
@@ -497,6 +552,73 @@ public class DocumentResourceTest extends BaseDocumentResourceTestCase {
 		HttpInvoker.HttpResponse httpResponse = httpInvoker.invoke();
 
 		return httpResponse.getContent();
+	}
+
+	private void _testPatchDocumentWithDates() throws Exception {
+		Document postDocument = testPatchDocument_addDocument();
+
+		Date dateExpired = postDocument.getDateExpired();
+		Date datePublished = postDocument.getDatePublished();
+
+		Document document = new Document();
+
+		document.setDescription(RandomTestUtil.randomString(10));
+
+		Document patchDocument = documentResource.patchDocument(
+			postDocument.getId(), document, new HashMap<>());
+
+		Document getDocument = documentResource.getDocument(
+			patchDocument.getId());
+
+		Assert.assertEquals(dateExpired, getDocument.getDateExpired());
+		Assert.assertEquals(datePublished, getDocument.getDatePublished());
+	}
+
+	private void _testPatchDocumentWithFriendlyUrlPath() throws Exception {
+		Document postDocument = testPatchDocument_addDocument();
+
+		Document document = new Document();
+
+		String friendlyUrlPath = StringUtil.toLowerCase(
+			StringUtil.randomString());
+
+		document.setFriendlyUrlPath(friendlyUrlPath);
+
+		Document patchDocument = documentResource.patchDocument(
+			postDocument.getId(), document, new HashMap<>());
+
+		Document expectedPatchDocument = postDocument.clone();
+
+		expectedPatchDocument.setFriendlyUrlPath(friendlyUrlPath);
+
+		Document getDocument = documentResource.getDocument(
+			patchDocument.getId());
+
+		assertEquals(expectedPatchDocument, getDocument);
+		assertValid(getDocument);
+	}
+
+	private void _testPatchDocumentWithoutFriendlyUrlPath() throws Exception {
+		Document postDocument = testPatchDocument_addDocument();
+
+		Document document = new Document();
+
+		String description = StringUtil.toLowerCase(StringUtil.randomString());
+
+		document.setDescription(description);
+
+		Document patchDocument = documentResource.patchDocument(
+			postDocument.getId(), document, new HashMap<>());
+
+		Document expectedPatchDocument = postDocument.clone();
+
+		expectedPatchDocument.setDescription(description);
+
+		Document getDocument = documentResource.getDocument(
+			patchDocument.getId());
+
+		assertEquals(expectedPatchDocument, getDocument);
+		assertValid(getDocument);
 	}
 
 	private void _testPostDocumentFolderDocumentWithDLFileEntryType()

@@ -1,7 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/modal": "3.139.0",
+		"@clayui/button": "3.144.1",
+		"@clayui/layout": "3.144.1",
+		"@clayui/link": "3.144.1",
+		"@clayui/loading-indicator": "3.144.1",
+		"@clayui/modal": "3.148.0",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
@@ -11,7 +14,8 @@
 	"scripts": {
 		"build": "node-scripts build",
 		"checkFormat": "node-scripts format --check",
-		"format": "node-scripts format"
+		"format": "node-scripts format",
+		"test": "node-scripts test"
 	},
-	"version": "5.0.105"
+	"version": "5.0.111"
 }

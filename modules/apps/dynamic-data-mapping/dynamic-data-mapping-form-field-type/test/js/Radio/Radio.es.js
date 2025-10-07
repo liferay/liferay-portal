@@ -27,6 +27,14 @@ describe('Field Radio', () => {
 	// eslint-disable-next-line no-console
 	const originalWarn = console.warn;
 
+	afterAll(() => {
+
+		// eslint-disable-next-line no-console
+		console.warn = originalWarn;
+	});
+
+	afterEach(cleanup);
+
 	beforeAll(() => {
 
 		// eslint-disable-next-line no-console
@@ -38,29 +46,33 @@ describe('Field Radio', () => {
 		};
 	});
 
-	afterAll(() => {
-
-		// eslint-disable-next-line no-console
-		console.warn = originalWarn;
-	});
-
-	afterEach(cleanup);
-
 	beforeEach(() => {
 		jest.useFakeTimers();
 		fetch.mockResponseOnce(JSON.stringify({}));
 	});
 
-	it('is not editable', () => {
+	it('does not have aria-invalid attribute on first render when it is required', () => {
 		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} readOnly />
+			<RadioWithProvider {...defaultRadioConfig} required={true} />
 		);
 
-		act(() => {
-			jest.runAllTimers();
-		});
+		const input = container.querySelector('input[aria-required="true"]');
 
-		expect(container).toMatchSnapshot();
+		expect(input.hasAttribute('aria-invalid')).toBe(false);
+	});
+
+	it('does not have aria-invalid attribute when it is required and has a value', () => {
+		const {container} = render(
+			<RadioWithProvider
+				{...defaultRadioConfig}
+				required={true}
+				value="value"
+			/>
+		);
+
+		const input = container.querySelector('input[aria-required="true"]');
+
+		expect(input.hasAttribute('aria-invalid')).toBe(false);
 	});
 
 	it('has a helptext', () => {
@@ -75,33 +87,93 @@ describe('Field Radio', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('renders options', () => {
+	it('has a label', () => {
 		const {container} = render(
-			<RadioWithProvider
-				{...defaultRadioConfig}
-				options={[
-					{
-						checked: false,
-						disabled: false,
-						id: 'id',
-						inline: false,
-						label: 'label',
-						name: 'name',
-						showLabel: true,
-						value: 'item',
-					},
-					{
-						checked: false,
-						disabled: false,
-						id: 'id',
-						inline: false,
-						label: 'label2',
-						name: 'name',
-						showLabel: true,
-						value: 'item2',
-					},
-				]}
-			/>
+			<RadioWithProvider {...defaultRadioConfig} label="label" />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has a placeholder', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} placeholder="Option 1" />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has a value', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} value="value" />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('has an id', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} id="Id" />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not editable', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} readOnly />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('is not required', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} required={false} />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders Label if showLabel is true', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} label="text" showLabel />
+		);
+
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('renders no options when options is empty', () => {
+		const {container} = render(
+			<RadioWithProvider {...defaultRadioConfig} options={[]} />
 		);
 
 		act(() => {
@@ -154,81 +226,33 @@ describe('Field Radio', () => {
 		expect(radioInputElement2).toBeTruthy();
 	});
 
-	it('renders no options when options is empty', () => {
+	it('renders options', () => {
 		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} options={[]} />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has an id', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} id="Id" />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a label', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} label="label" />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a placeholder', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} placeholder="Option 1" />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('is not required', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} required={false} />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('renders Label if showLabel is true', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} label="text" showLabel />
-		);
-
-		act(() => {
-			jest.runAllTimers();
-		});
-
-		expect(container).toMatchSnapshot();
-	});
-
-	it('has a value', () => {
-		const {container} = render(
-			<RadioWithProvider {...defaultRadioConfig} value="value" />
+			<RadioWithProvider
+				{...defaultRadioConfig}
+				options={[
+					{
+						checked: false,
+						disabled: false,
+						id: 'id',
+						inline: false,
+						label: 'label',
+						name: 'name',
+						showLabel: true,
+						value: 'item',
+					},
+					{
+						checked: false,
+						disabled: false,
+						id: 'id',
+						inline: false,
+						label: 'label2',
+						name: 'name',
+						showLabel: true,
+						value: 'item2',
+					},
+				]}
+			/>
 		);
 
 		act(() => {

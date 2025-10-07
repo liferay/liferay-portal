@@ -165,7 +165,7 @@ List<String> errorMessages = (List<String>)request.getAttribute(CommerceWebKeys.
 
 				<div class="col-md-3">
 					<dl class="commerce-list">
-						<dt><liferay-ui:message key="notes" /></dt>
+						<dt><liferay-ui:message key="questions-and-answers" /></dt>
 						<dd>
 
 							<%

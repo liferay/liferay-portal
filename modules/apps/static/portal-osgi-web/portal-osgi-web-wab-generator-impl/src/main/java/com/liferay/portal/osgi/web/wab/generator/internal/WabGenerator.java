@@ -11,11 +11,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.osgi.web.wab.generator.internal.artifact.ArtifactURLUtil;
 import com.liferay.portal.osgi.web.wab.generator.internal.artifact.WarArtifactUrlTransformer;
 import com.liferay.portal.osgi.web.wab.generator.internal.handler.WabURLStreamHandlerService;
 import com.liferay.portal.osgi.web.wab.generator.internal.processor.WabProcessor;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.ServletContext;
 
@@ -83,11 +83,12 @@ public class WabGenerator
 			() -> {
 				Set<String> requiredForStartupContextPaths =
 					_getRequiredForStartupContextPaths(
-						Paths.get(PropsValues.LIFERAY_HOME, "osgi/portal-war"));
+						Paths.get(
+							PropsUtil.get("module.framework.portal.war.dir")));
 
 				requiredForStartupContextPaths.addAll(
 					_getRequiredForStartupContextPaths(
-						Paths.get(PropsValues.LIFERAY_HOME, "osgi/war")));
+						Paths.get(PropsUtil.get("module.framework.war.dir"))));
 
 				if (requiredForStartupContextPaths.isEmpty()) {
 					return null;

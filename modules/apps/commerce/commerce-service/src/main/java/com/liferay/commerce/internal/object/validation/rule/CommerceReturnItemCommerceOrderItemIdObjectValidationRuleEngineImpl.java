@@ -7,6 +7,7 @@ package com.liferay.commerce.internal.object.validation.rule;
 
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -74,6 +75,7 @@ public class CommerceReturnItemCommerceOrderItemIdObjectValidationRuleEngineImpl
 				properties.get(
 					"r_commerceReturnToCommerceReturnItems_l_" +
 						"commerceReturnERC")),
+			ObjectDefinitionConstants.GROUP_ID_DEFAULT,
 			objectDefinition.getObjectDefinitionId());
 
 		if (objectEntry == null) {
@@ -88,6 +90,7 @@ public class CommerceReturnItemCommerceOrderItemIdObjectValidationRuleEngineImpl
 					originalProperties.get(
 						"r_commerceReturnToCommerceReturnItems_l_" +
 							"commerceReturnERC")),
+				ObjectDefinitionConstants.GROUP_ID_DEFAULT,
 				objectDefinition.getObjectDefinitionId());
 
 			if (objectEntry == null) {

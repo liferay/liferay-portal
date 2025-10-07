@@ -812,8 +812,8 @@ definition {
 
 		if (isSet(minOrderQuantity)) {
 			Type(
-				key_labelName = "Minimum Order Quantity",
-				locator1 = "TextInput#SPECIFIC_LABEL_TEXT_INPUT",
+				key_fieldLabel = "Minimum Order Quantity",
+				locator1 = "TextInput#GENERIC_NUMBER_INPUT",
 				value1 = ${minOrderQuantity});
 		}
 

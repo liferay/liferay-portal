@@ -161,7 +161,7 @@ definition {
 			webContentTitle = "Titulodelcontenidoweb");
 	}
 
-	@description = "This ensures that the translation files(zip and xlf files) contians multiple web contents can be imported from a zip."
+	@description = "This ensures that the translation files(zip and xlf files) contains multiple web contents can be imported from a zip."
 	@priority = 5
 	test CanImportMultipleFiles {
 		property portal.acceptance = "false";
@@ -272,7 +272,7 @@ definition {
 			webContentTitle = "TiteldesWebinhalts2");
 	}
 
-	@description = "This ensures that the translation files contians multiple web contents can be imported from a zip."
+	@description = "This ensures that the translation files contains multiple web contents can be imported from a zip."
 	@priority = 5
 	test CanImportMultipleWCs {
 		property portal.acceptance = "false";

@@ -9,11 +9,13 @@ import com.liferay.portal.background.task.internal.upgrade.v1_0_0.SchemaUpgradeP
 import com.liferay.portal.background.task.internal.upgrade.v1_0_0.UpgradeKernelPackage;
 import com.liferay.portal.background.task.internal.upgrade.v2_0_0.util.BackgroundTaskTable;
 import com.liferay.portal.background.task.internal.upgrade.v2_0_1.BackgroundTaskCompanyIdUpgradeProcess;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocalManager;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Cristina Rodríguez
@@ -41,7 +43,12 @@ public class BackgroundTaskServiceUpgradeStepRegistrator
 				new Class<?>[] {BackgroundTaskTable.class}));
 
 		registry.register(
-			"2.0.0", "2.0.1", new BackgroundTaskCompanyIdUpgradeProcess());
+			"2.0.0", "2.0.1",
+			new BackgroundTaskCompanyIdUpgradeProcess(
+				_backgroundTaskThreadLocalManager));
 	}
+
+	@Reference
+	private BackgroundTaskThreadLocalManager _backgroundTaskThreadLocalManager;
 
 }

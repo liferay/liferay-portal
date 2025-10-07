@@ -26,15 +26,15 @@ import java.util.Set;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.jaxrs.whiteboard.JaxrsWhiteboardConstants;
+import org.osgi.service.jakartars.whiteboard.JakartarsWhiteboardConstants;
 
 /**
  * @author Marcos Martins
  */
 @Component(
 	property = {
-		JaxrsWhiteboardConstants.JAX_RS_APPLICATION_BASE + "=/mock/osb-asah-publisher",
-		JaxrsWhiteboardConstants.JAX_RS_NAME + "=com.liferay.analytics.web.internal.jaxrs.application.MockOSBAsahPublisherApplication",
+		JakartarsWhiteboardConstants.JAKARTA_RS_APPLICATION_BASE + "=/mock/osb-asah-publisher",
+		JakartarsWhiteboardConstants.JAKARTA_RS_NAME + "=com.liferay.analytics.web.internal.jaxrs.application.MockOSBAsahPublisherApplication",
 		"auth.verifier.guest.allowed=true",
 		"liferay.access.control.disable=true"
 	},

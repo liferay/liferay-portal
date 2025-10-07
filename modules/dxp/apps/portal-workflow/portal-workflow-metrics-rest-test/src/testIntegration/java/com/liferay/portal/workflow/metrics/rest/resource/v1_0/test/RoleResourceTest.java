@@ -54,11 +54,9 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	public void testGetProcessRolesPage() throws Exception {
 		super.testGetProcessRolesPage();
 
-		Role role1 = testGetProcessRolesPage_addRole(
-			_process.getId(), randomRole(), "COMPLETED");
+		Role role1 = _addRole(_process.getId(), randomRole(), "COMPLETED");
 
-		Role role2 = testGetProcessRolesPage_addRole(
-			_process.getId(), randomRole(), "COMPLETED");
+		Role role2 = _addRole(_process.getId(), randomRole(), "COMPLETED");
 
 		Page<Role> page = roleResource.getProcessRolesPage(
 			_process.getId(), true);
@@ -95,11 +93,26 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	protected Role testGetProcessRolesPage_addRole(Long processId, Role role)
 		throws Exception {
 
-		return testGetProcessRolesPage_addRole(processId, role, "RUNNING");
+		return _addRole(processId, role, "RUNNING");
 	}
 
-	protected Role testGetProcessRolesPage_addRole(
-			Long processId, Role role, String status)
+	@Override
+	protected Long testGetProcessRolesPage_getProcessId() throws Exception {
+		return _process.getId();
+	}
+
+	private com.liferay.portal.kernel.model.Role _addRole(int roleType)
+		throws Exception {
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			roleType);
+
+		_roles.add(role);
+
+		return role;
+	}
+
+	private Role _addRole(Long processId, Role role, String status)
 		throws Exception {
 
 		User user = UserTestUtil.addUser();
@@ -124,22 +137,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				testGroup.getCompanyId(), Objects.equals(status, "COMPLETED"),
 				processId),
 			processId, status, TestPropsValues.getUser());
-
-		return role;
-	}
-
-	@Override
-	protected Long testGetProcessRolesPage_getProcessId() throws Exception {
-		return _process.getId();
-	}
-
-	private com.liferay.portal.kernel.model.Role _addRole(int roleType)
-		throws Exception {
-
-		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
-			roleType);
-
-		_roles.add(role);
 
 		return role;
 	}

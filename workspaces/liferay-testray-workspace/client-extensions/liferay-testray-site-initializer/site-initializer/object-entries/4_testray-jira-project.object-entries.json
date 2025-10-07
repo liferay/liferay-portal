@@ -1,0 +1,17 @@
+{
+	"object-entries": [
+		{
+			"externalReferenceCode": "AC",
+			"name": "INTERNAL - Liferay Analytics Cloud"
+		},
+		{
+			"externalReferenceCode": "LPD",
+			"name": "PUBLIC - Liferay Product Delivery"
+		},
+		{
+			"externalReferenceCode": "LRSD",
+			"name": "Liferay Solutions Delivery"
+		}
+	],
+	"objectDefinitionName": "JiraProject"
+}

@@ -6,6 +6,8 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONObject;
 
@@ -35,6 +37,19 @@ public class BaseTestReport implements TestReport {
 	}
 
 	@Override
+	public String getModuleAppPath() {
+		Matcher matcher = _moduleAppPathPattern.matcher(getTestTaskName());
+
+		if (!matcher.find()) {
+			return null;
+		}
+
+		String moduleAppPath = matcher.group("moduleAppPath");
+
+		return "modules" + moduleAppPath.replaceAll(":", "/");
+	}
+
+	@Override
 	public String getStatus() {
 		return _jsonObject.getString("status");
 	}
@@ -58,18 +73,6 @@ public class BaseTestReport implements TestReport {
 	public boolean isFailing() {
 		String status = getStatus();
 
-		DownstreamBuildReport downstreamBuildReport =
-			getDownstreamBuildReport();
-
-		if (status.equals("PASSED") && downstreamBuildReport.isFailing()) {
-			int failCount = downstreamBuildReport.getFailCount();
-			int passCount = downstreamBuildReport.getPassCount();
-
-			if ((failCount == 0) && (passCount == 1)) {
-				return true;
-			}
-		}
-
 		if (status.equals("FIXED") || status.equals("PASSED") ||
 			status.equals("SKIPPED")) {
 
@@ -90,6 +93,9 @@ public class BaseTestReport implements TestReport {
 		_downstreamBuildReport = downstreamBuildReport;
 		_jsonObject = jsonObject;
 	}
+
+	private static final Pattern _moduleAppPathPattern = Pattern.compile(
+		"(?<moduleAppPath>(:dxp)?:apps:[^:]+):.*");
 
 	private final DownstreamBuildReport _downstreamBuildReport;
 	private final JSONObject _jsonObject;

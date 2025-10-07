@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Layout Type Controller Content
 Bundle-SymbolicName: com.liferay.layout.type.controller.content
-Bundle-Version: 4.0.60
+Bundle-Version: 4.0.61
 Web-ContextPath: /layout-type-controller-content
 -dsannotations-options: inherit

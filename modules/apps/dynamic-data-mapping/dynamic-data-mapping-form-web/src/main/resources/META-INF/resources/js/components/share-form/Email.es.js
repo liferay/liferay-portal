@@ -67,7 +67,7 @@ const Email = ({
 	return (
 		<div className="share-form-modal-item-email">
 			<ClayForm.Group>
-				<label>{Liferay.Language.get('to')}</label>
+				<label>{Liferay.Language.get('to[recipient]')}</label>
 
 				<ClayInput.Group small stacked>
 					<ClayInput.GroupItem>

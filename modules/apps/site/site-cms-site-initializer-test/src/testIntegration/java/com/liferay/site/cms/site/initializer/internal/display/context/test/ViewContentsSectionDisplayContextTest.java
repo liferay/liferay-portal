@@ -8,20 +8,13 @@ package com.liferay.site.cms.site.initializer.internal.display.context.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
-import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectFolder;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -34,7 +27,6 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +40,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 @RunWith(Arquillian.class)
 @Sync
 public class ViewContentsSectionDisplayContextTest
-	extends BaseDisplayContextTestCase {
+	extends BaseSectionDisplayContextTestCase {
 
 	@ClassRule
 	@Rule
@@ -57,123 +49,87 @@ public class ViewContentsSectionDisplayContextTest
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Ignore
-	@Test
-	@TestInfo("LPD-50664")
-	public void testGetCreationMenu() throws Exception {
-		Map<String, String> expectedResultMap = LinkedHashMapBuilder.put(
-			"folder", StringPool.BLANK
-		).put(
-			"Basic Web Content",
-			getHref(
-				objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId()))
-		).build();
-
-		testGetCreationMenu(
-			ReflectionTestUtil.invoke(
-				_getViewContentsSectionDisplayContext(
-					getMockHttpServletRequest()),
-				"getCreationMenu", new Class<?>[0]),
-			expectedResultMap);
-
-		ObjectFolder objectFolder =
-			objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-				TestPropsValues.getCompanyId());
-
-		ObjectDefinition objectDefinition = addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), true, true,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-
-		expectedResultMap.put(
-			objectDefinition.getLabel(LocaleUtil.US),
-			getHref(objectDefinition));
-
-		addCustomObjectDefinition(
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-			false, true, ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), false, true,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), true, false,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), true, true,
-			ObjectDefinitionConstants.SCOPE_COMPANY,
-			WorkflowConstants.STATUS_APPROVED);
-		addCustomObjectDefinition(
-			objectFolder.getObjectFolderId(), true, true,
-			ObjectDefinitionConstants.SCOPE_SITE,
-			WorkflowConstants.STATUS_DRAFT);
-
-		testGetCreationMenu(
-			ReflectionTestUtil.invoke(
-				_getViewContentsSectionDisplayContext(
-					getMockHttpServletRequest()),
-				"getCreationMenu", new Class<?>[0]),
-			expectedResultMap);
-	}
-
 	@Test
 	public void testGetFDSActionDropdownItems() throws Exception {
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
-			_getFDSActionDropdownItems();
+			getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 5,
+			fdsActionDropdownItems.toString(), 15,
 			fdsActionDropdownItems.size());
 
-		_assertFDSActionDropdownItem(
+		assertFDSActionDropdownItem(
 			fdsActionDropdownItems.get(0), "view", "actionLinkFolder",
 			"view-folder", "get", "item");
-		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(1), "pencil", "editFolder", "edit",
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(1), "info-circle-open", "show-details",
+			"show-details", null, "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(2), "pencil", "editFolder", "edit",
 			"get", "item");
-		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(2), "pencil", "actionLink", "edit",
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(3), "pencil", "actionLink", "edit",
 			"get", "item");
-		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(3), "password-policies", "permissions",
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(4), "share", "share", "share", "get",
+			"item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(5), "automatic-translate", "translate",
+			"translate", "get", "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(6), "time", "expire", "expire", "post",
+			"item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(7), "view", "view-content", "view", null,
+			"item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(8), "view", "view-file", "view", null,
+			"item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(9), "date-time", "version-history",
+			"view-history", "get", "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(10), "upload", "export-for-translation",
+			"export-for-translation", null, "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(11), "download", "import-translation",
+			"import-translation", null, "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(12), "password-policies", "permissions",
 			"permissions", "get", "item");
-		_assertFDSActionDropdownItem(
-			fdsActionDropdownItems.get(4), "trash", "delete", "delete",
-			"delete", "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(13), "password-policies",
+			"default-permissions", "default-permissions", null, "item");
+		assertFDSActionDropdownItem(
+			fdsActionDropdownItems.get(14), "trash", "delete", "delete", null,
+			"item");
 	}
 
-	private void _assertFDSActionDropdownItem(
-		FDSActionDropdownItem fdsActionDropdownItem, String icon, String id,
-		String label, String method, String type) {
+	@Override
+	protected Map<String, String> getExpectedCreationMenuItems()
+		throws PortalException {
 
-		Assert.assertNotNull(fdsActionDropdownItem);
-
-		Map<String, String> data =
-			(Map<String, String>)fdsActionDropdownItem.get("data");
-
-		Assert.assertEquals(id, data.get("id"));
-		Assert.assertEquals(method, data.get("method"));
-
-		Assert.assertEquals(icon, fdsActionDropdownItem.get("icon"));
-		Assert.assertEquals(label, fdsActionDropdownItem.get("label"));
-		Assert.assertEquals(type, fdsActionDropdownItem.get("type"));
+		return LinkedHashMapBuilder.put(
+			"folder", StringPool.BLANK
+		).put(
+			"basic-content", getRedirect("L_BASIC_WEB_CONTENT")
+		).put(
+			"blog", getRedirect("L_BLOG")
+		).build();
 	}
 
-	private List<FDSActionDropdownItem> _getFDSActionDropdownItems()
-		throws Exception {
-
-		return ReflectionTestUtil.invoke(
-			_getViewContentsSectionDisplayContext(getMockHttpServletRequest()),
-			"getFDSActionDropdownItems", new Class<?>[0]);
+	@Override
+	protected String getObjectFolderExternalReferenceCode() {
+		return ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES;
 	}
 
-	private Object _getViewContentsSectionDisplayContext(
+	@Override
+	protected String getRootObjectEntryFolderExternalReferenceCode() {
+		return ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS;
+	}
+
+	@Override
+	protected Object getSectionDisplayContext(
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 

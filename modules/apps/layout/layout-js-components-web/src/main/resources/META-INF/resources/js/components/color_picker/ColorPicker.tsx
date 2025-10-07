@@ -314,8 +314,7 @@ export default function ColorPicker({
 									className: 'cadmin',
 								}}
 								onActiveChange={setActiveColorPicker}
-								onColorsChange={setCustomColors}
-								onValueChange={(color) => {
+								onChange={(color: String) => {
 									debouncedOnValueSelect(
 										field.name,
 										`#${color}`
@@ -330,6 +329,7 @@ export default function ColorPicker({
 										deleteStyleError(field.name);
 									}
 								}}
+								onColorsChange={setCustomColors}
 								showHex={false}
 								showPalette={false}
 								value={

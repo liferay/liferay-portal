@@ -19,6 +19,7 @@ import com.liferay.jenkins.results.parser.test.clazz.group.RESTBuilderModulesBat
 import com.liferay.jenkins.results.parser.test.clazz.group.SemVerModulesBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.ServiceBuilderModulesBatchTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.TCKJunitBatchTestClassGroup;
+import com.liferay.jenkins.results.parser.test.clazz.group.WorkspacesCompileBatchTestClassGroup;
 
 import java.io.File;
 
@@ -53,8 +54,29 @@ public class TestClassFactory {
 		return npmTestClasses;
 	}
 
+	public static List<PlaywrightJUnitTestClass> getPlaywrightTestClasses() {
+		List<PlaywrightJUnitTestClass> playwrightJUnitTestClasses =
+			new ArrayList<>(_playwrightJUnitTestClasses.values());
+
+		Collections.sort(playwrightJUnitTestClasses);
+
+		return playwrightJUnitTestClasses;
+	}
+
 	public static TestClass newTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
+
+		return _newTestClass(batchTestClassGroup, null, testClassFile, null);
+	}
+
+	public static TestClass newTestClass(
+		BatchTestClassGroup batchTestClassGroup, File testClassFile,
+		List<String> testClassMethodNames) {
+
+		if (batchTestClassGroup instanceof JUnitBatchTestClassGroup) {
+			return new JUnitTestClass(
+				batchTestClassGroup, testClassFile, testClassMethodNames);
+		}
 
 		return _newTestClass(batchTestClassGroup, null, testClassFile, null);
 	}
@@ -81,6 +103,17 @@ public class TestClassFactory {
 	}
 
 	public static TestClassMethod newTestClassMethod(
+		boolean ignored, String name, String issues, TestClass testClass) {
+
+		if (testClass instanceof PlaywrightJUnitTestClass) {
+			return new PlaywrightTestClassMethod(
+				ignored, name, issues, testClass);
+		}
+
+		return new TestClassMethod(ignored, name, issues, testClass);
+	}
+
+	public static TestClassMethod newTestClassMethod(
 		boolean ignored, String name, TestClass testClass) {
 
 		if (testClass instanceof PlaywrightJUnitTestClass) {
@@ -98,6 +131,26 @@ public class TestClassFactory {
 		}
 
 		return new TestClassMethod(jsonObject, testClass);
+	}
+
+	private static File _getCanonicalFile(
+		File testClassFile, JSONObject jsonObject) {
+
+		File canonicalFile = null;
+
+		if (testClassFile != null) {
+			canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
+				testClassFile);
+		}
+		else if ((jsonObject != null) && jsonObject.has("file")) {
+			canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
+				new File(jsonObject.getString("file")));
+		}
+		else {
+			throw new RuntimeException("Please set a test class file");
+		}
+
+		return canonicalFile;
 	}
 
 	private static TestClass _newTestClass(
@@ -141,19 +194,8 @@ public class TestClassFactory {
 					batchTestClassGroup, testClassFile);
 			}
 			else if (batchTestClassGroup instanceof JUnitBatchTestClassGroup) {
-				File canonicalFile;
-
-				if (testClassFile != null) {
-					canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
-						testClassFile);
-				}
-				else if ((jsonObject != null) && jsonObject.has("file")) {
-					canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
-						new File(jsonObject.getString("file")));
-				}
-				else {
-					throw new RuntimeException("Please set a test class file");
-				}
+				File canonicalFile = _getCanonicalFile(
+					testClassFile, jsonObject);
 
 				if (_jUnitTestClasses.containsKey(canonicalFile)) {
 					return _jUnitTestClasses.get(canonicalFile);
@@ -177,19 +219,8 @@ public class TestClassFactory {
 			else if (batchTestClassGroup instanceof
 						NPMTestBatchTestClassGroup) {
 
-				File canonicalFile;
-
-				if (testClassFile != null) {
-					canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
-						testClassFile);
-				}
-				else if ((jsonObject != null) && jsonObject.has("file")) {
-					canonicalFile = JenkinsResultsParserUtil.getCanonicalFile(
-						new File(jsonObject.getString("file")));
-				}
-				else {
-					throw new RuntimeException("Please set a test class file");
-				}
+				File canonicalFile = _getCanonicalFile(
+					testClassFile, jsonObject);
 
 				if (_npmTestClasses.containsKey(canonicalFile)) {
 					return _npmTestClasses.get(canonicalFile);
@@ -213,13 +244,28 @@ public class TestClassFactory {
 			else if (batchTestClassGroup instanceof
 						PlaywrightBatchTestClassGroup) {
 
-				if (jsonObject != null) {
-					return new PlaywrightJUnitTestClass(
-						batchTestClassGroup, jsonObject);
+				File canonicalFile = _getCanonicalFile(
+					testClassFile, jsonObject);
+
+				if (_playwrightJUnitTestClasses.containsKey(canonicalFile)) {
+					return _playwrightJUnitTestClasses.get(canonicalFile);
 				}
 
-				return new PlaywrightJUnitTestClass(
-					batchTestClassGroup, testClassFile);
+				PlaywrightJUnitTestClass playwrightJUnitTestClass = null;
+
+				if (jsonObject != null) {
+					playwrightJUnitTestClass = new PlaywrightJUnitTestClass(
+						batchTestClassGroup, jsonObject);
+				}
+				else {
+					playwrightJUnitTestClass = new PlaywrightJUnitTestClass(
+						batchTestClassGroup, testClassFile);
+				}
+
+				_playwrightJUnitTestClasses.put(
+					canonicalFile, playwrightJUnitTestClass);
+
+				return _playwrightJUnitTestClasses.get(canonicalFile);
 			}
 			else if (batchTestClassGroup instanceof
 						PluginsBatchTestClassGroup) {
@@ -267,6 +313,22 @@ public class TestClassFactory {
 			else if (batchTestClassGroup instanceof
 						ServiceBuilderModulesBatchTestClassGroup) {
 
+				if ((testClassFile == null) && jsonObject.has("file")) {
+					testClassFile = new File(jsonObject.getString("file"));
+				}
+
+				String testClassFileName = testClassFile.getName();
+
+				if (testClassFileName.endsWith(".xml")) {
+					if (jsonObject != null) {
+						return new ServiceBuilderAntTargetTestClass(
+							batchTestClassGroup, jsonObject);
+					}
+
+					return new ServiceBuilderAntTargetTestClass(
+						batchTestClassGroup, testClassFile);
+				}
+
 				if (jsonObject != null) {
 					return new ServiceBuilderModulesTestClass(
 						batchTestClassGroup, jsonObject);
@@ -283,6 +345,17 @@ public class TestClassFactory {
 				}
 
 				return new TCKTestClass(batchTestClassGroup, testClassFile);
+			}
+			else if (batchTestClassGroup instanceof
+						WorkspacesCompileBatchTestClassGroup) {
+
+				if (jsonObject != null) {
+					return new WorkspacesCompileTestClass(
+						batchTestClassGroup, jsonObject);
+				}
+
+				return new WorkspacesCompileTestClass(
+					batchTestClassGroup, testClassFile);
 			}
 
 			if (jsonObject != null) {
@@ -309,5 +382,7 @@ public class TestClassFactory {
 		new HashMap<>();
 	private static final Map<File, NPMTestClass> _npmTestClasses =
 		new HashMap<>();
+	private static final Map<File, PlaywrightJUnitTestClass>
+		_playwrightJUnitTestClasses = new HashMap<>();
 
 }

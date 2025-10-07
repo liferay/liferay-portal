@@ -57,6 +57,18 @@ public interface MultipartTestEntityResource {
 			Long multipartTestEntityId, MultipartTestEntity multipartTestEntity)
 		throws Exception;
 
+	public MultipartTestEntity postMultipartTestEntity(
+			MultipartTestEntity multipartTestEntity)
+		throws Exception;
+
+	public MultipartTestEntity postMultipartTestEntity(
+			MultipartBody multipartBody)
+		throws Exception;
+
+	public Response postMultipartTestEntityBatch(
+			String callbackURL, Object object)
+		throws Exception;
+
 	public MultipartTestEntity putMultipartTestEntity(
 			Long multipartTestEntityId, MultipartBody multipartBody)
 		throws Exception;

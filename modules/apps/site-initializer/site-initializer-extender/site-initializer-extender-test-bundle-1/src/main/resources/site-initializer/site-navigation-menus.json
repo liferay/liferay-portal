@@ -3,6 +3,7 @@
 		"externalReferenceCode": "SITENAVIGATIONMENU1",
 		"menuItems": [
 			{
+				"displayIcon": "home",
 				"externalReferenceCode": "TESTSITENAVIGATIONMENUITEM1",
 				"friendlyURL": "/test-public-layout",
 				"privateLayout": false,

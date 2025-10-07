@@ -1,0 +1,10 @@
+{
+	"name": "Configuration",
+	"name_i18n": {
+		"en_US": "Configuration",
+		"es-ES": "Configuración",
+		"ja-JP": "構成",
+		"pt-BR": "Configuração"
+	},
+	"viewableBy": "Anyone"
+}

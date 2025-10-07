@@ -1,6 +1,7 @@
 create table CSDiagramEntry (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
+	externalReferenceCode VARCHAR(75) null,
 	CSDiagramEntryId LONG not null,
 	companyId LONG,
 	userId LONG,

@@ -6,7 +6,7 @@
 package com.liferay.saml.internal.upgrade.v1_0_0;
 
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.internal.constants.LegacySamlPropsKeys;
 
@@ -23,15 +23,14 @@ public class SamlIdpSsoSessionMaxAgePropertyUpgradeProcess
 	extends BaseUpgradeSaml {
 
 	public SamlIdpSsoSessionMaxAgePropertyUpgradeProcess(
-		ConfigurationAdmin configurationAdmin, Props props) {
+		ConfigurationAdmin configurationAdmin) {
 
 		_configurationAdmin = configurationAdmin;
-		_props = props;
 	}
 
 	@Override
 	public void doUpgrade() throws Exception {
-		String samlIdpSsoSessionMaxAge = _props.get(
+		String samlIdpSsoSessionMaxAge = PropsUtil.get(
 			LegacySamlPropsKeys.SAML_IDP_SSO_SESSION_MAX_AGE);
 
 		if (Validator.isNull(samlIdpSsoSessionMaxAge)) {
@@ -74,6 +73,5 @@ public class SamlIdpSsoSessionMaxAgePropertyUpgradeProcess
 	}
 
 	private final ConfigurationAdmin _configurationAdmin;
-	private final Props _props;
 
 }

@@ -13,6 +13,7 @@ import com.liferay.customer.exception.TicketAttachmentNotFoundException;
 import com.liferay.customer.model.TicketAttachment;
 import com.liferay.customer.service.GoogleCloudStorageService;
 import com.liferay.customer.service.TicketAttachmentService;
+import com.liferay.petra.function.UnsafeFunction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,26 +31,54 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Amos Fong
  */
-@RequestMapping("/ticket-attachments/{ticketAttachmentId}/download")
+@RequestMapping("/ticket-attachments/")
 @RestController
 public class TicketAttachmentsDownloadRestController
 	extends BaseRestController {
 
-	@GetMapping
-	public ResponseEntity<String> get(
+	@GetMapping("/by-external-reference-code/{externalReferenceCode}/download")
+	public ResponseEntity<String> getByExternalReferenceCodeDownload(
 		@AuthenticationPrincipal Jwt jwt,
-		@PathVariable("ticketAttachmentId") long ticketAttachmentId) {
+		@PathVariable("externalReferenceCode") String externalReferenceCode) {
+
+		return _getResponseEntity(
+			jwt,
+			authorization -> _ticketAttachmentService.getTicketAttachment(
+				authorization, externalReferenceCode));
+	}
+
+	@GetMapping("/by-id/{id}/download")
+	public ResponseEntity<String> getByIdDownload(
+		@AuthenticationPrincipal Jwt jwt, @PathVariable("id") long id) {
+
+		return _getResponseEntity(
+			jwt,
+			authorization -> _ticketAttachmentService.getTicketAttachment(
+				authorization, id));
+	}
+
+	private ResponseEntity<String> _getResponseEntity(
+		Jwt jwt,
+		UnsafeFunction<String, TicketAttachment, Exception> unsafeFunction) {
 
 		try {
-			TicketAttachment ticketAttachment =
-				_ticketAttachmentService.fetchTicketAttachment(
-					"Bearer " + jwt.getTokenValue(), ticketAttachmentId);
+			String authorization = "Bearer " + jwt.getTokenValue();
 
-			String downloadURL = _googleCloudStorageService.getDownloadURL(
-				ticketAttachment.getGCSBucketName(),
-				ticketAttachment.getGCSObjectName());
+			TicketAttachment ticketAttachment = unsafeFunction.apply(
+				authorization);
 
-			return new ResponseEntity<>(downloadURL, HttpStatus.OK);
+			return new ResponseEntity<>(
+				_googleCloudStorageService.getDownloadURL(
+					ticketAttachment.getGCSBucketName(),
+					ticketAttachment.getGCSObjectName()),
+				HttpStatus.OK);
+		}
+		catch (FileServerUnavailableException fileServerUnavailableException) {
+			_log.error(
+				fileServerUnavailableException, fileServerUnavailableException);
+
+			return new ResponseEntity<>(
+				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
 		}
 		catch (StorageException storageException) {
 			_log.error(storageException, storageException);
@@ -58,13 +87,6 @@ public class TicketAttachmentsDownloadRestController
 				return new ResponseEntity<>(
 					"FILE_NOT_FOUND_IN_STORAGE", HttpStatus.NOT_FOUND);
 			}
-
-			return new ResponseEntity<>(
-				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);
-		}
-		catch (FileServerUnavailableException fileServerUnavailableException) {
-			_log.error(
-				fileServerUnavailableException, fileServerUnavailableException);
 
 			return new ResponseEntity<>(
 				"FILE_SERVER_UNAVAILABLE", HttpStatus.SERVICE_UNAVAILABLE);

@@ -9,7 +9,6 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -57,25 +56,23 @@ public class PortletRegistryImpl implements PortletRegistry {
 		List<String> portletIds = new ArrayList<>();
 
 		if (fragmentEntryLink.isTypePortlet()) {
-			try {
-				JSONObject jsonObject = _jsonFactory.createJSONObject(
-					fragmentEntryLink.getEditableValues());
+			JSONObject jsonObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
 
-				String portletId = jsonObject.getString("portletId");
-
-				if (Validator.isNotNull(portletId)) {
-					String instanceId = jsonObject.getString("instanceId");
-
-					if (Objects.equals(instanceId, "0")) {
-						instanceId = StringPool.BLANK;
-					}
-
-					portletIds.add(
-						PortletIdCodec.encode(portletId, instanceId));
-				}
+			if (jsonObject == null) {
+				return portletIds;
 			}
-			catch (PortalException portalException) {
-				_log.error("Unable to get portlet IDs", portalException);
+
+			String portletId = jsonObject.getString("portletId");
+
+			if (Validator.isNotNull(portletId)) {
+				String instanceId = jsonObject.getString("instanceId");
+
+				if (Objects.equals(instanceId, "0")) {
+					instanceId = StringPool.BLANK;
+				}
+
+				portletIds.add(PortletIdCodec.encode(portletId, instanceId));
 			}
 
 			return portletIds;
@@ -267,9 +264,6 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 	private final Map<String, String> _aliasPortletNames =
 		new ConcurrentHashMap<>();
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Portal _portal;

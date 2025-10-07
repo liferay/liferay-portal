@@ -2,7 +2,7 @@ assemble:
     -   include:
             -   "**/*.js"
             -   package.json
-liferay-testray-etc-jira-oauth-application-user-agent:
+liferay-testray-etc-jira-oaua:
     .serviceAddress: localhost:3001
     .serviceScheme: http
     name: Liferay Testray Etc Jira OAuth Application User Agent
@@ -14,21 +14,21 @@ liferay-testray-etc-jira-oauth-application-user-agent:
     type: oAuthApplicationUserAgent
 liferay-testray-etc-jira-requirement-tickets:
     name: Liferay Testray Etc Jira Requirement Tickets
-    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oaua
     resourcePath: /requirement/tickets
     type: objectAction
 liferay-testray-etc-jira-sync:
     name: Liferay Testray Etc Jira Sync
-    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oaua
     resourcePath: /sync
     type: objectAction
 liferay-testray-etc-jira-tickets:
     name: Liferay Testray Etc Jira Tickets
-    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oaua
     resourcePath: /tickets
     type: objectAction
 liferay-testray-etc-jira-token:
     name: Liferay Testray Etc Jira Token
-    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-testray-etc-jira-oaua
     resourcePath: /token
     type: objectAction

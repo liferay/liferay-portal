@@ -12,6 +12,7 @@ import getRandomString from '../../../../../utils/getRandomString';
 import performLogin, {
 	performUserSwitch,
 } from '../../../../../utils/performLogin';
+import {waitForModal} from '../../../../../utils/waitFor';
 import {waitForAlert} from '../../../../../utils/waitForAlert';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
 import clickRowAction from '../../utils/clickRowAction';
@@ -509,7 +510,9 @@ test('Check "Edit" permission', async ({
 		).toBeVisible();
 	});
 
-	const confirmDeleteButton = page.getByRole('button', {
+	const modalContainer = page.locator('.liferay-modal');
+
+	const confirmDeleteButton = modalContainer.getByRole('button', {
 		name: 'Delete',
 	});
 
@@ -546,7 +549,9 @@ test('Check "Edit" permission', async ({
 			row: filtersTableRow,
 		});
 
-		await confirmDeleteButton.waitFor();
+		await waitForModal({
+			page,
+		});
 
 		await confirmDeleteButton.click();
 
@@ -584,7 +589,9 @@ test('Check "Edit" permission', async ({
 			row: sortingsTableRow,
 		});
 
-		await confirmDeleteButton.waitFor();
+		await waitForModal({
+			page,
+		});
 
 		await confirmDeleteButton.click();
 
@@ -623,7 +630,9 @@ test('Check "Edit" permission', async ({
 			row: actionsTableRow,
 		});
 
-		await confirmDeleteButton.waitFor();
+		await waitForModal({
+			page,
+		});
 
 		await confirmDeleteButton.click();
 

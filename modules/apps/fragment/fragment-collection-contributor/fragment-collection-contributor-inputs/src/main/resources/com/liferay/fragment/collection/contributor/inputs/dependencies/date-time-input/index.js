@@ -1,4 +1,4 @@
-const inputElement = document.getElementById(`${fragmentNamespace}-date-input`);
+const inputElement = document.getElementById(`${fragmentElementId}-date-input`);
 
 if (inputElement) {
 	if (input.attributes?.readOnly) {
@@ -8,7 +8,8 @@ if (inputElement) {
 			}
 		});
 	}
-	else if (layoutMode === 'edit') {
+
+	if (layoutMode === 'edit') {
 		inputElement.setAttribute('disabled', true);
 	}
 	else {
@@ -23,7 +24,7 @@ if (inputElement) {
 						inputElement,
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
-						namespace: fragmentNamespace,
+						namespace: fragmentElementId,
 					});
 
 					inputElement.addEventListener('change', (event) => {
@@ -35,12 +36,12 @@ if (inputElement) {
 						defaultLanguageId,
 						inputElement,
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-date-time-read-only`
+							`${fragmentElementId}-date-time-read-only`
 						),
 						unlocalizedFieldsState:
 							input.attributes.unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

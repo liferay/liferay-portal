@@ -76,8 +76,11 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public long[] getGuestUserRoleIds() {
-		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			guestUserId, GroupConstants.DEFAULT_PARENT_GROUP_ID);
+		Map<Long, long[]> groupRoleIds =
+			PermissionCacheUtil.getUserGroupRoleIds(guestUserId);
+
+		long[] roleIds = groupRoleIds.get(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID);
 
 		if (roleIds != null) {
 			return roleIds;
@@ -98,8 +101,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			Arrays.sort(roleIds);
 		}
 
-		PermissionCacheUtil.putUserGroupRoleIds(
-			guestUserId, GroupConstants.DEFAULT_PARENT_GROUP_ID, roleIds);
+		groupRoleIds.put(GroupConstants.DEFAULT_PARENT_GROUP_ID, roleIds);
 
 		return roleIds;
 	}
@@ -121,7 +123,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public UserBag getUserBag() throws PortalException {
-		return UserBagFactoryUtil.create(getUserId());
+		return UserBagFactoryUtil.create(getUser());
 	}
 
 	@Override
@@ -422,8 +424,10 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			return getGuestUserRoleIds();
 		}
 
-		long[] roleIds = PermissionCacheUtil.getUserGroupRoleIds(
-			userId, groupId);
+		Map<Long, long[]> groupRoleIds =
+			PermissionCacheUtil.getUserGroupRoleIds(userId);
+
+		long[] roleIds = groupRoleIds.get(groupId);
 
 		if (roleIds != null) {
 			return roleIds;
@@ -454,18 +458,19 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		Set<Long> roleIdsSet = SetUtil.fromArray(userBag.getRoleIds());
 
 		List<UserGroupRole> userGroupRoles =
-			UserGroupRoleLocalServiceUtil.getUserGroupRoles(userId, groupId);
+			UserGroupRoleLocalServiceUtil.getUserGroupRoles(userId);
 
 		for (UserGroupRole userGroupRole : userGroupRoles) {
-			roleIdsSet.add(userGroupRole.getRoleId());
+			if (userGroupRole.getGroupId() == groupId) {
+				roleIdsSet.add(userGroupRole.getRoleId());
+			}
 		}
 
 		if (parentGroupId > 0) {
-			userGroupRoles = UserGroupRoleLocalServiceUtil.getUserGroupRoles(
-				userId, parentGroupId);
-
 			for (UserGroupRole userGroupRole : userGroupRoles) {
-				roleIdsSet.add(userGroupRole.getRoleId());
+				if (userGroupRole.getGroupId() == parentGroupId) {
+					roleIdsSet.add(userGroupRole.getRoleId());
+				}
 			}
 		}
 
@@ -540,7 +545,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		Arrays.sort(roleIds);
 
-		PermissionCacheUtil.putUserGroupRoleIds(userId, groupId, roleIds);
+		groupRoleIds.put(groupId, roleIds);
 
 		return roleIds;
 	}

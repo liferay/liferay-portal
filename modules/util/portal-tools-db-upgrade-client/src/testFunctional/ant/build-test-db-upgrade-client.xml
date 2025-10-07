@@ -623,24 +623,6 @@
 		</if>
 	</target>
 
-	<target name="delete-indexes-sql">
-		<get-test-app-server-lib-portal-dir />
-
-		<unzip
-			dest="${test.app.server.lib.portal.dir}/portal-impl"
-			src="${test.app.server.lib.portal.dir}/portal-impl.jar"
-		/>
-
-		<delete file="${test.app.server.lib.portal.dir}/portal-impl.jar" />
-
-		<delete file="${test.app.server.lib.portal.dir}/portal-impl/com/liferay/portal/tools/sql/dependencies/indexes.sql" />
-
-		<jar
-			basedir="${test.app.server.lib.portal.dir}/portal-impl"
-			destfile="${test.app.server.lib.portal.dir}/portal-impl.jar"
-		/>
-	</target>
-
 	<target name="delete-write-protected-directory">
 		<get-database-upgrade-client-paths />
 
@@ -668,6 +650,26 @@
 			db.upgrade.client.home="${db.upgrade.client.home}"
 			expect.file="check-upgrade-client-gogo-shell-connection.expect"
 			file.suffix.bat="${file.suffix.bat}"
+		/>
+	</target>
+
+	<target name="force-indexes-sql-failure">
+		<get-test-app-server-lib-portal-dir />
+
+		<unzip
+			dest="${test.app.server.lib.portal.dir}/portal-impl"
+			src="${test.app.server.lib.portal.dir}/portal-impl.jar"
+		/>
+
+		<delete file="${test.app.server.lib.portal.dir}/portal-impl.jar" />
+
+		<echo file="${test.app.server.lib.portal.dir}/portal-impl/com/liferay/portal/tools/sql/dependencies/indexes.sql">
+			create wrong index
+		</echo>
+
+		<jar
+			basedir="${test.app.server.lib.portal.dir}/portal-impl"
+			destfile="${test.app.server.lib.portal.dir}/portal-impl.jar"
 		/>
 	</target>
 

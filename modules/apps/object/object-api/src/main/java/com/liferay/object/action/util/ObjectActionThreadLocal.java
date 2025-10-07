@@ -7,8 +7,6 @@ package com.liferay.object.action.util;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -41,10 +39,6 @@ public class ObjectActionThreadLocal {
 		objectEntryIdsMap.clear();
 	}
 
-	public static HttpServletRequest getHttpServletRequest() {
-		return _httpServletRequest.get();
-	}
-
 	public static Map<Long, Set<Long>> getObjectEntryIdsMap() {
 		return _objectEntryIdsMap.get();
 	}
@@ -63,12 +57,6 @@ public class ObjectActionThreadLocal {
 		_clearObjectEntryIdsMap.set(clearObjectEntryIdsMap);
 	}
 
-	public static void setHttpServletRequest(
-		HttpServletRequest httpServletRequest) {
-
-		_httpServletRequest.set(httpServletRequest);
-	}
-
 	public static void setSkipObjectActionExecution(
 		boolean skipObjectActionExecution) {
 
@@ -79,9 +67,6 @@ public class ObjectActionThreadLocal {
 		new CentralizedThreadLocal<>(
 			ObjectActionThreadLocal.class + "._clearObjectEntryIdsMap",
 			() -> true);
-	private static final ThreadLocal<HttpServletRequest> _httpServletRequest =
-		new CentralizedThreadLocal<>(
-			ObjectActionThreadLocal.class + "._httpServletRequest", () -> null);
 	private static final ThreadLocal<Map<Long, Set<Long>>> _objectEntryIdsMap =
 		new CentralizedThreadLocal<>(
 			ObjectActionThreadLocal.class.getName() + "._objectEntryIdsMap",

@@ -350,7 +350,8 @@ test('Selection filter of type "Object Picklist" can be configured to use single
 	await test.step('Update filter and make it "active"', async () => {
 		await dataSetManagerApiHelpers.updateDataSetSelectionFilter({
 			active: true,
-			erc: selectionFilter.externalReferenceCode,
+			dataSetERC,
+			selectionFilterERC: selectionFilter.externalReferenceCode,
 		});
 	});
 
@@ -434,13 +435,14 @@ test('Selection filter of type "Object Picklist" can be configured to include or
 
 	await test.step('Update filter to use preselected values exclude mode', async () => {
 		await dataSetManagerApiHelpers.updateDataSetSelectionFilter({
-			erc: selectionFilter.externalReferenceCode,
+			dataSetERC,
 			preselectedValues: JSON.stringify([
 				{
 					label: getRandomString(),
 					value: picklistBooleanOption.externalReferenceCode,
 				},
 			]),
+			selectionFilterERC: selectionFilter.externalReferenceCode,
 		});
 	});
 

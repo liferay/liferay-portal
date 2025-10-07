@@ -50,6 +50,51 @@ public class SystemProperties implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
+	public ObjectDefinitionBrief getObjectDefinitionBrief() {
+		if (_objectDefinitionBriefSupplier != null) {
+			objectDefinitionBrief = _objectDefinitionBriefSupplier.get();
+
+			_objectDefinitionBriefSupplier = null;
+		}
+
+		return objectDefinitionBrief;
+	}
+
+	public void setObjectDefinitionBrief(
+		ObjectDefinitionBrief objectDefinitionBrief) {
+
+		this.objectDefinitionBrief = objectDefinitionBrief;
+
+		_objectDefinitionBriefSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setObjectDefinitionBrief(
+		UnsafeSupplier<ObjectDefinitionBrief, Exception>
+			objectDefinitionBriefUnsafeSupplier) {
+
+		_objectDefinitionBriefSupplier = () -> {
+			try {
+				return objectDefinitionBriefUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ObjectDefinitionBrief objectDefinitionBrief;
+
+	@JsonIgnore
+	private Supplier<ObjectDefinitionBrief> _objectDefinitionBriefSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
 	public Version getVersion() {
 		if (_versionSupplier != null) {
 			version = _versionSupplier.get();
@@ -116,6 +161,19 @@ public class SystemProperties implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		ObjectDefinitionBrief objectDefinitionBrief =
+			getObjectDefinitionBrief();
+
+		if (objectDefinitionBrief != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectDefinitionBrief\": ");
+
+			sb.append(String.valueOf(objectDefinitionBrief));
+		}
 
 		Version version = getVersion();
 

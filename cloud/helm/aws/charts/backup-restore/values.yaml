@@ -1,0 +1,104 @@
+argo:
+    artifactRepository:
+        bucketId: ""
+        namespace: argo
+    workflowSpec:
+        artifactGC:
+            strategy: OnWorkflowDeletion
+        podGC:
+            strategy: OnWorkflowSuccess
+        ttlStrategy:
+            secondsAfterCompletion: 86400
+awsBackupService:
+    assumedIamRoleArn: ""
+    restoreWaitTimeoutSeconds: 7200
+    vaultName: liferay-backup
+createClusterResources: true
+fullnameOverride: ""
+git:
+    credentials:
+        token: ""
+        username: ""
+    repository:
+        branch: master
+        paths:
+            dependenciesModule: cloud/terraform/aws/dependencies
+            sparseCheckout: cloud/terraform/aws
+        url: https://github.com/liferay/liferay-portal.git
+    user:
+        emailAddress: ""
+        name: ""
+images:
+    awsCli:
+        repository: amazon/aws-cli
+        tag: 2.27.63
+    kubectl:
+        repository: registry.k8s.io/kubectl
+        tag: v1.34.0
+    terraform:
+        repository: hashicorp/terraform
+        tag: 1.12.2
+liferayWorkload:
+    managedSecretName: managed-service-details
+    name: liferay-default
+    rolloutTimeout: 15m
+nameOverride: ""
+resources:
+    applyTerraformDependenciesModule:
+        limits:
+            cpu: "1"
+            memory: 1Gi
+        requests:
+            cpu: 500m
+            memory: 512Mi
+    checkoutGitRepository:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    cleanUpS3Bucket:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    getDependenciesModuleOutputs:
+        limits:
+            cpu: 500m
+            memory: 512Mi
+        requests:
+            cpu: 200m
+            memory: 256Mi
+    getPeerRecoveryPoints:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    kubectlRolloutRestart:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    kubectlRolloutStatus:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+    restoreS3Bucket:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi
+serviceAccountAnnotations: {}
+tfvarsOverrideFileName: zz-backup-restore.auto.tfvars

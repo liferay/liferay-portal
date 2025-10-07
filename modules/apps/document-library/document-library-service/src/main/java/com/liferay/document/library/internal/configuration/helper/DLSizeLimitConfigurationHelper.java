@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,8 +52,9 @@ public class DLSizeLimitConfigurationHelper {
 	}
 
 	public Map<String, Long> getCompanyMimeTypeSizeLimit(long companyId) {
-		return _companyMimeTypeSizeLimitsMap.computeIfAbsent(
-			companyId, this::_computeCompanyMimeTypeSizeLimit);
+		return Collections.unmodifiableMap(
+			_companyMimeTypeSizeLimitsMap.computeIfAbsent(
+				companyId, this::_computeCompanyMimeTypeSizeLimit));
 	}
 
 	public long getCompanyMimeTypeSizeLimit(long companyId, String mimeType) {
@@ -89,8 +91,9 @@ public class DLSizeLimitConfigurationHelper {
 	}
 
 	public Map<String, Long> getGroupMimeTypeSizeLimit(long groupId) {
-		return _groupMimeTypeSizeLimitsMap.computeIfAbsent(
-			groupId, this::_computeGroupMimeTypeSizeLimit);
+		return Collections.unmodifiableMap(
+			_groupMimeTypeSizeLimitsMap.computeIfAbsent(
+				groupId, this::_computeGroupMimeTypeSizeLimit));
 	}
 
 	public long getGroupMimeTypeSizeLimit(long groupId, String mimeType) {
@@ -121,7 +124,8 @@ public class DLSizeLimitConfigurationHelper {
 	}
 
 	public Map<String, Long> getSystemMimeTypeSizeLimit() {
-		return _computeMimeTypeSizeLimit(_systemDLSizeLimitConfiguration);
+		return Collections.unmodifiableMap(
+			_computeMimeTypeSizeLimit(_systemDLSizeLimitConfiguration));
 	}
 
 	public void unmapPid(String pid) {

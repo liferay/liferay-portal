@@ -110,15 +110,9 @@ import org.elasticsearch.percolator.PercolateQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.xcontent.XContentType;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Michael C. Han
  */
-@Component(
-	property = "search.engine.impl=Elasticsearch",
-	service = QueryTranslator.class
-)
 public class ElasticsearchQueryTranslator
 	implements QueryTranslator<QueryBuilder>, QueryVisitor<QueryBuilder> {
 

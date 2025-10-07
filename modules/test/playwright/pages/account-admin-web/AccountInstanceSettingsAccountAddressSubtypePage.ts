@@ -55,10 +55,12 @@ export class AccountInstanceSettingsAccountAddressSubtypePage {
 		});
 
 		const billingListTypeEntry =
-			await apiHelpers.listTypeAdmin.postListTypeEntry(
-				billingListTypeDefinition.externalReferenceCode,
-				'Billing1'
-			);
+			await apiHelpers.listTypeAdmin.postListTypeEntry({
+				key: 'billing1',
+				listTypeDefinitionExternalReferenceCode:
+					billingListTypeDefinition.externalReferenceCode,
+				name_i18n: {en_US: 'Billing1'},
+			});
 
 		const billingAndShippingListTypeDefinition =
 			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
@@ -69,10 +71,12 @@ export class AccountInstanceSettingsAccountAddressSubtypePage {
 		});
 
 		const billingAndShippingListTypeEntry =
-			await apiHelpers.listTypeAdmin.postListTypeEntry(
-				billingAndShippingListTypeDefinition.externalReferenceCode,
-				'BillingAndShipping1'
-			);
+			await apiHelpers.listTypeAdmin.postListTypeEntry({
+				key: 'billingAndShipping1',
+				listTypeDefinitionExternalReferenceCode:
+					billingAndShippingListTypeDefinition.externalReferenceCode,
+				name_i18n: {en_US: 'BillingAndShipping1'},
+			});
 
 		const shippingListTypeDefinition =
 			await apiHelpers.listTypeAdmin.postRandomListTypeDefinition();
@@ -83,10 +87,12 @@ export class AccountInstanceSettingsAccountAddressSubtypePage {
 		});
 
 		const shippingListTypeEntry =
-			await apiHelpers.listTypeAdmin.postListTypeEntry(
-				shippingListTypeDefinition.externalReferenceCode,
-				'Shipping1'
-			);
+			await apiHelpers.listTypeAdmin.postListTypeEntry({
+				key: 'shipping1',
+				listTypeDefinitionExternalReferenceCode:
+					shippingListTypeDefinition.externalReferenceCode,
+				name_i18n: {en_US: 'Shipping1'},
+			});
 
 		return {
 			billingAndShippingListTypeDefinition,

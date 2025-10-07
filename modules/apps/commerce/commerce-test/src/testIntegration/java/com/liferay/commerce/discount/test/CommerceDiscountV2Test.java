@@ -1010,7 +1010,7 @@ public class CommerceDiscountV2Test {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_group.getGroupId(), 10, couponCode,
 				CommerceDiscountConstants.TARGET_PRODUCTS,
 				cpDefinition.getCPDefinitionId());
@@ -1361,13 +1361,13 @@ public class CommerceDiscountV2Test {
 		String couponCode = StringUtil.randomString();
 
 		CommerceDiscount commerceDiscount =
-			CommerceDiscountTestUtil.addCouponDiscount(
+			CommerceDiscountTestUtil.addCouponCommerceDiscount(
 				_user.getGroupId(), 1, couponCode,
 				CommerceDiscountConstants.TARGET_TOTAL, null);
 
 		Assert.assertNotNull(commerceDiscount);
 
-		CommerceDiscountTestUtil.addCouponDiscount(
+		CommerceDiscountTestUtil.addCouponCommerceDiscount(
 			_user.getGroupId(), 1, couponCode,
 			CommerceDiscountConstants.TARGET_TOTAL, null);
 	}

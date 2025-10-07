@@ -570,15 +570,15 @@ public class AccountEntryServiceHttp {
 	}
 
 	public static com.liferay.account.model.AccountEntry
-			getOrAddIncompleteAccountEntry(
+			getOrAddEmptyAccountEntry(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				String name, String type)
-		throws Exception {
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
-				AccountEntryServiceUtil.class, "getOrAddIncompleteAccountEntry",
-				_getOrAddIncompleteAccountEntryParameterTypes13);
+				AccountEntryServiceUtil.class, "getOrAddEmptyAccountEntry",
+				_getOrAddEmptyAccountEntryParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, name, type);
@@ -589,8 +589,11 @@ public class AccountEntryServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
-				if (exception instanceof Exception) {
-					throw (Exception)exception;
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
 				}
 
 				throw new com.liferay.portal.kernel.exception.SystemException(
@@ -994,10 +997,8 @@ public class AccountEntryServiceHttp {
 		_getAccountEntryByExternalReferenceCodeParameterTypes12 = new Class[] {
 			String.class, long.class
 		};
-	private static final Class<?>[]
-		_getOrAddIncompleteAccountEntryParameterTypes13 = new Class[] {
-			String.class, String.class, String.class
-		};
+	private static final Class<?>[] _getOrAddEmptyAccountEntryParameterTypes13 =
+		new Class[] {String.class, String.class, String.class};
 	private static final Class<?>[] _searchAccountEntriesParameterTypes14 =
 		new Class[] {
 			String.class, java.util.LinkedHashMap.class, int.class, int.class,

@@ -16,4 +16,11 @@ public interface InfoItemObjectProvider<T> {
 	public T getInfoItem(InfoItemIdentifier infoItemIdentifier)
 		throws NoSuchInfoItemException;
 
+	public default T getInfoItem(
+			long groupId, InfoItemIdentifier infoItemIdentifier)
+		throws NoSuchInfoItemException {
+
+		return getInfoItem(infoItemIdentifier);
+	}
+
 }

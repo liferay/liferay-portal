@@ -1,0 +1,9 @@
+.home-section {
+	.search-bar {
+		& + .search-button {
+			bottom: 8px;
+			font-size: var(--text-paragraph-lg-font-size);
+			right: 28px;
+		}
+	}
+}

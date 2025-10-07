@@ -12,6 +12,8 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidationException;
+import com.liferay.dynamic.data.mapping.validator.DDMFormValuesValidator;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
@@ -40,6 +42,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
@@ -293,6 +296,10 @@ public class JournalArticleActionDropdownItemsProvider {
 								 WorkflowConstants.STATUS_SCHEDULED)),
 						_getExpireArticleActionConsumer(
 							articleId, _themeDisplay.getURLCurrent())
+					).add(
+						this::_isRevertToVersionActionAvailable,
+						_getRevertArticleActionConsumer(
+							_themeDisplay.getURLCurrent())
 					).build());
 				dropdownGroupItem.setSeparator(true);
 			}
@@ -309,15 +316,10 @@ public class JournalArticleActionDropdownItemsProvider {
 				dropdownGroupItem.setSeparator(true);
 			}
 		).addGroup(
-			() -> !JournalArticleLocalServiceUtil.isLatestVersion(
-				_article.getGroupId(), _article.getArticleId(),
-				_article.getVersion()),
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> JournalArticlePermission.contains(
-							_themeDisplay.getPermissionChecker(), _article,
-							ActionKeys.DELETE),
+						this::_hasDeleteArticleAction,
 						_getDeleteArticleAction(
 							articleId, _themeDisplay.getURLCurrent())
 					).build());
@@ -888,6 +890,32 @@ public class JournalArticleActionDropdownItemsProvider {
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>
+		_getRevertArticleActionConsumer(String redirect) {
+
+		return dropdownItem -> {
+			dropdownItem.putData("action", "revertArticle");
+			dropdownItem.putData(
+				"revertURL",
+				PortletURLBuilder.createActionURL(
+					_liferayPortletResponse
+				).setActionName(
+					"/journal/revert_article"
+				).setRedirect(
+					redirect
+				).setParameter(
+					"articleId", _article.getArticleId()
+				).setParameter(
+					"groupId", _article.getGroupId()
+				).setParameter(
+					"version", _article.getVersion()
+				).buildString());
+			dropdownItem.setIcon("undo");
+			dropdownItem.setLabel(
+				LanguageUtil.get(_httpServletRequest, "revert"));
+		};
+	}
+
+	private UnsafeConsumer<DropdownItem, Exception>
 		_getSubscribeArticleActionUnsafeConsumer() {
 
 		if (JournalUtil.isSubscribedToArticle(
@@ -1049,6 +1077,24 @@ public class JournalArticleActionDropdownItemsProvider {
 		};
 	}
 
+	private boolean _hasDeleteArticleAction() throws PortalException {
+		if (!JournalArticlePermission.contains(
+				_themeDisplay.getPermissionChecker(), _article,
+				ActionKeys.DELETE)) {
+
+			return false;
+		}
+
+		int count = JournalArticleLocalServiceUtil.getArticlesCount(
+			_article.getGroupId(), _article.getArticleId());
+
+		if (count > 1) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _hasTranslatePermission() {
 		PermissionChecker permissionChecker =
 			_themeDisplay.getPermissionChecker();
@@ -1065,6 +1111,58 @@ public class JournalArticleActionDropdownItemsProvider {
 		}
 
 		return false;
+	}
+
+	private boolean _isRevertToVersionActionAvailable() throws PortalException {
+		if (((_article.getStatus() != WorkflowConstants.STATUS_APPROVED) &&
+			 (_article.getStatus() != WorkflowConstants.STATUS_SCHEDULED)) ||
+			!JournalArticlePermission.contains(
+				_themeDisplay.getPermissionChecker(), _article,
+				ActionKeys.UPDATE)) {
+
+			return false;
+		}
+
+		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+			JournalArticle.class.getName(), _article.getResourcePrimKey());
+
+		if (assetEntry == null) {
+			return false;
+		}
+
+		try {
+			AssetEntryLocalServiceUtil.validate(
+				_article.getGroupId(), JournalArticle.class.getName(),
+				assetEntry.getClassTypeId(), assetEntry.getCategoryIds(),
+				assetEntry.getTagNames());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return false;
+		}
+
+		try {
+			DDMFormValuesValidator ddmFormValuesValidator =
+				_ddmFormValuesValidatorSnapshot.get();
+
+			ddmFormValuesValidator.validate(_article.getDDMFormValues());
+		}
+		catch (DDMFormValuesValidationException
+					ddmFormValuesValidationException) {
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(ddmFormValuesValidationException);
+			}
+
+			return false;
+		}
+
+		return !JournalArticleLocalServiceUtil.isLatestVersion(
+			_article.getGroupId(), _article.getArticleId(),
+			_article.getVersion());
 	}
 
 	private boolean _isShowPublishAction() {
@@ -1162,6 +1260,11 @@ public class JournalArticleActionDropdownItemsProvider {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalArticleActionDropdownItemsProvider.class);
+
+	private static final Snapshot<DDMFormValuesValidator>
+		_ddmFormValuesValidatorSnapshot = new Snapshot<>(
+			JournalArticleActionDropdownItemsProvider.class,
+			DDMFormValuesValidator.class);
 
 	private final JournalArticle _article;
 	private final AssetDisplayPageFriendlyURLProvider

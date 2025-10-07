@@ -1,5 +1,27 @@
 # Liferay Gradle Plugins Baseline Change Log
 
+## 7.0.6 - 2025-05-27
+
+### Commits
+- [LPD-52887] Rename (1e3d0e1ddc)
+
+### Dependencies
+- [LPD-56284] Update the com.liferay.ant.bnd dependency to version 3.2.15.
+
+## 7.0.5 - 2025-01-16
+
+### Dependencies
+- [LPD-41335] Update the com.liferay.ant.bnd dependency to version 3.2.14.
+
+## 7.0.4 - 2024-12-27
+
+### Commits
+- [LPD-41335] Auto sf by format-source-bnd (1ae89da596)
+
+### Dependencies
+- [LPD-41335] Update the com.liferay.ant.bnd dependency to version 3.2.13.
+- [LPD-28218] Update the com.liferay.ant.bnd dependency to version 3.2.12.
+
 ## 7.0.3 - 2024-04-10
 
 ### Commits
@@ -623,6 +645,10 @@ extend `BaselineTask`. If `true`, the baseline check will fail if the
 - [LPS-66762] Edit Gradle Baseline plugin README (04de22ed5e)
 
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
+[LPD-28218]: https://issues.liferay.com/browse/LPD-28218
+[LPD-41335]: https://issues.liferay.com/browse/LPD-41335
+[LPD-52887]: https://issues.liferay.com/browse/LPD-52887
+[LPD-56284]: https://issues.liferay.com/browse/LPD-56284
 [LPS-0]: https://issues.liferay.com/browse/LPS-0
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-64098]: https://issues.liferay.com/browse/LPS-64098

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.Digester;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -170,7 +169,7 @@ public abstract class BaseClientTestCase {
 	protected String generateCodeChallenge(String codeVerifier) {
 		return StringUtil.removeChar(
 			StringUtil.replace(
-				DigesterUtil.digestBase64(Digester.SHA_256, codeVerifier),
+				DigesterUtil.digestBase64(DigesterUtil.SHA_256, codeVerifier),
 				new char[] {CharPool.PLUS, CharPool.SLASH},
 				new char[] {CharPool.MINUS, CharPool.UNDERLINE}),
 			CharPool.EQUAL);

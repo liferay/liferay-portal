@@ -53,12 +53,42 @@
 		"to": "fetchCommerceCatalogByExternalReferenceCode(param#1#, param#0#)"
 	},
 	{
+		"classNames": [
+			"BaseProductResourceImpl"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-7753",
+		"methodsToFormat": [
+			{
+				"from": "@Override\n\tpublic Response deleteProduct(Long id)",
+				"to": "@Override\n\tpublic void deleteProduct(Long id)"
+			},
+			{
+				"from": "@Override\n\tpublic Response deleteProductByExternalReferenceCode(\n\t\t\tString externalReferenceCode)",
+				"to": "@Override\n\tpublic void deleteProductByExternalReferenceCode(\n\t\t\tString externalReferenceCode)"
+			}
+		]
+	},
+	{
 		"from": "regex:serviceLocator[\\n\\s]*\\.[\\n\\s]*findService\\([\\n\\s]*\"com\\.liferay\\.dynamic\\.data\\.mapping\\.storage\\.StorageEngine\"\\)",
 		"issueKey": "LPD-7762",
 		"skipParametersValidation": true,
 		"to": "staticUtil[\"com.liferay.dynamic.data.mapping.kernel.StorageEngineManagerUtil\"]",
 		"validExtensions": [
 			"ftl"
+		]
+	},
+	{
+		"classNames": [
+			"BasePanelApp"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-7870",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\s*@Reference\\s*\\(\\s*target\\s*=\\s*(?<target>\"[\\s\\S]*?\"\\)\"),[\\s\\S]*?\\)\\s*public\\s+void\\s+setPortlet\\(Portlet\\s+portlet\\)\\s*\\{[\\s\\S]*?\\}",
+				"to": "@Reference(\n\t\ttarget = ${target}\n\t)\n\tprivate Portlet _portlet;\n\n\t@Override\n\tpublic Portlet getPortlet() {\n\t\treturn _portlet;\n\t}"
+			}
 		]
 	},
 	{
@@ -112,6 +142,19 @@
 	},
 	{
 		"classNames": [
+			"AutoBatchPreparedStatementUtil"
+		],
+		"from": "autoBatch(PreparedStatement preparedStatement)",
+		"hasMessage": true,
+		"issueKey": "LPD-8010"
+	},
+	{
+		"from": "regex:(?<prefixMethodName>AutoBatchPreparedStatementUtil\\.autoBatch\\(\\s*)(?<variableName>\\w+)\\.prepareStatement\\((?<messageVariable>[\\s\\S]*?)\\)\\)",
+		"issueKey": "LPD-8010",
+		"to": "${prefixMethodName}${variableName},${messageVariable})"
+	},
+	{
+		"classNames": [
 			"InfoCollectionProvider"
 		],
 		"classStructurePattern": true,
@@ -148,6 +191,7 @@
 	},
 	{
 		"from": "new InfoItemFormVariation(String paramName, InfoLocalizedValue<String> paramName)",
+		"hasMessage": true,
 		"issueKey": "LPD-8024"
 	},
 	{
@@ -177,7 +221,7 @@
 			"Http",
 			"HttpUtil"
 		],
-		"from": "regex:(\\w+)\\.(?<methodName>addParameter|decodePath|decodeURL|encodeParameters|encodePath|fixPath|getCompleteURL|getDomain|getIpAddress|getParameter|getParameterMap|getPath|getProtocol|getQueryString|getRequestURL|getURI|hasDomain|hasProtocol|isForwarded|isSecure|normalizePath|parameterMapFromString|protocolize|removeDomain|removeParameter|removePathParameters|removeProtocol|sanitizeHeader|setParameter|shortenURL)",
+		"from": "regex:(\\w+)\\.(?<methodName>addParameter|decodePath|decodeURL|encodeParameters|encodePath|fixPath|getCompleteURL|getDomain|getIpAddress|getParameter|getParameterMap|getPath|getProtocol|getQueryString|getRequestURL|getURI|hasDomain|hasProtocol|isForwarded|isSecure|normalizePath|parameterMapFromString|parameterMapToString|protocolize|removeDomain|removeParameter|removePathParameters|removeProtocol|sanitizeHeader|setParameter|shortenURL)",
 		"issueKey": "LPD-8040",
 		"newImports": [
 			"com.liferay.portal.kernel.util.HttpComponentsUtil"
@@ -2409,6 +2453,36 @@
 		"to": "SAXReaderUtil.read(param#0#).formattedString()"
 	},
 	{
+		"classNames": [
+			"IndexerPostProcessor"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-27752",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\n\\t(?<methodSignature>public void postProcessContextQuery\\(\\n*\\s*BooleanQuery contextQuery, SearchContext searchContext\\))",
+				"to": "@Override\n\tpublic void postProcessContextBooleanFilter(\n\t\t\tBooleanFilter booleanFilter, SearchContext searchContext)"
+			},
+			{
+				"from": "regex:@Override\\n\\t(?<methodSignature>public void postProcessSearchQuery\\(\\n*\\s*BooleanQuery searchQuery, SearchContext searchContext\\))",
+				"to": "@Override\n\tpublic void postProcessSearchQuery(\n\t\t\tBooleanQuery searchQuery, BooleanFilter booleanFilter,\n\t\t\tSearchContext searchContext)"
+			}
+		]
+	},
+	{
+		"classNames": [
+			"BaseJSPDynamicInclude"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-28057",
+		"methodsToFormat": [
+			{
+				"from": "regex:@Override\\s*@Reference\\s*\\(\\s*target\\s*=\\s*\"(?<target>[^\"]*)\",[\\s\\S]*?\\)\\s*public\\s+void\\s+setServletContext\\(ServletContext\\s+servletContext\\)\\s*\\{[\\s\\S]*?\\}",
+				"to": "@Reference(\n\t\ttarget = \"${target}\"\n\t)\n\tprivate ServletContext _servletContext;\n\n\t@Override\n\tpublic ServletContext getServletContext() {\n\t\treturn _servletContext;\n\t}"
+			}
+		]
+	},
+	{
 		"from": "new CommercePriceEntryUOMCreateDateComparator()",
 		"issueKey": "LPD-28067",
 		"skipParametersValidation": true,
@@ -3299,6 +3373,7 @@
 			"JournalArticle"
 		],
 		"from": "setDDMStructureKey(String paramName)",
+		"hasMessage": true,
 		"issueKey": "LPD-30559"
 	},
 	{
@@ -3818,7 +3893,7 @@
 		"issueKey": "LPD-40678",
 		"newImports": [
 			"com.liferay.portal.kernel.util.SetUtil",
-			"com.liferay.portal.util.PropsValues"
+			"com.liferay.portal.kernel.util.PropsValues"
 		],
 		"to": "SetUtil.fromArray(PropsValues.MIME_TYPES_WEB_IMAGES).contains",
 		"validExtensions": [
@@ -3927,62 +4002,6 @@
 			"com.liferay.petra.string.StringPool"
 		],
 		"to": "fetchCommercePriceEntry(param#1#, null, StringPool.BLANK)"
-	},
-	{
-		"classNames": [
-			"CommercePriceEntryLocalService",
-			"CommercePriceEntryLocalServiceUtil",
-			"CommercePriceEntryService",
-			"CommercePriceEntryServiceUtil"
-		],
-		"from": "fetchCommercePriceEntry(long paramName, long paramName, boolean paramName)",
-		"issueKey": "LPD-41285",
-		"newImports": [
-			"com.liferay.petra.string.StringPool"
-		],
-		"to": "fetchCommercePriceEntry(param#1#, null, StringPool.BLANK, param#2#)"
-	},
-	{
-		"classNames": [
-			"CommercePriceEntryLocalService",
-			"CommercePriceEntryLocalServiceUtil",
-			"CommercePriceEntryService",
-			"CommercePriceEntryServiceUtil"
-		],
-		"from": "fetchCommercePriceEntry(long paramName, String paramName)",
-		"issueKey": "LPD-41285",
-		"newImports": [
-			"com.liferay.petra.string.StringPool"
-		],
-		"to": "fetchCommercePriceEntry(param#0#, param#1#, StringPool.BLANK)"
-	},
-	{
-		"classNames": [
-			"CommercePriceEntryLocalService",
-			"CommercePriceEntryLocalServiceUtil",
-			"CommercePriceEntryService",
-			"CommercePriceEntryServiceUtil"
-		],
-		"from": "fetchCommercePriceEntry(long paramName, String paramName, boolean paramName)",
-		"issueKey": "LPD-41285",
-		"newImports": [
-			"com.liferay.petra.string.StringPool"
-		],
-		"to": "fetchCommercePriceEntry(param#0#, param#1#, StringPool.BLANK, param#2#)"
-	},
-	{
-		"classNames": [
-			"CommercePriceEntryLocalService",
-			"CommercePriceEntryLocalServiceUtil",
-			"CommercePriceEntryService",
-			"CommercePriceEntryServiceUtil"
-		],
-		"from": "fetchCommercePriceEntry(long paramName, String paramName, int paramName)",
-		"issueKey": "LPD-41285",
-		"newImports": [
-			"com.liferay.petra.string.StringPool"
-		],
-		"to": "fetchCommercePriceEntry(param#0#, param#1#, param#2#, StringPool.BLANK)"
 	},
 	{
 		"classNames": [
@@ -4285,6 +4304,14 @@
 		"to": "updateCommercePriceList(param#0#, CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(param#1#).getCode(), true, param#2#, param#3#, param#4#, param#5#, param#6#, param#7#, param#8#, param#9#, param#10#, param#11#, param#12#, param#13#, param#14#, param#15#, param#16#, param#17#, param#18#)"
 	},
 	{
+		"from": "Liferay.Notification",
+		"hasMessage": true,
+		"issueKey": "LPD-44043",
+		"validExtensions": [
+			"jsp"
+		]
+	},
+	{
 		"classNames": [
 			"DDMTemplateLocalService",
 			"DDMTemplateLocalServiceUtil"
@@ -4363,6 +4390,45 @@
 		"from": "regex:(?<variableName>\\w+)\\.(?<prefixMethodName>getPortlet|setPortlet)Setup",
 		"issueKey": "LPD-47124",
 		"to": "${variableName}.${prefixMethodName}Preferences"
+	},
+	{
+		"classNames": [
+			"DefaultConfigurationAction"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-47432",
+		"methodsToFormat": [
+			{
+				"from": "regex:\\s*@Override\\s*@Reference\\s*\\(\\s*target\\s*=\\s*\\\"[^\\\"]*\\\",[\\s\\S]*?\\)\\s*public\\s+void\\s+setServletContext\\(ServletContext\\s+servletContext\\)\\s*\\{[\\s\\S]*?\\}",
+				"to": ""
+			}
+		]
+	},
+	{
+		"classNames": [
+			"RawMetadataProcessor"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-47852",
+		"methodsToFormat": [
+			{
+				"from": "@Override\n\tpublic Map<String, Set<String>> getFieldNames()",
+				"to": "@Override\n\tpublic Set<String> getFieldNames()"
+			}
+		]
+	},
+	{
+		"classNames": [
+			"CommerceDiscountRuleType"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-48183",
+		"newImports": [
+			"com.liferay.portal.kernel.util.Validator"
+		],
+		"newMethods": [
+			"@Override\n\tpublic boolean validate(String typeSettings) {\n\t\treturn Validator.isNotNull(typeSettings);\n\t}"
+		]
 	},
 	{
 		"classNames": [
@@ -4502,6 +4568,16 @@
 			"com.liferay.petra.string.StringPool"
 		],
 		"to": "getCommerceInventoryBookedQuantity(param#0#, param#1#, StringPool.BLANK)"
+	},
+	{
+		"classNames": [
+			"CommerceShippingEngine"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPD-48918",
+		"newMethods": [
+			"@Override\n\tpublic String getKey() {\n\t\treturn KEY;\n\t}"
+		]
 	},
 	{
 		"classNames": [
@@ -4804,6 +4880,122 @@
 		"to": "getHelperUtilities(param#1#)"
 	},
 	{
+		"from": "Liferay.Notice",
+		"hasMessage": true,
+		"issueKey": "LPD-56577",
+		"validExtensions": [
+			"jsp"
+		]
+	},
+	{
+		"classNames": [
+			"LayoutCopyHelper"
+		],
+		"from": "copyLayout",
+		"issueKey": "LPD-58415",
+		"to": "copyLayoutContent"
+	},
+	{
+		"classNames": [
+			"CompanyThreadLocal"
+		],
+		"from": "setWithSafeCloseable",
+		"issueKey": "LPD-58435",
+		"to": "setCompanyIdWithSafeCloseable"
+	},
+	{
+		"from": "PropsValues.XML_SITEMAP_INDEX_ENABLED",
+		"issueKey": "LPD-59753",
+		"newImports": [
+			"com.liferay.site.constants.LegacySitemapIndexPropsKeys"
+		],
+		"to": "LegacySitemapIndexPropsKeys.XML_SITEMAP_INDEX_ENABLED"
+	},
+	{
+		"classNames": [
+			"SitemapManager"
+		],
+		"from": "getSiteMapManager(long paramName, boolean paramName, ThemeDisplay paramName)",
+		"issueKey": "LPD-59820",
+		"to": "getSitemap(param#0#, param#1#, param#2#)"
+	},
+	{
+		"from": "PluginPackage.REPOSITORY_XML_FILENAME_EXTENSION",
+		"issueKey": "LPD-61573",
+		"to": "\"xml\""
+	},
+	{
+		"from": "PropsFiles.CAPTCHA",
+		"issueKey": "LPD-66321",
+		"to": "\"captcha\""
+	},
+	{
+		"from": "PropsFiles.CONTENT_TYPES",
+		"issueKey": "LPD-66321",
+		"to": "\"content-types\""
+	},
+	{
+		"from": "PropsFiles.PORTAL",
+		"issueKey": "LPD-66321",
+		"to": "\"portal\""
+	},
+	{
+		"classNames": [
+			"CommercePriceEntryLocalService",
+			"CommercePriceEntryLocalServiceUtil",
+			"CommercePriceEntryService",
+			"CommercePriceEntryServiceUtil"
+		],
+		"from": "fetchCommercePriceEntry(long paramName, long paramName, boolean paramName)",
+		"issueKey": "LPD-66666",
+		"newImports": [
+			"com.liferay.petra.string.StringPool"
+		],
+		"to": "fetchCommercePriceEntry(param#1#, null, StringPool.BLANK, param#2#)"
+	},
+	{
+		"classNames": [
+			"CommercePriceEntryLocalService",
+			"CommercePriceEntryLocalServiceUtil",
+			"CommercePriceEntryService",
+			"CommercePriceEntryServiceUtil"
+		],
+		"from": "fetchCommercePriceEntry(long paramName, String paramName)",
+		"issueKey": "LPD-66667",
+		"newImports": [
+			"com.liferay.petra.string.StringPool"
+		],
+		"to": "fetchCommercePriceEntry(param#0#, param#1#, StringPool.BLANK)"
+	},
+	{
+		"classNames": [
+			"CommercePriceEntryLocalService",
+			"CommercePriceEntryLocalServiceUtil",
+			"CommercePriceEntryService",
+			"CommercePriceEntryServiceUtil"
+		],
+		"from": "fetchCommercePriceEntry(long paramName, String paramName, boolean paramName)",
+		"issueKey": "LPD-66668",
+		"newImports": [
+			"com.liferay.petra.string.StringPool"
+		],
+		"to": "fetchCommercePriceEntry(param#0#, param#1#, StringPool.BLANK, param#2#)"
+	},
+	{
+		"classNames": [
+			"CommercePriceEntryLocalService",
+			"CommercePriceEntryLocalServiceUtil",
+			"CommercePriceEntryService",
+			"CommercePriceEntryServiceUtil"
+		],
+		"from": "fetchCommercePriceEntry(long paramName, String paramName, int paramName)",
+		"issueKey": "LPD-66669",
+		"newImports": [
+			"com.liferay.petra.string.StringPool"
+		],
+		"to": "fetchCommercePriceEntry(param#0#, param#1#, param#2#, StringPool.BLANK)"
+	},
+	{
 		"from": "CookieKeys.COMMERCE_CONTINUE_AS_GUEST",
 		"issueKey": "LPS-159679",
 		"newImports": [
@@ -4998,6 +5190,8 @@
 	},
 	{
 		"classNames": [
+			"CPDefinitionLocalServiceUtil",
+			"CPDefinitionServiceUtil",
 			"CPDefinitionLocalService",
 			"CPDefinitionService"
 		],
@@ -5181,9 +5375,9 @@
 		"to": "addFileEntry(null, param#0#, param#1#, param#2#, param#3#, param#4#, param#5#, null, param#6#, param#7#, param#8#, null, null, null, param#9#)"
 	},
 	{
-		"from": "ServiceTrackerList<Class<T>, Class<E>>",
+		"from": "regex:ServiceTrackerList<\\w+(?:<[^<>]+>)?,\\s*(?<TypeName>\\w+(?:<[^<>]+>)?)>",
 		"issueKey": "LPS-195079",
-		"to": "ServiceTrackerList<typeParam#1#>"
+		"to": "ServiceTrackerList<${TypeName}>"
 	},
 	{
 		"classNames": [
@@ -5221,10 +5415,27 @@
 	},
 	{
 		"classNames": [
+			"CommerceOrderValidator"
+		],
+		"classStructurePattern": true,
+		"issueKey": "LPS-196599",
+		"methodsToFormat": [
+			{
+				"from": "regex:(?<methodSignature>@Override\\n\\tpublic CommerceOrderValidatorResult validate\\(\\n\\s+Locale locale, CommerceOrder commerceOrder, CPInstance cpInstance,\\n\\s+)int quantity\\)",
+				"to": "${methodSignature}String json, BigDecimal quantity, boolean child)"
+			}
+		],
+		"newImports": [
+			"java.math.BigDecimal"
+		]
+	},
+	{
+		"classNames": [
 			"AssetCategoryLocalService",
 			"AssetCategoryLocalServiceUtil"
 		],
 		"from": "fetchAssetCategoryByExternalReferenceCode(long paramName, String paramName)",
+		"hasMessage": true,
 		"issueKey": "LPS-196608"
 	},
 	{
@@ -5479,6 +5690,7 @@
 			"AssetVocabularyLocalServiceUtil"
 		],
 		"from": "fetchAssetVocabularyByExternalReferenceCode(long paramName, String paramName)",
+		"hasMessage": true,
 		"issueKey": "LPS-198292"
 	},
 	{
@@ -5499,6 +5711,7 @@
 	},
 	{
 		"from": "ConfigurationBeanDeclaration",
+		"hasMessage": true,
 		"issueKey": "LPS-198405"
 	},
 	{
@@ -5524,11 +5737,17 @@
 	{
 		"from": "PortletDisplayTemplateManager.DISPLAY_STYLE_PREFIX",
 		"issueKey": "LPS-202918",
+		"newImports": [
+			"com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants"
+		],
 		"to": "PortletDisplayTemplateConstants.DISPLAY_STYLE_PREFIX"
 	},
 	{
 		"from": "PortletDisplayTemplateManager.ENTRIES",
 		"issueKey": "LPS-202918",
+		"newImports": [
+			"com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants"
+		],
 		"to": "PortletDisplayTemplateConstants.ENTRIES"
 	},
 	{

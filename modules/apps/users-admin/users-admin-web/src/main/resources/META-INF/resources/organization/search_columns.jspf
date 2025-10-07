@@ -33,7 +33,7 @@
 				<%= UsersAdminUtil.ORGANIZATION_COUNTRY_NAME_ACCESSOR.get(organization) %>
 			</div>
 
-			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-47858") %>'>
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
 				<div class="list-group-text">
 					<clay:label
 						displayType="<%= WorkflowConstants.getStatusStyle(organization.getStatus()) %>"
@@ -85,7 +85,7 @@
 			value="<%= LanguageUtil.get(request, organization.getType()) %>"
 		/>
 
-		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-47858") %>'>
+		<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
 			<liferay-ui:search-container-column-text
 				cssClass="table-cell-expand-smallest table-cell-ws-nowrap table-column-text-center"
 				name="status"

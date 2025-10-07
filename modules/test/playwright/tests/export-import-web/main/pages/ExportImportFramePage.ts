@@ -49,6 +49,6 @@ export class ExportImportFramePage {
 	}
 
 	async close() {
-		await this.page.getByLabel('close', {exact: true}).click();
+		await this.page.getByLabel('Close', {exact: true}).click();
 	}
 }

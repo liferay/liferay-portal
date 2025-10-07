@@ -8,6 +8,7 @@ package com.liferay.frontend.data.set.admin.web.internal.portlet.action;
 import com.liferay.frontend.data.set.SystemFDSEntry;
 import com.liferay.frontend.data.set.SystemFDSEntryRegistry;
 import com.liferay.frontend.data.set.admin.web.internal.constants.FDSAdminPortletKeys;
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -113,6 +114,7 @@ public class GetSystemDataSetsMVCResourceCommand
 						ObjectEntry objectEntry =
 							_objectEntryLocalService.fetchObjectEntry(
 								systemFDSEntry.getName(),
+								ObjectDefinitionConstants.GROUP_ID_DEFAULT,
 								dataSetObjectDefinition.
 									getObjectDefinitionId());
 

@@ -1,0 +1,10 @@
+{
+	"name": "Services and Compatibility",
+	"name_i18n": {
+		"en_US": "Services and Compatibility",
+		"es-ES": "Servicios y compatibilidad",
+		"ja-JP": "サービスと互換性",
+		"pt-BR": "Serviços e Compatibilidade"
+	},
+	"viewableBy": "Anyone"
+}

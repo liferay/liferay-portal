@@ -1,0 +1,274 @@
+@import 'cadmin-variables';
+
+@mixin metrics-chart {
+	.accessibility-tick-line.active {
+		stroke: $cadmin-gray-400;
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	.empty-chart {
+		position: relative;
+
+		&--show {
+			.recharts-wrapper {
+				.recharts-cartesian-grid-vertical line:not(:last-child),
+				.recharts-cartesian-grid-horizontal
+					line:not(:last-child):not(:first-child) {
+					stroke-opacity: 0 !important;
+				}
+			}
+		}
+
+		.empty-chart-content {
+			bottom: 0;
+			display: flex;
+			flex-direction: column;
+			height: 220px;
+			justify-content: center;
+			left: 0;
+			margin: 0 auto;
+			max-width: 300px;
+			padding-left: 40px;
+			position: absolute;
+			right: 0;
+			text-align: center;
+			top: 0;
+
+			.c-empty-state-title {
+				margin: 0 !important;
+			}
+		}
+	}
+
+	.metrics-chart {
+		min-height: 300px;
+
+		.recharts-label {
+			fill: $cadmin-secondary;
+			font-size: 12px;
+			font-weight: 400;
+		}
+
+		> .chart-root {
+			margin-bottom: 0;
+		}
+
+		.metrics-chart__legend {
+			margin: 0;
+			padding: 0;
+
+			li {
+				cursor: pointer;
+				display: inline-block;
+			}
+		}
+	}
+
+	.bb-axis-x {
+		transform: translateY(271px);
+	}
+
+	.bb-line-data-previous {
+		stroke-width: 2px;
+	}
+
+	.bb-legend {
+		&-background {
+			stroke-width: 0;
+		}
+
+		&-item a {
+			color: inherit;
+		}
+	}
+
+	.bb-tooltip-container {
+		background-color: $cadmin-white;
+		border: 1px solid $cadmin-gray-400;
+		border-radius: 3px;
+		max-width: none;
+		padding: 0;
+
+		.bb-tooltip {
+			box-shadow: none;
+
+			td,
+			th {
+				font-size: 12px;
+				padding: 2px 14px;
+			}
+
+			th {
+				border-bottom: 1px solid $cadmin-gray-400;
+				padding: 6px 14px;
+			}
+
+			tr:nth-child(2) td {
+				padding-top: 6px;
+			}
+
+			tr:last-child td {
+				padding-bottom: 6px;
+			}
+		}
+
+		.tooltip-template {
+			display: block;
+		}
+	}
+
+	.recharts-wrapper {
+		.recharts-cartesian-grid-vertical line:not(:last-child),
+		.recharts-cartesian-grid-horizontal
+			line:not(:last-child):not(:first-child) {
+			stroke-opacity: 1 !important;
+		}
+	}
+
+	.tab-focus:focus {
+		border-radius: 4px;
+		box-shadow:
+			0 0 0 2px $cadmin-white,
+			0 0 0 4px $cadmin-primary-l0;
+		outline: 0;
+	}
+}
+
+@mixin tooltip-template {
+	.tooltip-template {
+		border-collapse: collapse;
+		display: none;
+		margin: 12px;
+
+		.tooltip-template__column {
+			line-height: initial;
+			padding: 0;
+			padding-bottom: 0.5rem;
+		}
+
+		.tooltip-template__body .tooltip-template__content {
+			min-height: 18px;
+			position: relative;
+			width: 100%;
+		}
+
+		.tooltip-template__truncated {
+			position: absolute;
+			width: 100%;
+		}
+
+		.tooltip-template__header {
+			box-shadow: 0 1px 0 0 $cadmin-gray-300;
+
+			.tooltip-template__column {
+				font-weight: 600;
+			}
+		}
+
+		.tooltip-template__body {
+			.tooltip-template__row {
+				color: $cadmin-secondary;
+
+				&:first-child .tooltip-template__column {
+					padding-top: 0.5rem;
+				}
+
+				&:last-child .tooltip-template__column {
+					padding-bottom: 0;
+				}
+			}
+		}
+
+		svg > path {
+			fill: currentColor;
+		}
+
+		.text-left {
+			align-items: center;
+			display: flex;
+			justify-content: flex-start;
+		}
+
+		.text-right {
+			align-items: center;
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.circle {
+			display: inline-flex;
+		}
+	}
+}
+
+@mixin overview-metric {
+	.overview-metrics {
+		gap: 1rem;
+
+		@media screen and (max-width: 768px) {
+			.overview-metric {
+				width: 92px !important;
+
+				&__percentage-description {
+					display: none;
+				}
+
+				&__value {
+					font-size: 16px;
+				}
+			}
+		}
+
+		.overview-metric {
+			margin: 0 1rem 1rem 0;
+
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+	}
+
+	.overview-metric {
+		background-color: $cadmin-white;
+		border: 1px solid $cadmin-secondary-l3;
+		border-radius: 4px;
+		color: $cadmin-secondary;
+		min-width: 8rem;
+		padding: 0.75rem;
+		text-align: left;
+		transition: all 0.15s ease-in-out;
+		width: 185px;
+
+		&__value {
+			font-size: 2rem;
+			font-weight: 600;
+		}
+
+		&.selected {
+			background-color: $cadmin-primary-l3;
+			border-color: $cadmin-primary-l0;
+			color: $cadmin-black;
+		}
+
+		&:focus {
+			border-radius: 4px;
+			box-shadow:
+				0 0 0 2px $cadmin-white,
+				0 0 0 4px $cadmin-primary-l0;
+			outline: 0;
+		}
+
+		&:hover {
+			background-color: $cadmin-gray-100;
+			color: $cadmin-black;
+		}
+
+		&:hover:not(.selected) {
+			background-color: $cadmin-light-l1;
+			border-color: $cadmin-secondary-l3;
+		}
+	}
+}

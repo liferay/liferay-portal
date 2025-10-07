@@ -133,6 +133,14 @@ public abstract class BaseNotificationSender implements NotificationSender {
 			RecipientType recipientType = RecipientType.parse(
 				kaleoNotificationRecipient.getRecipientClassName());
 
+			if (notificationRecipients.isEmpty() &&
+				recipientType.equals(RecipientType.SCRIPT)) {
+
+				notificationRecipientsMap.clear();
+
+				return notificationRecipientsMap;
+			}
+
 			NotificationRecipientBuilder notificationRecipientBuilder =
 				notificationRecipientBuilderRegistry.
 					getNotificationRecipientBuilder(recipientType);

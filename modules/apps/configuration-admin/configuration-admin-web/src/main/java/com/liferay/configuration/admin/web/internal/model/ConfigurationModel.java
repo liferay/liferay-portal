@@ -197,7 +197,7 @@ public class ConfigurationModel implements ExtendedObjectClassDefinition {
 	}
 
 	public String getFeatureFlagKey() {
-		return _extensionAttributes.get("featureFlagKey");
+		return _extensionAttributes.get("feature.flag.key");
 	}
 
 	public Map<String, String> getHintAttributes() {

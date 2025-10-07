@@ -32,26 +32,6 @@ exports[`Individuals Dashboard KnownIndividuals List renders 1`] = `
                     role="presentation"
                   >
                     <div
-                      class="custom-control custom-checkbox"
-                    >
-                      <label>
-                        <input
-                          class="custom-control-input"
-                          data-testid="select-all-checkbox"
-                          type="checkbox"
-                          value="false"
-                        />
-                        <span
-                          class="custom-control-label"
-                        />
-                      </label>
-                    </div>
-                  </li>
-                  <li
-                    class="nav-item"
-                    role="presentation"
-                  >
-                    <div
                       class="dropdown dropdown-root filter-and-order-root"
                     >
                       <button
@@ -139,7 +119,6 @@ exports[`Individuals Dashboard KnownIndividuals List renders 1`] = `
             >
               <thead>
                 <tr>
-                  <th />
                   <th
                     class="table-head-title table-cell-expand"
                   >
@@ -212,24 +191,8 @@ exports[`Individuals Dashboard KnownIndividuals List renders 1`] = `
               </thead>
               <tbody>
                 <tr
-                  class="clickable"
+                  class=""
                 >
-                  <td>
-                    <div
-                      class="custom-control custom-checkbox"
-                    >
-                      <label>
-                        <input
-                          class="custom-control-input"
-                          type="checkbox"
-                          value="false"
-                        />
-                        <span
-                          class="custom-control-label"
-                        />
-                      </label>
-                    </div>
-                  </td>
                   <td
                     class="name-cell-root table-cell-expand"
                   >
@@ -402,7 +365,7 @@ exports[`Individuals Dashboard KnownIndividuals List renders with data source em
             Connect a data source to get started.
             <a
               class="d-block mb-3"
-              href="https://learn.liferay.com/analytics-cloud/latest/en/getting-started/connecting-liferay-dxp-to-analytics-cloud.html"
+              href="https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-data/managing-data-sources"
               rel="noreferrer noopener"
               target="_blank"
             >

@@ -24,7 +24,8 @@ import java.util.List;
  */
 public class LayoutStructureUtil {
 
-	public static void deleteMarkedForDeletionItems(long groupId, long plid)
+	public static void deleteMarkedForDeletionItems(
+			long groupId, long plid, long userId)
 		throws PortalException {
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
@@ -59,7 +60,7 @@ public class LayoutStructureUtil {
 
 			LayoutPageTemplateStructureLocalServiceUtil.
 				updateLayoutPageTemplateStructureData(
-					groupId, plid,
+					userId, groupId, plid,
 					layoutPageTemplateStructureRel.getSegmentsExperienceId(),
 					layoutStructure.toString());
 		}

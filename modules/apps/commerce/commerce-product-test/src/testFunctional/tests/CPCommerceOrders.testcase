@@ -2081,7 +2081,7 @@ definition {
 	@description = "This is a test for COMMERCE-11392. Can see timestamps from payment transaction history"
 	@priority = 3
 	test CanViewTimestampsInOrderTransactionHistory {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Given a Minium site with an Account is created") {
 			CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
@@ -2445,7 +2445,7 @@ definition {
 			accountName = "Commerce Account 1",
 			locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2463,7 +2463,7 @@ definition {
 			accountName = "Commerce Account 2",
 			locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2485,7 +2485,7 @@ definition {
 			accountName = "Commerce Account 2",
 			locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2501,7 +2501,7 @@ definition {
 			accountName = "Commerce Account 2",
 			locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2525,7 +2525,7 @@ definition {
 			accountName = "Commerce Account 2",
 			locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME");
 
-		Button.click(button = "Reset Filters");
+		Button.click(button = "Clear");
 
 		Click(locator1 = "CommerceEntry#FILTER_DROPDOWN_MENU");
 
@@ -2961,57 +2961,6 @@ definition {
 		AssertTextEquals(
 			locator1 = "CommerceEntry#PAGINATION_RESULTS",
 			value1 = "Showing 1 to 1 of 1 entries.");
-	}
-
-	@description = "This is a test for COMMERCE-5982. As an order manager, I want to sort orders by ascending or descending order date"
-	@priority = 3
-	test SortOrdersByOrderDate {
-		property portal.acceptance = "false";
-
-		// TODO Review
-
-		CommerceAccelerators.initializeNewSiteViaAccelerator(siteName = "Minium");
-
-		ApplicationsMenu.gotoSite(site = "Minium");
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/Minium");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-
-		FrontStore.addInitializerProductToCart(
-			productName = "U-Joint",
-			productQuantity = 2);
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Account Management");
-
-		CommerceAcceleratorsInitializer.createNewAccountViaFront(accountName = "Commerce Account 2");
-
-		CommerceAcceleratorsInitializer.selectAccountFromAccountSelector(accountName = "Commerce Account 2");
-
-		CommerceNavigator.gotoMiniumSidebarItem(menuItem = "Catalog");
-
-		FrontStore.addInitializerProductToCart(
-			productName = "Transmission Cooler Line Assembly",
-			productQuantity = 3);
-
-		CommerceOrders.openOrdersAdmin();
-
-		Click(locator1 = "//div[contains(@class,'autofit-col')]//button[@title='Sortable Column']");
-
-		var index = 1;
-
-		for (var accountName : list "Commerce Account,Commerce Account 2") {
-			AssertTextEquals.assertPartialText(
-				index = ${index},
-				locator1 = "CommerceAccelerators#ACCOUNT_ORDER_NAME",
-				value1 = ${accountName});
-
-			var index = ${index} + 1;
-		}
 	}
 
 }

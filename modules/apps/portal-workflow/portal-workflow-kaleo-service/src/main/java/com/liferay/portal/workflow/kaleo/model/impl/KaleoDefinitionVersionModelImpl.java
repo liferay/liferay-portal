@@ -49,7 +49,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1585,20 +1584,24 @@ public class KaleoDefinitionVersionModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<String>
-		contentAsXMLUpdateEntityCacheConsumer = contentAsXML -> {
-			KaleoDefinitionVersionCacheModel kaleoDefinitionVersionCacheModel =
-				EntityCacheUtil.fetchCacheModel(
-					KaleoDefinitionVersionImpl.class, _kaleoDefinitionVersionId,
-					KaleoDefinitionVersionCacheModel.class);
+	protected static final BiConsumer<KaleoDefinitionVersion, String>
+		contentAsXMLUpdateEntityCacheBiConsumer =
+			(kaleoDefinitionVersion, contentAsXML) -> {
+				KaleoDefinitionVersionCacheModel
+					kaleoDefinitionVersionCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							KaleoDefinitionVersionImpl.class,
+							kaleoDefinitionVersion.getPrimaryKey(),
+							KaleoDefinitionVersionCacheModel.class);
 
-			if ((kaleoDefinitionVersionCacheModel != null) &&
-				(kaleoDefinitionVersionCacheModel.getMvccVersion() ==
-					getMvccVersion())) {
+				if ((kaleoDefinitionVersionCacheModel != null) &&
+					(kaleoDefinitionVersionCacheModel.getMvccVersion() ==
+						kaleoDefinitionVersion.getMvccVersion())) {
 
-				kaleoDefinitionVersionCacheModel.contentAsXML = contentAsXML;
-			}
-		};
+					kaleoDefinitionVersionCacheModel.contentAsXML =
+						contentAsXML;
+				}
+			};
 
 	private static final MethodHandle _contentAsXMLMethodHandle;
 

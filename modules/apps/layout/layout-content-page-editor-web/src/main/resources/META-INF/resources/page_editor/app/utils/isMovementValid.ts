@@ -87,6 +87,11 @@ export function isMovementValid({
 				'forms-can-only-contain-one-stepper'
 			);
 		}
+		else if (reason === 'form-relationship-outside-form') {
+			message = Liferay.Language.get(
+				'form-relationships-can-only-be-placed-inside-a-form-container'
+			);
+		}
 		else if (reason === 'noninstanceable-widget-inside-collection') {
 			message = Liferay.Language.get(
 				'noninstanceable-widgets-cannot-be-placed-inside-a-collection-display'

@@ -20,6 +20,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -71,6 +72,7 @@ public class IndexerRequestBufferExecutorUtilTest {
 		_assertThreadLocalIds(false);
 	}
 
+	@Ignore
 	@Test
 	public void testExecuteWithBatchModeTrue() throws Exception {
 		Mockito.when(

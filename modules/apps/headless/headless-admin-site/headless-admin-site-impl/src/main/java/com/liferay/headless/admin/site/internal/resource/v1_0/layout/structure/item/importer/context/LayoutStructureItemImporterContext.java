@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.layout.structure.item.importer.context;
 
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.portal.kernel.model.Layout;
 
 /**
@@ -13,16 +14,28 @@ import com.liferay.portal.kernel.model.Layout;
 public class LayoutStructureItemImporterContext {
 
 	public LayoutStructureItemImporterContext(
-		long groupId, Layout layout, long segmentsExperienceId, long userId) {
+		long companyId, long groupId,
+		InfoItemServiceRegistry infoItemServiceRegistry, Layout layout,
+		long segmentsExperienceId, long userId) {
 
+		_companyId = companyId;
 		_groupId = groupId;
+		_infoItemServiceRegistry = infoItemServiceRegistry;
 		_layout = layout;
 		_segmentsExperienceId = segmentsExperienceId;
 		_userId = userId;
 	}
 
+	public long getCompanyId() {
+		return _companyId;
+	}
+
 	public long getGroupId() {
 		return _groupId;
+	}
+
+	public InfoItemServiceRegistry getInfoItemServiceRegistry() {
+		return _infoItemServiceRegistry;
 	}
 
 	public Layout getLayout() {
@@ -37,7 +50,9 @@ public class LayoutStructureItemImporterContext {
 		return _userId;
 	}
 
+	private final long _companyId;
 	private final long _groupId;
+	private final InfoItemServiceRegistry _infoItemServiceRegistry;
 	private final Layout _layout;
 	private final long _segmentsExperienceId;
 	private final long _userId;

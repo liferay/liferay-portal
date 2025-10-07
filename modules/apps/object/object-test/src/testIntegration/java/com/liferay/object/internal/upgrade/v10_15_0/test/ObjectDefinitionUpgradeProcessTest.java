@@ -42,13 +42,8 @@ public class ObjectDefinitionUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.addCustomObjectDefinition();
-
-		objectDefinition.setFriendlyURLSeparator(null);
-
-		objectDefinition = _objectDefinitionLocalService.updateObjectDefinition(
-			objectDefinition);
+		ObjectDefinition objectDefinition1 = _addCustomObjectDefinition(null);
+		ObjectDefinition objectDefinition2 = _addCustomObjectDefinition("able");
 
 		JSONObject originalFriendlyURLSeparatorsJSONObject =
 			_friendlyURLSeparatorConfigurationManager.
@@ -73,12 +68,35 @@ public class ObjectDefinitionUpgradeProcessTest {
 		}
 
 		_assertObjectDefinitionFriendlyURLSeparator(
-			"test", objectDefinition.getObjectDefinitionId());
+			"test", objectDefinition1.getObjectDefinitionId());
+		_assertObjectDefinitionFriendlyURLSeparator(
+			"able", objectDefinition2.getObjectDefinitionId());
+
+		objectDefinition1.setFriendlyURLSeparator(null);
+
+		objectDefinition1 =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				objectDefinition1);
 
 		_upgrade();
 
 		_assertObjectDefinitionFriendlyURLSeparator(
-			"l", objectDefinition.getObjectDefinitionId());
+			"l", objectDefinition1.getObjectDefinitionId());
+		_assertObjectDefinitionFriendlyURLSeparator(
+			"able", objectDefinition2.getObjectDefinitionId());
+	}
+
+	private ObjectDefinition _addCustomObjectDefinition(
+			String friendlyURLSeparator)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		objectDefinition.setFriendlyURLSeparator(friendlyURLSeparator);
+
+		return _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
 	}
 
 	private void _assertObjectDefinitionFriendlyURLSeparator(

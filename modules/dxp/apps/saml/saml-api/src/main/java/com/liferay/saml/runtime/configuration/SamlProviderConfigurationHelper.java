@@ -18,6 +18,8 @@ public interface SamlProviderConfigurationHelper {
 
 	public boolean isLDAPImportEnabled();
 
+	public boolean isRoleIb();
+
 	public boolean isRoleIdp();
 
 	public boolean isRoleSp();

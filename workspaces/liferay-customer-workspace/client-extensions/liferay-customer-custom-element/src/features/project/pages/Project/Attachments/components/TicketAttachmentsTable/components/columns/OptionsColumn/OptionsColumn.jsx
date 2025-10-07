@@ -44,7 +44,8 @@ const OptionsColumn = ({
 					customDropDownButton={
 						<ButtonWithIcon
 							aria-label={i18n.translate('manage-user-options')}
-							displayType="null"
+							className="text-dark"
+    						displayType="unstyled"
 							small
 							spritemap={Liferay.Icons.spritemap}
 							symbol="ellipsis-v"

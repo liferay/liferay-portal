@@ -36,7 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"before-filter=Session Id Filter", "dispatcher=REQUEST", "enabled=true",
-		"init-param.url-regex-ignore-pattern=^/html/.+\\.(css|gif|html|ico|jpg|js|png)(\\?.*)?$",
+		"init-param.url-regex-ignore-pattern=^/(html|o)/.+\\.(css|gif|html|ico|jpg|js|png)(\\?.*)?$",
 		"servlet-context-name=",
 		"servlet-filter-name=Same Site Lax Cookies SAML Portal Filter",
 		"url-pattern=/c/portal/saml/acs", "url-pattern=/c/portal/saml/slo",

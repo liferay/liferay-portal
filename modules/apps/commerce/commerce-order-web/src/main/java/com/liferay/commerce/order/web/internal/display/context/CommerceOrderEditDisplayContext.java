@@ -571,6 +571,10 @@ public class CommerceOrderEditDisplayContext {
 			if (commerceOrderStatus.getKey() ==
 					CommerceOrderConstants.ORDER_STATUS_PARTIALLY_SHIPPED) {
 
+				if (_commerceOrder.getShippingAddress() == null) {
+					return headerActionModels;
+				}
+
 				label = "create-shipment";
 			}
 			else if (commerceOrderStatus.getKey() ==

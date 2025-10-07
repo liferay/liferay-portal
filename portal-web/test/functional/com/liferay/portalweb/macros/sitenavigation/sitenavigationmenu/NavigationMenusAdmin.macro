@@ -77,120 +77,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addChildItem(pageNameList = null, itemName = null, item = null, depotName = null, urlName = null, assetTitleList = null, submenuName = null, privacy = null, url = null, target = null) {
-		MouseOver(
-			key_itemName = ${itemName},
-			locator1 = "SiteNavigationMenu#ITEM_ENTRY");
-
-		LexiconCard.clickEllipsisItem(
-			card = ${itemName},
-			item = "Add Child");
-
-		MenuItem.click(menuItem = ${item});
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		if (isSet(depotName)) {
-			ItemSelector.changeWorkspaces(
-				customImage = "false",
-				workspacesType = "Asset Library");
-
-			LexiconCard.clickCard(card = ${depotName});
-		}
-
-		if (${item} == "Page") {
-			NavigationMenusAdmin._addItemPage(
-				pageNameList = ${pageNameList},
-				privacy = ${privacy});
-
-			SelectFrameTop();
-
-			Button.click(button = "Select");
-		}
-
-		if ((${item} == "Document") || (${item} == "Web Content Article") || (${item} == "Blogs Entry")) {
-			WaitForElementPresent(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
-
-			if (IsElementPresent(key_displayStyle = "list", locator1 = "Icon#CURRENT_DISPLAY_STYLE_ACTIVE")) {
-				ClickNoError(
-					key_listEntry = ${assetTitle},
-					locator1 = "LexiconList#LIST_ENTRY_TITLE");
-			}
-			else {
-				ClickNoError(
-					key_card = ${assetTitle},
-					locator1 = "Card#CARD");
-			}
-		}
-
-		if (${item} == "Category") {
-			Portlet.expandTree();
-
-			var i = 1;
-
-			for (var assetTitle : list ${assetTitleList}) {
-				AssertVisible(
-					key_nodeName = ${assetTitle},
-					locator1 = "Treeview#NODE_ITEM");
-
-				Click(
-					key_nodeName = ${assetTitle},
-					locator1 = "Treeview#NODE_UNSELECTED");
-
-				if (${i} == 1) {
-					AssertTextEquals(
-						locator1 = "Search#SEARCH_INFO",
-						value1 = "${i} Item Selected");
-				}
-				else {
-					AssertTextEquals(
-						locator1 = "Search#SEARCH_INFO",
-						value1 = "${i} Items Selected");
-				}
-
-				var i = ${i} + 1;
-			}
-
-			SelectFrame.selectFrameTop();
-
-			Button.clickSelect();
-		}
-
-		if (${item} == "Submenu") {
-			NavigationMenusAdmin._addItemSubmenu(submenuName = ${submenuName});
-
-			Button.click(button = "Add");
-		}
-
-		if (${item} == "URL") {
-			NavigationMenusAdmin._addItemURL(
-				target = ${target},
-				url = ${url},
-				urlName = ${urlName});
-
-			Button.click(button = "Add");
-		}
-
-		if (${item} == "Vocabulary") {
-			var i = 1;
-
-			for (var assetTitle : list ${assetTitleList}) {
-				LexiconTable.checkTableCheckbox(tableEntry = ${assetTitle});
-
-				var i = ${i} + 1;
-			}
-
-			SelectFrame.selectFrameTop();
-
-			Button.clickSelect();
-		}
-
-		SelectFrame.selectFrameTop();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro addItem(pageNameList = null, item = null, depotName = null, urlName = null, assetTitleList = null, submenuName = null, privacy = null, url = null, target = null) {
 		WaitForLiferayEvent.initializeLiferayEventLog();
 
@@ -310,121 +196,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addSiblingItem(pageNameList = null, item = null, depotName = null, urlName = null, privacy = null, url = null, target = null, itemName = null, assetTitleList = null, submenuName = null, relationship = null) {
-		MouseOver(
-			key_itemName = ${itemName},
-			locator1 = "SiteNavigationMenu#ITEM_ENTRY");
-
-		Click(
-			key_itemName = ${itemName},
-			key_relationship = ${relationship},
-			locator1 = "SiteNavigationMenu#ITEM_ENTRY_ADD_ICON");
-
-		MenuItem.click(menuItem = ${item});
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		if (isSet(depotName)) {
-			ItemSelector.changeWorkspaces(
-				customImage = "false",
-				workspacesType = "Asset Library");
-
-			LexiconCard.clickCard(card = ${depotName});
-		}
-
-		if (${item} == "Page") {
-			NavigationMenusAdmin._addItemPage(
-				pageNameList = ${pageNameList},
-				privacy = ${privacy});
-
-			SelectFrameTop();
-
-			Button.click(button = "Select");
-		}
-
-		if ((${item} == "Document") || (${item} == "Web Content Article") || (${item} == "Blogs Entry")) {
-			WaitForElementPresent(locator1 = "Icon#CURRENT_DISPLAY_STYLE");
-
-			if (IsElementPresent(key_displayStyle = "list", locator1 = "Icon#CURRENT_DISPLAY_STYLE_ACTIVE")) {
-				ClickNoError(
-					key_listEntry = ${assetTitle},
-					locator1 = "LexiconList#LIST_ENTRY_TITLE");
-			}
-			else {
-				ClickNoError(
-					key_card = ${assetTitle},
-					locator1 = "Card#CARD");
-			}
-		}
-
-		if (${item} == "Category") {
-			Portlet.expandTree();
-
-			var i = 1;
-
-			for (var assetTitle : list ${assetTitleList}) {
-				AssertVisible(
-					key_nodeName = ${assetTitle},
-					locator1 = "Treeview#NODE_ITEM");
-
-				Click(
-					key_nodeName = ${assetTitle},
-					locator1 = "Treeview#NODE_UNSELECTED");
-
-				if (${i} == 1) {
-					AssertTextEquals(
-						locator1 = "Search#SEARCH_INFO",
-						value1 = "${i} Item Selected");
-				}
-				else {
-					AssertTextEquals(
-						locator1 = "Search#SEARCH_INFO",
-						value1 = "${i} Items Selected");
-				}
-
-				var i = ${i} + 1;
-			}
-
-			SelectFrame.selectFrameTop();
-
-			Button.clickSelect();
-		}
-
-		if (${item} == "Submenu") {
-			NavigationMenusAdmin._addItemSubmenu(submenuName = ${submenuName});
-
-			Button.click(button = "Add");
-		}
-
-		if (${item} == "URL") {
-			NavigationMenusAdmin._addItemURL(
-				target = ${target},
-				url = ${url},
-				urlName = ${urlName});
-
-			Button.click(button = "Add");
-		}
-
-		if (${item} == "Vocabulary") {
-			var i = 1;
-
-			for (var assetTitle : list ${assetTitleList}) {
-				LexiconTable.checkTableCheckbox(tableEntry = ${assetTitle});
-
-				var i = ${i} + 1;
-			}
-
-			SelectFrame.selectFrameTop();
-
-			Button.clickSelect();
-		}
-
-		SelectFrame.selectFrameTop();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro configureMenuType(menuType = null, navigationMenu = null, oldPrimaryNavigationMenu = null) {
 		if (${menuType} == "Primary Navigation") {
 			LexiconEntry.gotoEntryMenuItemNoError(
@@ -445,25 +216,6 @@ definition {
 			key_rowEntry = ${navigationMenu},
 			key_rowText = ${menuType},
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_TEXT");
-	}
-
-	@summary = "Default summary"
-	macro deleteAllCP() {
-		PortletEntry.selectAll();
-
-		Click(
-			key_text = "trash",
-			locator1 = "ManagementBar#ANY_ICON");
-
-		AssertTextEquals(
-			locator1 = "Modal#BODY",
-			value1 = "Are you sure you want to delete this? It will be deleted immediately.");
-
-		Click(
-			key_text = "Delete",
-			locator1 = "Modal#MODAL_FOOTER_BUTTON");
-
-		Alert.viewSuccessMessage();
 	}
 
 	@summary = "Default summary"
@@ -720,35 +472,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewItemStatus(itemName = null, itemStatus = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		AssertTextEquals(
-			index = ${index},
-			key_itemName = ${itemName},
-			locator1 = "SiteNavigationMenu#ITEM_ENTRY_STATUS",
-			value1 = ${itemStatus});
-	}
-
-	@summary = "Default summary"
-	macro viewItemWarningIcon(itemName = null) {
-		AssertVisible(
-			key_card = ${itemName},
-			key_icon = "warning",
-			locator1 = "Card#CARD_STICKER");
-	}
-
-	@summary = "Default summary"
-	macro viewItemWarningIconNotPresent(itemName = null) {
-		AssertElementNotPresent(
-			key_card = ${itemName},
-			key_icon = "warning",
-			locator1 = "Card#CARD_STICKER");
-	}
-
-	@summary = "Default summary"
 	macro viewItemWarningMessage(itemName = null, warningMessage = null) {
 		if (isSet(itemName)) {
 			NavigationMenusAdmin.openItemSidebar(itemName = ${itemName});
@@ -792,15 +515,6 @@ definition {
 	@summary = "Default summary"
 	macro viewMenuTitle(navigationMenu = null) {
 		LexiconTable.viewTableEntryTitle(tableEntry = ${navigationMenu});
-	}
-
-	@summary = "Default summary"
-	macro viewMenuType(rowEntry = null, menuType = null) {
-		AssertTextEquals(
-			key_markedAs = ${menuType},
-			key_rowEntry = ${rowEntry},
-			locator1 = "SiteNavigationMenu#MENU_MARKED_AS",
-			value1 = ${menuType});
 	}
 
 }

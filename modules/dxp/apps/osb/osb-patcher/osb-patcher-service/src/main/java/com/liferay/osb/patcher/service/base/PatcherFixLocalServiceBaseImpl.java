@@ -106,12 +106,13 @@ public abstract class PatcherFixLocalServiceBaseImpl
 	 *
 	 * @param patcherFixId the primary key of the patcher fix
 	 * @return the patcher fix that was removed
+	 * @throws Exception
 	 * @throws PortalException if a patcher fix with the primary key could not be found
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public PatcherFix deletePatcherFix(long patcherFixId)
-		throws PortalException {
+		throws Exception, PortalException {
 
 		return patcherFixPersistence.remove(patcherFixId);
 	}

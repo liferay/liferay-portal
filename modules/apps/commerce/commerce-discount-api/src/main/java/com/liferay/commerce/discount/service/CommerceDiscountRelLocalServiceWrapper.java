@@ -285,6 +285,15 @@ public class CommerceDiscountRelLocalServiceWrapper
 
 	@Override
 	public com.liferay.commerce.discount.model.CommerceDiscountRel
+		fetchCommerceDiscountRel(
+			long commerceDiscountId, String className, long classPK) {
+
+		return _commerceDiscountRelLocalService.fetchCommerceDiscountRel(
+			commerceDiscountId, className, classPK);
+	}
+
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRel
 		fetchCommerceDiscountRel(String className, long classPK) {
 
 		return _commerceDiscountRelLocalService.fetchCommerceDiscountRel(

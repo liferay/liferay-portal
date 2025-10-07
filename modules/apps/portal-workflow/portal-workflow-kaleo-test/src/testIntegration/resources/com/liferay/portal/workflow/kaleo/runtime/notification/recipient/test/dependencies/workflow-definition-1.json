@@ -1,0 +1,239 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "workflow-definition-1"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "Start"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Begin a workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        297.99993896484375,",
+						"        -4.000022888183594",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Start",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "Review",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "review"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "End"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Conclude the workflow."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"terminal\": true,",
+						"    \"xy\": [",
+						"        296.99993896484375,",
+						"        398.9999771118164",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "End",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "review"
+				},
+				{
+					"#tag-name": "description",
+					"#value": "Ask a user to work on the item."
+				},
+				{
+					"#cdata-value": [
+						"{",
+						"    \"xy\": [",
+						"        297.908935546875,",
+						"        200.28971099853516",
+						"    ]",
+						"}"
+					],
+					"#tag-name": "metadata"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "Notification Name"
+								},
+								{
+									"#tag-name": "description"
+								},
+								{
+									"#cdata-value": [
+										"Notification Template"
+									],
+									"#tag-name": "template"
+								},
+								{
+									"#tag-name": "template-language",
+									"#value": "freemarker"
+								},
+								{
+									"#tag-name": "notification-type",
+									"#value": "user-notification"
+								},
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "assignees"
+										}
+									],
+									"#tag-name": "recipients",
+									"receptionType": "to"
+								},
+								{
+									"#tag-name": "execution-type",
+									"#value": "onAssignment"
+								}
+							],
+							"#tag-name": "notification"
+						}
+					],
+					"#tag-name": "actions"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "user"
+						}
+					],
+					"#tag-name": "assignments"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#tag-name": "label",
+							"#value": "Review",
+							"language-id": "en_US"
+						}
+					],
+					"#tag-name": "labels"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#child-nodes": [
+										{
+											"#tag-name": "label",
+											"#value": "End",
+											"language-id": "en_US"
+										}
+									],
+									"#tag-name": "labels"
+								},
+								{
+									"#tag-name": "name",
+									"#value": "end"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "End"
+								},
+								{
+									"#tag-name": "default",
+									"#value": "true"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "task"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}

@@ -8,6 +8,8 @@ package com.liferay.portal.search.ml.embedding.text;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.Document;
 
+import java.util.List;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -21,5 +23,7 @@ public interface TextEmbeddingDocumentContributor {
 
 	public <T extends BaseModel<T>> void contribute(
 		Document document, T model, String text);
+
+	public <T extends BaseModel<T>> List<String> getLanguageIds(T model);
 
 }

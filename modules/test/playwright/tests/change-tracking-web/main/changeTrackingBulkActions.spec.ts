@@ -66,6 +66,10 @@ test('LPD-26363 Can delete ctEntries in bulk', async ({
 		),
 	});
 
+	await expect(
+		page.getByRole('button', {name: 'Discard Changes'})
+	).toBeVisible();
+
 	const allSelected = await page.getByText('All Selected');
 
 	await clickAndExpectToBeVisible({
@@ -124,6 +128,10 @@ test('LPD-46060 Can move ctEntries in bulk', async ({
 		),
 	});
 
+	await expect(
+		page.getByRole('button', {name: 'Move Changes'})
+	).toBeVisible();
+
 	const allSelected = await page.getByText('All Selected');
 
 	await clickAndExpectToBeVisible({
@@ -147,6 +155,8 @@ test('LPD-46060 Can move ctEntries in bulk', async ({
 	const publicationSelector = page.locator(
 		'#_com_liferay_change_tracking_web_portlet_PublicationsPortlet_toPublication'
 	);
+
+	await page.waitForLoadState('domcontentloaded');
 
 	await expect(publicationSelector).toBeVisible();
 

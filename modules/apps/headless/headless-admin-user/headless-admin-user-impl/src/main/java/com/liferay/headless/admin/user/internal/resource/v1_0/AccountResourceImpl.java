@@ -8,6 +8,7 @@ package com.liferay.headless.admin.user.internal.resource.v1_0;
 import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountListTypeConstants;
+import com.liferay.account.constants.AccountPortletKeys;
 import com.liferay.account.exception.DuplicateAccountGroupRelException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
@@ -23,6 +24,7 @@ import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountContactInformation;
 import com.liferay.headless.admin.user.dto.v1_0.AccountGroupBrief;
@@ -118,10 +120,15 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/account.properties",
-	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
-	service = AccountResource.class
+	property = {
+		"export.import.vulcan.batch.engine.task.item.delegate=true",
+		"nested.field.support=true"
+	},
+	scope = ServiceScope.PROTOTYPE, service = AccountResource.class
 )
-public class AccountResourceImpl extends BaseAccountResourceImpl {
+public class AccountResourceImpl
+	extends BaseAccountResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Account> {
 
 	@Override
 	public void deleteAccount(Long accountId) throws Exception {
@@ -308,6 +315,35 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				_portal.getClassNameId(AccountEntry.class.getName()),
 				contextCompany.getCompanyId(), _expandoBridgeIndexer,
 				_expandoColumnLocalService, _expandoTableLocalService));
+	}
+
+	@Override
+	public ExportImportDescriptor getExportImportDescriptor() {
+		return new ExportImportDescriptor() {
+
+			@Override
+			public String getItemClassName() {
+				return com.liferay.mail.kernel.model.Account.class.getName();
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of(
+					"accountGroupBriefs", "accountRoles", "creator", "keywords",
+					"logoBase64", "postalAddresses", "taxonomyCategoryBriefs");
+			}
+
+			@Override
+			public String getPortletId() {
+				return AccountPortletKeys.ACCOUNT_ENTRIES_ADMIN;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+		};
 	}
 
 	@NestedField(
@@ -568,7 +604,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 		try {
 			AccountGroup accountGroup =
-				_accountGroupService.getOrAddIncompleteAccountGroup(
+				_accountGroupService.getOrAddEmptyAccountGroup(
 					externalReferenceCode, accountGroupBrief.getName());
 
 			_accountGroupRelService.addAccountGroupRel(
@@ -596,7 +632,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			return accountEntry;
 		}
 
-		_accountRoleLocalService.getOrAddIncompleteAccountRole(
+		_accountRoleLocalService.getOrAddEmptyAccountRole(
 			externalReferenceCode, contextCompany.getCompanyId(),
 			contextUser.getUserId(), accountEntry.getAccountEntryId(),
 			accountRole.getName());
@@ -681,7 +717,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	}
 
 	private Long[] _getAssetCategoryIds(Account account) {
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return null;
 		}
 
@@ -716,7 +752,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				}
 
 				AssetCategory assetCategory =
-					_assetCategoryService.getOrAddIncompleteCategory(
+					_assetCategoryService.getOrAddEmptyCategory(
 						externalReferenceCode, group.getGroupId());
 
 				return assetCategory.getCategoryId();
@@ -758,11 +794,11 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			Account account, long accountEntryId, long defaultBillingAddressId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getDefaultBillingAddressExternalReferenceCode())) {
 
-			Address address = _addressLocalService.getOrAddIncompleteAddress(
+			Address address = _addressLocalService.getOrAddEmptyAddress(
 				account.getDefaultBillingAddressExternalReferenceCode(),
 				contextCompany.getCompanyId(), contextUser.getUserId(),
 				AccountEntry.class.getName(), accountEntryId);
@@ -793,11 +829,11 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			Account account, long accountEntryId, long defaultShippingAddressId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getDefaultShippingAddressExternalReferenceCode())) {
 
-			Address address = _addressLocalService.getOrAddIncompleteAddress(
+			Address address = _addressLocalService.getOrAddEmptyAddress(
 				account.getDefaultShippingAddressExternalReferenceCode(),
 				contextCompany.getCompanyId(), contextUser.getUserId(),
 				AccountEntry.class.getName(), accountEntryId);
@@ -1024,13 +1060,11 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			organizationIds = transformToArray(
 				Arrays.asList(organizationExternalReferenceCodes),
 				externalReferenceCode -> {
-					if (FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+					if (FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 						com.liferay.portal.kernel.model.Organization
 							organization =
-								_organizationService.
-									getOrAddIncompleteOrganization(
-										externalReferenceCode,
-										StringPool.BLANK);
+								_organizationService.getOrAddEmptyOrganization(
+									externalReferenceCode, StringPool.BLANK);
 
 						return organization.getOrganizationId();
 					}
@@ -1063,12 +1097,12 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			Account account, long defaultParentAccountId)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-47858") &&
+		if (FeatureFlagManagerUtil.isEnabled("LPD-35914") &&
 			Validator.isNotNull(
 				account.getParentAccountExternalReferenceCode())) {
 
 			AccountEntry accountEntry =
-				_accountEntryService.getOrAddIncompleteAccountEntry(
+				_accountEntryService.getOrAddEmptyAccountEntry(
 					account.getParentAccountExternalReferenceCode(),
 					account.getParentAccountExternalReferenceCode(),
 					AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
@@ -1259,7 +1293,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		if (accountContactInformation != null) {
 			UsersAdminUtil.updateAddresses(
 				AccountEntry.class.getName(), accountId,
-				_getContactAddresses(account, accountEntry));
+				_getContactAddresses(account, accountEntry),
+				AccountListTypeConstants.ACCOUNT_ENTRY_CONTACT_ADDRESS);
 			UsersAdminUtil.updateEmailAddresses(
 				AccountEntry.class.getName(), accountId,
 				_getEmailAddresses(account, accountEntry));
@@ -1312,7 +1347,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			}
 		}
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-47858")) {
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-35914")) {
 			return accountEntry;
 		}
 

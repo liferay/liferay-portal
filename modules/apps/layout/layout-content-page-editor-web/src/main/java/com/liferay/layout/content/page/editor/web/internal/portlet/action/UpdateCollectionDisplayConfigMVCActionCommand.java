@@ -81,8 +81,8 @@ public class UpdateCollectionDisplayConfigMVCActionCommand
 				segmentsExperienceId);
 
 		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
-			JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-				fragmentEntryLink.getEditableValues());
+			JSONObject editableValuesJSONObject =
+				fragmentEntryLink.getEditableValuesJSONObject();
 
 			String configuration = editableValuesJSONObject.getString(
 				FragmentEntryProcessorConstants.

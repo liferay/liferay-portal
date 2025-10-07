@@ -1,0 +1,94 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "Highlights",
+					"description": "apps-section-title",
+					"label": "Section Title",
+					"name": "sectionTitle",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "Fragments and client extensions to foster your productivity",
+					"description": "apps-section-description",
+					"label": "Section Description",
+					"name": "sectionDescription",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "large",
+					"description": "card-size",
+					"label": "Card Size",
+					"name": "cardSize",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "small"
+							},
+							{
+								"value": "large"
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "int",
+					"defaultValue": "8",
+					"description": "page-size",
+					"label": "Page Size",
+					"name": "pageSize",
+					"type": "select",
+					"typeOptions": {
+						"validValues": [
+							{
+								"value": "4"
+							},
+							{
+								"value": "8"
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"description": "specification-filter-value",
+					"label": "Specification Filter Value",
+					"name": "specificationFilterValue",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"defaultValue": true,
+					"description": "hide-rating-info",
+					"label": "Hide Rating Info",
+					"name": "hideRatingInfo",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}

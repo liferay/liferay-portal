@@ -5,7 +5,13 @@
 				"externalReferenceCode": "M2H8_ADMIN_ADAM"
 			}
 		],
-		"emailAddress": "m2h8.admin.adam@liferay.com"
+		"alternateName": "m2h8.admin.adam",
+		"emailAddress": "m2h8.admin.adam@liferay.com",
+		"familyName": "Adam",
+		"givenName": "M2H8 Admin",
+		"jobTitle": "Administrator",
+		"name": "M2H8 Admin Adam",
+		"password": "test"
 	},
 	{
 		"accountBriefs": [
@@ -13,7 +19,13 @@
 				"externalReferenceCode": "M2H8_CUSTOMER_CARL"
 			}
 		],
-		"emailAddress": "m2h8.customer.carl@liferay.com"
+		"alternateName": "m2h8.customer.carl",
+		"emailAddress": "m2h8.customer.carl@liferay.com",
+		"familyName": "Carl",
+		"givenName": "M2H8 Customer",
+		"jobTitle": "Customer",
+		"name": "M2H8 Customer Carl",
+		"password": "test"
 	},
 	{
 		"accountBriefs": [
@@ -21,6 +33,12 @@
 				"externalReferenceCode": "M2H8_SUPPORT_SAM"
 			}
 		],
-		"emailAddress": "m2h8.support.sam@liferay.com"
+		"alternateName": "m2h8.support.sam",
+		"emailAddress": "m2h8.support.sam@liferay.com",
+		"familyName": "Sam",
+		"givenName": "M2H8 Support",
+		"jobTitle": "Support",
+		"name": "M2H8 Support Sam",
+		"password": "test"
 	}
 ]

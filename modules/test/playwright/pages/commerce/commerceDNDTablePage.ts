@@ -71,7 +71,7 @@ export class CommerceDNDTablePage {
 		this.filterValue = (value: string) => page.getByLabel(value);
 		this.resetFiltersButton = page.getByRole('button', {
 			exact: true,
-			name: 'Reset Filters',
+			name: 'Clear',
 		});
 		this.table = page.locator(tableIdentifier);
 		this.tableHeadSelector = page.locator('input[name="items-selector"]');

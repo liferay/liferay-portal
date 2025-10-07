@@ -33,7 +33,7 @@ type ObjectDefinitionNodeActionsProps = {
 	objectDefinitionId: number;
 	objectDefinitionName: string;
 	objectDefinitionPermissionsURL: string;
-	objectFoldersLenght: number;
+	objectFoldersLength: number;
 	status: {
 		code: number;
 		label: string;
@@ -190,7 +190,7 @@ export function getObjectDefinitionNodeActions({
 	objectDefinitionId,
 	objectDefinitionName,
 	objectDefinitionPermissionsURL,
-	objectFoldersLenght,
+	objectFoldersLength,
 }: ObjectDefinitionNodeActionsProps) {
 	const PermissionUrl = formatActionURL(
 		objectDefinitionPermissionsURL,
@@ -255,7 +255,7 @@ export function getObjectDefinitionNodeActions({
 	] as DropDownItems[];
 
 	if (
-		objectFoldersLenght > 1 &&
+		objectFoldersLength > 1 &&
 		hasObjectDefinitionUpdateResourcePermission
 	) {
 		kebabOptions.push(
@@ -493,9 +493,9 @@ export async function getUpdatedModelBuilderStructurePayload(
 						[];
 
 					const objectDefinitionsFilteredByObjectFolder =
-						await API.getObjectDefinitions(
-							`filter=objectFolderExternalReferenceCode eq '${objectFolder.externalReferenceCode}'`
-						);
+						await API.getObjectDefinitions({
+							filter: `objectFolderExternalReferenceCode eq '${objectFolder.externalReferenceCode}'`,
+						});
 
 					const linkedObjectDefinitions: ObjectDefinition[] = [];
 

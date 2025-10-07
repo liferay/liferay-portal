@@ -268,6 +268,13 @@ public class OrganizationPersistenceTest {
 	}
 
 	@Test
+	public void testCountByLogoId() throws Exception {
+		_persistence.countByLogoId(RandomTestUtil.nextLong());
+
+		_persistence.countByLogoId(0L);
+	}
+
+	@Test
 	public void testCountByC_P() throws Exception {
 		_persistence.countByC_P(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());

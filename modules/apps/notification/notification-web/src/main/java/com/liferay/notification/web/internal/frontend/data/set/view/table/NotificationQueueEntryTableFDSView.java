@@ -44,6 +44,13 @@ public class NotificationQueueEntryTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"notificationQueueEntryToDataRenderer")
 		).add(
+			"sentDate", "sent-date",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"dateTime"
+			).setSortable(
+				true
+			)
+		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"notificationQueueEntryStatusDataRenderer")

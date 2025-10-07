@@ -222,6 +222,7 @@ public class DropZoneFragmentEntryLinkListener
 
 				_layoutPageTemplateStructureLocalService.
 					updateLayoutPageTemplateStructureData(
+						fragmentEntryLink.getUserId(),
 						fragmentEntryLink.getGroupId(),
 						fragmentEntryLink.getPlid(),
 						fragmentEntryLink.getSegmentsExperienceId(),
@@ -422,6 +423,7 @@ public class DropZoneFragmentEntryLinkListener
 
 				_layoutPageTemplateStructureLocalService.
 					updateLayoutPageTemplateStructureData(
+						fragmentEntryLink.getUserId(),
 						fragmentEntryLink.getGroupId(),
 						fragmentEntryLink.getPlid(),
 						fragmentEntryLink.getSegmentsExperienceId(),

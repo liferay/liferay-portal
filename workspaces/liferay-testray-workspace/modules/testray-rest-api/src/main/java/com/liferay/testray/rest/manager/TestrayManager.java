@@ -33,6 +33,10 @@ public interface TestrayManager {
 			long companyId, OffsetDateTime offsetDateTime, long testrayCaseId)
 		throws Exception;
 
+	public Long[] getRelatedTestrayRoutineIds(
+			long companyId, long testrayRoutineId)
+		throws Exception;
+
 	public void loadTestrayCache(
 			long companyId, TestrayCache testrayCache, long userId)
 		throws Exception;

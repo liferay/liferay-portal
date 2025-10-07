@@ -61,6 +61,10 @@ public class PatcherProductVersionUtil {
 			PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
 				name);
 
+		if (patcherProductVersion == null) {
+			return -1;
+		}
+
 		return patcherProductVersion.getPatcherProductVersionId();
 	}
 

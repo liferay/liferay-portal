@@ -17,6 +17,7 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.definition.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.object.exception.DuplicateObjectActionExternalReferenceCodeException;
 import com.liferay.object.exception.LockedObjectActionException;
@@ -29,7 +30,6 @@ import com.liferay.object.exception.ObjectActionParametersException;
 import com.liferay.object.exception.ObjectActionSystemException;
 import com.liferay.object.exception.ObjectActionTriggerKeyException;
 import com.liferay.object.internal.action.trigger.util.ObjectActionTriggerUtil;
-import com.liferay.object.internal.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
@@ -41,12 +41,11 @@ import com.liferay.object.scripting.validator.ObjectScriptingValidator;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
-import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.base.ObjectActionLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
-import com.liferay.object.tree.ObjectDefinitionTreeFactory;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -73,9 +72,11 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.security.script.management.configuration.helper.ScriptManagementConfigurationHelper;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,18 +169,8 @@ public class ObjectActionLocalServiceImpl
 				ObjectActionTriggerConstants.KEY_STANDALONE)) {
 
 			try {
-				if (objectDefinition.isRootDescendantNode()) {
-					objectDefinition =
-						_objectDefinitionPersistence.findByPrimaryKey(
-							objectDefinition.getRootObjectDefinitionId());
-				}
-
 				ObjectDefinitionResourcePermissionUtil.populateResourceActions(
-					objectActionLocalService, objectDefinition, null,
-					_objectDefinitionPersistence,
-					new ObjectDefinitionTreeFactory(
-						_objectDefinitionPersistence,
-						_objectRelationshipLocalService),
+					objectActionLocalService, objectDefinition,
 					_portletLocalService, _resourceActions, null);
 			}
 			catch (Exception exception) {
@@ -233,6 +224,69 @@ public class ObjectActionLocalServiceImpl
 			conditionExpression, description, errorMessageMap, labelMap, name,
 			objectActionExecutorKey, objectActionTriggerKey,
 			parametersUnicodeProperties, system);
+	}
+
+	@Override
+	public void addOrUpdateSubscriptionObjectActions(
+			ObjectDefinition objectDefinition)
+		throws PortalException {
+
+		Map<String, Map<String, String>> subscriptionObjectActions =
+			ObjectActionConstants.getSubscriptionObjectActions();
+
+		for (Map.Entry<String, Map<String, String>> entry :
+				subscriptionObjectActions.entrySet()) {
+
+			ObjectAction objectAction = objectActionPersistence.fetchByODI_N(
+				objectDefinition.getObjectDefinitionId(), entry.getKey());
+
+			if (objectAction != null) {
+				if (!objectDefinition.isEnableObjectEntrySubscription()) {
+					objectActionLocalService.updateActive(objectAction, false);
+				}
+				else {
+					objectActionLocalService.updateActive(objectAction, true);
+				}
+			}
+			else if (objectDefinition.isEnableObjectEntrySubscription()) {
+				String notificationTemplateExternalReferenceCode =
+					MapUtil.getString(
+						entry.getValue(),
+						"notificationTemplateExternalReferenceCode");
+
+				NotificationTemplate notificationTemplate =
+					_notificationTemplateLocalService.
+						fetchNotificationTemplateByExternalReferenceCode(
+							notificationTemplateExternalReferenceCode,
+							objectDefinition.getCompanyId());
+
+				if (notificationTemplate == null) {
+					_notificationTemplateLocalService.
+						addSubscriptionNotificationTemplate(
+							notificationTemplateExternalReferenceCode,
+							objectDefinition.getUserId());
+				}
+
+				objectActionLocalService.addObjectAction(
+					null, objectDefinition.getUserId(),
+					objectDefinition.getObjectDefinitionId(), true,
+					MapUtil.getString(entry.getValue(), "conditionExpression"),
+					StringPool.BLANK, null,
+					LocalizedMapUtil.getLocalizedMap(
+						MapUtil.getString(entry.getValue(), "label")),
+					entry.getKey(),
+					ObjectActionExecutorConstants.KEY_NOTIFICATION,
+					MapUtil.getString(
+						entry.getValue(), "objectActionTriggerKey"),
+					UnicodePropertiesBuilder.create(
+						true
+					).put(
+						"notificationTemplateExternalReferenceCode",
+						notificationTemplateExternalReferenceCode
+					).build(),
+					false);
+			}
+		}
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -351,6 +405,20 @@ public class ObjectActionLocalServiceImpl
 		}
 
 		return objectActionsMap;
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public ObjectAction updateActive(ObjectAction objectAction, boolean active)
+		throws PortalException {
+
+		if (objectAction.isActive() == active) {
+			return objectAction;
+		}
+
+		objectAction.setActive(active);
+
+		return objectActionLocalService.updateObjectAction(objectAction);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -535,7 +603,8 @@ public class ObjectActionLocalServiceImpl
 			ObjectDefinition objectDefinition)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-34594") ||
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectDefinition.getCompanyId(), "LPD-34594") ||
 			objectDefinition.isRootNode()) {
 
 			return;
@@ -1068,9 +1137,6 @@ public class ObjectActionLocalServiceImpl
 
 	@Reference
 	private ObjectFolderLocalService _objectFolderLocalService;
-
-	@Reference
-	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private ObjectScriptingValidator _objectScriptingValidator;

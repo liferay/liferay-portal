@@ -222,7 +222,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 	}
 
 	private String _generateLocalWellKnownURI(
-			String issuer, String tokenEndPoint, String wellKnownURISuffix)
+			String issuer, String tokenEndpoint, String wellKnownURISuffix)
 		throws PortalException {
 
 		try {
@@ -234,7 +234,7 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 				issuerURI.getScheme(), "://", issuerURI.getAuthority(),
 				"/.well-known/", wellKnownURISuffix, issuerURI.getPath(), '/',
 				Base64.encodeToURL(
-					messageDigest.digest(tokenEndPoint.getBytes())),
+					messageDigest.digest(tokenEndpoint.getBytes())),
 				"/local");
 		}
 		catch (Exception exception) {

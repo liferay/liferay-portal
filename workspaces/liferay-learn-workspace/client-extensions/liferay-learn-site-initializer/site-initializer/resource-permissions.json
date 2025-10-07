@@ -9,9 +9,8 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resource-pk": "recipes",
 		"resourceName": "com.liferay.document.library.kernel.model.DLFolder",
-		"roleName": "Recipe Approver",
+		"roleName": "Knowledge Article Approver",
 		"scope": 1
 	},
 	{
@@ -24,9 +23,8 @@
 			"VIEW"
 		],
 		"primKey": "0",
-		"resource-pk": "recipes",
 		"resourceName": "com.liferay.document.library.kernel.model.DLFolder",
-		"roleName": "Recipe Creator",
+		"roleName": "Knowledge Article Creator",
 		"scope": 1
 	},
 	{
@@ -35,7 +33,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com.liferay.journal",
-		"roleName": "Recipe Approver",
+		"roleName": "Knowledge Article Approver",
 		"scope": 1
 	},
 	{
@@ -45,7 +43,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com.liferay.journal",
-		"roleName": "Recipe Creator",
+		"roleName": "Knowledge Article Creator",
 		"scope": 1
 	},
 	{
@@ -64,7 +62,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com.liferay.portal.kernel.model.Group",
-		"roleName": "Recipe Approver",
+		"roleName": "Knowledge Article Approver",
 		"scope": 1
 	},
 	{
@@ -74,7 +72,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com.liferay.portal.kernel.model.Group",
-		"roleName": "Recipe Creator",
+		"roleName": "Knowledge Article Creator",
 		"scope": 1
 	},
 	{
@@ -84,7 +82,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com_liferay_document_library_web_portlet_DLAdminPortlet",
-		"roleName": "Recipe Approver",
+		"roleName": "Knowledge Article Approver",
 		"scope": 1
 	},
 	{
@@ -94,7 +92,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com_liferay_document_library_web_portlet_DLAdminPortlet",
-		"roleName": "Recipe Creator",
+		"roleName": "Knowledge Article Creator",
 		"scope": 1
 	},
 	{
@@ -104,7 +102,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com_liferay_journal_web_portlet_JournalPortlet",
-		"roleName": "Recipe Approver",
+		"roleName": "Knowledge Article Approver",
 		"scope": 1
 	},
 	{
@@ -114,7 +112,7 @@
 		],
 		"primKey": "0",
 		"resourceName": "com_liferay_journal_web_portlet_JournalPortlet",
-		"roleName": "Recipe Creator",
+		"roleName": "Knowledge Article Creator",
 		"scope": 1
 	}
 ]

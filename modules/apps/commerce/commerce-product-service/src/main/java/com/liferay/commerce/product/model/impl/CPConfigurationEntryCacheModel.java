@@ -71,7 +71,7 @@ public class CPConfigurationEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(75);
+		StringBundler sb = new StringBundler(73);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -141,8 +141,6 @@ public class CPConfigurationEntryCacheModel
 		sb.append(shipSeparately);
 		sb.append(", taxExempt=");
 		sb.append(taxExempt);
-		sb.append(", visible=");
-		sb.append(visible);
 		sb.append(", weight=");
 		sb.append(weight);
 		sb.append(", width=");
@@ -251,7 +249,6 @@ public class CPConfigurationEntryCacheModel
 		cpConfigurationEntryImpl.setShippingExtraPrice(shippingExtraPrice);
 		cpConfigurationEntryImpl.setShipSeparately(shipSeparately);
 		cpConfigurationEntryImpl.setTaxExempt(taxExempt);
-		cpConfigurationEntryImpl.setVisible(visible);
 		cpConfigurationEntryImpl.setWeight(weight);
 		cpConfigurationEntryImpl.setWidth(width);
 
@@ -319,8 +316,6 @@ public class CPConfigurationEntryCacheModel
 		shipSeparately = objectInput.readBoolean();
 
 		taxExempt = objectInput.readBoolean();
-
-		visible = objectInput.readBoolean();
 
 		weight = objectInput.readDouble();
 
@@ -423,8 +418,6 @@ public class CPConfigurationEntryCacheModel
 
 		objectOutput.writeBoolean(taxExempt);
 
-		objectOutput.writeBoolean(visible);
-
 		objectOutput.writeDouble(weight);
 
 		objectOutput.writeDouble(width);
@@ -464,7 +457,6 @@ public class CPConfigurationEntryCacheModel
 	public double shippingExtraPrice;
 	public boolean shipSeparately;
 	public boolean taxExempt;
-	public boolean visible;
 	public double weight;
 	public double width;
 

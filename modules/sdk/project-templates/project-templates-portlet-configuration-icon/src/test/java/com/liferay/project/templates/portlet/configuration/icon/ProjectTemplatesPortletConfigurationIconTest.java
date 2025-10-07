@@ -43,7 +43,7 @@ public class ProjectTemplatesPortletConfigurationIconTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -99,22 +99,22 @@ public class ProjectTemplatesPortletConfigurationIconTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		if (VersionUtil.getMinorVersion(_liferayVersion) < 3) {
-			testContains(
-				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
-		}
-		else {
-			testContains(
-				gradleProjectDir, "build.gradle",
-				DEPENDENCY_RELEASE_PORTAL_API);
-		}
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+
+		String portletConfigurationIconFile =
+			"src/main/java/blade/test/portlet/configuration/icon" +
+				"/IcontestPortletConfigurationIcon.java";
 
 		testContains(
-			gradleProjectDir,
-			"src/main/java/blade/test/portlet/configuration/icon" +
-				"/IcontestPortletConfigurationIcon.java",
+			gradleProjectDir, portletConfigurationIconFile,
 			"public class IcontestPortletConfigurationIcon",
-			"extends BasePortletConfigurationIcon");
+			"extends BasePortletConfigurationIcon",
+			getJavaxOrJakartaPackagePrefix(_liferayVersion) + ".portlet.name=");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(
+				gradleProjectDir, portletConfigurationIconFile);
+		}
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 

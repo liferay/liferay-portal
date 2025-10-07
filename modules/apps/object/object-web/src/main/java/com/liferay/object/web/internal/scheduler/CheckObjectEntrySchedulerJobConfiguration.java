@@ -7,6 +7,7 @@ package com.liferay.object.web.internal.scheduler;
 
 import com.liferay.object.configuration.ObjectEntryScheduleConfiguration;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -35,15 +36,20 @@ public class CheckObjectEntrySchedulerJobConfiguration
 	public UnsafeConsumer<Long, Exception>
 		getCompanyJobExecutorUnsafeConsumer() {
 
-		return companyId -> _objectEntryLocalService.checkObjectEntries(
-			companyId);
+		return companyId -> {
+			_objectEntryLocalService.checkObjectEntries(companyId);
+			_objectEntryVersionLocalService.checkObjectEntryVersions(companyId);
+		};
 	}
 
 	@Override
 	public UnsafeRunnable<Exception> getJobExecutorUnsafeRunnable() {
 		return () -> _companyLocalService.forEachCompanyId(
-			companyId -> _objectEntryLocalService.checkObjectEntries(
-				companyId));
+			companyId -> {
+				_objectEntryLocalService.checkObjectEntries(companyId);
+				_objectEntryVersionLocalService.checkObjectEntryVersions(
+					companyId);
+			});
 	}
 
 	@Override
@@ -68,6 +74,10 @@ public class CheckObjectEntrySchedulerJobConfiguration
 
 	private volatile ObjectEntryScheduleConfiguration
 		_objectEntryScheduleConfiguration;
+
+	@Reference
+	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
+
 	private TriggerConfiguration _triggerConfiguration;
 
 }

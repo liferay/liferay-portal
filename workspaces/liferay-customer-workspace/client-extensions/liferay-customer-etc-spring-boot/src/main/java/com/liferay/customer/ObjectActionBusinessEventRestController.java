@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -274,17 +275,16 @@ public class ObjectActionBusinessEventRestController
 
 		return HashMapBuilder.put(
 			"BUSINESSEVENT_ACTIVITY_HISTORY_PAGE_LINK",
-			businessEvent.getActivityHistoryURL(
-				lxcDXPServerProtocol, lxcDXPMainDomain)
+			businessEvent.getActivityHistoryURL(_customerPortalURL)
 		).put(
 			"BUSINESSEVENT_AUTHOR_FIRST_NAME",
 			businessEvent.getCreatorGivenName()
 		).put(
 			"BUSINESSEVENT_DETAIL_PAGE_LINK",
-			businessEvent.getURL(lxcDXPServerProtocol, lxcDXPMainDomain)
+			businessEvent.getURL(_customerPortalURL)
 		).put(
 			"BUSINESSEVENT_EDIT_PAGE_LINK",
-			businessEvent.getEditURL(lxcDXPServerProtocol, lxcDXPMainDomain)
+			businessEvent.getEditURL(_customerPortalURL)
 		).put(
 			"BUSINESSEVENT_EVENTTYPE", businessEvent.getEventTypeName()
 		).put(
@@ -480,6 +480,9 @@ public class ObjectActionBusinessEventRestController
 
 	@Autowired
 	private BusinessEventPermission _businessEventPermission;
+
+	@Value("${liferay.customer.portal.url}")
+	private String _customerPortalURL;
 
 	@Autowired
 	private Environment _environment;

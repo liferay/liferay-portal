@@ -13,6 +13,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.navigation.model.SiteNavigationMenu;
+import com.liferay.site.navigation.service.SiteNavigationMenuLocalServiceUtil;
 import com.liferay.site.navigation.taglib.servlet.taglib.NavigationMenuMode;
 
 import java.util.Objects;
@@ -32,10 +35,15 @@ public class FragmentEntryMenuDisplayConfiguration {
 				source = ContextualMenu.parse(
 					jsonObject.getString("contextualMenu"));
 			}
-			else if (jsonObject.has("siteNavigationMenuId")) {
+			else if (jsonObject.has(
+						"siteNavigationMenuExternalReferenceCode") ||
+					 jsonObject.has("siteNavigationMenuId")) {
+
 				source = new SiteNavigationMenuSource(
 					jsonObject.getLong("parentSiteNavigationMenuItemId"),
 					jsonObject.getBoolean("privateLayout"),
+					jsonObject.getString(
+						"siteNavigationMenuExternalReferenceCode"),
 					jsonObject.getLong("siteNavigationMenuId"));
 			}
 		}
@@ -109,12 +117,48 @@ public class FragmentEntryMenuDisplayConfiguration {
 		return "select";
 	}
 
-	public long getSiteNavigationMenuId() {
-		if (_source instanceof SiteNavigationMenuSource) {
-			SiteNavigationMenuSource siteNavigationMenuSource =
-				(SiteNavigationMenuSource)_source;
+	public String getSiteNavigationMenuExternalReferenceCode() {
+		SiteNavigationMenuSource siteNavigationMenuSource =
+			_getSiteNavigationMenuSource();
 
-			return siteNavigationMenuSource.getSiteNavigationMenuId();
+		if (siteNavigationMenuSource == null) {
+			return null;
+		}
+
+		return siteNavigationMenuSource.
+			getSiteNavigationMenuExternalReferenceCode();
+	}
+
+	public long getSiteNavigationMenuId(long groupId) {
+		SiteNavigationMenuSource siteNavigationMenuSource =
+			_getSiteNavigationMenuSource();
+
+		if (siteNavigationMenuSource == null) {
+			return 0;
+		}
+
+		long siteNavigationMenuId =
+			siteNavigationMenuSource.getSiteNavigationMenuId();
+
+		if (siteNavigationMenuId > 0) {
+			return siteNavigationMenuId;
+		}
+
+		String siteNavigationMenuExternalReferenceCode =
+			siteNavigationMenuSource.
+				getSiteNavigationMenuExternalReferenceCode();
+
+		if (Validator.isNull(siteNavigationMenuExternalReferenceCode)) {
+			return 0;
+		}
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuLocalServiceUtil.
+				fetchSiteNavigationMenuByExternalReferenceCode(
+					siteNavigationMenuExternalReferenceCode, groupId);
+
+		if (siteNavigationMenu != null) {
+			return siteNavigationMenu.getSiteNavigationMenuId();
 		}
 
 		return 0;
@@ -133,6 +177,14 @@ public class FragmentEntryMenuDisplayConfiguration {
 		}
 	}
 
+	private SiteNavigationMenuSource _getSiteNavigationMenuSource() {
+		if (_source instanceof SiteNavigationMenuSource) {
+			return (SiteNavigationMenuSource)_source;
+		}
+
+		return null;
+	}
+
 	private static final Source _DEFAULT_SOURCE = new DefaultSource();
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -147,15 +199,22 @@ public class FragmentEntryMenuDisplayConfiguration {
 
 		public SiteNavigationMenuSource(
 			long parentSiteNavigationMenuItemId, boolean privateLayout,
+			String siteNavigationMenuExternalReferenceCode,
 			long siteNavigationMenuId) {
 
 			_parentSiteNavigationMenuItemId = parentSiteNavigationMenuItemId;
 			_privateLayout = privateLayout;
+			_siteNavigationMenuExternalReferenceCode =
+				siteNavigationMenuExternalReferenceCode;
 			_siteNavigationMenuId = siteNavigationMenuId;
 		}
 
 		public long getParentSiteNavigationMenuItemId() {
 			return _parentSiteNavigationMenuItemId;
+		}
+
+		public String getSiteNavigationMenuExternalReferenceCode() {
+			return _siteNavigationMenuExternalReferenceCode;
 		}
 
 		public long getSiteNavigationMenuId() {
@@ -168,6 +227,7 @@ public class FragmentEntryMenuDisplayConfiguration {
 
 		private final long _parentSiteNavigationMenuItemId;
 		private final boolean _privateLayout;
+		private final String _siteNavigationMenuExternalReferenceCode;
 		private final long _siteNavigationMenuId;
 
 	}

@@ -120,7 +120,7 @@ import toggleControls from './util/toggle_controls';
 import toggleDisabled from './util/toggle_disabled';
 import toggleRadio from './util/toggle_radio';
 import toggleSelectBox from './util/toggle_select_box';
-import loadClientExtensions from './utils/client_extensions/loadClientExtensions';
+import {loadClientExtensions} from './utils/client_extensions/loadClientExtensions';
 import loadEditorClientExtensions from './utils/client_extensions/loadEditorClientExtensions';
 import {loadModule} from './utils/client_extensions/loadModule';
 
@@ -204,6 +204,13 @@ Liferay.Util.checkAll = (...args) => {
 	import('frontend-js-web/legacy')
 		.then(({checkAll}) => {
 			checkAll(...args);
+		})
+		.catch(() => {});
+};
+Liferay.Util.checkAllBox = (...args) => {
+	import('frontend-js-web/legacy')
+		.then(({checkAllBox}) => {
+			checkAllBox(...args);
 		})
 		.catch(() => {});
 };
@@ -367,6 +374,14 @@ Liferay.Util.checkAll = (...args) => {
 			'/o/frontend-js-web/__liferay__/legacy.js'
 	).then(({checkAll}) => {
 		checkAll(...args);
+	});
+};
+Liferay.Util.checkAllBox = (...args) => {
+	import(
+		themeDisplay.getPathContext() +
+			'/o/frontend-js-web/__liferay__/legacy.js'
+	).then(({checkAllBox}) => {
+		checkAllBox(...args);
 	});
 };
 Liferay.Util.Cookie = Cookie;

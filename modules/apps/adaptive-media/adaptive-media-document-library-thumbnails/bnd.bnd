@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Document Library Thumbnails
 Bundle-SymbolicName: com.liferay.adaptive.media.document.library.thumbnails
-Bundle-Version: 5.0.46
+Bundle-Version: 5.0.47
 -dsannotations-options: inherit

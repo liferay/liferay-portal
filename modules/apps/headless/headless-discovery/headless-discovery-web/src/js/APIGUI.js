@@ -17,7 +17,7 @@ import apiFetch from './util/apiFetch';
 
 import 'graphiql/graphiql.css';
 
-import learnSwaggerUIPlugin from './swagger-ui/plugins/learn';
+import helpInputSwaggerUIPlugin from './swagger-ui/plugins/helpInput';
 
 const APIGUI = () => {
 	const contextPath = window.location.pathname.substring(
@@ -46,12 +46,7 @@ const APIGUI = () => {
 
 	useEffect(() => {
 		apiFetch(contextPath + '/o/openapi', 'get', {}).then((response) => {
-			setOrigin(
-				Object.values(response)[0][0].substring(
-					0,
-					Object.values(response)[0][0].indexOf('/o/')
-				)
-			);
+			setOrigin(new URL(Object.values(response)[0][0]).origin);
 			setEndpoints(
 				Object.keys(response)
 					.flatMap((key) => response[key])
@@ -70,6 +65,16 @@ const APIGUI = () => {
 				headers
 			),
 		[contextPath, headers]
+	);
+
+	const LoadingSpinner = () => (
+		<div className="swagger-ui">
+			<div className="loading-container">
+				<div className="info">
+					<div className="loading"></div>
+				</div>
+			</div>
+		</div>
 	);
 
 	const requestInterceptor = (req) => {
@@ -303,7 +308,9 @@ const APIGUI = () => {
 					</ClayModal>
 				)}
 
-				{showGraphQL ? (
+				{!origin ? (
+					<LoadingSpinner />
+				) : showGraphQL ? (
 					<ClayLayout.Row className="vh-100">
 						<GraphiQL fetcher={graphQLFetcher} />
 					</ClayLayout.Row>
@@ -314,7 +321,7 @@ const APIGUI = () => {
 				) : (
 					<SwaggerUI
 						displayOperationId={true}
-						plugins={[learnSwaggerUIPlugin(contextPath)]}
+						plugins={[helpInputSwaggerUIPlugin(contextPath)]}
 						requestInterceptor={requestInterceptor}
 						supportedSubmitMethods={[
 							'get',

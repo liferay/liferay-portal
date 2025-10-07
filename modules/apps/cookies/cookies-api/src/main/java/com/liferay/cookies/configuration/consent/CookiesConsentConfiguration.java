@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
  * @author Olivér Kecskeméty
  */
 @ExtendedObjectClassDefinition(
-	category = "cookies", scope = ExtendedObjectClassDefinition.Scope.GROUP
+	category = "privacy", scope = ExtendedObjectClassDefinition.Scope.GROUP
 )
 @Meta.OCD(
 	id = "com.liferay.cookies.configuration.consent.CookiesConsentConfiguration",
@@ -63,6 +63,12 @@ public interface CookiesConsentConfiguration {
 	)
 	public LocalizedValuesMap functionalCookiesDescription();
 
+	@ExtendedAttributeDefinition(
+		featureFlagKey = "LPD-51356", requiredInput = true
+	)
+	@Meta.AD(deflt = "false", name = "hide-from-end-user", required = false)
+	public boolean functionalCookiesHideFromEndUser();
+
 	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(deflt = "false", name = "prechecked", required = false)
 	public boolean functionalCookiesPrechecked();
@@ -74,6 +80,12 @@ public interface CookiesConsentConfiguration {
 	)
 	public LocalizedValuesMap performanceCookiesDescription();
 
+	@ExtendedAttributeDefinition(
+		featureFlagKey = "LPD-51356", requiredInput = true
+	)
+	@Meta.AD(deflt = "false", name = "hide-from-end-user", required = false)
+	public boolean performanceCookiesHideFromEndUser();
+
 	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(deflt = "false", name = "prechecked", required = false)
 	public boolean performanceCookiesPrechecked();
@@ -84,6 +96,12 @@ public interface CookiesConsentConfiguration {
 		name = "personalization-cookies-description-field", required = false
 	)
 	public LocalizedValuesMap personalizationCookiesDescription();
+
+	@ExtendedAttributeDefinition(
+		featureFlagKey = "LPD-51356", requiredInput = true
+	)
+	@Meta.AD(deflt = "false", name = "hide-from-end-user", required = false)
+	public boolean personalizationCookiesHideFromEndUser();
 
 	@ExtendedAttributeDefinition(requiredInput = true)
 	@Meta.AD(deflt = "false", name = "prechecked", required = false)

@@ -1,0 +1,46 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "Finest Publishers",
+					"label": "Section Title",
+					"name": "sectionTitle",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"defaultValue": "Fragments and client extensions to foster your productivity",
+					"label": "Section Description",
+					"name": "sectionDescription",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"dataType": "string",
+					"label": "Publisher Details Object Id",
+					"name": "publisherDetailsObjectId",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"fields": [
+				{
+					"defaultValue": false,
+					"label": "Hide Rating Info",
+					"name": "hideRatingInfo",
+					"type": "checkbox"
+				}
+			]
+		}
+	]
+}

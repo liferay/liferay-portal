@@ -1,0 +1,278 @@
+[
+	{
+		"configuration": {
+			"advancedConfiguration": {
+			},
+			"aggregationConfiguration": {
+			},
+			"generalConfiguration": {
+				"clauseContributorsExcludes": [
+				],
+				"clauseContributorsIncludes": [
+					"*"
+				],
+				"searchableAssetTypes": [
+				]
+			},
+			"highlightConfiguration": {
+			},
+			"parameterConfiguration": {
+			},
+			"queryConfiguration": {
+				"applyIndexerClauses": true
+			},
+			"sortConfiguration": {
+			}
+		},
+		"description_i18n": {
+		},
+		"elementInstances": [
+			{
+				"configurationEntry": {
+					"queryConfiguration": {
+						"queryEntries": [
+							{
+								"clauses": [
+									{
+										"context": "query",
+										"occur": "filter",
+										"query": {
+											"terms": {
+												"assetCategoryIds": [
+													"[$TAXONOMY_CATEGORY_ID:Announments$]",
+													"[$TAXONOMY_CATEGORY_ID:Customer Portal Updates$]"
+												]
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				},
+				"sxpElement": {
+					"createDate": "2022-11-16T15:39:41Z",
+					"description": "Filter results by one or multiple terms. At least one must match.",
+					"description_i18n": {
+						"en-US": "filter-by-exact-terms-match-description"
+					},
+					"elementDefinition": {
+						"category": "filter",
+						"configuration": {
+							"queryConfiguration": {
+								"queryEntries": [
+									{
+										"clauses": [
+											{
+												"context": "query",
+												"occur": "filter",
+												"query": {
+													"terms": {
+														"${configuration.field}": "${configuration.values}"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						"icon": "filter",
+						"uiConfiguration": {
+							"fieldSets": [
+								{
+									"fields": [
+										{
+											"label": "field",
+											"labelLocalized": "Field",
+											"name": "field",
+											"type": "fieldMapping"
+										},
+										{
+											"label": "Values",
+											"labelLocalized": "Values",
+											"name": "values",
+											"type": "multiselect"
+										}
+									]
+								}
+							]
+						}
+					},
+					"externalReferenceCode": "FILTER_BY_EXACT_TERMS_MATCH",
+					"id": 3157,
+					"modifiedDate": "2022-11-16T15:39:41Z",
+					"readOnly": true,
+					"schemaVersion": "1.0",
+					"title": "Filter by Exact Terms Match",
+					"title_i18n": {
+						"en-US": "filter-by-exact-terms-match"
+					},
+					"type": 0,
+					"userName": "",
+					"version": "1.0"
+				},
+				"uiConfigurationValues": {
+					"field": {
+						"field": "assetCategoryIds",
+						"languageIdPosition": -1
+					},
+					"values": [
+						{
+							"key": "key_1",
+							"label": "[$TAXONOMY_CATEGORY_ID:Announments$]",
+							"value": "[$TAXONOMY_CATEGORY_ID:Announments$]"
+						},
+						{
+							"key": "key_2",
+							"label": "[$TAXONOMY_CATEGORY_ID:Customer Portal Updates$]",
+							"value": "[$TAXONOMY_CATEGORY_ID:Customer Portal Updates$]"
+						}
+					]
+				}
+			}
+		],
+		"externalReferenceCode": "533d77b9-136f-c40b-a81c-dc799ad25a70",
+		"schemaVersion": "1.1",
+		"title_i18n": {
+			"en_US": "Announcements",
+			"es_ES": "Anuncios",
+			"ja_JP": "アナウンスメント",
+			"pt_BR": "Avisos"
+		}
+	},
+	{
+		"configuration": {
+			"advancedConfiguration": {
+			},
+			"aggregationConfiguration": {
+			},
+			"generalConfiguration": {
+				"clauseContributorsExcludes": [
+				],
+				"clauseContributorsIncludes": [
+					"*"
+				],
+				"searchableAssetTypes": [
+				]
+			},
+			"highlightConfiguration": {
+			},
+			"parameterConfiguration": {
+			},
+			"queryConfiguration": {
+				"applyIndexerClauses": true
+			},
+			"sortConfiguration": {
+			}
+		},
+		"description_i18n": {
+		},
+		"elementInstances": [
+			{
+				"configurationEntry": {
+					"queryConfiguration": {
+						"queryEntries": [
+							{
+								"clauses": [
+									{
+										"context": "query",
+										"occur": "filter",
+										"query": {
+											"terms": {
+												"assetVocabularyIds": [
+													"[$TAXONOMY_VOCABULARY_ID:Article Categories$]"
+												]
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				},
+				"sxpElement": {
+					"createDate": "2022-11-16T15:39:41Z",
+					"description": "Filter results by one or multiple terms. At least one must match.",
+					"description_i18n": {
+						"en-US": "filter-by-exact-terms-match-description"
+					},
+					"elementDefinition": {
+						"category": "filter",
+						"configuration": {
+							"queryConfiguration": {
+								"queryEntries": [
+									{
+										"clauses": [
+											{
+												"context": "query",
+												"occur": "filter",
+												"query": {
+													"terms": {
+														"${configuration.field}": "${configuration.values}"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						"icon": "filter",
+						"uiConfiguration": {
+							"fieldSets": [
+								{
+									"fields": [
+										{
+											"label": "field",
+											"labelLocalized": "Field",
+											"name": "field",
+											"type": "fieldMapping"
+										},
+										{
+											"label": "Values",
+											"labelLocalized": "Values",
+											"name": "values",
+											"type": "multiselect"
+										}
+									]
+								}
+							]
+						}
+					},
+					"externalReferenceCode": "FILTER_BY_EXACT_TERMS_MATCH",
+					"id": 3157,
+					"modifiedDate": "2022-11-16T15:39:41Z",
+					"readOnly": true,
+					"schemaVersion": "1.0",
+					"title": "Filter by Exact Terms Match",
+					"title_i18n": {
+						"en-US": "filter-by-exact-terms-match"
+					},
+					"type": 0,
+					"userName": "",
+					"version": "1.0"
+				},
+				"uiConfigurationValues": {
+					"field": {
+						"field": "assetVocabularyIds",
+						"languageIdPosition": -1,
+						"locale": ""
+					},
+					"values": [
+						{
+							"key": "key_1",
+							"label": "[$TAXONOMY_VOCABULARY_ID:Article Categories$]",
+							"value": "[$TAXONOMY_VOCABULARY_ID:Article Categories$]"
+						}
+					]
+				}
+			}
+		],
+		"externalReferenceCode": "50f81936-f760-76d6-a920-d45821302ab5",
+		"schemaVersion": "1.1",
+		"title_i18n": {
+			"en_US": "Search"
+		}
+	}
+]

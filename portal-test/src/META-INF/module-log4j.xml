@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<Configuration strict="true">
+	<Loggers>
+		<Logger level="INFO" name="com.liferay.portal.test.cluster.tomcat.TomcatNode" />
+	</Loggers>
+</Configuration>

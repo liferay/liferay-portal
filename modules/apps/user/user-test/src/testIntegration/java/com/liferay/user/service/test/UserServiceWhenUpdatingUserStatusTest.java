@@ -54,7 +54,7 @@ public class UserServiceWhenUpdatingUserStatusTest {
 
 		_testUpdateUserStatusWithInvalidPermission(
 			ActionKeys.DEACTIVATE, WorkflowConstants.STATUS_INACTIVE,
-			WorkflowConstants.STATUS_APPROVED, "ACTIVATE,DELETE");
+			WorkflowConstants.STATUS_APPROVED, "ACTIVATE, DELETE");
 
 		_testUpdateUserStatusWithValidPermission(
 			ActionKeys.DELETE, WorkflowConstants.STATUS_INACTIVE,
@@ -65,7 +65,7 @@ public class UserServiceWhenUpdatingUserStatusTest {
 	public void testDeactivateUser() throws Exception {
 		_testUpdateUserStatusWithInvalidPermission(
 			ActionKeys.ACTIVATE, WorkflowConstants.STATUS_APPROVED,
-			WorkflowConstants.STATUS_INACTIVE, "DEACTIVATE,DELETE");
+			WorkflowConstants.STATUS_INACTIVE, "DEACTIVATE, DELETE");
 
 		_testUpdateUserStatusWithValidPermission(
 			ActionKeys.DEACTIVATE, WorkflowConstants.STATUS_APPROVED,

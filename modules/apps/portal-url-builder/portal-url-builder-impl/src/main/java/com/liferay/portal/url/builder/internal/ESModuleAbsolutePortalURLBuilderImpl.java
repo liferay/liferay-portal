@@ -10,8 +10,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.internal.util.URLUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 /**
  * @author Iván Zaera Avellón
  */
@@ -19,8 +17,7 @@ public class ESModuleAbsolutePortalURLBuilderImpl
 	implements ESModuleAbsolutePortalURLBuilder {
 
 	public ESModuleAbsolutePortalURLBuilderImpl(
-		String esModulePath, String cdnHost,
-		HttpServletRequest httpServletRequest, String pathModule,
+		String esModulePath, String cdnHost, String pathModule,
 		String pathProxy, String webContextPath) {
 
 		if (!esModulePath.startsWith(StringPool.SLASH)) {
@@ -33,7 +30,6 @@ public class ESModuleAbsolutePortalURLBuilderImpl
 
 		_esModulePath = esModulePath;
 		_cdnHost = cdnHost;
-		_httpServletRequest = httpServletRequest;
 		_pathModule = pathModule;
 		_pathProxy = pathProxy;
 		_webContextPath = webContextPath;
@@ -67,7 +63,6 @@ public class ESModuleAbsolutePortalURLBuilderImpl
 
 	private final String _cdnHost;
 	private final String _esModulePath;
-	private final HttpServletRequest _httpServletRequest;
 	private boolean _ignoreCDNHost;
 	private boolean _ignorePathProxy;
 	private final String _pathModule;

@@ -9,6 +9,7 @@ import React, {
 	ReactNode,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 } from 'react';
 import {useSearchParams} from 'react-router-dom';
@@ -22,7 +23,9 @@ import {
 	filterSchema as filterSchemas,
 } from '../../schema/filters';
 import {PAGINATION, SortDirection} from '../../utils/constants';
+import {safeJSONParse} from '../../utils/util';
 import EmptyState from '../EmptyState';
+import {RendererFields} from '../Form/Renderer';
 import Loading from '../Loading';
 import ManagementToolbar, {
 	ManagementToolbarProps,
@@ -84,13 +87,35 @@ export type ListViewProps<T extends Record<string, any>> = {
 		displayType: boolean;
 	};
 
+	refreshInterval?: number;
+
 	resource: string;
 
 	tableProps: Omit<
 		TableProps<T>,
 		'items' | 'mutate' | 'onSelectAllRows' | 'onSort'
 	>;
+
+	/**
+	 * A function to transform the data before rendering.
+	 * It can be used to format or filter the data.
+	 *
+	 * @default undefined
+	 */
+	transformData?: (response: APIResponse<T>) => APIResponse<T>;
 };
+
+function getMatchedOption(rawValue: string, field?: RendererFields) {
+	const matchedOption = field?.options?.find((opt) => {
+		if (typeof opt === 'object') {
+			return opt.value === rawValue;
+		}
+	});
+
+	return typeof matchedOption === 'object'
+		? matchedOption
+		: {label: rawValue, value: rawValue};
+}
 
 const ListView = <T extends Record<string, any>>({
 	children,
@@ -101,8 +126,10 @@ const ListView = <T extends Record<string, any>>({
 		...managementToolbarProps
 	} = {},
 	paginationOptions = {displayType: true},
+	refreshInterval,
 	resource,
 	tableProps,
+	transformData = (item) => item,
 }: ListViewProps<T>) => {
 	const [listViewContext, dispatch] = useContext(ListViewContext);
 
@@ -110,11 +137,60 @@ const ListView = <T extends Record<string, any>>({
 	const [searchParams] = useSearchParams();
 
 	const {filters, keywords, sort} = listViewContext;
-	const filterSchemaName = managementToolbarProps?.filterSchema ?? '';
 
 	const filterSchema = (filterSchemas as any)[
-		filterSchemaName
+		managementToolbarProps?.filterSchema ?? ''
 	] as FilterSchemaType;
+
+	const encodedFilter = searchParams.get('filter');
+
+	const setFilters = useCallback(() => {
+		const parsedFilter = safeJSONParse(encodedFilter, {});
+
+		if (!Object.keys(parsedFilter).length) {
+			return;
+		}
+
+		const fields = filterSchema?.fields ?? ([] as RendererFields[]);
+
+		const normalizedFilter = Object.fromEntries(
+			Object.entries(parsedFilter).map(([key, value]) => {
+				const fieldSchema = fields.find((field) => field.name === key);
+				const rawValues = Array.isArray(value)
+					? value
+					: [String(value)];
+
+				return [
+					key,
+					rawValues.map((value) =>
+						getMatchedOption(value, fieldSchema)
+					),
+				];
+			})
+		);
+
+		dispatch({
+			payload: {
+				filters: {
+					entries: Object.entries(normalizedFilter).map(
+						([key, selectedOptions]) => ({
+							label:
+								fields.find(({name}) => name === key)?.label ??
+								key,
+							name: key,
+							value: selectedOptions
+								.map((opt) => opt.label)
+								.join(', '),
+						})
+					),
+					filter: normalizedFilter,
+				},
+			},
+			type: ListViewTypes.SET_FILTERS,
+		});
+	}, [dispatch, encodedFilter, filterSchema?.fields]);
+
+	useEffect(() => setFilters(), [encodedFilter, setFilters]);
 
 	const currentPage = searchParams.get('page');
 	const currentPageSize = searchParams.get('pageSize');
@@ -174,17 +250,20 @@ const ListView = <T extends Record<string, any>>({
 		isValidating,
 		loading,
 		mutate,
-	} = useFetch(resource, {
-		params: getURLSearchParams(),
-	});
+	} = useFetch(
+		resource,
+		{
+			params: getURLSearchParams(),
+		},
+		refreshInterval
+	);
 
 	const {
-		actions = {},
 		items = [],
 		page = 1,
 		pageSize,
 		totalCount = 0,
-	} = response || {};
+	} = transformData(response || {items: []});
 
 	if (loading || (isValidating && searchParams.get('filter'))) {
 		return <Loading />;
@@ -194,7 +273,9 @@ const ListView = <T extends Record<string, any>>({
 		<ClayPaginationBarWithBasicItems
 			activeDelta={pageSize}
 			activePage={page}
-			deltas={PAGINATION.delta.map((label) => ({label}))}
+			deltas={listViewContext.paginationDeltaOptions.map((label) => ({
+				label,
+			}))}
 			ellipsisBuffer={PAGINATION.ellipsisBuffer}
 			labels={{
 				paginationResults: i18n.translate('showing-x-to-x-of-x'),
@@ -211,7 +292,7 @@ const ListView = <T extends Record<string, any>>({
 
 				dispatch({payload: page, type: ListViewTypes.SET_PAGE});
 			}}
-			totalItems={totalCount || 0}
+			totalItems={totalCount}
 		/>
 	);
 
@@ -220,17 +301,18 @@ const ListView = <T extends Record<string, any>>({
 			{managementToolbarVisible && (
 				<ManagementToolbar
 					{...managementToolbarProps}
-					actions={actions}
 					totalItems={totalCount}
 				/>
 			)}
 
 			{!items.length && (
-				<EmptyState
-					description={error?.message}
-					type={error ? 'EMPTY_SEARCH' : 'EMPTY_STATE'}
-					{...emptyStateProps}
-				/>
+				<>
+					<EmptyState
+						description={error?.message}
+						type={error ? 'EMPTY_SEARCH' : 'EMPTY_STATE'}
+						{...emptyStateProps}
+					/>
+				</>
 			)}
 			{!!items.length && (
 				<>
@@ -243,19 +325,17 @@ const ListView = <T extends Record<string, any>>({
 					/>
 
 					{paginationOptions.displayType && Pagination}
-
-					{children &&
-						children(response!, {
-							dispatch,
-							listViewContext,
-							mutate,
-						})}
 				</>
 			)}
+			{children &&
+				children(response!, {
+					dispatch,
+					listViewContext,
+					mutate,
+				})}
 		</>
 	);
 };
-
 const ListViewWithContext = <T extends Record<string, any>>({
 	initialContext,
 	...otherProps

@@ -325,6 +325,15 @@ public class DataRecordCollectionResourceTest
 	}
 
 	@Override
+	protected Long
+			testGraphQLPostDataDefinitionDataRecordCollection_getDataDefinitionId(
+				DataRecordCollection dataRecordCollection)
+		throws Exception {
+
+		return _ddmStructure.getStructureId();
+	}
+
+	@Override
 	protected DataRecordCollection
 			testPostDataDefinitionDataRecordCollection_addDataRecordCollection(
 				DataRecordCollection dataRecordCollection)

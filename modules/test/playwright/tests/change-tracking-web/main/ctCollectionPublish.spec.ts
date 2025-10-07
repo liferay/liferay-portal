@@ -13,6 +13,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import getRandomString from '../../../utils/getRandomString';
+import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
@@ -255,6 +256,63 @@ test('LPD-33274 Disable Publish button after first click', async ({
 	const button = page.locator('button:text("Publish")');
 
 	await button.dblclick();
+
+	await expect(
+		page.getByRole('link', {name: ctCollection.body.name})
+	).toBeVisible();
+});
+
+test('LPD-61155 View Publication history when CTProcess user is deleted', async ({
+	apiHelpers,
+	changeTrackingPage,
+	ctCollection,
+	page,
+	site,
+}) => {
+	const user1 = await changeTrackingPage.addUserWithPublicationsUserRole();
+
+	await changeTrackingPage.workOnPublication(ctCollection);
+
+	const basicWebContentStructureId =
+		await getBasicWebContentStructureId(apiHelpers);
+
+	const title = getRandomString();
+
+	await apiHelpers.jsonWebServicesJournal.addWebContent({
+		ddmStructureId: basicWebContentStructureId,
+		groupId: site.id,
+		titleMap: {en_US: title},
+	});
+
+	await changeTrackingPage.addUserToPublication(
+		ctCollection.body.name,
+		'Admin',
+		user1
+	);
+
+	await performLogout(page);
+
+	await performLoginViaApi({page, screenName: user1.alternateName});
+
+	await changeTrackingPage.goToReviewChanges(ctCollection.body.name);
+
+	await page.getByRole('link', {name: 'Publish'}).click();
+
+	await page.locator('button:text("Publish")').click();
+
+	await changeTrackingPage.goToPublicationHistory();
+
+	await expect(
+		page.getByRole('link', {name: ctCollection.body.name})
+	).toBeVisible();
+
+	await performLogout(page);
+
+	await performLoginViaApi({page, screenName: 'test'});
+
+	await apiHelpers.headlessAdminUser.deleteUserAccount(Number(user1.id));
+
+	await changeTrackingPage.goToPublicationHistory();
 
 	await expect(
 		page.getByRole('link', {name: ctCollection.body.name})

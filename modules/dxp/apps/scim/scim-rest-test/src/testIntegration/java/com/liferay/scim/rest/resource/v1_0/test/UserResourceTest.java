@@ -18,8 +18,6 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -187,20 +185,36 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 
 		long userId = GetterUtil.getLong(user3.getId());
 
+		_userLocalService.updateStatus(
+			userId, WorkflowConstants.STATUS_INACTIVE, new ServiceContext());
+
+		_assertListResponse(
+			userResource.getV2Users(5, 0, null), 3, 3, user1, user2, user3);
+
 		ScimTestUtil.saveSCIMClientId(
 			com.liferay.portal.kernel.model.User.class.getName(), userId,
 			TestPropsValues.getCompanyId(),
 			ScimClientUtil.generateScimClientId(
 				"scim-client-test" + RandomTestUtil.randomString()));
 
-		_reindexUser(userId);
-
+		_assertListResponse(userResource.getV2Users(-1, 1, null), 2, 0);
+		_assertListResponse(userResource.getV2Users(1, 2, null), 2, 1, user2);
+		_assertListResponse(
+			userResource.getV2Users(1, null, null), 2, 1, user1);
 		_assertListResponse(
 			userResource.getV2Users(5, 0, null), 2, 2, user1, user2);
+		_assertListResponse(
+			userResource.getV2Users(10000, null, null), 2, 2, user1, user2);
+		_assertListResponse(
+			userResource.getV2Users(null, 2, null), 2, 1, user2);
+		_assertListResponse(userResource.getV2Users(null, 10000, null), 2, 0);
 		_assertListResponse(
 			userResource.getV2Users(
 				5, 0,
 				"externalId eq \"" + RandomTestUtil.randomString() + "\""),
+			0, 0);
+		_assertListResponse(
+			userResource.getV2Users(5, 0, "externalId eq \"" + _PREFIX + "\""),
 			0, 0);
 		_assertListResponse(
 			userResource.getV2Users(
@@ -210,6 +224,9 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 			userResource.getV2Users(
 				5, 0, "userName eq \"" + RandomTestUtil.randomString() + "\""),
 			0, 0);
+		_assertListResponse(
+			userResource.getV2Users(5, 0, "userName eq \"" + _PREFIX + "\""), 0,
+			0);
 		_assertListResponse(
 			userResource.getV2Users(
 				5, 0, "userName eq \"" + user1.getUserName() + "\""),
@@ -248,6 +265,7 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 					}
 				}
 			});
+
 		patchOp.setSchemas(
 			new String[] {"\"urn:ietf:params:scim:api:messages:2.0:PatchOp\""});
 
@@ -485,6 +503,7 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 					}
 				}
 			});
+		user.setExternalId(_PREFIX + user.getExternalId());
 		user.setId((String)null);
 		user.setName(
 			new Name() {
@@ -506,6 +525,7 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 					male = true;
 				}
 			});
+		user.setUserName(_PREFIX + user.getUserName());
 
 		return user;
 	}
@@ -594,14 +614,8 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 		return User.toDTO(userObject.toString());
 	}
 
-	private void _reindexUser(long userId) throws Exception {
-		Indexer<com.liferay.portal.kernel.model.User> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(
-				com.liferay.portal.kernel.model.User.class);
-
-		indexer.reindex(
-			com.liferay.portal.kernel.model.User.class.getName(), userId);
-	}
+	private static final String _PREFIX = StringUtil.toLowerCase(
+		RandomTestUtil.randomString());
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;

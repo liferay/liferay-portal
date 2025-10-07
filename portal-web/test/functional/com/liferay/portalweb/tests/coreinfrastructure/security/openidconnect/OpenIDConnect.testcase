@@ -416,7 +416,7 @@ definition {
 	@description = "This is a workaround usecase for LPS-139642 TC-11: Verify the OAuth client of System level should apply to OAuth client of virtual instance."
 	@priority = 5
 	test ConfigureOnSystemLevelShouldApplyToInstanceLevel {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

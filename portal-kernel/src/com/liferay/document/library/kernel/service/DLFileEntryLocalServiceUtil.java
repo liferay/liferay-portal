@@ -238,6 +238,13 @@ public class DLFileEntryLocalServiceUtil {
 			groupId, folderId, includeTrashedEntries);
 	}
 
+	public static void deleteFileEntries(
+			long companyId, long classNameId, long classPK)
+		throws PortalException {
+
+		getService().deleteFileEntries(companyId, classNameId, classPK);
+	}
+
 	public static DLFileEntry deleteFileEntry(DLFileEntry dlFileEntry)
 		throws PortalException {
 

@@ -57,7 +57,7 @@ const checkSegmentLink = (
 	}, []);
 
 	return (
-		<WrapSafeResults {...{error, loading}} page pageDisplay>
+		<WrapSafeResults error={error} loading={loading} page pageDisplay>
 			<WrappedComponent
 				{...otherProps}
 				groupId={groupId}

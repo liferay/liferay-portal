@@ -1969,6 +1969,16 @@ public class DDMDataProviderInstancePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2310,6 +2320,16 @@ public class DDMDataProviderInstancePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
 			return findByGroupId(groupIds, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupIds);
 		}
 
 		if (groupIds == null) {
@@ -2744,6 +2764,16 @@ public class DDMDataProviderInstancePersistenceImpl
 			return countByGroupId(groupId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DDMDataProviderInstance> ddmDataProviderInstances =
+				findByGroupId(groupId);
+
+			ddmDataProviderInstances = InlineSQLHelperUtil.filter(
+				ddmDataProviderInstances, groupId);
+
+			return ddmDataProviderInstances.size();
+		}
+
 		StringBundler sb = new StringBundler(2);
 
 		sb.append(_FILTER_SQL_COUNT_DDMDATAPROVIDERINSTANCE_WHERE);
@@ -2790,6 +2820,13 @@ public class DDMDataProviderInstancePersistenceImpl
 	public int filterCountByGroupId(long[] groupIds) {
 		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
 			return countByGroupId(groupIds);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<DDMDataProviderInstance> ddmDataProviderInstances =
+				InlineSQLHelperUtil.filter(findByGroupId(groupIds), groupIds);
+
+			return ddmDataProviderInstances.size();
 		}
 
 		if (groupIds == null) {

@@ -32,6 +32,8 @@ import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -77,7 +79,12 @@ public class CPConfigurationListRelLocalServiceImpl
 		cpConfigurationListRel.setClassPK(classPK);
 		cpConfigurationListRel.setCPConfigurationListId(cpConfigurationListId);
 
-		return cpConfigurationListRelPersistence.update(cpConfigurationListRel);
+		cpConfigurationListRel = cpConfigurationListRelPersistence.update(
+			cpConfigurationListRel);
+
+		_reindexCPConfigurationList(cpConfigurationListId);
+
+		return cpConfigurationListRel;
 	}
 
 	@Override
@@ -100,8 +107,14 @@ public class CPConfigurationListRelLocalServiceImpl
 			cpConfigurationListRelPersistence.findByPrimaryKey(
 				cpConfigurationListRelId);
 
-		return cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
-			cpConfigurationListRel);
+		cpConfigurationListRel =
+			cpConfigurationListRelLocalService.deleteCPConfigurationListRel(
+				cpConfigurationListRel);
+
+		_reindexCPConfigurationList(
+			cpConfigurationListRel.getCPConfigurationListId());
+
+		return cpConfigurationListRel;
 	}
 
 	@Override
@@ -335,6 +348,16 @@ public class CPConfigurationListRelLocalServiceImpl
 							_customSQL.keywords(keywords, true)));
 				}
 			));
+	}
+
+	private void _reindexCPConfigurationList(long cpConfigurationListId)
+		throws PortalException {
+
+		Indexer<CPConfigurationList> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(CPConfigurationList.class);
+
+		indexer.reindex(
+			CPConfigurationList.class.getName(), cpConfigurationListId);
 	}
 
 	private void _validate(

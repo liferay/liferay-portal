@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Cache API
 Bundle-SymbolicName: com.liferay.portal.cache.api
-Bundle-Version: 13.0.1
+Bundle-Version: 13.0.2
 Export-Package:\
 	com.liferay.portal.cache,\
 	com.liferay.portal.cache.configuration,\

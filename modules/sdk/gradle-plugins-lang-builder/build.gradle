@@ -16,7 +16,7 @@ tasks.eclipse {
 dependencies {
 	api group: "com.liferay", name: "com.liferay.gradle.util", version: "1.0.49"
 	compileOnly fileTree(builtBy: [rootProject.tasks.getByName("extractGradleApi" + gradleVersion.replace(".", ""))], dir: new File(rootProject.buildDir, "gradle-${gradleVersion}"))
-	compileOnly group: "com.liferay", name: "com.liferay.lang.builder", version: "1.0.57"
+	compileOnly group: "com.liferay", name: "com.liferay.lang.builder", version: "1.0.58"
 }
 
 pluginBundle {

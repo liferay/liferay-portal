@@ -13,7 +13,7 @@ import com.liferay.application.list.util.PanelCategoryRegistryUtil;
 import com.liferay.asset.categories.admin.web.constants.AssetCategoriesAdminPortletKeys;
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
-import com.liferay.depot.web.internal.constants.DepotPortletKeys;
+import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.web.internal.frontend.taglib.clay.servlet.taglib.DepotDashboardApplicationNavigationCard;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;

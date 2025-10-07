@@ -5,7 +5,8 @@
 
 package com.liferay.portal.kernel.log;
 
-import java.util.Map;
+import com.liferay.portal.kernel.internal.log4j.Log4jLogFactoryImpl;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,60 +22,32 @@ public class LogFactoryUtil {
 	}
 
 	public static Log getLog(String name) {
+		Log log = _logs.get(name);
 
-		// The following concurrent collection retrieve has the side effect of a
-		// memory fence read. This will invalidate all dirty cache data if there
-		// are any. If the LogWrapper swap happens before this, the new Log will
-		// be visible to the current Thread.
-
-		LogWrapper logWrapper = _logWrappers.get(name);
-
-		if (logWrapper == null) {
-			Log log = _logFactory.getLog(name);
-
+		if (log == null) {
 			if (SanitizerLogWrapper.isEnabled()) {
-				logWrapper = new SanitizerLogWrapper(log);
-			}
-			else if (log instanceof LogWrapper) {
-				logWrapper = (LogWrapper)log;
+				log = new SanitizerLogWrapper(_logFactory.getLog(name));
 			}
 			else {
-				logWrapper = new LogWrapper(_logFactory.getLog(name));
+				log = _logFactory.getLog(name);
 			}
 
-			LogWrapper previousLogWrapper = _logWrappers.putIfAbsent(
-				name, logWrapper);
+			Log previousLog = _logs.putIfAbsent(name, log);
 
-			if (previousLogWrapper != null) {
-				logWrapper = previousLogWrapper;
+			if (previousLog != null) {
+				log = previousLog;
 			}
 		}
 
-		return logWrapper;
+		return log;
 	}
 
 	public static LogFactory getLogFactory() {
 		return _logFactory;
 	}
 
-	public static void setLogFactory(LogFactory logFactory) {
-		for (Map.Entry<String, LogWrapper> entry : _logWrappers.entrySet()) {
-			String name = entry.getKey();
-
-			LogWrapper logWrapper = entry.getValue();
-
-			logWrapper.setLog(logFactory.getLog(name));
-		}
-
-		// The following volatile write will flush out all cache data. All
-		// previously swapped LogWrappers will be visible for any reads after a
-		// memory fence read according to the happens-before rules.
-
-		_logFactory = logFactory;
-	}
-
-	private static volatile LogFactory _logFactory = new Jdk14LogFactoryImpl();
-	private static final ConcurrentMap<String, LogWrapper> _logWrappers =
+	private static final LogFactory _logFactory = new Log4jLogFactoryImpl();
+	private static final ConcurrentMap<String, Log> _logs =
 		new ConcurrentHashMap<>();
 
 }

@@ -53,7 +53,7 @@ public class UserSystemObjectDefinitionManager
 			false, user);
 
 		UserAccount userAccount = userAccountResource.postUserAccount(
-			_toUserAccount(values));
+			null, null, _toUserAccount(values));
 
 		setExtendedProperties(
 			UserAccount.class.getName(), userAccount, user, values);

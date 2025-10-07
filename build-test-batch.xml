@@ -394,6 +394,390 @@ mariadb.executable=${mariadb.executable}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="execute-ant-target-build-services">
+		<attribute name="ant.target.name" />
+		<attribute name="ant.target.file" />
+
+		<sequential>
+			<trycatch property="ant.target.failure">
+				<try>
+					<beanshell>
+						project.setProperty("ant.target.start.time", String.valueOf(System.currentTimeMillis()));
+					</beanshell>
+
+					<generate-backend-batch-junit-report-ant-target
+						ant.target.failure.count="1"
+						ant.target.file="@{ant.target.file}"
+						ant.target.name="@{ant.target.name}"
+						ant.target.start.time="${ant.target.start.time}"
+					/>
+
+					<local name="ant.target.dir" />
+					<local name="ant.target.file.name" />
+
+					<propertyregex
+						input="@{ant.target.file}"
+						override="true"
+						property="ant.target.dir"
+						regexp="(.+)/(.+.xml)"
+						replace="\1"
+					/>
+
+					<propertyregex
+						input="@{ant.target.file}"
+						override="true"
+						property="ant.target.file.name"
+						regexp="(.+)/(.+.xml)"
+						replace="\2"
+					/>
+
+					<record action="start" name="${project.dir}/execute.ant.target.log" />
+
+					<record-git-diffs-build-services>
+						<action>
+							<ant antfile="${ant.target.file.name}" dir="${ant.target.dir}" target="@{ant.target.name}" />
+						</action>
+					</record-git-diffs-build-services>
+
+					<generate-backend-batch-junit-report-ant-target
+						ant.target.failure.count="0"
+						ant.target.file="@{ant.target.file}"
+						ant.target.name="@{ant.target.name}"
+						ant.target.start.time="${ant.target.start.time}"
+					/>
+				</try>
+				<catch>
+					<record action="stop" name="${project.dir}/execute.ant.target.log" />
+
+					<local name="execute.ant.target.log" />
+
+					<loadfile
+						property="execute.ant.target.log"
+						srcfile="${project.dir}/execute.ant.target.log"
+					/>
+
+					<delete failonerror="false" file="${project.dir}/execute.ant.target.log" />
+
+					<get-console-log-failure-message console.log="${execute.ant.target.log}" />
+
+					<local name="ant.target.failure.stacktrace" />
+
+					<condition else="${ant.target.failure}" property="ant.target.failure.stacktrace" value="${console.log.failure.message}">
+						<isset property="console.log.failure.message" />
+					</condition>
+
+					<generate-backend-batch-junit-report-ant-target
+						ant.target.failure.count="1"
+						ant.target.failure.message="Detected build services compilation error. Please check the logs for details."
+						ant.target.failure.stacktrace="${ant.target.failure.stacktrace}"
+						ant.target.file="@{ant.target.file}"
+						ant.target.name="@{ant.target.name}"
+						ant.target.start.time="${ant.target.start.time}"
+					/>
+				</catch>
+				<finally>
+					<record action="stop" name="${project.dir}/execute.ant.target.log" />
+
+					<delete failonerror="false" file="${project.dir}/execute.ant.target.log" />
+
+					<if>
+						<isset property="git.diffs" />
+						<then>
+							<generate-backend-batch-junit-report-ant-target
+								ant.target.failure.count="1"
+								ant.target.failure.message="Detected build services changes. Please check the logs for details. Make sure to commit in all build services results."
+								ant.target.failure.stacktrace="${git.diffs}"
+								ant.target.file="@{ant.target.file}"
+								ant.target.name="@{ant.target.name}"
+								ant.target.start.time="${ant.target.start.time}"
+							/>
+						</then>
+					</if>
+				</finally>
+			</trycatch>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="execute-gradle-task">
+		<attribute name="gradle.task.name" />
+		<attribute name="gradle.task.module.dir" />
+
+		<element name="action" />
+		<element name="action-fail" optional="true" />
+
+		<sequential>
+			<local name="gradle.task.failure" />
+
+			<trycatch property="gradle.task.failure">
+				<try>
+					<beanshell>
+						project.setProperty("gradle.task.start.time", String.valueOf(System.currentTimeMillis()));
+					</beanshell>
+
+					<generate-backend-batch-junit-report-gradle-task
+						gradle.task.failure.count="1"
+						gradle.task.module.dir="@{gradle.task.module.dir}"
+						gradle.task.name="@{gradle.task.name}"
+						gradle.task.start.time="${gradle.task.start.time}"
+					/>
+
+					<record action="start" name="${project.dir}/execute.gradle.task.log" />
+
+					<action />
+
+					<generate-backend-batch-junit-report-gradle-task
+						gradle.task.failure.count="0"
+						gradle.task.module.dir="@{gradle.task.module.dir}"
+						gradle.task.name="@{gradle.task.name}"
+						gradle.task.start.time="${gradle.task.start.time}"
+					/>
+				</try>
+				<catch>
+					<record action="stop" name="${project.dir}/execute.gradle.task.log" />
+
+					<local name="execute.gradle.task.log" />
+
+					<loadfile
+						property="execute.gradle.task.log"
+						srcfile="${project.dir}/execute.gradle.task.log"
+					/>
+
+					<delete failonerror="false" file="${project.dir}/execute.gradle.task.log" />
+
+					<get-console-log-failure-message console.log="${execute.gradle.task.log}" />
+
+					<local name="gradle.task.failure.stacktrace" />
+
+					<condition else="${gradle.task.failure}" property="gradle.task.failure.stacktrace" value="${console.log.failure.message}">
+						<isset property="console.log.failure.message" />
+					</condition>
+
+					<generate-backend-batch-junit-report-gradle-task
+						gradle.task.failure.count="1"
+						gradle.task.failure.message="@{gradle.task.module.dir} @{gradle.task.name} failed. Please check the logs for details."
+						gradle.task.failure.stacktrace="${gradle.task.failure.stacktrace}"
+						gradle.task.module.dir="@{gradle.task.module.dir}"
+						gradle.task.name="@{gradle.task.name}"
+						gradle.task.start.time="${gradle.task.start.time}"
+					/>
+				</catch>
+				<finally>
+					<record action="stop" name="${project.dir}/execute.gradle.task.log" />
+
+					<delete failonerror="false" file="${project.dir}/execute.gradle.task.log" />
+
+					<action-fail />
+				</finally>
+			</trycatch>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="execute-gradle-task-build-services">
+		<attribute name="gradle.module.dir" />
+		<attribute name="gradle.task.name" />
+
+		<sequential>
+			<execute-gradle-task gradle.task.module.dir="@{gradle.module.dir}" gradle.task.name="@{gradle.task.name}">
+				<action>
+					<record-git-diffs-build-services>
+						<action>
+							<gradle-execute dir="@{gradle.module.dir}" forcedcacheenabled="false" task="@{gradle.task.name}">
+								<arg value="-Dskip.read.only=${build.services.skip.read.only}" />
+								<arg value="-Pcom.liferay.portal.tools.service.builder.ignore.local=false" />
+							</gradle-execute>
+						</action>
+					</record-git-diffs-build-services>
+				</action>
+				<action-fail>
+					<if>
+						<isset property="git.diffs" />
+						<then>
+							<generate-backend-batch-junit-report-gradle-task
+								gradle.task.failure.count="1"
+								gradle.task.failure.message="Detected build services changes. Please check the logs for details. Make sure to commit in all build services results."
+								gradle.task.failure.stacktrace="${git.diffs}"
+								gradle.task.module.dir="@{gradle.module.dir}"
+								gradle.task.name="@{gradle.task.name}"
+								gradle.task.start.time="${gradle.task.start.time}"
+							/>
+						</then>
+					</if>
+				</action-fail>
+			</execute-gradle-task>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="execute-gradle-task-rest-builder">
+		<attribute name="gradle.module.dir" />
+		<attribute name="gradle.task.name" />
+
+		<sequential>
+			<execute-gradle-task gradle.task.module.dir="@{gradle.module.dir}" gradle.task.name="@{gradle.task.name}">
+				<action>
+					<record-git-diffs-rest-builder>
+						<action>
+							<gradle-execute dir="@{gradle.module.dir}" forcedcacheenabled="false" task="@{gradle.task.name}">
+								<arg value="-DbuildREST.forceClientVersionDescription=false" />
+								<arg value="-Dskip.read.only=${build.rest.skip.read.only}" />
+								<arg value="-Pcom.liferay.portal.tools.rest.builder.ignore.local=false" />
+							</gradle-execute>
+						</action>
+					</record-git-diffs-rest-builder>
+				</action>
+				<action-fail>
+					<if>
+						<isset property="git.diffs" />
+						<then>
+							<generate-backend-batch-junit-report-gradle-task
+								gradle.task.failure.count="1"
+								gradle.task.failure.message="Detected build REST changes. Please check the logs for details. Make sure to commit in all build REST results."
+								gradle.task.failure.stacktrace="${git.diffs}"
+								gradle.task.module.dir="@{gradle.module.dir}"
+								gradle.task.name="@{gradle.task.name}"
+								gradle.task.start.time="${gradle.task.start.time}"
+							/>
+						</then>
+					</if>
+				</action-fail>
+			</execute-gradle-task>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="get-console-log-failure-message">
+		<attribute name="console.log" />
+
+		<sequential>
+			<var name="console.log.failure.message" unset="true" />
+
+			<local name="console.log" />
+
+			<property name="console.log" value="@{console.log}" />
+
+			<beanshell>
+				<![CDATA[
+					import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+					import com.liferay.jenkins.results.parser.failure.message.generator.CompileFailureMessageGenerator;
+					import com.liferay.jenkins.results.parser.failure.message.generator.ModulesCompilationFailureMessageGenerator;
+
+					String consoleLog = project.getProperty("console.log");
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(consoleLog)) {
+						return;
+					}
+
+					CompileFailureMessageGenerator compileFailureMessageGenerator = new CompileFailureMessageGenerator();
+
+					String failureMessage = compileFailureMessageGenerator.getMessage(consoleLog);
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(failureMessage)) {
+						ModulesCompilationFailureMessageGenerator modulesCompilationFailureMessageGenerator = new ModulesCompilationFailureMessageGenerator();
+
+						failureMessage = modulesCompilationFailureMessageGenerator.getMessage(consoleLog);
+					}
+
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(failureMessage)) {
+						project.setProperty("console.log.failure.message", failureMessage);
+					}
+				]]>
+			</beanshell>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="get-gradle-module-dir-task-names">
+		<attribute name="gradle.task.names" />
+
+		<sequential>
+			<var name="gradle.module.dir.task.names" unset="true" />
+
+			<beanshell>
+				<![CDATA[
+					import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+					import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory.Module;
+
+					import java.util.regex.Matcher;
+					import java.util.regex.Pattern;
+
+					public File getParentModuleDir(File dir) {
+				        List moduleDirs = new ArrayList();
+
+						File currentDir = dir;
+
+						while ((currentDir != null) && !modulesDir.equals(currentDir.getParentFile())) {
+							moduleDirs.add(currentDir);
+
+							currentDir = currentDir.getParentFile();
+						}
+
+						Collections.reverse(moduleDirs);
+
+						for (File moduleDir : moduleDirs) {
+							if (isModuleDir(moduleDir)) {
+								return moduleDir;
+							}
+						}
+
+						return dir;
+					}
+
+					public boolean isModuleDir(File dir) {
+						Module module = Module.getModule(dir.toPath());
+
+						if ((module != null) && dir.equals(module.getFile())) {
+							return true;
+						}
+
+						return false;
+					}
+
+					File modulesDir = new File(project.getProperty("project.dir"), "modules");
+
+					Pattern pattern = Pattern.compile("(?<moduleDir>.+):(?<taskName>[^:]+)");
+
+					String gradleTaskNames = "@{gradle.task.names}";
+
+					Map map = new HashMap();
+
+					for (String gradleTaskName : gradleTaskNames.split("[,\\s]")) {
+						Matcher matcher = pattern.matcher(gradleTaskName);
+
+						if (!matcher.find()) {
+							continue;
+						}
+
+						String moduleDirString = matcher.group("moduleDir");
+
+						File moduleDir = getParentModuleDir(new File(project.getProperty("project.dir") + "/modules" + moduleDirString.replaceAll(":", "/")));
+
+						Set taskNames = map.get(moduleDir);
+
+						if (taskNames == null) {
+							taskNames = new HashSet();
+						}
+
+						taskNames.add(matcher.group("taskName"));
+
+						map.put(moduleDir, taskNames);
+					}
+
+					StringBuilder sb = new StringBuilder();
+
+					for (Map.Entry entry : map.entrySet()) {
+						sb.append(JenkinsResultsParserUtil.getPathRelativeTo(entry.getKey(), modulesDir.getParentFile()));
+						sb.append("=");
+						sb.append(JenkinsResultsParserUtil.join(" ", new ArrayList(entry.getValue())));
+						sb.append("|");
+					}
+
+					if (sb.length() > 0) {
+						sb.setLength(sb.length() - 1);
+					}
+
+					project.setProperty("gradle.module.dir.task.names", sb.toString());
+				]]>
+			</beanshell>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="get-release-dependency-modules">
 		<attribute default="false" name="post.startup.modules.only" />
 		<attribute default="false" name="pre.startup.modules.only" />
@@ -542,6 +926,12 @@ mariadb.executable=${mariadb.executable}]]></echo>
 					}
 
 					Set releaseDependentModules = new TreeSet();
+
+					String testReleaseAdditionalDependencyModules = project.getProperty("test.release.additional.dependency.modules");
+
+					if (testReleaseAdditionalDependencyModules != null) {
+						releaseDependentModules.addAll(new ArrayList(Arrays.asList(testReleaseAdditionalDependencyModules.split(","))));
+					}
 
 					releaseDependentModules.addAll(getTestUtilModules());
 
@@ -1142,6 +1532,81 @@ app.server.type=@{app.server.type}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="record-git-diffs-build-services">
+		<element name="action" />
+
+		<sequential>
+			<var name="git.diffs" unset="true" />
+
+			<action />
+
+			<local name="tstamp" />
+
+			<tstamp>
+				<format pattern="yyyyMMddkkmmssSSS" property="tstamp" />
+			</tstamp>
+
+			<exec executable="git" output="${tstamp}.diff">
+				<arg value="diff" />
+				<arg value="--" />
+				<arg value="." />
+				<arg value=":!*/*-portlet-service.jar" />
+				<arg value=":!*/packageinfo" />
+				<arg value=":!*/src/main/resources/service.properties" />
+				<arg value=":!*/src/service.properties" />
+			</exec>
+
+			<exec executable="git">
+				<arg value="checkout" />
+				<arg value="--" />
+				<arg value="." />
+			</exec>
+
+			<loadfile
+				property="git.diffs"
+				srcfile="${tstamp}.diff"
+			/>
+
+			<delete file="${tstamp}.diff" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="record-git-diffs-rest-builder">
+		<element name="action" />
+
+		<sequential>
+			<var name="git.diffs" unset="true" />
+
+			<action />
+
+			<local name="tstamp" />
+
+			<tstamp>
+				<format pattern="yyyyMMddkkmmssSSS" property="tstamp" />
+			</tstamp>
+
+			<exec executable="git" output="${tstamp}.diff">
+				<arg value="diff" />
+				<arg value="--" />
+				<arg value="." />
+				<arg value=":!*/packageinfo" />
+			</exec>
+
+			<exec executable="git">
+				<arg value="checkout" />
+				<arg value="--" />
+				<arg value="." />
+			</exec>
+
+			<loadfile
+				property="git.diffs"
+				srcfile="${tstamp}.diff"
+			/>
+
+			<delete file="${tstamp}.diff" />
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-archived-module-smoke">
 		<attribute name="database.type" />
 
@@ -1378,6 +1843,7 @@ app.server.type=@{app.server.type}]]></echo>
 
 	<macrodef name="run-bundle-blacklist-restart-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<var name="database.type" value="@{database.type}" />
@@ -1456,8 +1922,76 @@ app.server.type=@{app.server.type}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="run-db-migration-container-test">
+		<attribute name="database.type" />
+		<attribute name="database.version" />
+
+		<sequential>
+			<run-batch-test tomcat.gc.log="true">
+				<test-action>
+					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+						<test-action>
+							<antcall inheritAll="false" target="prepare-log4j-ext-xml">
+								<param name="database.type" value="@{database.type}" />
+							</antcall>
+
+							<antcall if:set="env.JENKINS_HOME" inheritAll="false" target="prepare-portal-ext-properties">
+								<param name="database.type" value="@{database.type}" />
+							</antcall>
+
+							<echo file="${app.server.classes.portal.dir}/system-ext.properties">log.sanitizer.enabled=false</echo>
+
+							<trycatch>
+								<try>
+									<antcall inheritall="false" target="start-docker-database">
+										<param name="database.type" value="postgresql" />
+									</antcall>
+
+									<antcall inheritall="false" target="rebuild-database">
+										<param name="database.type" value="postgresql" />
+										<param name="skip.delete.liferay.home" value="true" />
+										<param name="sql.dir" value="sql/create-bare/" />
+										<param name="sql.file" value="create-bare-postgresql.sql" />
+									</antcall>
+
+									<echo file="${app.server.classes.portal.dir}/system-ext.properties">
+										database.postgresql.driver=${database.postgresql.driver}
+										database.postgresql.password=${database.postgresql.password}
+										database.postgresql.url=${database.postgresql.url}
+										database.postgresql.username=${database.postgresql.username}
+									</echo>
+
+									<antcall inheritall="false" target="start-app-server-preserve-liferay-home" />
+
+									<gradle-execute dir="modules/util/portal-tools-db-migration-importer-test" task="testIntegration">
+										<arg value="testIntegration" />
+									</gradle-execute>
+								</try>
+
+								<finally>
+									<antcall inheritall="false" target="stop-docker-database">
+										<param name="database.type" value="postgresql" />
+									</antcall>
+
+									<ant dir="portal-kernel" inheritAll="false" target="test-class">
+										<property name="test.class" value="PortalLogAssertorTest" />
+									</ant>
+								</finally>
+							</trycatch>
+						</test-action>
+					</database-test-run-test>
+				</test-action>
+
+				<test-set-up>
+					<setup-test-environment />
+				</test-set-up>
+			</run-batch-test>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-empty-osgi-core-dir-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<var name="database.type" value="@{database.type}" />
@@ -1579,6 +2113,10 @@ app.server.type=@{app.server.type}]]></echo>
 			<retry retrycount="${functional.batch.retry.count}">
 				<run-batch-test tomcat.gc.log="@{tomcat.gc.log}" tsant.gc.log="@{tsant.gc.log}">
 					<test-action>
+						<stop-docker-browser />
+
+						<start-docker-browser />
+
 						<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" rebuild.database="false">
 							<test-action>
 								<lstopwatch action="start" name="test.execution.duration" />
@@ -1852,11 +2390,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-lpkg-container-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
 				<test-action>
-					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+					<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" stop.app.server="true">
 						<test-action>
 							<antcall inheritAll="false" target="prepare-log4j-ext-xml">
 								<param name="database.type" value="@{database.type}" />
@@ -1905,11 +2444,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-lpkg-controller-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
 				<test-action>
-					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+					<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" stop.app.server="true">
 						<test-action>
 							<setup-lpkg-test database.type="@{database.type}" />
 
@@ -1950,11 +2490,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-lpkg-override-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
 				<test-action>
-					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+					<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" stop.app.server="true">
 						<test-action>
 							<setup-lpkg-test database.type="@{database.type}" />
 
@@ -2062,11 +2603,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-lpkg-persistence-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
 				<test-action>
-					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+					<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" stop.app.server="true">
 						<test-action>
 							<antcall inheritAll="false" target="prepare-log4j-ext-xml">
 								<param name="database.type" value="@{database.type}" />
@@ -2170,11 +2712,12 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-lpkg-startup-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
 				<test-action>
-					<database-test-run-test database.type="@{database.type}" stop.app.server="true">
+					<database-test-run-test database.type="@{database.type}" database.version="@{database.version}" stop.app.server="true">
 						<test-action>
 							<setup-lpkg-test database.type="@{database.type}" />
 
@@ -2566,11 +3109,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						import java.util.regex.Matcher;
 						import java.util.regex.Pattern;
 
-						public static File getPortalGitWorkingDirectory() {
-							return JenkinsResultsParserUtil.getGitWorkingDir(new File(project.getProperty("project.dir")));
-						}
-
-						public static void addProjectToMap(String projectName, String testName, Map projectTestMap){
+						public static void addProjectToMap(String projectName, String testName, Map projectTestMap) {
 							if (!projectTestMap.containsKey(projectName)) {
 								List testList = new ArrayList();
 
@@ -2589,7 +3128,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 							}
 						}
 
-						public static void generateJunitReport(File baseDir, String testClassName, String testTaskName){
+						public static void generateJunitReport(File baseDir, String testClassName, String testTaskName) {
 							Map parameters = new HashMap();
 
 							parameters.put("test.class.name", testClassName);
@@ -2598,21 +3137,39 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 							AntUtil.callMacrodef(project, "generate-backend-batch-junit-report-modules", parameters);
 						}
 
-						public static String getTestClassNameForTestResults(String testClass){
-							testClass = testClass.replace(".java", "");
-
-							testClass = testClass.replace("/", ".");
-
-							return testClass;
+						public static File getPortalGitWorkingDirectory() {
+							return JenkinsResultsParserUtil.getGitWorkingDir(new File(project.getProperty("project.dir")));
 						}
 
-						public static String getTestName(String testClassFilePath) {
-							Pattern pattern = Pattern.compile("/([^/]+)\\.java");
+						public static String getTestClassNameForTestResults(String testClassFilePath) {
+							Pattern pattern = Pattern.compile("([^#]+)\\.java(#.*)?");
 
 							Matcher matcher = pattern.matcher(testClassFilePath);
 
-							if (matcher.find()) {
-								return matcher.group(1);
+							String testClassName = testClassFilePath;
+
+							if (matcher.matches()) {
+								testClassName = matcher.group(1);
+							}
+
+							testClassName = testClassName.replace("/", ".");
+
+							return testClassName;
+						}
+
+						public static String getTestName(String testClassFilePath) {
+							Pattern pattern = Pattern.compile(".*/(\\w+)\\.java(?:#(\\w+))?");
+
+							Matcher matcher = pattern.matcher(testClassFilePath);
+
+							if (matcher.matches()) {
+								String testName = matcher.group(1);
+
+								if (matcher.group(2) != null) {
+									testName = testName + "." + matcher.group(2);
+								}
+
+								return testName;
 							}
 
 							return null;
@@ -2640,22 +3197,74 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 							return new File(project.getProperty("project.dir") + "/modules/" + testProjectName.replaceAll(":", "/") + "/test-results/");
 						}
 
+						public void updateTestClassFileNamesFile() throws IOException {
+							String projectDir = project.getProperty("project.dir");
+
+							File testClassFileNamesFile = new File(projectDir + "/test.class.file.names.properties");
+
+							String fileContent = JenkinsResultsParserUtil.read(testClassFileNamesFile);
+
+							if (!fileContent.contains("#")) {
+								return;
+							}
+
+							Set testClassNamesSet = new HashSet();
+
+							Pattern pattern = Pattern.compile("(TEST_CLASS_GROUP_\\d+=)(.*)");
+
+							Matcher matcher = pattern.matcher(fileContent);
+
+							if (matcher.find()) {
+								String testClassNames = matcher.group(2);
+
+								String[] testClassNamesList = testClassNames.split(",");
+
+								for (int i=0; i < testClassNamesList.length; i++) {
+									String testClassName = testClassNamesList[i];
+
+									int index = testClassName.indexOf('#');
+
+									if (index != -1) {
+										testClassNamesSet.add(testClassName.substring(0, index));
+									}
+									else{
+										testClassNamesSet.add(testClassName);
+									}
+								}
+
+								StringBuilder sb = new StringBuilder();
+
+								sb.append(matcher.group(1));
+
+								for (String testClassName : testClassNamesSet) {
+									sb.append(testClassName);
+									sb.append(",");
+								}
+
+								if (testClassNamesSet.size() > 0) {
+									sb.deleteCharAt(sb.length() - 1);
+								}
+
+								JenkinsResultsParserUtil.write(testClassFileNamesFile, sb.toString());
+							}
+						}
+
 						File projectDir = new File(project.getProperty("project.dir"));
 
 						String testClassGroup = project.getProperty("test.class.group");
 
-						String[] testClassList = testClassGroup.split(",");
+						String[] testClassFilePathList = testClassGroup.split(",");
 
 						Map projectTestMap = new HashMap();
 
 						File baseDir = getPortalGitWorkingDirectory();
 
-						for (String testClass : testClassList) {
-							testClass = testClass.replaceAll("\\.class", "\\.java");
+						for (String testClassFilePath : testClassFilePathList) {
+							testClassFilePath = testClassFilePath.replaceAll("\\.class", "\\.java");
 
-							String testClassName = getTestClassNameForTestResults(testClass);
+							String testClassName = getTestClassNameForTestResults(testClassFilePath);
 
-							File testClassFile = JenkinsResultsParserUtil.getFileFromPathSnippet(projectDir, testClass);
+							File testClassFile = JenkinsResultsParserUtil.getFileFromPathSnippet(projectDir, testClassName);
 
 							String testProjectName = getTestProjectName(testClassFile.toString());
 
@@ -2663,7 +3272,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 							generateJunitReport(baseDir, testClassName, testTaskName);
 
-							String testName = getTestName(testClassFile.toString());
+							String testName = getTestName(testClassFilePath);
 
 							addProjectToMap(testProjectName, testName, projectTestMap);
 						}
@@ -2689,6 +3298,8 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 							int timeout = Integer.parseInt(project.getProperty("test.class.timeout.minutes"));
 
 							try {
+								updateTestClassFileNamesFile();
+
 								System.out.println("\"gradle-execute-modules\" will timeout in " + timeout);
 
 								AntUtil.callTargetWithTimeout(projectDir, "build-common.xml", "gradle-execute-modules", parameters, timeout, true);
@@ -2722,6 +3333,8 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		<sequential>
 			<get-java-jdk-bundle-type test.batch.name="${test.batch.name}" />
 			<get-java-jdk-bundle-version test.batch.name="${test.batch.name}" />
+			<var name="app.server.type" value="@{app.server.type}" />
+			<var name="database.type" value="@{database.type}" />
 
 			<run-batch-test>
 				<test-action>
@@ -2758,6 +3371,8 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 								<try>
 									<exec executable="/bin/bash">
 										<arg value="modules/test/playwright/env/set_up.sh" />
+										<env key="APP_SERVER_TYPE" value="@{app.server.type}" />
+										<env key="DATABASE_TYPE" value="@{database.type}" />
 										<env key="JAVA_HOME" value="${java.jdk.home}" />
 										<env key="JAVA_OPTS" value="${java.jdk.opts}" />
 										<env key="LIFERAY_HOME" value="${liferay.home}" />
@@ -2820,6 +3435,8 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 									<exec executable="/bin/bash">
 										<arg value="modules/test/playwright/env/tear_down.sh" />
+										<env key="APP_SERVER_TYPE" value="@{app.server.type}" />
+										<env key="DATABASE_TYPE" value="@{database.type}" />
 										<env key="JAVA_HOME" value="${java.jdk.home}" />
 										<env key="JAVA_OPTS" value="${java.jdk.opts}" />
 										<env key="LIFERAY_HOME" value="${liferay.home}" />
@@ -2923,6 +3540,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-release-osgi-state-exploded-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
@@ -2982,6 +3600,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-release-osgi-state-lpkg-change-directory-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
@@ -3053,6 +3672,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 	<macrodef name="run-release-osgi-state-lpkg-test">
 		<attribute name="database.type" />
+		<attribute name="database.version" />
 
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
@@ -3164,13 +3784,24 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 			<if>
 				<and>
 					<or>
-						<available file="liferay-portal-bundle-${app.server.type}.tar.gz" />
-						<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
+						<or>
+							<available file="liferay-portal-bundle-${app.server.type}.tar.gz" />
+							<available file="liferay-portal-bundle-${app.server.type}-${app.server.version}.tar.gz" />
+						</or>
+						<and>
+							<available file="dist/liferay-portal-elasticsearch.zip" />
+							<available file="dist/liferay-portal-osgi.zip" />
+							<available file="dist/liferay-portal-tools.zip" />
+							<available file="dist/liferay-portal.war" />
+						</and>
 					</or>
 					<available file="liferay-portal-source.tar.gz" />
 				</and>
 				<then>
-					<prepare-test-environment />
+					<prepare-test-environment
+						app.server.type="${app.server.type}"
+						app.server.version="${app.server.version}"
+					/>
 				</then>
 				<elseif>
 					<and>
@@ -3646,6 +4277,10 @@ information. Make sure to commit in all build-lib-versions results.
 		<run-bundle-blacklist-restart-test database.type="mysql" />
 	</target>
 
+	<target name="bundle-blacklist-restart-mysql80">
+		<run-bundle-blacklist-restart-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="bundle-blacklist-restart-postgresql163">
 		<run-bundle-blacklist-restart-test database.type="postgresql" />
 	</target>
@@ -3707,6 +4342,30 @@ information. Make sure to commit in all build-lib-versions results.
 		</run-batch-test>
 	</target>
 
+	<target name="db-migration-container-db2111">
+		<run-db-migration-container-test database.type="db2" database.version="11.1.3" />
+	</target>
+
+	<target name="db-migration-container-mariadb102">
+		<run-db-migration-container-test database.type="mariadb" database.version="10.2" />
+	</target>
+
+	<target name="db-migration-container-mysql57">
+		<run-db-migration-container-test database.type="mysql" database.version="5.7" />
+	</target>
+
+	<target name="db-migration-container-mysql80">
+		<run-db-migration-container-test database.type="mysql" database.version="8.0" />
+	</target>
+
+	<target name="db-migration-container-oracle193">
+		<run-db-migration-container-test database.type="oracle" database.version="19.3.0.0.0" />
+	</target>
+
+	<target name="db-migration-container-sqlserver2019">
+		<run-db-migration-container-test database.type="sqlserver" database.version="2019" />
+	</target>
+
 	<target name="dist-jdk7">
 		<parallel threadCount="1" timeout="7200000">
 			<prepare-test-build-dist
@@ -3722,6 +4381,10 @@ information. Make sure to commit in all build-lib-versions results.
 
 	<target name="empty-osgi-core-dir-mysql57-jdk21_zulu">
 		<run-empty-osgi-core-dir-test database.type="mysql" />
+	</target>
+
+	<target name="empty-osgi-core-dir-mysql80">
+		<run-empty-osgi-core-dir-test database.type="mysql" database.version="8.0" />
 	</target>
 
 	<target name="empty-osgi-core-dir-postgresql163">
@@ -4723,6 +5386,18 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="5.7" test.portal.log.assert="true" />
 	</target>
 
+	<target name="functional-smoke-jboss80-mysql80">
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
+
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="8.0" test.portal.log.assert="true" />
+	</target>
+
+	<target name="functional-smoke-jboss80-mysql80-jdk21_zulu">
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
+
+		<run-functional-test app.server.type="jboss" app.server.version="8.0.0" database.type="mysql" database.version="8.0" test.portal.log.assert="true" />
+	</target>
+
 	<target name="functional-smoke-jboss80-postgresql">
 		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
 
@@ -5467,6 +6142,14 @@ information. Make sure to commit in all format-javadoc results.
 
 	<target name="functional-smoke-wildfly300-mysql57-jdk21_zulu">
 		<antcall target="functional-wildfly300-mysql57-jdk21_zulu" />
+	</target>
+
+	<target name="functional-smoke-wildfly300-mysql80">
+		<antcall target="functional-wildfly300-mysql80" />
+	</target>
+
+	<target name="functional-smoke-wildfly300-mysql80-jdk21_zulu">
+		<antcall target="functional-wildfly300-mysql80-jdk21_zulu" />
 	</target>
 
 	<target name="functional-smoke-wildfly300-postgresql-jdk21_zulu">
@@ -6554,6 +7237,18 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" />
 	</target>
 
+	<target name="functional-wildfly300-mysql80">
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
+
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" database.version="8.0" />
+	</target>
+
+	<target name="functional-wildfly300-mysql80-jdk21_zulu">
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
+
+		<run-functional-test app.server.type="wildfly" app.server.version="30.0.0" database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="functional-wildfly300-postgresql">
 		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
 
@@ -7021,12 +7716,20 @@ information. Make sure to commit in all format-javadoc results.
 		<run-lpkg-container-test database.type="mysql" />
 	</target>
 
+	<target name="lpkg-container-mysql80">
+		<run-lpkg-container-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="lpkg-container-postgresql163">
 		<run-lpkg-container-test database.type="postgresql" />
 	</target>
 
 	<target name="lpkg-controller-mysql57">
 		<run-lpkg-controller-test database.type="mysql" />
+	</target>
+
+	<target name="lpkg-controller-mysql80">
+		<run-lpkg-controller-test database.type="mysql" database.version="8.0" />
 	</target>
 
 	<target name="lpkg-controller-postgresql163">
@@ -7037,6 +7740,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-lpkg-override-test database.type="mysql" />
 	</target>
 
+	<target name="lpkg-override-mysql80">
+		<run-lpkg-override-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="lpkg-override-postgresql163">
 		<run-lpkg-override-test database.type="postgresql" />
 	</target>
@@ -7045,12 +7752,20 @@ information. Make sure to commit in all format-javadoc results.
 		<run-lpkg-persistence-test database.type="mysql" />
 	</target>
 
+	<target name="lpkg-persistence-mysql80">
+		<run-lpkg-persistence-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="lpkg-persistence-postgresql163">
 		<run-lpkg-persistence-test database.type="postgresql" />
 	</target>
 
 	<target name="lpkg-startup-mysql57">
 		<run-lpkg-startup-test database.type="mysql" />
+	</target>
+
+	<target name="lpkg-startup-mysql80">
+		<run-lpkg-startup-test database.type="mysql" database.version="8.0" />
 	</target>
 
 	<target name="lpkg-startup-postgresql163">
@@ -7096,62 +7811,37 @@ information. Make sure to commit in all format-javadoc results.
 					<propertyresource name="modules.test.class.group" />
 				</loadresource>
 
-				<beanshell>
-					<![CDATA[
-						import java.io.File;
+				<get-gradle-module-dir-task-names gradle.task.names="${modules.compile.task.groups}" />
 
-						import java.util.regex.Matcher;
-						import java.util.regex.Pattern;
-
-						String modulesCompileTaskGroupsString = project.getProperty("modules.compile.task.groups");
-
-						String[] modulesCompileTaskGroups = modulesCompileTaskGroupsString.split(" ");
-
-						StringBuilder sb = new StringBuilder();
-
-						Pattern pattern = Pattern.compile("(.*):.*");
-
-						for (String modulesCompileTaskGroup : modulesCompileTaskGroups) {
-
-							Matcher matcher = pattern.matcher(modulesCompileTaskGroup);
-
-							if (!matcher.find()) {
-								continue;
-							}
-
-							String modulesCompileTaskGroupPath = matcher.group(1);
-
-							modulesCompileTaskGroupDirPath = project.getProperty("project.dir") + "/modules" + modulesCompileTaskGroupPath.replace(":", "/");
-
-							File modulesCompileTaskGroupDir = new File(modulesCompileTaskGroupDirPath);
-
-							if (!modulesCompileTaskGroupDir.isDirectory()) {
-								continue;
-							}
-
-							File lfrBuildPortalFile = new File(modulesCompileTaskGroupDir, ".lfrbuild-portal");
-
-							if (lfrBuildPortalFile.exists()) {
-								continue;
-							}
-
-							sb.append(modulesCompileTaskGroup);
-
-							sb.append(" ");
-						}
-
-						project.setProperty("modules.compile.processed.task.groups", sb.toString());
-					]]>
-				</beanshell>
-
-				<for list="${modules.compile.processed.task.groups}" param="modules.compile.task.group" trim="true">
+				<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
 					<sequential>
-						<echo>Executing Gradle tasks: @{modules.compile.task.group}.</echo>
+						<local name="gradle.module.dir" />
+						<local name="gradle.task.name" />
 
-						<gradle-execute dir="modules" task="@{modules.compile.task.group}">
-							<arg value="--continue" />
-							<arg value="--parallel" />
-						</gradle-execute>
+						<propertyregex
+							input="@{gradle.module.dir.task.name}"
+							override="true"
+							property="gradle.module.dir"
+							regexp="([^=]+)=([^=]+)"
+							replace="\1"
+						/>
+
+						<propertyregex
+							input="@{gradle.module.dir.task.name}"
+							override="true"
+							property="gradle.task.name"
+							regexp="([^=]+)=([^=]+)"
+							replace="\2"
+						/>
+
+						<execute-gradle-task gradle.task.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}">
+							<action>
+								<gradle-execute dir="${gradle.module.dir}" task="${gradle.task.name}">
+									<arg value="--continue" />
+									<arg value="--parallel" />
+								</gradle-execute>
+							</action>
+						</execute-gradle-task>
 					</sequential>
 				</for>
 			</test-action>
@@ -7490,6 +8180,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-modules-integration-test database.type="mysql" database.version="8.0" />
 	</target>
 
+	<target name="modules-integration-mysql80-jdk21_zulu">
+		<run-modules-integration-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="modules-integration-mysql80_stable">
 		<run-modules-integration-test database.type="mysql" database.version="8.0" />
 	</target>
@@ -7645,15 +8339,79 @@ information. Make sure to commit in all format-javadoc results.
 					<propertyresource name="modules.test.class.group" />
 				</loadresource>
 
-				<for list="${modules.baseline.task.groups}" param="modules.baseline.task.group" trim="true">
-					<sequential>
-						<echo>Executing Gradle tasks: @{modules.baseline.task.group}.</echo>
+				<get-gradle-module-dir-task-names gradle.task.names="${modules.baseline.task.groups}" />
 
-						<gradle-execute dir="modules" forcedcacheenabled="false" task="@{modules.baseline.task.group}">
-							<arg value="--continue" />
-							<arg value="--parallel" />
-							<arg value="-Dbaseline.ignoreFailures=true" />
-						</gradle-execute>
+				<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
+					<sequential>
+						<local name="gradle.module.dir" />
+						<local name="gradle.task.name" />
+
+						<propertyregex
+							input="@{gradle.module.dir.task.name}"
+							override="true"
+							property="gradle.module.dir"
+							regexp="([^=]+)=([^=]+)"
+							replace="\1"
+						/>
+
+						<propertyregex
+							input="@{gradle.module.dir.task.name}"
+							override="true"
+							property="gradle.task.name"
+							regexp="([^=]+)=([^=]+)"
+							replace="\2"
+						/>
+
+						<execute-gradle-task gradle.task.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}">
+							<action>
+								<gradle-execute dir="${gradle.module.dir}" forcedcacheenabled="false" task="${gradle.task.name}">
+									<arg value="--continue" />
+									<arg value="--parallel" />
+									<arg value="-Dbaseline.ignoreFailures=true" />
+								</gradle-execute>
+							</action>
+							<action-fail>
+								<local name="baseline.log.files.content" />
+
+								<beanshell>
+									<![CDATA[
+										import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
+										File projectDir = new File(project.getProperty("project.dir"));
+
+										File baseDir = new File(projectDir, project.getProperty("gradle.module.dir"));
+
+										StringBuilder sb = new StringBuilder();
+
+										for (File baselineFile : JenkinsResultsParserUtil.findFiles(baseDir, "baseline.log")) {
+											sb.append("\n> ");
+											sb.append(JenkinsResultsParserUtil.getPathRelativeTo(baselineFile, projectDir));
+											sb.append("\n\n");
+											sb.append(JenkinsResultsParserUtil.read(baselineFile));
+											sb.append("\n");
+										}
+
+										if (sb.length() > 0) {
+											project.setProperty("baseline.log.files.content", sb.toString());
+										}
+									]]>
+								</beanshell>
+
+								<if>
+									<isset property="baseline.log.files.content" />
+									<then>
+										<generate-backend-batch-junit-report-gradle-task
+											gradle.task.failure.count="1"
+											gradle.task.failure.message="${gradle.module.dir} failed semantic versioning. Please check the logs for details."
+											gradle.task.failure.stacktrace="${baseline.log.files.content}"
+											gradle.task.module.dir="${gradle.module.dir}"
+											gradle.task.name="${gradle.task.name}"
+											gradle.task.start.time="${gradle.task.start.time}"
+										/>
+									</then>
+								</if>
+							</action-fail>
+						</execute-gradle-task>
 					</sequential>
 				</for>
 
@@ -8058,6 +8816,10 @@ ${output.content}</echo>
 		</run-batch-test>
 	</target>
 
+	<target name="playwright-js-smoke-jboss80-postgresql155">
+		<run-playwright-js-test app.server.type="jboss" database.type="postgresql" />
+	</target>
+
 	<target name="playwright-js-smoke-tomcat101-db2115">
 		<run-playwright-js-test database.type="db2" />
 	</target>
@@ -8084,6 +8846,10 @@ ${output.content}</echo>
 
 	<target name="playwright-js-smoke-tomcat101-sqlserver2022">
 		<run-playwright-js-test database.type="sqlserver" />
+	</target>
+
+	<target name="playwright-js-smoke-wildfly300-mariadb106">
+		<run-playwright-js-test app.server.type="wildfly" database.type="mariadb" />
 	</target>
 
 	<target name="playwright-js-tomcat101-mysql57">
@@ -9379,6 +10145,10 @@ ${output.content}</echo>
 		</exec>
 	</target>
 
+	<target name="prepare-test-environment">
+		<prepare-test-environment />
+	</target>
+
 	<target name="release-functional-smoke-tomcat-mysql57">
 		<antcall target="functional-tomcat-mysql57" />
 	</target>
@@ -9391,6 +10161,10 @@ ${output.content}</echo>
 		<run-release-osgi-state-exploded-test database.type="mysql" />
 	</target>
 
+	<target name="release-osgi-state-exploded-test-mysql80">
+		<run-release-osgi-state-exploded-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="release-osgi-state-exploded-test-postgresql155">
 		<run-release-osgi-state-exploded-test database.type="postgresql" />
 	</target>
@@ -9399,12 +10173,20 @@ ${output.content}</echo>
 		<run-release-osgi-state-lpkg-change-directory-test database.type="mysql" />
 	</target>
 
+	<target name="release-osgi-state-lpkg-change-directory-test-mysql80">
+		<run-release-osgi-state-lpkg-change-directory-test database.type="mysql" database.version="8.0" />
+	</target>
+
 	<target name="release-osgi-state-lpkg-change-directory-test-postgresql155">
 		<run-release-osgi-state-lpkg-change-directory-test database.type="postgresql" />
 	</target>
 
 	<target name="release-osgi-state-lpkg-test-mysql57">
 		<run-release-osgi-state-lpkg-test database.type="mysql" />
+	</target>
+
+	<target name="release-osgi-state-lpkg-test-mysql80">
+		<run-release-osgi-state-lpkg-test database.type="mysql" database.version="8.0" />
 	</target>
 
 	<target name="release-osgi-state-lpkg-test-postgresql155">
@@ -9428,83 +10210,39 @@ ${output.content}</echo>
 					<arg value="--all" />
 				</exec>
 
-				<record action="start" name="${project.dir}/build.rest.output.txt" />
-
 				<if>
 					<isset property="modules.test.class.group" />
 					<then>
-						<loadresource property="modules.build.rest.tasks">
-							<filterchain>
-								<tokenfilter>
-									<replaceregex flags="g" pattern="(\S+ )" replace="\0," />
-								</tokenfilter>
-							</filterchain>
-							<propertyresource name="modules.test.class.group" />
-						</loadresource>
+						<get-gradle-module-dir-task-names gradle.task.names="${modules.test.class.group}" />
 
-						<for list="${modules.build.rest.tasks}" param="modules.build.rest.task" trim="true">
+						<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
 							<sequential>
-								<echo>Executing Gradle tasks: @{modules.build.rest.task}</echo>
+								<local name="gradle.module.dir" />
+								<local name="gradle.task.name" />
 
-								<gradle-execute dir="modules" forcedcacheenabled="false" task="@{modules.build.rest.task}">
-									<arg value="-DbuildREST.forceClientVersionDescription=false" />
-									<arg value="-Dskip.read.only=${build.rest.skip.read.only}" />
-									<arg value="-Pcom.liferay.portal.tools.rest.builder.ignore.local=false" />
-								</gradle-execute>
+								<propertyregex
+									input="@{gradle.module.dir.task.name}"
+									override="true"
+									property="gradle.module.dir"
+									regexp="([^=]+)=([^=]+)"
+									replace="\1"
+								/>
+
+								<propertyregex
+									input="@{gradle.module.dir.task.name}"
+									override="true"
+									property="gradle.task.name"
+									regexp="([^=]+)=([^=]+)"
+									replace="\2"
+								/>
+
+								<execute-gradle-task-rest-builder gradle.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}" />
 							</sequential>
 						</for>
 					</then>
 					<else>
-						<echo>Executing Gradle tasks: @{modules.build.rest.task}</echo>
-
-						<gradle-execute dir="modules" forcedcacheenabled="false" task="buildREST">
-							<arg value="-DbuildREST.forceClientVersionDescription=false" />
-							<arg value="-Dskip.read.only=${build.rest.skip.read.only}" />
-							<arg value="-Pcom.liferay.portal.tools.rest.builder.ignore.local=false" />
-						</gradle-execute>
+						<execute-gradle-task-rest-builder gradle.module.dir="modules" gradle.task.name="buildREST" />
 					</else>
-				</if>
-
-				<record action="stop" name="${project.dir}/build.rest.output.txt" />
-
-				<loadfile
-					property="build.rest.output.txt.content"
-					srcfile="${project.dir}/build.rest.output.txt"
-				/>
-
-				<delete file="${project.dir}/build.rest.output.txt" />
-
-				<if>
-					<contains string="${build.rest.output.txt.content}" substring="Writing " />
-					<then>
-						<exec executable="git" output="${project.dir}/build.rest.diff.txt">
-							<arg value="diff" />
-							<arg value="--" />
-							<arg value="." />
-							<arg value=":!*/packageinfo" />
-						</exec>
-
-						<loadfile
-							property="build.rest.diff.txt.content"
-							srcfile="${project.dir}/build.rest.diff.txt"
-						/>
-
-						<delete file="${project.dir}/build.rest.diff.txt" />
-
-						<if>
-							<isset property="build.rest.diff.txt.content" />
-							<then>
-								<echo>${build.rest.diff.txt.content}</echo>
-
-								<fail>
-.
-
-Detected build REST changes. See above build REST log for more
-information. Make sure to commit in all build REST results.
-								</fail>
-							</then>
-						</if>
-					</then>
 				</if>
 			</test-action>
 
@@ -9512,49 +10250,6 @@ information. Make sure to commit in all build REST results.
 				<setup-test-environment />
 			</test-set-up>
 		</run-batch-test>
-	</target>
-
-	<target name="ruby-sass-compiler">
-		<antcall if:set="env.JENKINS_HOME" inheritAll="false" target="clean-up-java-processes" />
-
-		<setup-test-environment />
-
-		<echo file="build.${user.name}.properties">sass.compiler.class.name=ruby</echo>
-
-		<antcall inheritAll="false" target="setup-sdk" />
-
-		<antcall inheritAll="false" target="setup-yarn" />
-
-		<record action="start" name="${project.dir}/sass-compiler-log" />
-
-		<gradle-execute dir="modules" task="buildCSS">
-			<arg value="-Dbuild.exclude.ant.plugin=true" />
-		</gradle-execute>
-
-		<record action="stop" name="${project.dir}/sass-compiler-log" />
-
-		<fail message="The Sass compiler is not using Ruby.">
-			<condition>
-				<and>
-					<not>
-						<resourcecontains
-							resource="${project.dir}/sass-compiler-log"
-							substring="Using Ruby Sass compiler"
-						/>
-					</not>
-					<or>
-						<resourcecontains
-							resource="${project.dir}/sass-compiler-log"
-							substring="Unable to load Ruby compiler, falling back to native"
-						/>
-						<resourcecontains
-							resource="${project.dir}/sass-compiler-log"
-							substring="Using native Sass compiler"
-						/>
-					</or>
-				</and>
-			</condition>
-		</fail>
 	</target>
 
 	<target name="semantic-versioning">
@@ -9672,98 +10367,51 @@ tar --extract --file=liferay-portal-source.tar.gz modules/core/portal-bootstrap/
 					<arg value="--all" />
 				</exec>
 
-				<record action="start" name="${project.dir}/build.services.output.txt" />
-
 				<if>
-					<not>
-						<equals arg1="${skip.service.builder.full}" arg2="true" />
-					</not>
+					<or>
+						<not>
+							<equals arg1="${skip.service.builder.core}" arg2="true" />
+						</not>
+						<not>
+							<equals arg1="${skip.service.builder.full}" arg2="true" />
+						</not>
+					</or>
 					<then>
-						<ant dir="portal-impl" target="build-services">
-							<property name="com.liferay.portal.tools.service.builder.ignore.local" value="false" />
-						</ant>
+						<execute-ant-target-build-services ant.target.file="portal-impl/build.xml" ant.target.name="build-service-counter" />
+						<execute-ant-target-build-services ant.target.file="portal-impl/build.xml" ant.target.name="build-service-portal" />
+						<execute-ant-target-build-services ant.target.file="portal-impl/build.xml" ant.target.name="build-service-portlets" />
 					</then>
-					<else>
-						<if>
-							<not>
-								<equals arg1="${skip.service.builder.core}" arg2="true" />
-							</not>
-							<then>
-								<ant dir="portal-impl" target="build-service-counter" />
-								<ant dir="portal-impl" target="build-service-portal" />
-								<ant dir="portal-impl" target="build-service-portlets" />
-							</then>
-						</if>
-
-						<if>
-							<isset property="modules.test.class.group" />
-							<then>
-								<loadresource property="modules.build.service.tasks">
-									<filterchain>
-										<tokenfilter>
-											<replaceregex flags="g" pattern="(\S+ )" replace="\0," />
-										</tokenfilter>
-									</filterchain>
-									<propertyresource name="modules.test.class.group" />
-								</loadresource>
-
-								<for list="${modules.build.service.tasks}" param="modules.build.service.task" trim="true">
-									<sequential>
-										<echo>Executing Gradle tasks: @{modules.build.service.task}</echo>
-
-										<gradle-execute dir="modules" forcedcacheenabled="false" task="@{modules.build.service.task}">
-											<arg value="-Dskip.read.only=${build.services.skip.read.only}" />
-											<arg value="-Pcom.liferay.portal.tools.service.builder.ignore.local=false" />
-										</gradle-execute>
-									</sequential>
-								</for>
-							</then>
-						</if>
-					</else>
 				</if>
 
-				<record action="stop" name="${project.dir}/build.services.output.txt" />
-
-				<loadfile
-					property="build.services.output.txt.content"
-					srcfile="${project.dir}/build.services.output.txt"
-				/>
-
-				<delete file="${project.dir}/build.services.output.txt" />
-
 				<if>
-					<contains string="${build.services.output.txt.content}" substring="Writing " />
+					<isset property="modules.test.class.group" />
 					<then>
-						<exec executable="git" output="${project.dir}/build.services.diff.txt">
-							<arg value="diff" />
-							<arg value="--" />
-							<arg value="." />
-							<arg value=":!*/*-portlet-service.jar" />
-							<arg value=":!*/packageinfo" />
-							<arg value=":!*/src/main/resources/service.properties" />
-							<arg value=":!*/src/service.properties" />
-						</exec>
+						<get-gradle-module-dir-task-names gradle.task.names="${modules.test.class.group}" />
 
-						<loadfile
-							property="build.services.diff.txt.content"
-							srcfile="${project.dir}/build.services.diff.txt"
-						/>
+						<for delimiter="|" list="${gradle.module.dir.task.names}" param="gradle.module.dir.task.name" trim="true">
+							<sequential>
+								<local name="gradle.module.dir" />
+								<local name="gradle.task.name" />
 
-						<delete file="${project.dir}/build.services.diff.txt" />
+								<propertyregex
+									input="@{gradle.module.dir.task.name}"
+									override="true"
+									property="gradle.module.dir"
+									regexp="([^=]+)=([^=]+)"
+									replace="\1"
+								/>
 
-						<if>
-							<isset property="build.services.diff.txt.content" />
-							<then>
-								<echo>${build.services.diff.txt.content}</echo>
+								<propertyregex
+									input="@{gradle.module.dir.task.name}"
+									override="true"
+									property="gradle.task.name"
+									regexp="([^=]+)=([^=]+)"
+									replace="\2"
+								/>
 
-								<fail>
-.
-
-Detected build services changes. See above build services log for more
-information. Make sure to commit in all build services results.
-								</fail>
-							</then>
-						</if>
+								<execute-gradle-task-build-services gradle.module.dir="${gradle.module.dir}" gradle.task.name="${gradle.task.name}" />
+							</sequential>
+						</for>
 					</then>
 				</if>
 			</test-action>
@@ -9838,11 +10486,19 @@ information. Make sure to commit in all build services results.
 								<gradle-execute dir="modules/util/source-formatter" task="deploy" />
 							</then>
 						</if>
+
+						<echo>Running com.liferay.source.formatter.jar from HEAD.</echo>
 					</then>
 					<else>
 						<antcall target="setup-sdk" />
 
 						<antcall target="setup-yarn" />
+
+						<loadproperties>
+							<zipentry name="META-INF/MANIFEST.MF" zipfile="tools/sdk/dependencies/com.liferay.source.formatter/lib/com.liferay.source.formatter.jar" />
+						</loadproperties>
+
+						<echo>Running com.liferay.source.formatter.jar ${Bundle-Version}.</echo>
 					</else>
 				</if>
 
@@ -10166,86 +10822,30 @@ junit.jvm.override.version=21</echo>
 
 				<for list="${workspace.names}" param="workspace.name">
 					<sequential>
-						<trycatch property="workspace.exception">
-							<try>
-								<local name="workspace.dir" />
+						<local name="workspace.dir" />
 
-								<property name="workspace.dir" value="${project.dir}/workspaces/@{workspace.name}" />
+						<property name="workspace.dir" value="workspaces/@{workspace.name}" />
 
-								<if>
-									<available file="${workspace.dir}" />
-									<then>
-										<echo></echo>
-										<echo>##</echo>
-										<echo>## @{workspace.name}</echo>
-										<echo>##</echo>
-										<echo></echo>
+						<if>
+							<available file="${workspace.dir}" />
+							<then>
+								<echo></echo>
+								<echo>##</echo>
+								<echo>## @{workspace.name}</echo>
+								<echo>##</echo>
+								<echo></echo>
 
-										<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
-
+								<execute-gradle-task gradle.task.module.dir="${workspace.dir}" gradle.task.name="build">
+									<action>
 										<execute dir="${workspace.dir}">
 											./gradlew build
 										</execute>
-									</then>
-								</if>
-							</try>
-							<catch>
-								<echo>${workspace.exception}</echo>
-
-								<echo append="true" file="workspaces-failure">@{workspace.name},</echo>
-							</catch>
-						</trycatch>
+									</action>
+								</execute-gradle-task>
+							</then>
+						</if>
 					</sequential>
 				</for>
-
-				<if>
-					<available file="workspaces-failure" />
-					<then>
-						<loadfile
-							property="failed.workspaces"
-							srcFile="workspaces-failure"
-						/>
-
-						<beanshell>
-							<![CDATA[
-								StringBuilder sb = new StringBuilder();
-
-								sb.append("\n");
-
-								String failedWorkspacesString = project.getProperty("failed.workspaces");
-
-								String[] failedWorkspaces = failedWorkspacesString.split(",");
-
-								sb.append(failedWorkspaces.length);
-
-								sb.append(" of ");
-
-								String workspaceNamesString = project.getProperty("workspace.names");
-
-								String[] workspaceNames = workspaceNamesString.split(",");
-
-								sb.append(workspaceNames.length);
-
-								sb.append(" workspace");
-
-								if (workspaceNames.length != 1) {
-									sb.append("s");
-								}
-
-								sb.append(" failed to compile:\n");
-
-								for (String failedWorkspace : failedWorkspaces) {
-									sb.append(failedWorkspace);
-									sb.append("\n");
-								}
-
-								project.setProperty("workspaces.failure.message", sb.toString());
-							]]>
-						</beanshell>
-
-						<fail message="${workspaces.failure.message}" />
-					</then>
-				</if>
 			</test-action>
 		</run-batch-test>
 	</target>

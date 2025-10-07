@@ -35,7 +35,7 @@ String redirect = ParamUtil.getString(request, "redirect");
 							boolean useCustomTitle = GetterUtil.getBoolean(portletPreferences.getValue("portletSetupUseCustomTitle", null));
 
 							if (useCustomTitle) {
-								name = PortletConfigurationUtil.getPortletTitle(portletDisplay.getPortletName(), portletPreferences, LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale()));
+								name = PortletConfigurationUtil.getPortletTitle(portletDisplay.getId(), portletPreferences, LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale()));
 							}
 							%>
 

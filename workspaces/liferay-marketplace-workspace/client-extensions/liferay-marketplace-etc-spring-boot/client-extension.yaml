@@ -2,15 +2,15 @@ assemble:
     -   fromTask: bootJar
 liferay-marketplace-etc-spring-boot-marketplace-product-purchase:
     name: Liferay Marketplace Etc Spring Boot Marketplace Product Purchase
-    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oaua
     resourcePath: /marketplace/product/purchase
     type: objectAction
 liferay-marketplace-etc-spring-boot-marketplace-product-submit:
     name: Liferay Marketplace Etc Spring Boot Marketplace Product Submit
-    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oaua
     resourcePath: /marketplace/product/submit
     type: objectAction
-liferay-marketplace-etc-spring-boot-oauth-application-headless-server:
+liferay-marketplace-etc-spring-boot-oahs:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Marketplace Etc Spring Boot OAuth Application Headless Server
@@ -21,8 +21,9 @@ liferay-marketplace-etc-spring-boot-oauth-application-headless-server:
         -   Liferay.Headless.Commerce.Admin.Order.everything
         -   Liferay.Headless.Commerce.Delivery.Catalog.everything
         -   Liferay.Notification.REST.everything
+        -   c_trialextensionrequest.everything
     type: oAuthApplicationHeadlessServer
-liferay-marketplace-etc-spring-boot-oauth-application-user-agent:
+liferay-marketplace-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Marketplace Etc Spring Boot OAuth Application User Agent
@@ -31,6 +32,6 @@ liferay-marketplace-etc-spring-boot-oauth-application-user-agent:
     type: oAuthApplicationUserAgent
 liferay-marketplace-etc-spring-boot-trial-provisioning:
     name: Liferay Marketplace Etc Spring Boot Trial Provisioning
-    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-marketplace-etc-spring-boot-oaua
     resourcePath: /trial/provisioning
     type: objectAction

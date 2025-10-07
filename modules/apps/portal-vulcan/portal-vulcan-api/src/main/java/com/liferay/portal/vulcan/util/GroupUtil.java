@@ -81,7 +81,7 @@ public class GroupUtil {
 	private static boolean _checkGroup(Group group) {
 		if ((group != null) &&
 			(_isDepotOrSite(group) || _isDepotOrSite(group.getLiveGroup()) ||
-			 group.isUserGroup())) {
+			 group.isCMS() || group.isUserGroup())) {
 
 			return true;
 		}

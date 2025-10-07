@@ -35,6 +35,34 @@
 		"cssVariableMapping": "btn-padding-y",
 		"value": "0.5rem"
 	},
+	"cardFlatBackgroundColor": {
+		"cssVariableMapping": "card-flat-background-color",
+		"value": "transparent"
+	},
+	"cardFlatBackgroundColorActive": {
+		"cssVariableMapping": "card-flat-background-color-active",
+		"value": "transparent"
+	},
+	"cardFlatBackgroundColorHover": {
+		"cssVariableMapping": "card-flat-background-color-hover",
+		"value": "transparent"
+	},
+	"cardFlatBorderColor": {
+		"cssVariableMapping": "card-flat-border-color",
+		"value": "transparent"
+	},
+	"cardFlatBorderColorActive": {
+		"cssVariableMapping": "card-flat-border-color-active",
+		"value": "transparent"
+	},
+	"cardFlatBorderColorHover": {
+		"cssVariableMapping": "card-flat-border-color-hover",
+		"value": "transparent"
+	},
+	"cardFlatBorderWidth": {
+		"cssVariableMapping": "card-flat-border-width",
+		"value": "0"
+	},
 	"colorAccent1": {
 		"cssVariableMapping": "color-accent-1",
 		"value": "#1AA0E8"
@@ -82,6 +110,10 @@
 	"colorAccent6Lighten": {
 		"cssVariableMapping": "color-accent-6-lighten",
 		"value": "#FFF5DB"
+	},
+	"colorActionBackgroundHover": {
+		"cssVariableMapping": "color-action-background-hover",
+		"value": "#2772FF"
 	},
 	"colorActionNeutralActive": {
 		"cssVariableMapping": "color-action-neutral-active",
@@ -454,6 +486,10 @@
 	"colorStateWarningLighten2": {
 		"cssVariableMapping": "color-state-warning-lighten-2",
 		"value": "#F7EAE0"
+	},
+	"colorSurfaceBackground": {
+		"cssVariableMapping": "color-surface-background",
+		"value": "#F1F5FB"
 	},
 	"colorUtilityDarkenColor30": {
 		"cssVariableMapping": "color-utility-darken-color-30",

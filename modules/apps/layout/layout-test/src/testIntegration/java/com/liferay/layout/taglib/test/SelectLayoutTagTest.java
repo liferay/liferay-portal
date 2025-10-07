@@ -27,11 +27,12 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -85,6 +86,45 @@ public class SelectLayoutTagTest {
 	@After
 	public void tearDown() {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testEmptyLayouts() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeEmptyLayout(_group);
+
+		SelectLayoutTag selectLayoutTag = new SelectLayoutTag();
+
+		HttpServletRequest httpServletRequest = _getMockHttpServletRequest();
+
+		selectLayoutTag.doTag(
+			httpServletRequest, new MockHttpServletResponse());
+
+		Map<String, Object> data =
+			(Map<String, Object>)httpServletRequest.getAttribute(
+				"liferay-layout:select-layout:data");
+
+		JSONArray nodesJSONArray = (JSONArray)data.get("nodes");
+
+		JSONObject nodeJSONObject = nodesJSONArray.getJSONObject(0);
+
+		JSONArray childrenJSONArray = nodeJSONObject.getJSONArray("children");
+
+		boolean found = false;
+
+		for (JSONObject childrenJSONObject :
+				(Iterable<JSONObject>)childrenJSONArray) {
+
+			if (StringUtil.contains(
+					childrenJSONObject.getString("externalReferenceCode"),
+					layout.getExternalReferenceCode())) {
+
+				found = true;
+
+				break;
+			}
+		}
+
+		Assert.assertFalse(found);
 	}
 
 	@Test

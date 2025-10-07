@@ -67,6 +67,23 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 	}
 
 	@Override
+	public ListTypeEntry fetchListTypeEntry(
+			long listTypeDefinitionId, String key)
+		throws PortalException {
+
+		ListTypeEntry listTypeEntry =
+			listTypeEntryLocalService.fetchListTypeEntry(
+				listTypeDefinitionId, key);
+
+		if (listTypeEntry != null) {
+			_listTypeDefinitionModelResourcePermission.check(
+				getPermissionChecker(), listTypeDefinitionId, ActionKeys.VIEW);
+		}
+
+		return listTypeEntry;
+	}
+
+	@Override
 	public List<ListTypeEntry> getListTypeEntries(
 			long listTypeDefinitionId, int start, int end)
 		throws PortalException {
@@ -118,6 +135,30 @@ public class ListTypeEntryServiceImpl extends ListTypeEntryServiceBaseImpl {
 			ActionKeys.VIEW);
 
 		return listTypeEntry;
+	}
+
+	@Override
+	public ListTypeEntry getOrAddEmptyListTypeEntry(
+			long userId, long listTypeDefinitionId, String key)
+		throws PortalException {
+
+		ListTypeEntry listTypeEntry = listTypeEntryService.fetchListTypeEntry(
+			listTypeDefinitionId, key);
+
+		if (listTypeEntry != null) {
+			return listTypeEntry;
+		}
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionPersistence.findByPrimaryKey(
+				listTypeDefinitionId);
+
+		_listTypeDefinitionModelResourcePermission.check(
+			getPermissionChecker(),
+			listTypeDefinition.getListTypeDefinitionId(), ActionKeys.UPDATE);
+
+		return listTypeEntryLocalService.getOrAddEmptyListTypeEntry(
+			userId, listTypeDefinitionId, key);
 	}
 
 	@Override

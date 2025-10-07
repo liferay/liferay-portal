@@ -91,7 +91,7 @@ public class GraphQLDTOContributorDataFetcher extends BaseDataFetcher {
 		}
 		else if (_operation == GraphQLDTOContributor.Operation.DELETE) {
 			return _graphQLDTOContributorDataFetchingProcessor.delete(
-				_graphQLDTOContributor,
+				_graphQLDTOContributor, httpServletRequest,
 				dataFetchingEnvironment.<Long>getArgument(
 					_graphQLDTOContributor.getIdName()));
 		}

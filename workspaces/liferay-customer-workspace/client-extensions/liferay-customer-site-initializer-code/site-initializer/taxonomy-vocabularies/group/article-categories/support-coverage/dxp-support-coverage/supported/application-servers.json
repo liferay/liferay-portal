@@ -1,0 +1,10 @@
+{
+	"name": "Application Servers",
+	"name_i18n": {
+		"en_US": "Application Servers",
+		"es-ES": "Servidores de aplicaciones",
+		"ja-JP": "アプリケーション・サーバー",
+		"pt-BR": "Serviços de aplicação"
+	},
+	"viewableBy": "Anyone"
+}

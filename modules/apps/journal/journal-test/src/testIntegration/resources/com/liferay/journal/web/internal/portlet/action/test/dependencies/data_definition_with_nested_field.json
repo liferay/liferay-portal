@@ -1,0 +1,73 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "journal",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"fieldReference": "Fieldset",
+				"rows": [
+					{
+						"columns": [
+							{
+								"fields": [
+									"Text"
+								],
+								"size": 12
+							}
+						]
+					}
+				]
+			},
+			"fieldType": "fieldset",
+			"label": {
+				"en_US": "Fields Group"
+			},
+			"name": "Fieldset",
+			"nestedDataDefinitionFields": [
+				{
+					"customProperties": {
+						"dataType": "string",
+						"displayStyle": "singleline",
+						"fieldReference": "Text"
+					},
+					"fieldType": "text",
+					"label": {
+						"en_US": "Text"
+					},
+					"localizable": true,
+					"name": "Text"
+				}
+			]
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Fieldset"
+								]
+							}
+						]
+					}
+				]
+			}
+		],
+		"name": {
+			"en_US": "Data Definition With Nested Field"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"externalReferenceCode": "DATA_DEFINITION_WITH_NESTED_FIELD",
+	"name": {
+		"en_US": "Data Definition With Nested Field"
+	},
+	"storageType": "default"
+}

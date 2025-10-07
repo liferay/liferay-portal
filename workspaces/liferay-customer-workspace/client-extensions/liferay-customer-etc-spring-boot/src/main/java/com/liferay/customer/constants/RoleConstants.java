@@ -33,6 +33,8 @@ public class RoleConstants {
 	public static final String NAME_PARTNER_TECHNICAL_USER =
 		"Partner Technical User";
 
+	public static final String NAME_PROVISIONING_MEMBER = "Provisioning Member";
+
 	public static final String NAME_REQUESTER = "Requester";
 
 	public static final String[] PARTNER_ACCOUNT_ROLES = {

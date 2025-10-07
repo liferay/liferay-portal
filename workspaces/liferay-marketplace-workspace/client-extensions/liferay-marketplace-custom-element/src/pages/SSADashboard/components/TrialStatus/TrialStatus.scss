@@ -1,0 +1,32 @@
+.trial-status-icon {
+	height: 0.5rem;
+	width: 0.5rem;
+
+	&-completed {
+		color: #da1414;
+	}
+
+	&-in_progress {
+		color: #4aab3b;
+	}
+
+	&-on-hold {
+		color: #f0ad4e;
+	}
+
+	&-pending {
+		color: #ccc;
+	}
+
+	&-processing {
+		color: #2477fd;
+	}
+}
+
+.trial-status-text {
+	color: #6c6c75;
+	font-size: 0.813rem;
+	font-weight: 600;
+	line-height: 1rem;
+	text-transform: capitalize;
+}

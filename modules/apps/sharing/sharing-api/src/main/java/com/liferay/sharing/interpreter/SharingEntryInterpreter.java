@@ -25,8 +25,6 @@ public interface SharingEntryInterpreter {
 
 	public SharingEntryViewRenderer getSharingEntryViewRenderer();
 
-	public String getTitle(SharingEntry sharingEntry);
-
 	public String getTitle(SharingEntry sharingEntry, Locale locale);
 
 	public Map<Locale, String> getTitleMap(SharingEntry sharingEntry);

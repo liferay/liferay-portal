@@ -50,7 +50,7 @@
 </tr>
 <tr>
 	<td>CREATE_SEGMENT_BUTTON</td>
-	<td>//button[contains(@class,'dropdown-toggle')][normalize-space()='Create Segment']</td>
+	<td>//div//a[contains(text(),'Create Segment')]</td>
 	<td></td>
 </tr>
 <tr>

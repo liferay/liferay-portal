@@ -47,11 +47,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.TreeMap;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -707,8 +707,6 @@ public interface Portal {
 
 	public Locale getLocale(PortletRequest portletRequest);
 
-	public String getMailId(String mx, String popPortletPrefix, Object... ids);
-
 	public String getNetvibesURL(Portlet portlet, ThemeDisplay themeDisplay)
 		throws PortalException;
 
@@ -987,7 +985,8 @@ public interface Portal {
 	public long getValidUserId(long companyId, long userId)
 		throws PortalException;
 
-	public TreeMap<String, String> getVirtualHostnames(LayoutSet layoutSet);
+	public NavigableMap<String, String> getVirtualHostnames(
+		LayoutSet layoutSet);
 
 	public String getWidgetURL(Portlet portlet, ThemeDisplay themeDisplay)
 		throws PortalException;

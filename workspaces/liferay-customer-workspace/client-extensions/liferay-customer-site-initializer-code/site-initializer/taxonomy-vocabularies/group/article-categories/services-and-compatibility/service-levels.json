@@ -1,0 +1,20 @@
+{
+	"name": "Service Levels",
+	"name_i18n": {
+		"en_US": "Service Levels",
+		"es-ES": "Niveles de servicio",
+		"ja-JP": "サービスレベル",
+		"pt-BR": "Níveis de serviço"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "subtitle",
+			"value": "benefits-included-with-each-subscription-service-level"
+		},
+		{
+			"key": "thumbnail",
+			"value": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/service_levels.svg$]"
+		}
+	],
+	"viewableBy": "Anyone"
+}

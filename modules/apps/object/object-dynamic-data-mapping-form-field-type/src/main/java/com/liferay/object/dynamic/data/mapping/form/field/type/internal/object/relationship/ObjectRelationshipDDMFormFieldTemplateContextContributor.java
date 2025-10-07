@@ -116,6 +116,9 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 			}
 		).put(
 			"valueKey", _getValueKey(objectDefinition)
+		).put(
+			"visible",
+			GetterUtil.getBoolean(ddmFormField.getProperty("visible"), true)
 		).putAll(
 			DDMFormFieldTemplateContextContributorUtil.
 				getLocalizationParameters(

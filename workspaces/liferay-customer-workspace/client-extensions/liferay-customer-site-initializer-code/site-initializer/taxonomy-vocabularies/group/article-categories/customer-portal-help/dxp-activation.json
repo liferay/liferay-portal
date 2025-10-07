@@ -1,0 +1,10 @@
+{
+	"name": "DXP Activation",
+	"name_i18n": {
+		"en_US": "DXP Activation",
+		"es-ES": "Activación de DXP",
+		"ja-JP": "DXPアクティベーション",
+		"pt-BR": "Ativação do DXP"
+	},
+	"viewableBy": "Anyone"
+}

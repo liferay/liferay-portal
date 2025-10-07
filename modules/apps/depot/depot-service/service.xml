@@ -51,10 +51,18 @@
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
 
+		<!-- Other fields -->
+
+		<column name="type" type="int" />
+
 		<!-- Finder methods -->
 
 		<finder name="GroupId" return-type="DepotEntry" unique="true">
 			<finder-column name="groupId" />
+		</finder>
+		<finder name="C_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="type" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="DepotEntryGroupRel" remote-service="true" uuid="true">
@@ -81,6 +89,7 @@
 		<column name="depotEntryId" type="long" />
 		<column name="searchable" type="boolean" />
 		<column name="toGroupId" type="long" />
+		<column name="type" type="int" />
 		<column name="lastPublishDate" type="Date" />
 
 		<!-- Finder methods -->
@@ -102,6 +111,10 @@
 		<finder name="S_TGI" return-type="Collection">
 			<finder-column name="searchable" />
 			<finder-column name="toGroupId" />
+		</finder>
+		<finder name="TGI_T" return-type="Collection">
+			<finder-column name="toGroupId" />
+			<finder-column name="type" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="DepotEntryPin" remote-service="true" trash-enabled="false" uuid="true">

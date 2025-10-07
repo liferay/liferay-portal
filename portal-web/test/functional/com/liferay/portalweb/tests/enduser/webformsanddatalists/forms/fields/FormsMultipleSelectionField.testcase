@@ -682,7 +682,6 @@ definition {
 	@description = "LPS-68381 - Verify that options can be rearranged after one is removed"
 	@priority = 3
 	test OptionsCanBeReordered {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

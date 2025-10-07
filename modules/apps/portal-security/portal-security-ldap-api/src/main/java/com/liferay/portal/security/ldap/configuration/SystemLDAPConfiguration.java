@@ -57,11 +57,6 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 	public String[] connectionProperties();
 
 	@Meta.AD(
-		deflt = "age", name = "error-password-age-keywords", required = false
-	)
-	public String[] errorPasswordAgeKeywords();
-
-	@Meta.AD(
 		deflt = "expired", name = "error-password-expired-keywords",
 		required = false
 	)
@@ -72,24 +67,6 @@ public interface SystemLDAPConfiguration extends CompanyScopedConfiguration {
 		required = false
 	)
 	public String[] errorPasswordHistoryKeywords();
-
-	@Meta.AD(
-		deflt = "not allowed to change",
-		name = "error-password-not-changeable-keywords", required = false
-	)
-	public String[] errorPasswordNotChangeableKeywords();
-
-	@Meta.AD(
-		deflt = "syntax", name = "error-password-syntax-keywords",
-		required = false
-	)
-	public String[] errorPasswordSyntaxKeywords();
-
-	@Meta.AD(
-		deflt = "trivial", name = "error-password-trivial-text-keywords",
-		required = false
-	)
-	public String[] errorPasswordTrivialTextKeywords();
 
 	@Meta.AD(
 		deflt = "retry limit", name = "error-user-lockout-keywords",

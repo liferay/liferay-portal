@@ -110,7 +110,7 @@ public class PortletDataHandlerStatusMessageSenderImpl
 		Message message, String messageType, ManifestSummary manifestSummary) {
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 		message.put("messageType", messageType);
 

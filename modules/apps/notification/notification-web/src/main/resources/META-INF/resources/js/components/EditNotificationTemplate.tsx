@@ -7,7 +7,6 @@ import ClayForm from '@clayui/form';
 import {
 	API,
 	ManagementToolbar,
-	MultiSelectItem,
 	constantsUtils,
 	invalidateRequired,
 	openToast,
@@ -23,7 +22,6 @@ import {BasicInfoContainer} from './BasicInfoContainer/BasicInfoContainer';
 import ContentContainer from './ContentContainer/ContentContainer';
 import DefinitionOfTermsContainer from './DefinitionOfTermsContainer/DefinitionOfTermsContainer';
 import {SettingsContainer} from './SettingsContainer/SettingsContainer';
-import {getEmailNotificationRoles} from './SettingsContainer/rolesUtil';
 
 import './EditNotificationTemplate.scss';
 
@@ -78,11 +76,20 @@ export function validate(values: NotificationTemplate) {
 			errors.fromName = constantsUtils.REQUIRED_MSG;
 		}
 
-		if (!Array.isArray(recipient.to) && !recipient.to[defaultLanguageId]) {
-			errors.to = constantsUtils.REQUIRED_MSG;
+		if (recipient.toType !== 'subscribers' && recipient.toType !== 'term') {
+			if (
+				!Array.isArray(recipient.to) &&
+				!(recipient.to as LocalizedValue<string>)[defaultLanguageId]
+			) {
+				errors.to = constantsUtils.REQUIRED_MSG;
+			}
+
+			if (Array.isArray(recipient.to) && !recipient.to.length) {
+				errors.to = constantsUtils.REQUIRED_MSG;
+			}
 		}
 
-		if (Array.isArray(recipient.to) && !recipient.to.length) {
+		if (recipient.toType === 'term' && !recipient.to) {
 			errors.to = constantsUtils.REQUIRED_MSG;
 		}
 	}
@@ -113,10 +120,6 @@ export default function EditNotificationTemplate({
 	);
 
 	const [templateTitle, setTemplateTitle] = useState<string>('');
-
-	const [emailNotificationRoles, setEmailNotificationRoles] = useState<
-		MultiSelectItem[]
-	>([]);
 
 	const onSubmit = async (notification: NotificationTemplate) => {
 		if (isSubmitted) {
@@ -282,15 +285,6 @@ export default function EditNotificationTemplate({
 				);
 			}
 
-			if (
-				notificationTemplateType === '' ||
-				notificationTemplateType === 'email'
-			) {
-				setEmailNotificationRoles(
-					await getEmailNotificationRoles(baseResourceURL)
-				);
-			}
-
 			const objectDefinitionsItems = await API.getObjectDefinitions();
 
 			setObjectDefinitions(objectDefinitionsItems);
@@ -375,7 +369,7 @@ export default function EditNotificationTemplate({
 							})}
 						>
 							<SettingsContainer
-								emailNotificationRoles={emailNotificationRoles}
+								baseResourceURL={baseResourceURL}
 								errors={errors}
 								learnResources={learnResources}
 								selectedLocale={selectedLocale}

@@ -462,7 +462,7 @@ definition {
 	@description = ""
 	@priority = 3
 	test CheckBlogFilterByCategoryAtCollection {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Add a global category") {
 			var categoryId1 = JSONCategory.addCategory(

@@ -3,48 +3,70 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {Locator, Page} from '@playwright/test';
 
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
-import {liferayConfig} from '../../../../liferay.config';
-import getRandomString from '../../../../utils/getRandomString';
-import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
-import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import POM from '../../../../utils/POM';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 
-export class SamplePage {
+export enum TabName {
+	FIELDSET = 'Fieldset',
+	ICON_MENU = 'Icon Menu',
+	INPUT_LOCALIZED = 'Input Localized',
+	LOGO_SELECTOR = 'Logo Selector',
+	SEARCH_ITERATOR = 'Search Iterator',
+	SEARCH_PAGINATOR = 'Search Paginator',
+}
+
+export class SamplePage extends POM {
 	readonly apiHelpers: ApiHelpers;
-	readonly page: Page;
 	readonly linkList: Locator;
 
-	constructor(page: Page) {
+	constructor(page: Page, url: string) {
+		super(page, url);
+
 		this.apiHelpers = new ApiHelpers(page);
-		this.page = page;
 		this.linkList = page.getByRole('link');
 	}
 
-	async selectLink(tabName: string) {
+	async selectTab(tabName: TabName) {
 		const linkHeading = this.linkList.getByText(tabName);
 
-		await expect(linkHeading).toBeInViewport();
+		const target: Locator | undefined = {
+			[TabName.FIELDSET]: this.page.getByRole('button', {
+				name: 'Help Text Help Text',
+			}),
 
-		await linkHeading.click();
+			[TabName.ICON_MENU]: this.page.getByRole('button', {
+				name: 'Sample Add',
+			}),
+
+			[TabName.INPUT_LOCALIZED]: this.page.getByText('Sample label'),
+
+			[TabName.LOGO_SELECTOR]: this.page.getByText('First Logo'),
+
+			[TabName.SEARCH_ITERATOR]: this.page.getByRole('cell', {
+				exact: true,
+				name: 'Name',
+			}),
+
+			[TabName.SEARCH_PAGINATOR]: this.page.getByLabel('Items per Page'),
+		}[tabName];
+
+		if (target === undefined) {
+			throw new Error(`Unknown tab name ${tabName}`);
+		}
+
+		await clickAndExpectToBeVisible({
+			autoClick: false,
+			target,
+			trigger: linkHeading,
+		});
 	}
 
-	async setupSampleWidget({site}) {
-		const widgetDefinition = getWidgetDefinition({
-			id: getRandomString(),
-			widgetName:
-				'com_liferay_frontend_taglib_sample_web_portlet_SamplePortlet',
-		});
-
-		const layout = await this.apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([widgetDefinition]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		await this.page.goto(
-			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
-		);
+	async waitFor() {
+		await this.page
+			.getByRole('link', {name: 'Fieldset'})
+			.waitFor({state: 'visible'});
 	}
 }

@@ -179,7 +179,7 @@ public class SampleSQLBuilderTest {
 				"commerceInventoryWarehouseItem,commerceOrder,commerceProduct,",
 				"company,cpDefinition,documentLibrary,dynamicDataList,",
 				"fragment,layout,mbCategory,mbThread,objectDefinition,",
-				"repository,user"));
+				"portalPreferenceValue,repository,user"));
 		properties.put(BenchmarksPropsKeys.OUTPUT_MERGE, "true");
 		properties.put(
 			BenchmarksPropsKeys.SCRIPT,

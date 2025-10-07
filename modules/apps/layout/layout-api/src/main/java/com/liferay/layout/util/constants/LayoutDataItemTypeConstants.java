@@ -22,6 +22,8 @@ public class LayoutDataItemTypeConstants {
 
 	public static final String TYPE_FORM = "form";
 
+	public static final String TYPE_FORM_RELATIONSHIP = "form-relationship";
+
 	public static final String TYPE_FORM_STEP = "form-step";
 
 	public static final String TYPE_FORM_STEP_CONTAINER = "form-step-container";

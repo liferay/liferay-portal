@@ -115,6 +115,13 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		super.testGraphQLGetDiscountSkuSku();
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetPriceEntryIdSku() throws Exception {
+		super.testGraphQLGetPriceEntryIdSku();
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {

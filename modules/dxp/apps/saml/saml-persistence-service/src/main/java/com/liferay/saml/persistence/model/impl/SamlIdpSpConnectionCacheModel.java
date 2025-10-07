@@ -69,6 +69,8 @@ public class SamlIdpSpConnectionCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", samlSpEntityId=");
+		sb.append(samlSpEntityId);
 		sb.append(", assertionLifetime=");
 		sb.append(assertionLifetime);
 		sb.append(", attributeNames=");
@@ -81,20 +83,18 @@ public class SamlIdpSpConnectionCacheModel
 		sb.append(enabled);
 		sb.append(", encryptionForced=");
 		sb.append(encryptionForced);
+		sb.append(", metadataUpdatedDate=");
+		sb.append(metadataUpdatedDate);
 		sb.append(", metadataUrl=");
 		sb.append(metadataUrl);
 		sb.append(", metadataXml=");
 		sb.append(metadataXml);
-		sb.append(", metadataUpdatedDate=");
-		sb.append(metadataUpdatedDate);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", nameIdAttribute=");
 		sb.append(nameIdAttribute);
 		sb.append(", nameIdFormat=");
 		sb.append(nameIdFormat);
-		sb.append(", samlSpEntityId=");
-		sb.append(samlSpEntityId);
 		sb.append("}");
 
 		return sb.toString();
@@ -130,6 +130,13 @@ public class SamlIdpSpConnectionCacheModel
 			samlIdpSpConnectionImpl.setModifiedDate(new Date(modifiedDate));
 		}
 
+		if (samlSpEntityId == null) {
+			samlIdpSpConnectionImpl.setSamlSpEntityId("");
+		}
+		else {
+			samlIdpSpConnectionImpl.setSamlSpEntityId(samlSpEntityId);
+		}
+
 		samlIdpSpConnectionImpl.setAssertionLifetime(assertionLifetime);
 
 		if (attributeNames == null) {
@@ -145,6 +152,14 @@ public class SamlIdpSpConnectionCacheModel
 		samlIdpSpConnectionImpl.setEnabled(enabled);
 		samlIdpSpConnectionImpl.setEncryptionForced(encryptionForced);
 
+		if (metadataUpdatedDate == Long.MIN_VALUE) {
+			samlIdpSpConnectionImpl.setMetadataUpdatedDate(null);
+		}
+		else {
+			samlIdpSpConnectionImpl.setMetadataUpdatedDate(
+				new Date(metadataUpdatedDate));
+		}
+
 		if (metadataUrl == null) {
 			samlIdpSpConnectionImpl.setMetadataUrl("");
 		}
@@ -157,14 +172,6 @@ public class SamlIdpSpConnectionCacheModel
 		}
 		else {
 			samlIdpSpConnectionImpl.setMetadataXml(metadataXml);
-		}
-
-		if (metadataUpdatedDate == Long.MIN_VALUE) {
-			samlIdpSpConnectionImpl.setMetadataUpdatedDate(null);
-		}
-		else {
-			samlIdpSpConnectionImpl.setMetadataUpdatedDate(
-				new Date(metadataUpdatedDate));
 		}
 
 		if (name == null) {
@@ -188,13 +195,6 @@ public class SamlIdpSpConnectionCacheModel
 			samlIdpSpConnectionImpl.setNameIdFormat(nameIdFormat);
 		}
 
-		if (samlSpEntityId == null) {
-			samlIdpSpConnectionImpl.setSamlSpEntityId("");
-		}
-		else {
-			samlIdpSpConnectionImpl.setSamlSpEntityId(samlSpEntityId);
-		}
-
 		samlIdpSpConnectionImpl.resetOriginalValues();
 
 		return samlIdpSpConnectionImpl;
@@ -212,6 +212,7 @@ public class SamlIdpSpConnectionCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		samlSpEntityId = objectInput.readUTF();
 
 		assertionLifetime = objectInput.readInt();
 		attributeNames = objectInput.readUTF();
@@ -223,13 +224,12 @@ public class SamlIdpSpConnectionCacheModel
 		enabled = objectInput.readBoolean();
 
 		encryptionForced = objectInput.readBoolean();
+		metadataUpdatedDate = objectInput.readLong();
 		metadataUrl = objectInput.readUTF();
 		metadataXml = (String)objectInput.readObject();
-		metadataUpdatedDate = objectInput.readLong();
 		name = objectInput.readUTF();
 		nameIdAttribute = objectInput.readUTF();
 		nameIdFormat = objectInput.readUTF();
-		samlSpEntityId = objectInput.readUTF();
 	}
 
 	@Override
@@ -250,6 +250,13 @@ public class SamlIdpSpConnectionCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		if (samlSpEntityId == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(samlSpEntityId);
+		}
+
 		objectOutput.writeInt(assertionLifetime);
 
 		if (attributeNames == null) {
@@ -266,6 +273,7 @@ public class SamlIdpSpConnectionCacheModel
 		objectOutput.writeBoolean(enabled);
 
 		objectOutput.writeBoolean(encryptionForced);
+		objectOutput.writeLong(metadataUpdatedDate);
 
 		if (metadataUrl == null) {
 			objectOutput.writeUTF("");
@@ -280,8 +288,6 @@ public class SamlIdpSpConnectionCacheModel
 		else {
 			objectOutput.writeObject(metadataXml);
 		}
-
-		objectOutput.writeLong(metadataUpdatedDate);
 
 		if (name == null) {
 			objectOutput.writeUTF("");
@@ -303,13 +309,6 @@ public class SamlIdpSpConnectionCacheModel
 		else {
 			objectOutput.writeUTF(nameIdFormat);
 		}
-
-		if (samlSpEntityId == null) {
-			objectOutput.writeUTF("");
-		}
-		else {
-			objectOutput.writeUTF(samlSpEntityId);
-		}
 	}
 
 	public long samlIdpSpConnectionId;
@@ -318,18 +317,18 @@ public class SamlIdpSpConnectionCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String samlSpEntityId;
 	public int assertionLifetime;
 	public String attributeNames;
 	public boolean attributesEnabled;
 	public boolean attributesNamespaceEnabled;
 	public boolean enabled;
 	public boolean encryptionForced;
+	public long metadataUpdatedDate;
 	public String metadataUrl;
 	public String metadataXml;
-	public long metadataUpdatedDate;
 	public String name;
 	public String nameIdAttribute;
 	public String nameIdFormat;
-	public String samlSpEntityId;
 
 }

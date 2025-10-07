@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
+import {
+	ObjectDefinitionAPI,
+	ObjectRelationshipAPI,
+} from '@liferay/object-admin-rest-client-js';
 import {Page, expect, mergeTests} from '@playwright/test';
 import fs from 'fs/promises';
 import * as path from 'path';
@@ -22,10 +25,12 @@ import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {pageTemplatesPagesTest} from '../../../fixtures/pageTemplatesPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
+import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {HomePage} from '../../../pages/portal-web/HomePage';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
 import {getTempDir} from '../../../utils/temp';
@@ -47,7 +52,7 @@ export const test = mergeTests(
 	exportImportPagesTest,
 	featureFlagsTest({
 		'LPD-35013': {enabled: true},
-		'LPD-35914': {enabled: false, system: true},
+		'LPD-35914': {enabled: false},
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 	}),
@@ -68,11 +73,14 @@ export const testWithExportImportAtInstanceLevelFF = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: true, system: true},
+		'LPD-17564': {enabled: true},
+		'LPD-35914': {enabled: true},
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
+		'LPD-45276': {enabled: true},
 	}),
 	loginTest(),
+	styleBookPageTest,
 	uiElementsPageTest
 );
 
@@ -80,7 +88,7 @@ const testWithDeprecationFFDisabled = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: true, system: true},
+		'LPD-35914': {enabled: true},
 		'LPD-44307': {enabled: false},
 		'LPD-44771': {enabled: false},
 	}),
@@ -92,7 +100,7 @@ const testWithDeprecationFF = mergeTests(
 	exportImportPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-35914': {enabled: true, system: true},
+		'LPD-35914': {enabled: true},
 		'LPD-44307': {enabled: true},
 		'LPD-44771': {enabled: true},
 	}),
@@ -128,41 +136,15 @@ async function getSiteHomePageScreenshot(
 }
 
 testWithExportImportAtInstanceLevelFF(
-	'can export and import custom object entries at site level',
+	'Can export and import custom object entries at site level',
 	async ({apiHelpers, exportImportPage}) => {
 		const objectActionAPIClient =
 			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
 
 		const {body: objectDefinition} =
-			await objectActionAPIClient.postObjectDefinition({
-				active: true,
-				externalReferenceCode: 'test',
-				label: {
-					en_US: 'Test',
-				},
-				name: 'Test',
-				objectFields: [
-					{
-						DBType: 'String',
-						businessType: 'Text',
-						indexed: true,
-						indexedAsKeyword: true,
-						label: {
-							en_US: 'Name',
-						},
-						name: 'name',
-						required: true,
-					},
-				],
-				pluralLabel: {
-					en_US: 'Tests',
-				},
-				portlet: true,
-				scope: 'site',
-				status: {
-					code: 0,
-				},
-			});
+			await objectActionAPIClient.postObjectDefinition(
+				objectDefitionRequestData({scope: 'site'})
+			);
 
 		apiHelpers.data.push({
 			id: objectDefinition.id,
@@ -178,7 +160,7 @@ testWithExportImportAtInstanceLevelFF(
 
 		const exportName = 'MyExport-' + getRandomString();
 
-		await exportImportPage.export(exportName, 'Tests');
+		await exportImportPage.export(exportName, 'Tests 1 Items');
 
 		await expect(
 			exportImportPage.page
@@ -228,7 +210,7 @@ testWithExportImportAtInstanceLevelFF(
 );
 
 testWithExportImportAtInstanceLevelFF(
-	'cannot import an instance scoped lar file',
+	'Cannot import an instance scoped lar file',
 	async ({apiHelpers, companyExportImportPage, exportImportPage, page}) => {
 		const objectActionAPIClient =
 			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
@@ -243,9 +225,16 @@ testWithExportImportAtInstanceLevelFF(
 			type: 'objectDefinition',
 		});
 
+		await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', name: 'test'},
+			'c/tests'
+		);
+
 		const homePage = new HomePage(page);
 
-		const exportFilePath = await companyExportImportPage.export('Tests');
+		const exportFilePath = await companyExportImportPage.export([
+			'Tests 1 Items',
+		]);
 
 		await homePage.goto();
 
@@ -332,7 +321,7 @@ test(
 );
 
 test(
-	'can XSS with `searchContainerId` in Asset Libraries import',
+	'Can XSS with `searchContainerId` in Asset Libraries import',
 	{tag: '@LPS-195766'},
 	async ({apiHelpers, depotAdminPage, page}) => {
 		const depotName = getRandomString();
@@ -374,7 +363,7 @@ test(
 	}
 );
 
-test('can import a folder with document type restrictions and workflow', async ({
+test('Can import a folder with document type restrictions and workflow', async ({
 	apiHelpers,
 	documentLibraryEditFolderPage,
 	documentLibraryPage,
@@ -398,7 +387,7 @@ test('can import a folder with document type restrictions and workflow', async (
 	);
 });
 
-test('can import a lar file selecting some items to import', async ({
+test('Can import a lar file selecting some items to import', async ({
 	exportImportPage,
 }) => {
 	await exportImportPage.goToExport();
@@ -430,11 +419,250 @@ test('can import a lar file selecting some items to import', async ({
 	).toBeVisible();
 });
 
+testWithExportImportAtInstanceLevelFF(
+	'Can export and import a site created with the Clarity site initializer including all exportable items',
+	{tag: '@LPD-64056'},
+	async ({
+		apiHelpers,
+		exportImportPage,
+		styleBooksPage,
+		uploadServletRequestSystemSettingsPage,
+	}) => {
+		test.setTimeout(300000);
+
+		let exportFilePath: string;
+		let exportName: string;
+		let exportableItems1: Map<string, number>;
+		let exportableItems2: Map<string, number>;
+		let exportableItems3: Map<string, number>;
+		let objectDefinition1;
+		let objectDefinition2;
+		let objectRelationship;
+		let originalOverallMaximumUploadRequestSize: string;
+		let site1: Site;
+		let site2: Site;
+
+		await test.step('Increase the maximum upload request size', async () => {
+			await uploadServletRequestSystemSettingsPage.goto();
+
+			originalOverallMaximumUploadRequestSize =
+				await uploadServletRequestSystemSettingsPage.getOverallMaximumUploadRequestSize();
+
+			await uploadServletRequestSystemSettingsPage.setOverallMaximumUploadRequestSize(
+				{
+					size: '200000000',
+				}
+			);
+		});
+
+		try {
+			await test.step('Create the Object definitions with 1-M relationship', async () => {
+				const objectFolder =
+					await apiHelpers.objectAdmin.postRandomObjectFolder();
+
+				apiHelpers.data.push({
+					id: objectFolder.id,
+					type: 'objectFolder',
+				});
+
+				objectDefinition1 =
+					await apiHelpers.objectAdmin.postRandomObjectDefinition({
+						objectFolderExternalReferenceCode:
+							objectFolder.externalReferenceCode,
+						scope: 'site',
+						status: {code: 0},
+					});
+
+				apiHelpers.data.push({
+					id: objectDefinition1.id,
+					type: 'objectDefinition',
+				});
+
+				objectDefinition2 =
+					await apiHelpers.objectAdmin.postRandomObjectDefinition({
+						objectFolderExternalReferenceCode:
+							objectFolder.externalReferenceCode,
+						scope: 'site',
+						status: {code: 0},
+					});
+
+				apiHelpers.data.push({
+					id: objectDefinition2.id,
+					type: 'objectDefinition',
+				});
+
+				const objectRelationshipAPIClient =
+					await apiHelpers.buildRestClient(ObjectRelationshipAPI);
+
+				objectRelationship =
+					await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+						objectDefinition1.externalReferenceCode,
+						{
+							label: {
+								en_US: `objectRelationshipLabel${getRandomInt()}`,
+							},
+							name: `objectRelationshipName${Math.floor(Math.random() * 99)}`,
+							objectDefinitionExternalReferenceCode1:
+								objectDefinition1.externalReferenceCode,
+							objectDefinitionExternalReferenceCode2:
+								objectDefinition2.externalReferenceCode,
+							objectDefinitionId1: objectDefinition1.id,
+							objectDefinitionId2: objectDefinition2.id,
+							objectDefinitionName2: objectDefinition2.name,
+							type: 'oneToMany',
+						}
+					);
+			});
+
+			await test.step('Create the site 1 from the template', async () => {
+				site1 = await apiHelpers.headlessSite.createSite({
+					name: getRandomString(),
+					templateKey: 'com.liferay.site.initializer.teaser.showcase',
+					templateType: 'site-initializer',
+				});
+
+				apiHelpers.data.push({id: site1.id, type: 'site'});
+			});
+
+			await test.step('Add Object entry to the site 1', async () => {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						textField: getRandomString(),
+						[objectRelationship.body.name]: [
+							{
+								textField: getRandomString(),
+							},
+						],
+					},
+					`c/${objectDefinition1.name.toLowerCase()}s/scopes/${site1.name}`
+				);
+			});
+
+			await test.step('Add a Style Book on the site 1', async () => {
+				await styleBooksPage.goto(site1.friendlyUrlPath);
+
+				await styleBooksPage.create(getRandomString());
+			});
+
+			await test.step('Export the site 1', async () => {
+				await exportImportPage.goToExport(site1.friendlyUrlPath);
+
+				exportableItems1 = await exportImportPage.getExportableItems();
+
+				expect(exportableItems1.has(objectDefinition1.name)).toBe(true);
+
+				expect(exportableItems1.has(objectDefinition2.name)).toBe(true);
+
+				expect(exportableItems1.has('Style Books')).toBe(true);
+
+				exportName = `MyExport-${getRandomString()}`;
+
+				await exportImportPage.exportAll(exportName);
+
+				await expect(
+					exportImportPage.taskSuccessLabel(exportName)
+				).toBeVisible({timeout: 60000});
+
+				exportFilePath =
+					await exportImportPage.downloadExportProcess(exportName);
+			});
+
+			await test.step('Create the site 2', async () => {
+				site2 = await apiHelpers.headlessSite.createSite({
+					name: getRandomString(),
+				});
+
+				apiHelpers.data.push({id: site2.id, type: 'site'});
+			});
+
+			await test.step('Import the site 1 into site 2', async () => {
+				await exportImportPage.goToExport(site2.friendlyUrlPath);
+
+				exportableItems2 = await exportImportPage.getExportableItems();
+
+				await exportImportPage.goToImport(site2.friendlyUrlPath);
+
+				await exportImportPage.import(exportFilePath);
+
+				await expect(
+					exportImportPage.taskSuccessLabel(exportName)
+				).toBeVisible({timeout: 60000});
+			});
+
+			await test.step('Assert the exportable items from site 1 and site 2 are equal', async () => {
+				await exportImportPage.goToExport(site2.friendlyUrlPath);
+
+				exportableItems3 = await exportImportPage.getExportableItems();
+
+				expect(exportableItems3.size).toEqual(exportableItems1.size);
+
+				for (const [name, count] of exportableItems1.entries()) {
+					if (name === 'Calendar' || name === 'Categories') {
+
+						// TODO LPD-64899, LPD-65749
+
+						continue;
+					}
+					else if (name === 'Pages') {
+						expect(exportableItems3.get(name)).toBe(
+							count + exportableItems2.get('Pages')
+						);
+					}
+					else if (name === 'Style Books') {
+
+						// TODO LPD-64905
+
+						expect(
+							exportableItems3.get(name)
+						).toBeGreaterThanOrEqual(count);
+					}
+					else {
+						expect(exportableItems3.get(name)).toBe(count);
+					}
+				}
+			});
+
+			// TODO LPD-65374
+
+			/*
+			await test.step('Assert the home page screenshots from site 1 and site 2 are equal', async () => {
+
+				const comparator = getComparator('image/png');
+
+				const buffer = comparator(
+					await getSiteHomePageScreenshot(page, site1.name, {staging: false}),
+					await getSiteHomePageScreenshot(page, site2.name, {staging: false})
+				);
+
+				if (buffer !== null && buffer.diff !== undefined) {
+					const diffPath = path.join(getTempDir(), `${site1.name}-diff.png`);
+					await fs.writeFile(diffPath, buffer.diff);
+					throw new Error(
+						`The site 1 and site 2 home pages differ. Check the screenshot diff at "${diffPath}".`
+					);
+				}
+			});
+			*/
+		}
+		finally {
+			await test.step('Restore the initial maximum upload request size', async () => {
+				await uploadServletRequestSystemSettingsPage.goto();
+
+				await uploadServletRequestSystemSettingsPage.setOverallMaximumUploadRequestSize(
+					{
+						size: originalOverallMaximumUploadRequestSize,
+					}
+				);
+			});
+		}
+	}
+);
+
 [
 	{name: 'com.liferay.site.initializer.masterclass', shouldFail: true},
 	{name: 'com.liferay.site.initializer.welcome'},
 ].forEach(({name, shouldFail}) => {
-	test(`site initializer ${name} can be exported and imported`, async ({
+	test(`Site initializer ${name} can be exported and imported`, async ({
 		apiHelpers,
 		page,
 		stagingPage,
@@ -472,7 +700,7 @@ test('can import a lar file selecting some items to import', async ({
 	});
 });
 
-test('can see corresponding elements at site level', async ({
+test('Can see corresponding elements at site level', async ({
 	apiHelpers,
 	exportImportPage,
 }) => {
@@ -535,7 +763,7 @@ test('can see corresponding elements at site level', async ({
 });
 
 testWithDeprecationFFDisabled(
-	"hide 'Delete Application Data' checkbox and 'Copy as New' radio button when deprecation FF is false",
+	"Hide 'Delete Application Data' checkbox and 'Copy as New' radio button when deprecation FF is false",
 	{tag: ['@LPD-44771', '@LPD-44307']},
 	async ({apiHelpers, exportImportPage}) => {
 		const objectActionAPIClient =
@@ -580,7 +808,7 @@ testWithDeprecationFFDisabled(
 );
 
 testWithDeprecationFF(
-	'show modal warning at site level',
+	'Show modal warning at site level',
 	{tag: ['@LPD-54835', '@LPD-54836']},
 	async ({apiHelpers, exportImportPage, page, uiElementsPage}) => {
 		const objectActionAPIClient =
@@ -600,7 +828,12 @@ testWithDeprecationFF(
 
 		const exportName = 'MyExport-' + getRandomString();
 
-		await exportImportPage.export(exportName, 'Tests');
+		await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', name: 'test'},
+			'c/tests/scopes/Guest'
+		);
+
+		await exportImportPage.export(exportName, 'Tests 1 Items');
 
 		await expect(
 			page.getByText(exportName).locator('../..').getByText('Successful')
@@ -758,7 +991,7 @@ testWithDeprecationFF(
 );
 
 testWithDeprecationFFDisabled(
-	'show modal warning at site level - FF disabled',
+	'Show modal warning at site level - FF disabled',
 	{tag: ['@LPD-54835', '@LPD-54836']},
 	async ({apiHelpers, exportImportPage, page, uiElementsPage}) => {
 		const objectActionAPIClient =
@@ -778,7 +1011,12 @@ testWithDeprecationFFDisabled(
 
 		const exportName = 'MyExport-' + getRandomString();
 
-		await exportImportPage.export(exportName, 'Tests');
+		await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', name: 'test'},
+			'c/tests/scopes/Guest'
+		);
+
+		await exportImportPage.export(exportName, 'Tests 1 Items');
 
 		await expect(
 			page.getByText(exportName).locator('../..').getByText('Successful')

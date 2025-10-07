@@ -293,7 +293,7 @@ public class WelcomeSiteInitializerTest {
 
 		JSONObject editableValueJSONObject =
 			_fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(
-				StringPool.BLANK, StringPool.BLANK);
+				StringPool.BLANK, null);
 
 		Portlet portlet = _portletLocalService.getPortletById(portletId);
 

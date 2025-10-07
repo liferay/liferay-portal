@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Security Export Import API
 Bundle-SymbolicName: com.liferay.portal.security.exportimport.api
-Bundle-Version: 6.1.8
+Bundle-Version: 6.1.9
 Export-Package: com.liferay.portal.security.exportimport

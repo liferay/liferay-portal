@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -54,7 +57,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -87,6 +89,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -279,7 +282,7 @@ public abstract class BaseShipmentResourceTestCase {
 							put("shipmentId", shipment1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -315,7 +318,7 @@ public abstract class BaseShipmentResourceTestCase {
 								put("shipmentId", shipment2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -413,6 +416,103 @@ public abstract class BaseShipmentResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteShipmentByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		Shipment shipment1 =
+			testGraphQLDeleteShipmentByExternalReferenceCode_addShipment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteShipmentByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										shipment1.getExternalReferenceCode() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteShipmentByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"shipmentByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" + shipment1.getExternalReferenceCode() +
+									"\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminShipment_v1_0
+
+		Shipment shipment2 =
+			testGraphQLDeleteShipmentByExternalReferenceCode_addShipment();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminShipment_v1_0",
+						new GraphQLField(
+							"deleteShipmentByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											shipment2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminShipment_v1_0",
+				"Object/deleteShipmentByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminShipment_v1_0",
+					new GraphQLField(
+						"shipmentByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										shipment2.getExternalReferenceCode() +
+											"\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected Shipment
+			testGraphQLDeleteShipmentByExternalReferenceCode_addShipment()
+		throws Exception {
+
+		return testGraphQLShipment_addShipment();
 	}
 
 	@Test
@@ -1165,6 +1265,7 @@ public abstract class BaseShipmentResourceTestCase {
 			"shipments",
 			new HashMap<String, Object>() {
 				{
+					put("search", null);
 					put("page", 1);
 					put("pageSize", 10);
 				}
@@ -1180,8 +1281,9 @@ public abstract class BaseShipmentResourceTestCase {
 
 		long totalCount = shipmentsJSONObject.getLong("totalCount");
 
-		Shipment shipment1 = testGraphQLGetShipmentsPage_addShipment();
-		Shipment shipment2 = testGraphQLGetShipmentsPage_addShipment();
+		Shipment shipment1 = testGraphQLShipment_addShipment(randomShipment());
+
+		Shipment shipment2 = testGraphQLShipment_addShipment(randomShipment());
 
 		shipmentsJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -1219,12 +1321,6 @@ public abstract class BaseShipmentResourceTestCase {
 			shipment2,
 			Arrays.asList(
 				ShipmentSerDes.toDTOs(shipmentsJSONObject.getString("items"))));
-	}
-
-	protected Shipment testGraphQLGetShipmentsPage_addShipment()
-		throws Exception {
-
-		return testGraphQLShipment_addShipment();
 	}
 
 	@Test
@@ -1302,6 +1398,15 @@ public abstract class BaseShipmentResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostShipment() throws Exception {
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
+	}
+
+	@Test
 	public void testPostShipmentByExternalReferenceCodeStatusDelivered()
 		throws Exception {
 
@@ -1322,6 +1427,17 @@ public abstract class BaseShipmentResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostShipmentByExternalReferenceCodeStatusDelivered()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
 	}
 
 	@Test
@@ -1348,6 +1464,17 @@ public abstract class BaseShipmentResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostShipmentByExternalReferenceCodeStatusFinishProcessing()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
+	}
+
+	@Test
 	public void testPostShipmentByExternalReferenceCodeStatusShipped()
 		throws Exception {
 
@@ -1371,6 +1498,17 @@ public abstract class BaseShipmentResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostShipmentByExternalReferenceCodeStatusShipped()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
+	}
+
+	@Test
 	public void testPostShipmentStatusDelivered() throws Exception {
 		Shipment randomShipment = randomShipment();
 
@@ -1387,6 +1525,15 @@ public abstract class BaseShipmentResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostShipmentStatusDelivered() throws Exception {
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
 	}
 
 	@Test
@@ -1409,6 +1556,17 @@ public abstract class BaseShipmentResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostShipmentStatusFinishProcessing()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
+	}
+
+	@Test
 	public void testPostShipmentStatusShipped() throws Exception {
 		Shipment randomShipment = randomShipment();
 
@@ -1425,6 +1583,15 @@ public abstract class BaseShipmentResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostShipmentStatusShipped() throws Exception {
+		Shipment randomShipment = randomShipment();
+
+		Shipment shipment = testGraphQLShipment_addShipment(randomShipment);
+
+		Assert.assertTrue(equals(randomShipment, shipment));
 	}
 
 	@Test
@@ -1561,8 +1728,115 @@ public abstract class BaseShipmentResourceTestCase {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected Shipment testGraphQLShipment_addShipment() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		return testGraphQLShipment_addShipment(randomShipment());
+	}
+
+	protected Shipment testGraphQLShipment_addShipment(Shipment shipment)
+		throws Exception {
+
+		JSONDeserializer<Shipment> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(Shipment.class)) {
+
+			if (getGraphQLValue(field.get(shipment)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(shipment)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createShipment",
+						new HashMap<String, Object>() {
+							{
+								put("shipment", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createShipment"),
+			Shipment.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(Shipment shipment, List<Shipment> shipments) {
@@ -1862,6 +2136,10 @@ public abstract class BaseShipmentResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

@@ -42,8 +42,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			createMockLiferayPortletActionRequest(
-				"previous_version_valid_data_definition.json",
-				"Imported Structure");
+				"data_definition_with_text_field.json", "Imported Structure");
 
 		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
 
@@ -78,8 +77,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			createMockLiferayPortletActionRequest(
-				"valid_data_definition_with_field_names_without_random_" +
-					"digits.json",
+				"data_definition_with_field_names_without_random_digits.json",
 				"Imported Structure");
 
 		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
@@ -103,7 +101,8 @@ public class ImportDataDefinitionMVCActionCommandTest
 	public void testProcessActionWithInvalidDataDefinition() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			createMockLiferayPortletActionRequest(
-				"invalid_data_definition.json", "Imported Structure");
+				"data_definition_with_invalid_fields.json",
+				"Imported Structure");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.journal.web.internal.portlet.action." +
@@ -136,6 +135,50 @@ public class ImportDataDefinitionMVCActionCommandTest
 	}
 
 	@Test
+	public void testProcessActionWithMultipleImportOfSameDataDefinition()
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			createMockLiferayPortletActionRequest(
+				"data_definition_with_valid_fields.json", "Imported Structure");
+
+		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				portal.getPortletId(mockLiferayPortletActionRequest) +
+					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE));
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				"importDataDefinitionSuccessMessage"));
+
+		mockLiferayPortletActionRequest = createMockLiferayPortletActionRequest(
+			"data_definition_with_valid_fields.json", "Imported Structure");
+
+		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				portal.getPortletId(mockLiferayPortletActionRequest) +
+					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE));
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				"importDataDefinitionSuccessMessage"));
+	}
+
+	@Test
 	public void testProcessActionWithoutName() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.journal.web.internal.portlet.action." +
@@ -144,7 +187,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 				createMockLiferayPortletActionRequest(
-					"valid_data_definition.json", null);
+					"data_definition_with_valid_fields.json", null);
 
 			setUpUploadPortletRequest(mockLiferayPortletActionRequest);
 
@@ -176,7 +219,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			createMockLiferayPortletActionRequest(
-				"valid_data_definition.json", "Imported Structure");
+				"data_definition_with_valid_fields.json", "Imported Structure");
 
 		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
 

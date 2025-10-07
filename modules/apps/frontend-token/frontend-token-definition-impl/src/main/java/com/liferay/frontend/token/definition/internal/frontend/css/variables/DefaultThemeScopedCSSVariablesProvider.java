@@ -99,7 +99,8 @@ public class DefaultThemeScopedCSSVariablesProvider
 
 					cssVariables.put(
 						frontendTokenMapping.getValue(),
-						frontendToken.getDefaultValue());
+						String.valueOf(
+							frontendToken.<Object>getDefaultValue()));
 				}
 			}
 		}

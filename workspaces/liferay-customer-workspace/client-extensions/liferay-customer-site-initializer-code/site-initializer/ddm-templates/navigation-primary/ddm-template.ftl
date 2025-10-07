@@ -46,6 +46,8 @@
 						backgroundColor = secondaryCustomFields["Submenu Background"]?first!""
 						childColumns = secondaryCustomFields["Submenu Child Columns"]?first!""
 						columnSpan = secondaryCustomFields["Submenu Column Span"]!?first!""
+						imageURL = getLocalizedExpandoValue(secondaryCustomFields["Menu Item Image URL"])!""
+						menuItemType = secondaryCustomFields["Menu Item Type"]?first!""
 					/>
 
 					<#if childColumns?has_content>
@@ -57,7 +59,12 @@
 					</#if>
 
 					<ul class="adt-submenu-section ${backgroundColor} ${columnSpan}">
-						<li class="adt-submenu-header color-neutral-8 font-size-small-caps">${navSecondaryItem.getName()}</li>
+						<li class="adt-submenu-header color-neutral-8 font-size-small-caps">
+							<#if stringUtil.equals(menuItemType, "Image") && imageURL?has_content>
+								<img class="adt-submenu-header-image" loading="lazy" src="${imageURL}" />
+							</#if>
+							${navSecondaryItem.getName()}
+						</li>
 
 						<#list navSecondaryItem.getChildren() as navTertiaryItem>
 							<#assign

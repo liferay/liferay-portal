@@ -548,6 +548,15 @@ test('LPD-45897 Can delete an inactive account', async ({
 	await expect(accountsPage.accountsTable.cell(account.name)).toHaveCount(1);
 
 	await (await accountsPage.accountsTable.rowActions(account.name)).click();
+
+	await expect(async () => {
+		await (
+			await accountsPage.accountsTable.rowActions(account.name)
+		).click();
+
+		await expect(accountsPage.deleteButton).toBeVisible({timeout: 500});
+	}).toPass();
+
 	await accountsPage.deleteButton.click();
 
 	await waitForAlert(page);
@@ -1165,15 +1174,16 @@ test('LPS-101221 Can search an account', async ({
 	await accountsPage.accountsTable.filterButton.click();
 	await accountsPage.accountsTable.filterMenuItem('Inactive').click();
 
-	await accountsPage.accountsTable.search(account1.name);
+	await expect(async () => {
+		await accountsPage.accountsTable.search(account1.name);
 
-	await expect(accountsPage.accountsTable.cell(account1.name)).toHaveCount(0);
-	await expect(accountsPage.accountsTable.cell(account2.name)).toHaveCount(0);
-
-	await accountsPage.accountsTable.search(account1.name);
-
-	await expect(accountsPage.accountsTable.cell(account1.name)).toBeVisible();
-	await expect(accountsPage.accountsTable.cell(account2.name)).toHaveCount(0);
+		await expect(
+			accountsPage.accountsTable.cell(account1.name)
+		).toBeVisible({timeout: 500});
+		await expect(
+			accountsPage.accountsTable.cell(account2.name)
+		).toHaveCount(0);
+	}).toPass();
 });
 
 test('LPD-47225 Can edit account custom fields', async ({
@@ -1629,3 +1639,71 @@ test('LPD-47589 Check delete and deactivate permissions work independently', asy
 
 	await expect(accountsPage.accountsTable.cell(account.name)).toHaveCount(0);
 });
+
+test(
+	'Phone number and phone extension should display as phone number and phone extension',
+	{tag: ['@LPD-61973']},
+	async ({
+		accountsPage,
+		apiHelpers,
+		editAccountContactInformationPage,
+		editAccountContactPage,
+		editAccountPage,
+		editAccountPhonePage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: 'test',
+			type: 'business',
+		});
+
+		await accountsPage.goto();
+
+		await (await accountsPage.accountsTable.cellLink(account.name)).click();
+		await editAccountPage.contactLink.click();
+		await editAccountContactPage.contactInformationLink.click();
+		await editAccountContactInformationPage.addPhoneNumbersButton.click();
+
+		await expect(editAccountPhonePage.extensionLabel).toBeVisible();
+
+		await expect(editAccountPhonePage.numberLabel).toBeVisible();
+
+		await editAccountPhonePage.updatePhoneNumber('111-111-1111');
+
+		await expect(
+			page.getByText('Success:Your request completed successfully.')
+		).toBeVisible();
+
+		await expect(
+			editAccountContactInformationPage.phoneExtensionHeader
+		).toBeVisible();
+		await expect(
+			editAccountContactInformationPage.phoneNumberHeader
+		).toBeVisible();
+	}
+);
+
+test(
+	'Escape account name to avoid XSS injections',
+	{tag: '@LPD-65007'},
+	async ({accountsPage, apiHelpers, page}) => {
+		const name = '<img src=x onerror=alert(origin)>';
+
+		await apiHelpers.headlessAdminUser.postAccount({
+			name,
+			type: 'business',
+		});
+
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS detected');
+			}
+		});
+
+		await accountsPage.goto();
+
+		await expect(
+			await accountsPage.accountsTable.cellLink(name)
+		).toBeVisible();
+	}
+);

@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Product Navigation Personal Menu API
 Bundle-SymbolicName: com.liferay.product.navigation.personal.menu.api
-Bundle-Version: 6.0.2
+Bundle-Version: 6.0.3
 Export-Package:\
 	com.liferay.product.navigation.personal.menu,\
 	com.liferay.product.navigation.personal.menu.configuration,\

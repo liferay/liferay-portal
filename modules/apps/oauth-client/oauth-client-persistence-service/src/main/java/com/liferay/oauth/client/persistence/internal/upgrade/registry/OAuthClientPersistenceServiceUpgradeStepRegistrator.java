@@ -8,9 +8,7 @@ package com.liferay.oauth.client.persistence.internal.upgrade.registry;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Arthur Chan
@@ -30,11 +28,13 @@ public class OAuthClientPersistenceServiceUpgradeStepRegistrator
 			"1.1.0", "1.2.0",
 			UpgradeProcessFactory.addColumns(
 				"OAuthClientEntry", "metadataCacheTime LONG"),
-			new com.liferay.oauth.client.persistence.internal.upgrade.v1_2_0.
-				OAuthClientEntryUpgradeProcess(_configurationAdmin));
-	}
+			UpgradeProcessFactory.runSQL(
+				"update OAuthClientEntry set metadataCacheTime = 360000"));
 
-	@Reference
-	private ConfigurationAdmin _configurationAdmin;
+		registry.register(
+			"1.2.0", "1.3.0",
+			UpgradeProcessFactory.addColumns(
+				"OAuthClientEntry", "customClaimsJSON TEXT null"));
+	}
 
 }

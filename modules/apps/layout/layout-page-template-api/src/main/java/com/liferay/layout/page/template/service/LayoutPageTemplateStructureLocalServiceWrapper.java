@@ -458,21 +458,22 @@ public class LayoutPageTemplateStructureLocalServiceWrapper
 
 	@Override
 	public LayoutPageTemplateStructure updateLayoutPageTemplateStructureData(
-			long groupId, long plid, long segmentsExperienceId, String data)
+			long userId, long groupId, long plid, long segmentsExperienceId,
+			String data)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				groupId, plid, segmentsExperienceId, data);
+				userId, groupId, plid, segmentsExperienceId, data);
 	}
 
 	@Override
 	public LayoutPageTemplateStructure updateLayoutPageTemplateStructureData(
-			long groupId, long plid, String data)
+			long userId, long groupId, long plid, String data)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _layoutPageTemplateStructureLocalService.
-			updateLayoutPageTemplateStructureData(groupId, plid, data);
+			updateLayoutPageTemplateStructureData(userId, groupId, plid, data);
 	}
 
 	@Override

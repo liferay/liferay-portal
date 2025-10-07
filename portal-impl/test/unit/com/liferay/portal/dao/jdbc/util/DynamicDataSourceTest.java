@@ -8,6 +8,7 @@ package com.liferay.portal.dao.jdbc.util;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.DataSourceFactoryImpl;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactory;
 import com.liferay.portal.kernel.servlet.PortalSessionContext;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.spring.hibernate.DialectDetector;
 import com.liferay.portal.spring.hibernate.SpringHibernateThreadLocalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -27,7 +29,6 @@ import com.liferay.portal.util.FileImpl;
 import java.io.File;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.sql.DataSource;
 
@@ -37,6 +38,9 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import org.springframework.mock.web.MockHttpSession;
 
@@ -66,6 +70,18 @@ public class DynamicDataSourceTest {
 			SpringHibernateThreadLocalUtil.class,
 			"_currentTransactionReadOnly");
 
+		_dbManagerUtilMockedStatic.when(
+			() -> DBManagerUtil.getDBType(Mockito.any())
+		).thenReturn(
+			null
+		);
+
+		_dialectDetectorMockedStatic.when(
+			() -> DialectDetector.getDialect(Mockito.any())
+		).thenReturn(
+			null
+		);
+
 		_tempDir = FileUtil.createTempFolder();
 
 		DataSourceFactory dataSourceFactory = new DataSourceFactoryImpl();
@@ -89,6 +105,9 @@ public class DynamicDataSourceTest {
 	@After
 	public void tearDown() {
 		_currentTransactionReadOnly.remove();
+
+		_dbManagerUtilMockedStatic.close();
+		_dialectDetectorMockedStatic.close();
 
 		FileUtil.deltree(_tempDir);
 
@@ -198,9 +217,9 @@ public class DynamicDataSourceTest {
 			_currentTransactionReadOnly.remove();
 		}
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.dao.jdbc.util.DynamicDataSource",
-				Level.FINEST)) {
+				LoggerTestUtil.TRACE)) {
 
 			Assert.assertSame(
 				expectedDataSource,
@@ -228,6 +247,10 @@ public class DynamicDataSourceTest {
 	}
 
 	private ThreadLocal<Boolean> _currentTransactionReadOnly;
+	private final MockedStatic<DBManagerUtil> _dbManagerUtilMockedStatic =
+		Mockito.mockStatic(DBManagerUtil.class);
+	private final MockedStatic<DialectDetector> _dialectDetectorMockedStatic =
+		Mockito.mockStatic(DialectDetector.class);
 	private DynamicDataSource _dynamicDataSource;
 	private File _tempDir;
 	private ThreadLocal<Boolean> _writeDynamicDataSource;

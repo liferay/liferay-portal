@@ -8,10 +8,8 @@ package com.liferay.portal.search.elasticsearch7.internal.search.engine.adapter.
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.elasticsearch7.internal.connection.ElasticsearchFixture;
-import com.liferay.portal.search.elasticsearch7.internal.document.DefaultElasticsearchDocumentFactory;
 import com.liferay.portal.search.elasticsearch7.internal.document.ElasticsearchDocumentFactory;
 import com.liferay.portal.search.engine.adapter.document.DeleteDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.IndexDocumentRequest;
@@ -59,18 +57,8 @@ public class ElasticsearchBulkableDocumentRequestTranslatorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ElasticsearchDocumentFactory elasticsearchDocumentFactory =
-			_createElasticsearchDocumentFactory();
-
-		ElasticsearchBulkableDocumentRequestTranslator
-			elasticsearchBulkableDocumentRequestTranslator =
-				_createElasticsearchBulkableDocumentRequestTranslator(
-					elasticsearchDocumentFactory);
-
 		_elasticsearchBulkableDocumentRequestTranslator =
-			elasticsearchBulkableDocumentRequestTranslator;
-
-		_elasticsearchDocumentFactory = elasticsearchDocumentFactory;
+			new ElasticsearchBulkableDocumentRequestTranslatorImpl();
 
 		_documentFixture.setUp();
 	}
@@ -154,25 +142,6 @@ public class ElasticsearchBulkableDocumentRequestTranslatorTest {
 
 		_testUpdateDocumentRequestTranslation(
 			null, true, WriteRequest.RefreshPolicy.IMMEDIATE);
-	}
-
-	private ElasticsearchBulkableDocumentRequestTranslator
-		_createElasticsearchBulkableDocumentRequestTranslator(
-			ElasticsearchDocumentFactory elasticsearchDocumentFactory) {
-
-		ElasticsearchBulkableDocumentRequestTranslator
-			elasticsearchBulkableDocumentRequestTranslator =
-				new ElasticsearchBulkableDocumentRequestTranslatorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			elasticsearchBulkableDocumentRequestTranslator,
-			"_elasticsearchDocumentFactory", elasticsearchDocumentFactory);
-
-		return elasticsearchBulkableDocumentRequestTranslator;
-	}
-
-	private ElasticsearchDocumentFactory _createElasticsearchDocumentFactory() {
-		return new DefaultElasticsearchDocumentFactory();
 	}
 
 	private void _setUid(Document document, String uid) {
@@ -303,6 +272,7 @@ public class ElasticsearchBulkableDocumentRequestTranslatorTest {
 	private final DocumentFixture _documentFixture = new DocumentFixture();
 	private ElasticsearchBulkableDocumentRequestTranslator
 		_elasticsearchBulkableDocumentRequestTranslator;
-	private ElasticsearchDocumentFactory _elasticsearchDocumentFactory;
+	private final ElasticsearchDocumentFactory _elasticsearchDocumentFactory =
+		new ElasticsearchDocumentFactory();
 
 }

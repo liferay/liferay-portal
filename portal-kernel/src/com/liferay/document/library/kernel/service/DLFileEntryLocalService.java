@@ -204,6 +204,10 @@ public interface DLFileEntryLocalService
 			long groupId, long folderId, boolean includeTrashedEntries)
 		throws PortalException;
 
+	public void deleteFileEntries(
+			long companyId, long classNameId, long classPK)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.DELETE)
 	@SystemEvent(
 		action = SystemEventConstants.ACTION_SKIP,

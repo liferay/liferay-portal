@@ -448,6 +448,20 @@ public interface KaleoDefinitionModel
 	 */
 	public void setActive(boolean active);
 
+	/**
+	 * Returns the status of this kaleo definition.
+	 *
+	 * @return the status of this kaleo definition
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this kaleo definition.
+	 *
+	 * @param status the status of this kaleo definition
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 

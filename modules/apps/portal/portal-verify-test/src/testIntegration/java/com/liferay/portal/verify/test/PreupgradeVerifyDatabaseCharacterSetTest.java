@@ -6,6 +6,7 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -14,20 +15,27 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.jdbc.DataSourceFactoryUtil;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ServiceComponent;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.verify.PreupgradeVerifyDatabaseCharacterSet;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.sql.Connection;
+
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -55,9 +63,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		_connection = DataAccess.getConnection();
-
 		_db = DBManagerUtil.getDB();
-
 		_dataSource = InfrastructureUtil.getDataSource();
 
 		if ((_db.getDBType() == DBType.MARIADB) ||
@@ -76,6 +82,8 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			return;
 		}
 
+		_safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+			PortalInstancePool.getDefaultCompanyId());
 		_unsupportedCharacterSetDataSource =
 			DataSourceFactoryUtil.initDataSource(
 				PropsValues.JDBC_DEFAULT_DRIVER_CLASS_NAME, _getSchemaURL(),
@@ -86,6 +94,10 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		DataAccess.cleanUp(_connection);
+
+		if (_safeCloseable != null) {
+			_safeCloseable.close();
+		}
 
 		if (_unsupportedCharacterSetDataSource != null) {
 			DataSourceFactoryUtil.destroyDataSource(
@@ -105,7 +117,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 			_serviceComponentLocalService.createServiceComponent(
 				RandomTestUtil.nextLong());
 
-		DBInspector dbInspector = new DBInspector(DataAccess.getConnection());
+		DBInspector dbInspector = new DBInspector(_connection);
 
 		String tableName = dbInspector.normalizeName("TestTable");
 
@@ -121,13 +133,23 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 				"create table ", tableName,
 				" (testColumn VARCHAR(75) primary key) collate utf8_bin"));
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				PreupgradeVerifyDatabaseCharacterSet.class.getName(),
+				LoggerTestUtil.WARN)) {
+
 			testVerify();
 
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			_verifyException(exception, "Mixed character set and collation:");
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					"Mixed character set and collation: " + tableName));
 		}
 		finally {
 			_serviceComponentLocalService.deleteServiceComponent(
@@ -180,6 +202,7 @@ public class PreupgradeVerifyDatabaseCharacterSetTest
 	private static Connection _connection;
 	private static DataSource _dataSource;
 	private static DB _db;
+	private static SafeCloseable _safeCloseable;
 
 	@Inject
 	private static ServiceComponentLocalService _serviceComponentLocalService;

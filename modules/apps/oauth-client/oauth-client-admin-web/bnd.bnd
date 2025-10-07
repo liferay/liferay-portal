@@ -1,5 +1,5 @@
 Bundle-Name: Liferay OAuth Client Admin Web
 Bundle-SymbolicName: com.liferay.oauth.client.admin.web
-Bundle-Version: 1.0.24
+Bundle-Version: 1.0.25
 Web-ContextPath: /oauth-client-admin-web
 -dsannotations-options: inherit

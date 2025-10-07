@@ -16,7 +16,9 @@ export class ViewObjectActionsPage {
 
 	constructor(page: Page) {
 		this.actionsTabItem = page.getByRole('link', {name: 'Actions'});
-		this.addObjectActionButton = page.getByLabel('Add Object Action');
+		this.addObjectActionButton = page
+			.getByLabel('Add Object Action')
+			.first();
 		this.frontendDataSetItems = page.locator('div.table-list-title a');
 		this.lastExecutionCell = page.locator('.cell-status');
 		this.viewObjectDefinitionsPage = new ViewObjectDefinitionsPage(page);

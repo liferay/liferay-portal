@@ -563,11 +563,9 @@
 		"type": "Root"
 	},
 	"settings": {
-		"colorSchemeName": "01",
 		"masterPage": {
 			"key": "home"
-		},
-		"themeName": "Dialect"
+		}
 	},
 	"version": 1.1
 }

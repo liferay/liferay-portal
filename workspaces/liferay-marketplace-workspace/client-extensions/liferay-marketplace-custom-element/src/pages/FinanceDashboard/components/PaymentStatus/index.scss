@@ -1,0 +1,8 @@
+.payment-status-icon {
+	height: 0.5rem;
+	width: 0.5rem;
+
+	&.text-warning {
+		color: #b95000 !important;
+	}
+}

@@ -868,6 +868,26 @@ public class ArrayUtil {
 		return set.toArray(new String[0]);
 	}
 
+	public static boolean equalsIgnoreCase(String[] array1, String[] array2) {
+		if (array1 == array2) {
+			return true;
+		}
+
+		if (isEmpty(array1) || isEmpty(array2) ||
+			(array1.length != array2.length)) {
+
+			return false;
+		}
+
+		for (int i = 0; i < array1.length; i++) {
+			if (!StringUtil.equalsIgnoreCase(array1[i], array2[i])) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public static <T> boolean exists(T[] array, Predicate<T> predicate) {
 		if (isEmpty(array)) {
 			return false;

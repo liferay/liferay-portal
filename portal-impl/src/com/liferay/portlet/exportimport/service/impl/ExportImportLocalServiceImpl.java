@@ -17,6 +17,7 @@ import com.liferay.exportimport.kernel.lar.MissingReferences;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -183,7 +185,9 @@ public class ExportImportLocalServiceImpl
 			ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException {
 
-		try {
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
 			ImportController layoutImportController =
 				ExportImportControllerRegistryUtil.getImportController(
 					Layout.class.getName());
@@ -450,7 +454,9 @@ public class ExportImportLocalServiceImpl
 			ExportImportConfiguration exportImportConfiguration, File file)
 		throws PortalException {
 
-		try {
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
 			ImportController portletImportController =
 				ExportImportControllerRegistryUtil.getImportController(
 					Portlet.class.getName());

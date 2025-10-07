@@ -17,6 +17,8 @@ import com.liferay.headless.form.resource.v1_0.FormStructureResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -419,6 +421,9 @@ public class Query {
 		formResource.setContextUriInfo(_uriInfo);
 		formResource.setContextUser(_user);
 		formResource.setGroupLocalService(_groupLocalService);
+		formResource.setResourceActionLocalService(_resourceActionLocalService);
+		formResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		formResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -434,6 +439,10 @@ public class Query {
 		formDocumentResource.setContextUriInfo(_uriInfo);
 		formDocumentResource.setContextUser(_user);
 		formDocumentResource.setGroupLocalService(_groupLocalService);
+		formDocumentResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		formDocumentResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		formDocumentResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -447,6 +456,10 @@ public class Query {
 		formRecordResource.setContextUriInfo(_uriInfo);
 		formRecordResource.setContextUser(_user);
 		formRecordResource.setGroupLocalService(_groupLocalService);
+		formRecordResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		formRecordResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		formRecordResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -462,6 +475,10 @@ public class Query {
 		formStructureResource.setContextUriInfo(_uriInfo);
 		formStructureResource.setContextUser(_user);
 		formStructureResource.setGroupLocalService(_groupLocalService);
+		formStructureResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		formStructureResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		formStructureResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -482,6 +499,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

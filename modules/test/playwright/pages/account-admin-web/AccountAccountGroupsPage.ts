@@ -10,6 +10,7 @@ export class AccountAccountGroupsPage {
 	readonly page: Page;
 	readonly searchButton: Locator;
 	readonly searchInput: Locator;
+	readonly statusColumn: Locator;
 
 	constructor(page: Page) {
 		this.accountGroupName = async (accountGroupName: string) => {
@@ -18,5 +19,6 @@ export class AccountAccountGroupsPage {
 		this.page = page;
 		this.searchButton = this.page.getByLabel('Search for', {exact: true});
 		this.searchInput = this.page.getByPlaceholder('Search for');
+		this.statusColumn = this.page.getByText('Status');
 	}
 }

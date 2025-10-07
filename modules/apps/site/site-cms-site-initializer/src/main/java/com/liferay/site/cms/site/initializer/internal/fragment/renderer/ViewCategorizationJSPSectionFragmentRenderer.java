@@ -55,7 +55,7 @@ public class ViewCategorizationJSPSectionFragmentRenderer
 			String redirectURL = PortalUtil.getLayoutFullURL(
 				_layoutLocalService.getLayoutByFriendlyURL(
 					themeDisplay.getScopeGroupId(), false,
-					"/categorization/view_vocabularies"),
+					"/categorization/view-vocabularies"),
 				themeDisplay);
 
 			httpServletResponse.sendRedirect(redirectURL);

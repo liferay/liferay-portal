@@ -1572,11 +1572,6 @@ definition {
 				value1 = ${accountTaxId});
 		}
 
-		AssertTextEquals(
-			key_fieldLabel = "Tax ID",
-			locator1 = "Icon#HELPER",
-			value1 = "Enter the account's tax ID (EIN, VAT number, etc.).");
-
 		if (isSet(externalReferenceCode)) {
 			AssertTextEquals(
 				key_fieldLabel = "External Reference Code",

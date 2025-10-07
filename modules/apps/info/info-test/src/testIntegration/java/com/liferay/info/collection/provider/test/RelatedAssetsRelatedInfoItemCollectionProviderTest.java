@@ -51,6 +51,7 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.layout.util.structure.CollectionStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -207,10 +208,7 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 					_journalArticle.getResourcePrimKey(), _journalArticle),
 				layout, segmentsExperienceId);
 
-			Assert.assertTrue(
-				html,
-				StringUtil.contains(
-					html, journalArticle.getTitle(), StringPool.BLANK));
+			Assert.assertTrue(html, html.contains(journalArticle.getTitle()));
 		}
 		finally {
 			_journalArticleLocalService.deleteArticle(journalArticle);
@@ -245,10 +243,7 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 				assetCategory),
 			2, layout, segmentsExperienceId);
 
-		Assert.assertTrue(
-			html,
-			StringUtil.contains(
-				html, assetCategory.getName(), StringPool.BLANK));
+		Assert.assertTrue(html, html.contains(assetCategory.getName()));
 	}
 
 	@Test
@@ -572,8 +567,9 @@ public class RelatedAssetsRelatedInfoItemCollectionProviderTest {
 				null, TestPropsValues.getUserId(), draftLayout.getGroupId(), 0,
 				0, segmentsExperienceId, draftLayout.getPlid(),
 				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				fragmentRenderer.getConfiguration(
-					defaultFragmentRendererContext),
+				JSONFactoryUtil.toString(
+					fragmentRenderer.getConfigurationJSONObject(
+						defaultFragmentRendererContext)),
 				"{}", StringPool.BLANK, 0, fragmentRenderer.getKey(),
 				fragmentRenderer.getType(), _serviceContext));
 

@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Media Implementation
 Bundle-SymbolicName: com.liferay.commerce.media.impl
-Bundle-Version: 4.0.32
+Bundle-Version: 4.0.33
 Web-ContextPath: /commerce-media-impl

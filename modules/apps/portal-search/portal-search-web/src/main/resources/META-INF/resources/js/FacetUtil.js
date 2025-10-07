@@ -292,11 +292,15 @@ export const FacetUtil = {
 	},
 
 	selectTerms(form, selections) {
-		let search = document.location.search;
+		const url = new URL(window.location.href);
 
-		search = this.queryParameterAndUpdateValue(form, search, selections);
+		url.search = this.queryParameterAndUpdateValue(
+			form,
+			window.location.search,
+			selections
+		);
 
-		document.location.search = search;
+		Liferay.Util.navigate(url.toString());
 	},
 
 	setURLParameter(url, name, value) {
@@ -393,7 +397,9 @@ export default function ({namespace: portletNamespace}) {
 
 	if (portletNamespace) {
 		FacetUtil.enableInputs(
-			document.querySelectorAll(`#${portletNamespace}fm .facet-term`)
+			document.querySelectorAll(
+				`[id^="${portletNamespace}fm"] .facet-term`
+			)
 		);
 	}
 }

@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {createCategories} from '../../../helpers/CreateCategories';
@@ -16,6 +17,9 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 export const test = mergeTests(
 	apiHelpersTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-35914': {enabled: true},
+	}),
 	loginTest(),
 	usersAndOrganizationsPagesTest
 );
@@ -232,5 +236,46 @@ test(
 		await test.step('Delete organization created via UI', async () => {
 			await deleteOrganization();
 		});
+	}
+);
+
+test(
+	'Can view status when assigning an organization role',
+	{tag: ['@@LPD-59032']},
+	async ({apiHelpers, usersAndOrganizationsPage}) => {
+		const organization =
+			await apiHelpers.headlessAdminUser.postOrganization();
+
+		await usersAndOrganizationsPage.goToOrganizations();
+		await (
+			await usersAndOrganizationsPage.organizationsTable.rowActions(
+				organization.name
+			)
+		).click();
+		await usersAndOrganizationsPage.assignOrganizationRolesMenuItem.click();
+
+		await expect(
+			await usersAndOrganizationsPage.assignOrganizationRolesTableStatus(
+				'Account Manager',
+				'Approved'
+			)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Country and region should not be required for a default organization.',
+	{tag: '@LPD-63206'},
+	async ({editOrganizationPage, usersAndOrganizationsPage}) => {
+		await usersAndOrganizationsPage.goToOrganizations();
+
+		await usersAndOrganizationsPage.addOrganizationButton.click();
+
+		await expect(editOrganizationPage.countrySelect).not.toHaveAttribute(
+			'required'
+		);
+		await expect(editOrganizationPage.regionSelect).not.toHaveAttribute(
+			'required'
+		);
 	}
 );

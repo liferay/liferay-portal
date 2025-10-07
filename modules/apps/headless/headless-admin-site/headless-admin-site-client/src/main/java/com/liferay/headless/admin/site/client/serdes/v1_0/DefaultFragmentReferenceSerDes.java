@@ -63,6 +63,20 @@ public class DefaultFragmentReferenceSerDes {
 			sb.append("\"");
 		}
 
+		if (defaultFragmentReference.getFragmentReferenceType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"fragmentReferenceType\": ");
+
+			sb.append("\"");
+
+			sb.append(defaultFragmentReference.getFragmentReferenceType());
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -94,6 +108,16 @@ public class DefaultFragmentReferenceSerDes {
 					defaultFragmentReference.getDefaultFragmentKey()));
 		}
 
+		if (defaultFragmentReference.getFragmentReferenceType() == null) {
+			map.put("fragmentReferenceType", null);
+		}
+		else {
+			map.put(
+				"fragmentReferenceType",
+				String.valueOf(
+					defaultFragmentReference.getFragmentReferenceType()));
+		}
+
 		return map;
 	}
 
@@ -115,6 +139,11 @@ public class DefaultFragmentReferenceSerDes {
 			if (Objects.equals(jsonParserFieldName, "defaultFragmentKey")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "fragmentReferenceType")) {
+
+				return false;
+			}
 
 			return false;
 		}
@@ -128,6 +157,15 @@ public class DefaultFragmentReferenceSerDes {
 				if (jsonParserFieldValue != null) {
 					defaultFragmentReference.setDefaultFragmentKey(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "fragmentReferenceType")) {
+
+				if (jsonParserFieldValue != null) {
+					defaultFragmentReference.setFragmentReferenceType(
+						DefaultFragmentReference.FragmentReferenceType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}

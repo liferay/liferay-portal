@@ -408,8 +408,7 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			groupId, name, start, end, false, orderByComparator);
 	}
 
-	@Override
-	public AssetVocabulary getOrAddIncompleteVocabulary(
+	public AssetVocabulary getOrAddEmptyVocabulary(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
@@ -424,7 +423,7 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		AssetCategoriesPermission.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_VOCABULARY);
 
-		return assetVocabularyLocalService.getOrAddIncompleteVocabulary(
+		return assetVocabularyLocalService.getOrAddEmptyVocabulary(
 			externalReferenceCode, getUserId(), groupId);
 	}
 

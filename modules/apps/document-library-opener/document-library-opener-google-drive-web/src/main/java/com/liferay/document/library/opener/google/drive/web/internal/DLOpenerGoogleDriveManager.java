@@ -24,11 +24,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskContextMapConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -283,7 +283,7 @@ public class DLOpenerGoogleDriveManager {
 			).build();
 
 		return _backgroundTaskManager.addBackgroundTask(
-			userId, CompanyConstants.SYSTEM,
+			userId, BackgroundTaskConstants.GROUP_ID_DEFAULT,
 			StringBundler.concat(
 				DLOpenerGoogleDriveManager.class.getSimpleName(),
 				StringPool.POUND, fileEntry.getFileEntryId()),

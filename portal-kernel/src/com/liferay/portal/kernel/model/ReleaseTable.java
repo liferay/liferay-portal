@@ -39,6 +39,8 @@ public class ReleaseTable extends BaseTable<ReleaseTable> {
 		"buildNumber", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 	public final Column<ReleaseTable, Date> buildDate = createColumn(
 		"buildDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<ReleaseTable, String> versionDisplayName = createColumn(
+		"versionDisplayName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ReleaseTable, Boolean> verified = createColumn(
 		"verified", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<ReleaseTable, Integer> state = createColumn(

@@ -271,7 +271,9 @@ public class ViewSharedAssetsDisplayContext {
 			return StringPool.BLANK;
 		}
 
-		return HtmlUtil.escape(sharingEntryInterpreter.getTitle(sharingEntry));
+		return HtmlUtil.escape(
+			sharingEntryInterpreter.getTitle(
+				sharingEntry, _themeDisplay.getLocale()));
 	}
 
 	public String getSortingOrder() {

@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../utils/waitForAlert';
 
 export class WidgetPagePage {
@@ -12,6 +13,7 @@ export class WidgetPagePage {
 
 	readonly addButton: Locator;
 	readonly contentTab: Locator;
+	readonly searchForm: Locator;
 	readonly toggleControlsButton: Locator;
 	readonly widgetsTab: Locator;
 
@@ -27,6 +29,7 @@ export class WidgetPagePage {
 		this.contentTab = page.getByText('Content', {
 			exact: true,
 		});
+		this.searchForm = this.page.getByRole('textbox', {name: 'Search Form'});
 		this.toggleControlsButton = page
 			.locator('.control-menu-nav-item')
 			.getByRole('button', {
@@ -58,11 +61,12 @@ export class WidgetPagePage {
 	async addPortlet(portletName: string, category: string = undefined) {
 		await this.openAddPanel();
 
-		await this.widgetsTab.click();
+		await clickAndExpectToBeVisible({
+			target: this.page.getByLabel('Widgets', {exact: true}),
+			trigger: this.widgetsTab,
+		});
 
-		await this.page
-			.getByRole('textbox', {name: 'Search Form'})
-			.fill(portletName);
+		await this.searchForm.fill(portletName);
 
 		let item: Locator;
 
@@ -78,24 +82,34 @@ export class WidgetPagePage {
 
 			item = categoryPanel
 				.locator('.panel-body')
-				.filter({hasText: portletName})
-				.getByRole('button', {name: 'Add Content'});
+				.locator('.sidebar-body__add-panel__tab-item', {
+					hasText: portletName,
+				})
+				.first();
 		}
 		else {
 			item = this.page
-				.locator('.sidebar-body__add-panel__tab-item')
-				.filter({hasText: portletName})
-				.getByRole('button', {name: 'Add Content'})
+				.locator('.sidebar-body__add-panel__tab-item', {
+					hasText: portletName,
+				})
 				.first();
 		}
 
 		await expect(async () => {
-			await item.click({timeout: 1000});
+			if ((await item.getAttribute('class')).includes('disabled')) {
+				return;
+			}
+
+			const addButton = item
+				.getByRole('button', {name: 'Add Content'})
+				.first();
+
+			await addButton.click({timeout: 1000});
 
 			await waitForAlert(
 				this.page,
 				'Success:The application was added to the page.',
-				{timeout: 1000}
+				{timeout: 3000}
 			);
 		}).toPass();
 	}
@@ -171,7 +185,11 @@ export class WidgetPagePage {
 		);
 
 		if (!isOpen) {
-			await this.addButton.click();
+			await clickAndExpectToBeVisible({
+				target: this.searchForm,
+				timeout: 2000,
+				trigger: this.addButton,
+			});
 		}
 	}
 
@@ -193,7 +211,7 @@ export class WidgetPagePage {
 
 		await this.page
 			.locator('.modal-header')
-			.getByLabel('close', {exact: true})
+			.getByLabel('Close', {exact: true})
 			.click();
 	}
 

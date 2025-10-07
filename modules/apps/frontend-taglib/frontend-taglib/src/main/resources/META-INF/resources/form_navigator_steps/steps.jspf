@@ -6,7 +6,7 @@
 --%>
 
 <liferay-util:html-top>
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/form_navigator.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="frontend-taglib/css/form_navigator.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div class="taglib-form-navigator" id="<portlet:namespace />tabsBoundingBox">

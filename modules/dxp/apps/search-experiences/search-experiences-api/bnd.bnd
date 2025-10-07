@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Search Experiences API
 Bundle-SymbolicName: com.liferay.search.experiences.api
-Bundle-Version: 31.0.1
+Bundle-Version: 31.1.1
 Export-Package:\
 	com.liferay.search.experiences.blueprint.exception,\
 	com.liferay.search.experiences.blueprint.parameter,\

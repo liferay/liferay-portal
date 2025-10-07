@@ -6,9 +6,9 @@
 package com.liferay.portal.deploy.hot;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

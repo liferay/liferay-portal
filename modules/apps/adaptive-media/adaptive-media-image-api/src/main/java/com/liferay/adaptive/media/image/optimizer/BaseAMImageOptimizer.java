@@ -203,7 +203,7 @@ public abstract class BaseAMImageOptimizer implements AMImageOptimizer {
 		Message message = new Message();
 
 		message.put(
-			BackgroundTaskConstants.BACKGROUND_TASK_ID,
+			BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID,
 			BackgroundTaskThreadLocal.getBackgroundTaskId());
 
 		Class<?> clazz = getClass();

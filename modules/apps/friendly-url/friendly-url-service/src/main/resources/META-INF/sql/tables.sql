@@ -20,10 +20,10 @@ create table FriendlyURLEntryLocalization (
 	companyId LONG,
 	friendlyURLEntryId LONG,
 	languageId VARCHAR(75) null,
-	urlTitle VARCHAR(255) null,
 	groupId LONG,
 	classNameId LONG,
 	classPK LONG,
+	urlTitle VARCHAR(255) null,
 	primary key (friendlyURLEntryLocalizationId, ctCollectionId)
 );
 

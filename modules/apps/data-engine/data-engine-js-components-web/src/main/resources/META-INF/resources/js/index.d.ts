@@ -67,6 +67,8 @@ export const FormReport: React.FC<{
 
 export const FormView: React.FC<{
 	children?: React.ReactNode;
+	portletNamespace?: string;
+	title?: string;
 }>;
 
 export const PartialResults: React.FC<{

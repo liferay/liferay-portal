@@ -1,0 +1,12 @@
+{
+	"deletionType": "disassociate",
+	"label": {
+		"en_US": "ProjectToJiraProjects"
+	},
+	"name": "projectToJiraProjects",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:Project$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:JiraProject$]",
+	"objectDefinitionName2": "JiraProject",
+	"system": false,
+	"type": "oneToMany"
+}

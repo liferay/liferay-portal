@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -25,15 +26,16 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.workflow.metrics.rest.client.dto.v1_0.Node;
 import com.liferay.portal.workflow.metrics.rest.client.http.HttpInvoker;
@@ -59,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -206,6 +209,64 @@ public abstract class BaseNodeResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteProcessNode() throws Exception {
+
+		// No namespace
+
+		Node node1 = testGraphQLDeleteProcessNode_addNode();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteProcessNode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"processId",
+									testGraphQLDeleteProcessNode_getProcessId(
+										node1));
+								put("nodeId", node1.getId());
+							}
+						})),
+				"JSONObject/data", "Object/deleteProcessNode"));
+
+		// Using the namespace portalWorkflowMetrics_v1_0
+
+		Node node2 = testGraphQLDeleteProcessNode_addNode();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"portalWorkflowMetrics_v1_0",
+						new GraphQLField(
+							"deleteProcessNode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"processId",
+										testGraphQLDeleteProcessNode_getProcessId(
+											node2));
+									put("nodeId", node2.getId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/portalWorkflowMetrics_v1_0",
+				"Object/deleteProcessNode"));
+	}
+
+	protected Long testGraphQLDeleteProcessNode_getProcessId(Node node)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Node testGraphQLDeleteProcessNode_addNode() throws Exception {
+		return testGraphQLNode_addNode();
+	}
+
+	@Test
 	public void testGetProcessNodesPage() throws Exception {
 		Long processId = testGetProcessNodesPage_getProcessId();
 		Long irrelevantProcessId =
@@ -280,6 +341,69 @@ public abstract class BaseNodeResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetProcessNodesPage() throws Exception {
+		Long processId = testGetProcessNodesPage_getProcessId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"processNodes",
+			new HashMap<String, Object>() {
+				{
+					put("processId", processId);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject processNodesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/processNodes");
+
+		long totalCount = processNodesJSONObject.getLong("totalCount");
+
+		Node node1 = testGraphQLProcessNode_addNode(processId, randomNode());
+
+		Node node2 = testGraphQLProcessNode_addNode(processId, randomNode());
+
+		processNodesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/processNodes");
+
+		Assert.assertEquals(
+			totalCount + 2, processNodesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			node1,
+			Arrays.asList(
+				NodeSerDes.toDTOs(processNodesJSONObject.getString("items"))));
+		assertContains(
+			node2,
+			Arrays.asList(
+				NodeSerDes.toDTOs(processNodesJSONObject.getString("items"))));
+
+		// Using the namespace portalWorkflowMetrics_v1_0
+
+		processNodesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("portalWorkflowMetrics_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/portalWorkflowMetrics_v1_0",
+			"JSONObject/processNodes");
+
+		Assert.assertEquals(
+			totalCount + 2, processNodesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			node1,
+			Arrays.asList(
+				NodeSerDes.toDTOs(processNodesJSONObject.getString("items"))));
+		assertContains(
+			node2,
+			Arrays.asList(
+				NodeSerDes.toDTOs(processNodesJSONObject.getString("items"))));
+	}
+
+	@Test
 	public void testPostProcessNode() throws Exception {
 		Node randomNode = randomNode();
 
@@ -295,8 +419,147 @@ public abstract class BaseNodeResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostProcessNode() throws Exception {
+		Node randomNode = randomNode();
+
+		Node node = testGraphQLProcessNode_addNode(
+			testGraphQLPostProcessNode_getProcessId(randomNode), randomNode);
+
+		Assert.assertTrue(equals(randomNode, node));
+	}
+
+	protected Long testGraphQLPostProcessNode_getProcessId(Node node)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Assert.assertTrue(true);
+	}
+
+	protected Node testGraphQLNode_addNode() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Node testGraphQLProcessNode_addNode() throws Exception {
+		return testGraphQLProcessNode_addNode(
+			testGraphQLProcessNode_getProcessId(), randomNode());
+	}
+
+	protected Long testGraphQLProcessNode_getProcessId() throws Exception {
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Node testGraphQLProcessNode_addNode(Long processId, Node node)
+		throws Exception {
+
+		JSONDeserializer<Node> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field : getDeclaredFields(Node.class)) {
+			if (getGraphQLValue(field.get(node)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(node)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createProcessNode",
+						new HashMap<String, Object>() {
+							{
+								put("processId", processId);
+								put("node", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createProcessNode"),
+			Node.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(Node node, List<Node> nodes) {
@@ -487,6 +750,8 @@ public abstract class BaseNodeResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

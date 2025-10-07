@@ -76,9 +76,14 @@ public class PortalPreferencesImpl
 
 	@Override
 	public PortalPreferencesImpl clone() {
+		Map<PortalPreferenceKey, String[]> preferences = _originalPreferences;
+
+		if (_modifiedPreferences != null) {
+			preferences = new HashMap<>(_modifiedPreferences);
+		}
+
 		return new PortalPreferencesImpl(
-			getOwnerId(), getOwnerType(), new HashMap<>(getPreferences()),
-			isSignedIn());
+			getOwnerId(), getOwnerType(), preferences, isSignedIn());
 	}
 
 	@Override

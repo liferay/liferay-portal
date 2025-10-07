@@ -73,7 +73,7 @@ public class RoleServiceTest extends BasePermissionTestCase {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteRole() throws Exception {
+	public void testGetOrAddEmptyRole() throws Exception {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
@@ -94,7 +94,7 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
-				Role role2 = _roleService.getOrAddIncompleteRole(
+				Role role2 = _roleService.getOrAddEmptyRole(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), 0,
 					RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
@@ -109,7 +109,7 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 					user, PermissionCheckerFactoryUtil.create(user))) {
 
-				_roleService.getOrAddIncompleteRole(
+				_roleService.getOrAddEmptyRole(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), 0,
 					RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);

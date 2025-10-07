@@ -89,13 +89,13 @@ export class ERCScopedTestEntityAPI {
 
 		/**
 		 * 
-				 * @param ercScopedTestEntityExternalReferenceCode
 				 * @param siteExternalReferenceCode
+				 * @param ercScopedTestEntityExternalReferenceCode
 		 * @param headers Optional custom request headers
 		 */
 		public async deleteSiteERCScopedTestEntity(
-						ercScopedTestEntityExternalReferenceCode: string,
 						siteExternalReferenceCode: string,
+						ercScopedTestEntityExternalReferenceCode: string,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body?: any;
@@ -103,18 +103,18 @@ export class ERCScopedTestEntityAPI {
 		}> {
 
 			const path = this._basePath + "/test/v1.0/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}"
-						.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
-										.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+						.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+										.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
 				;
 
 			const queryParameters: any = {};
 
-						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
-							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling deleteSiteERCScopedTestEntity.");
-						}
-
 						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
 							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling deleteSiteERCScopedTestEntity.");
+						}
+
+						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling deleteSiteERCScopedTestEntity.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -315,13 +315,13 @@ export class ERCScopedTestEntityAPI {
 
 		/**
 		 * 
-				 * @param ercScopedTestEntityExternalReferenceCode
 				 * @param siteExternalReferenceCode
+				 * @param ercScopedTestEntityExternalReferenceCode
 		 * @param headers Optional custom request headers
 		 */
 		public async getSiteERCScopedTestEntity(
-						ercScopedTestEntityExternalReferenceCode: string,
 						siteExternalReferenceCode: string,
+						ercScopedTestEntityExternalReferenceCode: string,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: ERCScopedTestEntity;
@@ -329,18 +329,18 @@ export class ERCScopedTestEntityAPI {
 		}> {
 
 			const path = this._basePath + "/test/v1.0/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}"
-						.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
-										.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+						.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+										.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
 				;
 
 			const queryParameters: any = {};
 
-						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
-							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling getSiteERCScopedTestEntity.");
-						}
-
 						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
 							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling getSiteERCScopedTestEntity.");
+						}
+
+						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling getSiteERCScopedTestEntity.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -691,14 +691,14 @@ export class ERCScopedTestEntityAPI {
 					}
 		/**
 		 * 
-				 * @param ercScopedTestEntityExternalReferenceCode
 				 * @param siteExternalReferenceCode
+				 * @param ercScopedTestEntityExternalReferenceCode
 		 		* @param requestBody Request body that can be one of multiple content types
 		 * @param headers Optional custom request headers
 		 */
 		public async putSiteERCScopedTestEntityWithContentType(
-						ercScopedTestEntityExternalReferenceCode: string,
 						siteExternalReferenceCode: string,
+						ercScopedTestEntityExternalReferenceCode: string,
 					requestBody:
 							{
 								parameters: {
@@ -728,18 +728,18 @@ export class ERCScopedTestEntityAPI {
 						}
 
 			const path = this._basePath + "/test/v1.0/sites/{siteExternalReferenceCode}/erc-scoped-test-entities/{ercScopedTestEntityExternalReferenceCode}"
-						.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
-										.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+						.replace("{siteExternalReferenceCode}",encodeURIComponent(siteExternalReferenceCode))
+										.replace("{ercScopedTestEntityExternalReferenceCode}",encodeURIComponent(ercScopedTestEntityExternalReferenceCode))
 				;
 
 			const queryParameters: any = {};
 
-						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
-							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling putSiteERCScopedTestEntity.");
-						}
-
 						if (siteExternalReferenceCode === null || siteExternalReferenceCode === undefined) {
 							throw new Error("Required parameter siteExternalReferenceCode was null or undefined when calling putSiteERCScopedTestEntity.");
+						}
+
+						if (ercScopedTestEntityExternalReferenceCode === null || ercScopedTestEntityExternalReferenceCode === undefined) {
+							throw new Error("Required parameter ercScopedTestEntityExternalReferenceCode was null or undefined when calling putSiteERCScopedTestEntity.");
 						}
 
 			const queryString = Object.keys(queryParameters).length ?
@@ -776,13 +776,13 @@ export class ERCScopedTestEntityAPI {
 
 					/**
 					 *  - Default method for JSON body
-							 * @param ercScopedTestEntityExternalReferenceCode
 							 * @param siteExternalReferenceCode
+							 * @param ercScopedTestEntityExternalReferenceCode
 						 * @param eRCScopedTestEntity
 					 */
 					public async putSiteERCScopedTestEntity(
-									ercScopedTestEntityExternalReferenceCode: string,
 									siteExternalReferenceCode: string,
+									ercScopedTestEntityExternalReferenceCode: string,
 							eRCScopedTestEntity?: ERCScopedTestEntity,
 						headers?: {[name: string]: string}
 					): Promise<{
@@ -790,8 +790,8 @@ export class ERCScopedTestEntityAPI {
 						response: Response;
 					}> {
 						return this.putSiteERCScopedTestEntityWithContentType(
-										ercScopedTestEntityExternalReferenceCode,
 										siteExternalReferenceCode,
+										ercScopedTestEntityExternalReferenceCode,
 							{
 								parameters: {
 										eRCScopedTestEntity: eRCScopedTestEntity

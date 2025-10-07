@@ -5,14 +5,14 @@
 
 import {addParams} from 'frontend-js-web';
 
-import ApiHelper from '../../services/ApiHelper';
+import ApiHelper from '../../common/services/ApiHelper';
 import {config} from '../config';
-import {State} from '../contexts/StateContext';
+import {Structure} from '../types/Structure';
 
-async function resetDisplayPage({id}: {id: State['id']}) {
+async function resetDisplayPage({erc}: {erc: Structure['erc']}) {
 	const resetStructureDisplayPageURL = addParams(
 		{
-			objectDefinitionId: id,
+			objectDefinitionExternalReferenceCode: erc,
 		},
 		config.resetStructureDisplayPageURL
 	);
@@ -20,6 +20,18 @@ async function resetDisplayPage({id}: {id: State['id']}) {
 	return await ApiHelper.post(resetStructureDisplayPageURL);
 }
 
+async function resetTranslationDisplayPage({erc}: {erc: Structure['erc']}) {
+	const resetStructureDisplayPageURL = addParams(
+		{
+			objectDefinitionExternalReferenceCode: erc,
+		},
+		config.resetTranslationDisplayPageURL
+	);
+
+	return await ApiHelper.post(resetStructureDisplayPageURL);
+}
+
 export default {
 	resetDisplayPage,
+	resetTranslationDisplayPage,
 };

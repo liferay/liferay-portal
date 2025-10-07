@@ -8,12 +8,21 @@ package com.liferay.adaptive.media.image.counter;
 import com.liferay.adaptive.media.image.mime.type.AMImageMimeTypeProvider;
 import com.liferay.adaptive.media.image.validator.AMImageValidator;
 import com.liferay.document.library.configuration.DLFileEntryConfigurationProvider;
-import com.liferay.document.library.constants.DLFileEntryConfigurationConstants;
-import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileEntryTable;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.trash.model.TrashEntryTable;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,7 +48,10 @@ public abstract class BaseAMImageCounter implements AMImageCounter {
 		AtomicInteger counter = new AtomicInteger(0);
 
 		try {
-			forEachFileEntry(companyId, _getCountDLFileEntryConsumer(counter));
+			_forEachGroup(
+				companyId,
+				_getCountDLFileEntryConsumer(
+					companyId, counter, previewableProcessorMaxSize));
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -50,15 +62,7 @@ public abstract class BaseAMImageCounter implements AMImageCounter {
 		return counter.get();
 	}
 
-	protected abstract void forEachFileEntry(
-			long companyId, Consumer<DLFileEntry> consumer)
-		throws PortalException;
-
-	protected String[] getMimeTypes() {
-		return ArrayUtil.filter(
-			amImageMimeTypeProvider.getSupportedMimeTypes(),
-			amImageValidator::isProcessingSupported);
-	}
+	protected abstract String getClassName();
 
 	@Reference
 	protected AMImageMimeTypeProvider amImageMimeTypeProvider;
@@ -67,29 +71,95 @@ public abstract class BaseAMImageCounter implements AMImageCounter {
 	protected AMImageValidator amImageValidator;
 
 	@Reference
+	protected ClassNameLocalService classNameLocalService;
+
+	@Reference
 	protected DLFileEntryConfigurationProvider dlFileEntryConfigurationProvider;
 
-	private Consumer<DLFileEntry> _getCountDLFileEntryConsumer(
-		AtomicInteger counter) {
+	@Reference
+	protected DLFileEntryLocalService dlFileEntryLocalService;
+
+	private void _forEachGroup(long companyId, Consumer<Group> consumer)
+		throws PortalException {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			GroupLocalServiceUtil.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setModelClass(Group.class);
+		actionableDynamicQuery.setPerformActionMethod(
+			(ActionableDynamicQuery.PerformActionMethod<Group>)
+				consumer::accept);
+
+		actionableDynamicQuery.performActions();
+	}
+
+	private Consumer<Group> _getCountDLFileEntryConsumer(
+		long companyId, AtomicInteger counter,
+		long previewableProcessorMaxSize) {
 
 		Map<Long, Long> groupPreviewableProcessorMaxSizeMap =
 			dlFileEntryConfigurationProvider.
 				getGroupPreviewableProcessorMaxSizeMap();
 
-		return dlFileEntry -> {
-			Long previewableProcessorMaxSize =
-				groupPreviewableProcessorMaxSizeMap.get(
-					dlFileEntry.getGroupId());
+		return group -> {
+			long groupId = group.getGroupId();
 
-			if ((previewableProcessorMaxSize == null) ||
-				(previewableProcessorMaxSize ==
-					DLFileEntryConfigurationConstants.
-						PREVIEWABLE_PROCESSOR_MAX_SIZE_UNLIMITED) ||
-				(dlFileEntry.getSize() <= previewableProcessorMaxSize)) {
+			long previewableGroupProcessorMaxSize =
+				groupPreviewableProcessorMaxSizeMap.getOrDefault(
+					groupId, previewableProcessorMaxSize);
 
-				counter.incrementAndGet();
-			}
+			DSLQuery dslQuery = DSLQueryFactoryUtil.count(
+			).from(
+				DLFileEntryTable.INSTANCE
+			).leftJoinOn(
+				TrashEntryTable.INSTANCE,
+				TrashEntryTable.INSTANCE.classPK.eq(
+					DLFileEntryTable.INSTANCE.fileEntryId)
+			).where(
+				DLFileEntryTable.INSTANCE.groupId.eq(
+					groupId
+				).and(
+					() -> {
+						if (Validator.isNotNull(getClassName())) {
+							return DLFileEntryTable.INSTANCE.classNameId.eq(
+								classNameLocalService.getClassNameId(
+									getClassName()));
+						}
+
+						return DLFileEntryTable.INSTANCE.repositoryId.eq(
+							groupId);
+					}
+				).and(
+					DLFileEntryTable.INSTANCE.companyId.eq(companyId)
+				).and(
+					DLFileEntryTable.INSTANCE.mimeType.in(_getMimeTypes())
+				).and(
+					_getPredicate(previewableGroupProcessorMaxSize)
+				).and(
+					TrashEntryTable.INSTANCE.entryId.isNull()
+				)
+			);
+
+			int count = dlFileEntryLocalService.dslQueryCount(dslQuery);
+
+			counter.addAndGet(count);
 		};
+	}
+
+	private String[] _getMimeTypes() {
+		return ArrayUtil.filter(
+			amImageMimeTypeProvider.getSupportedMimeTypes(),
+			amImageValidator::isProcessingSupported);
+	}
+
+	private Predicate _getPredicate(long previewableGroupProcessorMaxSize) {
+		if (previewableGroupProcessorMaxSize > 0) {
+			return DLFileEntryTable.INSTANCE.size.lte(
+				previewableGroupProcessorMaxSize);
+		}
+
+		return Predicate.withParentheses(null);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

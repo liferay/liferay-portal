@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayTable from '@clayui/table';
@@ -106,18 +107,31 @@ const Table = <T extends Record<string, any>>({
 								typeof action.disabled === 'boolean'
 									? action.disabled
 									: action?.disabled?.(item),
+							hidden:
+								typeof action.hidden === 'boolean'
+									? action.hidden
+									: action?.hidden?.(item),
 							onClick: () => {
 								if (action.onClick) {
 									return action?.onClick(item, mutate);
 								}
 							},
 						}))}
-						trigger={<ClayIcon symbol="ellipsis-v" />}
+						trigger={
+							<ClayButtonWithIcon
+								aria-label="actions"
+								displayType="unstyled"
+								onClick={(event) => event.stopPropagation()}
+								symbol="ellipsis-v"
+							/>
+						}
 					>
-						{(item) => (
+						{(item, index) => (
 							<ClayDropDown.Item
 								disabled={item.disabled}
+								hidden={!!item.hidden}
 								onClick={() => item.onClick()}
+								{...{['keyValue']: index}}
 							>
 								{item.icon && (
 									<ClayIcon

@@ -107,6 +107,8 @@ public class OpenAPIResourceImpl {
 
 			add(SchemaResourceImpl.class);
 
+			add(ScopedTestEntityResourceImpl.class);
+
 			add(SiteTestEntityResourceImpl.class);
 
 			add(SortResourceImpl.class);

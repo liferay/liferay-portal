@@ -463,10 +463,11 @@ public class SharingEntryLocalServiceImpl
 	 */
 	@Override
 	public List<SharingEntry> getSharingEntries(
-		long classNameId, long classPK, int start, int end) {
+		long classNameId, long classPK, int start, int end,
+		OrderByComparator<SharingEntry> orderByComparator) {
 
 		return sharingEntryPersistence.findByC_C(
-			classNameId, classPK, start, end);
+			classNameId, classPK, start, end, orderByComparator);
 	}
 
 	/**

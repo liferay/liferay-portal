@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom/extend-expect';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -81,9 +81,13 @@ describe('CSSClassSelectorField', () => {
 		await userEvent.type(cssClassesInput, 'customClass1');
 		fireEvent.keyDown(cssClassesInput, {key: 'Enter'});
 
-		expect(screen.getByText('customClass1')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('customClass1')).toBeInTheDocument();
 
-		expect(onValueSelect).toBeCalledWith('cssClasses', ['customClass1']);
+			expect(onValueSelect).toBeCalledWith('cssClasses', [
+				'customClass1',
+			]);
+		});
 	});
 
 	it('adds classes with comma, enter and space', async () => {
@@ -95,18 +99,24 @@ describe('CSSClassSelectorField', () => {
 
 		await userEvent.type(cssClassesInput, '{Enter}');
 
-		expect(screen.getByText('customClass1')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('customClass1')).toBeInTheDocument();
+		});
 
 		fireEvent.change(cssClassesInput, {target: {value: 'customClass2'}});
 
 		await userEvent.type(cssClassesInput, ',');
 
-		expect(screen.getByText('customClass2')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('customClass2')).toBeInTheDocument();
+		});
 
 		fireEvent.change(cssClassesInput, {target: {value: 'customClass3'}});
 		await userEvent.type(cssClassesInput, ' ');
 
-		expect(screen.getByText('customClass3')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('customClass3')).toBeInTheDocument();
+		});
 	});
 
 	it('removes cssClass when clicking remove button', async () => {
@@ -131,7 +141,9 @@ describe('CSSClassSelectorField', () => {
 
 		await userEvent.type(cssClassesInput, 'customClass1');
 
-		expect(screen.getByText('create')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('create')).toBeInTheDocument();
+		});
 	});
 
 	it('add cssClass when clicking modal button', async () => {
@@ -146,7 +158,11 @@ describe('CSSClassSelectorField', () => {
 		await userEvent.type(cssClassesInput, 'customClass1');
 		await userEvent.click(screen.getByText('create'));
 
-		expect(onValueSelect).toBeCalledWith('cssClasses', ['customClass1']);
+		await waitFor(() => {
+			expect(onValueSelect).toBeCalledWith('cssClasses', [
+				'customClass1',
+			]);
+		});
 	});
 
 	it('autocomplete with classNames of other components', async () => {
@@ -156,7 +172,9 @@ describe('CSSClassSelectorField', () => {
 
 		await userEvent.type(cssClassesInput, 'other');
 
-		expect(screen.getByText('otherClass1')).toBeInTheDocument();
-		expect(screen.getByText('otherClass2')).toBeInTheDocument();
+		await waitFor(() => {
+			expect(screen.getByText('otherClass1')).toBeInTheDocument();
+			expect(screen.getByText('otherClass2')).toBeInTheDocument();
+		});
 	});
 });

@@ -134,10 +134,12 @@ public class JiraRestController extends BaseRestController {
 		throws Exception {
 
 		try {
-			JSONObject jsonObject = _jiraService.search(
+			List<JSONObject> jsonObjects = _jiraService.search(
 				filterAffectedVersions, filterCategories, filterClassifications,
-				filterFixVersions, filterSeverities, keywords, page, pageSize,
-				sortOrder, _hasEarlyPublishAccess(jwt));
+				filterFixVersions, filterSeverities, keywords, sortOrder,
+				_hasEarlyPublishAccess(jwt));
+
+			JSONObject jsonObject = _toJSONObject(jsonObjects, page, pageSize);
 
 			return new ResponseEntity<>(jsonObject.toString(), HttpStatus.OK);
 		}
@@ -245,6 +247,26 @@ public class JiraRestController extends BaseRestController {
 		return LocalDateTime.parse(
 			fieldsJSONObject.optString("customerPublishingDate"),
 			dateTimeFormatter);
+	}
+
+	private JSONObject _toJSONObject(
+		List<JSONObject> jsonObjects, int page, int pageSize) {
+
+		return new JSONObject(
+		).put(
+			"issues",
+			jsonObjects.subList(
+				_jiraService.calculateStartAt(page, pageSize),
+				Math.min(
+					_jiraService.calculateStartAt(page, pageSize) + pageSize,
+					jsonObjects.size()))
+		).put(
+			"page", page
+		).put(
+			"pageSize", pageSize
+		).put(
+			"total", jsonObjects.size()
+		);
 	}
 
 	private static final Log _log = LogFactory.getLog(JiraRestController.class);

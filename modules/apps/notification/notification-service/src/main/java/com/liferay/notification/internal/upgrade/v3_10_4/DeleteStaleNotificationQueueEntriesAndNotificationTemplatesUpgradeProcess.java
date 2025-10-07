@@ -181,6 +181,7 @@ public class
 			}
 
 			deletePreparedStatement1.executeBatch();
+
 			deletePreparedStatement2.executeBatch();
 		}
 	}

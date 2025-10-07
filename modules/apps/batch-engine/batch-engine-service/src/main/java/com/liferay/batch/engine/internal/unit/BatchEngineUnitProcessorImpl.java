@@ -21,6 +21,7 @@ import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.batch.engine.unit.BundleBatchEngineUnit;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -31,7 +32,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -220,21 +223,24 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 			_batchEngineTaskItemDelegateProvider.toBatchEngineTaskItemDelegate(
 				service);
 
-		BatchEngineImportTask batchEngineImportTask =
-			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
-				null, batchEngineUnitConfiguration.getCompanyId(),
-				batchEngineUnitConfiguration.getUserId(), 100,
-				batchEngineUnitConfiguration.getCallbackURL(),
-				batchEngineUnitConfiguration.getClassName(), content,
-				StringUtil.toUpperCase(contentType),
-				BatchEngineTaskExecuteStatus.INITIAL.name(),
-				batchEngineUnitConfiguration.getFieldNameMappingMap(),
-				importStrategy, BatchEngineTaskOperation.CREATE.name(),
-				parameters,
-				batchEngineUnitConfiguration.getTaskItemDelegateName(),
-				batchEngineTaskItemDelegate);
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					batchEngineUnitConfiguration.getCompanyId())) {
 
-		try {
+			BatchEngineImportTask batchEngineImportTask =
+				_batchEngineImportTaskLocalService.addBatchEngineImportTask(
+					null, batchEngineUnitConfiguration.getCompanyId(),
+					batchEngineUnitConfiguration.getUserId(), 100,
+					batchEngineUnitConfiguration.getCallbackURL(),
+					batchEngineUnitConfiguration.getClassName(), content,
+					StringUtil.toUpperCase(contentType),
+					BatchEngineTaskExecuteStatus.INITIAL.name(),
+					batchEngineUnitConfiguration.getFieldNameMappingMap(),
+					importStrategy, BatchEngineTaskOperation.CREATE.name(),
+					parameters,
+					batchEngineUnitConfiguration.getTaskItemDelegateName(),
+					batchEngineTaskItemDelegate);
+
 			BatchEngineUnitThreadLocal.setFileName(
 				batchEngineUnit.getFileName());
 
@@ -261,16 +267,18 @@ public class BatchEngineUnitProcessorImpl implements BatchEngineUnitProcessor {
 		Role role = _roleLocalService.getRole(
 			companyId, RoleConstants.ADMINISTRATOR);
 
-		long[] userIds = _userLocalService.getRoleUserIds(role.getRoleId());
+		for (long userId : _userLocalService.getRoleUserIds(role.getRoleId())) {
+			User user = _userLocalService.fetchUser(userId);
 
-		if (userIds.length == 0) {
-			throw new NoSuchUserException(
-				StringBundler.concat(
-					"No user exists in company ", companyId, " with role ",
-					role.getName()));
+			if ((user != null) && user.isActive()) {
+				return user.getUserId();
+			}
 		}
 
-		return userIds[0];
+		throw new NoSuchUserException(
+			StringBundler.concat(
+				"No active user exists in company ", companyId, " with role ",
+				role.getName()));
 	}
 
 	private Bundle _getBundle(BatchEngineUnit batchEngineUnit) {

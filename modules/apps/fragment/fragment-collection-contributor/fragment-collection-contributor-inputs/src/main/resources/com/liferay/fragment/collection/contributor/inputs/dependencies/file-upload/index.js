@@ -5,16 +5,16 @@
 
 const wrapper = fragmentElement;
 
-const fileInput = document.getElementById(`${fragmentNamespace}-file-upload`);
+const fileInput = document.getElementById(`${fragmentElementId}-file-upload`);
 const fileName = wrapper.querySelector('.forms-file-upload-file-name');
 const hiddenFileInput = document.getElementById(
-	`${fragmentNamespace}-file-upload-hidden`
+	`${fragmentElementId}-file-upload-hidden`
 );
 const removeButton = document.getElementById(
-	`${fragmentNamespace}-file-upload-remove-button`
+	`${fragmentElementId}-file-upload-remove-button`
 );
 const selectButton = document.getElementById(
-	`${fragmentNamespace}-file-upload-button-label`
+	`${fragmentElementId}-file-upload-button-label`
 );
 
 function showRemoveButton() {
@@ -102,7 +102,7 @@ const onSelectFromUserComputer = () => {
 	fileInput.click();
 };
 
-function getTranslationInput(namespace, languageId, inputId) {
+function getFragmentTranslationInput(namespace, languageId, inputId) {
 	return document.getElementById(`${namespace}${inputId}_${languageId}`);
 }
 
@@ -145,7 +145,7 @@ else {
 
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -164,13 +164,13 @@ else {
 				);
 
 				initialValues.forEach(([languageId, value]) => {
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
 						languageId,
-						inputElement.parentNode,
-						fragmentNamespace
-					);
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentElementId,
+					});
 
 					translationInput.value = value.fileEntryId;
 					translationInput.dataset.fileName = value.name;
@@ -183,11 +183,22 @@ else {
 					changeTextDirection: false,
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					inputElement: fileInput,
+					inputName: input.name,
+					localizationInputsContainer: inputElement.parentNode,
+					namespace: fragmentElementId,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
-						const translationInput = getTranslationInput(
-							fragmentNamespace,
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentElementId,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						const translationInput = getFragmentTranslationInput(
+							fragmentElementId,
 							languageId,
 							inputElement.id
 						);
@@ -196,31 +207,81 @@ else {
 							setFileName(translationInput);
 						}
 						else {
-							const defaultTranslationInput = getTranslationInput(
-								fragmentNamespace,
+							setFileName(defaultTranslationInput);
+						}
+					},
+					onMarkAsTranslated: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentElementId,
 								defaultLanguageId,
 								inputElement.id
 							);
 
-							setFileName(defaultTranslationInput);
+						setFileName(defaultTranslationInput);
+
+						if (defaultTranslationInput.type === 'file') {
+							setTranslationInputValue({
+								fileName:
+									defaultTranslationInput.dataset.fileName,
+								type: 'file',
+								value: defaultTranslationInput.files,
+							});
+						}
+						else {
+							setTranslationInputValue({
+								fileName:
+									defaultTranslationInput.dataset.fileName,
+								type: 'document',
+								value: defaultTranslationInput.value,
+							});
+						}
+					},
+					onResetTranslation: () => {
+						const defaultTranslationInput =
+							getFragmentTranslationInput(
+								fragmentElementId,
+								defaultLanguageId,
+								inputElement.id
+							);
+
+						const translationInput = getFragmentTranslationInput(
+							fragmentElementId,
+							currentLanguageId,
+							fileInput.id
+						);
+
+						setFileName(defaultTranslationInput);
+
+						if (translationInput.type === 'file') {
+							translationInput.parentNode.removeChild(
+								translationInput
+							);
+						}
+						else {
+							translationInput.removeAttribute('data-file-name');
+							translationInput.removeAttribute('value');
 						}
 					},
 				});
 
-				const setTranslationInputValue = ({fileName, value}) => {
+				const setTranslationInputValue = (props) => {
+					const {fileName, value} = props;
+
 					const type =
-						isFromDocumentLibrary === false ? 'file' : 'hidden';
+						props.type ||
+						(isFromDocumentLibrary ? 'document' : 'file');
 
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
-						currentLanguageId,
-						inputElement.parentNode,
-						fragmentNamespace,
-						type
-					);
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentElementId,
+						type: type === 'file' ? 'file' : 'hidden',
+					});
 
-					if (isFromDocumentLibrary) {
+					if (type === 'document') {
 						translationInput.value = value;
 						translationInput.dataset.fileName = fileName;
 					}
@@ -268,13 +329,13 @@ else {
 
 					removeButton.classList.add('d-none');
 
-					const translationInput = getOrCreateTranslationInput(
-						inputElement.id,
-						input.name,
-						currentLanguageId,
-						inputElement.parentNode,
-						fragmentNamespace
-					);
+					const translationInput = getTranslationInput({
+						inputId: inputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: inputElement.parentNode,
+						namespace: fragmentElementId,
+					});
 
 					translationInput.value = '';
 					translationInput.dataset.fileName = '';
@@ -338,11 +399,11 @@ else {
 						}
 					},
 					readOnlyInputLabel: document.getElementById(
-						`${fragmentNamespace}-file-upload-read-only`
+						`${fragmentElementId}-file-upload-read-only`
 					),
 					unlocalizedFieldsState,
 					unlocalizedMessageContainer: document.getElementById(
-						`${fragmentNamespace}-unlocalized-info`
+						`${fragmentElementId}-unlocalized-info`
 					),
 				});
 

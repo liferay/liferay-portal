@@ -190,7 +190,7 @@ test(
 			await styleBooksPage.waitForAutoSave();
 		});
 
-		await test.step('Preview the effect in page preivew iframe', async () => {
+		await test.step('Preview the effect in page preview iframe', async () => {
 			const previewIframe = page.frameLocator(
 				'iframe.style-book-editor__page-preview-frame'
 			);

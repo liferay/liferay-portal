@@ -78,7 +78,7 @@ type UserAccount = {
 	name: string;
 	newsSubscription: boolean;
 	password: string;
-	roleBriefs: {id: number; name: string}[];
+	roleBriefs: RoleBrife[];
 	type: string;
 	userAccountContactInformation: {
 		telephones: {

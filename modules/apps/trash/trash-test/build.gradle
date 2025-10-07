@@ -1,7 +1,7 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay", name: "org.springframework.test", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	testIntegrationImplementation group: "org.springframework", name: "spring-test", version: "6.2.9"
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:journal:journal-api")

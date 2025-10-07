@@ -5,6 +5,7 @@
 
 import {
 	ObjectDefinitionAPI,
+	ObjectField,
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
@@ -17,8 +18,9 @@ import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {generateObjectEntryValues} from './utils/generateObjectEntry';
+import {generateObjectFields} from './utils/generateObjectFields';
 import getRandomObjectFieldText from './utils/getRandomObjectFieldText';
-import {mockObjectFields} from './utils/mockObjectFields';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -74,6 +76,77 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 		);
 	});
 
+	test('can view Entries with Custom Layout Created', async ({
+		apiHelpers,
+		objectLayoutsPage,
+		page,
+		viewObjectEntriesPage,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+				titleObjectFieldName: 'textField',
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const iframe = page.frameLocator('iframe');
+
+		const blockName = getRandomString();
+
+		await test.step('create layout and set it as default', async () => {
+			await objectLayoutsPage.goto(objectDefinition.name);
+
+			const objectLayoutName = getRandomString();
+
+			await objectLayoutsPage.createObjectLayout(objectLayoutName);
+
+			await objectLayoutsPage.createObjectLayoutContent({
+				objectLayoutBlockName: blockName,
+				objectLayoutName,
+				objectLayoutTabName: getRandomString(),
+			});
+
+			await objectLayoutsPage.addObjectLayoutObjectField('textField');
+
+			await iframe.getByRole('button', {name: 'Save'}).first().click();
+		});
+
+		await test.step('add object entry and assert that blockname is visible', async () => {
+			await viewObjectEntriesPage.goto(objectDefinition.className);
+
+			await viewObjectEntriesPage.clickAddObjectEntry();
+
+			await viewObjectEntriesPage.fillObjectEntry({
+				objectFieldBusinessType: 'Text',
+				objectFieldLabel: 'textField',
+				objectFieldValue: 'Entry A',
+			});
+
+			await viewObjectEntriesPage.saveObjectEntryButton.click();
+
+			await waitForAlert(page);
+
+			await viewObjectEntriesPage.backButton.click();
+
+			await page.waitForLoadState('networkidle');
+
+			await page
+				.getByRole('row', {name: 'Entry A'})
+				.getByRole('link')
+				.click();
+
+			await expect(
+				page.locator('label').filter({hasText: blockName})
+			).toBeVisible();
+
+			await expect(page.getByLabel('textField')).toBeVisible();
+		});
+	});
+
 	test('can view relationship child entry when selected', async ({
 		apiHelpers,
 		objectLayoutsPage,
@@ -86,10 +159,13 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 		const objectDefinitionLabel2 = 'ObjectDefinitionLabel' + getRandomInt();
 		const objectDefinitionName2 = 'ObjectDefinitionName' + getRandomInt();
 
-		const {objectEntry, objectFields} = await mockObjectFields({
-			apiHelpers,
-			objectEntryReturn: {format: 'API'},
-			objectFieldBusinessTypes: ['text'],
+		const objectFields1: Partial<ObjectField>[] = generateObjectFields({
+			objectFieldBusinessTypes: ['Text'],
+		});
+
+		const objectEntry1 = await generateObjectEntryValues({
+			objectEntryFormat: 'UI',
+			objectFields: objectFields1,
 		});
 
 		const objectDefinitionAPIClient =
@@ -102,7 +178,7 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 					en_US: objectDefinitionLabel1,
 				},
 				name: objectDefinitionName1,
-				objectFields,
+				objectFields: objectFields1,
 				pluralLabel: {
 					en_US: objectDefinitionLabel1,
 				},
@@ -123,16 +199,18 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 
 		const {id: objectEntryId} =
 			await apiHelpers.objectEntry.postObjectEntry(
-				objectEntry,
+				objectEntry1,
 				applicationName
 			);
 
-		const {objectEntry: objectEntry2, objectFields: objectFields2} =
-			await mockObjectFields({
-				apiHelpers,
-				objectEntryReturn: {format: 'API'},
-				objectFieldBusinessTypes: ['text'],
-			});
+		const objectFields2: Partial<ObjectField>[] = generateObjectFields({
+			objectFieldBusinessTypes: ['Text'],
+		});
+
+		const objectEntry2 = await generateObjectEntryValues({
+			objectEntryFormat: 'UI',
+			objectFields: objectFields2,
+		});
 
 		const {body: objectDefinition2} =
 			await objectDefinitionAPIClient.postObjectDefinition({
@@ -211,7 +289,7 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 		});
 
 		await objectLayoutsPage.addObjectLayoutObjectField(
-			objectFields[0].label.en_US
+			objectFields1[0].label.en_US
 		);
 
 		const objectLayoutRelTabName = getRandomString();
@@ -250,7 +328,7 @@ test.describe('manage Object Layouts through the Object Layout tab', () => {
 
 		await waitForAlert(page);
 
-		await page.getByRole('link', {name: 'Back'}).click();
+		await viewObjectEntriesPage.backButton.click();
 
 		await page.getByRole('cell').getByRole('link').click();
 

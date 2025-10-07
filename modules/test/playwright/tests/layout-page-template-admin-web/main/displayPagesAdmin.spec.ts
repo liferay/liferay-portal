@@ -512,7 +512,7 @@ test.describe('UI', () => {
 
 			await page
 				.locator('.modal-header')
-				.getByLabel('close', {exact: true})
+				.getByLabel('Close', {exact: true})
 				.click();
 
 			// Assert warning message
@@ -1600,19 +1600,34 @@ test.describe('View', () => {
 
 			// Open the info panel
 
-			await page
-				.getByLabel(`Select ${displayPageTemplateName}`, {exact: true})
-				.check();
-
-			await page.getByTitle('Toggle Info Panel', {exact: true}).click();
+			await clickAndExpectToBeVisible({
+				target: page.getByLabel('Close Info Panel'),
+				trigger: page.getByTitle('Toggle Info Panel', {exact: true}),
+			});
 
 			const infoPanel = page.getByLabel('Info Panel', {exact: true});
 
-			await infoPanel
-				.getByRole('button', {name: 'Manage Permissions'})
-				.click();
+			await expect(async () => {
+				await page
+					.getByLabel(`Select ${displayPageTemplateName}`, {
+						exact: true,
+					})
+					.check({timeout: 1000});
+
+				await expect(
+					infoPanel.getByRole('button', {name: 'Manage Permissions'})
+				).toBeVisible({timeout: 1000});
+			}).toPass();
 
 			const iframe = page.frameLocator('iframe[title="Permissions"]');
+
+			await clickAndExpectToBeVisible({
+				target: iframe.locator('#guest_ACTION_DELETE'),
+				timeout: 3000,
+				trigger: infoPanel.getByRole('button', {
+					name: 'Manage Permissions',
+				}),
+			});
 
 			// Change permissions for display page template
 
@@ -1640,13 +1655,28 @@ test.describe('View', () => {
 				.locator('.card-page-item-directory')
 				.filter({hasText: displayPageTemplateFolderName});
 
-			await folderCard.locator('input').check();
+			await folderCard.waitFor();
 
-			await page.getByTitle('Toggle Info Panel', {exact: true}).click();
+			await clickAndExpectToBeVisible({
+				target: page.getByLabel('Close Info Panel'),
+				trigger: page.getByTitle('Toggle Info Panel', {exact: true}),
+			});
 
-			await infoPanel
-				.getByRole('button', {name: 'Manage Permissions'})
-				.click();
+			await expect(async () => {
+				await folderCard.locator('input').check({timeout: 1000});
+
+				await expect(
+					infoPanel.getByRole('button', {name: 'Manage Permissions'})
+				).toBeVisible({timeout: 1000});
+			}).toPass();
+
+			await clickAndExpectToBeVisible({
+				target: iframe.locator('#guest_ACTION_DELETE'),
+				timeout: 3000,
+				trigger: infoPanel.getByRole('button', {
+					name: 'Manage Permissions',
+				}),
+			});
 
 			// Change permissions for folder
 

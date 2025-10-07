@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 
+import java.sql.Timestamp;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -38,6 +40,10 @@ public class RandomTestUtil {
 
 	public static long nextLong() {
 		return CounterLocalServiceUtil.increment();
+	}
+
+	public static Timestamp nextTimestamp() {
+		return new Timestamp(nextDate().getTime());
 	}
 
 	public static boolean randomBoolean() {

@@ -1,0 +1,20 @@
+buildService {
+	apiDir = "../change-tracking-sample-api/src/main/java"
+	testDir = "../change-tracking-sample-test/src/testIntegration/java"
+}
+
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:change-tracking:change-tracking-sample-api")
+	compileOnly project(":apps:change-tracking:change-tracking-spi")
+	compileOnly project(":apps:portal:portal-aop-api")
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-sql-dsl-api")
+	compileOnly project(":core:petra:petra-string")
+}
+
+liferay {
+	deployDir = file("${liferayHome}/osgi/test")
+}

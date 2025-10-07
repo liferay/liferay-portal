@@ -334,7 +334,7 @@ public class WidgetPageWidgetInstance implements Serializable {
 		description = "The widget instance's look and feel configuration."
 	)
 	@Valid
-	public WidgetLookAndFeelConfig[] getWidgetLookAndFeelConfig() {
+	public WidgetLookAndFeelConfig getWidgetLookAndFeelConfig() {
 		if (_widgetLookAndFeelConfigSupplier != null) {
 			widgetLookAndFeelConfig = _widgetLookAndFeelConfigSupplier.get();
 
@@ -345,7 +345,7 @@ public class WidgetPageWidgetInstance implements Serializable {
 	}
 
 	public void setWidgetLookAndFeelConfig(
-		WidgetLookAndFeelConfig[] widgetLookAndFeelConfig) {
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig) {
 
 		this.widgetLookAndFeelConfig = widgetLookAndFeelConfig;
 
@@ -354,7 +354,7 @@ public class WidgetPageWidgetInstance implements Serializable {
 
 	@JsonIgnore
 	public void setWidgetLookAndFeelConfig(
-		UnsafeSupplier<WidgetLookAndFeelConfig[], Exception>
+		UnsafeSupplier<WidgetLookAndFeelConfig, Exception>
 			widgetLookAndFeelConfigUnsafeSupplier) {
 
 		_widgetLookAndFeelConfigSupplier = () -> {
@@ -374,11 +374,10 @@ public class WidgetPageWidgetInstance implements Serializable {
 		description = "The widget instance's look and feel configuration."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected WidgetLookAndFeelConfig[] widgetLookAndFeelConfig;
+	protected WidgetLookAndFeelConfig widgetLookAndFeelConfig;
 
 	@JsonIgnore
-	private Supplier<WidgetLookAndFeelConfig[]>
-		_widgetLookAndFeelConfigSupplier;
+	private Supplier<WidgetLookAndFeelConfig> _widgetLookAndFeelConfigSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The widget instance's name."
@@ -585,7 +584,7 @@ public class WidgetPageWidgetInstance implements Serializable {
 			sb.append("\"");
 		}
 
-		WidgetLookAndFeelConfig[] widgetLookAndFeelConfig =
+		WidgetLookAndFeelConfig widgetLookAndFeelConfig =
 			getWidgetLookAndFeelConfig();
 
 		if (widgetLookAndFeelConfig != null) {
@@ -595,17 +594,7 @@ public class WidgetPageWidgetInstance implements Serializable {
 
 			sb.append("\"widgetLookAndFeelConfig\": ");
 
-			sb.append("[");
-
-			for (int i = 0; i < widgetLookAndFeelConfig.length; i++) {
-				sb.append(String.valueOf(widgetLookAndFeelConfig[i]));
-
-				if ((i + 1) < widgetLookAndFeelConfig.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
+			sb.append(String.valueOf(widgetLookAndFeelConfig));
 		}
 
 		String widgetName = getWidgetName();

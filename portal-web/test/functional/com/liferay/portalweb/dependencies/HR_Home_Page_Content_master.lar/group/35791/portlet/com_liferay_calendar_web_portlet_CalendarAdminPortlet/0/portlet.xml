@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<portlet portlet-id="com_liferay_calendar_web_portlet_CalendarAdminPortlet" root-portlet-id="com_liferay_calendar_web_portlet_CalendarAdminPortlet" scope-group-id="35791" scope-layout-type="" scope-layout-uuid="" private-layout="false" self-path="/group/35791/portlet/com_liferay_calendar_web_portlet_CalendarAdminPortlet/0/portlet.xml">
+	<portlet-data path="/group/35791/portlet/com_liferay_calendar_web_portlet_CalendarAdminPortlet/35791/portlet-data.xml"/>
+	<portlet-preferences path="/group/35791/portlet/com_liferay_calendar_web_portlet_CalendarAdminPortlet/preferences/group/35791/0/portlet-preferences.xml">
+		<preference-data/>
+	</portlet-preferences>
+	<portlet-preferences path="/group/35791/portlet/com_liferay_calendar_web_portlet_CalendarAdminPortlet/preferences/group/35791/0/portlet-preferences.xml">
+		<preference-data/>
+	</portlet-preferences>
+</portlet>

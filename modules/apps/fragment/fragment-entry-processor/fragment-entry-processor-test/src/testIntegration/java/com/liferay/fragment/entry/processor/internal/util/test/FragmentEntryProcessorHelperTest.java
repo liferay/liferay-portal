@@ -11,6 +11,9 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTypeConstants;
@@ -28,9 +31,11 @@ import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesToFieldsConverter;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
+import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -39,6 +44,17 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalConverter;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.util.ObjectFieldUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -78,6 +94,7 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -91,6 +108,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.text.DateFormat;
 
@@ -99,6 +117,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +198,57 @@ public class FragmentEntryProcessorHelperTest {
 					"fieldId", "title"
 				),
 				LocaleUtil.SPAIN));
+	}
+
+	@Test
+	@TestInfo("LPD-62842")
+	public void testGetFieldValueFromLongText() throws Exception {
+		String fieldValue = StringBundler.concat(
+			"<script>alert(\"", RandomTestUtil.randomString(), "\")</script>");
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING, "My Long Text",
+						"myLongText")),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			TestPropsValues.getGroupId(), objectDefinition.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"myLongText", fieldValue
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+
+		try {
+			_pushServiceContext(_layout, _themeDisplay);
+
+			Assert.assertEquals(
+				HtmlUtil.escape(fieldValue),
+				_getFieldValue(
+					JSONUtil.put(
+						"className", objectDefinition.getClassName()
+					).put(
+						"classNameId",
+						_portal.getClassNameId(objectDefinition.getClassName())
+					).put(
+						"classPK", objectEntry.getObjectEntryId()
+					).put(
+						"fieldId", "myLongText"
+					),
+					LocaleUtil.getSiteDefault()));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Test
@@ -514,6 +584,211 @@ public class FragmentEntryProcessorHelperTest {
 					new ClassPKInfoItemIdentifier(
 						journalArticle.getResourcePrimKey())),
 				fieldId, LocaleUtil.getSiteDefault()));
+	}
+
+	@Test
+	@TestInfo("LPD-62842")
+	public void testGetInfoItemFieldMapped() throws Exception {
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				ListUtil.fromArray(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"myText"
+					).objectFieldSettings(
+						Collections.emptyList()
+					).build()),
+				ObjectDefinitionConstants.SCOPE_DEPOT);
+
+		_objectDefinitionSettingLocalService.addObjectDefinitionSetting(
+			objectDefinition.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS,
+			StringPool.TRUE);
+
+		long classNameId = _portal.getClassNameId(
+			objectDefinition.getClassName());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		DepotEntry depotEntry1 = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY, serviceContext);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _objectEntryLocalService.addObjectEntry(
+			depotEntry1.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"myText", RandomTestUtil.randomString()
+			).build(),
+			serviceContext);
+
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"classPK", objectEntry1.getObjectEntryId()
+			).put(
+				"fieldId", "myText"
+			),
+			depotEntry1.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ClassPKInfoItemIdentifier(
+						objectEntry1.getObjectEntryId())),
+				objectEntry1));
+
+		DepotEntry depotEntry2 = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY, serviceContext);
+
+		ObjectEntry objectEntry2 = _objectEntryLocalService.addObjectEntry(
+			depotEntry2.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"myText", RandomTestUtil.randomString()
+			).build(),
+			serviceContext);
+
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"classPK", objectEntry2.getObjectEntryId()
+			).put(
+				"fieldId", "myText"
+			),
+			depotEntry2.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ClassPKInfoItemIdentifier(
+						objectEntry2.getObjectEntryId())),
+				objectEntry2));
+
+		Group group1 = depotEntry1.getGroup();
+
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"classPK", objectEntry1.getObjectEntryId()
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"fieldId", "myText"
+			).put(
+				"scopeExternalReferenceCode", group1.getExternalReferenceCode()
+			),
+			depotEntry1.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ClassPKInfoItemIdentifier(
+						objectEntry1.getObjectEntryId())),
+				objectEntry1));
+
+		Group group2 = depotEntry2.getGroup();
+
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"classPK", objectEntry1.getObjectEntryId()
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"fieldId", "myText"
+			).put(
+				"scopeExternalReferenceCode", group2.getExternalReferenceCode()
+			),
+			depotEntry2.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ClassPKInfoItemIdentifier(
+						objectEntry1.getObjectEntryId())),
+				objectEntry1));
+
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"fieldId", "myText"
+			).put(
+				"scopeExternalReferenceCode", group1.getExternalReferenceCode()
+			),
+			depotEntry1.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ERCInfoItemIdentifier(
+						externalReferenceCode,
+						group1.getExternalReferenceCode())),
+				objectEntry1));
+		_testGetInfoItemFieldMapped(
+			JSONUtil.put(
+				"className", objectDefinition.getClassName()
+			).put(
+				"classNameId", classNameId
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"fieldId", "myText"
+			).put(
+				"scopeExternalReferenceCode", group2.getExternalReferenceCode()
+			),
+			depotEntry2.getGroupId(),
+			new InfoItemFieldMapped(
+				"myText",
+				new InfoItemReference(
+					objectDefinition.getClassName(),
+					new ERCInfoItemIdentifier(
+						externalReferenceCode,
+						group2.getExternalReferenceCode())),
+				objectEntry2));
 	}
 
 	@Test
@@ -916,6 +1191,54 @@ public class FragmentEntryProcessorHelperTest {
 		return jsonObject.toString();
 	}
 
+	private void _testGetInfoItemFieldMapped(
+			JSONObject editableValuesJSONObject, long groupId,
+			InfoItemFieldMapped infoItemFieldMapped)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				groupId, TestPropsValues.getUserId());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, _layout);
+
+		_themeDisplay.setScopeGroupId(groupId);
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+
+		serviceContext.setRequest(mockHttpServletRequest);
+
+		try {
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			FragmentEntryProcessorContext fragmentEntryProcessorContext =
+				new DefaultFragmentEntryProcessorContext(
+					mockHttpServletRequest, new MockHttpServletResponse(),
+					FragmentEntryLinkConstants.EDIT, LocaleUtil.US);
+
+			InfoItemFieldMapped actualInfoItemFieldMapped =
+				_fragmentEntryProcessorHelper.getInfoItemFieldMapped(
+					editableValuesJSONObject, fragmentEntryProcessorContext);
+
+			Assert.assertEquals(
+				infoItemFieldMapped.getFieldName(),
+				actualInfoItemFieldMapped.getFieldName());
+			Assert.assertEquals(
+				infoItemFieldMapped.getInfoItemIdentifier(),
+				actualInfoItemFieldMapped.getInfoItemIdentifier());
+			Assert.assertEquals(
+				infoItemFieldMapped.getObject(),
+				actualInfoItemFieldMapped.getObject());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	private void _testHasViewPermission(
 			JSONObject editableValueJSONObject, boolean expected)
 		throws Exception {
@@ -1005,6 +1328,9 @@ public class FragmentEntryProcessorHelperTest {
 	private DDMFormValuesToFieldsConverter _ddmFormValuesToFieldsConverter;
 
 	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
 	private FragmentEntryProcessorHelper _fragmentEntryProcessorHelper;
 
 	@DeleteAfterTestRun
@@ -1014,6 +1340,13 @@ public class FragmentEntryProcessorHelperTest {
 	private JournalConverter _journalConverter;
 
 	private Layout _layout;
+
+	@Inject
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject
 	private Portal _portal;

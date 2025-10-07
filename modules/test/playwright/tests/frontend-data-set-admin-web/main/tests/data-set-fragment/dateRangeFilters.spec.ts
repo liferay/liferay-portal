@@ -112,7 +112,7 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 		await toInput.fill('2020-01-02');
 
 		const editButton = dataSetFragmentPage.page.getByRole('button', {
-			name: 'Edit Filter',
+			name: 'Show Results',
 		});
 
 		await expect(editButton).toBeVisible();

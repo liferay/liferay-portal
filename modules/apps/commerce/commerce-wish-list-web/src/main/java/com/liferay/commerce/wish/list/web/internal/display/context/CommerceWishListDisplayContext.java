@@ -273,7 +273,7 @@ public class CommerceWishListDisplayContext {
 
 		return _cpDefinitionHelper.getCPCatalogEntry(
 			commerceAccountId, commerceChannelGroupId, cpDefinitionId,
-			_commerceWishListRequestHelper.getLocale());
+			_commerceWishListRequestHelper.getLocale(), false);
 	}
 
 	public String getCPDefinitionURL(

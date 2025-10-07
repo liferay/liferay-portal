@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Order Rule Service
 Bundle-SymbolicName: com.liferay.commerce.order.rule.service
-Bundle-Version: 1.0.65
+Bundle-Version: 1.0.66
 Liferay-Require-SchemaVersion: 1.2.1
 Liferay-Service: true
 -dsannotations-options: inherit

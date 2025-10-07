@@ -2,13 +2,13 @@
 	"manually-resolving-conflicts": {
 		"en_US": {
 			"message": "Learn more about manually resolving conflicts.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/publishing-tools/publications/resolving-conflicts#manually-resolving-conflicts"
+			"url": "https://learn.liferay.com/w/dxp/sites/publishing-tools/publications/resolving-conflicts#manually-resolving-conflicts"
 		}
 	},
 	"resolving-conflicts": {
 		"en_US": {
 			"message": "Learn more about resolving conflicts.",
-			"url": "https://learn.liferay.com/w/dxp/site-building/publishing-tools/publications/resolving-conflicts"
+			"url": "https://learn.liferay.com/w/dxp/sites/publishing-tools/publications/resolving-conflicts"
 		}
 	}
 }

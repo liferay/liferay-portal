@@ -56,6 +56,13 @@ public class ObjectEntryVersionLocalServiceWrapper
 			objectEntryVersion);
 	}
 
+	@Override
+	public void checkObjectEntryVersions(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_objectEntryVersionLocalService.checkObjectEntryVersions(companyId);
+	}
+
 	/**
 	 * Creates a new object entry version with the primary key. Does not add the object entry version to the database.
 	 *
@@ -280,11 +287,42 @@ public class ObjectEntryVersionLocalServiceWrapper
 	}
 
 	@Override
+	public void expireObjectEntryVersions(
+			long userId, com.liferay.object.model.ObjectEntry objectEntry,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws Exception {
+
+		_objectEntryVersionLocalService.expireObjectEntryVersions(
+			userId, objectEntry, serviceContext);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntryVersion
+		fetchLatestApprovedObjectEntryVersion(
+			long objectEntryId,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.object.model.ObjectEntryVersion>
+					orderByComparator) {
+
+		return _objectEntryVersionLocalService.
+			fetchLatestApprovedObjectEntryVersion(
+				objectEntryId, orderByComparator);
+	}
+
+	@Override
 	public com.liferay.object.model.ObjectEntryVersion fetchObjectEntryVersion(
 		long objectEntryVersionId) {
 
 		return _objectEntryVersionLocalService.fetchObjectEntryVersion(
 			objectEntryVersionId);
+	}
+
+	@Override
+	public com.liferay.object.model.ObjectEntryVersion fetchObjectEntryVersion(
+		long objectEntryId, int version) {
+
+		return _objectEntryVersionLocalService.fetchObjectEntryVersion(
+			objectEntryId, version);
 	}
 
 	/**
@@ -439,6 +477,14 @@ public class ObjectEntryVersionLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectEntryVersionLocalService.getPersistedModel(primaryKeyObj);
+	}
+
+	@Override
+	public boolean isLatestObjectEntryVersion(long objectEntryId, int version)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _objectEntryVersionLocalService.isLatestObjectEntryVersion(
+			objectEntryId, version);
 	}
 
 	@Override

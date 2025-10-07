@@ -4,7 +4,11 @@
  */
 
 export default function getInitialRelationship(field: string | undefined) {
-	if (!field || !field.includes('ObjectRelationship')) {
+	if (
+		!field ||
+		!field.includes('ObjectRelationship') ||
+		!Liferay.FeatureFlags['LPD-60546']
+	) {
 		return null;
 	}
 

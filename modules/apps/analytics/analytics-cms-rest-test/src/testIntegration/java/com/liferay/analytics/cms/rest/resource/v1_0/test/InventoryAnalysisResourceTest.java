@@ -18,6 +18,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -46,7 +47,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,20 +59,87 @@ import org.osgi.framework.FrameworkUtil;
  */
 @FeatureFlags(
 	featureFlags = {
-		@FeatureFlag(value = "LPD-31149"), @FeatureFlag(value = "LPD-34594"),
-		@FeatureFlag(value = "LPS-179669"), @FeatureFlag(value = "LPD-17564"),
-		@FeatureFlag(value = "LPD-21926"), @FeatureFlag(value = "LPD-11232")
+		@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-21926"),
+		@FeatureFlag("LPD-31149"), @FeatureFlag("LPD-34594"),
+		@FeatureFlag("LPS-179669")
 	}
 )
 @RunWith(Arquillian.class)
 public class InventoryAnalysisResourceTest
 	extends BaseInventoryAnalysisResourceTestCase {
 
-	@Before
 	@Override
-	public void setUp() throws Exception {
-		super.setUp();
+	@Test
+	public void testGetInventoryAnalysis() throws Exception {
+		_setUpCMSContext();
 
+		InventoryAnalysis inventoryAnalysis =
+			inventoryAnalysisResource.getInventoryAnalysis(
+				null, _depotEntry.getDepotEntryId(), null, null, null, null,
+				null, null, null, null, null);
+
+		InventoryAnalysisItem[] inventoryAnalysisItems =
+			inventoryAnalysis.getInventoryAnalysisItems();
+
+		Assert.assertEquals(
+			inventoryAnalysisItems.toString(), 1,
+			inventoryAnalysisItems.length);
+
+		InventoryAnalysisItem inventoryAnalysisItem = inventoryAnalysisItems[0];
+
+		Assert.assertEquals(3L, (long)inventoryAnalysisItem.getCount());
+
+		Assert.assertEquals(
+			"Basic Web Content", inventoryAnalysisItem.getTitle());
+
+		inventoryAnalysis = inventoryAnalysisResource.getInventoryAnalysis(
+			null, _depotEntry.getDepotEntryId(), "category", null, null, null,
+			null, null, null, null, null);
+
+		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
+
+		Assert.assertEquals(
+			inventoryAnalysisItems.toString(), 2,
+			inventoryAnalysisItems.length);
+
+		inventoryAnalysisItem = inventoryAnalysisItems[0];
+
+		Assert.assertEquals(2L, (long)inventoryAnalysisItem.getCount());
+
+		Assert.assertEquals("Unknown", inventoryAnalysisItem.getTitle());
+
+		inventoryAnalysisItem = inventoryAnalysisItems[1];
+
+		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
+
+		Assert.assertEquals("My Category", inventoryAnalysisItem.getTitle());
+
+		inventoryAnalysis = inventoryAnalysisResource.getInventoryAnalysis(
+			_assetCategory.getCategoryId(), _depotEntry.getDepotEntryId(),
+			"category", null, null, null, null, null, null, null, null);
+
+		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
+
+		Assert.assertEquals(
+			inventoryAnalysisItems.toString(), 1,
+			inventoryAnalysisItems.length);
+
+		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
+
+		Assert.assertEquals("My Category", inventoryAnalysisItem.getTitle());
+	}
+
+	private void _deleteFile(Bundle bundle, String fileName) {
+		File file = bundle.getDataFile(
+			".com.liferay.site.initializer.cms.internal.batch." + fileName +
+				".batch.engine.data.json.0.processed");
+
+		if ((file != null) && file.exists()) {
+			file.delete();
+		}
+	}
+
+	private void _setUpCMSContext() throws Exception {
 		Bundle testBundle = FrameworkUtil.getBundle(OverviewResourceTest.class);
 
 		BundleContext bundleContext = testBundle.getBundleContext();
@@ -82,8 +149,9 @@ public class InventoryAnalysisResourceTest
 					bundle.getSymbolicName(),
 					"com.liferay.site.initializer.cms")) {
 
-				_setUpProcessedFile(bundle, "01.object.folder");
-				_setUpProcessedFile(bundle, "02.object.definition");
+				_deleteFile(bundle, "00.list.type.definition");
+				_deleteFile(bundle, "01.object.folder");
+				_deleteFile(bundle, "02.object.definition");
 
 				CompletableFuture<Void> completableFuture =
 					_batchEngineUnitProcessor.processBatchEngineUnits(
@@ -103,7 +171,7 @@ public class InventoryAnalysisResourceTest
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
-			_serviceContext);
+			DepotConstants.TYPE_ASSET_LIBRARY, _serviceContext);
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -140,75 +208,6 @@ public class InventoryAnalysisResourceTest
 			ObjectEntryTestUtil.addObjectEntry(
 				_depotEntry.getGroupId(), objectDefinition,
 				Collections.emptyMap(), RandomTestUtil.randomString()));
-	}
-
-	@Override
-	@Test
-	public void testGetInventoryAnalysis() throws Exception {
-		InventoryAnalysis inventoryAnalysis =
-			inventoryAnalysisResource.getInventoryAnalysis(
-				null, null, null, null, null, null,
-				_depotEntry.getDepotEntryId(), null, null, null, null);
-
-		InventoryAnalysisItem[] inventoryAnalysisItems =
-			inventoryAnalysis.getInventoryAnalysisItems();
-
-		Assert.assertEquals(
-			inventoryAnalysisItems.toString(), 1,
-			inventoryAnalysisItems.length);
-
-		InventoryAnalysisItem inventoryAnalysisItem = inventoryAnalysisItems[0];
-
-		Assert.assertEquals(3L, (long)inventoryAnalysisItem.getCount());
-
-		Assert.assertEquals(
-			"Basic Web Content", inventoryAnalysisItem.getTitle());
-
-		inventoryAnalysis = inventoryAnalysisResource.getInventoryAnalysis(
-			null, "category", null, null, null, null,
-			_depotEntry.getDepotEntryId(), null, null, null, null);
-
-		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
-
-		Assert.assertEquals(
-			inventoryAnalysisItems.toString(), 2,
-			inventoryAnalysisItems.length);
-
-		inventoryAnalysisItem = inventoryAnalysisItems[0];
-
-		Assert.assertEquals(2L, (long)inventoryAnalysisItem.getCount());
-
-		Assert.assertEquals("Unknown", inventoryAnalysisItem.getTitle());
-
-		inventoryAnalysisItem = inventoryAnalysisItems[1];
-
-		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
-
-		Assert.assertEquals("My Category", inventoryAnalysisItem.getTitle());
-
-		inventoryAnalysis = inventoryAnalysisResource.getInventoryAnalysis(
-			_assetCategory.getCategoryId(), "category", null, null, null, null,
-			_depotEntry.getDepotEntryId(), null, null, null, null);
-
-		inventoryAnalysisItems = inventoryAnalysis.getInventoryAnalysisItems();
-
-		Assert.assertEquals(
-			inventoryAnalysisItems.toString(), 1,
-			inventoryAnalysisItems.length);
-
-		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
-
-		Assert.assertEquals("My Category", inventoryAnalysisItem.getTitle());
-	}
-
-	private void _setUpProcessedFile(Bundle bundle, String fileName) {
-		File file = bundle.getDataFile(
-			".com.liferay.headless.builder.internal.batch." + fileName +
-				".batch.engine.data.json.0.processed");
-
-		if ((file != null) && file.exists()) {
-			file.delete();
-		}
 	}
 
 	@DeleteAfterTestRun

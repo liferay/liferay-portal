@@ -7,12 +7,18 @@ package com.liferay.ratings.taglib.servlet.taglib;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
+import com.liferay.message.boards.model.MBDiscussion;
+import com.liferay.message.boards.model.MBMessage;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.PersistedResourcedModelLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
@@ -24,6 +30,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
+import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.ratings.kernel.RatingsType;
 import com.liferay.ratings.kernel.definition.PortletRatingsDefinitionUtil;
 import com.liferay.ratings.kernel.model.RatingsEntry;
@@ -35,6 +42,9 @@ import com.liferay.taglib.util.IncludeTag;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.PageContext;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Ambrín Chaudhary
@@ -138,6 +148,7 @@ public class RatingsTag extends IncludeTag {
 		_className = null;
 		_classPK = 0;
 		_contentTitle = null;
+		_externalReferenceCode = null;
 		_inTrash = null;
 		_numberOfStars = _NUMBER_OF_STARS;
 		_ratingsEntry = null;
@@ -160,6 +171,9 @@ public class RatingsTag extends IncludeTag {
 				"liferay-ratings:ratings:className", _className);
 			httpServletRequest.setAttribute(
 				"liferay-ratings:ratings:classPK", String.valueOf(_classPK));
+			httpServletRequest.setAttribute(
+				"liferay-ratings:ratings:externalReferenceCode",
+				_getExternalReferenceCode());
 
 			boolean inTrash = _isInTrash();
 
@@ -197,6 +211,8 @@ public class RatingsTag extends IncludeTag {
 					"contentTitle", _contentTitle
 				).put(
 					"enabled", _isEnabled(themeDisplay, inTrash)
+				).put(
+					"externalReferenceCode", _externalReferenceCode
 				).put(
 					"initialAverageScore", _getInitialAverageScore(ratingsStats)
 				).put(
@@ -242,6 +258,55 @@ public class RatingsTag extends IncludeTag {
 		catch (Exception exception) {
 			_log.error(exception);
 		}
+	}
+
+	private String _getExternalReferenceCode() throws Exception {
+		if (Validator.isNotNull(_externalReferenceCode)) {
+			return _externalReferenceCode;
+		}
+
+		String className = _className;
+
+		if (Objects.equals(className, MBDiscussion.class.getName())) {
+			className = MBMessage.class.getName();
+		}
+
+		PersistedModelLocalService persistedModelLocalService =
+			PersistedModelLocalServiceRegistryUtil.
+				getPersistedModelLocalService(className);
+
+		PersistedModel persistedModel = null;
+
+		if (persistedModelLocalService instanceof
+				PersistedResourcedModelLocalService) {
+
+			PersistedResourcedModelLocalService
+				persistedResourcedModelLocalService =
+					(PersistedResourcedModelLocalService)
+						persistedModelLocalService;
+
+			List<? extends PersistedModel> persistedModels =
+				persistedResourcedModelLocalService.getPersistedModel(_classPK);
+
+			if (!persistedModels.isEmpty()) {
+				persistedModel = persistedModels.get(0);
+			}
+		}
+
+		if (persistedModel == null) {
+			persistedModel = persistedModelLocalService.fetchPersistedModel(
+				_classPK);
+		}
+
+		if (persistedModel instanceof ExternalReferenceCodeModel) {
+			ExternalReferenceCodeModel externalReferenceCodeModel =
+				(ExternalReferenceCodeModel)persistedModel;
+
+			_externalReferenceCode =
+				externalReferenceCodeModel.getExternalReferenceCode();
+		}
+
+		return _externalReferenceCode;
 	}
 
 	private double _getInitialAverageScore(RatingsStats ratingsStats) {
@@ -399,6 +464,7 @@ public class RatingsTag extends IncludeTag {
 	private String _className;
 	private long _classPK;
 	private String _contentTitle;
+	private String _externalReferenceCode;
 	private Boolean _inTrash;
 	private int _numberOfStars = _NUMBER_OF_STARS;
 	private RatingsEntry _ratingsEntry;

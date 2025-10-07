@@ -272,6 +272,11 @@ const SelectionControls = ({
 									setCheckboxStatus('unchecked');
 
 									onClearButtonClick(event);
+
+									Liferay.fire(
+										EVENT_MANAGEMENT_TOOLBAR_TOGGLE_ALL_ITEMS,
+										{checked: false}
+									);
 								}}
 								symbol="times-circle"
 								title={Liferay.Language.get('clear')}
@@ -301,6 +306,11 @@ const SelectionControls = ({
 										setSelectedItems(itemsTotal);
 
 										onSelectAllButtonClick(event);
+
+										Liferay.fire(
+											EVENT_MANAGEMENT_TOOLBAR_TOGGLE_ALL_ITEMS,
+											{checked: true}
+										);
 									}}
 								>
 									<span className="text-truncate-inline">

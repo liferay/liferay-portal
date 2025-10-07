@@ -605,6 +605,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -1001,6 +1010,14 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByUuid(uuid);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1612,6 +1629,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2028,6 +2054,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByUuid_C(
+				uuid, companyId);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2585,6 +2620,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2943,6 +2987,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByCompanyId(
+				companyId);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3481,6 +3534,15 @@ public class ObjectDefinitionPersistenceImpl
 				objectFolderId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByObjectFolderId(
+					objectFolderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3842,6 +3904,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByObjectFolderId(long objectFolderId) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByObjectFolderId(objectFolderId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByObjectFolderId(
+				objectFolderId);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -4388,6 +4459,15 @@ public class ObjectDefinitionPersistenceImpl
 				accountEntryRestricted, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByAccountEntryRestricted(
+					accountEntryRestricted, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4757,6 +4837,15 @@ public class ObjectDefinitionPersistenceImpl
 			return countByAccountEntryRestricted(accountEntryRestricted);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions =
+				findByAccountEntryRestricted(accountEntryRestricted);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
+		}
+
 		StringBundler sb = new StringBundler(2);
 
 		sb.append(_FILTER_SQL_COUNT_OBJECTDEFINITION_WHERE);
@@ -4797,6 +4886,202 @@ public class ObjectDefinitionPersistenceImpl
 	private static final String
 		_FINDER_COLUMN_ACCOUNTENTRYRESTRICTED_ACCOUNTENTRYRESTRICTED_2 =
 			"objectDefinition.accountEntryRestricted = ?";
+
+	private FinderPath _finderPathFetchByClassName;
+
+	/**
+	 * Returns the object definition where className = &#63; or throws a <code>NoSuchObjectDefinitionException</code> if it could not be found.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition
+	 * @throws NoSuchObjectDefinitionException if a matching object definition could not be found
+	 */
+	@Override
+	public ObjectDefinition findByClassName(String className)
+		throws NoSuchObjectDefinitionException {
+
+		ObjectDefinition objectDefinition = fetchByClassName(className);
+
+		if (objectDefinition == null) {
+			StringBundler sb = new StringBundler(4);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("className=");
+			sb.append(className);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchObjectDefinitionException(sb.toString());
+		}
+
+		return objectDefinition;
+	}
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param className the class name
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	@Override
+	public ObjectDefinition fetchByClassName(String className) {
+		return fetchByClassName(className, true);
+	}
+
+	/**
+	 * Returns the object definition where className = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param className the class name
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching object definition, or <code>null</code> if a matching object definition could not be found
+	 */
+	@Override
+	public ObjectDefinition fetchByClassName(
+		String className, boolean useFinderCache) {
+
+		className = Objects.toString(className, "");
+
+		Object[] finderArgs = null;
+
+		if (useFinderCache) {
+			finderArgs = new Object[] {className};
+		}
+
+		Object result = null;
+
+		if (useFinderCache) {
+			result = finderCache.getResult(
+				_finderPathFetchByClassName, finderArgs, this);
+		}
+
+		if (result instanceof ObjectDefinition) {
+			ObjectDefinition objectDefinition = (ObjectDefinition)result;
+
+			if (!Objects.equals(className, objectDefinition.getClassName())) {
+				result = null;
+			}
+		}
+
+		if (result == null) {
+			StringBundler sb = new StringBundler(3);
+
+			sb.append(_SQL_SELECT_OBJECTDEFINITION_WHERE);
+
+			boolean bindClassName = false;
+
+			if (className.isEmpty()) {
+				sb.append(_FINDER_COLUMN_CLASSNAME_CLASSNAME_3);
+			}
+			else {
+				bindClassName = true;
+
+				sb.append(_FINDER_COLUMN_CLASSNAME_CLASSNAME_2);
+			}
+
+			String sql = sb.toString();
+
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query query = session.createQuery(sql);
+
+				QueryPos queryPos = QueryPos.getInstance(query);
+
+				if (bindClassName) {
+					queryPos.add(className);
+				}
+
+				List<ObjectDefinition> list = query.list();
+
+				if (list.isEmpty()) {
+					if (useFinderCache) {
+						finderCache.putResult(
+							_finderPathFetchByClassName, finderArgs, list);
+					}
+				}
+				else {
+					if (list.size() > 1) {
+						Collections.sort(list, Collections.reverseOrder());
+
+						if (_log.isWarnEnabled()) {
+							if (!useFinderCache) {
+								finderArgs = new Object[] {className};
+							}
+
+							_log.warn(
+								"ObjectDefinitionPersistenceImpl.fetchByClassName(String, boolean) with parameters (" +
+									StringUtil.merge(finderArgs) +
+										") yields a result set with more than 1 result. This violates the logical unique restriction. There is no order guarantee on which result is returned by this finder.");
+						}
+					}
+
+					ObjectDefinition objectDefinition = list.get(0);
+
+					result = objectDefinition;
+
+					cacheResult(objectDefinition);
+				}
+			}
+			catch (Exception exception) {
+				throw processException(exception);
+			}
+			finally {
+				closeSession(session);
+			}
+		}
+
+		if (result instanceof List<?>) {
+			return null;
+		}
+		else {
+			return (ObjectDefinition)result;
+		}
+	}
+
+	/**
+	 * Removes the object definition where className = &#63; from the database.
+	 *
+	 * @param className the class name
+	 * @return the object definition that was removed
+	 */
+	@Override
+	public ObjectDefinition removeByClassName(String className)
+		throws NoSuchObjectDefinitionException {
+
+		ObjectDefinition objectDefinition = findByClassName(className);
+
+		return remove(objectDefinition);
+	}
+
+	/**
+	 * Returns the number of object definitions where className = &#63;.
+	 *
+	 * @param className the class name
+	 * @return the number of matching object definitions
+	 */
+	@Override
+	public int countByClassName(String className) {
+		ObjectDefinition objectDefinition = fetchByClassName(className);
+
+		if (objectDefinition == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String _FINDER_COLUMN_CLASSNAME_CLASSNAME_2 =
+		"objectDefinition.className = ?";
+
+	private static final String _FINDER_COLUMN_CLASSNAME_CLASSNAME_3 =
+		"(objectDefinition.className IS NULL OR objectDefinition.className = '')";
 
 	private FinderPath _finderPathWithPaginationFindBySystem;
 	private FinderPath _finderPathWithoutPaginationFindBySystem;
@@ -5282,6 +5567,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findBySystem(system, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findBySystem(
+					system, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5640,6 +5934,14 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountBySystem(boolean system) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countBySystem(system);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findBySystem(system);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -6204,6 +6506,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByC_U(companyId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -6581,6 +6892,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByC_U(long companyId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_U(companyId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_U(
+				companyId, userId);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -7577,6 +7897,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByC_S(companyId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_S(
+					companyId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -7954,6 +8283,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByC_S(long companyId, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_S(companyId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_S(
+				companyId, status);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -8521,6 +8859,15 @@ public class ObjectDefinitionPersistenceImpl
 			return findByS_S(system, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByS_S(
+					system, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -8898,6 +9245,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByS_S(boolean system, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByS_S(system, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByS_S(
+				system, status);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -9504,6 +9860,15 @@ public class ObjectDefinitionPersistenceImpl
 				companyId, active, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A_S(
+					companyId, active, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -9899,6 +10264,15 @@ public class ObjectDefinitionPersistenceImpl
 	public int filterCountByC_A_S(long companyId, boolean active, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_A_S(companyId, active, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_A_S(
+				companyId, active, status);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -10516,6 +10890,15 @@ public class ObjectDefinitionPersistenceImpl
 				companyId, modifiable, system, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_M_S(
+					companyId, modifiable, system, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -10918,6 +11301,15 @@ public class ObjectDefinitionPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_M_S(companyId, modifiable, system);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_M_S(
+				companyId, modifiable, system);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -11566,6 +11958,15 @@ public class ObjectDefinitionPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A_S_S(
+					companyId, active, system, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -11984,6 +12385,15 @@ public class ObjectDefinitionPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_A_S_S(companyId, active, system, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_A_S_S(
+				companyId, active, system, status);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(5);
@@ -12749,6 +13159,16 @@ public class ObjectDefinitionPersistenceImpl
 				scope, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_OFI_A_E_S_S(
+					companyId, objectFolderId, active, enableObjectEntryDraft,
+					scope, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		scope = Objects.toString(scope, "");
 
 		StringBundler sb = null;
@@ -13189,6 +13609,16 @@ public class ObjectDefinitionPersistenceImpl
 			return findByC_OFI_A_E_S_S(
 				companyId, objectFolderIds, active, enableObjectEntryDraft,
 				scope, status, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_OFI_A_E_S_S(
+					companyId, objectFolderIds, active, enableObjectEntryDraft,
+					scope, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
 		}
 
 		if (objectFolderIds == null) {
@@ -13833,6 +14263,16 @@ public class ObjectDefinitionPersistenceImpl
 				scope, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions = findByC_OFI_A_E_S_S(
+				companyId, objectFolderId, active, enableObjectEntryDraft,
+				scope, status);
+
+			objectDefinitions = InlineSQLHelperUtil.filter(objectDefinitions);
+
+			return objectDefinitions.size();
+		}
+
 		scope = Objects.toString(scope, "");
 
 		StringBundler sb = new StringBundler(7);
@@ -13922,6 +14362,16 @@ public class ObjectDefinitionPersistenceImpl
 			return countByC_OFI_A_E_S_S(
 				companyId, objectFolderIds, active, enableObjectEntryDraft,
 				scope, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ObjectDefinition> objectDefinitions =
+				InlineSQLHelperUtil.filter(
+					findByC_OFI_A_E_S_S(
+						companyId, objectFolderIds, active,
+						enableObjectEntryDraft, scope, status));
+
+			return objectDefinitions.size();
 		}
 
 		if (objectFolderIds == null) {
@@ -14279,6 +14729,10 @@ public class ObjectDefinitionPersistenceImpl
 			objectDefinition);
 
 		finderCache.putResult(
+			_finderPathFetchByClassName,
+			new Object[] {objectDefinition.getClassName()}, objectDefinition);
+
+		finderCache.putResult(
 			_finderPathFetchByC_C,
 			new Object[] {
 				objectDefinition.getCompanyId(), objectDefinition.getClassName()
@@ -14374,7 +14828,12 @@ public class ObjectDefinitionPersistenceImpl
 	protected void cacheUniqueFindersCache(
 		ObjectDefinitionModelImpl objectDefinitionModelImpl) {
 
-		Object[] args = new Object[] {
+		Object[] args = new Object[] {objectDefinitionModelImpl.getClassName()};
+
+		finderCache.putResult(
+			_finderPathFetchByClassName, args, objectDefinitionModelImpl);
+
+		args = new Object[] {
 			objectDefinitionModelImpl.getCompanyId(),
 			objectDefinitionModelImpl.getClassName()
 		};
@@ -15032,6 +15491,11 @@ public class ObjectDefinitionPersistenceImpl
 			"countByAccountEntryRestricted",
 			new String[] {Boolean.class.getName()},
 			new String[] {"accountEntryRestricted"}, false);
+
+		_finderPathFetchByClassName = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByClassName",
+			new String[] {String.class.getName()}, new String[] {"className"},
+			true);
 
 		_finderPathWithPaginationFindBySystem = new FinderPath(
 			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBySystem",

@@ -97,9 +97,7 @@ export function getDataSetProps(
 				modalType: 'edit',
 				name_i18n: itemData.name_i18n,
 				readOnly,
-				system: Liferay.FeatureFlags['LPD-24055']
-					? itemData.system
-					: values.system,
+				system: itemData.system,
 			});
 		}
 
@@ -141,10 +139,7 @@ export function getDataSetProps(
 		type: 'item',
 	};
 
-	const addItemMenu =
-		readOnly || (!Liferay.FeatureFlags['LPD-24055'] && values?.system)
-			? []
-			: [addButton];
+	const addItemMenu = readOnly ? [] : [addButton];
 
 	return {
 		actionParameterName: '',

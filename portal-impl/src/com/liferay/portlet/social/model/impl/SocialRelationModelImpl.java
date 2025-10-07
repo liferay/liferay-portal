@@ -152,7 +152,7 @@ public class SocialRelationModelImpl
 	public static final long RELATIONID_COLUMN_BITMASK = 32L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.social.kernel.model.SocialRelation"));
 
 	public SocialRelationModelImpl() {

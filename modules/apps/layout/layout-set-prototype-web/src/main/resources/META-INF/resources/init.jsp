@@ -35,10 +35,10 @@ page import="com.liferay.portal.kernel.util.CustomJspRegistryUtil" %><%@
 page import="com.liferay.portal.kernel.util.GetterUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
 page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
+page import="com.liferay.portal.kernel.util.PropsValues" %><%@
 page import="com.liferay.portal.kernel.util.UnicodeProperties" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
-page import="com.liferay.portal.model.impl.LayoutSetPrototypeImpl" %><%@
-page import="com.liferay.portal.util.PropsValues" %>
+page import="com.liferay.portal.model.impl.LayoutSetPrototypeImpl" %>
 
 <%@ page import="jakarta.portlet.PortletURL" %>
 

@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PortalInstances;
 
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Alejandro Tardín
@@ -27,7 +26,7 @@ public class ObjectDefinitionUtil {
 	public static String getModifiableSystemObjectDefinitionRESTContextPath(
 		String name) {
 
-		if (PortalRunMode.isTestMode() && Objects.equals(name, "Test")) {
+		if (PortalRunMode.isTestMode() && StringUtil.startsWith(name, "Test")) {
 			return "/test";
 		}
 
@@ -101,8 +100,8 @@ public class ObjectDefinitionUtil {
 		"com.liferay.frontend.data.set.admin.web",
 		"com.liferay.frontend.data.set.impl",
 		"com.liferay.headless.builder.impl", "com.liferay.list.type.service",
-		"com.liferay.notification.service", "com.liferay.object.service",
-		"com.liferay.site.initializer.cms"
+		"com.liferay.mcp.server", "com.liferay.notification.service",
+		"com.liferay.object.service", "com.liferay.site.initializer.cms"
 	};
 
 	private static final Map<String, String>
@@ -127,29 +126,34 @@ public class ObjectDefinitionUtil {
 		).put(
 			"Bookmark", "/bookmarks"
 		).put(
+			"BulkActionTask", "/cms/bulk-action-tasks"
+		).put(
+			"BulkActionTaskItem", "/cms/bulk-action-task-items"
+		).put(
+			"CMSDefaultPermission", "/cms/default-permissions"
+		).put(
 			"CommerceReturn", "/commerce/returns"
 		).put(
 			"CommerceReturnItem", "/commerce/return-items"
 		).put(
 			"DataSet", "/data-set-admin/data-sets"
 		).put(
-			"DataSetAction", "/data-set-admin/data-sets/actions"
+			"DataSetAction", "/data-set-admin/actions"
 		).put(
-			"DataSetCardsSection", "/data-set-admin/data-sets/cards-sections"
+			"DataSetCardsSection", "/data-set-admin/cards-sections"
 		).put(
 			"DataSetClientExtensionFilter",
-			"/data-set-admin/data-sets/client-extension-filters"
+			"/data-set-admin/client-extension-filters"
 		).put(
-			"DataSetDateFilter", "/data-set-admin/data-sets/date-filters"
+			"DataSetDateFilter", "/data-set-admin/date-filters"
 		).put(
-			"DataSetListSection", "/data-set-admin/data-sets/list-sections"
+			"DataSetListSection", "/data-set-admin/list-sections"
 		).put(
-			"DataSetSelectionFilter",
-			"/data-set-admin/data-sets/selection-filters"
+			"DataSetSelectionFilter", "/data-set-admin/selection-filters"
 		).put(
-			"DataSetSort", "/data-set-admin/data-sets/sorts"
+			"DataSetSort", "/data-set-admin/sorts"
 		).put(
-			"DataSetTableSection", "/data-set-admin/data-sets/table-sections"
+			"DataSetTableSection", "/data-set-admin/table-sections"
 		).put(
 			"ExternalVideo", "/cms/external-videos"
 		).put(
@@ -177,6 +181,8 @@ public class ObjectDefinitionUtil {
 			"FunctionalCookieEntry", "/functional-cookies-entries"
 		).put(
 			"KnowledgeBase", "/cms/knowledge-bases"
+		).put(
+			"MCPServerPrompt", "/mcp/server-prompts"
 		).put(
 			"NecessaryCookieEntry", "/necessary-cookies-entries"
 		).put(

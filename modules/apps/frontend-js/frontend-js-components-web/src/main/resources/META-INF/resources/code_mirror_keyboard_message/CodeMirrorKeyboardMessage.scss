@@ -9,6 +9,20 @@ html#{$cadmin-selector} {
 
 .keyboard-message.popover {
 	left: inherit;
+	padding: 0.25rem 0.5rem;
 	right: 4px;
 	top: 4px;
+	transition: padding ease-out 200ms;
+
+	&:not(:hover).d-reduce {
+		padding: 0;
+
+		.c-kbd-sm:not(.c-kbd) {
+			display: none;
+		}
+
+		.c-kbd-light {
+			font-size: 65%;
+		}
+	}
 }

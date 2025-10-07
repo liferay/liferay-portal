@@ -10,8 +10,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
-import com.liferay.portal.util.PropsUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1934,7 +1934,8 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		"lucene.store.jdbc.dialect.hsqldb", "lucene.store.jdbc.dialect.jtds",
 		"lucene.store.jdbc.dialect.microsoft",
 		"lucene.store.jdbc.dialect.mysql", "lucene.store.jdbc.dialect.oracle",
-		"lucene.store.jdbc.dialect.postgresql", "mail.hook.cyrus.add.user",
+		"lucene.store.jdbc.dialect.postgresql", "mail.audit.trail",
+		"mail.batch.size", "mail.hook.cyrus.add.user",
 		"mail.hook.cyrus.delete.user", "mail.hook.cyrus.home",
 		"mail.hook.fusemail.account.type", "mail.hook.fusemail.group.parent",
 		"mail.hook.fusemail.password", "mail.hook.fusemail.url",
@@ -1943,6 +1944,15 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		"mail.hook.sendmail.delete.user", "mail.hook.sendmail.home",
 		"mail.hook.sendmail.virtusertable",
 		"mail.hook.sendmail.virtusertable.refresh", "mail.hook.shell.script",
+		"mail.send.blacklist", "mail.session.jndi.name", "mail.session.mail",
+		"mail.session.mail.advanced.properties", "mail.session.mail.pop3.host",
+		"mail.session.mail.pop3.password", "mail.session.mail.pop3.port",
+		"mail.session.mail.pop3.user", "mail.session.mail.smtp.auth",
+		"mail.session.mail.smtp.host", "mail.session.mail.smtp.password",
+		"mail.session.mail.smtp.port", "mail.session.mail.smtp.starttls.enable",
+		"mail.session.mail.smtp.user", "mail.session.mail.store.protocol",
+		"mail.session.mail.transport.protocol",
+		"mail.throws.exception.on.failure",
 		"memory.cluster.scheduler.lock.cache.enabled",
 		"message.boards.email.message.added.signature",
 		"message.boards.email.message.updated.signature",
@@ -1983,6 +1993,7 @@ public class PreupgradeVerifyProperties extends PreupgradeVerifyProcess {
 		"organizations.indexer.enabled", "organizations.rootable",
 		"organizations.types", "permissions.object.blocking.cache",
 		"poller.notifications.timeout", "poller.request.timeout",
+		"pop.server.notifications.enabled", "pop.server.subdomain",
 		"portal.cache.manager.type.multi.vm",
 		"portal.cache.manager.type.single.vm", "portal.ctx",
 		"portal.fabric.enabled", "portal.fabric.agent.selector.class",

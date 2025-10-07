@@ -140,6 +140,8 @@ const ColorPicker = ({
 		>
 			<ClayColorPickerWithState
 				accessibleProps={{
+					...(otherProps.displayErrors &&
+						!otherProps.valid && {'aria-invalid': true}),
 					'aria-required': otherProps.required,
 				}}
 				inputValue={value ? value : predefinedValue}

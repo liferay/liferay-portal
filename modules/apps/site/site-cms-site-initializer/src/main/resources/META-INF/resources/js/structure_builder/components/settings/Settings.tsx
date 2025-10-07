@@ -6,9 +6,10 @@
 import ClayEmptyState from '@clayui/empty-state';
 import React from 'react';
 
-import {getImage} from '../../../main/util/getImage';
+import {getImage} from '../../../common/utils/getImage';
 import useSelectedItem from '../../contexts/hooks/useSelectedItem';
 import ReferencedStructureSettings from './ReferencedStructureSettings';
+import RepeatableGroupSettings from './RepeatableGroupSettings';
 import StructureFieldSettings from './StructureFieldSettings';
 import StructureSettings from './StructureSettings';
 
@@ -22,17 +23,30 @@ export default function Settings() {
 	if (item.type === 'referenced-structure') {
 		return (
 			<ReferencedStructureSettings
+				key={item.referencedStructure.uuid}
 				referencedStructure={item.referencedStructure}
 			/>
 		);
 	}
 
-	if (item.type === 'field') {
-		return <StructureFieldSettings field={item.field} />;
+	if (item.type === 'repeatable-group') {
+		return (
+			<RepeatableGroupSettings
+				disabled={item.referenced}
+				group={item.group}
+				key={item.group.uuid}
+			/>
+		);
 	}
 
-	if (item.type === 'referenced-field') {
-		return <StructureFieldSettings disabled field={item.field} />;
+	if (item.type === 'field') {
+		return (
+			<StructureFieldSettings
+				disabled={item.referenced || item.field.locked}
+				field={item.field}
+				key={item.field.uuid}
+			/>
+		);
 	}
 
 	return <StructureSettings />;

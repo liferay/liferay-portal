@@ -436,6 +436,12 @@ public class DropZoneFragmentEntryProcessorTest {
 			LayoutStructure layoutStructure)
 		throws Exception {
 
+		Mockito.when(
+			fragmentEntryLink.getHtml()
+		).thenReturn(
+			html
+		);
+
 		Document document = _getDocument(html);
 
 		_dropZoneDocumentFragmentEntryProcessor.processFragmentEntryLinkHTML(

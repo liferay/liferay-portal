@@ -5,7 +5,8 @@
 
 package com.liferay.exportimport.internal.lar;
 
-import com.liferay.batch.engine.BatchEngineDeletionHelper;
+import com.liferay.exportimport.internal.data.handler.BatchEnginePortletDataHandler;
+import com.liferay.exportimport.internal.data.handler.BatchEnginePortletDataHandlerRegistryUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportProcessCallbackRegistry;
@@ -16,6 +17,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.lar.DeletionSystemEventExporter;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Conjunction;
 import com.liferay.portal.kernel.dao.orm.Disjunction;
@@ -37,12 +39,14 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -114,7 +118,30 @@ public class DeletionSystemEventExporterImpl
 				"/deletion-system-events.xml",
 			document.formattedString());
 
-		_batchEngineDeletionHelper.exportDeletions(portletDataContext);
+		Map<String, Map<?, ?>> newPrimaryKeysMaps =
+			portletDataContext.getNewPrimaryKeysMaps();
+
+		for (String key : newPrimaryKeysMaps.keySet()) {
+			if (!key.endsWith(
+					BatchEnginePortletDataHandler.
+						BATCH_DELETE_CLASS_NAME_POSTFIX)) {
+
+				continue;
+			}
+
+			BatchEnginePortletDataHandler batchEnginePortletDataHandler =
+				BatchEnginePortletDataHandlerRegistryUtil.
+					getBatchEnginePortletDataHandler(
+						StringUtil.removeLast(
+							key,
+							BatchEnginePortletDataHandler.
+								BATCH_DELETE_CLASS_NAME_POSTFIX));
+
+			if (batchEnginePortletDataHandler != null) {
+				batchEnginePortletDataHandler.exportDeletionSystemEvents(
+					portletDataContext);
+			}
+		}
 
 		if (ListUtil.isNotEmpty(exportedSystemEventIds) &&
 			ExportImportThreadLocal.isStagingInProcess()) {
@@ -214,9 +241,17 @@ public class DeletionSystemEventExporterImpl
 		String className = PortalUtil.getClassName(
 			systemEvent.getClassNameId());
 
-		if (_batchEngineDeletionHelper.isBatchDeleteSupported(className)) {
-			_batchEngineDeletionHelper.addDeletionEvent(
-				portletDataContext, systemEvent);
+		if (BatchEnginePortletDataHandlerRegistryUtil.
+				hasBatchEnginePortletDataHandler(className)) {
+
+			Map<String, String> newPrimaryKeysMap =
+				(Map<String, String>)portletDataContext.getNewPrimaryKeysMap(
+					systemEvent.getClassName() +
+						BatchEnginePortletDataHandler.
+							BATCH_DELETE_CLASS_NAME_POSTFIX);
+
+			newPrimaryKeysMap.put(
+				systemEvent.getClassExternalReferenceCode(), StringPool.BLANK);
 		}
 		else {
 			Element deletionSystemEventElement =
@@ -326,9 +361,6 @@ public class DeletionSystemEventExporterImpl
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DeletionSystemEventExporterImpl.class);
-
-	@Reference
-	private BatchEngineDeletionHelper _batchEngineDeletionHelper;
 
 	@Reference
 	private ExportImportProcessCallbackRegistry

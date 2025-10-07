@@ -25,10 +25,13 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.servlet.taglib.util.OutputData;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -52,11 +56,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -72,13 +79,13 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
-	public String getConfiguration(
+	public JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
 
 		FragmentEntryLink fragmentEntryLink =
 			fragmentRendererContext.getFragmentEntryLink();
 
-		return fragmentEntryLink.getConfiguration();
+		return fragmentEntryLink.getConfigurationJSONObject(true);
 	}
 
 	@Override
@@ -111,14 +118,18 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		}
 	}
 
-	private FragmentEntry _getContributedFragmentEntry(
-		FragmentEntryLink fragmentEntryLink) {
+	@Activate
+	protected void activate() {
+		_configurationPortalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM,
+			FragmentEntryFragmentRenderer.class.getName());
+	}
 
-		Map<String, FragmentEntry> fragmentCollectionContributorEntries =
-			_fragmentCollectionContributorRegistry.getFragmentEntries();
-
-		return fragmentCollectionContributorEntries.get(
-			fragmentEntryLink.getRendererKey());
+	@Deactivate
+	protected void deactivate() {
+		PortalCacheHelperUtil.removePortalCache(
+			PortalCacheManagerNames.SINGLE_VM,
+			FragmentEntryFragmentRenderer.class.getName());
 	}
 
 	private FragmentEntryLink _getFragmentEntryLink(
@@ -127,15 +138,23 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		FragmentEntryLink fragmentEntryLink =
 			fragmentRendererContext.getFragmentEntryLink();
 
-		FragmentEntry fragmentEntry = _getContributedFragmentEntry(
-			fragmentEntryLink);
+		FragmentEntry fragmentEntry =
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				fragmentEntryLink.getRendererKey());
 
 		if (fragmentEntry != null) {
 			fragmentEntryLink.setCss(fragmentEntry.getCss());
 			fragmentEntryLink.setHtml(fragmentEntry.getHtml());
 			fragmentEntryLink.setJs(fragmentEntry.getJs());
-			fragmentEntryLink.setConfiguration(
-				fragmentEntry.getConfiguration());
+
+			if (!Objects.equals(
+					fragmentEntryLink.getConfiguration(),
+					fragmentEntry.getConfiguration())) {
+
+				fragmentEntryLink.setConfiguration(
+					fragmentEntry.getConfiguration());
+			}
+
 			fragmentEntryLink.setType(fragmentEntry.getType());
 		}
 
@@ -251,7 +270,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		FragmentRendererContext fragmentRendererContext, String html,
 		HttpServletRequest httpServletRequest, String nonce) {
 
-		StringBundler sb = new StringBundler(29);
+		StringBundler sb = new StringBundler(31);
 
 		sb.append("<div id=\"");
 
@@ -318,53 +337,57 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			}
 		}
 
-		if (Validator.isNotNull(fragmentEntryLink.getJs())) {
-			boolean javaScriptModuleEnabled = _isJavaScriptModuleEnabled(
-				httpServletRequest);
+		if (Validator.isNull(fragmentEntryLink.getJs())) {
+			return sb.toString();
+		}
 
-			if (javaScriptModuleEnabled) {
-				sb.append("<script type=\"module\" ");
-				sb.append(nonce);
-				sb.append(StringPool.GREATER_THAN);
-			}
-			else {
-				sb.append("<script>(function() {");
-			}
+		boolean javaScriptModuleEnabled = _isJavaScriptModuleEnabled(
+			httpServletRequest);
 
-			sb.append("const configuration = ");
-			sb.append(configuration);
-			sb.append("; const fragmentElement = document.querySelector('#");
-			sb.append(fragmentRendererContext.getFragmentElementId());
-			sb.append("'); const fragmentEntryLinkNamespace = '");
-			sb.append(fragmentEntryLink.getNamespace());
-			sb.append("'; const fragmentNamespace = '");
-			sb.append(fragmentEntryLink.getNamespace());
-			sb.append("'");
+		if (javaScriptModuleEnabled) {
+			sb.append("<script type=\"module\" ");
+			sb.append(nonce);
+			sb.append(StringPool.GREATER_THAN);
+		}
+		else {
+			sb.append("<script>(function() {");
+		}
 
-			if (fragmentEntryLink.isTypeInput()) {
-				sb.append("; const input = ");
-				sb.append(
-					JSONUtil.toString(
-						_getInputJSONObject(
-							fragmentEntryLink, fragmentRendererContext,
-							httpServletRequest)));
-			}
+		sb.append("const configuration = ");
+		sb.append(configuration);
+		sb.append("; const fragmentElement = document.querySelector('#");
+		sb.append(fragmentRendererContext.getFragmentElementId());
+		sb.append("'); const fragmentElementId = '");
+		sb.append(fragmentRendererContext.getFragmentElementId());
+		sb.append("'; const fragmentEntryLinkNamespace = '");
+		sb.append(fragmentEntryLink.getNamespace());
+		sb.append("'; const fragmentNamespace = '");
+		sb.append(fragmentEntryLink.getNamespace());
+		sb.append("'");
 
-			sb.append("; const layoutMode = '");
+		if (fragmentEntryLink.isTypeInput()) {
+			sb.append("; const input = ");
 			sb.append(
-				HtmlUtil.escapeJS(
-					ParamUtil.getString(
-						_portal.getOriginalServletRequest(httpServletRequest),
-						"p_l_mode", Constants.VIEW)));
-			sb.append("';");
-			sb.append(fragmentEntryLink.getJs());
+				JSONUtil.toString(
+					_getInputJSONObject(
+						fragmentEntryLink, fragmentRendererContext,
+						httpServletRequest)));
+		}
 
-			if (javaScriptModuleEnabled) {
-				sb.append(";</script>");
-			}
-			else {
-				sb.append(";}());</script>");
-			}
+		sb.append("; const layoutMode = '");
+		sb.append(
+			HtmlUtil.escapeJS(
+				ParamUtil.getString(
+					_portal.getOriginalServletRequest(httpServletRequest),
+					"p_l_mode", Constants.VIEW)));
+		sb.append("';");
+		sb.append(fragmentEntryLink.getJs());
+
+		if (javaScriptModuleEnabled) {
+			sb.append(";</script>");
+		}
+		else {
+			sb.append(";}());</script>");
 		}
 
 		return sb.toString();
@@ -412,6 +435,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 			fragmentRendererContext.getAttributes());
 		defaultFragmentEntryProcessorContext.setContextInfoItemReference(
 			fragmentRendererContext.getContextInfoItemReference());
+		defaultFragmentEntryProcessorContext.setDisablePortletRender(
+			fragmentRendererContext.isDisablePortletRender());
 		defaultFragmentEntryProcessorContext.setFragmentElementId(
 			fragmentRendererContext.getFragmentElementId());
 		defaultFragmentEntryProcessorContext.setInfoForm(
@@ -449,32 +474,62 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 				httpServletResponse);
 		}
 
-		JSONObject configurationJSONObject = _jsonFactory.createJSONObject();
+		content = _renderFragmentEntry(
+			_toConfiguration(fragmentEntryLink, fragmentRendererContext), css,
+			fragmentRendererContext, html, httpServletRequest, nonce);
 
-		if (Validator.isNotNull(fragmentEntryLink.getConfiguration())) {
-			configurationJSONObject =
-				_fragmentEntryConfigurationParser.getConfigurationJSONObject(
-					fragmentEntryLink.getConfiguration(),
-					fragmentEntryLink.getEditableValues(),
-					fragmentRendererContext.getLocale());
+		if (!cacheable) {
+			return content;
 		}
 
-		content = _renderFragmentEntry(
-			configurationJSONObject.toString(), css, fragmentRendererContext,
-			html, httpServletRequest, nonce);
+		_fragmentEntryLinkCache.putFragmentEntryLinkContent(
+			content, fragmentEntryLink, fragmentRendererContext.getLocale());
 
-		if (cacheable) {
-			_fragmentEntryLinkCache.putFragmentEntryLinkContent(
-				content, fragmentEntryLink,
+		return StringUtil.replace(
+			content, _NONCE,
+			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
+				httpServletRequest));
+	}
+
+	private String _toConfiguration(
+			FragmentEntryLink fragmentEntryLink,
+			FragmentRendererContext fragmentRendererContext)
+		throws JSONException {
+
+		String configuration = fragmentEntryLink.getConfiguration();
+
+		if (Validator.isNull(configuration)) {
+			return "{}";
+		}
+
+		String key = String.valueOf(fragmentEntryLink.getFragmentEntryLinkId());
+
+		if (configuration.contains("localizable")) {
+			key = key.concat(StringPool.POUND);
+			key = key.concat(
+				LocaleUtil.toLanguageId(fragmentRendererContext.getLocale()));
+		}
+
+		Map.Entry<Long, String> entry = _configurationPortalCache.get(key);
+
+		if ((entry != null) &&
+			(entry.getKey() == fragmentEntryLink.getMvccVersion())) {
+
+			return entry.getValue();
+		}
+
+		JSONObject jsonObject =
+			_fragmentEntryConfigurationParser.getConfigurationJSONObject(
+				fragmentEntryLink.getConfigurationJSONObject(),
+				fragmentEntryLink.getEditableValuesJSONObject(),
 				fragmentRendererContext.getLocale());
 
-			content = StringUtil.replace(
-				content, _NONCE,
-				ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
-					httpServletRequest));
-		}
+		entry = new AbstractMap.SimpleImmutableEntry<>(
+			fragmentEntryLink.getMvccVersion(), jsonObject.toString());
 
-		return content;
+		_configurationPortalCache.put(key, entry);
+
+		return entry.getValue();
 	}
 
 	private String _writePortletPaths(
@@ -499,6 +554,9 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	private static final Log _log = LogFactoryUtil.getLog(
 		FragmentEntryFragmentRenderer.class);
 
+	private PortalCache<String, Map.Entry<Long, String>>
+		_configurationPortalCache;
+
 	@Reference
 	private ConfigurationProvider _configurationProvider;
 
@@ -521,9 +579,6 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

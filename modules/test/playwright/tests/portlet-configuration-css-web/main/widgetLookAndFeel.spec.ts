@@ -94,3 +94,104 @@ test(
 		);
 	}
 );
+
+test(
+	'Checks background color for nested widgets',
+	{
+		tag: '@LPD-63964',
+	},
+	async ({apiHelpers, page, site, widgetPagePage}) => {
+
+		// Create widget page
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		// Add nested applications widget
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Nested Applications');
+
+		// Configure styles
+
+		await widgetPagePage.clickOnAction(
+			'Nested Applications',
+			'Look and Feel Configuration'
+		);
+
+		let lookAndFeelIFrame = page.frameLocator(
+			'iframe[title="Look and Feel Configuration"]'
+		);
+
+		await lookAndFeelIFrame
+			.getByRole('tab', {name: 'Background Styles'})
+			.click();
+
+		await lookAndFeelIFrame
+			.locator('#backgroundStyles')
+			.getByLabel('Color selection is ')
+			.fill('000000');
+
+		await lookAndFeelIFrame.getByRole('button', {name: 'Save'}).click();
+
+		await page.reload();
+
+		await widgetPagePage.addPortlet('Web Content Display');
+
+		await widgetPagePage.clickOnAction(
+			'Web Content Display',
+			'Look and Feel Configuration'
+		);
+
+		lookAndFeelIFrame = page.frameLocator(
+			'iframe[title="Look and Feel Configuration"]'
+		);
+
+		await lookAndFeelIFrame
+			.getByRole('tab', {name: 'Background Styles'})
+			.click();
+
+		await lookAndFeelIFrame
+			.locator('#backgroundStyles')
+			.getByLabel('Color selection is ')
+			.fill('FFFFFF');
+
+		await lookAndFeelIFrame.getByRole('button', {name: 'Save'}).click();
+
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {name: 'Close'})
+			.click();
+
+		// Add web content display widget inside nested portlet
+
+		await widgetPagePage.dragPortlet(
+			'Web Content Display',
+			page
+				.locator('.portlet-nested-portlets .portlet-dropzone.empty')
+				.first()
+		);
+
+		await page.reload();
+
+		// Check that styles are applied correctly
+
+		let portlet = page.locator('.portlet-content', {
+			hasText: 'Nested Applications',
+		});
+
+		await expect(portlet).toHaveCSS('background-color', 'rgb(0, 0, 0)');
+
+		portlet = portlet.locator('.portlet-content', {
+			hasText: 'Web Content Display',
+		});
+
+		await expect(portlet).toHaveCSS(
+			'background-color',
+			'rgb(255, 255, 255)'
+		);
+	}
+);

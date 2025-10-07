@@ -399,20 +399,8 @@ public class LangBuilder {
 							value + LanguageBuilderUtil.AUTOMATIC_COPY;
 					}
 					else if (line.contains("[")) {
-						int pos = line.indexOf("[");
-
-						String baseKey = line.substring(0, pos);
-
-						String translatedBaseKey = properties.getProperty(
-							baseKey);
-
-						if (Validator.isNotNull(translatedBaseKey)) {
-							translatedText = translatedBaseKey;
-						}
-						else {
-							translatedText =
-								value + LanguageBuilderUtil.AUTOMATIC_COPY;
-						}
+						translatedText =
+							value + LanguageBuilderUtil.AUTOMATIC_COPY;
 					}
 					else if (!automaticCopy && key.endsWith("-delimiter")) {
 						translatedText = "";

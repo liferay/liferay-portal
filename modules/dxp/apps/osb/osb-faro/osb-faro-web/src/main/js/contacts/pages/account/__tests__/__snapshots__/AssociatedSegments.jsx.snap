@@ -188,22 +188,6 @@ exports[`AccountAssociatedSegments should render 1`] = `
                   class="content-container"
                 >
                   <div
-                    class="icon-container"
-                  >
-                    <div
-                      class="sticker sticker-root sticker-static segment-sticker-root sticker-rounded sticker-dark"
-                    >
-                      <svg
-                        class="lexicon-icon lexicon-icon-individual_dynamic_segment icon-root"
-                        role="presentation"
-                      >
-                        <use
-                          href="#individual_dynamic_segment"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div
                     class="text-truncate"
                   >
                     <div

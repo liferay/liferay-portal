@@ -6,11 +6,15 @@
 package com.liferay.list.type.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.list.type.exception.NoSuchListTypeEntryException;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.list.type.service.ListTypeEntryService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -18,10 +22,12 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -60,7 +66,10 @@ public class ListTypeEntryServiceTest {
 		_originalName = PrincipalThreadLocal.getName();
 		_originalPermissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
+
 		_user = TestPropsValues.getUser();
+
+		_setUser(_user);
 	}
 
 	@After
@@ -140,6 +149,69 @@ public class ListTypeEntryServiceTest {
 		}
 
 		_testGetListTypeEntryByExternalReferenceCode(_user);
+	}
+
+	@Test
+	public void testGetOrAddEmptyListTypeEntry() throws Exception {
+
+		// Lazy referencing disabled
+
+		String key = RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			NoSuchListTypeEntryException.class,
+			StringBundler.concat(
+				"No ListTypeEntry exists with the key {listTypeDefinitionId=",
+				_listTypeDefinition.getListTypeDefinitionId(), ", key=", key,
+				"}"),
+			() -> _listTypeEntryService.getOrAddEmptyListTypeEntry(
+				_user.getUserId(),
+				_listTypeDefinition.getListTypeDefinitionId(), key));
+
+		// Lazy referencing enabled
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			// With permissions
+
+			ListTypeEntry listTypeEntry =
+				_listTypeEntryService.getOrAddEmptyListTypeEntry(
+					_user.getUserId(),
+					_listTypeDefinition.getListTypeDefinitionId(),
+					RandomTestUtil.randomString());
+
+			// Without permissions
+
+			User user = UserTestUtil.addUser();
+
+			_setUser(user);
+
+			AssertUtils.assertFailure(
+				PrincipalException.MustHavePermission.class,
+				StringBundler.concat(
+					"User ", user.getUserId(),
+					" must have UPDATE permission for ",
+					_listTypeDefinition.getModelClassName(), " ",
+					_listTypeDefinition.getListTypeDefinitionId()),
+				() -> _listTypeEntryService.getOrAddEmptyListTypeEntry(
+					user.getUserId(),
+					_listTypeDefinition.getListTypeDefinitionId(),
+					RandomTestUtil.randomString()));
+
+			// Without permissions, existing list type entry
+
+			AssertUtils.assertFailure(
+				PrincipalException.MustHavePermission.class,
+				StringBundler.concat(
+					"User ", user.getUserId(),
+					" must have VIEW permission for ",
+					_listTypeDefinition.getModelClassName(), " ",
+					_listTypeDefinition.getListTypeDefinitionId()),
+				() -> _listTypeEntryService.getOrAddEmptyListTypeEntry(
+					user.getUserId(), listTypeEntry.getListTypeDefinitionId(),
+					listTypeEntry.getKey()));
+		}
 	}
 
 	@Test

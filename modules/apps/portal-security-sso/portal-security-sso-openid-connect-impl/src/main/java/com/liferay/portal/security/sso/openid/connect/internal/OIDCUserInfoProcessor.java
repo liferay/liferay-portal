@@ -44,7 +44,7 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -68,12 +68,13 @@ import org.osgi.service.component.annotations.Reference;
 public class OIDCUserInfoProcessor {
 
 	public long processUserInfo(
-			long companyId, String issuer, ServiceContext serviceContext,
-			String userInfoJSON, String userInfoMapperJSON)
+			long companyId, String customClaimsJSON, String issuer,
+			ServiceContext serviceContext, String userInfoJSON,
+			String userInfoMapperJSON)
 		throws Exception {
 
 		User user = _addOrUpdateUser(
-			companyId, issuer, serviceContext, userInfoJSON,
+			companyId, customClaimsJSON, issuer, serviceContext, userInfoJSON,
 			userInfoMapperJSON);
 
 		try {
@@ -195,8 +196,9 @@ public class OIDCUserInfoProcessor {
 	}
 
 	private User _addOrUpdateUser(
-			long companyId, String issuer, ServiceContext serviceContext,
-			String userInfoJSON, String userInfoMapperJSON)
+			long companyId, String customClaimsJSON, String issuer,
+			ServiceContext serviceContext, String userInfoJSON,
+			String userInfoMapperJSON)
 		throws Exception {
 
 		JSONObject userInfoMapperJSONObject = _jsonFactory.createJSONObject(
@@ -269,6 +271,9 @@ public class OIDCUserInfoProcessor {
 				expandoColumn.getTableId(), expandoColumn.getColumnId(),
 				user.getUserId(), String.valueOf(oAuthClientEntryId));
 
+			_addOrUpdateUserCustomClaims(
+				customClaimsJSON, user, userInfoJSONObject);
+
 			return _userLocalService.updatePasswordReset(
 				user.getUserId(), false);
 		}
@@ -276,6 +281,9 @@ public class OIDCUserInfoProcessor {
 		Contact contact = user.getContact();
 
 		serviceContext.setUuid(user.getUuid());
+
+		_addOrUpdateUserCustomClaims(
+			customClaimsJSON, user, userInfoJSONObject);
 
 		return _userLocalService.updateUser(
 			user.getUserId(), StringPool.BLANK, StringPool.BLANK,
@@ -301,6 +309,49 @@ public class OIDCUserInfoProcessor {
 			user.getUserGroupRoles(),
 			_getUserGroupIds(companyId, oAuthClientEntryId, user, userGroupIds),
 			serviceContext);
+	}
+
+	private void _addOrUpdateUserCustomClaims(
+			String customClaimsJSON, User user, JSONObject userInfoJSONObject)
+		throws Exception {
+
+		ExpandoTable expandoTable = _expandoTableLocalService.fetchTable(
+			user.getCompanyId(),
+			_classNameLocalService.getClassNameId(User.class.getName()),
+			ExpandoTableConstants.DEFAULT_TABLE_NAME);
+
+		if (expandoTable == null) {
+			return;
+		}
+
+		JSONObject customClaimsJSONObject = _jsonFactory.createJSONObject(
+			customClaimsJSON);
+
+		for (String key : customClaimsJSONObject.keySet()) {
+			String value = userInfoJSONObject.getString(
+				customClaimsJSONObject.getString(key));
+
+			if (value.isEmpty()) {
+				continue;
+			}
+
+			ExpandoColumn expandoColumn =
+				_expandoColumnLocalService.fetchColumn(
+					expandoTable.getTableId(), key);
+
+			if (expandoColumn == null) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("No expando column found with name " + key);
+				}
+
+				continue;
+			}
+
+			_expandoValueLocalService.addValue(
+				_classNameLocalService.getClassNameId(User.class.getName()),
+				expandoColumn.getTableId(), expandoColumn.getColumnId(),
+				user.getUserId(), value);
+		}
 	}
 
 	private void _addPhone(
@@ -530,13 +581,13 @@ public class OIDCUserInfoProcessor {
 		if (Validator.isNull(issuer) ||
 			!Objects.equals(
 				issuer,
-				_props.get(
+				PropsUtil.get(
 					"open.id.connect.user.info.processor.impl.issuer"))) {
 
 			return null;
 		}
 
-		String roleName = _props.get(
+		String roleName = PropsUtil.get(
 			"open.id.connect.user.info.processor.impl.regular.role");
 
 		if (Validator.isNull(roleName)) {
@@ -622,6 +673,10 @@ public class OIDCUserInfoProcessor {
 			long companyId, long oAuthClientEntryId, User user,
 			List<Long> userGroupIds)
 		throws Exception {
+
+		if (userGroupIds == null) {
+			userGroupIds = new ArrayList<>();
+		}
 
 		ExpandoColumn expandoColumn = _getOrAddExpandoColumn(
 			UserGroup.class.getName(), companyId);
@@ -728,9 +783,6 @@ public class OIDCUserInfoProcessor {
 
 	@Reference
 	private PhoneLocalService _phoneLocalService;
-
-	@Reference
-	private Props _props;
 
 	@Reference
 	private RegionLocalService _regionLocalService;

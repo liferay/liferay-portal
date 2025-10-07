@@ -14,7 +14,7 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
-import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -22,24 +22,26 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.portlet.PortletPreferences;
-
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -196,11 +198,7 @@ public class JournalArticleInfoItemFormVariationsProviderTest {
 				infoItemFormVariation.getKey(), label);
 		}
 
-		PortletPreferences portletPreferences = PrefsPropsUtil.getPreferences(
-			company.getCompanyId());
-
-		String originalLocales = portletPreferences.getValue(
-			PropsKeys.LOCALES, StringPool.BLANK);
+		Set<Locale> availableLocales = _language.getAvailableLocales();
 
 		_companyLocalService.updatePreferences(
 			company.getCompanyId(),
@@ -243,19 +241,18 @@ public class JournalArticleInfoItemFormVariationsProviderTest {
 			}
 		}
 		finally {
-			_companyLocalService.updatePreferences(
-				company.getCompanyId(),
-				UnicodePropertiesBuilder.put(
-					PropsKeys.LOCALES, "en_CA,fr_CA," + originalLanguageId
-				).build());
 			_companyLocalService.updateDisplay(
 				company.getCompanyId(), originalLanguageId,
 				user.getTimeZoneId());
-			_companyLocalService.updatePreferences(
-				company.getCompanyId(),
-				UnicodePropertiesBuilder.put(
-					PropsKeys.LOCALES, originalLocales
-				).build());
+
+			PropsValues.LOCALES_ENABLED = PropsUtil.getArray(
+				PropsKeys.LOCALES_ENABLED);
+
+			_language.init();
+
+			CompanyTestUtil.resetCompanyLocales(
+				TestPropsValues.getCompanyId(), availableLocales,
+				LocaleUtil.getDefault());
 		}
 	}
 
@@ -311,5 +308,8 @@ public class JournalArticleInfoItemFormVariationsProviderTest {
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
+	private Language _language;
 
 }

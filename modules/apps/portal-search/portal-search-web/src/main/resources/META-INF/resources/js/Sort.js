@@ -20,11 +20,15 @@ export default function ({namespace: portletNamespace}) {
 		).value;
 
 		if (key) {
-			document.location.search = FacetUtil.updateQueryString(
+			const url = new URL(window.location.href);
+
+			url.search = FacetUtil.updateQueryString(
 				key,
 				[sortSelect],
-				document.location.search
+				window.location.search
 			);
+
+			Liferay.Util.navigate(url.toString());
 		}
 	}
 

@@ -146,7 +146,7 @@ definition {
 
 	@priority = 3
 	test CanDeleteParentDocumentFolderByErc {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("And Given with postDocumentFolderDocumentFolder and parentDocumentFolderId to create a new folder with a custom erc") {
 			var response = DocumentFolderAPI.addDocumentFolder(
@@ -192,7 +192,7 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanGetDocumentFolderByErc {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("When with GET request, siteId and external reference code to retrieve the document folder") {
 			var response = DocumentFolderAPI.getDocumentFolderBySiteIdAndErc(
@@ -307,7 +307,7 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanReturnErrorWithGetDocumentFolderByNonexistentErc {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("When with GET request, siteId and nonexistent external reference code to retrieve the document folder") {
 			var response = DocumentFolderAPI.getDocumentFolderBySiteIdAndErc(
@@ -354,7 +354,7 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test DocumentFolderDeletionImpossibleByNonexistentErc {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("When I make a DELETE request by siteId and on-existent erc") {
 			DocumentFolderAPI.deleteDocumentFolderBySiteIdAndErc(

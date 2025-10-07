@@ -274,8 +274,8 @@ public class DeleteDuplicateUniqueFinderRowsUpgradeProcessTest {
 				tableName, columnNames, orderByClause);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.kernel.upgrade." +
-					"DeleteDuplicateUniqueFinderRowsUpgradeProcess",
+				"com.liferay.portal.kernel.dao.db." +
+					"DuplicateUniqueFinderRowsCleaner",
 				LoggerTestUtil.OFF)) {
 
 			upgradeProcess.upgrade();

@@ -153,6 +153,8 @@ public class ElasticsearchInstaller {
 		PathUtil.copyDirectory(
 			_temporaryDirectoryPath.resolve(rootArchiveName),
 			_installationDirectoryPath);
+
+		PathUtil.deleteDir(_installationDirectoryPath.resolve("jdk"));
 	}
 
 	private void _installPlugin(Distributable distributable)

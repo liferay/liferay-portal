@@ -43,7 +43,8 @@ public class ProjectTemplatesSimulationPanelEntryTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "7.4.13.u72"}, {"dxp", "2024.q1.1"}
+				{"dxp", "7.4.13.u72"}, {"dxp", "2024.q1.1"},
+				{"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -108,12 +109,19 @@ public class ProjectTemplatesSimulationPanelEntryTest
 				DEPENDENCY_RELEASE_PORTAL_API);
 		}
 
-		testContains(
-			gradleProjectDir,
+		String simulationPanelAppFilePath =
 			"src/main/java/test/simulator/application/list" +
-				"/SimulatorSimulationPanelApp.java",
+				"/SimulatorSimulationPanelApp.java";
+
+		testContains(
+			gradleProjectDir, simulationPanelAppFilePath,
 			"public class SimulatorSimulationPanelApp",
 			"extends BaseJSPPanelApp");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(
+				gradleProjectDir, simulationPanelAppFilePath);
+		}
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 
@@ -125,9 +133,17 @@ public class ProjectTemplatesSimulationPanelEntryTest
 			(_liferayVersion.startsWith("7.4") &&
 			 _liferayProduct.equals("dxp"))) {
 
+			String workspaceLiferayVersion = _liferayVersion;
+
+			if (_liferayVersion.startsWith(
+					UNRELEASED_QUARTERLY_LIFERAY_VERSION)) {
+
+				workspaceLiferayVersion = WORKSPACE_QUARTERLY_LIFERAY_VERSION;
+			}
+
 			updateMavenPomProperties(
 				mavenWorkspaceDir, "liferay.bom.version", "liferay.bom.version",
-				_liferayVersion);
+				workspaceLiferayVersion);
 
 			updateMavenPomElementText(
 				mavenWorkspaceDir, "//artifactId[text()='release.portal.bom']",

@@ -6,8 +6,8 @@
 package com.liferay.jenkins.results.parser.test.clazz.group;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
-
-import java.io.File;
+import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,27 +35,48 @@ public class JUnitSegmentTestClassGroup extends SegmentTestClassGroup {
 			AxisTestClassGroup axisTestClassGroup = getAxisTestClassGroup(
 				axisIndex);
 
-			List<File> testClassFiles = axisTestClassGroup.getTestClassFiles();
+			List<TestClass> testClasses = axisTestClassGroup.getTestClasses();
 
 			sb.append("TEST_CLASS_GROUP_");
 			sb.append(axisIndex);
 			sb.append("=");
 
-			for (File testClassFile : testClassFiles) {
-				Matcher matcher = _pattern.matcher(testClassFile.toString());
+			for (TestClass testClass : testClasses) {
+				Matcher matcher = _pattern.matcher(
+					String.valueOf(testClass.getTestClassFile()));
 
 				if (!matcher.find()) {
 					continue;
 				}
 
-				String classFileName = matcher.group("classFileName");
+				JUnitTestClass jUnitTestClass = (JUnitTestClass)testClass;
 
-				sb.append(classFileName.replace(".java", ".class"));
+				String testClassFileName = matcher.group("testClassFileName");
 
-				sb.append(",");
+				testClassFileName = testClassFileName.replace(
+					".java", ".class");
+
+				List<String> testClassMethodNames =
+					jUnitTestClass.getTestClassMethodNames();
+
+				if ((testClassMethodNames != null) &&
+					!testClassMethodNames.isEmpty()) {
+
+					for (String testClassMethodName : testClassMethodNames) {
+						sb.append(testClassFileName);
+						sb.append("#");
+						sb.append(testClassMethodName);
+						sb.append(",");
+					}
+				}
+				else {
+					sb.append(testClassFileName);
+
+					sb.append(",");
+				}
 			}
 
-			if (!testClassFiles.isEmpty()) {
+			if (!testClasses.isEmpty()) {
 				sb.setLength(sb.length() - 1);
 			}
 
@@ -82,6 +103,6 @@ public class JUnitSegmentTestClassGroup extends SegmentTestClassGroup {
 	}
 
 	private static final Pattern _pattern = Pattern.compile(
-		".*/(?<classFileName>com/.*)");
+		".*/(?<testClassFileName>com/.*)");
 
 }

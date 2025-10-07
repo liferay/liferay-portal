@@ -481,6 +481,14 @@ public class SiteNavigationMenuItemLocalServiceWrapper
 			siteNavigationMenuId, orderByComparator);
 	}
 
+	@Override
+	public java.util.List<SiteNavigationMenuItem> getSiteNavigationMenuItems(
+		String type) {
+
+		return _siteNavigationMenuItemLocalService.getSiteNavigationMenuItems(
+			type);
+	}
+
 	/**
 	 * Returns all the site navigation menu items matching the UUID and company.
 	 *

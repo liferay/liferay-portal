@@ -268,7 +268,7 @@ public class InfoFieldItemSelectorViewDescriptor
 
 			String inputFieldId = GetterUtil.getString(
 				_fragmentEntryConfigurationParser.getFieldValue(
-					fragmentEntryLink.getEditableValues(),
+					fragmentEntryLink.getEditableValuesJSONObject(),
 					new FragmentConfigurationField(
 						"inputFieldId", "string", "", false, "text"),
 					_themeDisplay.getLocale()));

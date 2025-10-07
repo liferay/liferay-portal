@@ -5,7 +5,7 @@
 
 import {fetch} from 'frontend-js-web';
 
-import {DEFAULT_FETCH_HEADERS} from './constants';
+import {DEFAULT_FETCH_HEADERS, PAGE_SIZE} from './constants';
 import openDefaultFailureToast from './openDefaultFailureToast';
 import {IPickList} from './types';
 
@@ -14,7 +14,7 @@ export default async function getAllPicklists(
 	items: IPickList[] = []
 ) {
 	const response = await fetch(
-		`/o/headless-admin-list-type/v1.0/list-type-definitions?pageSize=100&page=${page}`,
+		`/o/headless-admin-list-type/v1.0/list-type-definitions?pageSize=${PAGE_SIZE}&page=${page}`,
 		{
 			headers: DEFAULT_FETCH_HEADERS,
 		}

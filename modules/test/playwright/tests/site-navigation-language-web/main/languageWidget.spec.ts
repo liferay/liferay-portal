@@ -164,7 +164,7 @@ test('The user can choose which languages will be available to site via language
 
 	await page
 		.locator('.modal-header')
-		.getByLabel('close', {exact: true})
+		.getByLabel('Close', {exact: true})
 		.click();
 
 	// Assert available languages

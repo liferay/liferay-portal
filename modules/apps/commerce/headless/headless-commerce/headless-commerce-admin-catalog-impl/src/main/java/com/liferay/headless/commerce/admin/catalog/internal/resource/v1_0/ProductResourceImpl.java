@@ -706,7 +706,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		int originalWorkflowAction = serviceContext.getWorkflowAction();
 
 		cpDefinition = _cpDefinitionService.addOrUpdateCPDefinition(
-			externalReferenceCode, commerceCatalog.getGroupId(),
+			externalReferenceCode,
+			(cpDefinition != null) ? cpDefinition.getCPDefinitionId() : 0,
+			commerceCatalog.getGroupId(),
 			LanguageUtils.getLocalizedMap(nameMap),
 			LanguageUtils.getLocalizedMap(shortDescriptionMap),
 			LanguageUtils.getLocalizedMap(descriptionMap),
@@ -1092,9 +1094,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 					GetterUtil.getBoolean(
 						!_isTaxable(productTaxConfiguration),
 						masterCPConfigurationEntry.isTaxExempt()),
-					GetterUtil.getBoolean(
-						productConfiguration.getVisible(),
-						masterCPConfigurationEntry.isVisible()),
 					GetterUtil.getDouble(
 						productShippingConfiguration.getWeight(),
 						masterCPConfigurationEntry.getWeight()),

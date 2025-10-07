@@ -170,14 +170,10 @@ public class CTScoreLocalServiceTest {
 					transactionConfig,
 					() -> {
 						_ctScoreLocalService.incrementScore(
-							dlFolder.getCtCollectionId(),
-							_classNameLocalService.getClassNameId(
-								DLFolder.class));
+							dlFolder.getCtCollectionId(), 10);
 
 						_ctScoreLocalService.incrementScore(
-							dlFolder.getCtCollectionId(),
-							_classNameLocalService.getClassNameId(
-								DLFolder.class));
+							dlFolder.getCtCollectionId(), 10);
 
 						return null;
 					});

@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.security.auth;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 /**
@@ -185,8 +186,8 @@ public class PrincipalException extends PortalException {
 			super(
 				String.format(
 					"User %s must have %s permission for %s %s", userId,
-					StringUtil.merge(actionIds, ","), resourceName,
-					(resourceId == 0) ? "" : resourceId),
+					StringUtil.merge(ArrayUtil.sortedUnique(actionIds), ", "),
+					resourceName, (resourceId == 0) ? "" : resourceId),
 				throwable);
 
 			this.userId = userId;

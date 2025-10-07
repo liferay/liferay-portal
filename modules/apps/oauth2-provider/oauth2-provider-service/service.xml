@@ -183,5 +183,6 @@
 		<exception>OAuth2ApplicationRedirectURIMissing</exception>
 		<exception>OAuth2ApplicationRedirectURIPath</exception>
 		<exception>OAuth2ApplicationRedirectURIScheme</exception>
+		<exception>RequiredOAuth2Application</exception>
 	</exceptions>
 </service-builder>

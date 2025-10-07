@@ -13,8 +13,6 @@ import com.liferay.petra.lang.HashUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -134,19 +132,6 @@ public class FragmentStyledLayoutStructureItem
 		}
 	}
 
-	private JSONObject _createJSONObject(String value) {
-		try {
-			return JSONFactoryUtil.createJSONObject(value);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			return JSONFactoryUtil.createJSONObject();
-		}
-	}
-
 	private String _getFragmentEntryLinkIdentifier(
 		FragmentEntryLink fragmentEntryLink) {
 
@@ -156,10 +141,13 @@ public class FragmentStyledLayoutStructureItem
 			return rendererKey;
 		}
 
-		JSONObject jsonObject = _createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		String portletId = null;
 
-		String portletId = jsonObject.getString("portletId");
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
+
+		if (jsonObject != null) {
+			portletId = jsonObject.getString("portletId");
+		}
 
 		if (Validator.isNotNull(portletId)) {
 			return PortletIdCodec.decodePortletName(portletId);
@@ -181,9 +169,6 @@ public class FragmentStyledLayoutStructureItem
 
 		return cssClass.replaceAll("[^A-Za-z0-9-]", StringPool.DASH);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		FragmentStyledLayoutStructureItem.class);
 
 	private long _fragmentEntryLinkId;
 	private boolean _indexed = true;

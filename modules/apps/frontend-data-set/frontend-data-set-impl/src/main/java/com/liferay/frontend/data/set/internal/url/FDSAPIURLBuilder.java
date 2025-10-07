@@ -11,6 +11,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -57,6 +58,10 @@ public class FDSAPIURLBuilder {
 	}
 
 	public String build() {
+		return build(true);
+	}
+
+	public String build(boolean interpolate) {
 		StringBundler sb = new StringBundler(
 			3 + (_queryStringItems.size() * 2));
 
@@ -68,10 +73,20 @@ public class FDSAPIURLBuilder {
 
 		_appendParameters(true, sb);
 
-		return _interpolate(_resolveParameters(sb.toString()));
+		String apiURL = sb.toString();
+
+		if (!interpolate) {
+			return apiURL;
+		}
+
+		return _interpolateTokens(apiURL);
 	}
 
 	public String buildQueryString() {
+		return buildQueryString(true);
+	}
+
+	public String buildQueryString(boolean interpolate) {
 		StringBundler sb = new StringBundler(_queryStringItems.size() * 2);
 
 		_appendParameters(false, sb);
@@ -82,7 +97,19 @@ public class FDSAPIURLBuilder {
 			return null;
 		}
 
-		return _interpolate(_resolveParameters(query));
+		if (!interpolate) {
+			return query;
+		}
+
+		return _interpolateTokens(query);
+	}
+
+	public FDSAPIURLBuilder setTokenResolutions(
+		JSONObject tokenResolutionsJSONObject) {
+
+		_tokenResolutionsJSONObject = tokenResolutionsJSONObject;
+
+		return this;
 	}
 
 	private void _appendParameters(
@@ -109,43 +136,51 @@ public class FDSAPIURLBuilder {
 		}
 	}
 
-	private String _interpolate(String apiURL) {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+	private String _interpolateTokens(String text) {
 
-		apiURL = StringUtil.replace(
-			apiURL, "{siteId}", String.valueOf(themeDisplay.getScopeGroupId()));
-		apiURL = StringUtil.replace(
-			apiURL, "{scopeKey}",
-			String.valueOf(themeDisplay.getScopeGroupId()));
-		apiURL = StringUtil.replace(
-			apiURL, "{userId}", String.valueOf(themeDisplay.getUserId()));
+		// Interpolate using provided resolved tokens
 
-		if (StringUtil.contains(apiURL, "{") && _log.isWarnEnabled()) {
-			_log.warn("Unsupported parameter in API URL: " + apiURL);
+		if (_tokenResolutionsJSONObject != null) {
+			for (String key : _tokenResolutionsJSONObject.keySet()) {
+				text = StringUtil.replace(
+					text, "{" + key + "}",
+					_tokenResolutionsJSONObject.getString(key));
+			}
 		}
 
-		return apiURL;
-	}
+		// Interpolate using registered resolvers
 
-	private String _resolveParameters(String apiURL) {
 		FDSAPIURLResolver fdsAPIURLResolver =
 			_fdsAPIURLResolverRegistry.getFDSAPIURLResolver(
 				_restApplication, _restSchema);
 
-		if (fdsAPIURLResolver == null) {
-			return apiURL;
+		if (fdsAPIURLResolver != null) {
+			try {
+				text = fdsAPIURLResolver.resolve(text, _httpServletRequest);
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
 		}
 
-		try {
-			return fdsAPIURLResolver.resolve(apiURL, _httpServletRequest);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+		// Interpolate using default tokens
 
-			return apiURL;
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		text = StringUtil.replace(
+			text, "{scopeKey}", String.valueOf(themeDisplay.getScopeGroupId()));
+		text = StringUtil.replace(
+			text, "{siteId}", String.valueOf(themeDisplay.getScopeGroupId()));
+		text = StringUtil.replace(
+			text, "{userId}", String.valueOf(themeDisplay.getUserId()));
+
+		if (StringUtil.contains(text, "{") && _log.isWarnEnabled()) {
+			_log.warn("Unresolved token in API URL: " + text);
 		}
+
+		return text;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -157,5 +192,6 @@ public class FDSAPIURLBuilder {
 	private final String _restApplication;
 	private final String _restEndpoint;
 	private final String _restSchema;
+	private JSONObject _tokenResolutionsJSONObject;
 
 }

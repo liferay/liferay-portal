@@ -1,3 +1,23 @@
+# cb2501a618b8b2cfc7e045cc610f8bc872231fb0
+
+This commit is missing a breaking change message. The correct message is:
+
+```
+LPD-16086: Prevent to compute values for item selector and URL fields. This commit resolves a bug where pages containing item selector or URL fields could not be imported after being exported. Previously, the full value of these fields was computed and stored, leading to data inconsistencies during import/export. For a complete and correct response format, this change should be considered in conjunction with regressions LPD-33951 and LPD-57833.
+
+# breaking
+
+## What modules/apps/headless/headless-delivery/headless-delivery-impl/src/main/java/com/liferay/headless/delivery/internal/dto/v1_0/mapper/PageFragmentInstanceDefinitionMapper.java
+
+Consumers of the PageFragmentInstanceDefinitionMapper (specifically for item selector and URL fields) will no longer receive the fully computed values directly in the response. Instead, consumers must now use the classPK (or externalReferenceCode if applicable) from the response to retrieve all necessary information for the referenced resource via the appropriate Liferay services.
+
+## Why
+
+This change is needed to make the import process work.
+```
+
+----
+
 # 3aa30f7e03264d3798731f301853ec4f952c3637
 
 The commit message does not have the complete file path. The correct message is:
@@ -604,4 +624,28 @@ The convertPermissions(long) and convertPermissions(long, PermissionConversionFi
 ## Why
 
 These methods are no longer used after refactoring the PermissionConverter APIs.
+```
+
+----
+
+# 50b57897005e337516b53e1e592b1eeee70e2950
+
+This commit is missing a breaking change message. The correct message is:
+
+```
+LPD-47825 portal-search-web: skip deprecation for internal interface
+
+# breaking
+
+## What modules/apps/portal-search/portal-search-web/src/main/java/com/liferay/portal/search/web/internal/category/facet/portlet/CategoryFacetPortletPreferences.java
+
+Vocabulary Ids were removed from the CategoryFacetPortletPreferences and replaced by a GroupExternalReferenceCode VocabularyExternalReferenceCode pair. Category Facet Widget Display Templates using portletPreferences.getValues() will no longer be able to return vocabularyIds from the CategoryFacetPortletPreferences.
+
+## Why
+
+Vocabulary Ids were replaced by a External Reference Codes in Category Facet Portlet Preferences for better data preservation during imports, exports, and data migration.
+
+## Alternatives
+
+Vocabulary ids to all vocabularies related to the returned categories are available through the AssetCategoriesSearchFacetDisplayContext: use `assetCategoriesSearchFacetDisplayContext.getVocabularyIds()`.
 ```

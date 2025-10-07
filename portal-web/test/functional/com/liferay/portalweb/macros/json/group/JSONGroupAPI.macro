@@ -119,6 +119,7 @@ definition {
 			${portalURL}/api/jsonws/depot.depotentrygrouprel/get-depot-entry-group-rels \
 				-u ${userLoginInfo} \
 				-d groupId=${groupId} \
+				-d "type=0" \
 				-d "start=-1" \
 				-d "end=-1"
 		''';

@@ -10,24 +10,27 @@ import getCN from 'classnames';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-function SizeInput({onBlur, onChange, touched, value}) {
+function SizeInput({index, onBlur, onChange, touched, value}) {
 	return (
 		<ClayInput.GroupItem
 			className={getCN({
 				'has-error': (!value || value < 0) && touched,
 			})}
 		>
-			<label>
-				{Liferay.Language.get('size')}
+			<label htmlFor={`size${index}`}>
+				<span>
+					{Liferay.Language.get('size')}
 
-				<span className="reference-mark">
-					<ClayIcon symbol="asterisk" />
+					<span className="reference-mark">
+						<ClayIcon symbol="asterisk" />
+					</span>
 				</span>
 
 				<ClayTooltipProvider>
 					<span
 						className="c-ml-2"
 						data-tooltip-align="top"
+						tabIndex={0}
 						title={Liferay.Language.get('size-suggestion-help')}
 					>
 						<ClayIcon symbol="question-circle-full" />
@@ -37,6 +40,7 @@ function SizeInput({onBlur, onChange, touched, value}) {
 
 			<ClayInput
 				aria-label={Liferay.Language.get('size')}
+				id={`size${index}`}
 				min="0"
 				onBlur={onBlur}
 				onChange={onChange}

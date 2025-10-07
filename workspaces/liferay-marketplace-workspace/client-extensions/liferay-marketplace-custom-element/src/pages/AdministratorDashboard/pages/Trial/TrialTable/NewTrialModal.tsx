@@ -91,7 +91,6 @@ const NewTrialModal: React.FC<NewTrialModalProps> = ({onClose, revalidate}) => {
 
 		const productPurchase = new ProductPurchaseSolutionTrial(
 			account,
-			channel,
 			product
 		);
 

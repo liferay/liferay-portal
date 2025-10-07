@@ -1,0 +1,1021 @@
+{
+	"pageElement": {
+		"id": "244ef522-40ca-6b35-d007-c9e3a98951d6",
+		"pageElements": [
+			{
+				"definition": {
+					"fragmentStyle": {
+						"hidden": true
+					},
+					"widgetInstance": {
+						"widgetConfig": {
+							"allowEmptySearches": "true",
+							"basicFacetSelection": "false",
+							"federatedSearchKey": "",
+							"retainFacetSelections": "false"
+						},
+						"widgetName": "com_liferay_portal_search_web_search_options_portlet_SearchOptionsPortlet"
+					}
+				},
+				"id": "6b3d2ae3-a552-87d1-91b8-263a99d546c3",
+				"type": "Widget"
+			},
+			{
+				"definition": {
+					"widgetInstance": {
+						"widgetConfig": {
+							"destination": "/search",
+							"displayStyle": "ddmTemplate_CATEGORY-HEADER-SEARCH-BAR",
+							"displayStyleGroupId": "[$GROUP_ID$]",
+							"displayStyleGroupKey": "68390129561053",
+							"federatedSearchKey": "",
+							"invisible": "false",
+							"keywordsParameterName": "q",
+							"scopeParameterName": "scope",
+							"searchScope": "this-site",
+							"showStagedResults": "false",
+							"suggestionsContributorConfigurations": "{\"contributorName\": \"basic\", \"displayGroupName\": \"suggestions\", \"size\": 5}",
+							"suggestionsDisplayThreshold": "2",
+							"suggestionsEnabled": "false",
+							"useAdvancedSearchSyntax": "false"
+						},
+						"widgetName": "com_liferay_portal_search_web_search_bar_portlet_SearchBarPortlet"
+					}
+				},
+				"id": "841eb85e-5031-d004-dc82-64cc8ffd830e",
+				"type": "Widget"
+			},
+			{
+				"definition": {
+					"fragmentStyle": {
+						"maxWidth": "var(--container-max-xl)",
+						"paddingBottom": "3",
+						"paddingLeft": "3",
+						"paddingRight": "3"
+					},
+					"indexed": true,
+					"layout": {
+						"paddingBottom": 1,
+						"paddingLeft": 1,
+						"paddingRight": 1,
+						"widthType": "Fixed"
+					}
+				},
+				"id": "39514fa4-f01a-90d5-533b-ef19a746ee64",
+				"pageElements": [
+					{
+						"definition": {
+							"fragment": {
+								"key": "cp-text",
+								"siteKey": "Customer Portal"
+							},
+							"fragmentConfig": {
+								"textType": "h3",
+								"truncateText": false
+							},
+							"fragmentFields": [
+								{
+									"id": "element-text",
+									"value": {
+										"fragmentLink": {
+										},
+										"text": {
+											"value_i18n": {
+												"en_US": "Getting Started",
+												"es_ES": "Cómo empezar",
+												"ja_JP": "はじめに",
+												"pt_BR": "Primeiros passos"
+											}
+										}
+									}
+								}
+							],
+							"fragmentStyle": {
+								"marginBottom": "3"
+							},
+							"indexed": true
+						},
+						"id": "11c5f1ac-0d48-66a5-48fe-7e03a1af7666",
+						"type": "Fragment"
+					},
+					{
+						"definition": {
+							"customCSS": ".[$FRAGMENT_CLASS$] > div > div > div {\nalign-items: stretch !important;\n}\n\n.[$FRAGMENT_CLASS$] a {\ndisplay: flex !important;\nflex: 1 !important;\n}\n\n.[$FRAGMENT_CLASS$] a > div {\nwidth: 100% !important;\n}",
+							"fragment": {
+								"key": "cp-layout",
+								"siteKey": "Customer Portal"
+							},
+							"fragmentConfig": {
+								"alignDesktop": "center",
+								"alignMobile": "flex-start",
+								"alignTablet": "flex-start",
+								"directionDesktop": "row",
+								"directionMobile": "row",
+								"directionTablet": "row",
+								"distributeDesktop": "space-between",
+								"distributeMobile": "flex-start",
+								"distributeTablet": "flex-start",
+								"fillHeightDesktop": true,
+								"fillHeightMobile": false,
+								"fillHeightTablet": true,
+								"horizontalGapDesktop": "var(--spacer-4)",
+								"horizontalGapMobile": "var(--spacer-3)",
+								"horizontalGapTablet": "var(--spacer-4)",
+								"verticalGapDesktop": "var(--spacer-4)",
+								"verticalGapMobile": "var(--spacer-3)",
+								"verticalGapTablet": "var(--spacer-4)",
+								"widthBasisDesktop": "1",
+								"widthBasisMobile": "1",
+								"widthBasisTablet": "50%",
+								"widthDesktop": "auto",
+								"widthGrowDesktop": "1",
+								"widthGrowMobile": "1",
+								"widthGrowTablet": "1",
+								"widthMobile": "auto",
+								"widthTablet": "auto",
+								"wrapDesktop": "nowrap",
+								"wrapMobile": "nowrap",
+								"wrapTablet": "nowrap"
+							},
+							"fragmentFields": [
+							],
+							"fragmentStyle": {
+								"marginBottom": "4"
+							},
+							"indexed": true
+						},
+						"id": "b700d9b6-826f-2650-2980-77b6d426d947",
+						"pageElements": [
+							{
+								"definition": {
+								},
+								"id": "52a9f521-0696-1392-55ac-df293d41859c",
+								"pageElements": [
+									{
+										"definition": {
+											"cssClasses": [
+												"card",
+												"card-flat"
+											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"fieldKey": "AssetCategory_displayPageURL",
+														"itemReference": {
+															"className": "com.liferay.asset.kernel.model.AssetCategory",
+															"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/getting-started.json$]"
+														}
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "colorBrandPrimaryLighten5",
+												"borderRadius": "borderRadiusLg",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4",
+												"textAlign": "center"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexColumn",
+												"justify": "Center",
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "3dd8948f-ea26-ff39-f2c1-f087bef273fc",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-image"
+													},
+													"fragmentConfig": {
+														"imageSize": "w-100"
+													},
+													"fragmentFields": [
+														{
+															"id": "image-square",
+															"value": {
+																"fragmentImage": {
+																	"url": {
+																		"value_i18n": {
+																			"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/getting_started.svg$]"
+																		}
+																	}
+																},
+																"fragmentLink": {
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"height": "48px",
+														"width": "48px"
+													},
+													"indexed": true
+												},
+												"id": "70596f24-77fb-8567-0248-415892b230e0",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "h5",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"mapping": {
+																		"fieldKey": "AssetCategory_name",
+																		"itemReference": {
+																			"className": "com.liferay.asset.kernel.model.AssetCategory",
+																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/getting-started.json$]"
+																		}
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginBottom": "2",
+														"marginTop": "2"
+													},
+													"indexed": true
+												},
+												"id": "b2d01ca9-7901-4612-a679-2a617b17cace",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "First steps and essential guidance for administrators, new users, and partners",
+																		"es_ES": "Primeros pasos y guía básica para administradores, nuevos usuarios y partners",
+																		"ja_JP": "管理者、新規ユーザー、パートナーのためのファーストステップと重要なガイダンス",
+																		"pt_BR": "Primeiros passos e orientações essenciais para administradores, novos usuários e parceiros"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "4f168bf0-efc1-90ac-6043-e63bc620c543",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									},
+									{
+										"definition": {
+											"customCSS": ".[$FRAGMENT_CLASS$] {\ndisplay: flex !important;\nflex: 1 !important;\n}",
+											"fragment": {
+												"key": "cp-activation-card",
+												"siteKey": "Customer Portal"
+											},
+											"fragmentConfig": {
+											},
+											"fragmentFields": [
+											],
+											"indexed": true
+										},
+										"id": "c063d18c-965e-f78f-cd90-b3465378a87f",
+										"type": "Fragment"
+									},
+									{
+										"definition": {
+											"cssClasses": [
+												"card",
+												"card-flat"
+											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"fieldKey": "AssetCategory_displayPageURL",
+														"itemReference": {
+															"className": "com.liferay.asset.kernel.model.AssetCategory",
+															"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/administration.json$]"
+														}
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "colorBrandPrimaryLighten5",
+												"borderRadius": "borderRadiusLg",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4",
+												"textAlign": "center"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexColumn",
+												"justify": "Center",
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "069e9770-28d4-b906-f688-540df798d1e2",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-image"
+													},
+													"fragmentConfig": {
+														"imageSize": "w-100"
+													},
+													"fragmentFields": [
+														{
+															"id": "image-square",
+															"value": {
+																"fragmentImage": {
+																	"url": {
+																		"value_i18n": {
+																			"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/service_levels.svg$]"
+																		}
+																	}
+																},
+																"fragmentLink": {
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"height": "48px",
+														"width": "48px"
+													},
+													"indexed": true
+												},
+												"id": "8e04e2f9-bbfe-a2bb-29b6-0bececab8294",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "h5",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"mapping": {
+																		"fieldKey": "AssetCategory_name",
+																		"itemReference": {
+																			"className": "com.liferay.asset.kernel.model.AssetCategory",
+																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/administration.json$]"
+																		}
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginBottom": "2",
+														"marginTop": "2"
+													},
+													"indexed": true
+												},
+												"id": "758fe099-006d-ac1d-0735-56a8922d44cf",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Learn more about project administration within the Customer Portal",
+																		"es_ES": "Lee más sobre la administración de projectos en el Portal del cliente",
+																		"ja_JP": "カスタマーポータルでのプロジェクト管理の詳細",
+																		"pt_BR": "Saiba mais sobre a administração de projetos dentro do Portal do Cliente"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "fc5158cf-9e2f-3fcc-2089-5be48c3aa78f",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									}
+								],
+								"type": "FragmentDropZone"
+							}
+						],
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
+			},
+			{
+				"definition": {
+					"fragmentStyle": {
+						"maxWidth": "var(--container-max-xl)",
+						"paddingBottom": "3",
+						"paddingLeft": "3",
+						"paddingRight": "3"
+					},
+					"indexed": true,
+					"layout": {
+						"paddingBottom": 1,
+						"paddingLeft": 1,
+						"paddingRight": 1,
+						"widthType": "Fixed"
+					}
+				},
+				"id": "0db25431-dc12-b36a-aee9-783b6bff2112",
+				"pageElements": [
+					{
+						"definition": {
+							"fragment": {
+								"key": "cp-text",
+								"siteKey": "Customer Portal"
+							},
+							"fragmentConfig": {
+								"textType": "h3",
+								"truncateText": false
+							},
+							"fragmentFields": [
+								{
+									"id": "element-text",
+									"value": {
+										"fragmentLink": {
+										},
+										"text": {
+											"value_i18n": {
+												"en_US": "Help Resources",
+												"es_ES": "Recursos de ayuda",
+												"ja_JP": "ヘルプ・リソース",
+												"pt_BR": "Recursos de ajuda"
+											}
+										}
+									}
+								}
+							],
+							"fragmentStyle": {
+								"marginBottom": "3"
+							},
+							"indexed": true
+						},
+						"id": "57436a89-7284-de90-811a-a83456e80f05",
+						"type": "Fragment"
+					},
+					{
+						"definition": {
+							"customCSS": ".[$FRAGMENT_CLASS$] > div > div > div {\nalign-items: stretch !important;\n}\n\n.[$FRAGMENT_CLASS$] a {\ndisplay: flex !important;\nflex: 1 !important;\n}\n\n.[$FRAGMENT_CLASS$] a > div {\nwidth: 100% !important;\n}",
+							"fragment": {
+								"key": "cp-layout",
+								"siteKey": "Customer Portal"
+							},
+							"fragmentConfig": {
+								"alignDesktop": "center",
+								"alignMobile": "flex-start",
+								"alignTablet": "flex-start",
+								"directionDesktop": "row",
+								"directionMobile": "row",
+								"directionTablet": "row",
+								"distributeDesktop": "space-between",
+								"distributeMobile": "flex-start",
+								"distributeTablet": "flex-start",
+								"fillHeightDesktop": true,
+								"fillHeightMobile": false,
+								"fillHeightTablet": true,
+								"horizontalGapDesktop": "var(--spacer-4)",
+								"horizontalGapMobile": "var(--spacer-3)",
+								"horizontalGapTablet": "var(--spacer-4)",
+								"verticalGapDesktop": "var(--spacer-4)",
+								"verticalGapMobile": "var(--spacer-3)",
+								"verticalGapTablet": "var(--spacer-4)",
+								"widthBasisDesktop": "1",
+								"widthBasisMobile": "1",
+								"widthBasisTablet": "50%",
+								"widthDesktop": "auto",
+								"widthGrowDesktop": "1",
+								"widthGrowMobile": "1",
+								"widthGrowTablet": "1",
+								"widthMobile": "auto",
+								"widthTablet": "auto",
+								"wrapDesktop": "nowrap",
+								"wrapMobile": "nowrap",
+								"wrapTablet": "nowrap"
+							},
+							"fragmentFields": [
+							],
+							"fragmentStyle": {
+								"marginBottom": "4"
+							},
+							"indexed": true
+						},
+						"id": "3960cfea-e09e-ff5c-dbef-d49b0c48e19f",
+						"pageElements": [
+							{
+								"definition": {
+								},
+								"id": "18e218f5-554d-fdce-03f5-d825c7735843",
+								"pageElements": [
+									{
+										"definition": {
+											"cssClasses": [
+												"card",
+												"card-flat"
+											],
+											"fragmentLink": {
+												"href": {
+													"value_i18n": {
+														"en_US": "https://support.liferay.com/w/about-the-overview-page-video-tutorial",
+														"es_ES": "https://support.liferay.com/w/about-the-overview-page-video-tutorial",
+														"ja_JP": "https://support.liferay.com/w/about-the-overview-page-video-tutorial",
+														"pt_BR": "https://support.liferay.com/w/about-the-overview-page-video-tutorial"
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "colorBrandPrimaryLighten5",
+												"borderRadius": "borderRadiusLg",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4",
+												"textAlign": "center"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexColumn",
+												"justify": "Center",
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "50469311-bf41-229f-fef3-1035c06be32d",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-image"
+													},
+													"fragmentConfig": {
+														"imageSize": "w-100"
+													},
+													"fragmentFields": [
+														{
+															"id": "image-square",
+															"value": {
+																"fragmentImage": {
+																	"url": {
+																		"value_i18n": {
+																			"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/overview.svg$]"
+																		}
+																	}
+																},
+																"fragmentLink": {
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"height": "48px",
+														"width": "48px"
+													},
+													"indexed": true
+												},
+												"id": "323bb4ff-54d8-cb08-6084-e383e2112472",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "h5",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Overview",
+																		"es_ES": "Visión general",
+																		"ja_JP": "概要",
+																		"pt_BR": "Visão geral"
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginBottom": "2",
+														"marginTop": "2"
+													},
+													"indexed": true
+												},
+												"id": "90074e58-4a6e-fed2-83c7-59da31afb50f",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "The essential guide to Liferay Customer Portal",
+																		"es_ES": "La guía básica para el Portal del cliente de Liferay",
+																		"ja_JP": "Liferayカスタマーポータルのエッセンシャルガイド",
+																		"pt_BR": "O guia essencial do Portal do Cliente Liferay"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "69fe3e91-c81e-d959-8953-78351bd95caf",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									},
+									{
+										"definition": {
+											"cssClasses": [
+												"card-flat",
+												"card"
+											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"fieldKey": "AssetCategory_displayPageURL",
+														"itemReference": {
+															"className": "com.liferay.asset.kernel.model.AssetCategory",
+															"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/dxp-activation.json$]"
+														}
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "colorBrandPrimaryLighten5",
+												"borderRadius": "borderRadiusLg",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4",
+												"textAlign": "center"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexColumn",
+												"justify": "Center",
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "0510670c-a1c8-57a2-b708-78ef20925042",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-image"
+													},
+													"fragmentConfig": {
+														"imageSize": "w-100"
+													},
+													"fragmentFields": [
+														{
+															"id": "image-square",
+															"value": {
+																"fragmentImage": {
+																	"url": {
+																		"value_i18n": {
+																			"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/dxp_activation.svg$]"
+																		}
+																	}
+																},
+																"fragmentLink": {
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"height": "48px",
+														"width": "48px"
+													},
+													"indexed": true
+												},
+												"id": "023922f1-4d73-ecea-2ca9-253bf9b45b8c",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "h5",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"mapping": {
+																		"fieldKey": "AssetCategory_name",
+																		"itemReference": {
+																			"className": "com.liferay.asset.kernel.model.AssetCategory",
+																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/dxp-activation.json$]"
+																		}
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginBottom": "2",
+														"marginTop": "2"
+													},
+													"indexed": true
+												},
+												"id": "21bbe291-b1e1-f4de-2a0b-507850252c4d",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Details about Liferay DXP activation key usage and types",
+																		"es_ES": "Detalles sobre el uso y tipos de códigos de activación de Liferay DXP",
+																		"ja_JP": "Liferay DXPアクティベーションキーの使用方法と種類に関する詳細",
+																		"pt_BR": "Detalhes sobre o uso e os tipos de chaves de ativação do Liferay DXP"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "bc9978e3-c879-3691-d435-dc7106d031f7",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									},
+									{
+										"definition": {
+											"cssClasses": [
+												"card-flat",
+												"card"
+											],
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"fieldKey": "AssetCategory_displayPageURL",
+														"itemReference": {
+															"className": "com.liferay.asset.kernel.model.AssetCategory",
+															"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/team-members.json$]"
+														}
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "colorBrandPrimaryLighten5",
+												"borderRadius": "borderRadiusLg",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4",
+												"textAlign": "center"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "Center",
+												"contentDisplay": "FlexColumn",
+												"justify": "Center",
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "55442dbe-3280-ac2d-0106-07b645da288f",
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "BASIC_COMPONENT-image"
+													},
+													"fragmentConfig": {
+														"imageSize": "w-100"
+													},
+													"fragmentFields": [
+														{
+															"id": "image-square",
+															"value": {
+																"fragmentImage": {
+																	"url": {
+																		"value_i18n": {
+																			"en_US": "[$DOCUMENT_URL:/site-initializer/documents/group/assets/team_members.svg$]"
+																		}
+																	}
+																},
+																"fragmentLink": {
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"height": "48px",
+														"width": "48px"
+													},
+													"indexed": true
+												},
+												"id": "1e59cdc1-5f07-6abe-e9eb-16ac24adfed5",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "h5",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"mapping": {
+																		"fieldKey": "AssetCategory_name",
+																		"itemReference": {
+																			"className": "com.liferay.asset.kernel.model.AssetCategory",
+																			"classPK": "[$TAXONOMY_CATEGORY_ID:/site-initializer/taxonomy-vocabularies/group/article-categories/customer-portal-help/team-members.json$]"
+																		}
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"marginBottom": "2",
+														"marginTop": "2"
+													},
+													"indexed": true
+												},
+												"id": "d345db22-e9bc-9fed-a3e4-6a0482dbc267",
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-paragraph",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Learn more about roles, support seats and Incident Contacts",
+																		"es_ES": "Lee más sobre roles, plazas de soporte y contactos de incidencias",
+																		"ja_JP": "役割、サポートシート、インシデント・コンタクトの詳細",
+																		"pt_BR": "Saiba mais sobre funções, vagas de suporte e Contatos de Incidentes"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "6f41be07-0f9c-19fa-4818-ebf252b27491",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									}
+								],
+								"type": "FragmentDropZone"
+							}
+						],
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "home"
+		}
+	},
+	"version": 1.1
+}

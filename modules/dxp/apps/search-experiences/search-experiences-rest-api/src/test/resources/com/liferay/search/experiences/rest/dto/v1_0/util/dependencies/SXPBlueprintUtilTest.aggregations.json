@@ -24,7 +24,7 @@
 									"restaurantContentLengths": "restaurants>restaurant_content_lengths",
 									"totalContentLengths": "content_lengths"
 								},
-								"description": "Percentage content of restaurant-tagged content lengths of all content lenghts",
+								"description": "Percentage content of restaurant-tagged content lengths of all content lengths",
 								"script": "params.restaurantContentLengths / params.totalContentLengths * 100"
 							}
 						},

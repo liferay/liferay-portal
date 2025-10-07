@@ -8,10 +8,7 @@ package com.liferay.portal.kernel.util.comparator;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.PortletCategory;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-
-import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +22,6 @@ public class PortletCategoryComparatorTest {
 
 	@Test
 	public void testCompareLocalized() {
-		PropsTestUtil.setProps(Collections.emptyMap());
-
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		Language language = Mockito.mock(Language.class);

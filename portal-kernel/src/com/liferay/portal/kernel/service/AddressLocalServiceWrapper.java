@@ -420,12 +420,12 @@ public class AddressLocalServiceWrapper
 	}
 
 	@Override
-	public Address getOrAddIncompleteAddress(
+	public Address getOrAddEmptyAddress(
 			String externalReferenceCode, long companyId, long userId,
 			String className, long classPK)
-		throws Exception {
+		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _addressLocalService.getOrAddIncompleteAddress(
+		return _addressLocalService.getOrAddEmptyAddress(
 			externalReferenceCode, companyId, userId, className, classPK);
 	}
 

@@ -132,7 +132,7 @@ export function ProvideAppBuildPage({
 
 		let marketplaceLiferayPlatformOfferingId = 0;
 		let marketplaceLiferayVersionId = 0;
-		let marketplaceEditionId = 0;
+		let marketplaceAvailabilityId = 0;
 
 		vocabulariesResponse.items.forEach(
 			(vocab: {id: number; name: string}) => {
@@ -146,8 +146,8 @@ export function ProvideAppBuildPage({
 					marketplaceLiferayVersionId = vocab.id;
 				}
 
-				if (vocab.name === ProductVocabulary.EDITION) {
-					marketplaceEditionId = vocab.id;
+				if (vocab.name === ProductVocabulary.AVAILABILITY) {
+					marketplaceAvailabilityId = vocab.id;
 				}
 			}
 		);
@@ -199,21 +199,22 @@ export function ProvideAppBuildPage({
 				});
 			}
 
-			const marketplaceEditionList = await getCategories({
-				vocabId: marketplaceEditionId,
+			const marketplaceAvailabilityList = await getCategories({
+				vocabId: marketplaceAvailabilityId,
 			});
 
-			const marketplaceEditionOption = marketplaceEditionList.find(
-				(item) => item.name === ProductEditionOption.EE
-			);
+			const marketplaceAvailabilityOption =
+				marketplaceAvailabilityList.find(
+					(item) => item.name === ProductEditionOption.EE
+				);
 
-			if (marketplaceEditionOption) {
+			if (marketplaceAvailabilityOption) {
 				newCategories.push({
 					externalReferenceCode:
-						marketplaceEditionOption?.externalReferenceCode,
-					id: marketplaceEditionOption.id,
-					name: marketplaceEditionOption.name,
-					vocabulary: ProductVocabulary.EDITION,
+						marketplaceAvailabilityOption?.externalReferenceCode,
+					id: marketplaceAvailabilityOption.id,
+					name: marketplaceAvailabilityOption.name,
+					vocabulary: ProductVocabulary.AVAILABILITY,
 				});
 			}
 
@@ -224,7 +225,7 @@ export function ProvideAppBuildPage({
 				...categories.items.filter((category) => {
 					if (
 						category.vocabulary !==
-							ProductVocabulary.EDITION.toLowerCase() &&
+							ProductVocabulary.AVAILABILITY.toLowerCase() &&
 						category.vocabulary !==
 							ProductVocabulary.LIFERAY_VERSION.toLowerCase()
 					) {
@@ -646,7 +647,7 @@ export function ProvideAppBuildPage({
 					<Section
 						description={i18n.translate(
 							appType.value === ProductType.DXP
-								? 'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-compatibility-range'
+								? 'if-the-app-is-compatible-with-different-updates-of-74-please-upload-multiple-packages-for-each-update-or-update-the-compatibility-range'
 								: 'select-a-local-file-to-upload'
 						)}
 						label={i18n.translate(

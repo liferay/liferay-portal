@@ -61,13 +61,13 @@ public class SamlPeerBindingModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"samlPeerBindingId", Types.BIGINT}, {"companyId", Types.BIGINT},
-		{"createDate", Types.TIMESTAMP}, {"userId", Types.BIGINT},
-		{"userName", Types.VARCHAR}, {"deleted", Types.BOOLEAN},
-		{"samlNameIdFormat", Types.VARCHAR},
+		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
+		{"createDate", Types.TIMESTAMP}, {"samlPeerEntityId", Types.VARCHAR},
+		{"deleted", Types.BOOLEAN}, {"samlNameIdFormat", Types.VARCHAR},
 		{"samlNameIdNameQualifier", Types.VARCHAR},
 		{"samlNameIdSpNameQualifier", Types.VARCHAR},
 		{"samlNameIdSpProvidedId", Types.VARCHAR},
-		{"samlNameIdValue", Types.VARCHAR}, {"samlPeerEntityId", Types.VARCHAR}
+		{"samlNameIdValue", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -76,20 +76,20 @@ public class SamlPeerBindingModelImpl
 	static {
 		TABLE_COLUMNS_MAP.put("samlPeerBindingId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("samlPeerEntityId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("deleted", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("samlNameIdFormat", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("samlNameIdNameQualifier", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("samlNameIdSpNameQualifier", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("samlNameIdSpProvidedId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("samlNameIdValue", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("samlPeerEntityId", Types.VARCHAR);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table SamlPeerBinding (samlPeerBindingId LONG not null primary key,companyId LONG,createDate DATE null,userId LONG,userName VARCHAR(75) null,deleted BOOLEAN,samlNameIdFormat VARCHAR(128) null,samlNameIdNameQualifier VARCHAR(1024) null,samlNameIdSpNameQualifier VARCHAR(75) null,samlNameIdSpProvidedId VARCHAR(75) null,samlNameIdValue VARCHAR(1024) null,samlPeerEntityId VARCHAR(1024) null)";
+		"create table SamlPeerBinding (samlPeerBindingId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,samlPeerEntityId VARCHAR(1024) null,deleted BOOLEAN,samlNameIdFormat VARCHAR(128) null,samlNameIdNameQualifier VARCHAR(1024) null,samlNameIdSpNameQualifier VARCHAR(75) null,samlNameIdSpProvidedId VARCHAR(75) null,samlNameIdValue VARCHAR(1024) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table SamlPeerBinding";
 
@@ -256,11 +256,13 @@ public class SamlPeerBindingModelImpl
 				"samlPeerBindingId", SamlPeerBinding::getSamlPeerBindingId);
 			attributeGetterFunctions.put(
 				"companyId", SamlPeerBinding::getCompanyId);
-			attributeGetterFunctions.put(
-				"createDate", SamlPeerBinding::getCreateDate);
 			attributeGetterFunctions.put("userId", SamlPeerBinding::getUserId);
 			attributeGetterFunctions.put(
 				"userName", SamlPeerBinding::getUserName);
+			attributeGetterFunctions.put(
+				"createDate", SamlPeerBinding::getCreateDate);
+			attributeGetterFunctions.put(
+				"samlPeerEntityId", SamlPeerBinding::getSamlPeerEntityId);
 			attributeGetterFunctions.put(
 				"deleted", SamlPeerBinding::getDeleted);
 			attributeGetterFunctions.put(
@@ -276,8 +278,6 @@ public class SamlPeerBindingModelImpl
 				SamlPeerBinding::getSamlNameIdSpProvidedId);
 			attributeGetterFunctions.put(
 				"samlNameIdValue", SamlPeerBinding::getSamlNameIdValue);
-			attributeGetterFunctions.put(
-				"samlPeerEntityId", SamlPeerBinding::getSamlPeerEntityId);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -304,16 +304,20 @@ public class SamlPeerBindingModelImpl
 				(BiConsumer<SamlPeerBinding, Long>)
 					SamlPeerBinding::setCompanyId);
 			attributeSetterBiConsumers.put(
-				"createDate",
-				(BiConsumer<SamlPeerBinding, Date>)
-					SamlPeerBinding::setCreateDate);
-			attributeSetterBiConsumers.put(
 				"userId",
 				(BiConsumer<SamlPeerBinding, Long>)SamlPeerBinding::setUserId);
 			attributeSetterBiConsumers.put(
 				"userName",
 				(BiConsumer<SamlPeerBinding, String>)
 					SamlPeerBinding::setUserName);
+			attributeSetterBiConsumers.put(
+				"createDate",
+				(BiConsumer<SamlPeerBinding, Date>)
+					SamlPeerBinding::setCreateDate);
+			attributeSetterBiConsumers.put(
+				"samlPeerEntityId",
+				(BiConsumer<SamlPeerBinding, String>)
+					SamlPeerBinding::setSamlPeerEntityId);
 			attributeSetterBiConsumers.put(
 				"deleted",
 				(BiConsumer<SamlPeerBinding, Boolean>)
@@ -338,10 +342,6 @@ public class SamlPeerBindingModelImpl
 				"samlNameIdValue",
 				(BiConsumer<SamlPeerBinding, String>)
 					SamlPeerBinding::setSamlNameIdValue);
-			attributeSetterBiConsumers.put(
-				"samlPeerEntityId",
-				(BiConsumer<SamlPeerBinding, String>)
-					SamlPeerBinding::setSamlPeerEntityId);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -385,20 +385,6 @@ public class SamlPeerBindingModelImpl
 	public long getOriginalCompanyId() {
 		return GetterUtil.getLong(
 			this.<Long>getColumnOriginalValue("companyId"));
-	}
-
-	@Override
-	public Date getCreateDate() {
-		return _createDate;
-	}
-
-	@Override
-	public void setCreateDate(Date createDate) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_createDate = createDate;
 	}
 
 	@Override
@@ -457,6 +443,48 @@ public class SamlPeerBindingModelImpl
 		}
 
 		_userName = userName;
+	}
+
+	@Override
+	public Date getCreateDate() {
+		return _createDate;
+	}
+
+	@Override
+	public void setCreateDate(Date createDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_createDate = createDate;
+	}
+
+	@Override
+	public String getSamlPeerEntityId() {
+		if (_samlPeerEntityId == null) {
+			return "";
+		}
+		else {
+			return _samlPeerEntityId;
+		}
+	}
+
+	@Override
+	public void setSamlPeerEntityId(String samlPeerEntityId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_samlPeerEntityId = samlPeerEntityId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalSamlPeerEntityId() {
+		return getColumnOriginalValue("samlPeerEntityId");
 	}
 
 	@Override
@@ -592,34 +620,6 @@ public class SamlPeerBindingModelImpl
 		return getColumnOriginalValue("samlNameIdValue");
 	}
 
-	@Override
-	public String getSamlPeerEntityId() {
-		if (_samlPeerEntityId == null) {
-			return "";
-		}
-		else {
-			return _samlPeerEntityId;
-		}
-	}
-
-	@Override
-	public void setSamlPeerEntityId(String samlPeerEntityId) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_samlPeerEntityId = samlPeerEntityId;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalSamlPeerEntityId() {
-		return getColumnOriginalValue("samlPeerEntityId");
-	}
-
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -678,9 +678,10 @@ public class SamlPeerBindingModelImpl
 
 		samlPeerBindingImpl.setSamlPeerBindingId(getSamlPeerBindingId());
 		samlPeerBindingImpl.setCompanyId(getCompanyId());
-		samlPeerBindingImpl.setCreateDate(getCreateDate());
 		samlPeerBindingImpl.setUserId(getUserId());
 		samlPeerBindingImpl.setUserName(getUserName());
+		samlPeerBindingImpl.setCreateDate(getCreateDate());
+		samlPeerBindingImpl.setSamlPeerEntityId(getSamlPeerEntityId());
 		samlPeerBindingImpl.setDeleted(isDeleted());
 		samlPeerBindingImpl.setSamlNameIdFormat(getSamlNameIdFormat());
 		samlPeerBindingImpl.setSamlNameIdNameQualifier(
@@ -690,7 +691,6 @@ public class SamlPeerBindingModelImpl
 		samlPeerBindingImpl.setSamlNameIdSpProvidedId(
 			getSamlNameIdSpProvidedId());
 		samlPeerBindingImpl.setSamlNameIdValue(getSamlNameIdValue());
-		samlPeerBindingImpl.setSamlPeerEntityId(getSamlPeerEntityId());
 
 		samlPeerBindingImpl.resetOriginalValues();
 
@@ -705,12 +705,14 @@ public class SamlPeerBindingModelImpl
 			this.<Long>getColumnOriginalValue("samlPeerBindingId"));
 		samlPeerBindingImpl.setCompanyId(
 			this.<Long>getColumnOriginalValue("companyId"));
-		samlPeerBindingImpl.setCreateDate(
-			this.<Date>getColumnOriginalValue("createDate"));
 		samlPeerBindingImpl.setUserId(
 			this.<Long>getColumnOriginalValue("userId"));
 		samlPeerBindingImpl.setUserName(
 			this.<String>getColumnOriginalValue("userName"));
+		samlPeerBindingImpl.setCreateDate(
+			this.<Date>getColumnOriginalValue("createDate"));
+		samlPeerBindingImpl.setSamlPeerEntityId(
+			this.<String>getColumnOriginalValue("samlPeerEntityId"));
 		samlPeerBindingImpl.setDeleted(
 			this.<Boolean>getColumnOriginalValue("deleted"));
 		samlPeerBindingImpl.setSamlNameIdFormat(
@@ -723,8 +725,6 @@ public class SamlPeerBindingModelImpl
 			this.<String>getColumnOriginalValue("samlNameIdSpProvidedId"));
 		samlPeerBindingImpl.setSamlNameIdValue(
 			this.<String>getColumnOriginalValue("samlNameIdValue"));
-		samlPeerBindingImpl.setSamlPeerEntityId(
-			this.<String>getColumnOriginalValue("samlPeerEntityId"));
 
 		return samlPeerBindingImpl;
 	}
@@ -805,6 +805,16 @@ public class SamlPeerBindingModelImpl
 
 		samlPeerBindingCacheModel.companyId = getCompanyId();
 
+		samlPeerBindingCacheModel.userId = getUserId();
+
+		samlPeerBindingCacheModel.userName = getUserName();
+
+		String userName = samlPeerBindingCacheModel.userName;
+
+		if ((userName != null) && (userName.length() == 0)) {
+			samlPeerBindingCacheModel.userName = null;
+		}
+
 		Date createDate = getCreateDate();
 
 		if (createDate != null) {
@@ -814,14 +824,12 @@ public class SamlPeerBindingModelImpl
 			samlPeerBindingCacheModel.createDate = Long.MIN_VALUE;
 		}
 
-		samlPeerBindingCacheModel.userId = getUserId();
+		samlPeerBindingCacheModel.samlPeerEntityId = getSamlPeerEntityId();
 
-		samlPeerBindingCacheModel.userName = getUserName();
+		String samlPeerEntityId = samlPeerBindingCacheModel.samlPeerEntityId;
 
-		String userName = samlPeerBindingCacheModel.userName;
-
-		if ((userName != null) && (userName.length() == 0)) {
-			samlPeerBindingCacheModel.userName = null;
+		if ((samlPeerEntityId != null) && (samlPeerEntityId.length() == 0)) {
+			samlPeerBindingCacheModel.samlPeerEntityId = null;
 		}
 
 		samlPeerBindingCacheModel.deleted = isDeleted();
@@ -876,14 +884,6 @@ public class SamlPeerBindingModelImpl
 
 		if ((samlNameIdValue != null) && (samlNameIdValue.length() == 0)) {
 			samlPeerBindingCacheModel.samlNameIdValue = null;
-		}
-
-		samlPeerBindingCacheModel.samlPeerEntityId = getSamlPeerEntityId();
-
-		String samlPeerEntityId = samlPeerBindingCacheModel.samlPeerEntityId;
-
-		if ((samlPeerEntityId != null) && (samlPeerEntityId.length() == 0)) {
-			samlPeerBindingCacheModel.samlPeerEntityId = null;
 		}
 
 		return samlPeerBindingCacheModel;
@@ -949,16 +949,16 @@ public class SamlPeerBindingModelImpl
 
 	private long _samlPeerBindingId;
 	private long _companyId;
-	private Date _createDate;
 	private long _userId;
 	private String _userName;
+	private Date _createDate;
+	private String _samlPeerEntityId;
 	private boolean _deleted;
 	private String _samlNameIdFormat;
 	private String _samlNameIdNameQualifier;
 	private String _samlNameIdSpNameQualifier;
 	private String _samlNameIdSpProvidedId;
 	private String _samlNameIdValue;
-	private String _samlPeerEntityId;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<SamlPeerBinding, Object> function =
@@ -990,9 +990,10 @@ public class SamlPeerBindingModelImpl
 
 		_columnOriginalValues.put("samlPeerBindingId", _samlPeerBindingId);
 		_columnOriginalValues.put("companyId", _companyId);
-		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("userId", _userId);
 		_columnOriginalValues.put("userName", _userName);
+		_columnOriginalValues.put("createDate", _createDate);
+		_columnOriginalValues.put("samlPeerEntityId", _samlPeerEntityId);
 		_columnOriginalValues.put("deleted", _deleted);
 		_columnOriginalValues.put("samlNameIdFormat", _samlNameIdFormat);
 		_columnOriginalValues.put(
@@ -1002,7 +1003,6 @@ public class SamlPeerBindingModelImpl
 		_columnOriginalValues.put(
 			"samlNameIdSpProvidedId", _samlNameIdSpProvidedId);
 		_columnOriginalValues.put("samlNameIdValue", _samlNameIdValue);
-		_columnOriginalValues.put("samlPeerEntityId", _samlPeerEntityId);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -1020,25 +1020,25 @@ public class SamlPeerBindingModelImpl
 
 		columnBitmasks.put("companyId", 2L);
 
-		columnBitmasks.put("createDate", 4L);
+		columnBitmasks.put("userId", 4L);
 
-		columnBitmasks.put("userId", 8L);
+		columnBitmasks.put("userName", 8L);
 
-		columnBitmasks.put("userName", 16L);
+		columnBitmasks.put("createDate", 16L);
 
-		columnBitmasks.put("deleted", 32L);
+		columnBitmasks.put("samlPeerEntityId", 32L);
 
-		columnBitmasks.put("samlNameIdFormat", 64L);
+		columnBitmasks.put("deleted", 64L);
 
-		columnBitmasks.put("samlNameIdNameQualifier", 128L);
+		columnBitmasks.put("samlNameIdFormat", 128L);
 
-		columnBitmasks.put("samlNameIdSpNameQualifier", 256L);
+		columnBitmasks.put("samlNameIdNameQualifier", 256L);
 
-		columnBitmasks.put("samlNameIdSpProvidedId", 512L);
+		columnBitmasks.put("samlNameIdSpNameQualifier", 512L);
 
-		columnBitmasks.put("samlNameIdValue", 1024L);
+		columnBitmasks.put("samlNameIdSpProvidedId", 1024L);
 
-		columnBitmasks.put("samlPeerEntityId", 2048L);
+		columnBitmasks.put("samlNameIdValue", 2048L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

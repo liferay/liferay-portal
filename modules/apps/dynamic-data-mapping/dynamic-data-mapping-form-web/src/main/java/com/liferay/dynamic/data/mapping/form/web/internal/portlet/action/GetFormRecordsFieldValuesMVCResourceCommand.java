@@ -6,7 +6,11 @@
 package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
 import com.liferay.dynamic.data.mapping.constants.DDMPortletKeys;
+import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
+import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalService;
 import com.liferay.dynamic.data.mapping.util.DDMFormReportDataUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -25,6 +29,8 @@ import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -58,18 +64,32 @@ public class GetFormRecordsFieldValuesMVCResourceCommand
 			HttpServletRequest httpServletRequest)
 		throws Exception {
 
-		String fieldName = ParamUtil.getString(httpServletRequest, "fieldName");
+		DDMFormInstance ddmFormInstance =
+			_ddmFormInstanceLocalService.fetchDDMFormInstance(
+				ParamUtil.getLong(httpServletRequest, "formInstanceId"));
+
+		DDMForm ddmForm = ddmFormInstance.getDDMForm();
+
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			ddmForm.getDDMFormFieldsMap(true);
+
+		DDMFormField ddmFormField = ddmFormFieldsMap.get(
+			ParamUtil.getString(httpServletRequest, "fieldName"));
 
 		BaseModelSearchResult<DDMFormInstanceRecord> baseModelSearchResult =
 			_ddmFormInstanceRecordLocalService.searchFormInstanceRecords(
 				ParamUtil.getLong(httpServletRequest, "formInstanceId"),
-				new String[] {fieldName}, WorkflowConstants.STATUS_APPROVED,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new String[] {ddmFormField.getFieldReference()},
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
 				new Sort(Field.MODIFIED_DATE, Sort.LONG_TYPE, true));
 
 		return DDMFormReportDataUtil.getFieldValuesJSONArray(
-			baseModelSearchResult.getBaseModels(), fieldName);
+			baseModelSearchResult.getBaseModels(), ddmFormField.getName());
 	}
+
+	@Reference
+	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
 
 	@Reference
 	private DDMFormInstanceRecordLocalService

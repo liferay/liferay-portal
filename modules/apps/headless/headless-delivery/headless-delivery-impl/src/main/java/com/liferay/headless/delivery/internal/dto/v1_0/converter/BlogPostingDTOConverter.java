@@ -35,9 +35,9 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -177,7 +177,7 @@ public class BlogPostingDTOConverter
 				setCaption(blogsEntry::getCoverImageCaption);
 				setContentUrl(
 					() -> _dlURLHelper.getPreviewURL(
-						fileEntry, fileEntry.getFileVersion(), null, "", false,
+						fileEntry, fileEntry.getFileVersion(), null, "", true,
 						false));
 				setContentValue(
 					() -> ContentValueUtil.toContentValue(

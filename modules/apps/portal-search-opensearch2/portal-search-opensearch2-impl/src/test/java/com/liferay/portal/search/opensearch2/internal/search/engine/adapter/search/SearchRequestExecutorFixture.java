@@ -45,7 +45,7 @@ import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTr
 import com.liferay.portal.search.opensearch2.internal.sort.OpenSearchSortFieldTranslatorFixture;
 import com.liferay.portal.search.opensearch2.internal.stats.StatsTranslator;
 import com.liferay.portal.search.opensearch2.internal.stats.StatsTranslatorImpl;
-import com.liferay.portal.search.opensearch2.internal.suggest.OpenSearchSuggesterTranslatorFixture;
+import com.liferay.portal.search.opensearch2.internal.suggest.OpenSearchSuggesterTranslator;
 import com.liferay.portal.search.query.Queries;
 
 import java.util.ArrayList;
@@ -486,14 +486,9 @@ public class SearchRequestExecutorFixture {
 			suggestSearchRequestExecutor, "_openSearchConnectionManager",
 			openSearchConnectionManager);
 
-		OpenSearchSuggesterTranslatorFixture
-			openSearchSuggesterTranslatorFixture =
-				new OpenSearchSuggesterTranslatorFixture();
-
 		ReflectionTestUtil.setFieldValue(
 			suggestSearchRequestExecutor, "_suggesterTranslator",
-			openSearchSuggesterTranslatorFixture.
-				getOpenSearchSuggesterTranslator());
+			new OpenSearchSuggesterTranslator(null));
 
 		return suggestSearchRequestExecutor;
 	}

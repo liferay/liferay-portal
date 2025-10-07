@@ -7,32 +7,32 @@ const optionListElement = fragmentElement.querySelector('.list-unstyled');
 const chooseOptionElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-choose-option-message`
+	`${fragmentElementId}-choose-option-message`
 );
 const labelInputElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-label-input`
+	`${fragmentElementId}-label-input`
 );
 const loadingResultsElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-loading-results-message`
+	`${fragmentElementId}-loading-results-message`
 );
 const noResultsElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-no-results-message`
+	`${fragmentElementId}-no-results-message`
 );
 const uiInputElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-select-from-list-input`
+	`${fragmentElementId}-select-from-list-input`
 );
 const valueInputElement = document.getElementById(
 
 	// eslint-disable-next-line no-undef
-	`${fragmentEntryLinkNamespace}-value-input`
+	`${fragmentElementId}-value-input`
 );
 
 buttonElement.addEventListener('click', toggleDropdown);
@@ -83,7 +83,7 @@ else {
 
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -92,64 +92,138 @@ else {
 			if (input.localizable) {
 				Object.entries(input.valueI18n).forEach(
 					([languageId, value]) => {
-						const input = getOrCreateTranslationInput(
-							uiInputElement.id,
-							input.name,
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
 							languageId,
-							uiInputElement.parentNode,
-							fragmentNamespace
-						);
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
 
 						// Set data-label with the option label for each translation input
 
-						input.dataset.label = input.attributes.options.find(
-							(option) => option.value === value
-						).label;
+						translationInput.dataset.label =
+							input.attributes.options.find(
+								(option) => option.value === value
+							).label;
 					}
 				);
 
 				const {onChange} = registerLocalizedInput({
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					initialValues: input.valueI18n,
 					inputElement: uiInputElement,
+					inputName: input.name,
+					localizationInputsContainer: uiInputElement.parentNode,
+					namespace: fragmentElementId,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
-						const translationInput = getOrCreateTranslationInput(
-							uiInputElement.id,
-							input.name,
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
 							languageId,
-							uiInputElement.parentNode,
-							fragmentNamespace
-						);
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
 
 						if (translationInput.getAttribute('value') !== null) {
-							uiInputElement.checked =
-								translationInput.value === 'true';
+							uiInputElement.value =
+								translationInput.dataset.label;
 						}
 						else {
-							const defaultLanguageInput =
-								getOrCreateTranslationInput(
-									uiInputElement.id,
-									input.name,
-									defaultLanguageId,
+							const defaultLanguageInput = getTranslationInput({
+								inputId: uiInputElement.id,
+								inputName: input.name,
+								languageId: defaultLanguageId,
+								localizationInputsContainer:
 									uiInputElement.parentNode,
-									fragmentNamespace
-								);
+								namespace: fragmentElementId,
+							});
+
 							uiInputElement.value =
 								defaultLanguageInput.dataset.label || '';
 						}
 					},
+					onMarkAsTranslated: () => {
+						const defaultLanguageInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: defaultLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
+
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
+
+						translationInput.dataset.label =
+							defaultLanguageInput.dataset.label;
+
+						translationInput.value = defaultLanguageInput.value;
+
+						uiInputElement.value =
+							defaultLanguageInput.dataset.label;
+					},
+					onResetTranslation: () => {
+						const defaultLanguageInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: defaultLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
+
+						const translationInput = getTranslationInput({
+							inputId: uiInputElement.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer:
+								uiInputElement.parentNode,
+							namespace: fragmentElementId,
+						});
+
+						translationInput.dataset.label = '';
+						translationInput.value = '';
+
+						uiInputElement.value =
+							defaultLanguageInput.dataset.label || '';
+					},
+				});
+
+				uiInputElement.addEventListener('blur', () => {
+					const translationInput = getTranslationInput({
+						inputId: uiInputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: uiInputElement.parentNode,
+						namespace: fragmentElementId,
+					});
+
+					if (!uiInputElement.value) {
+						translationInput.value = null;
+					}
 				});
 
 				optionListElement.addEventListener('click', (event) => {
-					const translationInput = getOrCreateTranslationInput(
-						uiInputElement.id,
-						input.name,
-						currentLanguageId,
-						uiInputElement.parentNode,
-						fragmentNamespace
-					);
+					const translationInput = getTranslationInput({
+						inputId: uiInputElement.id,
+						inputName: input.name,
+						languageId: currentLanguageId,
+						localizationInputsContainer: uiInputElement.parentNode,
+						namespace: fragmentElementId,
+					});
 
 					handleResultListClick(event, onChange, translationInput);
 				});
@@ -185,12 +259,12 @@ else {
 						}
 					},
 					readOnlyInputLabel: document.getElementById(
-						`${fragmentNamespace}-select-from-list-read-only`
+						`${fragmentElementId}-select-from-list-read-only`
 					),
 					unlocalizedFieldsState:
 						input.attributes.unlocalizedFieldsState,
 					unlocalizedMessageContainer: document.getElementById(
-						`${fragmentNamespace}-unlocalized-info`
+						`${fragmentElementId}-unlocalized-info`
 					),
 				});
 
@@ -242,7 +316,13 @@ function handleResultListClick(event, onChange, translationInput) {
 }
 
 function handleInputBlur() {
-	uiInputElement.value = labelInputElement.value;
+	if (!uiInputElement.value) {
+		labelInputElement.value = '';
+		valueInputElement.value = null;
+	}
+	else {
+		uiInputElement.value = labelInputElement.value;
+	}
 
 	if (checkIsOpenDropdown()) {
 		setTimeout(() => closeDropdown(), 500);
@@ -386,6 +466,7 @@ function filterRemoteOptions(query, abortController) {
 	}
 
 	const url = new URL(input.attributes.relationshipURL);
+	url.searchParams.set('pageSize', 0);
 	url.searchParams.set('search', query);
 
 	return Liferay.Util.fetch(url, {
@@ -472,7 +553,7 @@ function createOptionElement(option) {
 	optionElement.dataset.optionValue = option.value;
 
 	// eslint-disable-next-line no-undef
-	optionElement.id = `${fragmentEntryLinkNamespace}-option-${option.value}`;
+	optionElement.id = `${fragmentElementId}-option-${option.value}`;
 	optionElement.textContent = option.textContent;
 
 	optionElement.classList.add('dropdown-item');
@@ -499,7 +580,7 @@ function setSelectedOption(optionElement) {
 	const selectedOption = document.getElementById(
 
 		// eslint-disable-next-line no-undef
-		`${fragmentEntryLinkNamespace}-option-${valueInputElement.value}`
+		`${fragmentElementId}-option-${valueInputElement.value}`
 	);
 
 	if (selectedOption) {

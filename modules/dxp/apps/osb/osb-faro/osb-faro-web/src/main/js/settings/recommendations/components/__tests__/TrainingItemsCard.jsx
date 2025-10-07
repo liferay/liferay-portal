@@ -27,7 +27,7 @@ describe('TrainingItemsCard', () => {
 						itemFilters={[
 							{
 								name: 'includeFilter',
-								value: 'url ~ .*custom-assets'
+								value: 'url ~ .*documents'
 							}
 						]}
 					/>

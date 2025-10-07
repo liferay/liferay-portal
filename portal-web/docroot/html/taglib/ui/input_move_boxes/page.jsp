@@ -36,7 +36,7 @@ Map<String, Object> data = new HashMap<String, Object>();
 <div class="taglib-move-boxes <%= cssClass %> <%= leftReorder ? "left-reorder" : StringPool.BLANK %> <%= rightReorder ? "right-reorder" : StringPool.BLANK %>" id="<%= randomNamespace %>input-move-boxes">
 	<div class="row selector-container">
 		<div class="col-md-4 left-selector-column">
-			<aui:select cssClass="choice-selector left-selector" label="<%= leftTitle %>" multiple="<%= true %>" name="<%= leftBoxName %>" onChange="<%= Validator.isNotNull(leftOnChange) ? leftOnChange : StringPool.BLANK %>" size="10">
+			<aui:select cssClass="choice-selector left-selector" label="<%= leftTitle %>" multiple="<%= true %>" name="<%= leftBoxName %>" onChange="<%= Validator.isNotNull(leftOnChange) ? leftOnChange : StringPool.BLANK %>">
 
 				<%
 				data.put("selected", true);
@@ -57,7 +57,7 @@ Map<String, Object> data = new HashMap<String, Object>();
 		<div class="col-md-1 move-arrow-buttons"></div>
 
 		<div class="col-md-4 right-selector-column">
-			<aui:select cssClass="choice-selector right-selector" label="<%= rightTitle %>" multiple="<%= true %>" name="<%= rightBoxName %>" onChange="<%= Validator.isNotNull(rightOnChange) ? rightOnChange : StringPool.BLANK %>" size="10">
+			<aui:select cssClass="choice-selector right-selector" label="<%= rightTitle %>" multiple="<%= true %>" name="<%= rightBoxName %>" onChange="<%= Validator.isNotNull(rightOnChange) ? rightOnChange : StringPool.BLANK %>">
 
 				<%
 				data.put("selected", false);
@@ -120,6 +120,7 @@ Map<String, Object> data = new HashMap<String, Object>();
 					label: '<%= rightTitle %>'
 				},
 				rightMaxItems: <%= rightBoxMaxItems %>,
+				size: 10,
 			}
 		);
 	}

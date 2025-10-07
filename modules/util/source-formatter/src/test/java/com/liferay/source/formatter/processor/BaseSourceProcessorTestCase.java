@@ -25,6 +25,7 @@ import java.net.URL;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -140,6 +141,15 @@ public abstract class BaseSourceProcessorTestCase {
 					modifiedFileNames);
 			}
 
+			List<String> checkCategoryNames =
+				sourceFormatterArgs.getCheckCategoryNames();
+
+			if (checkCategoryNames.contains("Upgrade")) {
+				sourceFormatterMessages = ListUtil.sort(
+					sourceFormatterMessages,
+					Comparator.comparing(SourceFormatterMessage::getMessage));
+			}
+
 			_checkExpectedMessages(
 				expectedMessages, newFile, sourceFormatterMessages,
 				sourceProcessorTestParameters);
@@ -213,6 +223,12 @@ public abstract class BaseSourceProcessorTestCase {
 			if (lineNumber > -1) {
 				List<Integer> lineNumbers =
 					sourceProcessorTestParameters.getLineNumbers();
+
+				if (Collections.frequency(lineNumbers, -1) ==
+						lineNumbers.size()) {
+
+					continue;
+				}
 
 				Assert.assertEquals(
 					String.valueOf(lineNumbers.get(i)),

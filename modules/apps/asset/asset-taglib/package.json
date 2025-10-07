@@ -1,12 +1,12 @@
 {
 	"dependencies": {
-		"@clayui/button": "3.136.0",
-		"@clayui/core": "3.139.1",
-		"@clayui/data-provider": "3.139.0",
-		"@clayui/form": "3.139.0",
-		"@clayui/icon": "3.128.0",
-		"@clayui/link": "3.128.0",
-		"@clayui/multi-select": "3.139.1",
+		"@clayui/button": "3.144.1",
+		"@clayui/core": "3.149.0",
+		"@clayui/data-provider": "3.148.0",
+		"@clayui/form": "3.148.0",
+		"@clayui/icon": "3.144.1",
+		"@clayui/link": "3.144.1",
+		"@clayui/multi-select": "3.149.0",
 		"@liferay/frontend-js-react-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
@@ -23,5 +23,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "12.0.2"
+	"version": "12.0.9"
 }

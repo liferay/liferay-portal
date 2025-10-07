@@ -22,40 +22,6 @@ public class LPD_41285 {
 		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK);
 	}
 
-	public void method(
-		long cpInstanceId, long commercePriceListId, boolean useAncestor) {
-
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK, useAncestor);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(123, commercePriceListId, useAncestor);
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK, useAncestor);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK, useAncestor);
-		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, null, StringPool.BLANK, useAncestor);
-	}
-
-	public void method(long commercePriceListId, String cpInstanceUuid) {
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, "test123");
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK);
-		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK);
-	}
-
-	public void method(long commercePriceListId, String cpInstanceUuid, boolean useAncestor) {
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK, useAncestor);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, "test123", useAncestor);
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK, useAncestor);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK, useAncestor);
-		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, StringPool.BLANK, useAncestor);
-	}
-
-	public void method(long commercePriceListId, String cpInstanceUuid, int status) {
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, status, StringPool.BLANK);
-		CommercePriceEntryLocalServiceUtil.fetchCommercePriceEntry(commercePriceListId, "test123", status);
-		CommercePriceEntryServiceUtil.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, status, StringPool.BLANK);
-		_commercePriceEntryLocalService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, status, StringPool.BLANK);
-		_commercePriceEntryService.fetchCommercePriceEntry(commercePriceListId, cpInstanceUuid, status, StringPool.BLANK);
-	}
-
 	@Reference
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 

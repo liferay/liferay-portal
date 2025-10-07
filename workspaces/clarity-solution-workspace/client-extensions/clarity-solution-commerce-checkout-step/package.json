@@ -1,0 +1,13 @@
+{
+	"dependencies": {
+		"react": "16.12.0",
+		"serve": "^14.2.0"
+	},
+	"description": "Clarity Solution Commerce Checkout Step",
+	"name": "@liferay/clarity-solution-commerce-checkout-step",
+	"type": "module",
+	"version": "0.0.0",
+	"workspaces": [
+		"src/main/resources/assets/clarity-solution-commerce-checkout-step"
+	]
+}

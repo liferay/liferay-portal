@@ -13,7 +13,8 @@ import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountEntryUserRelService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.announcements.kernel.service.AnnouncementsDeliveryLocalService;
-import com.liferay.captcha.util.CaptchaUtil;
+import com.liferay.captcha.rest.dto.v1_0.Captcha;
+import com.liferay.captcha.rest.resource.v1_0.CaptchaResource;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
@@ -41,6 +42,7 @@ import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.captcha.CaptchaException;
 import com.liferay.portal.kernel.captcha.CaptchaSettings;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
@@ -880,7 +882,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		UsersAdminUtil.updateAddresses(
 			Contact.class.getName(), user.getContactId(),
-			_getAddresses(null, userAccount));
+			_getAddresses(null, userAccount),
+			ListTypeConstants.CONTACT_ADDRESS);
 		UsersAdminUtil.updateEmailAddresses(
 			Contact.class.getName(), user.getContactId(),
 			_getServiceBuilderEmailAddresses(null, userAccount));
@@ -989,7 +992,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	}
 
 	@Override
-	public UserAccount postUserAccount(UserAccount userAccount)
+	public UserAccount postUserAccount(
+			String captchaAnswer, String captchaToken, UserAccount userAccount)
 		throws Exception {
 
 		User user = null;
@@ -1022,7 +1026,21 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		if (contextUser.isGuestUser()) {
 			if (_captchaSettings.isCreateAccountCaptchaEnabled()) {
-				CaptchaUtil.check(contextHttpServletRequest);
+				try {
+					_captchaResource.setContextCompany(contextCompany);
+					_captchaResource.setContextUser(contextUser);
+
+					_captchaResource.postCaptchaResponse(
+						new Captcha() {
+							{
+								setAnswer(() -> captchaAnswer);
+								setToken(() -> captchaToken);
+							}
+						});
+				}
+				catch (Exception exception) {
+					throw new CaptchaException(exception);
+				}
 			}
 
 			user = _userService.addUserWithWorkflow(
@@ -1044,7 +1062,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 			UsersAdminUtil.updateAddresses(
 				Contact.class.getName(), user.getContactId(),
-				_getAddresses(null, userAccount));
+				_getAddresses(null, userAccount),
+				ListTypeConstants.CONTACT_ADDRESS);
 			UsersAdminUtil.updateEmailAddresses(
 				Contact.class.getName(), user.getContactId(),
 				_getServiceBuilderEmailAddresses(null, userAccount));
@@ -1215,7 +1234,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			externalReferenceCode, contextCompany.getCompanyId());
 
 		if (user == null) {
-			return postUserAccount(userAccount);
+			return postUserAccount(null, null, userAccount);
 		}
 
 		return putUserAccount(user.getUserId(), userAccount);
@@ -1890,6 +1909,9 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 	@Reference
 	private AnnouncementsDeliveryLocalService
 		_announcementsDeliveryLocalService;
+
+	@Reference
+	private CaptchaResource _captchaResource;
 
 	@Reference
 	private CaptchaSettings _captchaSettings;

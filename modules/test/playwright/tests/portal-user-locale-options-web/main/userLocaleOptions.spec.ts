@@ -38,9 +38,16 @@ test('LPD-46913 Language should change properly for admins even if the site does
 			site.friendlyUrlPath
 		);
 
-		await siteSettingsLocalizationPage.disableAllLanguagesExceptSp(
-			site.friendlyUrlPath
-		);
+		if (
+			(await siteSettingsLocalizationPage.page
+				.getByRole('listbox')
+				.first()
+				.count()) > 1
+		) {
+			await siteSettingsLocalizationPage.disableAllLanguagesExceptSp(
+				site.friendlyUrlPath
+			);
+		}
 
 		const siteURL = `/es/group${site.friendlyUrlPath}`;
 		await page.goto(siteURL);

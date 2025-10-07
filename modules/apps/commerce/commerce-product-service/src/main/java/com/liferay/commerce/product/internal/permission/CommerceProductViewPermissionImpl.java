@@ -9,7 +9,6 @@ import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.commerce.product.discovery.CPConfigurationListDiscovery;
-import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
@@ -19,7 +18,6 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -92,16 +90,6 @@ public class CommerceProductViewPermissionImpl
 
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
-
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			CPConfigurationList cpConfigurationList =
-				_cpConfigurationListDiscovery.getCPConfigurationList(
-					cpDefinition.getCompanyId(), cpDefinition.getGroupId(),
-					commerceAccountId, _getCommerceChannelId(groupId), 0);
-
-			return cpDefinition.isVisible(
-				cpConfigurationList.getCPConfigurationListId());
-		}
 
 		if (!_isChannelEnabled(groupId, cpDefinition)) {
 			return false;

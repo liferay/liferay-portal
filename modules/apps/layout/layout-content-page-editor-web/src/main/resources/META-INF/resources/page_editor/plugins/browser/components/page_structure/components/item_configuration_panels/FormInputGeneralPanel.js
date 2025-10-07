@@ -17,6 +17,10 @@ import {FREEMARKER_FRAGMENT_ENTRY_PROCESSOR} from '../../../../../../app/config/
 import {LAYOUT_DATA_ITEM_TYPES} from '../../../../../../app/config/constants/layoutDataItemTypes';
 import {config} from '../../../../../../app/config/index';
 import {
+	useObjectFields,
+	useObjectLabel,
+} from '../../../../../../app/contexts/ObjectDataContext';
+import {
 	useDispatch,
 	useSelector,
 	useSelectorCallback,
@@ -169,17 +173,17 @@ export function FormInputGeneralPanel({item}) {
 		[item.itemId]
 	);
 
-	const {classNameId, classTypeId, formId} = useSelectorCallback(
-		(state) =>
-			selectFormConfiguration(item, state.layoutData) ||
-			DEFAULT_FORM_CONFIGURATION,
-		[item.itemId]
-	);
+	const {classNameId, classTypeId, fieldSetName, formId} =
+		useSelectorCallback(
+			(state) =>
+				selectFormConfiguration(item, state.layoutData) ||
+				DEFAULT_FORM_CONFIGURATION,
+			[item.itemId]
+		);
 
-	const formFields = useCache({
-		fetcher: () => FormService.getFormFields({classNameId, classTypeId}),
-		key: [CACHE_KEYS.formFields, classNameId, classTypeId],
-	});
+	const formFields = useObjectFields(
+		fieldSetName ? {name: fieldSetName} : {classNameId, classTypeId}
+	);
 
 	const {fragmentEntryKey, groupId} = fragmentEntryLinkRef.current;
 
@@ -244,14 +248,14 @@ export function FormInputGeneralPanel({item}) {
 				const selectedFields = [];
 
 				const findSelectedFields = (itemId) => {
-					const inputItem = state.layoutData.items[itemId];
+					const layoutDataItem = state.layoutData.items[itemId];
 
 					if (
-						inputItem?.itemId !== item.itemId &&
-						inputItem?.type === LAYOUT_DATA_ITEM_TYPES.fragment
+						layoutDataItem?.itemId !== item.itemId &&
+						layoutDataItem?.type === LAYOUT_DATA_ITEM_TYPES.fragment
 					) {
 						const {editableValues, fragmentEntryType} =
-							selectFragmentEntryLink(state, inputItem);
+							selectFragmentEntryLink(state, layoutDataItem);
 
 						if (
 							fragmentEntryType === FRAGMENT_ENTRY_TYPES.input &&
@@ -267,7 +271,7 @@ export function FormInputGeneralPanel({item}) {
 						}
 					}
 
-					inputItem?.children.forEach(findSelectedFields);
+					layoutDataItem?.children.forEach(findSelectedFields);
 				};
 
 				findSelectedFields(formId);
@@ -276,21 +280,41 @@ export function FormInputGeneralPanel({item}) {
 			})();
 
 			fields = fields
-				.map((fieldset) => ({
-					...fieldset,
-					fields: fieldset.fields
-						.filter(
-							(field) =>
-								allowedInputTypes.includes(field.type) &&
-								!selectedFields.includes(field.key)
-						)
-						.map((field) =>
-							field.required
-								? {...field, label: `${field.label}*`}
-								: field
-						),
-				}))
-				.filter((fieldset) => fieldset.fields.length);
+				.map((field) => {
+					const isFieldSet = 'fields' in field;
+
+					if (isFieldSet && !field.relationship) {
+						return {
+							...field,
+							fields: field.fields
+								.filter(
+									(field) =>
+										allowedInputTypes.includes(
+											field.type
+										) && !selectedFields.includes(field.key)
+								)
+								.map((field) =>
+									field.required
+										? {...field, label: `${field.label}*`}
+										: field
+								),
+						};
+					}
+
+					if (
+						allowedInputTypes.includes(field.type) &&
+						!selectedFields.includes(field.key)
+					) {
+						return field.required
+							? {...field, label: `${field.label}*`}
+							: field;
+					}
+
+					return null;
+				})
+				.filter(
+					(field) => field && (!field.fields || field.fields.length)
+				);
 
 			return fields;
 		},
@@ -408,6 +432,7 @@ export function FormInputGeneralPanel({item}) {
 							form={{
 								classNameId,
 								classTypeId,
+								fieldSetName,
 								fields: formFields,
 							}}
 							item={item}
@@ -560,11 +585,15 @@ function FormInputMappingOptions({
 	form,
 	onValueSelect,
 }) {
-	const {classNameId, classTypeId, fields: formFields} = form;
+	const {classNameId, classTypeId, fieldSetName, fields: formFields} = form;
 
 	const {subtype, type} = useMemo(
 		() => getTypeLabels(classNameId, classTypeId),
 		[classNameId, classTypeId]
+	);
+
+	const label = useObjectLabel(
+		fieldSetName ? {name: fieldSetName} : {classNameId, classTypeId}
 	);
 
 	const relationshipSelectId = useId();
@@ -586,9 +615,11 @@ function FormInputMappingOptions({
 	);
 
 	const [sourceType, setSourceType] = useState(
-		selectedRelationship
-			? SOURCE_TYPES.relationship
-			: SOURCE_TYPES.mainObject
+		!Liferay.FeatureFlags['LPD-60546']
+			? SOURCE_TYPES.mainObject
+			: selectedRelationship
+				? SOURCE_TYPES.relationship
+				: SOURCE_TYPES.mainObject
 	);
 
 	useEffect(() => {
@@ -620,35 +651,42 @@ function FormInputMappingOptions({
 		<>
 			{relationships?.length ? (
 				<>
-					<ClayForm.Group small>
-						<label htmlFor={sourceSelectId}>
-							{Liferay.Language.get('source')}
-						</label>
+					{Liferay.FeatureFlags['LPD-60546'] ? (
+						<ClayForm.Group small>
+							<label htmlFor={sourceSelectId}>
+								{Liferay.Language.get('source')}
+							</label>
 
-						<ClaySelectWithOption
-							className="pr-4 text-truncate"
-							id={sourceSelectId}
-							onChange={(event) => {
-								setSourceType(event.target.value);
-								setSelectedRelationship(null);
-								onValueSelect(FIELD_ID_CONFIGURATION_KEY, null);
-							}}
-							options={[
-								{
-									label: sub(
-										Liferay.Language.get('x-default'),
-										type
-									),
-									value: SOURCE_TYPES.mainObject,
-								},
-								{
-									label: Liferay.Language.get('relationship'),
-									value: SOURCE_TYPES.relationship,
-								},
-							]}
-							value={sourceType}
-						/>
-					</ClayForm.Group>
+							<ClaySelectWithOption
+								className="pr-4 text-truncate"
+								id={sourceSelectId}
+								onChange={(event) => {
+									setSourceType(event.target.value);
+									setSelectedRelationship(null);
+									onValueSelect(
+										FIELD_ID_CONFIGURATION_KEY,
+										null
+									);
+								}}
+								options={[
+									{
+										label: sub(
+											Liferay.Language.get('x-default'),
+											type
+										),
+										value: SOURCE_TYPES.mainObject,
+									},
+									{
+										label: Liferay.Language.get(
+											'relationship'
+										),
+										value: SOURCE_TYPES.relationship,
+									},
+								]}
+								value={sourceType}
+							/>
+						</ClayForm.Group>
+					) : null}
 
 					{sourceType === SOURCE_TYPES.relationship ? (
 						<ClayForm.Group small>
@@ -683,7 +721,9 @@ function FormInputMappingOptions({
 				</>
 			) : null}
 
-			{fields.flatMap((fieldSet) => fieldSet.fields).length ? (
+			{fields.flatMap((field) =>
+				'fields' in field ? field.fields : [field]
+			).length ? (
 				<>
 					<MappingFieldSelector
 						fields={fields}
@@ -720,7 +760,7 @@ function FormInputMappingOptions({
 										({name}) =>
 											name === selectedRelationship
 									).label
-								: type}
+								: label || type}
 						</p>
 					)}
 

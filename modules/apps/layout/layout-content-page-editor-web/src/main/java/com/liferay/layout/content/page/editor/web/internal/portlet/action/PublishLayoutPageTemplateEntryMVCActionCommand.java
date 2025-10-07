@@ -63,7 +63,8 @@ public class PublishLayoutPageTemplateEntryMVCActionCommand
 			themeDisplay.getPermissionChecker(), layout, ActionKeys.UPDATE);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_publishLayoutPageTemplateEntry(draftLayout, layout);
+			_publishLayoutPageTemplateEntry(
+				draftLayout, layout, themeDisplay.getUserId());
 
 		String portletId = _portal.getPortletId(actionRequest);
 
@@ -109,7 +110,7 @@ public class PublishLayoutPageTemplateEntryMVCActionCommand
 	}
 
 	private LayoutPageTemplateEntry _publishLayoutPageTemplateEntry(
-			Layout draftLayout, Layout layout)
+			Layout draftLayout, Layout layout, long userId)
 		throws Exception {
 
 		UnicodeProperties previousLayouTypeSettingsUnicodeProperties =
@@ -118,7 +119,7 @@ public class PublishLayoutPageTemplateEntryMVCActionCommand
 		_layoutLocalService.copyLayoutContent(draftLayout, layout);
 
 		LayoutStructureUtil.deleteMarkedForDeletionItems(
-			draftLayout.getGroupId(), draftLayout.getPlid());
+			draftLayout.getGroupId(), draftLayout.getPlid(), userId);
 
 		draftLayout = _layoutLocalService.fetchLayout(draftLayout.getPlid());
 

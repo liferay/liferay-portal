@@ -66,7 +66,9 @@ public class ObjectEntrySXPBlueprintInfoCollectionProvider
 				collectionQuery.getPagination(), searchResponse.getTotalHits());
 		}
 		catch (Exception exception) {
-			_log.error("Unable to get object entry", exception);
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get object entry", exception);
+			}
 		}
 
 		return InfoPage.of(

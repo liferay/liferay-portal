@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -53,36 +52,6 @@ import java.util.Set;
  * @author Zsolt Balogh
  */
 public class PatcherFixUtil {
-
-	public static PatcherFix addNewPatcherFix(
-			User user, double keyVersion, List<Long> parentPatcherFixIds,
-			long patcherProjectVersionId, String name, int type, int status)
-		throws Exception {
-
-		PatcherFix newPatcherFix = PatcherFixLocalServiceUtil.createPatcherFix(
-			0);
-
-		newPatcherFix.setUserId(user.getUserId());
-		newPatcherFix.setUserName(user.getFullName());
-		newPatcherFix.setPatcherProductVersionId(
-			PatcherProjectVersionUtil.getPatcherProductVersionId(
-				patcherProjectVersionId));
-		newPatcherFix.setPatcherProjectVersionId(patcherProjectVersionId);
-		newPatcherFix.setName(name);
-		newPatcherFix.setKey(generateKey(patcherProjectVersionId, name));
-		newPatcherFix.setKeyVersion(keyVersion);
-		newPatcherFix.setType(type);
-		newPatcherFix.setLatestFix(true);
-		newPatcherFix.setStatus(status);
-
-		newPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
-			newPatcherFix);
-
-		PatcherFixRelUtil.addPatcherFixRel(
-			newPatcherFix.getPatcherFixId(), parentPatcherFixIds);
-
-		return newPatcherFix;
-	}
 
 	public static PatcherFix addPatcherFix(
 			User user, List<Long> parentPatcherFixIds,
@@ -129,18 +98,16 @@ public class PatcherFixUtil {
 				return existingPatcherFix;
 			}
 
-			existingPatcherFix.setLatestFix(false);
-
-			existingPatcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
-				existingPatcherFix);
+			existingPatcherFix = PatcherFixLocalServiceUtil.updateLatestFix(
+				existingPatcherFix.getPatcherFixId(), false);
 
 			keyVersion = BigDecimalUtil.add(
 				existingPatcherFix.getKeyVersion(), 0.1);
 		}
 
-		return addNewPatcherFix(
-			user, keyVersion, parentPatcherFixIds, patcherProjectVersionId,
-			name, type, status);
+		return PatcherFixLocalServiceUtil.addPatcherFix(
+			user.getUserId(), patcherProjectVersionId, keyVersion, name, type,
+			status, parentPatcherFixIds);
 	}
 
 	public static boolean containsIncompleteRebasePatcherFix(
@@ -217,40 +184,6 @@ public class PatcherFixUtil {
 		return false;
 	}
 
-	public static void deletePatcherFix(PatcherFix patcherFix)
-		throws Exception {
-
-		if (patcherFix.getKeyVersion() !=
-				PatcherFixConstants.KEY_VERSION_DEFAULT) {
-
-			PatcherFix oldPatcherFix = fetchPatcherFixByNextKeyVersion(
-				patcherFix, true);
-
-			if (oldPatcherFix != null) {
-				oldPatcherFix.setLatestFix(true);
-
-				boolean patcherFixExcluded = false;
-
-				if (patcherFix.getType() == PatcherFixConstants.TYPE_EXCLUDED) {
-					patcherFixExcluded = true;
-				}
-
-				if (patcherFixExcluded) {
-					oldPatcherFix.setType(PatcherFixConstants.TYPE_EXCLUDED);
-				}
-
-				updateObsolete(oldPatcherFix, patcherFixExcluded);
-
-				PatcherFixLocalServiceUtil.updatePatcherFix(oldPatcherFix);
-			}
-		}
-
-		PatcherFixRelLocalServiceUtil.deletePatcherFixRelsByChildPatcherFixId(
-			patcherFix.getPatcherFixId());
-
-		PatcherFixLocalServiceUtil.deletePatcherFix(patcherFix);
-	}
-
 	public static PatcherFix fetchLongestTicketPatcherFix(
 		List<PatcherFix> patcherFixes) {
 
@@ -279,21 +212,6 @@ public class PatcherFixUtil {
 		}
 
 		return null;
-	}
-
-	public static PatcherFix fetchPatcherFixByNextKeyVersion(
-		PatcherFix patcherFix, boolean older) {
-
-		List<PatcherFix> patcherFixes =
-			PatcherFixLocalServiceUtil.getPatcherFixes(
-				patcherFix.getKey(), patcherFix.getKeyVersion(),
-				PatcherFixConstants.TYPE_GENERATED_PRIVATE_PUBLIC, older);
-
-		if (patcherFixes.isEmpty()) {
-			return null;
-		}
-
-		return patcherFixes.get(0);
 	}
 
 	public static PatcherFix fetchSiblingChildPatcherBuildMainFix(
@@ -736,10 +654,7 @@ public class PatcherFixUtil {
 		return PatcherBuildLocalServiceUtil.hasPatcherFixes(patcherFixId);
 	}
 
-	public static void notifyUsersInactivePatcherFixes(
-			ThemeDisplay themeDisplay)
-		throws Exception {
-
+	public static void notifyUsersInactivePatcherFixes() throws Exception {
 		Calendar calendar = new GregorianCalendar();
 
 		calendar.add(Calendar.HOUR, -1);
@@ -758,15 +673,12 @@ public class PatcherFixUtil {
 		}
 
 		for (PatcherFix patcherFix : patcherFixes) {
-			User user = UserLocalServiceUtil.getUser(patcherFix.getUserId());
-
 			EmailUtil.sendPatcherTimeoutEmail(
-				patcherFix, user.getEmailAddress(), themeDisplay,
-				patcherFix.getUserId());
+				patcherFix,
+				UserLocalServiceUtil.getUser(patcherFix.getUserId()));
 
-			patcherFix.setNotified(true);
-
-			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+			PatcherFixLocalServiceUtil.updateNotified(
+				patcherFix.getPatcherFixId(), true);
 		}
 	}
 
@@ -775,7 +687,7 @@ public class PatcherFixUtil {
 		rollbackFor = Exception.class
 	)
 	public static void processOSBPatcherFixAddJenkinsStatus(
-			long patcherFixId, String servletStatus, ThemeDisplay themeDisplay)
+			long patcherFixId, String servletStatus, User user)
 		throws Exception {
 
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
@@ -787,7 +699,8 @@ public class PatcherFixUtil {
 			servletStatus);
 
 		if (servletStatusJSONObject.has("statusURL")) {
-			updatePatcherFixJenkinsResult(servletStatusJSONObject, patcherFix);
+			updatePatcherFixJenkinsResult(
+				servletStatusJSONObject, patcherFixId);
 
 			return;
 		}
@@ -802,13 +715,13 @@ public class PatcherFixUtil {
 
 		if (patcherFix.getType() == PatcherFixConstants.TYPE_REBASE) {
 			updatePatcherFixRebaseStatus(
-				patcherFix, osbPatcherServletOutcome.getStatus(),
-				osbPatcherServletOutcome.getResult(), messages, themeDisplay);
+				patcherFixId, osbPatcherServletOutcome.getStatus(),
+				osbPatcherServletOutcome.getResult(), messages, user);
 		}
 		else {
 			updatePatcherFixStatus(
-				patcherFix, osbPatcherServletOutcome.getStatus(),
-				osbPatcherServletOutcome.getResult(), messages, themeDisplay);
+				patcherFixId, osbPatcherServletOutcome.getStatus(),
+				osbPatcherServletOutcome.getResult(), messages, user);
 		}
 	}
 
@@ -817,66 +730,50 @@ public class PatcherFixUtil {
 			patcherFixIds, PatcherFixLocalServiceUtil::getPatcherFix);
 	}
 
-	public static void updateObsolete(PatcherFix patcherFix, boolean obsolete)
+	public static PatcherFix updateObsolete(long patcherFixId, boolean obsolete)
 		throws Exception {
 
-		patcherFix.setObsolete(obsolete);
-
-		patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+		PatcherFix patcherFix = PatcherFixLocalServiceUtil.updateObsolete(
+			patcherFixId, obsolete);
 
 		List<PatcherFix> patcherFixDescendants =
 			PatcherFixRelUtil.getPatcherFixDescendants(patcherFix);
 
 		for (PatcherFix patcherFixDescendant : patcherFixDescendants) {
 			if (obsolete) {
-				patcherFixDescendant.setObsolete(true);
-
-				patcherFixDescendant =
-					PatcherFixLocalServiceUtil.updatePatcherFix(
-						patcherFixDescendant);
+				PatcherFixLocalServiceUtil.updateObsolete(
+					patcherFixDescendant.getPatcherFixId(), true);
 
 				continue;
 			}
 
-			patcherFixDescendant.setObsolete(
+			PatcherFixLocalServiceUtil.updateObsolete(
+				patcherFixDescendant.getPatcherFixId(),
 				PatcherFixRelUtil.hasObsoletePatcherFixAncestor(
 					patcherFixDescendant));
-
-			PatcherFixLocalServiceUtil.updatePatcherFix(patcherFixDescendant);
 		}
+
+		return patcherFix;
 	}
 
 	public static void updatePatcherFixJenkinsResult(
 			JSONObject jenkinsStatusJSONObject, long patcherFixId)
 		throws Exception {
 
-		if (patcherFixId == 0) {
-			return;
-		}
-
 		PatcherFix patcherFix = PatcherFixLocalServiceUtil.fetchPatcherFix(
 			patcherFixId);
-
-		updatePatcherFixJenkinsResult(jenkinsStatusJSONObject, patcherFix);
-	}
-
-	public static void updatePatcherFixJenkinsResult(
-			JSONObject jenkinsStatusJSONObject, PatcherFix patcherFix)
-		throws Exception {
 
 		if (patcherFix == null) {
 			return;
 		}
 
-		String status = jenkinsStatusJSONObject.getString("status");
-		String statusURL = jenkinsStatusJSONObject.getString("statusURL");
-
-		JSONObject jenkinsResultJSONObject = JenkinsUtil.toJenkinsResult(
-			status, statusURL);
-
-		JenkinsUtil.putJenkinsResult(patcherFix, jenkinsResultJSONObject);
-
-		PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
+		PatcherFixLocalServiceUtil.updateJenkinsResult(
+			patcherFixId,
+			JenkinsUtil.getJenkinsResult(
+				JenkinsUtil.toJenkinsResult(
+					jenkinsStatusJSONObject.getString("status"),
+					jenkinsStatusJSONObject.getString("statusURL")),
+				patcherFix.getJenkinsResults()));
 	}
 
 	public static void validateDelete(PatcherFix patcherFix) throws Exception {
@@ -944,18 +841,18 @@ public class PatcherFixUtil {
 	}
 
 	protected static void updatePatcherFixPatcherBuildRebaseStatus(
-			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
-			List<String> messages, ThemeDisplay themeDisplay)
+			long patcherFixId, int osbPatcherServletOutcomeStatus,
+			List<String> messages, User user)
 		throws Exception {
 
 		List<PatcherBuild> patcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(
-				patcherFix.getPatcherFixId());
+				patcherFixId);
 
 		if (!patcherBuilds.isEmpty()) {
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The fix ", patcherFix.getPatcherFixId(), " is related to ",
+					"The fix ", patcherFixId, " is related to ",
 					patcherBuilds.size(), " build(s)."),
 				messages);
 		}
@@ -973,25 +870,20 @@ public class PatcherFixUtil {
 					continue;
 				}
 
-				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status);
+				patcherBuild = PatcherBuildLocalServiceUtil.updateStatus(
+					user.getUserId(), patcherBuild.getPatcherBuildId(), status);
 
-				patcherBuild = PatcherBuildLocalServiceUtil.updatePatcherBuild(
-					patcherBuild);
+				PatcherBuildUtil.workflowParentPatcherBuild(user, patcherBuild);
 
 				if (status == WorkflowConstants.STATUS_BUILD_COMPILING) {
-					JenkinsUtil.sendDistJenkinsRequest(
-						themeDisplay.getUser(), patcherBuild);
+					JenkinsUtil.sendDistJenkinsRequest(user, patcherBuild);
 				}
 				else if ((status ==
 							WorkflowConstants.STATUS_BUILD_MERGING_ONLY) ||
 						 (status == WorkflowConstants.STATUS_BUILD_MERGING)) {
 
-					JenkinsUtil.sendAgentJenkinsRequest(
-						themeDisplay.getUser(), patcherBuild);
+					JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild);
 				}
-
-				continue;
 			}
 			else if (osbPatcherServletOutcomeStatus ==
 						OSBPatcherServletOutcome.STATUS_CONFLICT) {
@@ -1002,31 +894,32 @@ public class PatcherFixUtil {
 					continue;
 				}
 
-				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status);
+				patcherBuild = PatcherBuildLocalServiceUtil.updateStatus(
+					user.getUserId(), patcherBuild.getPatcherBuildId(), status);
+
+				PatcherBuildUtil.workflowParentPatcherBuild(user, patcherBuild);
 			}
 			else {
-				PatcherBuildUtil.setStatus(
-					themeDisplay.getUser(), patcherBuild, status);
-			}
+				patcherBuild = PatcherBuildLocalServiceUtil.updateStatus(
+					user.getUserId(), patcherBuild.getPatcherBuildId(), status);
 
-			PatcherBuildLocalServiceUtil.updatePatcherBuild(patcherBuild);
+				PatcherBuildUtil.workflowParentPatcherBuild(user, patcherBuild);
+			}
 		}
 	}
 
 	protected static void updatePatcherFixPatcherBuilds(
-			PatcherFix patcherFix, List<String> messages,
-			ThemeDisplay themeDisplay)
+			long patcherFixId, List<String> messages, User user)
 		throws Exception {
 
 		List<PatcherBuild> patcherBuilds =
 			PatcherBuildLocalServiceUtil.getPatcherFixPatcherBuilds(
-				patcherFix.getPatcherFixId());
+				patcherFixId);
 
 		if (!patcherBuilds.isEmpty()) {
 			PatcherUtil.addMessage(
 				StringBundler.concat(
-					"The fix ", patcherFix.getPatcherFixId(), " is related to ",
+					"The fix ", patcherFixId, " is related to ",
 					patcherBuilds.size(), " build(s)."),
 				messages);
 		}
@@ -1053,11 +946,9 @@ public class PatcherFixUtil {
 			}
 
 			PatcherBuildUtil.updatePatcherBuildFixes(
-				themeDisplay.getUser(), patcherBuild, patcherFixIds,
-				themeDisplay);
+				user, patcherBuild, patcherFixIds);
 
-			JenkinsUtil.sendAgentJenkinsRequest(
-				themeDisplay.getUser(), patcherBuild);
+			JenkinsUtil.sendAgentJenkinsRequest(user, patcherBuild);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -1068,32 +959,32 @@ public class PatcherFixUtil {
 	}
 
 	protected static void updatePatcherFixRebaseStatus(
-			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
+			long patcherFixId, int osbPatcherServletOutcomeStatus,
 			String osbPatcherServletOutcomeResult, List<String> messages,
-			ThemeDisplay themeDisplay)
+			User user)
 		throws Exception {
+
+		PatcherFix patcherFix = null;
 
 		if (osbPatcherServletOutcomeStatus ==
 				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
-			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
-
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
+			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				user.getUserId(), patcherFixId, osbPatcherServletOutcomeResult,
+				WorkflowConstants.STATUS_FIX_COMPLETE);
 		}
 		else if (osbPatcherServletOutcomeStatus ==
 					OSBPatcherServletOutcome.STATUS_CONFLICT) {
 
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
+			patcherFix = PatcherFixLocalServiceUtil.updateStatus(
+				user.getUserId(), patcherFixId,
+				WorkflowConstants.STATUS_FIX_REBASE_CONFLICT);
 		}
 		else {
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
+			patcherFix = PatcherFixLocalServiceUtil.updateStatus(
+				user.getUserId(), patcherFixId,
+				WorkflowConstants.STATUS_FIX_FAILED);
 		}
-
-		patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(patcherFix);
-
-		PatcherUtil.pollIndexState(
-			PatcherFix.class.getName(), patcherFix.getPatcherFixId(),
-			themeDisplay, "status", WorkflowConstants.STATUS_FIX_COMPLETE);
 
 		PatcherUtil.addMessage(
 			StringBundler.concat(
@@ -1102,28 +993,21 @@ public class PatcherFixUtil {
 			messages);
 
 		updatePatcherFixPatcherBuildRebaseStatus(
-			patcherFix, osbPatcherServletOutcomeStatus, messages, themeDisplay);
+			patcherFixId, osbPatcherServletOutcomeStatus, messages, user);
 	}
 
 	protected static void updatePatcherFixStatus(
-			PatcherFix patcherFix, int osbPatcherServletOutcomeStatus,
+			long patcherFixId, int osbPatcherServletOutcomeStatus,
 			String osbPatcherServletOutcomeResult, List<String> messages,
-			ThemeDisplay themeDisplay)
+			User user)
 		throws Exception {
 
 		if (osbPatcherServletOutcomeStatus ==
 				OSBPatcherServletOutcome.STATUS_SUCCESS) {
 
-			patcherFix.setGitHash(osbPatcherServletOutcomeResult);
-
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_COMPLETE);
-
-			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
-				patcherFix);
-
-			PatcherUtil.pollIndexState(
-				PatcherFix.class.getName(), patcherFix.getPatcherFixId(),
-				themeDisplay, "status", WorkflowConstants.STATUS_FIX_COMPLETE);
+			PatcherFix patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
+				user.getUserId(), patcherFixId, osbPatcherServletOutcomeResult,
+				WorkflowConstants.STATUS_FIX_COMPLETE);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(
@@ -1131,13 +1015,12 @@ public class PatcherFixUtil {
 					patcherFix.getName(), " was successfully added."),
 				messages);
 
-			updatePatcherFixPatcherBuilds(patcherFix, messages, themeDisplay);
+			updatePatcherFixPatcherBuilds(patcherFixId, messages, user);
 		}
 		else {
-			patcherFix.setStatus(WorkflowConstants.STATUS_FIX_FAILED);
-
-			patcherFix = PatcherFixLocalServiceUtil.updatePatcherFix(
-				patcherFix);
+			PatcherFix patcherFix = PatcherFixLocalServiceUtil.updateStatus(
+				user.getUserId(), patcherFixId,
+				WorkflowConstants.STATUS_FIX_FAILED);
 
 			PatcherUtil.addMessage(
 				StringBundler.concat(

@@ -144,8 +144,8 @@ public class CPDefinitionLocalServiceUtil {
 	}
 
 	public static CPDefinition addOrUpdateCPDefinition(
-			String externalReferenceCode, long userId, long groupId,
-			Map<java.util.Locale, String> nameMap,
+			String externalReferenceCode, long userId, long cpDefinitionId,
+			long groupId, Map<java.util.Locale, String> nameMap,
 			Map<java.util.Locale, String> shortDescriptionMap,
 			Map<java.util.Locale, String> descriptionMap,
 			Map<java.util.Locale, String> urlTitleMap,
@@ -175,7 +175,7 @@ public class CPDefinitionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().addOrUpdateCPDefinition(
-			externalReferenceCode, userId, groupId, nameMap,
+			externalReferenceCode, userId, cpDefinitionId, groupId, nameMap,
 			shortDescriptionMap, descriptionMap, urlTitleMap, metaTitleMap,
 			metaDescriptionMap, metaKeywordsMap, productTypeName,
 			ignoreSKUCombinations, shippable, freeShipping, shipSeparately,
@@ -488,6 +488,12 @@ public class CPDefinitionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getCPDefinition(CPDefinitionId);
+	}
+
+	public static CPDefinition getCPDefinitionByCProductId(long cProductId)
+		throws PortalException {
+
+		return getService().getCPDefinitionByCProductId(cProductId);
 	}
 
 	/**

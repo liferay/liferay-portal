@@ -383,6 +383,9 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 		};
 	}
 
+	private static final EntityModel _entityModel =
+		new AccountRoleEntityModel();
+
 	@Reference
 	private AccountEntryLocalService _accountEntryLocalService;
 
@@ -391,8 +394,6 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 
 	@Reference
 	private AccountRoleLocalService _accountRoleLocalService;
-
-	private final EntityModel _entityModel = new AccountRoleEntityModel();
 
 	@Reference
 	private UserLocalService _userLocalService;

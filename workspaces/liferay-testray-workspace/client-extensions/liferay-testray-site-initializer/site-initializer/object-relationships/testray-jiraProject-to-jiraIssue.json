@@ -1,0 +1,11 @@
+{
+	"deletionType": "cascade",
+	"label": {
+		"en_US": "JiraProjectToJiraIssue"
+	},
+	"name": "jiraProjectToJiraIssue",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:JiraProject$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:JiraIssue$]",
+	"objectDefinitionName2": "JiraIssue",
+	"type": "oneToMany"
+}

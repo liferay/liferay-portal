@@ -54,6 +54,11 @@ public interface AddressService extends BaseService {
 	public void deleteAddress(long addressId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Address fetchAddressByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Address getAddress(long addressId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -63,6 +68,11 @@ public interface AddressService extends BaseService {
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Address> getListTypeAddresses(
 			String className, long classPK, long[] listTypeIds)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Address getOrAddEmptyAddress(
+			String externalReferenceCode, String className, long classPK)
 		throws PortalException;
 
 	/**

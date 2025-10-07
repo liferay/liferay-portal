@@ -1,5 +1,580 @@
 # Liferay Gradle Plugins Source Formatter Change Log
 
+## 5.2.245 - 2025-07-15
+
+### Dependencies
+- [LPD-60039] Update the com.liferay.source.formatter dependency to version
+1.0.1525.
+
+## 5.2.244 - 2025-07-14
+
+### Dependencies
+- [LPD-59977] Update the com.liferay.source.formatter dependency to version
+1.0.1524.
+
+## 5.2.243 - 2025-07-10
+
+### Dependencies
+- [LPD-60184] Update the com.liferay.source.formatter dependency to version
+1.0.1523.
+
+## 5.2.242 - 2025-07-09
+
+### Dependencies
+- [LPD-53130] Update the com.liferay.source.formatter dependency to version
+1.0.1522.
+
+## 5.2.241 - 2025-07-01
+
+### Dependencies
+- [LPD-43792] Update the com.liferay.source.formatter dependency to version
+1.0.1521.
+
+## 5.2.239 - 2025-06-26
+
+### Dependencies
+- [LPD-44043] Update the com.liferay.source.formatter dependency to version
+1.0.1520.
+
+## 5.2.238 - 2025-06-26
+
+### Dependencies
+- [LPD-59023] Update the com.liferay.source.formatter dependency to version
+1.0.1519.
+
+## 5.2.237 - 2025-06-25
+
+### Dependencies
+- [LPD-44842] Update the com.liferay.source.formatter dependency to version
+1.0.1518.
+
+## 5.2.235 - 2025-06-24
+
+### Commits
+- [LPD-54753] Rename (984a0592ed)
+- [LPD-54753] Add source.check.category.names for gw formatSource (a8ebe47112)
+
+### Dependencies
+- [LPD-54753] Update the com.liferay.source.formatter dependency to version
+1.0.1517.
+
+## 5.2.234 - 2025-06-19
+
+### Dependencies
+- [LPD-8041] Update the com.liferay.source.formatter dependency to version
+1.0.1516.
+
+## 5.2.233 - 2025-06-17
+
+### Dependencies
+- [LPD-57274] Update the com.liferay.source.formatter dependency to version
+1.0.1515.
+
+## 5.2.231 - 2025-06-13
+
+### Dependencies
+- [LPD-54753] Update the com.liferay.source.formatter dependency to version
+1.0.1514.
+
+## 5.2.230 - 2025-06-11
+
+### Dependencies
+- [LPD-53966] Update the com.liferay.source.formatter dependency to version
+1.0.1513.
+
+## 5.2.229 - 2025-06-11
+
+### Dependencies
+- [LPD-57483] Update the com.liferay.source.formatter dependency to version
+1.0.1512.
+
+## 5.2.228 - 2025-06-10
+
+### Dependencies
+- [LPD-57426] Update the com.liferay.source.formatter dependency to version
+1.0.1511.
+
+## 5.2.227 - 2025-06-04
+
+### Dependencies
+- [LPD-43525] Update the com.liferay.source.formatter dependency to version
+1.0.1510.
+
+## 5.2.226 - 2025-06-02
+
+### Dependencies
+- [LPD-54817] Update the com.liferay.source.formatter dependency to version
+1.0.1509.
+
+## 5.2.225 - 2025-05-28
+
+### Dependencies
+- [LPD-31994] Update the com.liferay.source.formatter dependency to version
+1.0.1508.
+
+## 5.2.224 - 2025-05-27
+
+### Dependencies
+- [LPD-53852] Update the com.liferay.source.formatter dependency to version
+1.0.1507.
+
+## 5.2.223 - 2025-05-22
+
+### Dependencies
+- [LPD-41300] Update the com.liferay.source.formatter dependency to version
+1.0.1506.
+
+## 5.2.222 - 2025-05-15
+
+### Dependencies
+- [LPD-54320 LPD-51006 LPD-54760] Update the com.liferay.source.formatter
+dependency to version 1.0.1505.
+
+## 5.2.221 - 2025-05-14
+
+### Dependencies
+- [LPD-54838] Update the com.liferay.source.formatter dependency to version
+1.0.1504.
+
+## 5.2.220 - 2025-05-07
+
+### Dependencies
+- [LPD-54558] Update the com.liferay.source.formatter dependency to version
+1.0.1503.
+
+## 5.2.219 - 2025-05-05
+
+### Dependencies
+- [LPD-54663] Update the com.liferay.source.formatter dependency to version
+1.0.1502.
+
+## 5.2.218 - 2025-05-01
+
+### Dependencies
+- [LPD-31256] Update the com.liferay.source.formatter dependency to version
+1.0.1501.
+
+## 5.2.217 - 2025-04-29
+
+### Dependencies
+- [LPD-52616] Update the com.liferay.source.formatter dependency to version
+1.0.1500.
+
+## 5.2.216 - 2025-04-25
+
+### Commits
+- [LPD-52887] Fix in code (1086e2b614)
+- [LPD-52887] Fix extension in code (cefb34481a)
+- [LPD-52887] Rename (1e3d0e1ddc)
+
+### Dependencies
+- [LPD-52887] Update the com.liferay.source.formatter dependency to version
+1.0.1499.
+
+## 5.2.215 - 2025-04-24
+
+### Dependencies
+- [LPD-40678] Update the com.liferay.source.formatter dependency to version
+1.0.1498.
+
+## 5.2.214 - 2025-04-21
+
+### Dependencies
+- [LPD-35795] Update the com.liferay.source.formatter dependency to version
+1.0.1497.
+
+## 5.2.213 - 2025-04-15
+
+### Dependencies
+- [LPD-31079] Update the com.liferay.source.formatter dependency to version
+1.0.1496.
+
+## 5.2.212 - 2025-04-11
+
+### Dependencies
+- [LPD-53012] Update the com.liferay.source.formatter dependency to version
+1.0.1495.
+
+## 5.2.211 - 2025-04-10
+
+### Dependencies
+- [LPD-27585] Update the com.liferay.source.formatter dependency to version
+1.0.1494.
+
+## 5.2.210 - 2025-04-07
+
+### Dependencies
+- [LPD-52619] Update the com.liferay.source.formatter dependency to version
+1.0.1493.
+
+## 5.2.209 - 2025-04-04
+
+### Dependencies
+- [LPD-51646] Update the com.liferay.source.formatter dependency to version
+1.0.1492.
+
+## 5.2.208 - 2025-04-03
+
+### Dependencies
+- [LPD-51325] Update the com.liferay.source.formatter dependency to version
+1.0.1491.
+
+## 5.2.207 - 2025-04-01
+
+### Dependencies
+- [LPD-51646] Update the com.liferay.source.formatter dependency to version
+1.0.1490.
+
+## 5.2.206 - 2025-03-28
+
+### Dependencies
+- [LPD-47268] Update the com.liferay.source.formatter dependency to version
+1.0.1489.
+
+## 5.2.205 - 2025-03-24
+
+### Dependencies
+- [LPD-50804] Update the com.liferay.source.formatter dependency to version
+1.0.1488.
+
+## 5.2.204 - 2025-03-24
+
+### Dependencies
+- [LPD-51893] Update the com.liferay.source.formatter dependency to version
+1.0.1487.
+
+## 5.2.203 - 2025-03-18
+
+### Dependencies
+- [LPD-51383] Update the com.liferay.source.formatter dependency to version
+1.0.1486.
+
+## 5.2.202 - 2025-03-17
+
+### Dependencies
+- [LPD-51266] Update the com.liferay.source.formatter dependency to version
+1.0.1485.
+
+## 5.2.201 - 2025-03-16
+
+### Dependencies
+- [LPD-45573] Update the com.liferay.source.formatter dependency to version
+1.0.1484.
+- [LPD-45574] Update the com.liferay.source.formatter dependency to version
+1.0.1483.
+
+## 5.2.200 - 2025-03-12
+
+### Dependencies
+- [LPD-36587] Update the com.liferay.source.formatter dependency to version
+1.0.1482.
+
+## 5.2.199 - 2025-03-06
+
+### Dependencies
+- [LPD-47204] Update the com.liferay.source.formatter dependency to version
+1.0.1481.
+
+## 5.2.198 - 2025-03-06
+
+### Dependencies
+- [LPD-45318] Update the com.liferay.source.formatter dependency to version
+1.0.1480.
+
+## 5.2.197 - 2025-03-03
+
+### Dependencies
+- [LPD-45575] Update the com.liferay.source.formatter dependency to version
+1.0.1479.
+
+## 5.2.196 - 2025-02-26
+
+### Dependencies
+- [LPD-49870] Update the com.liferay.source.formatter dependency to version
+1.0.1478.
+
+## 5.2.195 - 2025-02-25
+
+### Dependencies
+- [LPD-45572] Update the com.liferay.source.formatter dependency to version
+1.0.1477.
+
+## 5.2.194 - 2025-02-21
+
+### Dependencies
+- [LPD-41239] Update the com.liferay.source.formatter dependency to version
+1.0.1476.
+
+## 5.2.193 - 2025-02-19
+
+### Dependencies
+- [LPD-45806] Update the com.liferay.source.formatter dependency to version
+1.0.1475.
+
+## 5.2.192 - 2025-02-13
+
+### Dependencies
+- [LPD-41224] Update the com.liferay.source.formatter dependency to version
+1.0.1474.
+
+## 5.2.191 - 2025-02-09
+
+### Dependencies
+- [LPD-48336] Update the com.liferay.source.formatter dependency to version
+1.0.1473.
+
+## 5.2.190 - 2025-02-01
+
+### Dependencies
+- [LPD-46831] Update the com.liferay.source.formatter dependency to version
+1.0.1472.
+
+## 5.2.189 - 2025-02-01
+
+### Dependencies
+- [LPD-45118] Update the com.liferay.source.formatter dependency to version
+1.0.1471.
+
+## 5.2.188 - 2025-01-23
+
+### Dependencies
+- [LPD-47032] Update the com.liferay.source.formatter dependency to version
+1.0.1470.
+
+## 5.2.187 - 2025-01-16
+
+### Dependencies
+- [LPD-45571] Update the com.liferay.source.formatter dependency to version
+1.0.1469.
+
+## 5.2.186 - 2025-01-15
+
+### Dependencies
+- [LPD-45569] Update the com.liferay.source.formatter dependency to version
+1.0.1468.
+
+## 5.2.185 - 2025-01-09
+
+### Dependencies
+- [LPD-45403] Update the com.liferay.source.formatter dependency to version
+1.0.1467.
+
+## 5.2.184 - 2024-12-27
+
+### Dependencies
+- [LPD-42623] Update the com.liferay.source.formatter dependency to version
+1.0.1466.
+
+## 5.2.183 - 2024-12-23
+
+### Dependencies
+- [LPD-45107] Update the com.liferay.source.formatter dependency to version
+1.0.1465.
+
+## 5.2.181 - 2024-12-19
+
+### Dependencies
+- [LPD-44898] Update the com.liferay.source.formatter dependency to version
+1.0.1464.
+
+## 5.2.180 - 2024-12-17
+
+### Dependencies
+- [LPD-40723] Update the com.liferay.source.formatter dependency to version
+1.0.1463.
+
+## 5.2.179 - 2024-12-11
+
+### Dependencies
+- [LPD-42601] Update the com.liferay.source.formatter dependency to version
+1.0.1462.
+
+## 5.2.178 - 2024-12-06
+
+### Dependencies
+- [LPD-42623] Update the com.liferay.source.formatter dependency to version
+1.0.1461.
+
+## 5.2.177 - 2024-12-02
+
+### Dependencies
+- [LPD-40027] Update the com.liferay.source.formatter dependency to version
+1.0.1460.
+
+## 5.2.176 - 2024-11-21
+
+### Dependencies
+- [LPD-36750] Update the com.liferay.source.formatter dependency to version
+1.0.1459.
+
+## 5.2.175 - 2024-11-20
+
+### Dependencies
+- [LPD-37354] Update the com.liferay.source.formatter dependency to version
+1.0.1458.
+
+## 5.2.174 - 2024-11-13
+
+### Dependencies
+- [LPD-41985] Update the com.liferay.source.formatter dependency to version
+1.0.1457.
+
+## 5.2.173 - 2024-11-08
+
+### Dependencies
+- [LPD-41389] Update the com.liferay.source.formatter dependency to version
+1.0.1456.
+
+## 5.2.172 - 2024-11-07
+
+### Dependencies
+- [LPD-41038] Update the com.liferay.source.formatter dependency to version
+1.0.1455.
+
+## 5.2.171 - 2024-11-04
+
+### Dependencies
+- [LPD-41090] Update the com.liferay.source.formatter dependency to version
+1.0.1454.
+
+## 5.2.170 - 2024-10-30
+
+### Dependencies
+- [LPD-40345] Update the com.liferay.source.formatter dependency to version
+1.0.1453.
+
+## 5.2.169 - 2024-10-30
+
+### Dependencies
+- [LRCI-4023] Update the com.liferay.source.formatter dependency to version
+1.0.1452.
+
+## 5.2.168 - 2024-10-23
+
+### Dependencies
+- [LPD-31242] Update the com.liferay.source.formatter dependency to version
+1.0.1451.
+
+## 5.2.167 - 2024-10-23
+
+### Dependencies
+- [LPD-39563] Update the com.liferay.source.formatter dependency to version
+1.0.1450.
+
+## 5.2.166 - 2024-10-18
+
+### Dependencies
+- [LPD-37215] Update the com.liferay.source.formatter dependency to version
+1.0.1449.
+
+## 5.2.165 - 2024-10-17
+
+### Dependencies
+- [LPD-36212] Update the com.liferay.source.formatter dependency to version
+1.0.1448.
+
+## 5.2.164 - 2024-10-13
+
+### Dependencies
+- [LPD-37253] Update the com.liferay.source.formatter dependency to version
+1.0.1447.
+
+## 5.2.163 - 2024-10-13
+
+### Dependencies
+- [LPD-38817] Update the com.liferay.source.formatter dependency to version
+1.0.1446.
+
+## 5.2.162 - 2024-10-08
+
+### Dependencies
+- [LPD-33563] Update the com.liferay.source.formatter dependency to version
+1.0.1445.
+
+## 5.2.161 - 2024-10-04
+
+### Dependencies
+- [LPD-36188] Update the com.liferay.source.formatter dependency to version
+1.0.1444.
+
+## 5.2.160 - 2024-10-03
+
+### Dependencies
+- [LPD-36188] Update the com.liferay.source.formatter dependency to version
+1.0.1443.
+
+## 5.2.159 - 2024-09-27
+
+### Dependencies
+- [LPD-37502] Update the com.liferay.source.formatter dependency to version
+1.0.1442.
+
+## 5.2.158 - 2024-09-26
+
+### Dependencies
+- [LPD-37373] Update the com.liferay.source.formatter dependency to version
+1.0.1441.
+
+## 5.2.157 - 2024-09-24
+
+### Dependencies
+- [LPD-31214] Update the com.liferay.source.formatter dependency to version
+1.0.1440.
+
+## 5.2.156 - 2024-09-23
+
+### Dependencies
+- [LPD-33708] Update the com.liferay.source.formatter dependency to version
+1.0.1439.
+
+## 5.2.155 - 2024-09-19
+
+### Dependencies
+- [LPD-35530] Update the com.liferay.source.formatter dependency to version
+1.0.1438.
+
+## 5.2.154 - 2024-09-12
+
+### Dependencies
+- [LPD-36261] Update the com.liferay.source.formatter dependency to version
+1.0.1437.
+
+## 5.2.153 - 2024-09-11
+
+### Dependencies
+- [LPD-35777] Update the com.liferay.source.formatter dependency to version
+1.0.1436.
+
+## 5.2.152 - 2024-09-10
+
+### Dependencies
+- [LPD-35897] Update the com.liferay.source.formatter dependency to version
+1.0.1435.
+
+## 5.2.151 - 2024-09-10
+
+### Dependencies
+- [LPD-35875] Update the com.liferay.source.formatter dependency to version
+1.0.1434.
+
+## 5.2.150 - 2024-09-09
+
+### Dependencies
+- [LPD-35581] Update the com.liferay.source.formatter dependency to version
+1.0.1433.
+
+## 5.2.149 - 2024-09-03
+
+### Dependencies
+- [LPD-27020] Update the com.liferay.source.formatter dependency to version
+1.0.1432.
+
+## 5.2.148 - 2024-08-26
+
+### Dependencies
+- [LPD-32724] Update the com.liferay.source.formatter dependency to version
+1.0.1431.
+
 ## 5.2.147 - 2024-08-20
 
 ### Dependencies
@@ -7532,6 +8107,7 @@ version 2.4.
 [LPD-5443]: https://issues.liferay.com/browse/LPD-5443
 [LPD-6870]: https://issues.liferay.com/browse/LPD-6870
 [LPD-7996]: https://issues.liferay.com/browse/LPD-7996
+[LPD-8041]: https://issues.liferay.com/browse/LPD-8041
 [LPD-8052]: https://issues.liferay.com/browse/LPD-8052
 [LPD-8724]: https://issues.liferay.com/browse/LPD-8724
 [LPD-15162]: https://issues.liferay.com/browse/LPD-15162
@@ -7561,17 +8137,108 @@ version 2.4.
 [LPD-26470]: https://issues.liferay.com/browse/LPD-26470
 [LPD-26999]: https://issues.liferay.com/browse/LPD-26999
 [LPD-27018]: https://issues.liferay.com/browse/LPD-27018
+[LPD-27020]: https://issues.liferay.com/browse/LPD-27020
 [LPD-27355]: https://issues.liferay.com/browse/LPD-27355
 [LPD-27502]: https://issues.liferay.com/browse/LPD-27502
 [LPD-27535]: https://issues.liferay.com/browse/LPD-27535
+[LPD-27585]: https://issues.liferay.com/browse/LPD-27585
 [LPD-28604]: https://issues.liferay.com/browse/LPD-28604
 [LPD-28762]: https://issues.liferay.com/browse/LPD-28762
 [LPD-28815]: https://issues.liferay.com/browse/LPD-28815
 [LPD-29047]: https://issues.liferay.com/browse/LPD-29047
 [LPD-30270]: https://issues.liferay.com/browse/LPD-30270
+[LPD-31079]: https://issues.liferay.com/browse/LPD-31079
+[LPD-31214]: https://issues.liferay.com/browse/LPD-31214
+[LPD-31242]: https://issues.liferay.com/browse/LPD-31242
+[LPD-31256]: https://issues.liferay.com/browse/LPD-31256
+[LPD-31994]: https://issues.liferay.com/browse/LPD-31994
+[LPD-32724]: https://issues.liferay.com/browse/LPD-32724
 [LPD-32731]: https://issues.liferay.com/browse/LPD-32731
 [LPD-33240]: https://issues.liferay.com/browse/LPD-33240
 [LPD-33244]: https://issues.liferay.com/browse/LPD-33244
+[LPD-33563]: https://issues.liferay.com/browse/LPD-33563
+[LPD-33708]: https://issues.liferay.com/browse/LPD-33708
+[LPD-35530]: https://issues.liferay.com/browse/LPD-35530
+[LPD-35581]: https://issues.liferay.com/browse/LPD-35581
+[LPD-35777]: https://issues.liferay.com/browse/LPD-35777
+[LPD-35795]: https://issues.liferay.com/browse/LPD-35795
+[LPD-35875]: https://issues.liferay.com/browse/LPD-35875
+[LPD-35897]: https://issues.liferay.com/browse/LPD-35897
+[LPD-36188]: https://issues.liferay.com/browse/LPD-36188
+[LPD-36212]: https://issues.liferay.com/browse/LPD-36212
+[LPD-36261]: https://issues.liferay.com/browse/LPD-36261
+[LPD-36587]: https://issues.liferay.com/browse/LPD-36587
+[LPD-36750]: https://issues.liferay.com/browse/LPD-36750
+[LPD-37215]: https://issues.liferay.com/browse/LPD-37215
+[LPD-37253]: https://issues.liferay.com/browse/LPD-37253
+[LPD-37354]: https://issues.liferay.com/browse/LPD-37354
+[LPD-37373]: https://issues.liferay.com/browse/LPD-37373
+[LPD-37502]: https://issues.liferay.com/browse/LPD-37502
+[LPD-38817]: https://issues.liferay.com/browse/LPD-38817
+[LPD-39563]: https://issues.liferay.com/browse/LPD-39563
+[LPD-40027]: https://issues.liferay.com/browse/LPD-40027
+[LPD-40345]: https://issues.liferay.com/browse/LPD-40345
+[LPD-40678]: https://issues.liferay.com/browse/LPD-40678
+[LPD-40723]: https://issues.liferay.com/browse/LPD-40723
+[LPD-41038]: https://issues.liferay.com/browse/LPD-41038
+[LPD-41090]: https://issues.liferay.com/browse/LPD-41090
+[LPD-41224]: https://issues.liferay.com/browse/LPD-41224
+[LPD-41239]: https://issues.liferay.com/browse/LPD-41239
+[LPD-41300]: https://issues.liferay.com/browse/LPD-41300
+[LPD-41389]: https://issues.liferay.com/browse/LPD-41389
+[LPD-41985]: https://issues.liferay.com/browse/LPD-41985
+[LPD-42601]: https://issues.liferay.com/browse/LPD-42601
+[LPD-42623]: https://issues.liferay.com/browse/LPD-42623
+[LPD-43525]: https://issues.liferay.com/browse/LPD-43525
+[LPD-43792]: https://issues.liferay.com/browse/LPD-43792
+[LPD-44043]: https://issues.liferay.com/browse/LPD-44043
+[LPD-44842]: https://issues.liferay.com/browse/LPD-44842
+[LPD-44898]: https://issues.liferay.com/browse/LPD-44898
+[LPD-45107]: https://issues.liferay.com/browse/LPD-45107
+[LPD-45118]: https://issues.liferay.com/browse/LPD-45118
+[LPD-45318]: https://issues.liferay.com/browse/LPD-45318
+[LPD-45403]: https://issues.liferay.com/browse/LPD-45403
+[LPD-45569]: https://issues.liferay.com/browse/LPD-45569
+[LPD-45571]: https://issues.liferay.com/browse/LPD-45571
+[LPD-45572]: https://issues.liferay.com/browse/LPD-45572
+[LPD-45573]: https://issues.liferay.com/browse/LPD-45573
+[LPD-45574]: https://issues.liferay.com/browse/LPD-45574
+[LPD-45575]: https://issues.liferay.com/browse/LPD-45575
+[LPD-45806]: https://issues.liferay.com/browse/LPD-45806
+[LPD-46831]: https://issues.liferay.com/browse/LPD-46831
+[LPD-47032]: https://issues.liferay.com/browse/LPD-47032
+[LPD-47204]: https://issues.liferay.com/browse/LPD-47204
+[LPD-47268]: https://issues.liferay.com/browse/LPD-47268
+[LPD-48336]: https://issues.liferay.com/browse/LPD-48336
+[LPD-49870]: https://issues.liferay.com/browse/LPD-49870
+[LPD-50804]: https://issues.liferay.com/browse/LPD-50804
+[LPD-51006]: https://issues.liferay.com/browse/LPD-51006
+[LPD-51266]: https://issues.liferay.com/browse/LPD-51266
+[LPD-51325]: https://issues.liferay.com/browse/LPD-51325
+[LPD-51383]: https://issues.liferay.com/browse/LPD-51383
+[LPD-51646]: https://issues.liferay.com/browse/LPD-51646
+[LPD-51893]: https://issues.liferay.com/browse/LPD-51893
+[LPD-52616]: https://issues.liferay.com/browse/LPD-52616
+[LPD-52619]: https://issues.liferay.com/browse/LPD-52619
+[LPD-52887]: https://issues.liferay.com/browse/LPD-52887
+[LPD-53012]: https://issues.liferay.com/browse/LPD-53012
+[LPD-53130]: https://issues.liferay.com/browse/LPD-53130
+[LPD-53852]: https://issues.liferay.com/browse/LPD-53852
+[LPD-53966]: https://issues.liferay.com/browse/LPD-53966
+[LPD-54320]: https://issues.liferay.com/browse/LPD-54320
+[LPD-54558]: https://issues.liferay.com/browse/LPD-54558
+[LPD-54663]: https://issues.liferay.com/browse/LPD-54663
+[LPD-54753]: https://issues.liferay.com/browse/LPD-54753
+[LPD-54760]: https://issues.liferay.com/browse/LPD-54760
+[LPD-54817]: https://issues.liferay.com/browse/LPD-54817
+[LPD-54838]: https://issues.liferay.com/browse/LPD-54838
+[LPD-57274]: https://issues.liferay.com/browse/LPD-57274
+[LPD-57426]: https://issues.liferay.com/browse/LPD-57426
+[LPD-57483]: https://issues.liferay.com/browse/LPD-57483
+[LPD-59023]: https://issues.liferay.com/browse/LPD-59023
+[LPD-59977]: https://issues.liferay.com/browse/LPD-59977
+[LPD-60039]: https://issues.liferay.com/browse/LPD-60039
+[LPD-60184]: https://issues.liferay.com/browse/LPD-60184
 [LPS-24486]: https://issues.liferay.com/browse/LPS-24486
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-51801]: https://issues.liferay.com/browse/LPS-51801
@@ -8136,6 +8803,7 @@ version 2.4.
 [LRCI-2605]: https://issues.liferay.com/browse/LRCI-2605
 [LRCI-2670]: https://issues.liferay.com/browse/LRCI-2670
 [LRCI-3230]: https://issues.liferay.com/browse/LRCI-3230
+[LRCI-4023]: https://issues.liferay.com/browse/LRCI-4023
 [LRCI-4454]: https://issues.liferay.com/browse/LRCI-4454
 [LRDOCS-2647]: https://issues.liferay.com/browse/LRDOCS-2647
 [POSHI-83]: https://issues.liferay.com/browse/POSHI-83

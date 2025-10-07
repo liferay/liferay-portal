@@ -596,6 +596,15 @@ public class CommercePaymentEntryAuditPersistenceImpl
 				commercePaymentEntryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCommercePaymentEntryId(
+					commercePaymentEntryId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -970,6 +979,16 @@ public class CommercePaymentEntryAuditPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByCommercePaymentEntryId(commercePaymentEntryId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommercePaymentEntryAudit> commercePaymentEntryAudits =
+				findByCommercePaymentEntryId(commercePaymentEntryId);
+
+			commercePaymentEntryAudits = InlineSQLHelperUtil.filter(
+				commercePaymentEntryAudits);
+
+			return commercePaymentEntryAudits.size();
 		}
 
 		StringBundler sb = new StringBundler(2);

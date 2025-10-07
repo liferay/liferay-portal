@@ -24,8 +24,8 @@ import com.liferay.portal.kernel.search.suggest.QuerySuggester;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.aggregation.Aggregation;
 import com.liferay.portal.search.aggregation.pipeline.PipelineAggregation;
 import com.liferay.portal.search.constants.SearchContextAttributes;
@@ -115,7 +115,7 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 
 			if (end == QueryUtil.ALL_POS) {
 				end = GetterUtil.getInteger(
-					_props.get(PropsKeys.INDEX_SEARCH_LIMIT));
+					PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
 			}
 			else if (end < 0) {
 				throw new IllegalArgumentException("Invalid end " + end);
@@ -782,9 +782,6 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 
 	@Reference
 	private OpenSearchConfigurationWrapper _openSearchConfigurationWrapper;
-
-	@Reference
-	private Props _props;
 
 	@Reference(target = "(search.engine.impl=OpenSearch)")
 	private QuerySuggester _querySuggester;

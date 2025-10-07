@@ -65,7 +65,6 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.resource.EntityModelResource;
 import com.liferay.portal.vulcan.util.EntityExtensionUtil;
 import com.liferay.portal.vulcan.util.LocalDateTimeUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -96,7 +95,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = StructuredContentResource.class
 )
 public class StructuredContentResourceImpl
-	extends BaseStructuredContentResourceImpl implements EntityModelResource {
+	extends BaseStructuredContentResourceImpl {
 
 	@Override
 	public void deleteStructuredContentByVersion(
@@ -409,6 +408,9 @@ public class StructuredContentResourceImpl
 		}
 	}
 
+	private static final EntityModel _entityModel =
+		new StructuredContentEntityModel();
+
 	@Reference
 	private Aggregations _aggregations;
 
@@ -429,8 +431,6 @@ public class StructuredContentResourceImpl
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
-
-	private final EntityModel _entityModel = new StructuredContentEntityModel();
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;

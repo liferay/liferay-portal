@@ -4,3 +4,4 @@
  */
 
 export const PAGE_MANAGEMENT_SITE_ERC = 'page-management-site-erc';
+export const PAGE_MANAGEMENT_SITE_NAME = 'Page Management Site';

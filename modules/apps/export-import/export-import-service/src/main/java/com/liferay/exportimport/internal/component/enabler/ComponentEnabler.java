@@ -6,7 +6,7 @@
 package com.liferay.exportimport.internal.component.enabler;
 
 import com.liferay.exportimport.internal.scheduler.CheckSystemEventSchedulerJobConfiguration;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;

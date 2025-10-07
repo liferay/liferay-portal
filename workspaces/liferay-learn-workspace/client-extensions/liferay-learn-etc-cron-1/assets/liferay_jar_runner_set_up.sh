@@ -111,12 +111,12 @@ function prepare_import {
 
 	if [ -z "${LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_ID}" ]
 	then
-		export LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_ID=$(cat /etc/liferay/lxc/ext-init-metadata/liferay-learn-etc-cron-oauth-application-headless-server.oauth2.headless.server.client.id)
+		export LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_ID=$(cat /etc/liferay/lxc/ext-init-metadata/liferay-learn-etc-cron-oahs.oauth2.headless.server.client.id)
 	fi
 
 	if [ -z "${LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_SECRET}" ]
 	then
-		export LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_SECRET=$(cat /etc/liferay/lxc/ext-init-metadata/liferay-learn-etc-cron-oauth-application-headless-server.oauth2.headless.server.client.secret)
+		export LIFERAY_LEARN_ETC_CRON_LIFERAY_OAUTH_CLIENT_SECRET=$(cat /etc/liferay/lxc/ext-init-metadata/liferay-learn-etc-cron-oahs.oauth2.headless.server.client.secret)
 	fi
 
 	if [ -z "${LIFERAY_LEARN_ETC_CRON_LIFERAY_URL}" ]

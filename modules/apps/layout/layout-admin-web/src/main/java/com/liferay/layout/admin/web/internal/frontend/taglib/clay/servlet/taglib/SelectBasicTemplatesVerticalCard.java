@@ -9,14 +9,17 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.VerticalCard;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -52,29 +55,8 @@ public class SelectBasicTemplatesVerticalCard implements VerticalCard {
 	public Map<String, String> getDynamicAttributes() {
 		Map<String, String> data = new HashMap<>();
 
-		String redirect = ParamUtil.getString(_httpServletRequest, "redirect");
-
 		try {
-			data.put(
-				"data-add-layout-url",
-				PortletURLBuilder.createRenderURL(
-					_renderResponse
-				).setMVCRenderCommandName(
-					"/layout_admin/add_layout"
-				).setBackURL(
-					redirect
-				).setParameter(
-					"masterLayoutPlid", _layoutPageTemplateEntry.getPlid()
-				).setParameter(
-					"privateLayout",
-					ParamUtil.getBoolean(_httpServletRequest, "privateLayout")
-				).setParameter(
-					"selPlid", ParamUtil.getLong(_httpServletRequest, "selPlid")
-				).setParameter(
-					"type", LayoutConstants.TYPE_CONTENT
-				).setWindowState(
-					LiferayWindowState.POP_UP
-				).buildString());
+			data.put("data-add-layout-url", _getAddLayoutURL());
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -106,6 +88,45 @@ public class SelectBasicTemplatesVerticalCard implements VerticalCard {
 	@Override
 	public boolean isSelectable() {
 		return false;
+	}
+
+	private String _getAddLayoutURL() {
+		long selPlid = ParamUtil.getLong(_httpServletRequest, "selPlid");
+
+		PortletURL addLayoutURL = PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/layout_admin/add_layout"
+		).setBackURL(
+			ParamUtil.getString(_httpServletRequest, "redirect")
+		).setParameter(
+			"masterLayoutPlid", _layoutPageTemplateEntry.getPlid()
+		).setParameter(
+			"privateLayout",
+			ParamUtil.getBoolean(_httpServletRequest, "privateLayout")
+		).setParameter(
+			"selPlid", selPlid
+		).setParameter(
+			"type", LayoutConstants.TYPE_CONTENT
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildPortletURL();
+
+		if (selPlid != LayoutConstants.DEFAULT_PLID) {
+			Layout layout = LayoutLocalServiceUtil.fetchLayout(selPlid);
+
+			if ((layout != null) && layout.isTypeEmpty()) {
+				addLayoutURL.setParameter(
+					"emptyLayout",
+					String.valueOf(
+						ParamUtil.getBoolean(
+							_httpServletRequest, "emptyLayout")));
+				addLayoutURL.setParameter(
+					"externalReferenceCode", layout.getExternalReferenceCode());
+			}
+		}
+
+		return addLayoutURL.toString();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

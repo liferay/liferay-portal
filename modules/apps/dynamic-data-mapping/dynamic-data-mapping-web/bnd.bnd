@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dynamic Data Mapping Web
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.web
-Bundle-Version: 5.0.123
+Bundle-Version: 5.0.124
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /dynamic-data-mapping-web
 -dsannotations-options: inherit

@@ -80,9 +80,9 @@ public class APIApplicationTestUtil {
 		return ServiceTrackerFactory.open(
 			testBundle.getBundleContext(),
 			StringBundler.concat(
-				"(&(objectClass=", Application.class.getName(),
-				")(liferay.headless.builder.application=true)",
-				"(osgi.jaxrs.application.base=/c/", baseURL, "))"));
+				"(&(liferay.headless.builder.application=true)(objectClass=",
+				Application.class.getName(),
+				")(osgi.jaxrs.application.base=/c/", baseURL, "))"));
 	}
 
 }

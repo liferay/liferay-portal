@@ -571,10 +571,10 @@ public abstract class BasePortletIdUpgradeProcess extends UpgradeProcess {
 		if (!newRootPortletId.contains("_INSTANCE_")) {
 			runSQL(
 				StringBundler.concat(
-					"update ResourcePermission set primKey = replace(",
-					"primKey, '_LAYOUT_", oldRootPortletId, "_INSTANCE_', ",
-					"'_LAYOUT_", newRootPortletId, "_INSTANCE_') where name = ",
-					"'", oldRootPortletId, "' and primKey like '%_LAYOUT_",
+					"update ResourcePermission set primKey = replace(primKey, ",
+					"'_LAYOUT_", oldRootPortletId, "_INSTANCE_', '_LAYOUT_",
+					newRootPortletId, "_INSTANCE_') where name = '",
+					oldRootPortletId, "' and primKey like '%_LAYOUT_",
 					oldRootPortletId, "_INSTANCE_%'"));
 		}
 

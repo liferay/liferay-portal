@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.wiki.configuration.WikiFileUploadConfiguration;
 import com.liferay.wiki.constants.WikiPortletKeys;
@@ -127,7 +128,7 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(_portletURL, liferayPortletResponse)
 		).setParameter(
-			"selectedTab", getTitle(httpServletRequest.getLocale())
+			"selectedTab", _getSelectedTab()
 		).buildPortletURL();
 	}
 
@@ -179,6 +180,16 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 		return _search;
 	}
 
+	private String _getSelectedTab() {
+		if (_selectedTab != null) {
+			return _selectedTab;
+		}
+
+		_selectedTab = ParamUtil.getString(_httpServletRequest, "selectedTab");
+
+		return _selectedTab;
+	}
+
 	private WikiFileUploadConfiguration _getWikiFileUploadConfiguration()
 		throws ConfigurationException {
 
@@ -198,6 +209,7 @@ public class WikiAttachmentItemSelectorViewDisplayContext {
 	private final PortalPreferences _portalPreferences;
 	private final PortletURL _portletURL;
 	private final boolean _search;
+	private String _selectedTab;
 	private final WikiAttachmentItemSelectorCriterion
 		_wikiAttachmentItemSelectorCriterion;
 	private final WikiAttachmentItemSelectorView

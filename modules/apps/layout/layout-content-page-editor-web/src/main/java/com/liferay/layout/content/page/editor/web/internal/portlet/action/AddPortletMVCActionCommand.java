@@ -164,8 +164,7 @@ public class AddPortletMVCActionCommand
 
 			JSONObject editableValueJSONObject =
 				_fragmentEntryProcessorRegistry.
-					getDefaultEditableValuesJSONObject(
-						StringPool.BLANK, StringPool.BLANK);
+					getDefaultEditableValuesJSONObject(StringPool.BLANK, null);
 
 			editableValueJSONObject.put(
 				"instanceId", instanceId

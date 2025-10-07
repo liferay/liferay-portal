@@ -1,0 +1,25 @@
+dependencies {
+	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "io.swagger.core.v3", name: "swagger-annotations-jakarta", version: "2.2.28"
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
+	compileOnly group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	compileOnly project(":apps:export-import:export-import-api")
+	compileOnly project(":apps:export-import:export-import-report-api")
+	compileOnly project(":apps:export-import:export-import-rest-api")
+	compileOnly project(":apps:headless:headless-delivery:headless-delivery-api")
+	compileOnly project(":apps:object:object-api")
+	compileOnly project(":apps:portal-background-task:portal-background-task-api")
+	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-search:portal-search-api")
+	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
+	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
+	compileOnly project(":apps:staging:staging-api")
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-string")
+}

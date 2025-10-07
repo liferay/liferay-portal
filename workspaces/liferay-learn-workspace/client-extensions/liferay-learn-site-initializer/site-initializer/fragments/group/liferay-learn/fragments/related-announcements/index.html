@@ -1,0 +1,42 @@
+[#assign assetEntry = (request.getAttribute("LIFERAY_SHARED_LAYOUT_ASSET_ENTRY"))! /]
+
+[#assign learnAnnouncementId = assetEntry.classPK!/]
+
+[#assign learnAnnouncement = restClient.get("/c/p2s3learnannouncements/${learnAnnouncementId}") /]
+
+[#assign taxonomyCategoryIds = [] /]
+
+[#list learnAnnouncement.taxonomyCategoryBriefs![] as category]
+	[#assign taxonomyCategoryIds += [category.taxonomyCategoryId?c] /]
+[/#list]
+
+[#if (taxonomyCategoryIds?size > 0)]
+	[#assign filter = "taxonomyCategoryIds in (" + taxonomyCategoryIds?join(",") + ") and id ne '" + learnAnnouncementId?string + "'"]
+
+	[#assign relatedLearnAnnouncementsResponse = restClient.get("/c/p2s3learnannouncements?fields=id,title,description,dateCreated,taxonomyCategoryBriefs&pageSize=3&sort=dateCreated:desc&filter=" + filter?url("UTF-8"))]
+
+	[#assign relatedLearnAnnouncements = relatedLearnAnnouncementsResponse.items![]]
+
+	[#if (relatedLearnAnnouncements?size > 0)]
+		<div class="related-announcements-container">
+			<h5>[@liferay_ui["message"] key="related-announcements" /]</h5>
+
+			<div class="d-flex related-cards-container">
+				[#list relatedLearnAnnouncements as relatedLearnAnnouncement]
+					<a class="related-card-link" href="/l/${relatedLearnAnnouncement.id}">
+						<div class="related-card">
+							<h6 class="related-card-title">${relatedLearnAnnouncement.title}</h6>
+
+							<p class="related-card-description">${relatedLearnAnnouncement.description}</p>
+								[#if relatedLearnAnnouncement.dateCreated??]
+									<p class="related-card-date">
+										[@liferay_ui["message"] key="published" /]: ${relatedLearnAnnouncement.dateCreated?datetime("yyyy-MM-dd'T'HH:mm:ss'Z'")?string("MMM. d, yyyy")}
+									</p>
+								[/#if]
+						</div>
+					</a>
+				[/#list]
+			</div>
+		</div>
+	[/#if]
+[/#if]

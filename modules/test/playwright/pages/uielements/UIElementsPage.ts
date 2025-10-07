@@ -23,7 +23,9 @@ export class UIElementsPage {
 		this.alertMessage = page.locator('div.content >> div.alert-info');
 		this.anySuccessAlert = page.locator('.alert-success');
 		this.cancelButton = page.getByRole('button', {name: 'Cancel'});
-		this.closeClickable = page.getByLabel('close', {exact: true});
+		this.closeClickable = page
+			.locator('.modal-header')
+			.getByLabel('Close', {exact: true});
 		this.newButton = page.getByTestId('creationMenuNewButton').nth(1);
 		this.pageCreatedAlert = page.getByText(
 			'Success:The page was created successfully.'

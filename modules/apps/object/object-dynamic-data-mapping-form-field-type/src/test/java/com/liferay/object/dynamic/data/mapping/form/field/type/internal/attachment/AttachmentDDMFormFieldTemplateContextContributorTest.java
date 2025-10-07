@@ -11,16 +11,23 @@ import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.test.util.BaseDDMFormFieldTemplateContextContributorTestCase;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
+import com.liferay.object.field.attachment.AttachmentManager;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -32,6 +39,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import org.skyscreamer.jsonassert.JSONAssert;
+
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * @author Pedro Leite
@@ -50,6 +59,7 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_setUpAttachmentManager();
 		_setUpDLAppLocalService();
 		_setUpDLURLHelper();
 		_setUpJSONFactory();
@@ -117,6 +127,45 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 				"localizedObjectField"));
 	}
 
+	@Test
+	public void testGetParametersTip() {
+		Mockito.when(
+			_attachmentManager.getMaximumFileSize(
+				Mockito.anyLong(), Mockito.anyBoolean())
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		_ddmFormField.setProperty("contentURL", RandomTestUtil.randomString());
+		_ddmFormField.setProperty("localizedObjectField", true);
+
+		_testGetParametersTip(LocaleUtil.BRAZIL);
+		_testGetParametersTip(LocaleUtil.ENGLISH);
+	}
+
+	private DDMFormFieldRenderingContext _createDDMFormFieldRenderingContext(
+		Locale locale) {
+
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
+			new DDMFormFieldRenderingContext();
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			locale
+		);
+
+		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
+
+		ddmFormFieldRenderingContext.setHttpServletRequest(httpServletRequest);
+
+		return ddmFormFieldRenderingContext;
+	}
+
 	private void _mockFileEntry(FileEntry fileEntry, Long value)
 		throws Exception {
 
@@ -131,6 +180,12 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 		).thenReturn(
 			fileEntry
 		);
+	}
+
+	private void _setUpAttachmentManager() {
+		ReflectionTestUtil.setFieldValue(
+			_attachmentDDMFormFieldTemplateContextContributor,
+			"_attachmentManager", _attachmentManager);
 	}
 
 	private void _setUpDLAppLocalService() throws Exception {
@@ -170,9 +225,30 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 			_uploadServletRequestConfigurationProvider);
 	}
 
+	private void _testGetParametersTip(Locale locale) {
+		String tip = RandomTestUtil.randomString();
+
+		Mockito.when(
+			language.format(
+				Mockito.eq(locale), Mockito.eq("upload-a-x-no-larger-than-x"),
+				Mockito.any(Object[].class))
+		).thenReturn(
+			tip
+		);
+
+		Assert.assertEquals(
+			tip,
+			MapUtil.getString(
+				_attachmentDDMFormFieldTemplateContextContributor.getParameters(
+					_ddmFormField, _createDDMFormFieldRenderingContext(locale)),
+				"tip"));
+	}
+
 	private final AttachmentDDMFormFieldTemplateContextContributor
 		_attachmentDDMFormFieldTemplateContextContributor =
 			new AttachmentDDMFormFieldTemplateContextContributor();
+	private final AttachmentManager _attachmentManager = Mockito.mock(
+		AttachmentManager.class);
 	private final DDMFormField _ddmFormField = new DDMFormField(
 		"field", ObjectDDMFormFieldTypeConstants.ATTACHMENT);
 	private final DLAppLocalService _dlAppLocalService = Mockito.mock(

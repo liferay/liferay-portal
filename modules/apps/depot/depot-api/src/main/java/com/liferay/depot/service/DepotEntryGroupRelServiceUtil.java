@@ -61,10 +61,10 @@ public class DepotEntryGroupRelServiceUtil {
 	}
 
 	public static List<DepotEntryGroupRel> getDepotEntryGroupRels(
-			long groupId, int start, int end)
+			long groupId, int type, int start, int end)
 		throws PortalException {
 
-		return getService().getDepotEntryGroupRels(groupId, start, end);
+		return getService().getDepotEntryGroupRels(groupId, type, start, end);
 	}
 
 	public static int getDepotEntryGroupRelsCount(
@@ -74,10 +74,10 @@ public class DepotEntryGroupRelServiceUtil {
 		return getService().getDepotEntryGroupRelsCount(depotEntry);
 	}
 
-	public static int getDepotEntryGroupRelsCount(long groupId)
+	public static int getDepotEntryGroupRelsCount(long groupId, int type)
 		throws PortalException {
 
-		return getService().getDepotEntryGroupRelsCount(groupId);
+		return getService().getDepotEntryGroupRelsCount(groupId, type);
 	}
 
 	/**

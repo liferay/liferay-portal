@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upgrade.MockPortletPreferences;
@@ -38,8 +37,6 @@ import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -252,8 +249,6 @@ public class SearchDisplayContextTest {
 		throws Exception {
 
 		_setUpRequestKeywords(keywords);
-
-		PropsTestUtil.setProps(Collections.emptyMap());
 
 		return new SearchDisplayContext(
 			renderRequest, portletPreferences, _createPortal(renderRequest),

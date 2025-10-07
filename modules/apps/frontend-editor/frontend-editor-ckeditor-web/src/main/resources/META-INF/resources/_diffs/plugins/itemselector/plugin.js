@@ -284,7 +284,13 @@
 						: document.getElementById(`cke_${editor.name}`);
 
 					if (typeof callback === 'function') {
-						callback(imageSrc);
+						callback(imageSrc, selectedItem);
+
+						instance._checkImageWidth(
+							editor,
+							editorContent,
+							imageSrc
+						);
 					}
 					else {
 						const editorContentHeight =

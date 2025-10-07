@@ -7,6 +7,7 @@ package com.liferay.fragment.renderer;
 
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,10 +27,10 @@ public interface FragmentRenderer {
 
 	public String getCollectionKey();
 
-	public default String getConfiguration(
+	public default JSONObject getConfigurationJSONObject(
 		FragmentRendererContext fragmentRendererContext) {
 
-		return StringPool.BLANK;
+		return null;
 	}
 
 	public default String getIcon() {

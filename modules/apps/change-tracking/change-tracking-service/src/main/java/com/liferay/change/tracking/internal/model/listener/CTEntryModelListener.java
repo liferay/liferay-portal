@@ -29,12 +29,16 @@ public class CTEntryModelListener extends BaseModelListener<CTEntry> {
 	public void onAfterCreate(CTEntry ctEntry) {
 		_ctClosureFactory.clearCache(ctEntry.getCtCollectionId());
 
+		_reindexCTEntry(ctEntry, "reindex");
+
 		_updateCTScore(ctEntry, true);
 	}
 
 	@Override
 	public void onAfterRemove(CTEntry ctEntry) {
 		_ctClosureFactory.clearCache(ctEntry.getCtCollectionId());
+
+		_reindexCTEntry(ctEntry, "delete");
 
 		_updateCTScore(ctEntry, false);
 	}
@@ -53,7 +57,35 @@ public class CTEntryModelListener extends BaseModelListener<CTEntry> {
 			_updateCTScore(ctEntry, true);
 		}
 
+		if ((originalCTEntry.getCtCollectionId() !=
+				ctEntry.getCtCollectionId()) ||
+			(originalCTEntry.getUserId() != ctEntry.getUserId())) {
+
+			_reindexCTEntry(ctEntry, "reindex");
+		}
+
 		_ctClosureFactory.clearCache(ctEntry.getCtCollectionId());
+	}
+
+	private void _reindexCTEntry(CTEntry ctEntry, String type) {
+		TransactionCommitCallbackUtil.registerCallback(
+			() -> {
+				Message message = new Message();
+
+				message.setValues(
+					HashMapBuilder.<String, Object>put(
+						"companyId", ctEntry.getCompanyId()
+					).put(
+						"ctEntryId", ctEntry.getCtEntryId()
+					).put(
+						"type", type
+					).build());
+
+				_messageBus.sendMessage(
+					CTDestinationNames.CT_ENTRY_REINDEX, message);
+
+				return null;
+			});
 	}
 
 	private void _updateCTScore(CTEntry ctEntry, boolean increment) {

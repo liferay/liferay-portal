@@ -371,7 +371,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		List<Rule> violations = results.getViolations();
 
 		if (violations.isEmpty()) {
-			System.out.println("No accessiblity violations were found");
+			System.out.println("No accessibility violations were found");
 
 			return;
 		}
@@ -392,7 +392,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		}
 
 		if (rules.isEmpty()) {
-			System.out.println("No accessiblity violations were found");
+			System.out.println("No accessibility violations were found");
 
 			return;
 		}

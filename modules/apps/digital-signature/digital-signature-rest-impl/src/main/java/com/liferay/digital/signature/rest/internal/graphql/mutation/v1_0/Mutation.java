@@ -124,6 +124,24 @@ public class Mutation {
 						dsRecipientViewDefinition));
 	}
 
+	@GraphQLField
+	public Response createSiteDSRecipientViewDefinitionBatch(
+			@GraphQLName("siteKey") @NotEmpty String siteKey,
+			@GraphQLName("dsEnvelopeId") String dsEnvelopeId,
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_dsRecipientViewDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			dsRecipientViewDefinitionResource ->
+				dsRecipientViewDefinitionResource.
+					postSiteDSRecipientViewDefinitionBatch(
+						Long.valueOf(siteKey), dsEnvelopeId, callbackURL,
+						object));
+	}
+
 	private <T, R, E1 extends Throwable, E2 extends Throwable> R
 			_applyComponentServiceObjects(
 				ComponentServiceObjects<T> componentServiceObjects,
@@ -198,6 +216,14 @@ public class Mutation {
 			_groupLocalService);
 		dsRecipientViewDefinitionResource.setRoleLocalService(
 			_roleLocalService);
+
+		dsRecipientViewDefinitionResource.
+			setVulcanBatchEngineExportTaskResource(
+				_vulcanBatchEngineExportTaskResource);
+
+		dsRecipientViewDefinitionResource.
+			setVulcanBatchEngineImportTaskResource(
+				_vulcanBatchEngineImportTaskResource);
 	}
 
 	private static ComponentServiceObjects<DSEnvelopeResource>

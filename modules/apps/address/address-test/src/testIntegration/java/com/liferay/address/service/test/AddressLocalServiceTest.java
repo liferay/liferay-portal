@@ -166,13 +166,13 @@ public class AddressLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteAddress() throws Exception {
+	public void testGetOrAddEmptyAddress() throws Exception {
 		User user = TestPropsValues.getUser();
 
 		// Lazy referencing disabled
 
 		try {
-			_addressLocalService.getOrAddIncompleteAddress(
+			_addressLocalService.getOrAddEmptyAddress(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Contact.class.getName(),
 				user.getContactId());
@@ -188,13 +188,13 @@ public class AddressLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-			Address address = _addressLocalService.getOrAddIncompleteAddress(
+			Address address = _addressLocalService.getOrAddEmptyAddress(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Contact.class.getName(),
 				user.getContactId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, address.getStatus());
+				WorkflowConstants.STATUS_EMPTY, address.getStatus());
 		}
 	}
 
@@ -416,13 +416,13 @@ public class AddressLocalServiceTest {
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
-			Address address = _addressLocalService.getOrAddIncompleteAddress(
+			Address address = _addressLocalService.getOrAddEmptyAddress(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), Contact.class.getName(),
 				user.getContactId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, address.getStatus());
+				WorkflowConstants.STATUS_EMPTY, address.getStatus());
 
 			address = _addressLocalService.updateAddress(
 				address.getExternalReferenceCode(), address.getAddressId(),

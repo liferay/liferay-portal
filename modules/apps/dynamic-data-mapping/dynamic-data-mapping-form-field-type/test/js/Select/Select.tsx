@@ -14,6 +14,7 @@ interface Props {
 	multiple: boolean;
 	name: string;
 	options: Option[];
+	required?: boolean;
 }
 
 const SelectWithProvider = (props: Props) => (
@@ -59,6 +60,37 @@ describe('Select', () => {
 			value: 'value2',
 		},
 	];
+
+	it('does not have aria-invalid attribute on first render when it is required', () => {
+		const props = {
+			multiple: false,
+			name: 'selectName',
+			options,
+			required: true,
+		};
+
+		const {container} = render(<SelectWithProvider {...props} />);
+
+		const button = container.querySelector('button[aria-required="true"]');
+
+		expect(button?.hasAttribute('aria-invalid')).toBe(false);
+	});
+
+	it('does not have aria-invalid attribute when it is required and has a value', () => {
+		const props = {
+			multiple: false,
+			name: 'selectName',
+			options,
+			required: true,
+			value: 'value',
+		};
+
+		const {container} = render(<SelectWithProvider {...props} />);
+
+		const button = container.querySelector('button[aria-required="true"]');
+
+		expect(button?.hasAttribute('aria-invalid')).toBe(false);
+	});
 
 	it('renders data-option-reference in option elements', () => {
 		const props = {

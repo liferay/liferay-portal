@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.js.web.internal.servlet.filter;
 
-import com.liferay.frontend.js.web.internal.frontend.resource.FrontendResource;
+import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;

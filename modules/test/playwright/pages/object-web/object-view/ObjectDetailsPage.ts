@@ -38,13 +38,17 @@ export class ObjectDetailsPage {
 		await this.saveButton.click({trial: true});
 
 		await clickAndExpectToBeVisible({
-			target: this.page.getByRole('menuitem', {name: 'en_US'}),
-			trigger: this.page.getByTitle('Open Localizations').first(),
+			target: this.page.getByRole('option', {name: 'en_US'}),
+			trigger: this.page
+				.locator('[aria-label="Open Localizations"]')
+				.first(),
 		});
 
 		await clickAndExpectToBeHidden({
-			target: this.page.getByRole('menuitem', {name: 'en_US'}),
-			trigger: this.page.getByTitle('Open Localizations').first(),
+			target: this.page.getByRole('option', {name: 'en_US'}),
+			trigger: this.page
+				.locator('[aria-label="Open Localizations"]')
+				.first(),
 		});
 	}
 

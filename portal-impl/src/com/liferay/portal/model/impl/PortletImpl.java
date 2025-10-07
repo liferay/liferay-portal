@@ -54,22 +54,28 @@ import com.liferay.portal.kernel.servlet.URLEncoder;
 import com.liferay.portal.kernel.template.TemplateHandler;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.webdav.WebDAVStorage;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
 import com.liferay.portal.kernel.xml.QName;
 import com.liferay.portal.kernel.xmlrpc.Method;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
 import com.liferay.social.kernel.model.SocialRequestInterpreter;
 
+import jakarta.portlet.GenericPortlet;
+import jakarta.portlet.HeaderRequest;
+import jakarta.portlet.HeaderResponse;
 import jakarta.portlet.PortletMode;
 import jakarta.portlet.WindowState;
+
+import jakarta.servlet.ServletContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +85,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1352,7 +1359,7 @@ public class PortletImpl extends PortletBaseImpl {
 			throw new IllegalStateException("No portlet bag for " + toString());
 		}
 
-		return portletBag.getPortletDataHandlerInstance();
+		return portletBag.getPortletDataHandlerInstance(getCompanyId());
 	}
 
 	/**
@@ -2436,6 +2443,15 @@ public class PortletImpl extends PortletBaseImpl {
 			ApplicationType.FULL_PAGE_APPLICATION);
 	}
 
+	@Override
+	public boolean isHeaderPortlet() {
+		if (_headerPortlet == null) {
+			_headerPortlet = _isHeaderPortlet();
+		}
+
+		return _headerPortlet;
+	}
+
 	/**
 	 * Returns <code>true</code> to include the portlet and make it available to
 	 * be made active.
@@ -2525,10 +2541,11 @@ public class PortletImpl extends PortletBaseImpl {
 
 	/**
 	 * Returns <code>true</code> if the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified CSS resource dependencies are
 	 *         to be referenced in the page's header
@@ -2542,9 +2559,9 @@ public class PortletImpl extends PortletBaseImpl {
 	 * Returns <code>true</code> if the JavaScript resource dependencies
 	 * specified in <code>portlet.xml</code>, @{@link
 	 * jakarta.portlet.annotations.Dependency}, {@link
-	 * jakarta.portlet.HeaderResponse#addDependency(String, String, String)}, or
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String, String,
-	 * String)} are to be referenced in the page's header.
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @return <code>true</code> if the specified JavaScript resource
 	 *         dependencies are to be referenced in the page's header
@@ -3448,10 +3465,11 @@ public class PortletImpl extends PortletBaseImpl {
 
 	/**
 	 * Sets whether the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @param portletDependencyCssEnabled whether the CSS resource dependencies
 	 *        that are specified in <code>portlet.xml</code>,
@@ -3465,18 +3483,18 @@ public class PortletImpl extends PortletBaseImpl {
 
 	/**
 	 * Sets whether the JavaScript resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 *
 	 * @param portletDependencyJavaScriptEnabled whether the JavaScript resource
 	 *        dependencies specified in <code>portlet.xml</code>, @{@link
 	 *        jakarta.portlet.annotations.Dependency}, {@link
-	 *        jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 *        String)}, or {@link
-	 *        jakarta.portlet.HeaderResponse#addDependency(String, String, String,
-	 *        String)} are to be referenced in the page's header
+	 *        HeaderResponse#addDependency(String, String, String)}, or {@link
+	 *        HeaderResponse#addDependency(String, String, String, String)} are
+	 *        to be referenced in the page's header
 	 */
 	@Override
 	public void setPortletDependencyJavaScriptEnabled(
@@ -4159,6 +4177,70 @@ public class PortletImpl extends PortletBaseImpl {
 		return controlPanelEntry;
 	}
 
+	private boolean _isHeaderPortlet() {
+		PortletApp portletApp = getPortletApp();
+
+		if (portletApp.getSpecMajorVersion() < 3) {
+			return false;
+		}
+
+		String portletClassName = getPortletClass();
+
+		if (Objects.equals(
+				portletClassName,
+				"jakarta.portlet.faces.GenericFacesPortlet")) {
+
+			return true;
+		}
+
+		ServletContext servletContext = portletApp.getServletContext();
+
+		if (servletContext == null) {
+			return false;
+		}
+
+		ClassLoader classLoader = servletContext.getClassLoader();
+
+		if (classLoader == null) {
+			return false;
+		}
+
+		try {
+			Class<?> portletClass = classLoader.loadClass(portletClassName);
+
+			if (ClassUtil.isSubclass(
+					portletClass,
+					"jakarta.portlet.faces.GenericFacesPortlet")) {
+
+				return true;
+			}
+
+			java.lang.reflect.Method renderHeadersMethod =
+				portletClass.getMethod(
+					"renderHeaders", HeaderRequest.class, HeaderResponse.class);
+
+			if (GenericPortlet.class !=
+					renderHeadersMethod.getDeclaringClass()) {
+
+				return true;
+			}
+		}
+		catch (ClassNotFoundException classNotFoundException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to load portlet class " + portletClassName,
+					classNotFoundException);
+			}
+		}
+		catch (NoSuchMethodException noSuchMethodException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(noSuchMethodException);
+			}
+		}
+
+		return false;
+	}
+
 	/**
 	 * Log instance for this class.
 	 */
@@ -4337,6 +4419,8 @@ public class PortletImpl extends PortletBaseImpl {
 	 */
 	private List<String> _headerPortalJavaScript;
 
+	private Boolean _headerPortlet;
+
 	/**
 	 * A list of CSS files that will be referenced from the page's header
 	 * relative to the portlet's context path.
@@ -4489,19 +4573,21 @@ public class PortletImpl extends PortletBaseImpl {
 
 	/**
 	 * <code>True</code> if the CSS resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 */
 	private boolean _portletDependencyCssEnabled = true;
 
 	/**
 	 * <code>True</code> if the JavaScript resource dependencies specified in
-	 * <code>portlet.xml</code>, @{@link jakarta.portlet.annotations.Dependency},
-	 * {@link jakarta.portlet.HeaderResponse#addDependency(String, String,
-	 * String)}, or {@link jakarta.portlet.HeaderResponse#addDependency(String,
-	 * String, String, String)} are to be referenced in the page's header.
+	 * <code>portlet.xml</code>, @{@link
+	 * jakarta.portlet.annotations.Dependency}, {@link
+	 * HeaderResponse#addDependency(String, String, String)}, or {@link
+	 * HeaderResponse#addDependency(String, String, String, String)} are to be
+	 * referenced in the page's header.
 	 */
 	private boolean _portletDependencyJavaScriptEnabled = true;
 

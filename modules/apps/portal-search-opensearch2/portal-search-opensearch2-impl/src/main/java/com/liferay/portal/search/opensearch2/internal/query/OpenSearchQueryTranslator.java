@@ -94,15 +94,10 @@ import org.opensearch.client.opensearch._types.query_dsl.SimpleQueryStringQuery;
 import org.opensearch.client.opensearch._types.query_dsl.TextQueryType;
 import org.opensearch.client.opensearch._types.query_dsl.ZeroTermsQuery;
 
-import org.osgi.service.component.annotations.Component;
-
 /**
  * @author Michael C. Han
  * @author Petteri Karttunen
  */
-@Component(
-	property = "search.engine.impl=OpenSearch", service = QueryTranslator.class
-)
 public class OpenSearchQueryTranslator
 	implements QueryTranslator<QueryVariant>, QueryVisitor<QueryVariant> {
 

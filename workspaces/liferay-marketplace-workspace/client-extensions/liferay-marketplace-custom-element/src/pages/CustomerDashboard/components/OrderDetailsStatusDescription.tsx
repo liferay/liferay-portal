@@ -48,11 +48,13 @@ const OrderDetailsStatusDescription = ({
 				{productOwner}
 			</div>
 
-			<div className="align-items-center app-details-status d-flex mr-3">
-				<OrderStatus orderStatus={order?.orderStatusInfo.label}>
-					{order?.orderStatusInfo.label}
-				</OrderStatus>
-			</div>
+			{order && (
+				<div className="align-items-center app-details-status d-flex mr-3">
+					<OrderStatus orderStatus={order?.orderStatusInfo.label}>
+						{order?.orderStatusInfo.label}
+					</OrderStatus>
+				</div>
+			)}
 
 			{orderType && (
 				<ClayLabel className="rounded" displayType="info" large>

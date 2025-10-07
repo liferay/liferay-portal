@@ -13,7 +13,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceStickerConstants;
+import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,7 +31,7 @@ public class SpaceStickerDisplayContext {
 
 		_groupId = groupId;
 		_groupLocalService = groupLocalService;
-		_size = GetterUtil.get(size, CMSSpaceStickerConstants.LG);
+		_size = GetterUtil.get(size, CMSSpaceConstants.SPACE_STICKER_LG);
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);

@@ -1,5 +1,4 @@
 dependencies {
-	compileInclude group: "com.liferay", name: "org.eclipse.equinox.http.servlet", version: "1.2.2.v20211118-0920.LIFERAY-PATCHED-4.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.osgi.service.http", version: "1.2.2.LIFERAY-PATCHED-1.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.osgi.service.http.whiteboard", version: "1.1.1.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
@@ -11,5 +10,7 @@ dependencies {
 	compileOnly project(":apps:static:portal-osgi-web:portal-osgi-web-http-servlet-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
+	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
 }

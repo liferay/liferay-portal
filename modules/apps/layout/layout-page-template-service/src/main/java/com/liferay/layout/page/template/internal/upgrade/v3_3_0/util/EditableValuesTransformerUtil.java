@@ -118,6 +118,10 @@ public class EditableValuesTransformerUtil {
 					JSONObject valueJSONObject =
 						editableJSONObject.getJSONObject(valueKey);
 
+					if (valueJSONObject == null) {
+						continue;
+					}
+
 					Iterator<String> segmentedValueKeysIterator =
 						valueJSONObject.keys();
 

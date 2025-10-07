@@ -7,12 +7,13 @@ package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.db.partition.DBPartition;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -54,20 +55,14 @@ public class UpgradeProcessDBPartitionTest {
 	public void testUpgradeWithDatabasePartitionDisabled()
 		throws UpgradeException {
 
-		boolean databasePartitionEnabled =
-			ReflectionTestUtil.getAndSetFieldValue(
-				DBPartition.class, "_DATABASE_PARTITION_ENABLED", false);
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", false)) {
 
-		try {
 			UpgradeProcess upgradeProcess =
 				new AssertConnectionUpgradeProcess();
 
 			upgradeProcess.upgrade();
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				DBPartition.class, "_DATABASE_PARTITION_ENABLED",
-				databasePartitionEnabled);
 		}
 	}
 
@@ -75,20 +70,14 @@ public class UpgradeProcessDBPartitionTest {
 	public void testUpgradeWithDatabasePartitionEnabled()
 		throws UpgradeException {
 
-		boolean databasePartitionEnabled =
-			ReflectionTestUtil.getAndSetFieldValue(
-				DBPartition.class, "_DATABASE_PARTITION_ENABLED", true);
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"DATABASE_PARTITION_ENABLED", true)) {
 
-		try {
 			UpgradeProcess upgradeProcess =
 				new AssertConnectionUpgradeProcess();
 
 			upgradeProcess.upgrade();
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				DBPartition.class, "_DATABASE_PARTITION_ENABLED",
-				databasePartitionEnabled);
 		}
 	}
 

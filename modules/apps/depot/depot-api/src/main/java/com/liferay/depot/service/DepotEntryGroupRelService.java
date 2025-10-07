@@ -65,7 +65,7 @@ public interface DepotEntryGroupRelService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DepotEntryGroupRel> getDepotEntryGroupRels(
-			long groupId, int start, int end)
+			long groupId, int type, int start, int end)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -73,7 +73,8 @@ public interface DepotEntryGroupRelService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDepotEntryGroupRelsCount(long groupId) throws PortalException;
+	public int getDepotEntryGroupRelsCount(long groupId, int type)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.

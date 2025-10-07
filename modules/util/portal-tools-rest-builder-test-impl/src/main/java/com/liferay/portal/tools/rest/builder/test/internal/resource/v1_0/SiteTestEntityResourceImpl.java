@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.SiteTestEntity;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.SiteTestEntityResource;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -36,34 +38,8 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class SiteTestEntityResourceImpl extends BaseSiteTestEntityResourceImpl {
 
 	@Override
-	public Page<SiteTestEntity> doGetSiteSiteTestEntitiesPage(Long siteId)
-		throws Exception {
-
-		List<SiteTestEntity> siteTestEntities = new ArrayList<>();
-
-		for (SiteTestEntity siteTestEntity : _siteTestEntities) {
-			if (Objects.equals(siteId, siteTestEntity.getSiteId())) {
-				siteTestEntities.add(siteTestEntity);
-			}
-		}
-
-		return Page.of(
-			HashMapBuilder.<String, Map<String, String>>put(
-				"createBatch",
-				HashMapBuilder.put(
-					"href",
-					"http://localhost:8080/o/test/v1.0/sites/" + siteId +
-						"/site-test-entities/batch"
-				).put(
-					"method", "POST"
-				).build()
-			).build(),
-			siteTestEntities);
-	}
-
-	@Override
-	public SiteTestEntity doGetSiteSiteTestEntityByExternalReferenceCode(
-			String externalReferenceCode, Long siteId)
+	public void deleteSiteSiteTestEntityByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
 		throws Exception {
 
 		SiteTestEntity siteTestEntity =
@@ -74,93 +50,7 @@ public class SiteTestEntityResourceImpl extends BaseSiteTestEntityResourceImpl {
 			throw new NoSuchModelException();
 		}
 
-		return siteTestEntity;
-	}
-
-	@Override
-	public SiteTestEntity doGetSiteTestEntity(Long siteTestEntityId)
-		throws Exception {
-
-		SiteTestEntity siteTestEntity = _fetchSiteTestEntity(siteTestEntityId);
-
-		if (siteTestEntity == null) {
-			throw new NoSuchModelException();
-		}
-
-		return siteTestEntity;
-	}
-
-	@Override
-	public SiteTestEntity doPostSiteSiteTestEntity(
-			Long siteId, SiteTestEntity siteTestEntity)
-		throws Exception {
-
-		SiteTestEntity existingSiteTestEntity =
-			_fetchSiteSiteTestEntityByExternalReferenceCode(
-				siteTestEntity.getExternalReferenceCode(), siteId);
-
-		if (existingSiteTestEntity != null) {
-			throw new DuplicateExternalReferenceCodeException();
-		}
-
-		siteTestEntity.setId(Long.valueOf(_siteTestEntities.size()));
-		siteTestEntity.setSiteId(siteId);
-
-		_siteTestEntities.add(siteTestEntity);
-
-		return siteTestEntity;
-	}
-
-	@Override
-	public SiteTestEntity doPutSiteSiteTestEntityByExternalReferenceCode(
-			String externalReferenceCode, Long siteId,
-			SiteTestEntity siteTestEntity)
-		throws Exception {
-
-		siteTestEntity.setExternalReferenceCode(externalReferenceCode);
-
-		SiteTestEntity existingSiteTestEntity =
-			_fetchSiteSiteTestEntityByExternalReferenceCode(
-				externalReferenceCode, siteId);
-
-		if (existingSiteTestEntity == null) {
-			return postSiteSiteTestEntity(siteId, siteTestEntity);
-		}
-
-		return putSiteTestEntity(
-			existingSiteTestEntity.getId(), siteTestEntity);
-	}
-
-	@Override
-	public SiteTestEntity doPutSiteTestEntity(
-			Long siteTestEntityId, SiteTestEntity siteTestEntity)
-		throws Exception {
-
-		SiteTestEntity existingSiteTestEntity =
-			_fetchSiteSiteTestEntityByExternalReferenceCode(
-				siteTestEntity.getExternalReferenceCode(), siteTestEntityId);
-
-		if ((existingSiteTestEntity != null) &&
-			!Objects.equals(existingSiteTestEntity.getId(), siteTestEntityId)) {
-
-			throw new DuplicateExternalReferenceCodeException();
-		}
-
-		existingSiteTestEntity = _fetchSiteTestEntity(siteTestEntityId);
-
-		if (existingSiteTestEntity == null) {
-			throw new NoSuchModelException();
-		}
-
-		siteTestEntity.setExternalReferenceCode(
-			siteTestEntity.getExternalReferenceCode());
-		siteTestEntity.setId(siteTestEntityId);
-		siteTestEntity.setSiteId(existingSiteTestEntity.getSiteId());
-
-		_siteTestEntities.set(
-			Math.toIntExact(siteTestEntityId), siteTestEntity);
-
-		return siteTestEntity;
+		_siteTestEntities.remove(siteTestEntity);
 	}
 
 	@Override
@@ -204,6 +94,139 @@ public class SiteTestEntityResourceImpl extends BaseSiteTestEntityResourceImpl {
 		_permissions.put(siteTestEntity.getId(), permissions);
 
 		return getSiteTestEntityPermissionsPage(siteTestEntityId, null);
+	}
+
+	@Override
+	protected Page<SiteTestEntity> doGetSiteSiteTestEntitiesPage(Long siteId)
+		throws Exception {
+
+		List<SiteTestEntity> siteTestEntities = new ArrayList<>();
+
+		for (SiteTestEntity siteTestEntity : _siteTestEntities) {
+			if (Objects.equals(siteId, siteTestEntity.getSiteId())) {
+				siteTestEntities.add(siteTestEntity);
+			}
+		}
+
+		return Page.of(
+			HashMapBuilder.<String, Map<String, String>>put(
+				"createBatch",
+				HashMapBuilder.put(
+					"href",
+					"http://localhost:8080/o/test/v1.0/sites/" + siteId +
+						"/site-test-entities/batch"
+				).put(
+					"method", "POST"
+				).build()
+			).build(),
+			siteTestEntities);
+	}
+
+	@Override
+	protected SiteTestEntity doGetSiteSiteTestEntityByExternalReferenceCode(
+			Long siteId, String externalReferenceCode)
+		throws Exception {
+
+		SiteTestEntity siteTestEntity =
+			_fetchSiteSiteTestEntityByExternalReferenceCode(
+				externalReferenceCode, siteId);
+
+		if (siteTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		return siteTestEntity;
+	}
+
+	@Override
+	protected SiteTestEntity doGetSiteTestEntity(Long siteTestEntityId)
+		throws Exception {
+
+		SiteTestEntity siteTestEntity = _fetchSiteTestEntity(siteTestEntityId);
+
+		if (siteTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		return siteTestEntity;
+	}
+
+	@Override
+	protected SiteTestEntity doPostSiteSiteTestEntity(
+			Long siteId, SiteTestEntity siteTestEntity)
+		throws Exception {
+
+		if (Validator.isNull(siteTestEntity.getExternalReferenceCode())) {
+			siteTestEntity.setExternalReferenceCode(StringUtil.randomString());
+		}
+		else {
+			SiteTestEntity existingSiteTestEntity =
+				_fetchSiteSiteTestEntityByExternalReferenceCode(
+					siteTestEntity.getExternalReferenceCode(), siteId);
+
+			if (existingSiteTestEntity != null) {
+				throw new DuplicateExternalReferenceCodeException();
+			}
+		}
+
+		siteTestEntity.setId(Long.valueOf(_siteTestEntities.size()));
+		siteTestEntity.setSiteId(siteId);
+
+		_siteTestEntities.add(siteTestEntity);
+
+		return siteTestEntity;
+	}
+
+	@Override
+	protected SiteTestEntity doPutSiteSiteTestEntityByExternalReferenceCode(
+			Long siteId, String externalReferenceCode,
+			SiteTestEntity siteTestEntity)
+		throws Exception {
+
+		siteTestEntity.setExternalReferenceCode(externalReferenceCode);
+
+		SiteTestEntity existingSiteTestEntity =
+			_fetchSiteSiteTestEntityByExternalReferenceCode(
+				externalReferenceCode, siteId);
+
+		if (existingSiteTestEntity == null) {
+			return postSiteSiteTestEntity(siteId, siteTestEntity);
+		}
+
+		return putSiteTestEntity(
+			existingSiteTestEntity.getId(), siteTestEntity);
+	}
+
+	@Override
+	protected SiteTestEntity doPutSiteTestEntity(
+			Long siteTestEntityId, SiteTestEntity siteTestEntity)
+		throws Exception {
+
+		SiteTestEntity existingSiteTestEntity =
+			_fetchSiteSiteTestEntityByExternalReferenceCode(
+				siteTestEntity.getExternalReferenceCode(), siteTestEntityId);
+
+		if ((existingSiteTestEntity != null) &&
+			!Objects.equals(existingSiteTestEntity.getId(), siteTestEntityId)) {
+
+			throw new DuplicateExternalReferenceCodeException();
+		}
+
+		existingSiteTestEntity = _fetchSiteTestEntity(siteTestEntityId);
+
+		if (existingSiteTestEntity == null) {
+			throw new NoSuchModelException();
+		}
+
+		siteTestEntity.setExternalReferenceCode(
+			siteTestEntity.getExternalReferenceCode());
+		siteTestEntity.setId(siteTestEntityId);
+		siteTestEntity.setSiteId(existingSiteTestEntity.getSiteId());
+
+		_siteTestEntities.set(
+			Math.toIntExact(siteTestEntityId), siteTestEntity);
+
+		return siteTestEntity;
 	}
 
 	private SiteTestEntity _fetchSiteSiteTestEntityByExternalReferenceCode(

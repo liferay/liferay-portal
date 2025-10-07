@@ -1,0 +1,10 @@
+{
+	"name": "Customer Portal Updates",
+	"name_i18n": {
+		"en_US": "Customer Portal Updates",
+		"es-ES": "Actualizaciones del Portal del cliente",
+		"ja-JP": "カスタマーポータルのアップデート",
+		"pt-BR": "Atualizações do Portal do Cliente"
+	},
+	"viewableBy": "Anyone"
+}

@@ -9,6 +9,7 @@ dependencies {
 	compileInclude group: "org.apache.commons", name: "commons-collections4", version: "4.4"
 	compileInclude group: "org.apache.commons", name: "commons-compress", version: "1.26.0"
 	compileInclude group: "org.apache.commons", name: "commons-csv", version: "1.9.0"
+	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileInclude group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 	compileInclude group: "org.tukaani", name: "xz", version: "1.9"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"

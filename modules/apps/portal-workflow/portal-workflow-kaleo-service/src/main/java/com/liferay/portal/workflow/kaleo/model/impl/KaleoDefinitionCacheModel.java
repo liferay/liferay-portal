@@ -73,7 +73,7 @@ public class KaleoDefinitionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -111,6 +111,8 @@ public class KaleoDefinitionCacheModel
 		sb.append(version);
 		sb.append(", active=");
 		sb.append(active);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -200,6 +202,7 @@ public class KaleoDefinitionCacheModel
 
 		kaleoDefinitionImpl.setVersion(version);
 		kaleoDefinitionImpl.setActive(active);
+		kaleoDefinitionImpl.setStatus(status);
 
 		kaleoDefinitionImpl.resetOriginalValues();
 
@@ -243,6 +246,8 @@ public class KaleoDefinitionCacheModel
 		version = objectInput.readInt();
 
 		active = objectInput.readBoolean();
+
+		status = objectInput.readInt();
 
 		contentAsXML = (String)objectInput.readObject();
 	}
@@ -324,6 +329,8 @@ public class KaleoDefinitionCacheModel
 
 		objectOutput.writeBoolean(active);
 
+		objectOutput.writeInt(status);
+
 		objectOutput.writeObject(contentAsXML);
 	}
 
@@ -345,6 +352,7 @@ public class KaleoDefinitionCacheModel
 	public String scope;
 	public int version;
 	public boolean active;
+	public int status;
 	public volatile String contentAsXML;
 
 	private static final MethodHandle _contentAsXMLMethodHandle;

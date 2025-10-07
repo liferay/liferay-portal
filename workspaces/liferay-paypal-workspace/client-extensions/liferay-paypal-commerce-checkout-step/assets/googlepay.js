@@ -46,7 +46,7 @@ async function getGooglePaymentDataRequest() {
 
 async function getGooglePaymentsClient() {
 	const payPalOAuth = Liferay.OAuth2Client.FromUserAgentApplication(
-		'liferay-paypal-commerce-payment-integration-oauth-application-user-agent'
+		'liferay-paypal-commerce-payment-integration-oaua'
 	);
 
 	const clientId = document.getElementById('payment-client-id').value;
@@ -69,7 +69,7 @@ async function getGooglePaymentsClient() {
 
 async function getGoogleTransactionInfo(countryCode) {
 	const payPalOAuth = Liferay.OAuth2Client.FromUserAgentApplication(
-		'liferay-paypal-commerce-payment-integration-oauth-application-user-agent'
+		'liferay-paypal-commerce-payment-integration-oaua'
 	);
 
 	const orderId = document.getElementById('payment-order-id').value;
@@ -125,7 +125,7 @@ function onPaymentAuthorized(paymentData) {
 async function processPayment(paymentData) {
 	try {
 		const payPalOAuth = Liferay.OAuth2Client.FromUserAgentApplication(
-			'liferay-paypal-commerce-payment-integration-oauth-application-user-agent'
+			'liferay-paypal-commerce-payment-integration-oaua'
 		);
 
 		const orderId = document.getElementById('payment-order-id').value;

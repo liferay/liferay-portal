@@ -37,3 +37,13 @@
 # Bundle Version 4.1.3
 #
 1afd4fbe88db1a9dbc8a69394de1d7675fd6aa48^..0968fbfbb3642da37dc0dea2aab474ed818daf5a=LPD-45054
+
+#
+# Bundle Version 4.2.1
+#
+0968fbfbb3642da37dc0dea2aab474ed818daf5a^..29879e40eba2952011fa7cfe0073a2625a263d88=LPD-59251
+
+#
+# Bundle Version 4.2.2
+#
+29879e40eba2952011fa7cfe0073a2625a263d88^..eb53e11e2b16b2a910e5b0b33719b6c30cfd3fde=LPD-65248

@@ -347,12 +347,12 @@ public class PatcherProjectVersionLocalServiceUtil {
 	public static PatcherProjectVersion updatePatcherProjectVersion(
 			long patcherProjectVersionId, long patcherProductVersionId,
 			boolean combinedBranch, String committish, String fixedIssues,
-			boolean hide, String name, String repositoryName)
+			boolean hide, String repositoryName)
 		throws PortalException {
 
 		return getService().updatePatcherProjectVersion(
 			patcherProjectVersionId, patcherProductVersionId, combinedBranch,
-			committish, fixedIssues, hide, name, repositoryName);
+			committish, fixedIssues, hide, repositoryName);
 	}
 
 	/**

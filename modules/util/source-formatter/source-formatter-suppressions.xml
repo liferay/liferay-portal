@@ -7,11 +7,11 @@
 	</checkstyle>
 	<source-check>
 		<suppress checks="CDNCheck" files="src/main/java/com/liferay/source/formatter/check/CDNCheck\.java" />
+		<suppress checks="DeprecatedClassesCheck" files="src/main/java/com/liferay/source/formatter/check/DeprecatedClassesCheck\.java" />
 		<suppress checks="GoogleFontsCheck" files="src/main/java/com/liferay/source/formatter/check/GoogleFontsCheck\.java" />
 		<suppress checks="GradleMissingDependenciesForUpgradeJava21Check" files="build\.gradle" />
 		<suppress checks="IllegalImportsCheck" files="src/main/java/com/liferay/source/formatter/check/IllegalImportsCheck\.java" />
 		<suppress checks="IllegalImportsCheck" files="src/test/java/com/liferay/source/formatter/processor/JavaSourceProcessorTest\.java" />
-		<suppress checks="JavaDeprecatedKernelClassesCheck" files="src/main/java/com/liferay/source/formatter/check/JavaDeprecatedKernelClassesCheck\.java" />
 		<suppress checks="JavaHibernateSQLCheck" files="src/main/java/com/liferay/source/formatter/check/JavaHibernateSQLCheck\.java" />
 		<suppress checks="JavaInterfaceCheck" files="src/main/java/com/liferay/source/formatter/check/JavaInterfaceCheck\.java" />
 		<suppress checks="JavaModuleIllegalImportsCheck" files="src/main/java/com/liferay/source/formatter/check/JavaModuleIllegalImportsCheck\.java" />

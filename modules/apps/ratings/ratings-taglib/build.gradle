@@ -9,6 +9,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
+	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:trash:trash-api")
 	compileOnly project(":core:petra:petra-string")
 }

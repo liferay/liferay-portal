@@ -16,9 +16,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.users.admin.constants.UserScreenNavigationEntryConstants;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 import com.liferay.users.admin.management.toolbar.FilterContributor;
@@ -161,12 +162,17 @@ public class ViewFlatUsersDisplayContextFactory {
 
 		if (filterContributors != null) {
 			for (FilterContributor filterContributor : filterContributors) {
+				String parameterValue = ParamUtil.getString(
+					httpServletRequest, filterContributor.getParameter(),
+					filterContributor.getDefaultValue());
+
 				params.putAll(
-					filterContributor.getSearchParameters(
-						ParamUtil.getString(
-							httpServletRequest,
-							filterContributor.getParameter(),
-							filterContributor.getDefaultValue())));
+					filterContributor.getSearchParameters(parameterValue));
+
+				if (Validator.isNotNull(parameterValue)) {
+					portletURL.setParameter(
+						filterContributor.getParameter(), parameterValue);
+				}
 			}
 		}
 

@@ -19,7 +19,7 @@
 					"deletionType": "prevent",
 					"externalReferenceCode": "L_ACCOUNT_TO_L_COMMERCE_RETURN",
 					"label": {
-						"en_US": "Account To Commerce Returns"
+						"en_US": "Account to Commerce Returns"
 					},
 					"name": "accountToCommerceReturns",
 					"objectDefinitionExternalReferenceCode1": "L_ACCOUNT",

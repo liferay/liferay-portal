@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -57,10 +58,10 @@ public class DateRangeFactoryUtil {
 		String from, String to, TimeZone timeZone) {
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyyMMddHHmmss", TimeZoneUtil.GMT);
+			"yyyyMMddHHmmss", LocaleUtil.US, TimeZoneUtil.GMT);
 		DateFormat userTimeZoneDateFormat =
 			DateFormatFactoryUtil.getSimpleDateFormat(
-				"yyyyMMddHHmmss", timeZone);
+				"yyyyMMddHHmmss", LocaleUtil.US, timeZone);
 
 		String normalizedFrom = _normalizeRangeBoundary(from, "000000");
 		String normalizedTo = _normalizeRangeBoundary(to, "235959");
@@ -137,7 +138,7 @@ public class DateRangeFactoryUtil {
 		pastYear.set(Calendar.YEAR, now.get(Calendar.YEAR) - 1);
 
 		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyyMMddHHmmss");
+			"yyyyMMddHHmmss", LocaleUtil.US);
 
 		return StringUtil.replace(
 			rangeString, _ALIASES,

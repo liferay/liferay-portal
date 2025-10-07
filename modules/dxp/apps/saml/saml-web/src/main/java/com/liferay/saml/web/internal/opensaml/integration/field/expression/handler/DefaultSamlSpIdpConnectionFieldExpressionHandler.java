@@ -118,6 +118,7 @@ public class DefaultSamlSpIdpConnectionFieldExpressionHandler
 
 		if (newSamlSpIdpConnection.getSamlSpIdpConnectionId() <= 0) {
 			_samlSpIdpConnectionLocalService.addSamlSpIdpConnection(
+				newSamlSpIdpConnection.getSamlIdpEntityId(),
 				newSamlSpIdpConnection.isAssertionSignatureRequired(),
 				newSamlSpIdpConnection.getClockSkew(),
 				newSamlSpIdpConnection.isEnabled(),
@@ -126,7 +127,6 @@ public class DefaultSamlSpIdpConnectionFieldExpressionHandler
 				newSamlSpIdpConnection.getMetadataUrl(), metadataXmlInputStream,
 				newSamlSpIdpConnection.getName(),
 				newSamlSpIdpConnection.getNameIdFormat(),
-				newSamlSpIdpConnection.getSamlIdpEntityId(),
 				newSamlSpIdpConnection.isSignAuthnRequest(),
 				newSamlSpIdpConnection.isUnknownUsersAreStrangers(),
 				newSamlSpIdpConnection.getUserAttributeMappings(),
@@ -136,6 +136,7 @@ public class DefaultSamlSpIdpConnectionFieldExpressionHandler
 		else {
 			_samlSpIdpConnectionLocalService.updateSamlSpIdpConnection(
 				newSamlSpIdpConnection.getSamlSpIdpConnectionId(),
+				newSamlSpIdpConnection.getSamlIdpEntityId(),
 				newSamlSpIdpConnection.isAssertionSignatureRequired(),
 				newSamlSpIdpConnection.getClockSkew(),
 				newSamlSpIdpConnection.isEnabled(),
@@ -144,7 +145,6 @@ public class DefaultSamlSpIdpConnectionFieldExpressionHandler
 				newSamlSpIdpConnection.getMetadataUrl(), metadataXmlInputStream,
 				newSamlSpIdpConnection.getName(),
 				newSamlSpIdpConnection.getNameIdFormat(),
-				newSamlSpIdpConnection.getSamlIdpEntityId(),
 				newSamlSpIdpConnection.isSignAuthnRequest(),
 				newSamlSpIdpConnection.isUnknownUsersAreStrangers(),
 				newSamlSpIdpConnection.getUserAttributeMappings(),

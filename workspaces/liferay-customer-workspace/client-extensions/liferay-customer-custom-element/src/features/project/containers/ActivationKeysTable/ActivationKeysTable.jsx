@@ -183,7 +183,8 @@ const ActivationKeysTable = ({
 			download: (
 				<ButtonWithIcon
 					aria-label={i18n.translate('download-key')}
-					displayType="null"
+					className="text-dark"
+    				displayType="unstyled"
 					onClick={() =>
 						getActivationKeyDownload(
 							oAuthToken,

@@ -241,15 +241,6 @@ definition {
 	}
 
 	@priority = 5
-	test ViewResultRankingsEntryArchive7310 {
-		property data.archive.type = "data-archive-search-result-rankings";
-		property portal.version = "7.3.10";
-		property test.run.environment = "EE";
-
-		ValidateSearchUpgrade.viewResultRankingsEntry();
-	}
-
-	@priority = 5
 	test ViewResultRankingsEntryArchive7413 {
 		property data.archive.type = "data-archive-search-result-rankings";
 		property portal.version = "7.4.13";
@@ -673,15 +664,6 @@ definition {
 				key_element = "Descrição em Português",
 				locator1 = "Blueprints#BLUEPRINTS_ADDED_ELEMENT");
 		}
-	}
-
-	@priority = 5
-	test ViewSynonymsEntryArchive7310 {
-		property data.archive.type = "data-archive-search-synonyms";
-		property portal.version = "7.3.10";
-		property test.run.environment = "EE";
-
-		ValidateSearchUpgrade.viewSynonymsEntry();
 	}
 
 	@priority = 5

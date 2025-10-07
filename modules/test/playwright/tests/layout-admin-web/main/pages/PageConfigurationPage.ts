@@ -37,7 +37,7 @@ export class PageConfigurationPage {
 		this.customCanonicalURLSettings = page.getByLabel('Canonical URL', {
 			exact: true,
 		});
-		this.name = page.getByLabel('Name');
+		this.name = page.getByLabel('General').getByLabel('Name');
 		this.pagesAdminPage = new PagesAdminPage(page);
 		this.saveButton = page.getByRole('button', {exact: true, name: 'Save'});
 		this.url = page.getByLabel('URL').first();

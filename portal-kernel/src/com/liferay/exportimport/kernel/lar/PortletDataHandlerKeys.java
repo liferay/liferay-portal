@@ -31,6 +31,8 @@ public class PortletDataHandlerKeys {
 
 	public static final String DELETIONS = "DELETIONS";
 
+	public static final String FAVICON = "FAVICON";
+
 	public static final String IGNORE_LAST_PUBLISH_DATE =
 		"IGNORE_LAST_PUBLISH_DATE";
 

@@ -68,7 +68,7 @@ public class CPDefinitionLocalizationCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -82,6 +82,8 @@ public class CPDefinitionLocalizationCacheModel
 		sb.append(CPDefinitionId);
 		sb.append(", languageId=");
 		sb.append(languageId);
+		sb.append(", CProductId=");
+		sb.append(CProductId);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", shortDescription=");
@@ -117,6 +119,8 @@ public class CPDefinitionLocalizationCacheModel
 		else {
 			cpDefinitionLocalizationImpl.setLanguageId(languageId);
 		}
+
+		cpDefinitionLocalizationImpl.setCProductId(CProductId);
 
 		if (name == null) {
 			cpDefinitionLocalizationImpl.setName("");
@@ -179,6 +183,8 @@ public class CPDefinitionLocalizationCacheModel
 
 		CPDefinitionId = objectInput.readLong();
 		languageId = objectInput.readUTF();
+
+		CProductId = objectInput.readLong();
 		name = objectInput.readUTF();
 		shortDescription = objectInput.readUTF();
 		description = (String)objectInput.readObject();
@@ -205,6 +211,8 @@ public class CPDefinitionLocalizationCacheModel
 		else {
 			objectOutput.writeUTF(languageId);
 		}
+
+		objectOutput.writeLong(CProductId);
 
 		if (name == null) {
 			objectOutput.writeUTF("");
@@ -255,6 +263,7 @@ public class CPDefinitionLocalizationCacheModel
 	public long companyId;
 	public long CPDefinitionId;
 	public String languageId;
+	public long CProductId;
 	public String name;
 	public String shortDescription;
 	public String description;

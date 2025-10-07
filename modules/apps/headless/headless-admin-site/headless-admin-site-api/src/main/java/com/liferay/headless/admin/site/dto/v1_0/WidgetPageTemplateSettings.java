@@ -98,35 +98,33 @@ public class WidgetPageTemplateSettings
 	private Supplier<String> _layoutTemplateIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The widget page template's site navigation menu settings."
+		description = "The widget page template's site navigation settings."
 	)
 	@Valid
-	public NavigationMenuSettings getNavigationMenuSettings() {
-		if (_navigationMenuSettingsSupplier != null) {
-			navigationMenuSettings = _navigationMenuSettingsSupplier.get();
+	public NavigationSettings getNavigationSettings() {
+		if (_navigationSettingsSupplier != null) {
+			navigationSettings = _navigationSettingsSupplier.get();
 
-			_navigationMenuSettingsSupplier = null;
+			_navigationSettingsSupplier = null;
 		}
 
-		return navigationMenuSettings;
+		return navigationSettings;
 	}
 
-	public void setNavigationMenuSettings(
-		NavigationMenuSettings navigationMenuSettings) {
+	public void setNavigationSettings(NavigationSettings navigationSettings) {
+		this.navigationSettings = navigationSettings;
 
-		this.navigationMenuSettings = navigationMenuSettings;
-
-		_navigationMenuSettingsSupplier = null;
+		_navigationSettingsSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setNavigationMenuSettings(
-		UnsafeSupplier<NavigationMenuSettings, Exception>
-			navigationMenuSettingsUnsafeSupplier) {
+	public void setNavigationSettings(
+		UnsafeSupplier<NavigationSettings, Exception>
+			navigationSettingsUnsafeSupplier) {
 
-		_navigationMenuSettingsSupplier = () -> {
+		_navigationSettingsSupplier = () -> {
 			try {
-				return navigationMenuSettingsUnsafeSupplier.get();
+				return navigationSettingsUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -138,13 +136,13 @@ public class WidgetPageTemplateSettings
 	}
 
 	@GraphQLField(
-		description = "The widget page template's site navigation menu settings."
+		description = "The widget page template's site navigation settings."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected NavigationMenuSettings navigationMenuSettings;
+	protected NavigationSettings navigationSettings;
 
 	@JsonIgnore
-	private Supplier<NavigationMenuSettings> _navigationMenuSettingsSupplier;
+	private Supplier<NavigationSettings> _navigationSettingsSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -191,17 +189,16 @@ public class WidgetPageTemplateSettings
 			sb.append("\"");
 		}
 
-		NavigationMenuSettings navigationMenuSettings =
-			getNavigationMenuSettings();
+		NavigationSettings navigationSettings = getNavigationSettings();
 
-		if (navigationMenuSettings != null) {
+		if (navigationSettings != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"navigationMenuSettings\": ");
+			sb.append("\"navigationSettings\": ");
 
-			sb.append(String.valueOf(navigationMenuSettings));
+			sb.append(String.valueOf(navigationSettings));
 		}
 
 		Type type = getType();

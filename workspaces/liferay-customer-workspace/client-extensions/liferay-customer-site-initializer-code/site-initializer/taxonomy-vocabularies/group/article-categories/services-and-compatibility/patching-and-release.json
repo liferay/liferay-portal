@@ -1,0 +1,16 @@
+{
+	"name": "Patching and Release",
+	"name_i18n": {
+		"en_US": "Patching and Release",
+		"es-ES": "Aplicación de parches y versiones",
+		"ja-JP": "パッチとリリース",
+		"pt-BR": "Aplicação de Patches e Versões"
+	},
+	"taxonomyCategoryProperties": [
+		{
+			"key": "visible",
+			"value": "false"
+		}
+	],
+	"viewableBy": "Anyone"
+}

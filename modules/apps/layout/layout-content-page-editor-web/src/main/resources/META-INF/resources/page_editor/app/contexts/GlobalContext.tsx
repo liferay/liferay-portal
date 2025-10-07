@@ -85,9 +85,9 @@ export function GlobalContextFrame({
 
 			const element =
 				iframeElement.contentDocument &&
-				(iframeElement.contentDocument.getElementById('content') ||
+				(iframeElement.contentDocument.getElementById('main-content') ||
 					iframeElement.contentDocument.getElementById(
-						'main-content'
+						'master-layout-wrapper'
 					));
 
 			if (element) {

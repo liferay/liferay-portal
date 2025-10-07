@@ -29,7 +29,8 @@ public interface GraphQLDTOContributor<D, R> {
 	public R createDTO(D dto, DTOConverterContext dtoConverterContext)
 		throws Exception;
 
-	public boolean deleteDTO(long id) throws Exception;
+	public boolean deleteDTO(DTOConverterContext dtoConverterContext, long id)
+		throws Exception;
 
 	public String getApplicationName();
 

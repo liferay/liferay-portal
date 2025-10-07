@@ -184,7 +184,7 @@ public class MailingListMessageListener extends BaseMessageListener {
 			MailingListRequest mailingListRequest, Message mailMessage)
 		throws Exception {
 
-		if (MBMailUtil.hasMailIdHeader(mailMessage)) {
+		if (MBMailUtil.hasMailIdHeader(_mailService, mailMessage)) {
 			return;
 		}
 

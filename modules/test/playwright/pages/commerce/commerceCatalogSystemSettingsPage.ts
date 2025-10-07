@@ -17,9 +17,9 @@ export class CommerceCatalogSystemSettingsPage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.editConfigurationSubmitButton = page.getByTestId(
-			'submitConfiguration'
-		);
+		this.editConfigurationSubmitButton = page
+			.getByRole('button', {name: 'Save'})
+			.or(page.getByRole('button', {name: 'Update'}));
 		this.enabledButton = page.getByLabel('enabled');
 		this.systemSettingsPage = new SystemSettingsPage(page);
 		this.uiElementsPage = new UIElementsPage(page);

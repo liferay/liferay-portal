@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.dependencies.upgrade;
 
+import com.liferay.portlet.display.template.constants.PortletDisplayTemplateConstants;
+
 /**
  * @author Kyle Miho
  */

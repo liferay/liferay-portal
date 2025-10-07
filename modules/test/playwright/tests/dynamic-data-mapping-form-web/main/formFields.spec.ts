@@ -22,7 +22,7 @@ test.afterEach(async ({formsPage}) => {
 });
 
 test.describe('Manage fields through Form Preview page', () => {
-	test('assert that it is possible to delete the predefined value of a text field', async ({
+	test('Assert that it is possible to delete the predefined value of a text field', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 	}) => {
@@ -38,15 +38,7 @@ test.describe('Manage fields through Form Preview page', () => {
 			'predefined value for text field.'
 		);
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		await newTabPage.getByLabel('Text').click();
 
@@ -64,84 +56,120 @@ test.describe('Manage fields through Form Preview page', () => {
 		await newTabPage.close();
 	});
 
-	test('LPD-12824 HTML autocomplete attribute is rendered and has the configured value limited to 20 non-special characters in Date, Numeric and Text field types', async ({
+	test('Duplicating field with evaluation rules has correct behavior', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
+		page,
 	}) => {
-		const testData: {
-			expectedValue: string;
-			fieldTitle: FormFieldTypeTitle;
-			inputValue: string;
-		}[] = [
-			{
-				expectedValue: 'bday',
-				fieldTitle: 'Date',
-				inputValue: '+)(*&^%$#@ bday$__%  ',
-			},
-			{
-				expectedValue: 'one-time-code',
-				fieldTitle: 'Numeric',
-				inputValue: '****[][one-time-code&&#()',
-			},
-			{
-				expectedValue: 'transaction-currency',
-				fieldTitle: 'Text',
-				inputValue: 'transaction-currencyextracharacters',
-			},
-		];
-
 		await formBuilderPage.goToNew();
-
-		await expect(formBuilderPage.newFormHeading).toBeVisible();
 
 		await formBuilderPage.fillFormTitle('Form' + getRandomInt());
 
-		for (const data of testData) {
-			await formBuilderSidePanelPage.addFieldByDoubleClick(
-				data.fieldTitle
-			);
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
 
-			await formBuilderSidePanelPage.clickAdvancedTab();
+		await formBuilderSidePanelPage.label.fill('Text Field');
 
-			await expect(
-				formBuilderSidePanelPage.htmlAutocompleteAttributeField
-			).toBeVisible();
+		await formBuilderSidePanelPage.requiredFieldToggleSwitch.click();
 
-			await formBuilderSidePanelPage.htmlAutocompleteAttributeField.fill(
-				data.inputValue
-			);
+		await formBuilderSidePanelPage.clickAdvancedTab();
 
-			await formBuilderSidePanelPage.clickBackButton();
-		}
+		await formBuilderSidePanelPage.repeatableFieldToggleSwitch.click();
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
+		await page.getByLabel('Add Duplicate Field').waitFor();
 
-		await formBuilderPage.previewButton.click();
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
-		const newTabPage = await newTabPagePromise;
+		await newTabPage
+			.getByRole('textbox')
+			.and(newTabPage.getByLabel('Text Field', {exact: true}))
+			.click();
 
-		await newTabPage.waitForLoadState('domcontentloaded');
+		await newTabPage
+			.getByRole('button', {
+				name: 'Add Duplicate Field Text Field',
+			})
+			.click();
 
-		for (const data of testData) {
-			if (data.fieldTitle === 'Date') {
-				await expect(
-					newTabPage.getByPlaceholder('__/__/____')
-				).toHaveAttribute('autocomplete', data.expectedValue);
+		await expect(
+			newTabPage.getByText('This field is required.')
+		).toBeVisible();
 
-				continue;
-			}
-
-			await expect(
-				newTabPage.getByLabel(data.fieldTitle)
-			).toHaveAttribute('autocomplete', data.expectedValue);
-		}
-
-		await newTabPage.close();
+		await expect(
+			newTabPage.getByLabel('Text Field', {exact: true})
+		).toHaveCount(2);
 	});
 
-	test('make sure the aria-labelledby reference is present in the captcha form view', async ({
+	test(
+		'HTML autocomplete attribute is rendered and has the configured value limited to 20 non-special characters in Date, Numeric and Text field types',
+		{tag: ['@LPD-12824']},
+		async ({formBuilderPage, formBuilderSidePanelPage}) => {
+			const testData: {
+				expectedValue: string;
+				fieldTitle: FormFieldTypeTitle;
+				inputValue: string;
+			}[] = [
+				{
+					expectedValue: 'bday',
+					fieldTitle: 'Date',
+					inputValue: '+)(*&^%$#@ bday$__%  ',
+				},
+				{
+					expectedValue: 'one-time-code',
+					fieldTitle: 'Numeric',
+					inputValue: '****[][one-time-code&&#()',
+				},
+				{
+					expectedValue: 'transaction-currency',
+					fieldTitle: 'Text',
+					inputValue: 'transaction-currencyextracharacters',
+				},
+			];
+
+			await formBuilderPage.goToNew();
+
+			await expect(formBuilderPage.newFormHeading).toBeVisible();
+
+			await formBuilderPage.fillFormTitle('Form' + getRandomInt());
+
+			for (const data of testData) {
+				await formBuilderSidePanelPage.addFieldByDoubleClick(
+					data.fieldTitle
+				);
+
+				await formBuilderSidePanelPage.clickAdvancedTab();
+
+				await expect(
+					formBuilderSidePanelPage.htmlAutocompleteAttributeField
+				).toBeVisible();
+
+				await formBuilderSidePanelPage.htmlAutocompleteAttributeField.fill(
+					data.inputValue
+				);
+
+				await formBuilderSidePanelPage.clickBackButton();
+			}
+
+			const newTabPage = await formBuilderPage.openPreviewForm();
+
+			for (const data of testData) {
+				if (data.fieldTitle === 'Date') {
+					await expect(
+						newTabPage.getByPlaceholder('__/__/____')
+					).toHaveAttribute('autocomplete', data.expectedValue);
+
+					continue;
+				}
+
+				await expect(
+					newTabPage.getByLabel(data.fieldTitle)
+				).toHaveAttribute('autocomplete', data.expectedValue);
+			}
+
+			await newTabPage.close();
+		}
+	);
+
+	test('Make sure the aria-labelledby reference is present in the captcha form view', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 	}) => {
@@ -157,15 +185,7 @@ test.describe('Manage fields through Form Preview page', () => {
 
 		await formBuilderPage.formSettingsDoneButton.click();
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		const captchaContainer = newTabPage.locator(
 			"[data-field-reference='_CAPTCHA_']"
@@ -187,7 +207,7 @@ test.describe('Manage fields through Form Preview page', () => {
 		await newTabPage.close();
 	});
 
-	test('verify boolean field aria-labelledby is only created when there is corresponding label rendered', async ({
+	test('Verify boolean field aria-labelledby is only created when there is corresponding label rendered', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 	}) => {
@@ -209,15 +229,7 @@ test.describe('Manage fields through Form Preview page', () => {
 
 		await formBuilderSidePanelPage.backButton.click();
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		const elementWithoutHelpText = newTabPage
 			.locator('.form-group')
@@ -254,7 +266,7 @@ test.describe('Manage fields through Form Preview page', () => {
 
 		await formBuilderSidePanelPage.addFieldByDoubleClick('Upload');
 
-		await formBuilderSidePanelPage.allowGuestUsers.click();
+		await formBuilderSidePanelPage.allowGuestUsersToggle.click();
 
 		await formBuilderPage.clickPublishFormButton();
 
@@ -340,7 +352,7 @@ test.describe('Manage fields through Form Preview page', () => {
 });
 
 test.describe('Manage fields through Form Builder page', () => {
-	test('assert edition of a rich text field predefined value that contains a rule', async ({
+	test('Assert edition of a rich text field predefined value that contains a rule', async ({
 		formBuilderPage,
 		formsPage,
 		page,
@@ -388,7 +400,7 @@ test.describe('Manage fields through Form Builder page', () => {
 		).toBeVisible();
 	});
 
-	test('assert that a date field can be previewed', async ({
+	test('Assert that a date field can be previewed', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 	}) => {
@@ -396,15 +408,7 @@ test.describe('Manage fields through Form Builder page', () => {
 
 		await formBuilderSidePanelPage.addFieldByDoubleClick('Date');
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		await expect(
 			newTabPage.getByLabel('Date', {exact: true})
@@ -427,7 +431,7 @@ test.describe('Manage fields through Form Builder page', () => {
 		await expect(newTabPage.getByText(formattedDate)).toBeVisible();
 	});
 
-	test('assert that a fields group can be previewed', async ({
+	test('Assert that a fields group can be previewed', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 	}) => {
@@ -439,15 +443,7 @@ test.describe('Manage fields through Form Builder page', () => {
 
 		await formBuilderSidePanelPage.addFieldToFieldGroup('Numeric', 0);
 
-		const newTabPagePromise = new Promise<Page>((resolve) =>
-			formBuilderPage.page.once('popup', resolve)
-		);
-
-		await formBuilderPage.previewButton.click();
-
-		const newTabPage = await newTabPagePromise;
-
-		await newTabPage.waitForLoadState('domcontentloaded');
+		const newTabPage = await formBuilderPage.openPreviewForm();
 
 		await expect(
 			newTabPage.getByLabel('Fields Group', {exact: true})
@@ -462,7 +458,42 @@ test.describe('Manage fields through Form Builder page', () => {
 		).toBeVisible();
 	});
 
-	test('fields group can be translated and collapsed', async ({
+	test('Can move the last field of a child group into the parent group field', async ({
+		formBuilderPage,
+		formBuilderSidePanelPage,
+		page,
+	}) => {
+		await test.step('go to form builder and create structure with two levels of nesting and one field in each', async () => {
+			await formBuilderPage.goToNew();
+
+			await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
+
+			await formBuilderSidePanelPage.backButton.click();
+
+			await formBuilderSidePanelPage.addFieldToFieldGroup('Text', 0);
+
+			await formBuilderSidePanelPage.backButton.click();
+
+			await formBuilderSidePanelPage.addFieldToFieldGroup('Text', 2);
+
+			await page.getByLabel('Actions').nth(4).click();
+
+			await page.getByRole('menuitem', {name: 'Delete'}).click();
+		});
+
+		await test.step('drag field from child into the parent one to create new fieldGroup', async () => {
+			await page
+				.locator('.ddm-drag')
+				.nth(3)
+				.dragTo(page.locator('.ddm-drag').nth(1));
+		});
+
+		await expect(
+			page.getByLabel('Fields Group', {exact: true})
+		).toHaveCount(2);
+	});
+
+	test('Fields group can be translated and collapsed', async ({
 		formBuilderPage,
 		formBuilderSidePanelPage,
 		page,
@@ -533,13 +564,7 @@ test.describe('Manage fields through Form Builder page', () => {
 		});
 
 		await test.step('Go to the preview form tab', async () => {
-			const newTabPagePromise = new Promise<Page>((resolve) =>
-				formBuilderPage.page.once('popup', resolve)
-			);
-
-			await formBuilderPage.previewButton.click();
-
-			newTabPage = await newTabPagePromise;
+			newTabPage = await formBuilderPage.openPreviewForm();
 		});
 
 		await test.step('Assert that the values for the default language labels are visible', async () => {

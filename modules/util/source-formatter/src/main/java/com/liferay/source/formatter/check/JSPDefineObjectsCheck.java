@@ -101,7 +101,7 @@ public class JSPDefineObjectsCheck extends BaseFileCheck {
 	}
 
 	private String _formatDefineObjects(String content) {
-		Matcher matcher = _missingEmptyLineBetweenDefineOjbectsPattern.matcher(
+		Matcher matcher = _missingEmptyLineBetweenDefineObjectsPattern.matcher(
 			content);
 
 		if (matcher.find()) {
@@ -255,7 +255,7 @@ public class JSPDefineObjectsCheck extends BaseFileCheck {
 
 	private static final Pattern _defineObjectsPattern = Pattern.compile(
 		"\n\t*(<.*:defineObjects />)(\n|$)");
-	private static final Pattern _missingEmptyLineBetweenDefineOjbectsPattern =
+	private static final Pattern _missingEmptyLineBetweenDefineObjectsPattern =
 		Pattern.compile("<.*:defineObjects />\n<.*:defineObjects />(\n|$)");
 
 }

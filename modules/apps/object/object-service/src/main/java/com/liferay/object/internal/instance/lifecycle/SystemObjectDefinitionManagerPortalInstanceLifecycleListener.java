@@ -7,6 +7,7 @@ package com.liferay.object.internal.instance.lifecycle;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
@@ -45,6 +46,7 @@ import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
@@ -253,9 +255,9 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 
 			ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter =
 				new ObjectFieldInfoFieldConverter(
-					_listTypeEntryLocalService, _objectConfiguration,
-					_objectDefinitionLocalService, _objectFieldLocalService,
-					_objectFieldSettingLocalService,
+					_ddmExpressionFactory, _listTypeEntryLocalService,
+					_objectConfiguration, _objectDefinitionLocalService,
+					_objectFieldLocalService, _objectFieldSettingLocalService,
 					_objectRelationshipLocalService,
 					_objectScopeProviderRegistry, _objectStateFlowLocalService,
 					_objectStateLocalService, _portal,
@@ -310,7 +312,8 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 				).put(
 					"info.item.identifier",
 					new String[] {
-						"com.liferay.info.item.ClassPKInfoItemIdentifier"
+						"com.liferay.info.item.ClassPKInfoItemIdentifier",
+						"com.liferay.info.item.ERCInfoItemIdentifier"
 					}
 				).put(
 					"item.class.name", itemClassName
@@ -331,7 +334,8 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 				NotificationTermEvaluator.class,
 				new ObjectDefinitionNotificationTermEvaluator(
 					_listTypeLocalService, objectDefinition,
-					_objectDefinitionLocalService, _objectEntryLocalService,
+					_objectDefinitionLocalService,
+					_objectEntryFolderLocalService, _objectEntryLocalService,
 					_objectFieldLocalService, _objectRelationshipLocalService,
 					_userLocalService),
 				HashMapDictionaryBuilder.<String, Object>put(
@@ -394,6 +398,9 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 	private CompanyLocalService _companyLocalService;
 
 	@Reference
+	private DDMExpressionFactory _ddmExpressionFactory;
+
+	@Reference
 	private DisplayPageInfoItemFieldSetProvider
 		_displayPageInfoItemFieldSetProvider;
 
@@ -436,6 +443,9 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;

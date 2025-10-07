@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -54,7 +55,6 @@ import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -296,7 +296,7 @@ public abstract class BaseOrderItemResourceTestCase {
 							put("id", orderItem1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -331,7 +331,7 @@ public abstract class BaseOrderItemResourceTestCase {
 								put("id", orderItem2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -438,6 +438,102 @@ public abstract class BaseOrderItemResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteOrderItemByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		OrderItem orderItem1 =
+			testGraphQLDeleteOrderItemByExternalReferenceCode_addOrderItem();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteOrderItemByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										orderItem1.getExternalReferenceCode() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteOrderItemByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"orderItemByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" + orderItem1.getExternalReferenceCode() +
+									"\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminOrder_v1_0
+
+		OrderItem orderItem2 =
+			testGraphQLDeleteOrderItemByExternalReferenceCode_addOrderItem();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminOrder_v1_0",
+						new GraphQLField(
+							"deleteOrderItemByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											orderItem2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessCommerceAdminOrder_v1_0",
+				"Object/deleteOrderItemByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminOrder_v1_0",
+					new GraphQLField(
+						"orderItemByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										orderItem2.getExternalReferenceCode() +
+											"\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected OrderItem
+			testGraphQLDeleteOrderItemByExternalReferenceCode_addOrderItem()
+		throws Exception {
+
+		return testGraphQLOrderItem_addOrderItem();
 	}
 
 	@Test
@@ -1532,78 +1628,6 @@ public abstract class BaseOrderItemResourceTestCase {
 	}
 
 	@Test
-	public void testGraphQLGetOrderItemsPage() throws Exception {
-		GraphQLField graphQLField = new GraphQLField(
-			"orderItems",
-			new HashMap<String, Object>() {
-				{
-					put("page", 1);
-					put("pageSize", 10);
-				}
-			},
-			new GraphQLField("items", getGraphQLFields()),
-			new GraphQLField("page"), new GraphQLField("totalCount"));
-
-		// No namespace
-
-		JSONObject orderItemsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/orderItems");
-
-		long totalCount = orderItemsJSONObject.getLong("totalCount");
-
-		OrderItem orderItem1 = testGraphQLGetOrderItemsPage_addOrderItem();
-		OrderItem orderItem2 = testGraphQLGetOrderItemsPage_addOrderItem();
-
-		orderItemsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(graphQLField), "JSONObject/data",
-			"JSONObject/orderItems");
-
-		Assert.assertEquals(
-			totalCount + 2, orderItemsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			orderItem1,
-			Arrays.asList(
-				OrderItemSerDes.toDTOs(
-					orderItemsJSONObject.getString("items"))));
-		assertContains(
-			orderItem2,
-			Arrays.asList(
-				OrderItemSerDes.toDTOs(
-					orderItemsJSONObject.getString("items"))));
-
-		// Using the namespace headlessCommerceAdminOrder_v1_0
-
-		orderItemsJSONObject = JSONUtil.getValueAsJSONObject(
-			invokeGraphQLQuery(
-				new GraphQLField(
-					"headlessCommerceAdminOrder_v1_0", graphQLField)),
-			"JSONObject/data", "JSONObject/headlessCommerceAdminOrder_v1_0",
-			"JSONObject/orderItems");
-
-		Assert.assertEquals(
-			totalCount + 2, orderItemsJSONObject.getLong("totalCount"));
-
-		assertContains(
-			orderItem1,
-			Arrays.asList(
-				OrderItemSerDes.toDTOs(
-					orderItemsJSONObject.getString("items"))));
-		assertContains(
-			orderItem2,
-			Arrays.asList(
-				OrderItemSerDes.toDTOs(
-					orderItemsJSONObject.getString("items"))));
-	}
-
-	protected OrderItem testGraphQLGetOrderItemsPage_addOrderItem()
-		throws Exception {
-
-		return testGraphQLOrderItem_addOrderItem();
-	}
-
-	@Test
 	public void testPatchOrderItem() throws Exception {
 		OrderItem postOrderItem = testPatchOrderItem_addOrderItem();
 
@@ -2199,6 +2223,14 @@ public abstract class BaseOrderItemResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("productId", additionalAssertFieldName)) {
+				if (orderItem.getProductId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("promoPrice", additionalAssertFieldName)) {
 				if (orderItem.getPromoPrice() == null) {
 					valid = false;
@@ -2450,6 +2482,10 @@ public abstract class BaseOrderItemResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
@@ -2836,6 +2872,16 @@ public abstract class BaseOrderItemResourceTestCase {
 				if (!Objects.deepEquals(
 						orderItem1.getPrintedNote(),
 						orderItem2.getPrintedNote())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						orderItem1.getProductId(), orderItem2.getProductId())) {
 
 					return false;
 				}
@@ -3625,6 +3671,11 @@ public abstract class BaseOrderItemResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("productId")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("promoPrice")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -4109,6 +4160,7 @@ public abstract class BaseOrderItemResourceTestCase {
 				priceManuallyAdjusted = RandomTestUtil.randomBoolean();
 				printedNote = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				productId = RandomTestUtil.randomLong();
 				replacedSku = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				replacedSkuExternalReferenceCode = StringUtil.toLowerCase(

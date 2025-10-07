@@ -10,12 +10,12 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.NaturalOrderStringComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.check.comparator.PropertyNameComparator;
 import com.liferay.source.formatter.check.util.SourceUtil;
+import com.liferay.source.formatter.util.FileUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,12 +23,11 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,23 +55,10 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 			_checkTestPropertiesOrder(fileName, content);
 		}
 		else {
-			content = _generateProperties(absolutePath, content);
-
-			content = StringUtil.trimTrailing(content);
+			content = _sortProperties(content);
 		}
 
 		content = _formatSQLQuery(content);
-
-		while (true) {
-			String sortedTestCategories = _sortTestCategories(
-				content, StringPool.BLANK, StringPool.POUND + StringPool.POUND);
-
-			if (content.equals(sortedTestCategories)) {
-				break;
-			}
-
-			content = sortedTestCategories;
-		}
 
 		if (isAttributeValue(
 				_CHECK_TESTRAY_MAIN_COMPONENT_NAME_KEY, absolutePath)) {
@@ -132,77 +118,13 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 		return sb.toString();
 	}
 
-	private Map<String, Map<String, String>> _categorizeProperties(
-			String absolutePath, String content)
-		throws IOException {
-
-		Map<String, Map<String, String>> propertiesMap = new HashMap<>();
-
-		List<String> categorizedPropertiesPatterns = getAttributeValues(
-			_CATEGORIZED_PROPERTIES_PATTERNS_KEY, absolutePath);
-
-		Properties testProperties = new Properties();
-
-		testProperties.load(new StringReader(content));
-
-		Enumeration<String> enumeration =
-			(Enumeration<String>)testProperties.propertyNames();
-
-		outerLoop:
-		while (enumeration.hasMoreElements()) {
-			String key = enumeration.nextElement();
-
-			String value = testProperties.getProperty(key);
-
-			for (String categorizedPropertiesPattern :
-					categorizedPropertiesPatterns) {
-
-				String[] parts = StringUtil.split(
-					categorizedPropertiesPattern, StringPool.COLON);
-
-				if (parts.length != 2) {
-					continue;
-				}
-
-				if (key.matches(parts[1])) {
-					String categoryName = parts[0];
-
-					Map<String, String> properties = propertiesMap.get(
-						categoryName);
-
-					if (properties == null) {
-						properties = new HashMap<>();
-					}
-
-					properties.put(key, value);
-
-					propertiesMap.put(categoryName, properties);
-
-					continue outerLoop;
-				}
-			}
-
-			Map<String, String> properties = propertiesMap.get("Others");
-
-			if (properties == null) {
-				properties = new HashMap<>();
-			}
-
-			properties.put(key, value);
-
-			propertiesMap.put("Others", properties);
-		}
-
-		return propertiesMap;
-	}
-
 	private String _checkIndentation(String sqlClauses) throws IOException {
 		StringBundler sb = new StringBundler();
 
 		try (UnsyncBufferedReader unsyncBufferedReader =
 				new UnsyncBufferedReader(new UnsyncStringReader(sqlClauses))) {
 
-			int level = 2;
+			int level = 1;
 
 			String line = StringPool.BLANK;
 
@@ -440,7 +362,7 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 
 			sqlClauses = _checkIndentation(sqlClauses);
 
-			sqlClauses = _sort(sqlClauses);
+			sqlClauses = _sortSQLClauses(sqlClauses);
 
 			sqlClauses = "\\\n" + sqlClauses;
 
@@ -466,54 +388,26 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 		return content;
 	}
 
-	private String _generateProperties(String absolutePath, String content)
-		throws IOException {
-
-		Map<String, Map<String, String>> categorizedProperties =
-			_categorizeProperties(absolutePath, content);
-
-		if (MapUtil.isEmpty(categorizedProperties)) {
-			return content;
+	private synchronized String _getRootTestPropertiesContent() {
+		if (_rootTestPropertiesContent != null) {
+			return _rootTestPropertiesContent;
 		}
 
-		List<String> categoriesLevels = getAttributeValues(
-			_CATEGORIES_LEVELS_KEY, absolutePath);
+		File portalDir = getPortalDir();
 
-		if (ListUtil.isEmpty(categoriesLevels)) {
-			return content;
+		if (portalDir == null) {
+			return null;
 		}
 
-		String properties = "";
+		File file = new File(portalDir + "/test.properties");
 
-		for (String categoriesLevel : categoriesLevels) {
-			String mergedSubcategoriesProperties = "";
-
-			String[] parts = StringUtil.split(
-				categoriesLevel, StringPool.COLON);
-
-			for (int j = parts.length - 1; j > 0; j--) {
-				String mergedSubcategoryProperties = _mergeProperties(
-					false, parts[j], categorizedProperties.get(parts[j]));
-
-				mergedSubcategoriesProperties =
-					mergedSubcategoryProperties + mergedSubcategoriesProperties;
-			}
-
-			String mergedTopCategoryProperties = _mergeProperties(
-				true, parts[0], categorizedProperties.get(parts[0]));
-
-			if (Validator.isBlank(mergedSubcategoriesProperties) &&
-				!mergedTopCategoryProperties.contains("=")) {
-
-				continue;
-			}
-
-			properties =
-				mergedTopCategoryProperties + mergedSubcategoriesProperties +
-					properties;
+		if (!file.exists()) {
+			return null;
 		}
 
-		return properties;
+		_rootTestPropertiesContent = FileUtil.read(file);
+
+		return _rootTestPropertiesContent;
 	}
 
 	private String _getSQLClause(String line) {
@@ -576,44 +470,18 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 		return _testrayAllTeamsComponentNames;
 	}
 
-	private String _mergeProperties(
-		boolean topLevel, String categoryName,
-		Map<String, String> properitesMap) {
+	private String _mergeProperties(Map<String, String> propertiesMap) {
+		StringBundler sb = new StringBundler();
 
-		if (MapUtil.isEmpty(properitesMap) && !topLevel) {
-			return StringPool.BLANK;
-		}
+		for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+			String key = entry.getKey();
 
-		String comment = StringPool.FOUR_SPACES;
-
-		if (topLevel) {
-			comment = StringPool.POUND;
-		}
-
-		comment = comment + StringPool.POUND;
-
-		String categoryHeader = StringBundler.concat(
-			comment, "\n", comment, " ", categoryName, "\n", comment, "\n\n");
-
-		if (MapUtil.isEmpty(properitesMap) && topLevel) {
-			return categoryHeader;
-		}
-
-		StringBundler sb = new StringBundler(categoryHeader);
-
-		List<String> keys = new ArrayList<>(properitesMap.keySet());
-
-		Collections.sort(keys, new PropertyNameComparator());
-
-		for (int i = 0; i < keys.size(); i++) {
 			boolean multiLine = false;
 
-			String key = keys.get(i);
-
-			String[] values = StringUtil.split(properitesMap.get(key));
+			String[] values = StringUtil.split(entry.getValue());
 
 			if ((values.length == 1) && !StringUtil.equals(values[0], "**")) {
-				int lineLength = 5 + key.length() + values[0].length();
+				int lineLength = 1 + key.length() + values[0].length();
 
 				if (lineLength > getMaxLineLength()) {
 					multiLine = true;
@@ -627,13 +495,12 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 				sb.append("\n");
 			}
 
-			sb.append("    ");
 			sb.append(key);
 			sb.append("=");
 
 			if (multiLine) {
 				for (String value : values) {
-					sb.append("\\\n        ");
+					sb.append("\\\n    ");
 					sb.append(value);
 					sb.append(",");
 				}
@@ -645,15 +512,11 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 			else {
 				sb.append(values);
 
-				if (i == (keys.size() - 1)) {
-					sb.append("\n");
-				}
-
 				sb.append("\n");
 			}
 		}
 
-		return sb.toString();
+		return StringUtil.trim(sb.toString());
 	}
 
 	private String _removeRedundantParenthesis(String sqlClause) {
@@ -687,7 +550,57 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 		return sqlClause;
 	}
 
-	private String _sort(String sqlClauses) {
+	private String _sortProperties(String content) throws IOException {
+		String rootTestPropertiesContent = _getRootTestPropertiesContent();
+
+		if (rootTestPropertiesContent == null) {
+			return content;
+		}
+
+		Map<String, String> propertiesMap1 = new TreeMap<>(
+			new NaturalOrderStringComparator());
+		Map<String, String> propertiesMap2 = new TreeMap<>(
+			new NaturalOrderStringComparator());
+
+		Properties properties = new Properties();
+
+		properties.load(new StringReader(content));
+
+		Enumeration<String> enumeration =
+			(Enumeration<String>)properties.propertyNames();
+
+		while (enumeration.hasMoreElements()) {
+			String key = enumeration.nextElement();
+
+			String keyPrefix = key;
+
+			int x = keyPrefix.indexOf("[");
+
+			if (x != -1) {
+				keyPrefix = keyPrefix.substring(0, x);
+			}
+
+			if (rootTestPropertiesContent.contains(keyPrefix + "=") ||
+				rootTestPropertiesContent.contains(keyPrefix + "[")) {
+
+				propertiesMap1.put(key, properties.getProperty(key));
+			}
+			else {
+				propertiesMap2.put(key, properties.getProperty(key));
+			}
+		}
+
+		String mergedProperties = _mergeProperties(propertiesMap1);
+
+		if (Validator.isBlank(mergedProperties)) {
+			return _mergeProperties(propertiesMap2);
+		}
+
+		return StringUtil.trimTrailing(
+			mergedProperties + "\n\n" + _mergeProperties(propertiesMap2));
+	}
+
+	private String _sortSQLClauses(String sqlClauses) {
 		Matcher matcher = _sqlPattern2.matcher(sqlClauses);
 
 		while (matcher.find()) {
@@ -720,103 +633,16 @@ public class PropertiesTestFileCheck extends BaseFileCheck {
 		return sqlClauses;
 	}
 
-	private String _sortTestCategories(
-		String content, String indent, String pounds) {
-
-		String indentWithPounds = indent + pounds;
-
-		CommentComparator comparator = new CommentComparator();
-
-		Pattern pattern = Pattern.compile(
-			StringBundler.concat(
-				"((?<=\\A|\n\n)", indentWithPounds, "\n", indentWithPounds,
-				"( .+)\n", indentWithPounds, "\n\n[\\s\\S]*?)(?=(\n\n",
-				indentWithPounds, "\n|\\Z))"));
-
-		Matcher matcher = pattern.matcher(content);
-
-		String previousProperties = null;
-		String previousPropertiesComment = null;
-		int previousPropertiesStartPosition = -1;
-
-		while (matcher.find()) {
-			String properties = matcher.group(1);
-			String propertiesComment = matcher.group(2);
-			int propertiesStartPosition = matcher.start();
-
-			if (pounds.length() == 2) {
-				String newProperties = _sortTestCategories(
-					properties, indent + StringPool.FOUR_SPACES,
-					StringPool.POUND);
-
-				if (!newProperties.equals(properties)) {
-					return StringUtil.replaceFirst(
-						content, properties, newProperties,
-						propertiesStartPosition);
-				}
-			}
-
-			if (Validator.isNull(previousProperties)) {
-				previousProperties = properties;
-				previousPropertiesComment = propertiesComment;
-				previousPropertiesStartPosition = propertiesStartPosition;
-
-				continue;
-			}
-
-			int value = comparator.compare(
-				previousPropertiesComment, propertiesComment);
-
-			if (value > 0) {
-				content = StringUtil.replaceFirst(
-					content, properties, previousProperties,
-					propertiesStartPosition);
-				content = StringUtil.replaceFirst(
-					content, previousProperties, properties,
-					previousPropertiesStartPosition);
-
-				return content;
-			}
-
-			previousProperties = properties;
-			previousPropertiesComment = propertiesComment;
-			previousPropertiesStartPosition = propertiesStartPosition;
-		}
-
-		return content;
-	}
-
-	private static final String _CATEGORIES_LEVELS_KEY = "categoriesLevels";
-
-	private static final String _CATEGORIZED_PROPERTIES_PATTERNS_KEY =
-		"categorizedPropertiesPatterns";
-
 	private static final String _CHECK_TESTRAY_MAIN_COMPONENT_NAME_KEY =
 		"checkTestrayMainComponentName";
 
 	private static final Pattern _sqlPattern1 = Pattern.compile(
-		"(?<=\\A|\n) +test\\.batch\\.run\\.property(\\.global)?\\.query.+]=" +
+		"(?<=\\A|\n)test\\.batch\\.run\\.property(\\.global)?\\.query.+]=" +
 			"([\\s\\S]*?[^\\\\])(?=(\\Z|\n))");
 	private static final Pattern _sqlPattern2 = Pattern.compile(
 		"\\s(\\(.* ([!=]=|~) .+\\))( (AND|OR) )?(\\\\)?");
 
+	private String _rootTestPropertiesContent;
 	private List<String> _testrayAllTeamsComponentNames;
-
-	private class CommentComparator extends NaturalOrderStringComparator {
-
-		@Override
-		public int compare(String comment1, String comment2) {
-			if (comment1.equals(" Default") || comment2.equals(" Others")) {
-				return -1;
-			}
-
-			if (comment2.equals(" Default") || comment1.equals(" Others")) {
-				return 1;
-			}
-
-			return super.compare(comment1, comment2);
-		}
-
-	}
 
 }

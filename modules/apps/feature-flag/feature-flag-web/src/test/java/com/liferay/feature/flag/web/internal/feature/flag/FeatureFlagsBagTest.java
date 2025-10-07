@@ -9,26 +9,18 @@ import com.liferay.feature.flag.web.internal.model.FeatureFlagImpl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagType;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
-import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.test.log.LogCapture;
-import com.liferay.portal.test.log.LogEntry;
-import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
-import com.liferay.portal.util.PropsUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,7 +45,7 @@ public class FeatureFlagsBagTest {
 			_releaseFeatureFlag
 		};
 
-		Map<String, FeatureFlag> featureFlagsMap = new HashMap<>();
+		Map<String, FeatureFlag> featureFlagsMap = new TreeMap<>();
 
 		for (FeatureFlag featureFlag : _expectedFeatureFlags) {
 			featureFlagsMap.put(featureFlag.getKey(), featureFlag);
@@ -99,11 +91,8 @@ public class FeatureFlagsBagTest {
 		}
 	}
 
-	@NewEnv(type = NewEnv.Type.JVM)
 	@Test
 	public void testIsEnabled() {
-		com.liferay.portal.kernel.util.PropsUtil.setProps(new PropsImpl());
-
 		for (FeatureFlag expectedFeatureFlag : _expectedFeatureFlags) {
 			Assert.assertEquals(
 				expectedFeatureFlag.isEnabled(),
@@ -112,29 +101,17 @@ public class FeatureFlagsBagTest {
 
 		String randomKey = _createKey();
 
-		Assert.assertFalse(_featureFlagsBag.isEnabled(randomKey));
+		try {
+			_featureFlagsBag.isEnabled(randomKey);
 
-		PropsUtil.set(
-			FeatureFlagConstants.getKey(randomKey), Boolean.TRUE.toString());
-
-		Assert.assertTrue(_featureFlagsBag.isEnabled(randomKey));
-
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				FeatureFlagsBag.class.getName(), Level.INFO)) {
-
-			String key = "LPS-9099";
-
-			_featureFlagsBag.isEnabled(key);
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			LogEntry logEntry = logEntries.get(0);
-
+			Assert.fail();
+		}
+		catch (IllegalStateException illegalStateException) {
 			Assert.assertEquals(
 				StringBundler.concat(
-					"Feature flag ", key, " is not available for company ",
-					_COMPANY_ID),
-				logEntry.getMessage());
+					"Feature flag ", randomKey,
+					" is not available for company ", _COMPANY_ID),
+				illegalStateException.getMessage());
 		}
 	}
 

@@ -34,15 +34,17 @@ public interface InventoryAnalysisResource {
 	}
 
 	public InventoryAnalysis getInventoryAnalysis(
-			Long categoryId, String groupBy, String languageId, String rangeEnd,
-			Integer rangeKey, String rangeStart, Long spaceId, Long structureId,
-			Long tagId, Long vocabularyId, Pagination pagination)
+			Long categoryId, Long depotEntryId, String groupBy,
+			String languageId, String rangeEnd, Integer rangeKey,
+			String rangeStart, Long structureId, Long tagId, Long vocabularyId,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getInventoryAnalysisHttpResponse(
-			Long categoryId, String groupBy, String languageId, String rangeEnd,
-			Integer rangeKey, String rangeStart, Long spaceId, Long structureId,
-			Long tagId, Long vocabularyId, Pagination pagination)
+			Long categoryId, Long depotEntryId, String groupBy,
+			String languageId, String rangeEnd, Integer rangeKey,
+			String rangeStart, Long structureId, Long tagId, Long vocabularyId,
+			Pagination pagination)
 		throws Exception;
 
 	public static class Builder {
@@ -155,16 +157,16 @@ public interface InventoryAnalysisResource {
 		implements InventoryAnalysisResource {
 
 		public InventoryAnalysis getInventoryAnalysis(
-				Long categoryId, String groupBy, String languageId,
-				String rangeEnd, Integer rangeKey, String rangeStart,
-				Long spaceId, Long structureId, Long tagId, Long vocabularyId,
-				Pagination pagination)
+				Long categoryId, Long depotEntryId, String groupBy,
+				String languageId, String rangeEnd, Integer rangeKey,
+				String rangeStart, Long structureId, Long tagId,
+				Long vocabularyId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getInventoryAnalysisHttpResponse(
-					categoryId, groupBy, languageId, rangeEnd, rangeKey,
-					rangeStart, spaceId, structureId, tagId, vocabularyId,
+					categoryId, depotEntryId, groupBy, languageId, rangeEnd,
+					rangeKey, rangeStart, structureId, tagId, vocabularyId,
 					pagination);
 
 			String content = httpResponse.getContent();
@@ -227,10 +229,10 @@ public interface InventoryAnalysisResource {
 		}
 
 		public HttpInvoker.HttpResponse getInventoryAnalysisHttpResponse(
-				Long categoryId, String groupBy, String languageId,
-				String rangeEnd, Integer rangeKey, String rangeStart,
-				Long spaceId, Long structureId, Long tagId, Long vocabularyId,
-				Pagination pagination)
+				Long categoryId, Long depotEntryId, String groupBy,
+				String languageId, String rangeEnd, Integer rangeKey,
+				String rangeStart, Long structureId, Long tagId,
+				Long vocabularyId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -258,6 +260,11 @@ public interface InventoryAnalysisResource {
 				httpInvoker.parameter("categoryId", String.valueOf(categoryId));
 			}
 
+			if (depotEntryId != null) {
+				httpInvoker.parameter(
+					"depotEntryId", String.valueOf(depotEntryId));
+			}
+
 			if (groupBy != null) {
 				httpInvoker.parameter("groupBy", String.valueOf(groupBy));
 			}
@@ -276,10 +283,6 @@ public interface InventoryAnalysisResource {
 
 			if (rangeStart != null) {
 				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
-			}
-
-			if (spaceId != null) {
-				httpInvoker.parameter("spaceId", String.valueOf(spaceId));
 			}
 
 			if (structureId != null) {

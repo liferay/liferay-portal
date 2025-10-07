@@ -1,4 +1,5 @@
 dependencies {
+	compileInclude group: "com.github.virtuald", name: "curvesapi", version: "1.08"
 	compileInclude group: "org.apache.poi", name: "poi", version: "5.4.1"
 	compileInclude group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	compileInclude group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"

@@ -32,7 +32,8 @@ import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -49,10 +50,10 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.kernel.util.UniqueUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -110,9 +111,14 @@ public class FragmentEntryLocalServiceImpl
 		_validateFragmentEntryKey(groupId, fragmentEntryKey);
 
 		if (WorkflowConstants.STATUS_APPROVED == status) {
-			_fragmentEntryValidator.validateConfiguration(configuration);
+			JSONObject configurationJSONObject =
+				_jsonFactory.safeCreateJSONObject(configuration, true);
+
+			_fragmentEntryValidator.validateConfiguration(
+				configurationJSONObject);
+
 			_fragmentEntryValidator.validateTypeOptions(type, typeOptions);
-			_validateContent(html, configuration);
+			_validateContent(html, configurationJSONObject);
 		}
 
 		FragmentEntry draftFragmentEntry = create();
@@ -185,7 +191,21 @@ public class FragmentEntryLocalServiceImpl
 				publishedFragmentEntry.fetchDraftFragmentEntry();
 		}
 
-		String name = _getUniqueCopyName(sourceFragmentEntry);
+		String name = UniqueUtil.getCopyValue(
+			copyValue -> {
+				FragmentEntry existingFragmentEntry =
+					fragmentEntryPersistence.fetchByG_FCI_LikeN_First(
+						sourceFragmentEntry.getGroupId(),
+						sourceFragmentEntry.getFragmentCollectionId(),
+						copyValue, null);
+
+				if (existingFragmentEntry == null) {
+					return true;
+				}
+
+				return false;
+			},
+			sourceFragmentEntry.getName());
 
 		FragmentEntry copyPublishedFragmentEntry = null;
 
@@ -346,11 +366,6 @@ public class FragmentEntryLocalServiceImpl
 	}
 
 	@Override
-	public FragmentEntry fetchFragmentEntry(long fragmentEntryId) {
-		return fragmentEntryPersistence.fetchByPrimaryKey(fragmentEntryId);
-	}
-
-	@Override
 	public FragmentEntry fetchFragmentEntry(
 		long groupId, String fragmentEntryKey) {
 
@@ -368,14 +383,6 @@ public class FragmentEntryLocalServiceImpl
 
 		return fetchFragmentEntryByUuidAndGroupId(
 			fragmentEntry.getUuid(), groupId);
-	}
-
-	@Override
-	public FragmentEntry fetchFragmentEntryByExternalReferenceCode(
-		String externalReferenceCode, long groupId) {
-
-		return fragmentEntryPersistence.fetchByERC_G_Head(
-			externalReferenceCode, groupId, true);
 	}
 
 	@Override
@@ -671,11 +678,16 @@ public class FragmentEntryLocalServiceImpl
 		_validate(name);
 
 		if (WorkflowConstants.STATUS_APPROVED == status) {
-			_fragmentEntryValidator.validateConfiguration(configuration);
+			JSONObject configurationJSONObject =
+				_jsonFactory.safeCreateJSONObject(configuration, true);
+
+			_fragmentEntryValidator.validateConfiguration(
+				configurationJSONObject);
+
 			_fragmentEntryValidator.validateTypeOptions(
 				fragmentEntry.getType(), typeOptions);
 
-			_validateContent(html, configuration);
+			_validateContent(html, configurationJSONObject);
 		}
 
 		User user = _userLocalService.getUser(userId);
@@ -934,29 +946,6 @@ public class FragmentEntryLocalServiceImpl
 		return repository;
 	}
 
-	private String _getUniqueCopyName(FragmentEntry fragmentEntry) {
-		String copy = _language.get(LocaleUtil.getSiteDefault(), "copy");
-
-		String name = StringUtil.appendParentheticalSuffix(
-			fragmentEntry.getName(), copy);
-
-		for (int i = 1;; i++) {
-			FragmentEntry existingFragmentEntry =
-				fragmentEntryPersistence.fetchByG_FCI_LikeN_First(
-					fragmentEntry.getGroupId(),
-					fragmentEntry.getFragmentCollectionId(), name, null);
-
-			if (existingFragmentEntry == null) {
-				break;
-			}
-
-			name = StringUtil.appendParentheticalSuffix(
-				fragmentEntry.getName(), copy + StringPool.SPACE + i);
-		}
-
-		return name;
-	}
-
 	private void _propagateChanges(long fragmentEntryId)
 		throws PortalException {
 
@@ -992,13 +981,14 @@ public class FragmentEntryLocalServiceImpl
 			_validate(draftFragmentEntry.getName());
 		}
 
-		_fragmentEntryValidator.validateConfiguration(
-			draftFragmentEntry.getConfiguration());
+		JSONObject configurationJSONObject = _jsonFactory.safeCreateJSONObject(
+			draftFragmentEntry.getConfiguration(), true);
+
+		_fragmentEntryValidator.validateConfiguration(configurationJSONObject);
+
 		_fragmentEntryValidator.validateTypeOptions(
 			draftFragmentEntry.getType(), draftFragmentEntry.getTypeOptions());
-		_validateContent(
-			draftFragmentEntry.getHtml(),
-			draftFragmentEntry.getConfiguration());
+		_validateContent(draftFragmentEntry.getHtml(), configurationJSONObject);
 
 		draftFragmentEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 
@@ -1042,11 +1032,12 @@ public class FragmentEntryLocalServiceImpl
 		}
 	}
 
-	private void _validateContent(String html, String configuration)
+	private void _validateContent(
+			String html, JSONObject configurationJSONObject)
 		throws PortalException {
 
 		_fragmentEntryProcessorRegistry.validateFragmentEntryHTML(
-			html, configuration);
+			html, configurationJSONObject);
 	}
 
 	private void _validateFragmentEntryKey(
@@ -1094,7 +1085,7 @@ public class FragmentEntryLocalServiceImpl
 	private FragmentEntryValidator _fragmentEntryValidator;
 
 	@Reference
-	private Language _language;
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

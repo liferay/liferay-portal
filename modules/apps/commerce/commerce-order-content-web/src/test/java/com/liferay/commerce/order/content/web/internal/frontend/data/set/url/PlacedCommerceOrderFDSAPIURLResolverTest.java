@@ -43,8 +43,6 @@ public class PlacedCommerceOrderFDSAPIURLResolverTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		_mockHttpServletRequest = new MockHttpServletRequest();
-
 		Mockito.when(
 			_commerceContext.getAccountEntry()
 		).thenReturn(
@@ -64,7 +62,7 @@ public class PlacedCommerceOrderFDSAPIURLResolverTest {
 		);
 
 		Mockito.when(
-			_commerceChannelLocalService.getCommerceChannel(Mockito.anyLong())
+			_commerceChannelLocalService.fetchCommerceChannel(Mockito.anyLong())
 		).thenReturn(
 			_commerceChannel
 		);
@@ -140,7 +138,8 @@ public class PlacedCommerceOrderFDSAPIURLResolverTest {
 	@Mock
 	private CommerceOrder _commerceOrder;
 
-	private MockHttpServletRequest _mockHttpServletRequest;
+	private final MockHttpServletRequest _mockHttpServletRequest =
+		new MockHttpServletRequest();
 
 	@InjectMocks
 	private PlacedCommerceOrderFDSAPIURLResolver

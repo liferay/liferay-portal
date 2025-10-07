@@ -5,13 +5,16 @@
 
 package com.liferay.portal.kernel.internal.security.access.control;
 
-import com.liferay.portal.kernel.test.util.PropsTestUtil;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 /**
  * @author Mariano Álvaro Sáiz
@@ -20,15 +23,28 @@ public class AllowedIPAddressesValidatorTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		PropsTestUtil.setProps(
-			HashMapBuilder.<String, Object>put(
-				PropsKeys.DNS_SECURITY_ADDRESS_TIMEOUT_SECONDS,
-				String.valueOf(2)
-			).put(
-				PropsKeys.DNS_SECURITY_THREAD_LIMIT, String.valueOf(10)
-			).put(
-				PropsKeys.DNS_SECURITY_THREAD_QUEUE_LIMIT, String.valueOf(5)
-			).build());
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(PropsKeys.DNS_SECURITY_ADDRESS_TIMEOUT_SECONDS)
+		).thenReturn(
+			String.valueOf(2)
+		);
+
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(PropsKeys.DNS_SECURITY_THREAD_LIMIT)
+		).thenReturn(
+			String.valueOf(10)
+		);
+
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(PropsKeys.DNS_SECURITY_THREAD_QUEUE_LIMIT)
+		).thenReturn(
+			String.valueOf(5)
+		);
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		_propsUtilMockedStatic.close();
 	}
 
 	@Test
@@ -181,5 +197,8 @@ public class AllowedIPAddressesValidatorTest {
 
 	private static final String _ADDRESS_IP_V6 =
 		"2001:AC8:1234:0000:0000:C1C0:ABCD:0876";
+
+	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
+		Mockito.mockStatic(PropsUtil.class);
 
 }

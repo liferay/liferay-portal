@@ -55,8 +55,8 @@ public interface ERCScopedTestEntityResource {
 		throws Exception;
 
 	public void deleteSiteERCScopedTestEntity(
-			String ercScopedTestEntityExternalReferenceCode,
-			String siteExternalReferenceCode)
+			String siteExternalReferenceCode,
+			String ercScopedTestEntityExternalReferenceCode)
 		throws Exception;
 
 	public Page<ERCScopedTestEntity> getAssetLibraryERCScopedTestEntitiesPage(
@@ -73,8 +73,8 @@ public interface ERCScopedTestEntityResource {
 		throws Exception;
 
 	public ERCScopedTestEntity getSiteERCScopedTestEntity(
-			String ercScopedTestEntityExternalReferenceCode,
-			String siteExternalReferenceCode)
+			String siteExternalReferenceCode,
+			String ercScopedTestEntityExternalReferenceCode)
 		throws Exception;
 
 	public Response postAssetLibraryERCScopedTestEntitiesPageExportBatch(
@@ -113,8 +113,8 @@ public interface ERCScopedTestEntityResource {
 		throws Exception;
 
 	public ERCScopedTestEntity putSiteERCScopedTestEntity(
-			String ercScopedTestEntityExternalReferenceCode,
 			String siteExternalReferenceCode,
+			String ercScopedTestEntityExternalReferenceCode,
 			ERCScopedTestEntity ercScopedTestEntity)
 		throws Exception;
 

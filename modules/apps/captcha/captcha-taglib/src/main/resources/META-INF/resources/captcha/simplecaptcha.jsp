@@ -8,6 +8,9 @@
 <%@ include file="/captcha/init.jsp" %>
 
 <%
+String captchaId = PortalUtil.generateRandomKey(request, "captchaId");
+String refreshCaptchaId = PortalUtil.generateRandomKey(request, "refreshCaptchaId");
+
 String errorMessage = (String)request.getAttribute("liferay-captcha:captcha:errorMessage");
 String url = (String)request.getAttribute("liferay-captcha:captcha:url");
 %>
@@ -23,12 +26,12 @@ String url = (String)request.getAttribute("liferay-captcha:captcha:url");
 	%>
 
 	<div class="<%= cssClass %>">
-		<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="text-to-identify" />" class="captcha d-inline-block mb-2" id="<portlet:namespace />captcha" src="<%= HtmlUtil.escapeAttribute(HttpComponentsUtil.addParameter(url, "t", String.valueOf(System.currentTimeMillis()))) %>" />
+		<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="text-to-identify" />" class="captcha d-inline-block mb-2" id="<portlet:namespace /><%= captchaId %>" src="<%= HtmlUtil.escapeAttribute(HttpComponentsUtil.addParameter(url, "t", String.valueOf(System.currentTimeMillis()))) %>" />
 
 		<liferay-ui:icon
 			cssClass="align-top d-inline-block refresh"
 			icon="reload"
-			id="refreshCaptcha"
+			id="<%= refreshCaptchaId %>"
 			label="<%= false %>"
 			localizeMessage="<%= true %>"
 			markupView="lexicon"
@@ -51,11 +54,9 @@ String url = (String)request.getAttribute("liferay-captcha:captcha:url");
 
 	<aui:script>
 		function <portlet:namespace />attachEvent() {
-			const modal = document.querySelector('.modal-body');
-
-			var refreshCaptcha = modal
-				? modal.querySelector('#<portlet:namespace />refreshCaptcha')
-				: document.getElementById('<portlet:namespace />refreshCaptcha');
+			var refreshCaptcha = document.getElementById(
+				'<portlet:namespace /><%= refreshCaptchaId %>'
+			);
 
 			if (refreshCaptcha && !refreshCaptcha.hasEventAttached) {
 				refreshCaptcha.hasEventAttached = true;
@@ -65,9 +66,9 @@ String url = (String)request.getAttribute("liferay-captcha:captcha:url");
 						'<%= HtmlUtil.escapeJS(url) %>'
 					);
 
-					var captcha = modal
-						? modal.querySelector('#<portlet:namespace />captcha')
-						: document.getElementById('<portlet:namespace />captcha');
+					var captcha = document.getElementById(
+						'<portlet:namespace /><%= captchaId %>'
+					);
 
 					if (captcha) {
 						captcha.setAttribute('src', url);

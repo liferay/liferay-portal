@@ -78,8 +78,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanGetRelationshipDetailsThroughRelationshipEndpointWithoutRelatedEntries {
-		property portal.acceptance = "true";
-
 		task ("When I call userAccount object GET endpoint with {userAccountId}/usersFoundations") {
 			UserAccountAPI.getRelationshipByUserAccountId(
 				relationshipName = "usersFoundations",
@@ -98,8 +96,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test CanNotGetDetailsAfterRelationshipIsDeleted {
-		property portal.acceptance = "true";
-
 		task ("And Given I relate the secondFoundation entry with the userAccount entry through the userAccount PUT endpoint") {
 			UserAccountAPI.relateObjectEntries(
 				customObjectId = ${staticObjectEntryId3},

@@ -331,7 +331,7 @@ definition {
 
 		Type(
 			key_fieldLabel = "Maximum Order Quantity",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
+			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
 			value1 = ${maximumQuantity});
 
 		Button.clickPublish();
@@ -587,9 +587,9 @@ definition {
 				userSiteMembership = "Minium");
 		}
 
-		task ("And Allowed Order Quantity is set to '1,3,5' for a multiple Skus product(Brake Fluid)") {
+		task ("And Allowed Order Quantity is set to '1, 3 and 5' for a multiple Skus product(Brake Fluid)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "1,3,5",
+				allowedOrderQuantities = "1, 3, 5",
 				productName = ${productName});
 		}
 
@@ -1978,17 +1978,17 @@ definition {
 
 		task ("And allowed quantities, maximum quantity, minimum quantity and multiple quantity are configured for three products") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "1,2,6,8",
+				allowedOrderQuantities = "1, 2, 6, 8",
 				minOrderQuantity = 2,
 				productName = "U-Joint");
 
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "1,2,6,8",
+				allowedOrderQuantities = "1, 2, 6, 8",
 				maxOrderQuantity = 7,
 				productName = "Transmission Cooler Line Assembly");
 
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "1,3,6,9",
+				allowedOrderQuantities = "1, 3, 6, 9",
 				multipleOrderQuantity = 3,
 				productName = "Torque Converters");
 		}

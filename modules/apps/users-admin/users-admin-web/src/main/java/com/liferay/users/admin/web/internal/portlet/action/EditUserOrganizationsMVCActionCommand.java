@@ -15,12 +15,16 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.UserService;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
@@ -86,6 +90,16 @@ public class EditUserOrganizationsMVCActionCommand
 				organizationIds, user.getRoleIds(),
 				UsersAdminUtil.getUserGroupRoles(actionRequest),
 				user.getUserGroupIds(), serviceContext);
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			if (!UserPermissionUtil.contains(
+					themeDisplay.getPermissionChecker(), user.getUserId(),
+					ActionKeys.UPDATE)) {
+
+				actionResponse.setRenderParameter("mvcPath", "/view.jsp");
+			}
 		}
 		catch (Exception exception) {
 			if (exception instanceof ContactNameException ||

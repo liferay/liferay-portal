@@ -264,7 +264,7 @@ public class CPDefinitionImpl extends CPDefinitionBaseImpl {
 
 		return CommerceMediaResolverUtil.getThumbnailURL(
 			commerceAccountId,
-			cpAttachmentFileEntry.getCPAttachmentFileEntryId());
+			cpAttachmentFileEntry.getCPAttachmentFileEntryId(), false);
 	}
 
 	@Override
@@ -437,23 +437,6 @@ public class CPDefinitionImpl extends CPDefinitionBaseImpl {
 	@Override
 	public int hashCode() {
 		return super.hashCode();
-	}
-
-	@Override
-	public boolean isVisible(long cpConfigurationListId)
-		throws PortalException {
-
-		CPConfigurationEntry cpConfigurationEntry = _fetchCPConfigurationEntry(
-			cpConfigurationListId,
-			CPConfigurationEntryLocalServiceUtil.getCPConfigurationEntries(
-				ClassNameLocalServiceUtil.getClassNameId(CPDefinition.class),
-				getCPDefinitionId(), true));
-
-		if (cpConfigurationEntry == null) {
-			return false;
-		}
-
-		return true;
 	}
 
 	@Override

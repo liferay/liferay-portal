@@ -18,7 +18,7 @@ boolean localizable = (boolean)request.getAttribute("liferay-friendly-url:histor
 <liferay-util:html-top
 	outputKey="com.liferay.friendly.url.taglib#/history/page.jsp"
 >
-	<aui:link href='<%= PortalUtil.getStaticResourceURL(request, PortalUtil.getPathProxy() + application.getContextPath() + "/css/main.css") %>' rel="stylesheet" type="text/css" />
+	<aui:link hashedFile="<%= true %>" href="friendly-url-taglib/css/main.css" rel="stylesheet" type="text/css" />
 </liferay-util:html-top>
 
 <div class="btn-url-history-wrapper">

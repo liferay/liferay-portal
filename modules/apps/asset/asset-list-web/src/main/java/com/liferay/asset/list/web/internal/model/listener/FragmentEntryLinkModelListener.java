@@ -92,7 +92,7 @@ public class FragmentEntryLinkModelListener
 
 		return ListUtil.filter(
 			_fragmentEntryConfigurationParser.getFragmentConfigurationFields(
-				fragmentEntryLink.getConfiguration()),
+				fragmentEntryLink.getConfigurationJSONObject()),
 			fragmentConfigurationField -> Objects.equals(
 				fragmentConfigurationField.getType(), "collectionSelector"));
 	}
@@ -113,8 +113,8 @@ public class FragmentEntryLinkModelListener
 				fragmentConfigurationFields) {
 
 			Object fieldValue = _fragmentEntryConfigurationParser.getFieldValue(
-				fragmentEntryLink.getConfiguration(),
-				fragmentEntryLink.getEditableValues(),
+				fragmentEntryLink.getConfigurationJSONObject(),
+				fragmentEntryLink.getEditableValuesJSONObject(),
 				LocaleUtil.getMostRelevantLocale(),
 				fragmentConfigurationField.getName());
 

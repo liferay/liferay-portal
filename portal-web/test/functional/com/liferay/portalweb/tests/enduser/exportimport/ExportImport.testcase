@@ -29,45 +29,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-123156. Verify if information about staging system settings are present."
-	@priority = 3
-	test AssertStagingSystemSettingsInfo {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When: User open the Web Content configuration in System settings") {
-			SystemSettings.openSystemSettingsAdmin();
-
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Web Content",
-				configurationName = "Web Content",
-				configurationScope = "Virtual Instance Scope");
-		}
-
-		task ("Then: The correct labels will be visible") {
-			SystemSettings.viewTextLabel(fieldLabel = "Single Asset Publish Process Includes Version History");
-
-			SystemSettings.viewSettingsText(settingsText = "Specify characters that are not allowed in web content folder names.");
-
-			SystemSettings.openSystemSettingsAdmin();
-		}
-
-		task ("And: In the Staging configuration in System settings User can see the correct labels for LAR export / import") {
-			SystemSettings.gotoConfiguration(
-				configurationCategory = "Infrastructure",
-				configurationName = "Staging",
-				configurationScope = "Virtual Instance Scope");
-
-			SystemSettings.viewTextLabel(fieldLabel = "Delete temporary LAR during a failed staging publish process.");
-
-			SystemSettings.viewSettingsText(settingsText = "Uncheck to avoid deleting the temporary LAR during a failed staging publish process. In remote staging contexts, this only applies for the staging environment.");
-
-			SystemSettings.viewTextLabel(fieldLabel = "Delete temporary LAR during a successful staging publish process.");
-
-			SystemSettings.viewSettingsText(settingsText = "Uncheck to avoid deleting the temporary LAR during a successful staging publish process. In remote staging contexts, this only applies for the staging environment.");
-		}
-	}
-
 	@description = "This is a use case for LPS-83011. Verify if a user can configure asset links when export."
 	@priority = 3
 	test AssetLinksCanBeConfiguredWhenExport {
@@ -207,60 +168,6 @@ definition {
 				portlet = "Export");
 
 			LexiconEntry.viewActiveDisplayStyle(displayStyle = "table");
-		}
-	}
-
-	@description = "This is a use case for LPS-84223. Verify if a publish fails adding a file entry that do not exist."
-	@priority = 3
-	test DLLinkValidationInWebContent {
-		task ("Given: User add a new file") {
-			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-			DMDocument.addCP(
-				dmDocumentDescription = "DM Document Description",
-				dmDocumentFile = "Document_1.jpg",
-				dmDocumentTitle = "DM Document Title");
-		}
-
-		task ("And: Save the URL of the document then edit it by adding extra numbers at the end") {
-			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-			DMDocument.expandInfo();
-
-			var dmDocumentURL = selenium.getAttribute("//input[contains(@id,'urlInput')]@value");
-
-			var editDocumentURL = StringUtil.replaceFirst(${dmDocumentURL}, "_1", "_10000");
-
-			echo("## * Edit Document URL: ${editDocumentURL}");
-
-			var entryExternalURL = StringUtil.replace(${editDocumentURL}, "http://", "");
-
-			echo("## * Entry External URL: ${entryExternalURL}");
-		}
-
-		task ("When: User try to publish a WC with the previously saved wrong external URL") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "guest");
-
-			WebContentNavigator.gotoAddCP();
-
-			PortletEntry.inputTitle(title = "Web Content Title");
-
-			CKEditor.addEntryExternalURL(
-				displayText = ${editDocumentURL},
-				entryExternalURL = ${entryExternalURL},
-				fieldLabel = "Content");
-
-			WebContent.publishWithPermissions();
-		}
-
-		task ("Then: The publish process fails with corresponding error message") {
-			AssertTextPresent(
-				locator1 = "Message#ERROR",
-				value1 = "Your request failed to complete.");
-
-			AssertTextEquals.assertPartialText(
-				locator1 = "Message#ERROR_DISMISSIBLE",
-				value1 = "Unable to validate referenced document because it cannot be found with the following parameters");
 		}
 	}
 
@@ -969,8 +876,6 @@ definition {
 	@description = "Verify is possible export/import a Private Page."
 	@priority = 3
 	test ExportImportPrivatePage {
-		property portal.acceptance = "true";
-
 		task ("Enable private pages") {
 			PagesAdmin.enablePrivatePages();
 		}
@@ -1450,7 +1355,6 @@ definition {
 	@description = "Verify is possible export/import validation."
 	@priority = 3
 	test ExportImportValidation {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1668,7 +1572,6 @@ definition {
 	@description = "This is a use case for LPS-88498. Verify if a Guest is able to export files."
 	@priority = 3
 	test ExportViaGuest {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

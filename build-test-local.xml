@@ -338,7 +338,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 		<replaceregexp
 			file="${project.dir}/test.properties"
 			flags="g"
-			match="(test\.batch\.names\[portal-release-acceptance\]=)\\(\n*.*?)*release-osgi-state-lpkg-test-mysql57"
+			match="(test\.batch\.names\[portal-release-acceptance\]=)\\(\n*.*?)*release-osgi-state-lpkg-test-postgresql155"
 			replace="\1{test.batch.names[portal-release-acceptance]}"
 		/>
 
@@ -352,7 +352,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 					<replacevalue><![CDATA[\
 		functional-tomcat-postgresql163-jdk21_zulu,\
 		modules-integration-postgresql163,\
-		playwright-js-tomcat90-postgresql163]]></replacevalue>
+		playwright-js-tomcat101-postgresql163]]></replacevalue>
 				</replace>
 			</then>
 			<else>
@@ -362,7 +362,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 					<replacetoken><![CDATA[{test.batch.names[portal-release-acceptance]}]]></replacetoken>
 					<replacevalue><![CDATA[\
 		functional-tomcat-postgresql163-jdk21_zulu,\
-		playwright-js-tomcat90-postgresql163]]></replacevalue>
+		playwright-js-tomcat101-postgresql163]]></replacevalue>
 				</replace>
 			</else>
 		</if>
@@ -384,7 +384,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 		<replaceregexp
 			file="${project.dir}/test.properties"
 			flags="g"
-			match="(test\.batch\.class\.names\.includes\[modules-integration-\*\]=)(.*?\n)*?\n"
+			match="(test\.batch\.class\.names\.includes\.modules\[modules-integration-\*\]=)(.*?\n)*?\n"
 			replace="\1\\\\${line.separator}${line.separator}"
 		/>
 
@@ -397,12 +397,21 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 					file="${project.dir}/test.properties"
 				>
 					<replacetoken><![CDATA[test.batch.run.property.query[functional-tomcat*][portal-release-acceptance]=\]]></replacetoken>
-					<replacevalue><![CDATA[playwright.projects.includes[playwright-js-tomcat90-postgresql163][portal-release-acceptance]=\
+					<replacevalue><![CDATA[playwright.projects.includes[playwright-js-tomcat101-postgresql163][portal-release-acceptance]=\
 
     test.batch.run.property.query[functional-tomcat-postgresql163-jdk21_zulu][portal-release-acceptance]=\]]></replacevalue>
 				</replace>
 			</then>
 		</if>
+
+		<replace
+			file="${project.dir}/test.properties"
+		>
+			<replacetoken><![CDATA[test.batch.dist.app.servers[portal-release-acceptance]=tomcat]]></replacetoken>
+			<replacevalue><![CDATA[test.batch.class.names.includes[modules-integration-*][portal-release-acceptance]=\
+
+    test.batch.dist.app.servers[portal-release-acceptance]=tomcat]]></replacevalue>
+		</replace>
 
 		<for delimiter="${line.separator}" list="${custom.suite.testcases}" param="custom.suite.testcase">
 			<sequential>
@@ -505,7 +514,7 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 							<replaceregexp
 								file="${project.dir}/test.properties"
 								flags="g"
-								match="(playwright\.projects\.includes\[playwright-js-tomcat90-postgresql163\]\[portal-release-acceptance\]=\\\n)"
+								match="(playwright\.projects\.includes\[playwright-js-tomcat101-postgresql163\]\[portal-release-acceptance\]=\\\n)"
 								replace="\1        ${testcase.file.name}.main,\\\\${line.separator}"
 							/>
 						</then>
@@ -523,18 +532,19 @@ local.bundles.backup.file=${liferay.home.parent.dir}/bundles-master-${git.commit
 								select="\1"
 							/>
 
-							<replaceregexp
-								file="${project.dir}/test.properties"
-								flags="g"
-								match="(test\.batch\.class\.names\.includes=\\\n)"
-								replace="\1        **/testIntegration/**/${testcase.file.name}.java,\\\\${line.separator}"
+							<propertyregex
+								input="@{custom.suite.testcase}"
+								override="true"
+								property="testcase.test.name"
+								regexp="(.*?)\.(.*)"
+								select="\2"
 							/>
 
 							<replaceregexp
 								file="${project.dir}/test.properties"
 								flags="g"
-								match="(test\.batch\.class\.names\.includes\[modules-integration-\*\]=\\\n)"
-								replace="\1        **/testIntegration/**/${testcase.file.name}.java,\\\\${line.separator}"
+								match="(test\.batch\.class\.names\.includes\[modules-integration-\*\]\[portal-release-acceptance\]=\\\n)"
+								replace="\1        **/testIntegration/**/${testcase.file.name}.java#${testcase.test.name},\\\\${line.separator}"
 							/>
 						</then>
 					</elseif>
@@ -715,7 +725,7 @@ database.db2.docker.image=${database.db2.docker.image}
 database.db2.host=localhost_db2
 database.db2.password=${database.db2.password}
 database.db2.schema=lportal
-database.db2.url=jdbc:db2://localhost:25010/lportal:deferPrepares=false;fullyMaterializeInputStreams=true;fullyMaterializeLobData=true;progresssiveLocators=2;progressiveStreaming=2;
+database.db2.url=jdbc:db2://localhost:25010/lportal:deferPrepares=false;fullyMaterializeInputStreams=true;fullyMaterializeLobData=true;progressiveLocators=2;progressiveStreaming=2;
 database.db2.username=${database.db2.username}
 database.db2.version=${database.version}
 database.type=db2

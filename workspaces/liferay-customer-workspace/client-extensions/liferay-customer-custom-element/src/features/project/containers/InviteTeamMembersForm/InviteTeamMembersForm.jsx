@@ -8,24 +8,23 @@ import ClayForm from '@clayui/form';
 import classNames from 'classnames';
 import {FieldArray, Formik} from 'formik';
 import {useEffect, useState} from 'react';
-import SearchBuilder from '~/lib/SearchBuilder';
-import isSupportSeatRole from '~/utils/isSupportSeatRole';
-import {STATUS_CODE} from '~/features/project/utils/constants';
-import i18n from '~/utils/I18n';
 import {Badge, Button} from '~/components';
 import {useAppPropertiesContext} from '~/contexts/AppPropertiesContext';
+import {STATUS_CODE} from '~/features/project/utils/constants';
 import {
 	addTeamMembersInvitation,
 	assignUserAccountWithAccount,
 	assignUserAccountWithAccountAndAccountRole,
 	deleteAccountUserAccount,
-	getUserAccountByEmail,
 	patchUserAccount,
 } from '~/services/liferay/graphql/queries';
-import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/LicenseKeys';
+import {addContactRoleNameByEmailByProject} from '~/services/liferay/rest/raysource/TeamMembers';
+import i18n from '~/utils/I18n';
 import {ROLE_TYPES, SLA_TYPES} from '~/utils/constants';
 import getInitialInvite from '~/utils/getInitialInvite';
 import getProjectRoles from '~/utils/getProjectRoles';
+import isSupportSeatRole from '~/utils/isSupportSeatRole';
+
 import Layout from '../../../../components/FormLayout';
 import TeamMemberInputs from './TeamMemberInputs';
 
@@ -55,17 +54,12 @@ const InviteTeamMembersPage = ({
 	touched,
 	values,
 }) => {
-	const {
-		articleAccountSupportURL,
-		client,
-		provisioningServerAPI,
-	} = useAppPropertiesContext();
+	const {articleAccountSupportURL, client, provisioningServerAPI} =
+		useAppPropertiesContext();
 
 	const [addTeamMemberInvitation] = useMutation(addTeamMembersInvitation);
 	const [updateUserAccount] = useMutation(patchUserAccount);
-	const [assignUserWithAccount] = useMutation(
-		assignUserAccountWithAccount
-	);
+	const [assignUserWithAccount] = useMutation(assignUserAccountWithAccount);
 	const [assignUserAccountWithAccountRole] = useMutation(
 		assignUserAccountWithAccountAndAccountRole,
 		{
@@ -73,9 +67,7 @@ const InviteTeamMembersPage = ({
 			refetchQueries: ['getUserAccountsByAccountExternalReferenceCode'],
 		}
 	);
-	const [deleteUserAccount] = useMutation(
-		deleteAccountUserAccount,
-	);
+	const [deleteUserAccount] = useMutation(deleteAccountUserAccount);
 
 	const [baseButtonDisabled, setBaseButtonDisabled] = useState(true);
 	const [hasInitialError, setInitialError] = useState();
@@ -83,9 +75,8 @@ const InviteTeamMembersPage = ({
 	const [accountRolesOptions, setAccountRolesOptions] = useState([]);
 	const [accountRoles, setAccountRoles] = useState([]);
 	const [availableAdminsRoles, setAvailableAdminsRoles] = useState(1);
-	const [isLoadingUserInvitation, setIsLoadingUserInvitation] = useState(
-		false
-	);
+	const [isLoadingUserInvitation, setIsLoadingUserInvitation] =
+		useState(false);
 	const [showEmptyEmailError, setshowEmptyEmailError] = useState(false);
 	const [roleSelectorFilled, setRoleSelectorFilled] = useState(false);
 
@@ -93,7 +84,8 @@ const InviteTeamMembersPage = ({
 		project?.slaCurrent?.includes(SLA_TYPES.gold) ||
 		project?.slaCurrent?.includes(SLA_TYPES.platinum);
 
-	const isUnlimitedSupportSeats = project.maxRequestors === MAXIMUM_SUPPORT_SEATS_DEFAULT;
+	const isUnlimitedSupportSeats =
+		project.maxRequestors === MAXIMUM_SUPPORT_SEATS_DEFAULT;
 
 	useEffect(() => {
 		const getRoles = async () => {
@@ -116,7 +108,7 @@ const InviteTeamMembersPage = ({
 										name === ROLE_TYPES?.requester.name ||
 										name === ROLE_TYPES?.admin.name
 								),
-						  ]
+							]
 				);
 
 				for (let i = 1; i < INITIAL_INVITES_COUNT; i++) {
@@ -135,6 +127,7 @@ const InviteTeamMembersPage = ({
 		};
 
 		getRoles();
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [availableSupportSeatsCount, client, setFieldValue]);
 
@@ -161,6 +154,7 @@ const InviteTeamMembersPage = ({
 				? setAvailableAdminsRoles(UNLIMITED_SUPPORT_SEATS)
 				: setAvailableAdminsRoles(remainingAdmins);
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [values, project, accountRoles, availableSupportSeatsCount]);
 
@@ -172,10 +166,15 @@ const InviteTeamMembersPage = ({
 			errors?.invites?.filter((email) => email)?.length || 0;
 
 		const hasSupportSeatRoleInvited = values?.invites?.some((invite) =>
-			invite.role.some((roleSelected) => isSupportSeatRole(roleSelected.name))
+			invite.role.some((roleSelected) =>
+				isSupportSeatRole(roleSelected.name)
+			)
 		);
 		const supportSeatRoleInvitedCount = values?.invites.flatMap((invite) =>
-			invite.role.filter((roleSelected) => isSupportSeatRole(roleSelected.name))).length;
+			invite.role.filter((roleSelected) =>
+				isSupportSeatRole(roleSelected.name)
+			)
+		).length;
 
 		if (inviteMembers) {
 			const successfullyEmails = totalEmails - failedEmails;
@@ -185,18 +184,31 @@ const InviteTeamMembersPage = ({
 				hasSupportSeatRoleInvited
 			) {
 				setBaseButtonDisabled(true);
-			} else if (!isUnlimitedSupportSeats && availableSupportSeatsCount < supportSeatRoleInvitedCount) {
+			}
+			else if (
+				!isUnlimitedSupportSeats &&
+				availableSupportSeatsCount < supportSeatRoleInvitedCount
+			) {
 				setBaseButtonDisabled(true);
-			} else {
+			}
+			else {
 				setInitialError(false);
 				setBaseButtonDisabled(successfullyEmails !== totalEmails);
 				setshowEmptyEmailError(false);
 			}
-		} else if (touched['invites']?.some((field) => field?.email)) {
+		}
+		else if (touched['invites']?.some((field) => field?.email)) {
 			setInitialError(true);
 			setBaseButtonDisabled(true);
 		}
-	}, [touched, values, availableSupportSeatsCount, errors, project.maxRequestors, isUnlimitedSupportSeats]);
+	}, [
+		touched,
+		values,
+		availableSupportSeatsCount,
+		errors,
+		project.maxRequestors,
+		isUnlimitedSupportSeats,
+	]);
 
 	const handleSubmit = async () => {
 		const inviteMembers = values?.invites?.filter(({email}) => email) || [];
@@ -220,27 +232,9 @@ const InviteTeamMembersPage = ({
 			displaySuccess: false,
 		};
 
-		const _getUserAccountByEmails = async (emails) => {
-			const getUserAccount = await client.query({
-				context,
-				query: getUserAccountByEmail,
-				variables: {
-					filter: Array.isArray(emails)
-						? SearchBuilder.in('emailAddress', emails)
-						: SearchBuilder.eq('emailAddress', emails),
-				},
-			});
-
-			return getUserAccount?.data?.userAccounts?.items ?? [];
-		};
-
-		const userAccounts = await _getUserAccountByEmails(
-			values?.invites?.map(({email}) => email)
-		);
-
 		for (const inviteMember of inviteMembers) {
 			try {
-				await assignUserWithAccount({
+				const {data} = await assignUserWithAccount({
 					context,
 					variables: {
 						accountKey: project.accountKey,
@@ -248,45 +242,54 @@ const InviteTeamMembersPage = ({
 					},
 				});
 
-				const currentUserAccount = userAccounts.find(
-					({emailAddress}) => emailAddress === inviteMember.email
-				);
+				const createdOrAssignedUser =
+					data?.createAccountUserAccountByExternalReferenceCodeByEmailAddress;
 
-				const isCurrentUserAccountWithSameNames =
-					currentUserAccount?.familyName ===
-						inviteMember.familyName &&
-					currentUserAccount?.givenName === inviteMember.givenName;
+				if (!createdOrAssignedUser) {
+					throw new Error(
+						`Failed to create or assign user ${inviteMember.email}`
+					);
+				}
 
-				if (!isCurrentUserAccountWithSameNames) {
-					const [
-						invitedMemberUserAccount,
-					] = await _getUserAccountByEmails(inviteMember.email);
+				const needsNameUpdate =
+					createdOrAssignedUser.givenName !==
+						inviteMember.givenName ||
+					createdOrAssignedUser.familyName !==
+						inviteMember.familyName;
 
-					if (invitedMemberUserAccount) {
-						try {
-							await updateUserAccount({
-								context,
-								variables: {
-									userAccount: {
-										emailAddress: inviteMember.email,
-										familyName: inviteMember.familyName,
-										givenName: inviteMember.givenName,
-									},
-									userAccountId: invitedMemberUserAccount.id,
+				if (needsNameUpdate) {
+					try {
+						await updateUserAccount({
+							context,
+							variables: {
+								userAccount: {
+									emailAddress: inviteMember.email,
+									familyName: inviteMember.familyName,
+									givenName: inviteMember.givenName,
 								},
-							});
-						} catch (error) {}
+								userAccountId: createdOrAssignedUser.id,
+							},
+						});
+					}
+					catch (error) {
+						console.error(
+							`Failed to update name for ${inviteMember.email}`,
+							error
+						);
+
+						Liferay.Util.openToast({
+							...DEFAULT_WARNING,
+							message: i18n.sub(
+								'user-x-was-invited-successfully-but-there-was-a-problem-updating-their-name',
+								[inviteMember.givenName]
+							),
+						});
 					}
 				}
 
-				const inviteMemberRolesSelected = [];
-				const invitedMemberRoles = inviteMember.role;
+				const invitedMemberRoles = inviteMember.role || [];
 
-				invitedMemberRoles?.map((roleInvited) => {
-					inviteMemberRolesSelected.push(roleInvited);
-				});
-
-				for (const inviteRole of inviteMemberRolesSelected) {
+				for (const inviteRole of invitedMemberRoles) {
 					try {
 						await addContactRoleNameByEmailByProject(
 							project.accountKey,
@@ -325,7 +328,7 @@ const InviteTeamMembersPage = ({
 									accountKey: project.accountKey,
 									emailAddress: inviteMember.email,
 								},
-							})
+							});
 
 							throw new Error('Error', {cause: error.cause});
 						}
@@ -341,7 +344,9 @@ const InviteTeamMembersPage = ({
 
 				Liferay.Util.openToast({
 					...DEFAULT_WARNING,
-					message: `Unable to invite ${inviteMember.givenName}`,
+					message: i18n.sub('unable-to-invite-x', [
+						inviteMember.givenName,
+					]),
 				});
 			}
 		}
@@ -470,9 +475,10 @@ const InviteTeamMembersPage = ({
 													roleSelected
 														.partnerMemberRoles
 														.roles;
-												const updatedMemberRoles = memberRoles.filter(
-													(role) => role.active
-												);
+												const updatedMemberRoles =
+													memberRoles.filter(
+														(role) => role.active
+													);
 
 												return updatedMemberRoles?.map(
 													(updateRole, roleIndex) => {
@@ -488,9 +494,10 @@ const InviteTeamMembersPage = ({
 												);
 											}
 
-											const accountRoleItem = Object.values(
-												roleSelected
-											).filter((role) => role.active);
+											const accountRoleItem =
+												Object.values(
+													roleSelected
+												).filter((role) => role.active);
 
 											return accountRoleItem?.map(
 												(updateRole, roleIndex) => {
@@ -557,7 +564,8 @@ const InviteTeamMembersPage = ({
 											setBaseButtonDisabled(false);
 											setRoleSelectorFilled(false);
 
-											const hasEmptyEmails = isAnyEmptyEmail();
+											const hasEmptyEmails =
+												isAnyEmptyEmail();
 
 											if (!hasEmptyEmails) {
 												push(
@@ -583,10 +591,10 @@ const InviteTeamMembersPage = ({
 											projectHasSLAGoldPlatinum
 												? i18n.translate(
 														'support-seats'
-												  )
+													)
 												: i18n.translate(
 														'administrator-roles'
-												  )
+													)
 										}
 										  ${i18n.sub('available-x-of-x', [
 												availableAdminsRoles < 0
@@ -601,11 +609,11 @@ const InviteTeamMembersPage = ({
 											? i18n.sub(
 													'only-x-members-for-this-project-including-yourself-can-have-role-permissions-administrators-requesters-to-open-support-tickets',
 													[project.maxRequestors]
-											  )
+												)
 											: i18n.sub(
 													'only-x-member-for-this-project-including-yourself-can-have-role-permissions-administrators-requesters-to-open-support-tickets',
 													[project.maxRequestors]
-											  )}
+												)}
 
 										<a
 											className="font-weight-bold text-neutral-9"

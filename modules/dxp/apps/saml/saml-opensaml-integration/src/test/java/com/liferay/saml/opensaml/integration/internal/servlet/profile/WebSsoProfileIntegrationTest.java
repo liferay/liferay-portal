@@ -8,8 +8,11 @@ package com.liferay.saml.opensaml.integration.internal.servlet.profile;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.cookies.CookiesManager;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LRUMap;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -44,6 +47,8 @@ import com.liferay.saml.runtime.exception.SubjectException;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.io.ByteArrayOutputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.security.IdentifierGenerationStrategy;
@@ -156,21 +163,25 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			_webSsoProfileImpl, "samlProviderConfigurationHelper",
 			samlProviderConfigurationHelper);
 		ReflectionTestUtil.setFieldValue(
-			_webSsoProfileImpl, "_samlSpAuthRequestLocalService",
-			_samlSpAuthRequestLocalService);
+			_webSsoProfileImpl, "samlSpIdpConnectionLocalService",
+			getMockPortletService(
+				SamlSpIdpConnectionLocalServiceUtil.class,
+				SamlSpIdpConnectionLocalService.class));
 		ReflectionTestUtil.setFieldValue(
 			_webSsoProfileImpl, "samlSpSessionLocalService",
 			_samlSpSessionLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_webSsoProfileImpl, "_samlSpAuthRequestLocalService",
+			_samlSpAuthRequestLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_webSsoProfileImpl, "_samlSpMessageLocalService",
 			getMockPortletService(
 				SamlSpMessageLocalServiceUtil.class,
 				SamlSpMessageLocalService.class));
 		ReflectionTestUtil.setFieldValue(
-			_webSsoProfileImpl, "samlSpIdpConnectionLocalService",
+			_webSsoProfileImpl, "_userLocalService",
 			getMockPortletService(
-				SamlSpIdpConnectionLocalServiceUtil.class,
-				SamlSpIdpConnectionLocalService.class));
+				UserLocalServiceUtil.class, UserLocalService.class));
 
 		_webSsoProfileImpl.activate(
 			SystemBundleUtil.getBundleContext(), new HashMap<String, Object>());
@@ -728,6 +739,36 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			samlSsoRequestContext);
 	}
 
+	@Test
+	public void testProcessAuthnRequestWhenIsPassiveIsTrue() throws Exception {
+		SamlSpIdpConnection samlSpIdpConnection = new SamlSpIdpConnectionImpl();
+
+		samlSpIdpConnection.setSamlIdpEntityId(IDP_ENTITY_ID);
+		samlSpIdpConnection.setForceAuthn(false);
+
+		_setUpWebSsoProfilerImpl(samlSpIdpConnection);
+
+		prepareIdentityProvider(IDP_ENTITY_ID);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			getMockHttpServletRequest(
+				StringBundler.concat(
+					SSO_URL, "?SAMLRequest=", _buildEncodedSamlRequest()));
+
+		mockHttpServletRequest.setAttribute(
+			SamlWebKeys.SAML_SP_IDP_CONNECTION, samlSpIdpConnection);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_webSsoProfileImpl.processAuthnRequest(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		String content = mockHttpServletResponse.getContentAsString();
+
+		Assert.assertTrue(content.contains("SAMLResponse"));
+	}
+
 	@Test(expected = SignatureException.class)
 	public void testVerifyAssertionSignatureInvalidSignature()
 		throws Exception {
@@ -1275,6 +1316,35 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		Assert.assertEquals(
 			samlSsoRequestContexts.toString(), expectedSize,
 			samlSsoRequestContexts.size());
+	}
+
+	private String _buildEncodedSamlRequest() throws Exception {
+		AuthnRequest authnRequest = OpenSamlUtil.buildAuthnRequest(
+			SP_ENTITY_ID,
+			OpenSamlUtil.buildAssertionConsumerService(
+				SAMLConstants.SAML2_POST_BINDING_URI, -1, false, ACS_URL),
+			OpenSamlUtil.buildSingleSignOnService(
+				SAMLConstants.SAML2_POST_BINDING_URI, SSO_URL),
+			OpenSamlUtil.buildNameIdPolicy());
+
+		authnRequest.setIsPassive(true);
+
+		String authnRequestXML = OpenSamlUtil.marshall(authnRequest);
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+		Deflater deflater = new Deflater(Deflater.DEFLATED, true);
+
+		try (DeflaterOutputStream deflaterOutputStream =
+				new DeflaterOutputStream(byteArrayOutputStream, deflater)) {
+
+			deflaterOutputStream.write(authnRequestXML.getBytes("UTF-8"));
+		}
+		finally {
+			deflater.end();
+		}
+
+		return Base64.encodeToURL(byteArrayOutputStream.toByteArray());
 	}
 
 	private <T extends BaseContext> T _getMessageContextSubcontext(

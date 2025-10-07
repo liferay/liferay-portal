@@ -271,6 +271,40 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 		return styleBookEntryPersistence.fetchByPrimaryKey(styleBookEntryId);
 	}
 
+	@Override
+	public StyleBookEntry fetchStyleBookEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId) {
+
+		return styleBookEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public StyleBookEntry fetchStyleBookEntryByExternalReferenceCode(
+		String externalReferenceCode, long groupId, boolean head) {
+
+		return styleBookEntryPersistence.fetchByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
+	@Override
+	public StyleBookEntry getStyleBookEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId)
+		throws PortalException {
+
+		return styleBookEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, true);
+	}
+
+	@Override
+	public StyleBookEntry getStyleBookEntryByExternalReferenceCode(
+			String externalReferenceCode, long groupId, boolean head)
+		throws PortalException {
+
+		return styleBookEntryPersistence.findByERC_G_Head(
+			externalReferenceCode, groupId, head);
+	}
+
 	/**
 	 * Returns the style book entry with the primary key.
 	 *

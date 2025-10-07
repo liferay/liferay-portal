@@ -1,3 +1,17 @@
+buildscript {
+	dependencies {
+		classpath group: "me.champeau.jmh", name: "jmh-gradle-plugin", version: "0.7.2"
+	}
+
+	repositories {
+		maven {
+			url "https://repository-cdn.liferay.com/nexus/content/groups/public"
+		}
+	}
+}
+
+apply plugin: "me.champeau.jmh"
+
 dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-nio")

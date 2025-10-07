@@ -39,36 +39,36 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 					sb.append("\n");
 				}
 
-				if (!insideBlockStyle) {
-					if (YMLSourceUtil.isBlockStyle(line)) {
-						insideBlockStyle = true;
-						blockStyleLeadingSpaces = SourceUtil.getLeadingSpaces(
-							line);
-					}
-
-					if (Validator.isBlank(line)) {
-						continue;
-					}
-
+				if (insideBlockStyle) {
 					sb.append(line);
-
 					sb.append("\n");
+
+					leadingSpaces = SourceUtil.getLeadingSpaces(line);
+
+					if (!Validator.isBlank(line) &&
+						(leadingSpaces.length() <=
+							blockStyleLeadingSpaces.length()) &&
+						!YMLSourceUtil.isBlockStyle(line)) {
+
+						insideBlockStyle = false;
+					}
 
 					continue;
 				}
 
-				sb.append(line);
+				if (Validator.isBlank(line)) {
+					continue;
+				}
 
+				sb.append(line);
 				sb.append("\n");
 
-				leadingSpaces = SourceUtil.getLeadingSpaces(line);
-
-				if (!Validator.isBlank(line) &&
-					(leadingSpaces.length() <=
-						blockStyleLeadingSpaces.length())) {
-
-					insideBlockStyle = false;
+				if (!YMLSourceUtil.isBlockStyle(line)) {
+					continue;
 				}
+
+				blockStyleLeadingSpaces = SourceUtil.getLeadingSpaces(line);
+				insideBlockStyle = true;
 			}
 		}
 

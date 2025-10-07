@@ -7,15 +7,13 @@ import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
-import {useMemo, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import useSWR, {KeyedMutator} from 'swr';
+import {useMemo} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import useSWR from 'swr';
 
 import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import {ProductWorkflowStatusCode} from '../../../../enums/Product';
 import i18n from '../../../../i18n';
-import {Liferay} from '../../../../liferay/liferay';
-import koroneikiOAuth2 from '../../../../services/oauth/Koroneiki';
 import HeadlessCommerceAdminCatalog from '../../../../services/rest/HeadlessCommerceAdminCatalog';
 import {
 	getProductVersionFromSpecifications,
@@ -28,135 +26,41 @@ import AppDetail from './AppDetail';
 import './App.scss';
 
 type AppProps = {
-	isAdministratorDashboard?: boolean;
+	header?: any;
 };
 
-type AdministratorButtons = {
-	mutate: KeyedMutator<any>;
-	productId: number;
-	selectedApp: any;
-};
-
-const AdministratorButtons: React.FC<AdministratorButtons> = ({
-	mutate,
-	productId,
-	selectedApp,
-}) => {
-	const [loading, setLoading] = useState(false);
-
-	const isDraft =
-		selectedApp.workflowStatusInfo.code === ProductWorkflowStatusCode.DRAFT;
-
-	const onUpdateRequestStatus = async (
-		workflowStatus: ProductWorkflowStatusCode
-	) => {
-		try {
-			await HeadlessCommerceAdminCatalog.updateProductByExternalReferenceCode(
-				selectedApp.externalReferenceCode,
-				{workflowStatusInfo: workflowStatus}
-			);
-
-			mutate((data: any) => data, {revalidate: true});
-
-			Liferay.Util.openToast({
-				message: i18n.translate('your-request-completed-successfully'),
-				type: 'success',
-			});
-		}
-		catch {
-			Liferay.Util.openToast({
-				message: i18n.translate('an-unexpected-error-occurred'),
-				type: 'danger',
-			});
-		}
-	};
-
-	return (
-		<>
-			<ClayButton
-				className="font-weight-bold mr-5"
-				disabled={loading}
-				displayType="unstyled"
-				onClick={() => {
-					setLoading(true);
-
-					koroneikiOAuth2
-						.syncProduct(productId)
-						.then(() =>
-							Liferay.Util.openToast({
-								message: 'Koroneiki Sync Successfully',
-								title: 'Success',
-							})
-						)
-						.catch((error) => {
-							console.error(error);
-
-							Liferay.Util.openToast({
-								message: 'Koroneiki Sync Failed',
-								title: 'Error',
-								type: 'danger',
-							});
-						})
-						.finally(() => setLoading(false));
-				}}
-			>
-				{loading ? 'Synchronizing...' : 'Sync to KR'}
-			</ClayButton>
-
-			{isDraft && (
-				<ClayButton
-					displayType="primary"
-					onClick={() =>
-						onUpdateRequestStatus(
-							ProductWorkflowStatusCode.APPROVED
-						)
-					}
-				>
-					{i18n.translate('approve')}
-				</ClayButton>
-			)}
-		</>
-	);
-};
-
-const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
+const App: React.FC<AppProps> = ({header}) => {
 	const {productId} = useParams();
-	const {myUserAccount, properties} = useMarketplaceContext();
+	const {properties} = useMarketplaceContext();
 	const navigate = useNavigate();
+	const {pathname} = useLocation();
 
-	const isNewAppEnabled = properties.featureFlags.includes('LPD-24546');
-
-	const {
-		data: selectedApp,
-		isLoading,
-		mutate,
-	} = useSWR(`/published-app/${productId}`, () =>
-		HeadlessCommerceAdminCatalog.getProduct(
-			productId as unknown as number,
-			new URLSearchParams({
-				nestedFields: 'attachments,images,productSpecifications',
-			})
-		)
+	const {data: product, isLoading} = useSWR(
+		`/published-app/${productId}`,
+		() =>
+			HeadlessCommerceAdminCatalog.getProduct(
+				productId as unknown as number,
+				new URLSearchParams({
+					nestedFields: 'attachments,images,productSpecifications',
+				})
+			)
 	);
 
 	const appVersion = useMemo(
 		() =>
 			getProductVersionFromSpecifications(
-				selectedApp?.productSpecifications ?? []
+				product?.productSpecifications ?? []
 			),
-		[selectedApp?.productSpecifications]
+		[product?.productSpecifications]
 	);
 
-	if (!selectedApp || isLoading) {
+	if (isLoading || !product) {
 		return null;
 	}
 
-	const status = selectedApp?.workflowStatusInfo?.label?.replace(
-		/(^\w|\s\w)/g,
-		(m: string) => m.toUpperCase()
-	);
+	const isNewAppEnabled = properties.featureFlags.includes('LPD-24546');
 
-	const thumbnail = getThumbnailByProductAttachment(selectedApp?.images);
+	const thumbnail = getThumbnailByProductAttachment(product?.images);
 
 	return (
 		<div className="app-details-page-container">
@@ -167,11 +71,16 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 			>
 				<ClayIcon className="mr-2" symbol="order-arrow-left" />
 				<span className="h5 mt-1">
-					{i18n.translate('back-to-apps')}
+					{i18n.translate(
+						pathname.includes('/solutions')
+							? 'back-to-solutions'
+							: 'back-to-apps'
+					)}
 				</span>
 			</ClayButton>
 
-			{status === 'Draft' && (
+			{product.workflowStatusInfo.code ===
+				ProductWorkflowStatusCode.DRAFT && (
 				<ClayAlert
 					className="app-details-page-alert-container"
 					displayType="info"
@@ -198,9 +107,9 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 					<div>
 						<span
 							className="app-details-page-app-info-title d-block text-truncate"
-							title={selectedApp.name?.en_US}
+							title={product.name?.en_US}
 						>
-							{selectedApp.name?.en_US}
+							{product.name?.en_US}
 						</span>
 
 						<div className="app-details-page-app-info-subtitle-container">
@@ -216,48 +125,35 @@ const App: React.FC<AppProps> = ({isAdministratorDashboard}) => {
 									'app-details-page-app-info-subtitle-icon',
 									{
 										'app-details-page-app-info-subtitle-icon-hidden':
-											selectedApp.workflowStatusInfo
-												.label === 'draft',
+											product.workflowStatusInfo.label ===
+											'draft',
 										'app-details-page-app-info-subtitle-icon-pending':
-											selectedApp.workflowStatusInfo
-												.label === 'pending',
+											product.workflowStatusInfo.label ===
+											'pending',
 										'app-details-page-app-info-subtitle-icon-published':
-											selectedApp.workflowStatusInfo
-												.label === 'approved',
+											product.workflowStatusInfo.label ===
+											'approved',
 									}
 								)}
 								symbol="circle"
 							/>
 
 							<span className="app-details-page-app-info-subtitle-text">
-								{selectedApp.workflowStatusInfo.label_i18n}
+								{product.workflowStatusInfo.label_i18n}
 							</span>
 						</div>
 					</div>
 				</div>
 
-				{isAdministratorDashboard &&
-					myUserAccount?.roleBriefs.some(
-						({name}) => name === 'Administrator'
-					) && (
-						<div className="app-details-page-app-info-buttons-container">
-							<AdministratorButtons
-								mutate={mutate}
-								productId={productId as unknown as number}
-								selectedApp={selectedApp}
-							/>
-						</div>
-					)}
+				{header}
 			</div>
 			<div>
 				{isNewAppEnabled ? (
 					<AppDetail />
 				) : (
 					<ReviewAndSubmitAppPage
-						onClickBack={() => {}}
-						onClickContinue={() => {}}
-						productERC={selectedApp.externalReferenceCode}
-						productId={selectedApp.productId}
+						productERC={product.externalReferenceCode}
+						productId={product.productId}
 						readonly
 					/>
 				)}

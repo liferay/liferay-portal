@@ -480,7 +480,13 @@ function SelectionFilter({
 					disabled={submitDisabled}
 					onClick={() => {
 						if (actionType === 'delete') {
-							setFilter({active: false});
+							setFilter({
+								active: false,
+								selectedData: {
+									exclude: false,
+									selectedItems: [],
+								},
+							});
 						}
 						else {
 							const newSelectedData = {
@@ -503,7 +509,7 @@ function SelectionFilter({
 					{actionType === 'add' && Liferay.Language.get('add-filter')}
 
 					{actionType === 'edit' &&
-						Liferay.Language.get('edit-filter')}
+						Liferay.Language.get('show-results')}
 
 					{actionType === 'delete' &&
 						Liferay.Language.get('delete-filter')}

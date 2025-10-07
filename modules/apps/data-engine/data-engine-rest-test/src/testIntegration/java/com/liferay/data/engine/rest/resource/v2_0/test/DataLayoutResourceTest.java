@@ -36,9 +36,9 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.portal.util.PropsValues;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -501,11 +501,35 @@ public class DataLayoutResourceTest extends BaseDataLayoutResourceTestCase {
 	}
 
 	@Override
+	protected Long testGraphQLDataDefinitionDataLayout_getDataDefinitionId()
+		throws Exception {
+
+		return _dataDefinition.getId();
+	}
+
+	@Override
 	protected DataLayout testGraphQLDataLayout_addDataLayout()
 		throws Exception {
 
 		return dataLayoutResource.postDataDefinitionDataLayout(
 			_dataDefinition.getId(), randomDataLayout());
+	}
+
+	@Override
+	protected Long
+			testGraphQLDeleteDataDefinitionDataLayout_getDataDefinitionId(
+				DataLayout dataLayout)
+		throws Exception {
+
+		return _dataDefinition.getId();
+	}
+
+	@Override
+	protected Long testGraphQLPostDataDefinitionDataLayout_getDataDefinitionId(
+			DataLayout dataLayout)
+		throws Exception {
+
+		return _dataDefinition.getId();
 	}
 
 	@Override

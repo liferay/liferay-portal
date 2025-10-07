@@ -1931,6 +1931,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2297,6 +2307,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceNotificationTemplate> commerceNotificationTemplates =
+				findByGroupId(groupId);
+
+			commerceNotificationTemplates = InlineSQLHelperUtil.filter(
+				commerceNotificationTemplates, groupId);
+
+			return commerceNotificationTemplates.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -2867,6 +2887,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 			return findByG_E(groupId, enabled, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_E(
+					groupId, enabled, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3252,6 +3282,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 	public int filterCountByG_E(long groupId, boolean enabled) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_E(groupId, enabled);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceNotificationTemplate> commerceNotificationTemplates =
+				findByG_E(groupId, enabled);
+
+			commerceNotificationTemplates = InlineSQLHelperUtil.filter(
+				commerceNotificationTemplates, groupId);
+
+			return commerceNotificationTemplates.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -3885,6 +3925,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 				groupId, type, enabled, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_T_E(
+					groupId, type, enabled, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		type = Objects.toString(type, "");
 
 		StringBundler sb = null;
@@ -4326,6 +4376,16 @@ public class CommerceNotificationTemplatePersistenceImpl
 	public int filterCountByG_T_E(long groupId, String type, boolean enabled) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_T_E(groupId, type, enabled);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceNotificationTemplate> commerceNotificationTemplates =
+				findByG_T_E(groupId, type, enabled);
+
+			commerceNotificationTemplates = InlineSQLHelperUtil.filter(
+				commerceNotificationTemplates, groupId);
+
+			return commerceNotificationTemplates.size();
 		}
 
 		type = Objects.toString(type, "");

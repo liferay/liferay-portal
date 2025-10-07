@@ -12,9 +12,11 @@ import java.util.Properties;
  */
 public class ${servicePropsUtilClassName} {
 
-	public static void addProperties(Properties properties) {
-		_instance._configuration.addProperties(properties);
-	}
+	<#if serviceBuilder.isVersionLTE_7_3_0()>
+		public static void addProperties(Properties properties) {
+			_instance._configuration.addProperties(properties);
+		}
+	</#if>
 
 	public static boolean contains(String key) {
 		return _instance._configuration.contains(key);
@@ -40,9 +42,11 @@ public class ${servicePropsUtilClassName} {
 		return _instance._configuration.getProperties();
 	}
 
-	public static void removeProperties(Properties properties) {
-		_instance._configuration.removeProperties(properties);
-	}
+	<#if serviceBuilder.isVersionLTE_7_3_0()>
+		public static void removeProperties(Properties properties) {
+			_instance._configuration.removeProperties(properties);
+		}
+	</#if>
 
 	public static void set(String key, String value) {
 		_instance._configuration.set(key, value);

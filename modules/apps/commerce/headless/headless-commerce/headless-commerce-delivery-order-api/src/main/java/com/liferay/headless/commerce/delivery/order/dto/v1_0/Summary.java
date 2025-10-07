@@ -91,6 +91,47 @@ public class Summary implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _currencySupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(example = "1")
+	public Integer getItemsCount() {
+		if (_itemsCountSupplier != null) {
+			itemsCount = _itemsCountSupplier.get();
+
+			_itemsCountSupplier = null;
+		}
+
+		return itemsCount;
+	}
+
+	public void setItemsCount(Integer itemsCount) {
+		this.itemsCount = itemsCount;
+
+		_itemsCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setItemsCount(
+		UnsafeSupplier<Integer, Exception> itemsCountUnsafeSupplier) {
+
+		_itemsCountSupplier = () -> {
+			try {
+				return itemsCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Integer itemsCount;
+
+	@JsonIgnore
+	private Supplier<Integer> _itemsCountSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(example = "10.1")
 	@Valid
 	public BigDecimal getItemsQuantity() {
@@ -984,6 +1025,18 @@ public class Summary implements Serializable {
 			sb.append(_escape(currency));
 
 			sb.append("\"");
+		}
+
+		Integer itemsCount = getItemsCount();
+
+		if (itemsCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"itemsCount\": ");
+
+			sb.append(itemsCount);
 		}
 
 		BigDecimal itemsQuantity = getItemsQuantity();

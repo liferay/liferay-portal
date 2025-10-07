@@ -7,6 +7,7 @@ import getRandomString from '../../../../utils/getRandomString';
 
 type ListStyle =
 	| 'Bordered List (Collection Provider)'
+	| 'Bordered List (Journal)'
 	| 'Bulleted List (Collection Provider)'
 	| 'Bulleted List (Journal)'
 	| 'Inline List'
@@ -42,6 +43,8 @@ const COLLECTION_PROVIDERS = {
 const LIST_STYLES = {
 	'Bordered List (Collection Provider)':
 		'com.liferay.asset.info.internal.list.renderer.AssetEntryBorderedBasicInfoListRenderer',
+	'Bordered List (Journal)':
+		'com.liferay.journal.web.internal.info.list.renderer.JournalArticleBorderedBasicInfoListRenderer',
 	'Bulleted List (Collection Provider)':
 		'com.liferay.asset.info.internal.list.renderer.BulletedAssetEntryBasicInfoListRenderer',
 	'Bulleted List (Journal)':

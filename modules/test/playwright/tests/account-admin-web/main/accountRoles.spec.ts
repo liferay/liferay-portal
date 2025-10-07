@@ -7,6 +7,7 @@ import {Page, expect, mergeTests} from '@playwright/test';
 
 import {accountsPagesTest} from '../../../fixtures/accountsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {rolesPagesTest} from '../../../fixtures/rolesPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
@@ -24,6 +25,9 @@ import {addAccountRole, initAccountManager} from './utils/roles';
 export const test = mergeTests(
 	accountsPagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-35914': {enabled: true},
+	}),
 	loginTest(),
 	rolesPagesTest,
 	usersAndOrganizationsPagesTest
@@ -104,7 +108,7 @@ const setupPermissionsTest = async (
 
 test(
 	'Can create an owned account role',
-	{tag: ['@LPD-47225']},
+	{tag: ['@LPD-47225', '@LPD-59032']},
 	async ({
 		accountRolesPage,
 		accountsPage,
@@ -132,6 +136,9 @@ test(
 				(
 					await accountRolesPage.rolesTable.row(1, roleName)
 				).row.getByText('Owned')
+			).toBeVisible();
+			await expect(
+				accountRolesPage.rolesTable.cell('Approved')
 			).toBeVisible();
 		}).toPass({timeout: 5000});
 	}
@@ -1585,7 +1592,7 @@ test(
 
 		const roleName = getRandomString();
 
-		await editAccountRolePage.nameInput.fill(roleName);
+		await editAccountRolePage.titleInput.fill(roleName);
 		await editAccountRolePage.saveButton.click();
 
 		await waitForAlert(page);

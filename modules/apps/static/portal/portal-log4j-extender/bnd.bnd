@@ -1,4 +1,4 @@
 Bundle-Activator: com.liferay.portal.log4j.extender.internal.activator.Log4jExtenderBundleActivator
 Bundle-Name: Liferay Portal Log4j Extender
 Bundle-SymbolicName: com.liferay.portal.log4j.extender
-Bundle-Version: 6.0.12
+Bundle-Version: 6.0.14

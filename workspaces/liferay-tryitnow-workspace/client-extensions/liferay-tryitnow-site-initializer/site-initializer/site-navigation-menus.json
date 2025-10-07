@@ -1,5 +1,6 @@
 [
 	{
+		"externalReferenceCode": "M2H8-MAIN",
 		"menuItems": [
 			{
 				"friendlyURL": "/home",
@@ -7,8 +8,12 @@
 				"type": "layout"
 			},
 			{
-				"friendlyURL": "/view-tickets",
 				"menuItems": [
+					{
+						"friendlyURL": "/view-tickets",
+						"name": "View Tickets",
+						"type": "layout"
+					},
 					{
 						"friendlyURL": "/admin-tickets",
 						"name": "Admin View",
@@ -20,14 +25,21 @@
 						"type": "layout"
 					}
 				],
-				"name": "View Tickets",
-				"type": "layout"
+				"name": "Tickets",
+				"name_i18n": {
+					"en_US": "Tickets"
+				},
+				"title": "Tickets",
+				"type": "node"
 			},
 			{
 				"menuItems": [
 					{
 						"friendlyURL": "/trialguide",
 						"name": "Trial Guide",
+						"name_i18n": {
+							"en_US": "Trial Guide"
+						},
 						"type": "layout",
 						"useCustomName": true
 					},
@@ -59,6 +71,7 @@
 		"type": "node"
 	},
 	{
+		"externalReferenceCode": "M2H8-FOOTER-CLARITY",
 		"menuItems": [
 			{
 				"friendlyURL": "/home",
@@ -84,20 +97,17 @@
 		"type": "node"
 	},
 	{
+		"externalReferenceCode": "M2H8-FOOTER-TRIAL",
 		"menuItems": [
 			{
 				"friendlyURL": "/welcome",
-				"name": "Trial Guide",
+				"name": "Welcome",
 				"type": "layout"
 			},
 			{
-				"name": "Documentation",
-				"name_i18n": {
-					"en_US": "Documentation"
-				},
-				"type": "url",
-				"url": "https://learn.liferay.com",
-				"useNewTab": "true"
+				"friendlyURL": "/trialguide",
+				"name": "Trial Guide",
+				"type": "layout"
 			},
 			{
 				"friendlyURL": "/faq",
@@ -118,6 +128,7 @@
 		"type": "node"
 	},
 	{
+		"externalReferenceCode": "M2H8-FOOTER-LIFERAY",
 		"menuItems": [
 			{
 				"name": "About Liferay",
@@ -129,12 +140,21 @@
 				"useNewTab": "true"
 			},
 			{
-				"name": "Liferay Experience Cloud",
+				"name": "Capabilities",
 				"name_i18n": {
-					"en_US": "Liferay Experience Cloud"
+					"en_US": "Capabilities"
 				},
 				"type": "url",
-				"url": "https://www.liferay.com/products/liferay-cloud-capabilities",
+				"url": "https://www.liferay.com/capabilities",
+				"useNewTab": "true"
+			},
+			{
+				"name": "Offerings",
+				"name_i18n": {
+					"en_US": "Offerings"
+				},
+				"type": "url",
+				"url": "https://www.liferay.com/offerings",
 				"useNewTab": "true"
 			},
 			{

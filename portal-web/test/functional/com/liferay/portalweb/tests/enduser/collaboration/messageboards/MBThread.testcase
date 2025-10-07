@@ -40,6 +40,8 @@ definition {
 	@description = "This is a test for LPS-136910. It checks that bold text can be added in the editor."
 	@priority = 3
 	test CanAddBoldText {
+		property portal.acceptance = "false";
+
 		MessageboardsThread.addPG(
 			bold = "true",
 			groupName = "Guest",
@@ -154,6 +156,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanAddThreadWithUTF8Characters {
+		property portal.acceptance = "false";
+
 		Navigator.gotoPage(pageName = "Message Boards Page");
 
 		MessageboardsThread.addPG(
@@ -176,6 +180,8 @@ definition {
 	@description = "This ensures that a thread with 255 characters in the title can be added."
 	@priority = 3
 	test CanAddTitleWith255Characters {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "MB Thread Message Body",
@@ -192,6 +198,8 @@ definition {
 	@description = "This is a test for LPS-136912. It checks that an urgent thread can be added."
 	@priority = 3
 	test CanAddUrgentThread {
+		property portal.acceptance = "false";
+
 		MessageboardsThread.addPG(
 			groupName = "Guest",
 			layoutName = "message-boards-page",
@@ -214,6 +222,8 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanCancelEditOnThread {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "Message Boards Thread Body",
@@ -355,6 +365,8 @@ definition {
 	@description = "This is a test for LPS-136920. It checks that a thread can be exported."
 	@priority = 3
 	test CanExportThread {
+		property portal.acceptance = "false";
+
 		JSONMBMessage.addMessage(
 			groupName = "Guest",
 			threadBody = "MB Thread Message Body",
@@ -370,6 +382,8 @@ definition {
 	@description = "This is a test for LPS-136919. It checks that a thread can be imported."
 	@priority = 3
 	test CanImportThread {
+		property portal.acceptance = "false";
+
 		MessageBoardsAdmin.openMessageBoardsAdmin(siteURLKey = "guest");
 
 		LAR.importPortlet(
@@ -595,6 +609,7 @@ definition {
 	@refactordone
 	test CanViewBBCodeNoXSSWithRemoteServices {
 		property custom.properties = "message.boards.message.formats.default=bbcode";
+		property portal.acceptance = "false";
 
 		JSONLayout.addPublicLayout(
 			groupName = "Guest",

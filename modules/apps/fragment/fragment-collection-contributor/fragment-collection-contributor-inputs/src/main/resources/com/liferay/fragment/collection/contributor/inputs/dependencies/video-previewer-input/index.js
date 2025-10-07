@@ -1,23 +1,27 @@
 const currentLength = document.getElementById(
-	`${fragmentNamespace}-current-length`
+	`${fragmentElementId}-current-length`
 );
 const errorMessage = document.getElementById(
-	`${fragmentNamespace}-video-previewer-error-message`
+	`${fragmentElementId}-video-previewer-error-message`
 );
-const formGroup = document.getElementById(`${fragmentNamespace}-form-group`);
+const formGroup = document.getElementById(`${fragmentElementId}-form-group`);
 const inputElement = document.getElementById(
-	`${fragmentNamespace}-video-previewer-input`
+	`${fragmentElementId}-video-previewer-input`
 );
-const lengthInfo = document.getElementById(`${fragmentNamespace}-length-info`);
+const lengthInfo = document.getElementById(`${fragmentElementId}-length-info`);
 const lengthWarning = document.getElementById(
-	`${fragmentNamespace}-length-warning`
+	`${fragmentElementId}-length-warning`
 );
 const lengthWarningText = document.getElementById(
-	`${fragmentNamespace}-length-warning-text`
+	`${fragmentElementId}-length-warning-text`
 );
 const videoPreview = document.getElementById(
-	`${fragmentNamespace}-video-preview`
+	`${fragmentElementId}-video-preview`
 );
+
+function getFragmentTranslationInput(namespace, languageId, inputId) {
+	return document.getElementById(`${namespace}${inputId}_${languageId}`);
+}
 
 function main() {
 	if (layoutMode === 'edit' && inputElement) {
@@ -95,6 +99,8 @@ function main() {
 
 				const defaultLanguageId = themeDisplay.getDefaultLanguageId();
 
+				let currentLanguageId = defaultLanguageId;
+
 				if (input.localizable) {
 					const {onChange} = registerLocalizedInput({
 						defaultLanguageId,
@@ -102,9 +108,32 @@ function main() {
 						inputElement,
 						inputName: input.name,
 						localizationInputsContainer: inputElement.parentNode,
-						namespace: fragmentNamespace,
-						onLocaleChange: ({value}) => {
+						namespace: fragmentElementId,
+						onLocaleChange: ({languageId, value}) => {
+							currentLanguageId = languageId;
+
 							updateVideoPreview(value);
+						},
+						onResetTranslation: () => {
+							const defaultTranslationInput =
+								getFragmentTranslationInput(
+									fragmentElementId,
+									defaultLanguageId,
+									inputElement.id
+								);
+
+							const translationInput =
+								getFragmentTranslationInput(
+									fragmentElementId,
+									currentLanguageId,
+									inputElement.id
+								);
+
+							updateVideoPreview(defaultTranslationInput.value);
+
+							inputElement.value = defaultTranslationInput.value;
+
+							translationInput.removeAttribute('value');
 						},
 					});
 
@@ -117,12 +146,12 @@ function main() {
 						defaultLanguageId,
 						inputElement,
 						readOnlyInputLabel: document.getElementById(
-							`${fragmentNamespace}-video-previewer-readonly`
+							`${fragmentElementId}-video-previewer-readonly`
 						),
 						unlocalizedFieldsState:
 							input.attributes.unlocalizedFieldsState,
 						unlocalizedMessageContainer: document.getElementById(
-							`${fragmentNamespace}-unlocalized-info`
+							`${fragmentElementId}-unlocalized-info`
 						),
 					});
 				}

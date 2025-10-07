@@ -12,7 +12,6 @@ import jakarta.annotation.Generated;
 
 import java.io.Serializable;
 
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -26,27 +25,55 @@ public class FragmentLink implements Cloneable, Serializable {
 		return FragmentLinkSerDes.toDTO(json);
 	}
 
-	public Map<String, FragmentLinkValue> getValue_i18n() {
-		return value_i18n;
+	public Target getTarget() {
+		return target;
 	}
 
-	public void setValue_i18n(Map<String, FragmentLinkValue> value_i18n) {
-		this.value_i18n = value_i18n;
+	public String getTargetAsString() {
+		if (target == null) {
+			return null;
+		}
+
+		return target.toString();
 	}
 
-	public void setValue_i18n(
-		UnsafeSupplier<Map<String, FragmentLinkValue>, Exception>
-			value_i18nUnsafeSupplier) {
+	public void setTarget(Target target) {
+		this.target = target;
+	}
+
+	public void setTarget(
+		UnsafeSupplier<Target, Exception> targetUnsafeSupplier) {
 
 		try {
-			value_i18n = value_i18nUnsafeSupplier.get();
+			target = targetUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Map<String, FragmentLinkValue> value_i18n;
+	protected Target target;
+
+	public FragmentLinkValue getValue() {
+		return value;
+	}
+
+	public void setValue(FragmentLinkValue value) {
+		this.value = value;
+	}
+
+	public void setValue(
+		UnsafeSupplier<FragmentLinkValue, Exception> valueUnsafeSupplier) {
+
+		try {
+			value = valueUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected FragmentLinkValue value;
 
 	@Override
 	public FragmentLink clone() throws CloneNotSupportedException {
@@ -77,6 +104,39 @@ public class FragmentLink implements Cloneable, Serializable {
 
 	public String toString() {
 		return FragmentLinkSerDes.toJSON(this);
+	}
+
+	public static enum Target {
+
+		BLANK("Blank"), SELF("Self");
+
+		public static Target create(String value) {
+			for (Target target : values()) {
+				if (Objects.equals(target.getValue(), value) ||
+					Objects.equals(target.name(), value)) {
+
+					return target;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Target(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 }

@@ -73,6 +73,24 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 	}
 
 	@Override
+	public Address fetchAddressByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		Address address =
+			addressLocalService.fetchAddressByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+		if (address != null) {
+			CommonPermissionUtil.check(
+				getPermissionChecker(), address.getClassNameId(),
+				address.getClassPK(), ActionKeys.VIEW);
+		}
+
+		return address;
+	}
+
+	@Override
 	public Address getAddress(long addressId) throws PortalException {
 		Address address = addressPersistence.findByPrimaryKey(addressId);
 
@@ -108,6 +126,36 @@ public class AddressServiceImpl extends AddressServiceBaseImpl {
 
 		return addressLocalService.getListTypeAddresses(
 			user.getCompanyId(), className, classPK, listTypeIds);
+	}
+
+	@Override
+	public Address getOrAddEmptyAddress(
+			String externalReferenceCode, String className, long classPK)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		Address address = fetchAddressByExternalReferenceCode(
+			externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (address != null) {
+			return address;
+		}
+
+		String actionId = ActionKeys.UPDATE;
+
+		if (Objects.equals(
+				className, "com.liferay.account.model.AccountEntry")) {
+
+			actionId = "MANAGE_ADDRESSES";
+		}
+
+		CommonPermissionUtil.check(
+			permissionChecker, className, classPK, actionId);
+
+		return addressLocalService.getOrAddEmptyAddress(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId(), className, classPK);
 	}
 
 	@Override

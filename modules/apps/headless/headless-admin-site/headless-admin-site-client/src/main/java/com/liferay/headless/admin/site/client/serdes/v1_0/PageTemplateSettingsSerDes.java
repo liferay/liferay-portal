@@ -49,12 +49,12 @@ public class PageTemplateSettingsSerDes {
 		if (type != null) {
 			String typeString = type.toString();
 
-			if (typeString.equals("ContentPageTemplate")) {
+			if (typeString.equals("ContentPageTemplateSettings")) {
 				return ContentPageTemplateSettingsSerDes.toJSON(
 					(ContentPageTemplateSettings)pageTemplateSettings);
 			}
 
-			if (typeString.equals("WidgetPageTemplate")) {
+			if (typeString.equals("WidgetPageTemplateSettings")) {
 				return WidgetPageTemplateSettingsSerDes.toJSON(
 					(WidgetPageTemplateSettings)pageTemplateSettings);
 			}
@@ -123,11 +123,11 @@ public class PageTemplateSettingsSerDes {
 			if (type != null) {
 				String typeString = type.toString();
 
-				if (typeString.equals("ContentPageTemplate")) {
+				if (typeString.equals("ContentPageTemplateSettings")) {
 					return ContentPageTemplateSettings.toDTO(json);
 				}
 
-				if (typeString.equals("WidgetPageTemplate")) {
+				if (typeString.equals("WidgetPageTemplateSettings")) {
 					return WidgetPageTemplateSettings.toDTO(json);
 				}
 

@@ -180,7 +180,7 @@ public class InlineSQLHelperImplTest {
 			sql,
 			sql.contains(
 				StringBundler.concat(
-					" OR (", _GROUP_ID_FIELD, " IN (", _groupOne.getGroupId(),
+					" OR (JournalArticle.groupId IN (", _groupOne.getGroupId(),
 					"))")));
 	}
 
@@ -199,8 +199,8 @@ public class InlineSQLHelperImplTest {
 		_setPermissionChecker();
 
 		String sql = _inlineSQLHelper.replacePermissionCheck(
-			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD, new long[] {_groupOne.getGroupId()}, null);
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD,
+			new long[] {_groupOne.getGroupId()});
 
 		Assert.assertSame(_SQL_PLAIN, sql);
 
@@ -243,10 +243,8 @@ public class InlineSQLHelperImplTest {
 		_setPermissionChecker();
 
 		_inlineSQLHelper.replacePermissionCheck(
-			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD,
-			_GROUP_ID_FIELD,
-			new long[] {_groupOne.getGroupId(), _groupThree.getGroupId()},
-			null);
+			_SQL_PLAIN, _CLASS_NAME, _CLASS_PK_FIELD,
+			new long[] {_groupOne.getGroupId(), _groupThree.getGroupId()});
 	}
 
 	@Test
@@ -351,13 +349,13 @@ public class InlineSQLHelperImplTest {
 			StringBundler.concat(
 				"select * from Layout inner join PortletPreferences on ",
 				"PortletPreferences.plid = Layout.plid where Layout.companyId ",
-				"= ? and Layout.plid in (select distinct ",
+				"= ? and (Layout.plid in (select distinct ",
 				"ResourcePermission.primKeyId from ResourcePermission where ",
 				"ResourcePermission.companyId = ? and ResourcePermission.name ",
 				"= ? and ResourcePermission.scope = ? and ",
 				"ResourcePermission.viewActionId = ? and ",
 				"(ResourcePermission.roleId in (?, ?) or ",
-				"ResourcePermission.ownerId = ?))"),
+				"ResourcePermission.ownerId = ?)))"),
 			dslQuery.toString());
 
 		_assertValidSql(dslQuery);
@@ -491,19 +489,12 @@ public class InlineSQLHelperImplTest {
 					_RESOURCE_PERMISSION, ".companyId = ",
 					CompanyThreadLocal.getCompanyId())));
 
-		Assert.assertTrue(
-			sql,
-			sql.contains(
-				StringBundler.concat(
-					_USER_ID_FIELD, " = ", _user.getUserId())));
-
 		_assertValidSql(sql);
 	}
 
 	private String _replacePermissionCheckJoin(String sql, long... groupIds) {
 		return _inlineSQLHelper.replacePermissionCheck(
-			sql, _CLASS_NAME, _CLASS_PK_FIELD, _USER_ID_FIELD, _GROUP_ID_FIELD,
-			groupIds, null);
+			sql, _CLASS_NAME, _CLASS_PK_FIELD, groupIds);
 	}
 
 	private void _setPermissionChecker() throws Exception {
@@ -519,8 +510,6 @@ public class InlineSQLHelperImplTest {
 
 	private static final String _GROUP_BY_CLAUSE = " GROUP BY ";
 
-	private static final String _GROUP_ID_FIELD = "groupIdField";
-
 	private static final String _ORDER_BY_CLAUSE = " ORDER BY ";
 
 	private static final String _RESOURCE_PERMISSION = "ResourcePermission";
@@ -534,9 +523,6 @@ public class InlineSQLHelperImplTest {
 
 	private static final String _SQL_WHERE =
 		" WHERE " + _CLASS_PK_FIELD + " != 0";
-
-	private static final String _USER_ID_FIELD =
-		_RESOURCE_PERMISSION + ".ownerId";
 
 	private static final String _WHERE_CLAUSE = " WHERE ";
 

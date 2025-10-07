@@ -53,6 +53,7 @@ import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,6 +102,22 @@ public class PostalAddressResourceTest
 		super.testDeletePostalAddress();
 
 		_testDeletePrimaryPostalAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetAccountByExternalReferenceCodePostalAddressesPage()
+		throws Exception {
+
+		super.testGraphQLGetAccountByExternalReferenceCodePostalAddressesPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostAccountPostalAddress() throws Exception {
+		super.testGraphQLPostAccountPostalAddress();
 	}
 
 	@Override

@@ -114,6 +114,18 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 				/>
 			</liferay-ui:search-container-column-text>
 
+			<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+				<liferay-ui:search-container-column-text
+					cssClass="table-cell-expand"
+					name="status"
+				>
+					<clay:label
+						displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
+						label="<%= WorkflowConstants.getStatusLabel(role.getStatus()) %>"
+					/>
+				</liferay-ui:search-container-column-text>
+			</c:if>
+
 			<liferay-ui:search-container-column-text>
 				<c:if test="<%= !portletName.equals(myAccountPortletId) && userDisplayContext.isAllowRemoveRole(role) %>">
 					<clay:button
@@ -333,6 +345,18 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 					name="organization"
 					value="<%= HtmlUtil.escape(userGroupRole.getGroup().getDescriptiveName(locale)) %>"
 				/>
+
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+					<liferay-ui:search-container-column-text
+						cssClass="table-cell-expand"
+						name="status"
+					>
+						<clay:label
+							displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
+							label="<%= WorkflowConstants.getStatusLabel(role.getStatus()) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</c:if>
 
 				<%
 				boolean membershipProtected = false;
@@ -582,6 +606,18 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						group="<%= userGroupRole.getGroup() %>"
 					/>
 				</liferay-ui:search-container-column-text>
+
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+					<liferay-ui:search-container-column-text
+						cssClass="table-cell-expand"
+						name="status"
+					>
+						<clay:label
+							displayType="<%= WorkflowConstants.getStatusStyle(role.getStatus()) %>"
+							label="<%= WorkflowConstants.getStatusLabel(role.getStatus()) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</c:if>
 
 				<%
 				boolean membershipProtected = false;

@@ -68,29 +68,27 @@ public abstract class PageSettings implements Cloneable, Serializable {
 
 	protected Boolean hiddenFromNavigation;
 
-	public NavigationMenuSettings getNavigationMenuSettings() {
-		return navigationMenuSettings;
+	public NavigationSettings getNavigationSettings() {
+		return navigationSettings;
 	}
 
-	public void setNavigationMenuSettings(
-		NavigationMenuSettings navigationMenuSettings) {
-
-		this.navigationMenuSettings = navigationMenuSettings;
+	public void setNavigationSettings(NavigationSettings navigationSettings) {
+		this.navigationSettings = navigationSettings;
 	}
 
-	public void setNavigationMenuSettings(
-		UnsafeSupplier<NavigationMenuSettings, Exception>
-			navigationMenuSettingsUnsafeSupplier) {
+	public void setNavigationSettings(
+		UnsafeSupplier<NavigationSettings, Exception>
+			navigationSettingsUnsafeSupplier) {
 
 		try {
-			navigationMenuSettings = navigationMenuSettingsUnsafeSupplier.get();
+			navigationSettings = navigationSettingsUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected NavigationMenuSettings navigationMenuSettings;
+	protected NavigationSettings navigationSettings;
 
 	public OpenGraphSettings getOpenGraphSettings() {
 		return openGraphSettings;
@@ -113,6 +111,48 @@ public abstract class PageSettings implements Cloneable, Serializable {
 	}
 
 	protected OpenGraphSettings openGraphSettings;
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+
+	public void setPriority(
+		UnsafeSupplier<Integer, Exception> priorityUnsafeSupplier) {
+
+		try {
+			priority = priorityUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer priority;
+
+	public String getQueryString() {
+		return queryString;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
+
+	public void setQueryString(
+		UnsafeSupplier<String, Exception> queryStringUnsafeSupplier) {
+
+		try {
+			queryString = queryStringUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String queryString;
 
 	public SEOSettings getSeoSettings() {
 		return seoSettings;

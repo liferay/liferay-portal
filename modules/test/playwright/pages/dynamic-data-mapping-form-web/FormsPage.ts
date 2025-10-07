@@ -32,7 +32,7 @@ export class FormsPage {
 		this.exportImportIframe = page.frameLocator(
 			'iframe[title="Export \\/ Import"]'
 		);
-		this.closeButton = page.getByLabel('close', {exact: true});
+		this.closeButton = page.getByLabel('Close', {exact: true});
 		this.continueButton = this.exportImportIframe.getByRole('button', {
 			name: 'Continue',
 		});

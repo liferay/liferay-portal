@@ -27,6 +27,7 @@ const NumericBase = ({
 	appendType,
 	dataType,
 	decimalPlaces,
+	displayErrors,
 	editingLanguageId,
 	errorMessage,
 	focused,
@@ -53,7 +54,7 @@ const NumericBase = ({
 		...((errorMessage || tip) && {
 			'aria-describedby': `${id ?? name}_fieldFeedback`,
 		}),
-		'aria-invalid': !valid,
+		...(displayErrors && !valid && {'aria-invalid': true}),
 		'aria-required': required,
 	};
 

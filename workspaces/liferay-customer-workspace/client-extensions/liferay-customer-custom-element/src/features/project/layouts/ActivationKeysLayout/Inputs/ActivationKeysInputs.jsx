@@ -311,7 +311,7 @@ const ActivationKeysInputs = ({
 
 			{hasLicenseDownloadError && currentEnterpriseMessage}
 
-			{featureFlags.includes('LPS-185004') && (
+			{(accountSubscriptionGroupName === 'enterprise-search') && featureFlags.includes('LPS-185004') && (
 				<p className="pt-3 text-neutral-7">
 					{`${i18n.translate(
 						'for-instructions-on-how-to-setup-your-liferay-enterprise-search-software-please-read-the'

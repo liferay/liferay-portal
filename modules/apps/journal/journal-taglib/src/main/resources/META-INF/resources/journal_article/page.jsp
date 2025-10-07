@@ -30,7 +30,7 @@ String wrapperCssClass = (String)request.getAttribute("liferay-journal:journal-a
 		</div>
 	</c:when>
 	<c:otherwise>
-		<div class="journal-content-article <%= Validator.isNotNull(wrapperCssClass) ? wrapperCssClass : StringPool.BLANK %>" <%= dataAnalyticsTrackingEnabled ? String.format("data-analytics-asset-id=\"%s\" data-analytics-asset-title=\"%s\" data-analytics-asset-type=\"web-content\" data-analytics-web-content-resource-pk=\"%s\"", articleDisplay.getArticleId(), HtmlUtil.escapeAttribute(articleDisplay.getTitle()), articleDisplay.getResourcePrimKey()) : "" %>>
+		<div class="journal-content-article <%= Validator.isNotNull(wrapperCssClass) ? wrapperCssClass : StringPool.BLANK %>" <%= dataAnalyticsTrackingEnabled ? String.format("data-analytics-asset-id=\"%s\" data-analytics-asset-title=\"%s\" data-analytics-asset-type=\"web-content\" data-analytics-external-reference-code=\"%s\" data-analytics-web-content-resource-pk=\"%s\"", articleDisplay.getArticleId(), HtmlUtil.escapeAttribute(articleDisplay.getTitle()), articleDisplay.getExternalReferenceCode(), articleDisplay.getResourcePrimKey()) : "" %>>
 			<c:if test='<%= GetterUtil.getBoolean((String)request.getAttribute("liferay-journal:journal-article:showTitle")) %>'>
 				<clay:row>
 					<clay:col>

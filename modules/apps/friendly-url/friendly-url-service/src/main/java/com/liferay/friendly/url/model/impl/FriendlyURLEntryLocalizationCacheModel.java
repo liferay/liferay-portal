@@ -85,14 +85,14 @@ public class FriendlyURLEntryLocalizationCacheModel
 		sb.append(friendlyURLEntryId);
 		sb.append(", languageId=");
 		sb.append(languageId);
-		sb.append(", urlTitle=");
-		sb.append(urlTitle);
 		sb.append(", groupId=");
 		sb.append(groupId);
 		sb.append(", classNameId=");
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
+		sb.append(", urlTitle=");
+		sb.append(urlTitle);
 		sb.append("}");
 
 		return sb.toString();
@@ -118,16 +118,16 @@ public class FriendlyURLEntryLocalizationCacheModel
 			friendlyURLEntryLocalizationImpl.setLanguageId(languageId);
 		}
 
+		friendlyURLEntryLocalizationImpl.setGroupId(groupId);
+		friendlyURLEntryLocalizationImpl.setClassNameId(classNameId);
+		friendlyURLEntryLocalizationImpl.setClassPK(classPK);
+
 		if (urlTitle == null) {
 			friendlyURLEntryLocalizationImpl.setUrlTitle("");
 		}
 		else {
 			friendlyURLEntryLocalizationImpl.setUrlTitle(urlTitle);
 		}
-
-		friendlyURLEntryLocalizationImpl.setGroupId(groupId);
-		friendlyURLEntryLocalizationImpl.setClassNameId(classNameId);
-		friendlyURLEntryLocalizationImpl.setClassPK(classPK);
 
 		friendlyURLEntryLocalizationImpl.resetOriginalValues();
 
@@ -146,13 +146,13 @@ public class FriendlyURLEntryLocalizationCacheModel
 
 		friendlyURLEntryId = objectInput.readLong();
 		languageId = objectInput.readUTF();
-		urlTitle = objectInput.readUTF();
 
 		groupId = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
+		urlTitle = objectInput.readUTF();
 	}
 
 	@Override
@@ -174,18 +174,18 @@ public class FriendlyURLEntryLocalizationCacheModel
 			objectOutput.writeUTF(languageId);
 		}
 
+		objectOutput.writeLong(groupId);
+
+		objectOutput.writeLong(classNameId);
+
+		objectOutput.writeLong(classPK);
+
 		if (urlTitle == null) {
 			objectOutput.writeUTF("");
 		}
 		else {
 			objectOutput.writeUTF(urlTitle);
 		}
-
-		objectOutput.writeLong(groupId);
-
-		objectOutput.writeLong(classNameId);
-
-		objectOutput.writeLong(classPK);
 	}
 
 	public long mvccVersion;
@@ -194,9 +194,9 @@ public class FriendlyURLEntryLocalizationCacheModel
 	public long companyId;
 	public long friendlyURLEntryId;
 	public String languageId;
-	public String urlTitle;
 	public long groupId;
 	public long classNameId;
 	public long classPK;
+	public String urlTitle;
 
 }

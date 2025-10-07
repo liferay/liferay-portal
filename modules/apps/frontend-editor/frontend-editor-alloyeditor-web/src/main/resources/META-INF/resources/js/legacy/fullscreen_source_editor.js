@@ -238,7 +238,6 @@ AUI.add(
 						boundingBox.one('#switchTheme');
 
 					instance._editor = new A.LiferaySourceEditor({
-						aceOptions: instance.get('aceOptions'),
 						boundingBox: boundingBox.one('.source-html'),
 						height: '100%',
 						mode: 'html',

@@ -42,7 +42,7 @@ public class ProjectTemplatesMVCPortletCustomPackageTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -76,10 +76,13 @@ public class ProjectTemplatesMVCPortletCustomPackageTest
 			_liferayProduct, _liferayVersion, mavenExecutor,
 			_gradleDistribution);
 
+		String portletFilePath =
+			"src/main/java/com/liferay/test/portlet/FooPortlet.java";
+
 		testContains(
-			gradleProjectDir,
-			"src/main/java/com/liferay/test/portlet/FooPortlet.java",
-			"javax.portlet.name=\" + FooPortletKeys.FOO",
+			gradleProjectDir, portletFilePath,
+			getJavaxOrJakartaPackagePrefix(_liferayVersion) +
+				".portlet.name=\" + FooPortletKeys.FOO",
 			"public class FooPortlet extends MVCPortlet {");
 	}
 

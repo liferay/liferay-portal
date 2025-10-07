@@ -8,6 +8,7 @@ import {
 	getCollectionFilterValue,
 	setCollectionFilterValue,
 } from '@liferay/fragment-renderer-collection-filter-impl';
+import {dateUtils} from 'frontend-js-web';
 import React from 'react';
 
 export function FragmentCollectionFilterDate({
@@ -20,7 +21,33 @@ export function FragmentCollectionFilterDate({
 
 	return (
 		<ClayDatePicker
+			ariaLabels={{
+				buttonChooseDate: `${Liferay.Language.get('select-date')}`,
+				buttonDot: `${Liferay.Language.get('select-current-date')}`,
+				buttonNextMonth: `${Liferay.Language.get('select-next-month')}`,
+				buttonPreviousMonth: `${Liferay.Language.get(
+					'select-previous-month'
+				)}`,
+				dialog: `${Liferay.Language.get('select-date')}`,
+				selectMonth: `${Liferay.Language.get('select-a-month')}`,
+				selectYear: `${Liferay.Language.get('select-a-year')}`,
+			}}
 			disabled={isDisabled}
+			firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
+			months={[
+				`${Liferay.Language.get('january')}`,
+				`${Liferay.Language.get('february')}`,
+				`${Liferay.Language.get('march')}`,
+				`${Liferay.Language.get('april')}`,
+				`${Liferay.Language.get('may')}`,
+				`${Liferay.Language.get('june')}`,
+				`${Liferay.Language.get('july')}`,
+				`${Liferay.Language.get('august')}`,
+				`${Liferay.Language.get('september')}`,
+				`${Liferay.Language.get('october')}`,
+				`${Liferay.Language.get('november')}`,
+				`${Liferay.Language.get('december')}`,
+			]}
 			onValueChange={(value) =>
 				setCollectionFilterValue(
 					date,
@@ -31,6 +58,7 @@ export function FragmentCollectionFilterDate({
 			}
 			placeholder="YYYY-MM-DD"
 			value={value}
+			weekdaysShort={dateUtils.getWeekdaysShort()}
 		/>
 	);
 }

@@ -149,7 +149,8 @@ public class ObjectEntryWorkflowHandlerTest {
 				objectDefinitionA.getClassName());
 
 		ObjectEntry objectEntryA1 = _objectEntryLocalService.getObjectEntry(
-			"A1", objectDefinitionA.getObjectDefinitionId());
+			"A1", ObjectDefinitionConstants.GROUP_ID_DEFAULT,
+			objectDefinitionA.getObjectDefinitionId());
 
 		Assert.assertNotNull(
 			workflowHandler.getAssetRenderer(objectEntryA1.getObjectEntryId()));
@@ -175,7 +176,8 @@ public class ObjectEntryWorkflowHandlerTest {
 				TestPropsValues.getCompanyId(), "C_AA");
 
 		ObjectEntry objectEntryAA1 = _objectEntryLocalService.getObjectEntry(
-			"AA1", objectDefinitionAA.getObjectDefinitionId());
+			"AA1", ObjectDefinitionConstants.GROUP_ID_DEFAULT,
+			objectDefinitionAA.getObjectDefinitionId());
 
 		Assert.assertNotNull(
 			workflowHandler.getAssetRenderer(
@@ -246,8 +248,8 @@ public class ObjectEntryWorkflowHandlerTest {
 	private ObjectDefinition _addObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				TestPropsValues.getUserId(), 0, null, false, false, false,
-				false, false, false, null,
+				TestPropsValues.getUserId(), 0, null, false, true, false, false,
+				false, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(StringUtil.randomString()),
 				"A" + StringUtil.randomString(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -258,7 +260,8 @@ public class ObjectEntryWorkflowHandlerTest {
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), "fieldName")));
+						RandomTestUtil.randomString(), "fieldName")),
+				Collections.emptyList());
 
 		return _objectDefinitionLocalService.publishCustomObjectDefinition(
 			TestPropsValues.getUserId(),

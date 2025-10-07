@@ -231,7 +231,9 @@ public class CommerceCatalogUpgradeProcess extends UpgradeProcess {
 			}
 
 			preparedStatement1.executeBatch();
+
 			preparedStatement2.executeBatch();
+
 			preparedStatement3.executeBatch();
 		}
 	}

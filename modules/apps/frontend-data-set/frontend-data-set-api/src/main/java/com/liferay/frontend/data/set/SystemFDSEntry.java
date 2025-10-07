@@ -5,7 +5,7 @@
 
 package com.liferay.frontend.data.set;
 
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 /**
  * @author Daniel Sanz

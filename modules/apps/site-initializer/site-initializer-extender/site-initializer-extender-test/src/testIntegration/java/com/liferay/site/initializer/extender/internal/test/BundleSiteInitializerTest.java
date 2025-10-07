@@ -49,6 +49,7 @@ import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotAppCustomization;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotAppCustomizationLocalService;
@@ -135,7 +136,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -668,10 +668,9 @@ public class BundleSiteInitializerTest {
 				fetchAssetListEntrySegmentsEntryRel(
 					assetListEntry.getAssetListEntryId(), 0);
 
-		Assert.assertTrue(
-			StringUtil.contains(
-				assetListEntrySegmentsEntryRel.getTypeSettings(),
-				"queryValues0=Test Keyword", StringPool.BLANK));
+		String typeSettings = assetListEntrySegmentsEntryRel.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("queryValues0=Test Keyword"));
 
 		assetListEntry = assetListEntries.get(1);
 
@@ -1484,7 +1483,8 @@ public class BundleSiteInitializerTest {
 	private void _assertDepotEntries1() throws Exception {
 		List<DepotEntry> depotEntries =
 			_depotEntryLocalService.getGroupConnectedDepotEntries(
-				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				_group.getGroupId(), DepotConstants.TYPE_ANY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
 
 		Assert.assertEquals(depotEntries.toString(), 2, depotEntries.size());
 
@@ -1514,7 +1514,7 @@ public class BundleSiteInitializerTest {
 	private void _assertDepotEntries2() throws Exception {
 		List<DepotEntry> depotEntries =
 			_depotEntryLocalService.getGroupConnectedDepotEntries(
-				_group.getGroupId(), -1, -1);
+				_group.getGroupId(), DepotConstants.TYPE_ANY, -1, -1);
 
 		Assert.assertEquals(depotEntries.toString(), 3, depotEntries.size());
 
@@ -2063,8 +2063,8 @@ public class BundleSiteInitializerTest {
 
 		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
 
-		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		Assert.assertNotNull(editableValuesJSONObject);
 
@@ -3391,6 +3391,9 @@ public class BundleSiteInitializerTest {
 				"[$TestObjectDefinition3#Test_Object_Entry_1$]"));
 		Assert.assertFalse(
 			pageDefinitionString.contains(
+				"[$OBJECT_DEFINITION_CLASS_NAME:TestObjectDefinition1$]"));
+		Assert.assertFalse(
+			pageDefinitionString.contains(
 				"[$OBJECT_DEFINITION_CLASS_NAME:TestObjectDefinition3$]"));
 		Assert.assertFalse(
 			pageDefinitionString.contains(
@@ -3867,10 +3870,11 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.LAYOUT,
 			siteNavigationMenuItem1.getType());
-		Assert.assertFalse(
-			StringUtil.contains(
-				siteNavigationMenuItem1.getTypeSettings(), "useCustomName",
-				StringPool.BLANK));
+
+		String typeSettings = siteNavigationMenuItem1.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("displayIcon=home"));
+		Assert.assertFalse(typeSettings.contains("useCustomName"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem2 =
 			siteNavigationMenuItems.get(1);
@@ -3878,10 +3882,10 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.URL,
 			siteNavigationMenuItem2.getType());
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem2.getTypeSettings(), "Test URL",
-				StringPool.BLANK));
+
+		typeSettings = siteNavigationMenuItem2.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("Test URL"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem3 =
 			siteNavigationMenuItems.get(2);
@@ -3889,10 +3893,10 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.NODE,
 			siteNavigationMenuItem3.getType());
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem3.getTypeSettings(), "Other Links",
-				StringPool.BLANK));
+
+		typeSettings = siteNavigationMenuItem3.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("Other Links"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem4 =
 			siteNavigationMenuItems.get(3);
@@ -3948,14 +3952,11 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.LAYOUT,
 			siteNavigationMenuItem1.getType());
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem1.getTypeSettings(), "Test Layout",
-				StringPool.BLANK));
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem1.getTypeSettings(), "useCustomName",
-				StringPool.BLANK));
+
+		String typeSettings = siteNavigationMenuItem1.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("Test Layout"));
+		Assert.assertTrue(typeSettings.contains("useCustomName"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem2 =
 			siteNavigationMenuItems.get(1);
@@ -3963,10 +3964,10 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.URL,
 			siteNavigationMenuItem2.getType());
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem2.getTypeSettings(), "Test URL",
-				StringPool.BLANK));
+
+		typeSettings = siteNavigationMenuItem2.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("Test URL"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem3 =
 			siteNavigationMenuItems.get(2);
@@ -3974,10 +3975,10 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			SiteNavigationMenuItemTypeConstants.NODE,
 			siteNavigationMenuItem3.getType());
-		Assert.assertTrue(
-			StringUtil.contains(
-				siteNavigationMenuItem3.getTypeSettings(), "Other Links Update",
-				StringPool.BLANK));
+
+		typeSettings = siteNavigationMenuItem3.getTypeSettings();
+
+		Assert.assertTrue(typeSettings.contains("Other Links Update"));
 
 		SiteNavigationMenuItem siteNavigationMenuItem4 =
 			siteNavigationMenuItems.get(3);

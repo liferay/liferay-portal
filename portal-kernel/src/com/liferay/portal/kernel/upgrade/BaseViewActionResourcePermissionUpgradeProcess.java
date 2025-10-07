@@ -18,31 +18,12 @@ public abstract class BaseViewActionResourcePermissionUpgradeProcess
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		long bitwiseValue = _getBitwiseValue();
-
-		processConcurrently(
+		runSQL(
 			StringBundler.concat(
-				"select resourcePermissionId, actionIds from ",
-				"ResourcePermission where name = ? and primKeyId != ? and ",
-				"viewActionId = ?"),
-			preparedStatement -> {
-				preparedStatement.setString(1, getClassName());
-				preparedStatement.setLong(2, 0L);
-				preparedStatement.setBoolean(3, true);
-			},
-			"update ResourcePermission set actionIds = ? where " +
-				"resourcePermissionId = ?",
-			resultSet -> new Object[] {
-				resultSet.getLong("actionIds"),
-				resultSet.getLong("resourcePermissionId")
-			},
-			(values, preparedStatement) -> {
-				preparedStatement.setLong(1, bitwiseValue | (Long)values[0]);
-				preparedStatement.setLong(2, (Long)values[1]);
-
-				preparedStatement.addBatch();
-			},
-			null);
+				"update ResourcePermission set actionIds = BITOR(",
+				_getBitwiseValue(), ", actionIds) where name = '",
+				getClassName(),
+				"' and primKeyId != 0 and viewActionId = [$TRUE$]"));
 	}
 
 	protected abstract String getActionId();

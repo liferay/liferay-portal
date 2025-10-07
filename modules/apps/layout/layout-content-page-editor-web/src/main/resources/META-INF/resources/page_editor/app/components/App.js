@@ -24,6 +24,7 @@ import {
 } from '../contexts/KeyboardMovementContext';
 import {LayoutKeyboardContextProvider} from '../contexts/LayoutKeyboardContext';
 import {LocalConfigContextProvider} from '../contexts/LocalConfigContext';
+import {ObjectDataContextProvider} from '../contexts/ObjectDataContext';
 import {PortletContentContextProvider} from '../contexts/PortletContentContext';
 import {ShortcutContextProvider} from '../contexts/ShortcutContext';
 import {StoreContextProvider} from '../contexts/StoreContext';
@@ -86,15 +87,17 @@ export default function App({state}) {
 																	<CommonStylesManager />
 
 																	<StyleBookContextProvider>
-																		<Sidebar />
+																		<ObjectDataContextProvider>
+																			<Sidebar />
 
-																		<LayoutKeyboardContextProvider>
-																			<LayoutViewport />
-																		</LayoutKeyboardContextProvider>
+																			<LayoutKeyboardContextProvider>
+																				<LayoutViewport />
+																			</LayoutKeyboardContextProvider>
 
-																		<LayoutBreadcrumbs />
+																			<LayoutBreadcrumbs />
 
-																		<ItemConfigurationSidebar />
+																			<ItemConfigurationSidebar />
+																		</ObjectDataContextProvider>
 																	</StyleBookContextProvider>
 																</GlobalContextProvider>
 															</LocalConfigContextProvider>

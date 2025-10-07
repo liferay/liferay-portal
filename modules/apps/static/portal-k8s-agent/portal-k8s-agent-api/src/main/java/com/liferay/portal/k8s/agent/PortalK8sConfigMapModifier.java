@@ -33,7 +33,7 @@ public interface PortalK8sConfigMapModifier {
 
 	public enum Result {
 
-		CREATED, DELETED, UNCHANGED, UPDATED
+		BUFFERED, CREATED, DELETED, UNCHANGED, UPDATED
 
 	}
 

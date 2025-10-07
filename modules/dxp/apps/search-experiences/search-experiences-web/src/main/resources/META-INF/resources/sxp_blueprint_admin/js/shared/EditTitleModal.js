@@ -74,8 +74,9 @@ export default function EditTitleModal({
 	};
 
 	const _handleSelectedLocaleChange = (inputRef) => (value) => {
-		setSelectedLocale(value);
 		inputRef.current.focus();
+
+		setSelectedLocale(value);
 	};
 
 	const _handleSubmit = (event) => {

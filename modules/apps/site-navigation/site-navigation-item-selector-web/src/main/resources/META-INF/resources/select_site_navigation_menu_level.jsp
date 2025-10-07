@@ -26,6 +26,7 @@ SelectSiteNavigationMenuDisplayContext selectSiteNavigationMenuDisplayContext = 
 			cssClass="site-navigation-menu-selector"
 			data-parent-site-navigation-menu-item-id="<%= selectSiteNavigationMenuDisplayContext.getParentSiteNavigationMenuItemId() %>"
 			data-private-layout="<%= selectSiteNavigationMenuDisplayContext.isPrivateLayout() %>"
+			data-site-navigation-menu-external-reference-code="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuExternalReferenceCode() %>"
 			data-site-navigation-menu-id="<%= selectSiteNavigationMenuDisplayContext.getSiteNavigationMenuId() %>"
 			data-title="<%= selectSiteNavigationMenuDisplayContext.getCurrentLevelTitle() %>"
 			displayType="primary"

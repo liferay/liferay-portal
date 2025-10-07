@@ -607,6 +607,15 @@ public class ListTypeDefinitionPersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -1003,6 +1012,15 @@ public class ListTypeDefinitionPersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ListTypeDefinition> listTypeDefinitions = findByUuid(uuid);
+
+			listTypeDefinitions = InlineSQLHelperUtil.filter(
+				listTypeDefinitions);
+
+			return listTypeDefinitions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1614,6 +1632,15 @@ public class ListTypeDefinitionPersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2030,6 +2057,16 @@ public class ListTypeDefinitionPersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ListTypeDefinition> listTypeDefinitions = findByUuid_C(
+				uuid, companyId);
+
+			listTypeDefinitions = InlineSQLHelperUtil.filter(
+				listTypeDefinitions);
+
+			return listTypeDefinitions.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2622,6 +2659,15 @@ public class ListTypeDefinitionPersistenceImpl
 			return findByC_U(companyId, userId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_U(
+					companyId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2999,6 +3045,16 @@ public class ListTypeDefinitionPersistenceImpl
 	public int filterCountByC_U(long companyId, long userId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_U(companyId, userId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<ListTypeDefinition> listTypeDefinitions = findByC_U(
+				companyId, userId);
+
+			listTypeDefinitions = InlineSQLHelperUtil.filter(
+				listTypeDefinitions);
+
+			return listTypeDefinitions.size();
 		}
 
 		StringBundler sb = new StringBundler(3);

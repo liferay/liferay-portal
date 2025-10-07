@@ -1,5 +1,20 @@
 # Liferay Gradle Plugins Poshi Runner Change Log
 
+## 4.0.22 - 2025-01-19
+
+### Commits
+- [POSHI-710] Update default poshi runner version (fd25299936)
+
+## 4.0.20 - 2024-11-04
+
+### Commits
+- [POSHI-706] Update default poshi runner version (98a6b2df76)
+
+## 4.0.19 - 2024-10-17
+
+### Commits
+- [POSHI-703] Update default poshi runner version (a04501f4c3)
+
 ## 4.0.18 - 2024-06-28
 
 ### Commits
@@ -1157,3 +1172,6 @@ up-to-date check (59fd9e696c)
 [POSHI-695]: https://issues.liferay.com/browse/POSHI-695
 [POSHI-699]: https://issues.liferay.com/browse/POSHI-699
 [POSHI-700]: https://issues.liferay.com/browse/POSHI-700
+[POSHI-703]: https://issues.liferay.com/browse/POSHI-703
+[POSHI-706]: https://issues.liferay.com/browse/POSHI-706
+[POSHI-710]: https://issues.liferay.com/browse/POSHI-710

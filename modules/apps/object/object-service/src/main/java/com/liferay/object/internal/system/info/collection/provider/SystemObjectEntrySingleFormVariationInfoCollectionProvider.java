@@ -85,7 +85,10 @@ public class SystemObjectEntrySingleFormVariationInfoCollectionProvider
 						}
 
 						return new SystemObjectEntry(
-							GetterUtil.getLong(values.get("id")), values);
+							GetterUtil.getLong(values.get("id")),
+							GetterUtil.getString(
+								values.get("externalReferenceCode")),
+							values);
 					}),
 				collectionQuery.getPagination(), (int)page.getTotalCount());
 		}

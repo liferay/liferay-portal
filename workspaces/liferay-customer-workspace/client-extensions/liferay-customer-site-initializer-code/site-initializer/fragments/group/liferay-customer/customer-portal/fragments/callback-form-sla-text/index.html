@@ -11,10 +11,10 @@
 	[#assign objectEntryJSON = jsonFactoryUtil.createJSONObject(objectEntryResponse) /]
 [/#if]
 
-[#assign message = languageUtil.get(locale, "sla-normal-message", "While immediate callbacks are reserved for those with platinum level, a support member will get in touch within 1 business day during our <a href='https://web.liferay.com/support/coverage-areas-and-hours'>standard business hours</a> of your designated Support Center. In the meantime, consider creating a <a href='https://help.liferay.com/hc'>support ticket</a> which can help expedite a resolution.") /]
+[#assign message = languageUtil.get(locale, "sla-normal-message", "While immediate callbacks are reserved for those with platinum level, a support member will get in touch within 1 business day during our <a href='https://web.liferay.com/support/coverage-areas-and-hours'>standard business hours</a> of your designated Support Center. In the meantime, consider creating a <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>support ticket</a> which can help expedite a resolution.") /]
 
 [#if objectEntryJSON.has("koroneikiAccountToCallbackRequest") && objectEntryJSON.get("koroneikiAccountToCallbackRequest").has("slaCurrent") && objectEntryJSON.get("koroneikiAccountToCallbackRequest").get("slaCurrent") == "Platinum Subscription"]
-	[#assign message = languageUtil.get(locale, "sla-platinum-message", "A Liferay Support member will contact you within 1 hour at the indicated phone number. Consider creating a <a href='https://help.liferay.com/hc'>support ticket</a> if you haven't already to help expedite a resolution.") /]
+	[#assign message = languageUtil.get(locale, "sla-platinum-message", "A Liferay Support member will contact you within 1 hour at the indicated phone number. Consider creating a <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>support ticket</a> if you haven't already to help expedite a resolution.") /]
 [/#if]
 
 <p class="callback-message">${message}</p>

@@ -31,7 +31,8 @@ if (input.attributes?.readOnly) {
 		input.addEventListener('click', preventClick);
 	});
 }
-else if (layoutMode === 'edit') {
+
+if (layoutMode === 'edit') {
 	allInputs.forEach((input) => {
 		input.setAttribute('disabled', true);
 	});
@@ -41,7 +42,7 @@ else if (layoutMode === 'edit') {
 else {
 	import('@liferay/fragment-impl/api').then(
 		({
-			getOrCreateTranslationInput,
+			getTranslationInput,
 			registerLocalizedInput,
 			registerUnlocalizedInput,
 		}) => {
@@ -56,13 +57,14 @@ else {
 				allInputs.forEach((inputElement) => {
 					Object.entries(input.valueI18n).forEach(
 						([languageId, value]) => {
-							const input = getOrCreateTranslationInput(
-								inputElement.id,
-								inputElement.name,
+							const input = getTranslationInput({
+								inputId: inputElement.id,
+								inputName: inputElement.name,
 								languageId,
-								inputElement.parentNode,
-								fragmentNamespace
-							);
+								localizationInputsContainer:
+									inputElement.parentNode,
+								namespace: fragmentElementId,
+							});
 
 							input.value = value.includes(inputElement.value)
 								? inputElement.value
@@ -75,18 +77,20 @@ else {
 					changeTextDirection: false,
 					customLocaleChangeHandler: true,
 					defaultLanguageId,
+					inputName: input.name,
+					localizationInputsContainer: fieldSet,
+					namespace: fragmentElementId,
 					onLocaleChange: ({languageId}) => {
 						currentLanguageId = languageId;
 
 						allInputs.forEach((input) => {
-							const translationInput =
-								getOrCreateTranslationInput(
-									input.id,
-									input.name,
-									languageId,
-									input.parentNode,
-									fragmentNamespace
-								);
+							const translationInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentElementId,
+							});
 
 							if (translationInput) {
 								if (
@@ -100,13 +104,14 @@ else {
 							}
 							else {
 								const defaultLanguageInput =
-									getOrCreateTranslationInput(
-										input.id,
-										input.name,
-										defaultLanguageId,
-										input.parentNode,
-										fragmentNamespace
-									);
+									getTranslationInput({
+										inputId: input.id,
+										inputName: input.name,
+										languageId: defaultLanguageId,
+										localizationInputsContainer:
+											input.parentNode,
+										namespace: fragmentElementId,
+									});
 
 								if (defaultLanguageInput) {
 									input.checked = Boolean(
@@ -116,17 +121,63 @@ else {
 							}
 						});
 					},
+					onMarkAsTranslated: () => {
+						allInputs.forEach((input) => {
+							const defaultLanguageInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId: defaultLanguageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentElementId,
+							});
+
+							const translationInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId: currentLanguageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentElementId,
+							});
+
+							input.checked = Boolean(defaultLanguageInput.value);
+
+							translationInput.value = defaultLanguageInput.value;
+						});
+					},
+					onResetTranslation: () => {
+						allInputs.forEach((input) => {
+							const defaultLanguageInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId: defaultLanguageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentElementId,
+							});
+
+							const translationInput = getTranslationInput({
+								inputId: input.id,
+								inputName: input.name,
+								languageId: currentLanguageId,
+								localizationInputsContainer: input.parentNode,
+								namespace: fragmentElementId,
+							});
+
+							input.checked = Boolean(defaultLanguageInput.value);
+
+							translationInput.value = '';
+						});
+					},
 				});
 
 				fieldSet.addEventListener('change', () => {
 					allInputs.forEach((input) => {
-						const translationInput = getOrCreateTranslationInput(
-							input.id,
-							input.name,
-							currentLanguageId,
-							input.parentNode,
-							fragmentNamespace
-						);
+						const translationInput = getTranslationInput({
+							inputId: input.id,
+							inputName: input.name,
+							languageId: currentLanguageId,
+							localizationInputsContainer: input.parentNode,
+							namespace: fragmentElementId,
+						});
 
 						translationInput.value = input.checked
 							? input.value
@@ -178,11 +229,11 @@ else {
 						});
 					},
 					readOnlyInputLabel: document.getElementById(
-						`${fragmentNamespace}-multiselect-list-read-only`
+						`${fragmentElementId}-multiselect-list-read-only`
 					),
 					unlocalizedFieldsState,
 					unlocalizedMessageContainer: document.getElementById(
-						`${fragmentNamespace}-unlocalized-info`
+						`${fragmentElementId}-unlocalized-info`
 					),
 				});
 			}
@@ -207,7 +258,7 @@ if (numberOfOptions < options.length) {
 			input.value = option.value;
 
 			// eslint-disable-next-line no-undef
-			input.id = `${fragmentEntryLinkNamespace}-checkbox-${option.value}`;
+			input.id = `${fragmentElementId}-checkbox-${option.value}`;
 
 			if (values.includes(option.value)) {
 				input.checked = true;
@@ -223,7 +274,7 @@ if (numberOfOptions < options.length) {
 				'for',
 
 				// eslint-disable-next-line no-undef
-				`${fragmentEntryLinkNamespace}-checkbox-${option.value}`
+				`${fragmentElementId}-checkbox-${option.value}`
 			);
 
 			const text = node.querySelector('.custom-control-label-text');

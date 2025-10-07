@@ -24,6 +24,7 @@ import {zipFolder} from '../../../utils/zip';
 import getFormContainerDefinition from '../../layout-content-page-editor-web/main/utils/getFormContainerDefinition';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import {PAGE_MANAGEMENT_SITE_NAME} from '../../setup/page-management-site/main/constants/site';
 import {getObjectERC} from '../../setup/page-management-site/main/utils/getObjectERC';
 
 const test = mergeTests(
@@ -645,7 +646,7 @@ test(
 
 		const siteLink = frameLocator
 			.locator('.nav-link')
-			.filter({hasText: pageManagementSite.name});
+			.filter({hasText: PAGE_MANAGEMENT_SITE_NAME});
 
 		const fragmentSetCard = frameLocator
 			.locator('.card-horizontal')
@@ -922,7 +923,7 @@ test(
 				fieldType: 'Long Text',
 				fragmentCollectionName,
 				fragmentName: draftInputFragmentEntryName,
-				siteName: pageManagementSite.name,
+				siteName: PAGE_MANAGEMENT_SITE_NAME,
 			});
 		}).not.toPass();
 
@@ -1029,7 +1030,7 @@ test(
 				fieldType: 'Boolean',
 				fragmentCollectionName,
 				fragmentName: inputFragmentEntryName,
-				siteName: pageManagementSite.name,
+				siteName: PAGE_MANAGEMENT_SITE_NAME,
 			});
 		}).not.toPass();
 
@@ -1055,7 +1056,7 @@ test(
 				fieldType: 'Long Text',
 				fragmentCollectionName,
 				fragmentName: inputFragmentEntryName,
-				siteName: pageManagementSite.name,
+				siteName: PAGE_MANAGEMENT_SITE_NAME,
 			});
 		}).toPass();
 

@@ -27,13 +27,14 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocalizationUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.util.PropsUtil;
-import com.liferay.portal.util.PropsValues;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.PortletConfig;
@@ -42,6 +43,7 @@ import jakarta.portlet.PortletModeException;
 import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
+import jakarta.portlet.RenderRequest;
 import jakarta.portlet.WindowState;
 import jakarta.portlet.WindowStateException;
 
@@ -219,6 +221,32 @@ public class LoginUtil {
 		).setWindowState(
 			WindowState.MAXIMIZED
 		).buildPortletURL();
+	}
+
+	public static boolean isAllowedToRenderView(
+		String defaultMVCPath, String defaultMVCRenderCommandName,
+		RenderRequest renderRequest) {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isSignedIn()) {
+			return true;
+		}
+
+		String mvcPath = ParamUtil.getString(renderRequest, "mvcPath");
+		String mvcRenderCommandName = ParamUtil.getString(
+			renderRequest, "mvcRenderCommandName");
+
+		if ((Validator.isNull(mvcPath) &&
+			 Validator.isNull(mvcRenderCommandName)) ||
+			mvcPath.equals(defaultMVCPath) ||
+			mvcRenderCommandName.equals(defaultMVCRenderCommandName)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	public static void sendEmailUserCreationAttempt(

@@ -170,9 +170,8 @@ definition {
 			import com.liferay.portal.kernel.configuration.ConfigurationFactoryUtil;
 			import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 			import com.liferay.portal.kernel.util.PropsUtil;
-			import com.liferay.portal.util.PropsUtil;
 
-			println("com.liferay.portal.util.PropsUtil:" + com.liferay.portal.util.PropsUtil.get("partnerstamm-api-user"))
+			println("com.liferay.portal.kernel.util.PropsUtil:" + com.liferay.portal.kernel.util.PropsUtil.get("partnerstamm-api-user"))
 
 			println("com.liferay.portal.kernel.util.PropsUtil:" + com.liferay.portal.kernel.util.PropsUtil.get("partnerstamm-api-user"))
 
@@ -186,7 +185,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
-			value1 = "com.liferay.portal.util.PropsUtil:his_user com.liferay.portal.kernel.util.PropsUtil:his_user ConfigurationFactoryUtil:his_user");
+			value1 = "com.liferay.portal.kernel.util.PropsUtil:his_user com.liferay.portal.kernel.util.PropsUtil:his_user ConfigurationFactoryUtil:his_user");
 	}
 
 	@priority = 4

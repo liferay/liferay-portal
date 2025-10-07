@@ -37,4 +37,32 @@
 
 		<lstopwatch action="total" name="run.selenium.jboss" />
 	</target>
+
+	<target name="setup-jboss-playwright">
+		<lstopwatch action="start" name="setup.jboss" />
+
+		<app-server-properties-update>
+			app.server.type=jboss
+		</app-server-properties-update>
+
+		<set-app-server-version-number app.server.type="jboss" app.server.version="8.0.0" />
+
+		<antcall target="prepare-osgi-module-configurations" />
+
+		<antcall target="prepare-portal-properties" />
+
+		<antcall target="prepare-portal-ext-properties" />
+
+		<antcall target="prepare-portlet-ext-properties" />
+
+		<antcall target="prepare-system-ext-properties" />
+
+		<prepare-app-server-configuration />
+
+		<prepare-database-jndi />
+
+		<antcall target="clean-app-server-deploy-dir" />
+
+		<lstopwatch action="total" name="setup.jboss" />
+	</target>
 </project>

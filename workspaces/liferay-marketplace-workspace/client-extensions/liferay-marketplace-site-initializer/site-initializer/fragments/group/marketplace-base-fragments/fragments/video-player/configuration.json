@@ -1,0 +1,43 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"defaultValue": false,
+					"label": "Autoplay",
+					"name": "autoplay",
+					"type": "checkbox"
+				},
+				{
+					"defaultValue": false,
+					"label": "Lazy",
+					"name": "lazy",
+					"type": "checkbox"
+				},
+				{
+					"defaultValue": true,
+					"label": "Loop Video",
+					"name": "loop",
+					"type": "checkbox"
+				},
+				{
+					"defaultValue": false,
+					"label": "Muted",
+					"name": "muted",
+					"type": "checkbox"
+				},
+				{
+					"label": "URL CSS CDN",
+					"name": "URLcss",
+					"type": "text"
+				},
+				{
+					"label": "URL JS CDN",
+					"name": "URLjs",
+					"type": "text"
+				}
+			],
+			"label": "Video Settings"
+		}
+	]
+}

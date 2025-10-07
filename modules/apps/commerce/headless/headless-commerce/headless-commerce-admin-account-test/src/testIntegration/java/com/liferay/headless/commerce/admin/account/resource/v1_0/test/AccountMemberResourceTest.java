@@ -135,6 +135,22 @@ public class AccountMemberResourceTest
 	@Ignore
 	@Override
 	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountMember()
+		throws Exception {
+
+		super.testGraphQLDeleteAccountByExternalReferenceCodeAccountMember();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLDeleteAccountIdAccountMember() throws Exception {
+		super.testGraphQLDeleteAccountIdAccountMember();
+	}
+
+	@Ignore
+	@Override
+	@Test
 	public void testGraphQLGetAccountByExternalReferenceCodeAccountMember()
 		throws Exception {
 
@@ -295,6 +311,32 @@ public class AccountMemberResourceTest
 
 	@Override
 	protected Long testGetAccountIdAccountMembersPage_getId() throws Exception {
+		return _accountEntry.getAccountEntryId();
+	}
+
+	@Override
+	protected AccountMember testGraphQLAccountMember_addAccountMember()
+		throws Exception {
+
+		return accountMemberResource.
+			postAccountByExternalReferenceCodeAccountMember(
+				_accountEntry.getExternalReferenceCode(),
+				randomAccountMember());
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountMember_getExternalReferenceCode(
+				AccountMember accountMember)
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Long testGraphQLDeleteAccountIdAccountMember_getId()
+		throws Exception {
+
 		return _accountEntry.getAccountEntryId();
 	}
 

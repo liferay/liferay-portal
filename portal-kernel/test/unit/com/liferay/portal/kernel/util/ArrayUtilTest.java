@@ -295,6 +295,22 @@ public class ArrayUtilTest {
 	}
 
 	@Test
+	public void testEqualsIgnoreCase() {
+		Assert.assertFalse(
+			ArrayUtil.equalsIgnoreCase(
+				new String[] {"A", "A"}, new String[] {"B", "B"}));
+		Assert.assertTrue(
+			ArrayUtil.equalsIgnoreCase(
+				new String[] {"A", "B"}, new String[] {"A", "B"}));
+		Assert.assertTrue(
+			ArrayUtil.equalsIgnoreCase(
+				new String[] {"a", "A"}, new String[] {"A", "a"}));
+		Assert.assertTrue(
+			ArrayUtil.equalsIgnoreCase(
+				new String[] {"a", "b"}, new String[] {"a", "b"}));
+	}
+
+	@Test
 	public void testFilterDoubleArray() {
 		double[] array = ArrayUtil.filter(
 			new double[] {0.1, 0.2, 1.2, 1.3}, _doublePredicate);

@@ -66,8 +66,8 @@ public class TermsSetFilterImpl implements TermsSetFilter {
 	public void setExecutionOption(String executionOption) {
 	}
 
-	public String setMinimumShouldMatchField(String minimumShouldMatchField) {
-		return _minimumShouldMatchField = minimumShouldMatchField;
+	public void setMinimumShouldMatchField(String minimumShouldMatchField) {
+		_minimumShouldMatchField = minimumShouldMatchField;
 	}
 
 	@Override

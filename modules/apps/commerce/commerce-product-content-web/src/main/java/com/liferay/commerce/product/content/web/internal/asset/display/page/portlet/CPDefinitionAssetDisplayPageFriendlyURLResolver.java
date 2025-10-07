@@ -190,7 +190,7 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 		}
 
 		return _getBasicLayoutURL(
-			groupId, privateLayout, mainPath, requestContext, cpDefinition);
+			groupId, privateLayout, mainPath, requestContext, cpCatalogEntry);
 	}
 
 	@Override
@@ -304,17 +304,13 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 
 	private String _getBasicLayoutURL(
 			long groupId, boolean privateLayout, String mainPath,
-			Map<String, Object> requestContext, CPDefinition cpDefinition)
+			Map<String, Object> requestContext, CPCatalogEntry cpCatalogEntry)
 		throws PortalException {
 
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)requestContext.get("request");
 
 		Locale locale = _portal.getLocale(httpServletRequest);
-
-		CPCatalogEntry cpCatalogEntry = _cpDefinitionHelper.getCPCatalogEntry(
-			_getCommerceAccountId(groupId, httpServletRequest), groupId,
-			cpDefinition.getCPDefinitionId(), locale);
 
 		Layout layout = _getProductLayout(
 			groupId, privateLayout, cpCatalogEntry.getCPDefinitionId());

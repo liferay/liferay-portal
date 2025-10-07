@@ -6,7 +6,7 @@
 import {getRandomInt} from '../utils/getRandomInt';
 import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
-const DEFAULT_SXP_BLUEPRINT_CONFIGURATION = {
+export const DEFAULT_SXP_BLUEPRINT_CONFIGURATION = {
 	advancedConfiguration: {},
 	aggregationConfiguration: {},
 	generalConfiguration: {

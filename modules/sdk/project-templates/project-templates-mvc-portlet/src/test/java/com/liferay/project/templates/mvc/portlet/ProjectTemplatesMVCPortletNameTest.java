@@ -8,6 +8,7 @@ package com.liferay.project.templates.mvc.portlet;
 import com.liferay.maven.executor.MavenExecutor;
 import com.liferay.project.templates.BaseProjectTemplatesTestCase;
 import com.liferay.project.templates.extensions.util.Validator;
+import com.liferay.project.templates.extensions.util.VersionUtil;
 import com.liferay.project.templates.util.FileTestUtil;
 
 import java.io.File;
@@ -42,7 +43,7 @@ public class ProjectTemplatesMVCPortletNameTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -82,11 +83,19 @@ public class ProjectTemplatesMVCPortletNameTest
 			"public class PortletPortletKeys",
 			"public static final String PORTLET",
 			"\"portlet_PortletPortlet\";");
+
+		String portletFilePath =
+			"src/main/java/portlet/portlet/PortletPortlet.java";
+
 		testContains(
-			gradleProjectDir,
-			"src/main/java/portlet/portlet/PortletPortlet.java",
-			"javax.portlet.name=\" + PortletPortletKeys.PORTLET",
+			gradleProjectDir, portletFilePath,
+			getJavaxOrJakartaPackagePrefix(_liferayVersion) +
+				".portlet.name=\" + PortletPortletKeys.PORTLET",
 			"public class PortletPortlet extends MVCPortlet {");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(gradleProjectDir, portletFilePath);
+		}
 	}
 
 	@Rule

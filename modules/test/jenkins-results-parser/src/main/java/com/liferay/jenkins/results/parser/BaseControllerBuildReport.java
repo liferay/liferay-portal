@@ -39,6 +39,11 @@ public abstract class BaseControllerBuildReport
 	}
 
 	@Override
+	public JSONObject getBuildReportJSONObject() {
+		return _buildReportJSONObject;
+	}
+
+	@Override
 	public String getTestrayBuildDateString() {
 		return JenkinsResultsParserUtil.toDateString(
 			getStartDate(), "yyyy-MM-dd HH:mm:ss", "America/Los_Angeles");
@@ -50,14 +55,26 @@ public abstract class BaseControllerBuildReport
 	}
 
 	protected BaseControllerBuildReport(
+		Build controllerBuild, TopLevelBuildReport topLevelBuildReport) {
+
+		super(controllerBuild.getBuildURL());
+
+		_topLevelBuildReport = topLevelBuildReport;
+
+		_buildReportJSONObject = controllerBuild.getBuildReportJSONObject();
+	}
+
+	protected BaseControllerBuildReport(
 		JSONObject buildReportJSONObject,
 		TopLevelBuildReport topLevelBuildReport) {
 
-		super(buildReportJSONObject);
+		super(buildReportJSONObject.getString("buildURL"));
 
+		_buildReportJSONObject = buildReportJSONObject;
 		_topLevelBuildReport = topLevelBuildReport;
 	}
 
+	private final JSONObject _buildReportJSONObject;
 	private final TopLevelBuildReport _topLevelBuildReport;
 
 }

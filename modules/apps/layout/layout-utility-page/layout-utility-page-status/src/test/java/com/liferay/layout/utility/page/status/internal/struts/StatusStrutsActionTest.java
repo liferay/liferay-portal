@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -64,7 +63,6 @@ public class StatusStrutsActionTest {
 	@AfterClass
 	public static void tearDownClass() {
 		_portalMessagesMockedStatic.close();
-		_propsUtilMockedStatic.close();
 		_servletResponseUtilMockedStatic.close();
 		_sessionErrorsMockedStatic.close();
 		_sessionMessagesMockedStatic.close();
@@ -242,8 +240,6 @@ public class StatusStrutsActionTest {
 		Mockito.mock(LayoutSetLocalService.class);
 	private static final MockedStatic<PortalMessages>
 		_portalMessagesMockedStatic = Mockito.mockStatic(PortalMessages.class);
-	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
-		Mockito.mockStatic(PropsUtil.class);
 	private static final RequestDispatcher _requestDispatcher = Mockito.mock(
 		RequestDispatcher.class);
 	private static final ServletContext _servletContext = Mockito.mock(

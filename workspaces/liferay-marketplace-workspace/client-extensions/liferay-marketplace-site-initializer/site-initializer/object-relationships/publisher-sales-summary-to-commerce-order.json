@@ -1,0 +1,11 @@
+{
+	"deletionType": "cascade",
+	"label": {
+		"en_US": "Publisher to Commerce Order"
+	},
+	"name": "publisherToCommerceOrder",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:PublisherSalesSummary$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:CommerceOrder$]",
+	"objectDefinitionName2": "CommerceOrder",
+	"type": "oneToMany"
+}

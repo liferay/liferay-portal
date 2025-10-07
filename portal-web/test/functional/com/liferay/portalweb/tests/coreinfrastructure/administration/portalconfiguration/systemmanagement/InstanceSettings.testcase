@@ -42,7 +42,9 @@ definition {
 	@description = "This is a use case for LPS-108998."
 	@priority = 4
 	test AssertEmailVerificationIsRequiredByDefault {
-		property custom.properties = "company.security.strangers.verify=true${line.separator}jsonws.web.service.paths.excludes=${line.separator}mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property custom.properties = "company.security.strangers.verify=true${line.separator}jsonws.web.service.paths.excludes=";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.smtp.server.enabled = "true";
 
 		var portalURL = PropsUtil.get("portal.url");
@@ -462,7 +464,8 @@ definition {
 	@description = "This test asserts that a user can disable the account created notification. No email would send to user when the account created notification is disabled."
 	@priority = 3
 	test CanDisabledAccountCreatedNotification {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.smtp.server.enabled = "true";
 
 		PortalSettings.gotoConfiguration(
@@ -569,7 +572,7 @@ definition {
 		}
 
 		task ("When change companyWebId to www.baker.com and copy it to the configs folder") {
-			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.journal.configuration.JournalServiceConfiguration.scoped_*.config");
+			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.journal.configuration.JournalServiceConfiguration.scoped*.config");
 			var exportFileDirectory = selenium.getOutputDirName();
 
 			OSGiConfig.editOSGiConfigFileFromTempFolder(
@@ -794,7 +797,7 @@ definition {
 		}
 
 		task ("When change companyWebId to new instance and copy it to the configs folder") {
-			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.journal.configuration.JournalServiceConfiguration.scoped_*.config");
+			var exportConfigFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.journal.configuration.JournalServiceConfiguration.scoped*.config");
 			var exportFileDirectory = selenium.getOutputDirName();
 
 			OSGiConfig.editOSGiConfigFileFromTempFolder(
@@ -841,7 +844,6 @@ definition {
 	@description = "Verify the default company can be set to a virtual instance via property."
 	@priority = 3
 	test ChangeDefaultCompanyToDifferentInstance {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
@@ -1020,7 +1022,7 @@ definition {
 			fail("FAIL! Cannot find the configuration file exported from edit page for single factory.");
 		}
 
-		var tempFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration_*.config");
+		var tempFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration*.config");
 
 		OSGiConfig.copyOSGiConfigFile(
 			osgiConfigFileBaseDir = ${tempFileDirectory},
@@ -1166,7 +1168,7 @@ definition {
 			menuItem = "Edit",
 			rowEntry = "Google");
 
-		FormFields.editTextMultiline(
+		FormFields.editText(
 			fieldName = "providerName",
 			fieldValue = "Edit Google");
 
@@ -1224,7 +1226,7 @@ definition {
 
 		LexiconEntry.viewEntryName(rowEntry = "Google");
 
-		var tempFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration-*.config");
+		var tempFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "com.liferay.portal.security.sso.openid.connect.internal.configuration.OpenIdConnectProviderConfiguration*.config");
 		var tempFileDirectory = selenium.getOutputDirName();
 
 		var exportedConfigFile = FileUtil.exists("${tempFileDirectory}/${tempFileName}");
@@ -1328,7 +1330,8 @@ definition {
 	@description = "This is a use case for LRQA-68315 and LPS-176074 TC-3. This test asserts that a user can update the password changed notification subject and body. The notification also send when set password via json."
 	@priority = 3
 	test ViewPasswordChangedNotificationTemplateUpdated {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";
@@ -1416,7 +1419,8 @@ definition {
 	@description = "This is a use case for LRQA-68316 and LPS-176074 TC-4. This test asserts that a user can update the password reset notification subject and body. The notification also send when set password via json."
 	@priority = 3
 	test ViewPasswordResetNotificationTemplateUpdated {
-		property custom.properties = "mail.send.blacklist=noreply@liferay.com,noreply@domain.invalid,test@domain.invalid";
+		property osgi.module.configuration.file.names = "com.liferay.mail.settings.configuration.MailSettingSystemConfiguration.config";
+		property osgi.module.configurations = "sendBlacklist=[\"noreply@liferay.com\",\"noreply@domain.invalid\",\"test@domain.invalid\"]";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 		property test.smtp.server.enabled = "true";

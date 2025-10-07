@@ -286,6 +286,8 @@ export class SearchPage {
 
 			await expect(searchFacetCheckbox).not.toBeChecked();
 		}
+
+		await expect(searchFacetCheckbox).not.toBeDisabled();
 	}
 
 	async selectSearchFacetLink(

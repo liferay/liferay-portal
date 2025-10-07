@@ -52,8 +52,11 @@ public class PropertiesVerifyPropertiesCheck extends BaseFileCheck {
 
 		properties.load(new StringReader(content));
 
+		String verifyPropertiesFileName = getAttributeValue(
+			_VERIFY_PROPERTIES_FILE_NAME_KEY, absolutePath);
+
 		List<LegacyProperty> legacyProperties = _getLegacyProperties(
-			absolutePath);
+			absolutePath, verifyPropertiesFileName);
 
 		for (LegacyProperty legacyProperty : legacyProperties) {
 			if (!properties.containsKey(
@@ -97,8 +100,7 @@ public class PropertiesVerifyPropertiesCheck extends BaseFileCheck {
 
 			sb.append(". See \"");
 			sb.append(
-				StringUtil.removeSubstring(
-					_VERIFY_PROPERTIES_FILE_NAME, ".java"));
+				StringUtil.removeSubstring(verifyPropertiesFileName, ".java"));
 			sb.append("#");
 			sb.append(legacyProperty.getVariableName());
 			sb.append("\".");
@@ -110,7 +112,7 @@ public class PropertiesVerifyPropertiesCheck extends BaseFileCheck {
 	}
 
 	private synchronized List<LegacyProperty> _getLegacyProperties(
-			String absolutePath)
+			String absolutePath, String verifyPropertiesFileName)
 		throws Exception {
 
 		if (_legacyProperties != null) {
@@ -118,15 +120,14 @@ public class PropertiesVerifyPropertiesCheck extends BaseFileCheck {
 		}
 
 		_legacyProperties = LegacyPropertiesUtil.getLegacyProperties(
-			_VERIFY_PROPERTIES_FILE_NAME,
-			getPortalContent(_VERIFY_PROPERTIES_FILE_NAME, absolutePath));
+			verifyPropertiesFileName,
+			getPortalContent(verifyPropertiesFileName, absolutePath));
 
 		return _legacyProperties;
 	}
 
-	private static final String _VERIFY_PROPERTIES_FILE_NAME =
-		"portal-impl/src/com/liferay/portal/verify" +
-			"/PreupgradeVerifyProperties.java";
+	private static final String _VERIFY_PROPERTIES_FILE_NAME_KEY =
+		"verifyPropertiesFileName";
 
 	private List<LegacyProperty> _legacyProperties;
 

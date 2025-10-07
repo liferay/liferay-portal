@@ -56,8 +56,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -618,7 +618,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 	@Activate
 	protected void activate() {
 		_companySecurityAuthType = GetterUtil.getString(
-			_props.get(PropsKeys.COMPANY_SECURITY_AUTH_TYPE));
+			PropsUtil.get(PropsKeys.COMPANY_SECURITY_AUTH_TYPE));
 		_portalCache = (PortalCache<String, Long>)_singleVMPool.getPortalCache(
 			UserImporter.class.getName());
 	}
@@ -2154,9 +2154,6 @@ public class LDAPUserImporterImpl implements LDAPUserImporter {
 	private LockManager _lockManager;
 
 	private PortalCache<String, Long> _portalCache;
-
-	@Reference
-	private Props _props;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

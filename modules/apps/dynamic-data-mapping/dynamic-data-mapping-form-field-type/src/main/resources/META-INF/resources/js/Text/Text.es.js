@@ -85,7 +85,6 @@ const Text = ({
 	onKeyDown,
 	placeholder,
 	preventChangeHandlerOnBlur,
-	repeatable,
 	setError,
 	shouldUpdateValue,
 	showCounter,
@@ -176,10 +175,6 @@ const Text = ({
 						maxLength={showCounter ? '' : maxLength}
 						name={name}
 						onBlur={(event) => {
-							if (repeatable) {
-								Liferay.fire('disableRepeatableButton');
-							}
-
 							onBlur(event);
 
 							if (!preventChangeHandlerOnBlur) {
@@ -521,7 +516,7 @@ const Main = ({
 					...((otherProps.errorMessage || otherProps.tip) && {
 						'aria-describedby': `${otherProps.id ?? name}_fieldFeedback`,
 					}),
-					'aria-invalid': !valid,
+					...(displayErrors && !valid && {'aria-invalid': true}),
 					'aria-required': otherProps.required,
 				}}
 				defaultLanguageId={defaultLanguageId}

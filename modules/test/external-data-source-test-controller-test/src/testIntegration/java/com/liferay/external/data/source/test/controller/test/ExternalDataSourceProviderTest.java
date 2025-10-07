@@ -6,11 +6,7 @@
 package com.liferay.external.data.source.test.controller.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 /**
@@ -19,11 +15,6 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ExternalDataSourceProviderTest
 	extends ExternalDataSourceControllerTest {
-
-	@ClassRule
-	@Rule
-	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
 
 	@Override
 	protected String getResourceDestination() {

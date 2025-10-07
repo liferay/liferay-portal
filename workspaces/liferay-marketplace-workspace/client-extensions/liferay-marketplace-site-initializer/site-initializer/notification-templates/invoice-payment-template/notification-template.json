@@ -1,0 +1,24 @@
+{
+	"description": "",
+	"editorType": "richText",
+	"externalReferenceCode": "MARKETPLACE-INVOICE-ORDER-SUBMIT-TEMPLATE",
+	"name": "Invoice Order",
+	"recipientType": "email",
+	"recipients": [
+		{
+			"bcc": "",
+			"cc": "",
+			"from": "do-not-reply@liferay.com",
+			"fromName": {
+				"en-US": "Liferay Marketplace"
+			},
+			"to": {
+				"en-US": "accounts-receivables-intl@liferay.com"
+			}
+		}
+	],
+	"subject": {
+		"en_US": "Liferay Marketplace - Invoice Order"
+	},
+	"type": "email"
+}

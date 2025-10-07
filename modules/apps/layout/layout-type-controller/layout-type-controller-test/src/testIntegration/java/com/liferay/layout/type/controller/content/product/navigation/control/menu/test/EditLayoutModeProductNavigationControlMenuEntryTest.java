@@ -79,11 +79,11 @@ public class EditLayoutModeProductNavigationControlMenuEntryTest {
 		FileEntry fileEntry = _addFileEntry(_group);
 
 		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			_group.getGroupId(),
+			_group.getGroupId(), StringPool.BLANK,
 			_portal.getClassNameId(FileEntry.class.getName()),
-			fileEntry.getFileEntryId(), StringPool.BLANK,
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-			layout.getPlid(), new ServiceContext());
+			fileEntry.getFileEntryId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong(), layout.getPlid(),
+			new ServiceContext());
 
 		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
 

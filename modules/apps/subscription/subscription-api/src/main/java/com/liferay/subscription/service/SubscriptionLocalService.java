@@ -201,6 +201,9 @@ public interface SubscriptionLocalService
 	public void deleteSubscriptions(long userId, long groupId)
 		throws PortalException;
 
+	public void deleteSubscriptions(long companyId, String className)
+		throws PortalException;
+
 	/**
 	 * Deletes all the subscriptions to the entity.
 	 *

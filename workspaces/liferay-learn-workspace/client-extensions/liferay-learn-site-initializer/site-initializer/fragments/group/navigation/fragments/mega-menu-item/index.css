@@ -1,7 +1,7 @@
 .mega-menu-item {
 	align-items: center;
 	background: rgba(231, 239, 255, 0);
-	border-radius: calc(var(--border-radius) / 2);
+	border-radius: 8px;
 	cursor: pointer;
 	display: flex;
 	flex-direction: row;
@@ -11,6 +11,7 @@
 	margin: 0.25rem 0;
 	outline: rgba(99, 153, 255, 0) solid 2px;
 	outline-offset: 2px;
+	padding: 8px;
 	transition: all var(--transition-base);
 
 	.mega-menu-item-html {
@@ -71,7 +72,6 @@
 	&:focus,
 	&:focus-visible {
 		background: var(--color-action-primary-hover-lighten, #EDF3FE);
-		outline: var(--color-brand-primary-lighten-2, #6399FF) solid 2px;
 
 		.mega-menu-item-external-icon {
 			opacity: 1;

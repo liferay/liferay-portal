@@ -43,6 +43,8 @@ public class DepotEntryTable extends BaseTable<DepotEntryTable> {
 		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<DepotEntryTable, Date> modifiedDate = createColumn(
 		"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<DepotEntryTable, Integer> type = createColumn(
+		"type_", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private DepotEntryTable() {
 		super("DepotEntry", DepotEntryTable::new);

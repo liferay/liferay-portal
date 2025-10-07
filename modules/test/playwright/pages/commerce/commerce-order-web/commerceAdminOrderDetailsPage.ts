@@ -16,6 +16,7 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 		action: string
 	) => Promise<Locator>;
 	readonly editPaymentMethodFrame: FrameLocator;
+	readonly expandProductButton: Locator;
 	readonly headerDetailsTitle: Locator;
 	readonly orderDetailsEntryDescription: (
 		infoName: string
@@ -45,6 +46,8 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 		paymentMethod: string
 	) => Promise<Locator>;
 	readonly reorderButton: Locator;
+	readonly acceptOrderButton: Locator;
+	readonly createShipmentButton: Locator;
 	readonly saveButton: Locator;
 	readonly selectDeliveryTerms: Locator;
 	readonly selectPaymentTerms: Locator;
@@ -78,6 +81,9 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 		this.editPaymentMethodFrame = page.frameLocator(
 			'iframe[title="Edit Payment Method"]'
 		);
+		this.expandProductButton = page
+			.locator('.autofit-col-toggle')
+			.getByRole('button');
 		this.headerDetailsTitle = page.getByTestId('headerDetailsTitle');
 		this.orderDetailsEntryDescription = async (infoName: string) => {
 			return page.locator(
@@ -144,6 +150,14 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 			exact: true,
 			name: 'Reorder',
 		});
+		this.acceptOrderButton = page.getByRole('link', {
+			exact: true,
+			name: 'Accept Order',
+		});
+		this.createShipmentButton = page.getByRole('link', {
+			exact: true,
+			name: 'Create Shipment',
+		});
 		this.saveButton = this.page.getByRole('button', {name: 'Save'});
 		this.selectPaymentTerms = this.page
 			.frameLocator('iframe[title="Payment Terms"]')
@@ -180,10 +194,5 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 			await this.orderDetailsModalField('Region')
 		).selectOption(region);
 		await this.submitModalButton.click();
-	}
-
-	async reorder() {
-		this.reorderButton.click();
-		this.checkoutButton.click();
 	}
 }

@@ -32,14 +32,12 @@ import reactor.util.retry.Retry;
 public class ConsoleService extends BaseService {
 
 	public void deleteProject(String projectId) throws Exception {
-		String projectName = _consoleProjectPrefix + "-ext" + projectId;
-
 		delete(
 			getAuthorization(), "",
 			UriComponentsBuilder.fromUriString(
 				_consoleAuthURL
 			).path(
-				"/projects/" + projectName
+				"/projects/" + projectId
 			).build(
 			).toUri());
 	}
@@ -158,24 +156,24 @@ public class ConsoleService extends BaseService {
 	}
 
 	public void setUpProject(
-			String[] emailAddresses, String dxpVirtualInstanceId, long orderId)
+			String cluster, boolean deployable, String dxpProjectUid,
+			String dxpVirtualInstanceId, String[] emailAddresses, long orderId,
+			String projectId)
 		throws Exception {
 
-		JSONObject jsonObject = _postProject(
-			_consoleProjectPrefix + "-ext" + orderId);
+		JSONObject jsonObject = _postProject(cluster, projectId);
 
 		for (String emailAddress : emailAddresses) {
-			_inviteProject(emailAddress, jsonObject.getString("projectId"));
+			_inviteProject(emailAddress, projectId);
 		}
 
-		_inviteProject(
-			_trialAdminEmailAddress, jsonObject.getString("projectId"));
+		_linkDXPWithProject(
+			dxpProjectUid, dxpVirtualInstanceId, jsonObject.getString("id"));
 
-		_linkDXPWithProject(dxpVirtualInstanceId, jsonObject.getString("id"));
-
-		deployApp(
-			_consoleAuthEmailAddress, String.valueOf(orderId),
-			jsonObject.getString("projectId"));
+		if (deployable) {
+			deployApp(
+				_consoleAuthEmailAddress, String.valueOf(orderId), projectId);
+		}
 	}
 
 	public void uninstallApp(long orderId) throws Exception {
@@ -237,14 +235,15 @@ public class ConsoleService extends BaseService {
 	}
 
 	private void _linkDXPWithProject(
-			String dxpVirtualInstanceId, String extensionProjectUid)
+			String dxpProjectUid, String dxpVirtualInstanceId,
+			String extensionProjectUid)
 		throws Exception {
 
 		post(
 			getAuthorization(),
 			new JSONObject(
 			).put(
-				"dxpProjectUid", _consoleProjectUid
+				"dxpProjectUid", dxpProjectUid
 			).put(
 				"dxpVirtualInstanceId", dxpVirtualInstanceId
 			).put(
@@ -265,13 +264,15 @@ public class ConsoleService extends BaseService {
 		}
 	}
 
-	private JSONObject _postProject(String projectId) throws Exception {
+	private JSONObject _postProject(String cluster, String projectId)
+		throws Exception {
+
 		JSONObject jsonObject = new JSONObject(
 			post(
 				getAuthorization(),
 				new JSONObject(
 				).put(
-					"cluster", _consoleCluster
+					"cluster", cluster
 				).put(
 					"environment", true
 				).put(
@@ -310,18 +311,6 @@ public class ConsoleService extends BaseService {
 	@Value("${liferay.marketplace.console.auth.url}")
 	private String _consoleAuthURL;
 
-	@Value("${liferay.marketplace.console.cluster}")
-	private String _consoleCluster;
-
-	@Value("${liferay.marketplace.console.project.prefix}")
-	private String _consoleProjectPrefix;
-
-	@Value("${liferay.marketplace.console.project.uid}")
-	private String _consoleProjectUid;
-
 	private long _tokenExpirationMillis;
-
-	@Value("${liferay.marketplace.trial.admin.email.address}")
-	private String _trialAdminEmailAddress;
 
 }

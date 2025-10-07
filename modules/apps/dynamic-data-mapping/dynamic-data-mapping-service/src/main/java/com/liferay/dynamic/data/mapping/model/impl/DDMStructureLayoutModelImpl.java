@@ -50,7 +50,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1537,21 +1536,25 @@ public class DDMStructureLayoutModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer
-		<com.liferay.dynamic.data.mapping.model.DDMFormLayout>
-			ddmFormLayoutUpdateEntityCacheConsumer = ddmFormLayout -> {
-				DDMStructureLayoutCacheModel ddmStructureLayoutCacheModel =
-					EntityCacheUtil.fetchCacheModel(
-						DDMStructureLayoutImpl.class, _structureLayoutId,
-						DDMStructureLayoutCacheModel.class);
+	protected static final BiConsumer
+		<DDMStructureLayout,
+		 com.liferay.dynamic.data.mapping.model.DDMFormLayout>
+			ddmFormLayoutUpdateEntityCacheBiConsumer =
+				(ddmStructureLayout, ddmFormLayout) -> {
+					DDMStructureLayoutCacheModel ddmStructureLayoutCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							DDMStructureLayoutImpl.class,
+							ddmStructureLayout.getPrimaryKey(),
+							DDMStructureLayoutCacheModel.class);
 
-				if ((ddmStructureLayoutCacheModel != null) &&
-					(ddmStructureLayoutCacheModel.getMvccVersion() ==
-						getMvccVersion())) {
+					if ((ddmStructureLayoutCacheModel != null) &&
+						(ddmStructureLayoutCacheModel.getMvccVersion() ==
+							ddmStructureLayout.getMvccVersion())) {
 
-					ddmStructureLayoutCacheModel.ddmFormLayout = ddmFormLayout;
-				}
-			};
+						ddmStructureLayoutCacheModel.ddmFormLayout =
+							ddmFormLayout;
+					}
+				};
 
 	private static final MethodHandle _ddmFormLayoutMethodHandle;
 

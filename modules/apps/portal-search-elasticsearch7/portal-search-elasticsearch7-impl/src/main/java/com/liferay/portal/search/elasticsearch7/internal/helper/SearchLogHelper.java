@@ -20,10 +20,6 @@ public interface SearchLogHelper {
 
 	public void logActionResponse(Log log, BulkResponse bulkResponse);
 
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
 	public void setRESTClientLoggerLevel(
 		RESTClientLoggerLevel restClientLoggerLevel);
 

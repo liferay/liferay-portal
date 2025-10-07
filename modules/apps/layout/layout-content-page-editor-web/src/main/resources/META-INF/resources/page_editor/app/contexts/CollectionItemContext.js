@@ -253,12 +253,13 @@ const shouldRenderFragmentEntryLink = ({
 		return true;
 	}
 
-	//  For any other case we need to render when the className or classPK changes
+	// For any other case, we need to render when the className, classPK or
+	// externalReferenceCode changes
 
 	if (
-		previousItemClassName !== itemClassName &&
-		(previousItemClassPK !== itemClassPK ||
-			previousItemExternalReferenceCode !== itemExternalReferenceCode)
+		previousItemClassName !== itemClassName ||
+		previousItemClassPK !== itemClassPK ||
+		previousItemExternalReferenceCode !== itemExternalReferenceCode
 	) {
 		return true;
 	}

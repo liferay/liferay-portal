@@ -93,7 +93,7 @@ List<Phone> phones = PhoneServiceUtil.getPhones(className, classPK);
 
 		<liferay-ui:search-container-column-text
 			cssClass="table-cell-expand-small"
-			name="extension"
+			name="phone-extension"
 			property="extension"
 		/>
 

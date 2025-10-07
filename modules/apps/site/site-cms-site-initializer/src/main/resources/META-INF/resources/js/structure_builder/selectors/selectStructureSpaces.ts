@@ -6,5 +6,5 @@
 import {State} from '../contexts/StateContext';
 
 export default function selectStructureSpaces(state: State) {
-	return state.spaces;
+	return state.structure.spaces;
 }

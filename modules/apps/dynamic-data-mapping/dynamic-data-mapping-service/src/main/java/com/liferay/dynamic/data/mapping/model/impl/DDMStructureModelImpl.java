@@ -50,7 +50,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -1854,15 +1853,16 @@ public class DDMStructureModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<String>
-		classNameUpdateEntityCacheConsumer = className -> {
+	protected static final BiConsumer<DDMStructure, String>
+		classNameUpdateEntityCacheBiConsumer = (ddmStructure, className) -> {
 			DDMStructureCacheModel ddmStructureCacheModel =
 				EntityCacheUtil.fetchCacheModel(
-					DDMStructureImpl.class, _structureId,
+					DDMStructureImpl.class, ddmStructure.getPrimaryKey(),
 					DDMStructureCacheModel.class);
 
 			if ((ddmStructureCacheModel != null) &&
-				(ddmStructureCacheModel.getMvccVersion() == getMvccVersion())) {
+				(ddmStructureCacheModel.getMvccVersion() ==
+					ddmStructure.getMvccVersion())) {
 
 				ddmStructureCacheModel.className = className;
 			}
@@ -1870,17 +1870,17 @@ public class DDMStructureModelImpl
 
 	private static final MethodHandle _classNameMethodHandle;
 
-	protected final transient Consumer
-		<com.liferay.dynamic.data.mapping.model.DDMForm>
-			ddmFormUpdateEntityCacheConsumer = ddmForm -> {
+	protected static final BiConsumer
+		<DDMStructure, com.liferay.dynamic.data.mapping.model.DDMForm>
+			ddmFormUpdateEntityCacheBiConsumer = (ddmStructure, ddmForm) -> {
 				DDMStructureCacheModel ddmStructureCacheModel =
 					EntityCacheUtil.fetchCacheModel(
-						DDMStructureImpl.class, _structureId,
+						DDMStructureImpl.class, ddmStructure.getPrimaryKey(),
 						DDMStructureCacheModel.class);
 
 				if ((ddmStructureCacheModel != null) &&
 					(ddmStructureCacheModel.getMvccVersion() ==
-						getMvccVersion())) {
+						ddmStructure.getMvccVersion())) {
 
 					ddmStructureCacheModel.ddmForm = ddmForm;
 				}
@@ -1888,21 +1888,25 @@ public class DDMStructureModelImpl
 
 	private static final MethodHandle _ddmFormMethodHandle;
 
-	protected final transient Consumer
-		<Map<String, com.liferay.dynamic.data.mapping.model.DDMFormField>>
-			ddmFormFieldsMapUpdateEntityCacheConsumer = ddmFormFieldsMap -> {
-				DDMStructureCacheModel ddmStructureCacheModel =
-					EntityCacheUtil.fetchCacheModel(
-						DDMStructureImpl.class, _structureId,
-						DDMStructureCacheModel.class);
+	protected static final BiConsumer
+		<DDMStructure,
+		 Map<String, com.liferay.dynamic.data.mapping.model.DDMFormField>>
+			ddmFormFieldsMapUpdateEntityCacheBiConsumer =
+				(ddmStructure, ddmFormFieldsMap) -> {
+					DDMStructureCacheModel ddmStructureCacheModel =
+						EntityCacheUtil.fetchCacheModel(
+							DDMStructureImpl.class,
+							ddmStructure.getPrimaryKey(),
+							DDMStructureCacheModel.class);
 
-				if ((ddmStructureCacheModel != null) &&
-					(ddmStructureCacheModel.getMvccVersion() ==
-						getMvccVersion())) {
+					if ((ddmStructureCacheModel != null) &&
+						(ddmStructureCacheModel.getMvccVersion() ==
+							ddmStructure.getMvccVersion())) {
 
-					ddmStructureCacheModel.ddmFormFieldsMap = ddmFormFieldsMap;
-				}
-			};
+						ddmStructureCacheModel.ddmFormFieldsMap =
+							ddmFormFieldsMap;
+					}
+				};
 
 	private static final MethodHandle _ddmFormFieldsMapMethodHandle;
 

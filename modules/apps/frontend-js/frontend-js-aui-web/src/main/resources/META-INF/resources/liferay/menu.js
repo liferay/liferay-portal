@@ -22,6 +22,8 @@ AUI.add(
 
 		const CSS_PORTLET = '.portlet';
 
+		const CSS_SHOW = 'show';
+
 		const DEFAULT_ALIGN_POINTS = ['tl', 'bl'];
 
 		const EVENT_CLICK = 'click';
@@ -280,6 +282,8 @@ AUI.add(
 					listItems = listContainer.all(SELECTOR_LIST_ITEM);
 
 					menu = A.Node.create(TPL_MENU);
+
+					menu.addClass(CSS_SHOW);
 
 					listContainer.placeBefore(menu);
 

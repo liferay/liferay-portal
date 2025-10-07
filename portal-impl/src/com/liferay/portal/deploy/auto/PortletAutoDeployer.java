@@ -104,7 +104,7 @@ public class PortletAutoDeployer
 			return StringPool.BLANK;
 		}
 
-		StringBundler sb = new StringBundler();
+		StringBundler sb = new StringBundler(13);
 
 		Document document = UnsecureSAXReaderUtil.read(portletXML);
 
@@ -120,30 +120,19 @@ public class PortletAutoDeployer
 
 			String servletName = portletName + " Servlet";
 
-			sb.append("<servlet>");
-			sb.append("<servlet-name>");
+			sb.append("<servlet><servlet-name>");
 			sb.append(servletName);
-			sb.append("</servlet-name>");
-			sb.append("<servlet-class>");
-			sb.append("com.liferay.portal.kernel.servlet.PortletServlet");
-			sb.append("</servlet-class>");
-			sb.append("<init-param>");
-			sb.append("<param-name>portlet-class</param-name>");
-			sb.append("<param-value>");
+			sb.append("</servlet-name><servlet-class>com.liferay.portal.");
+			sb.append("kernel.servlet.PortletServlet</servlet-class><init-");
+			sb.append("param><param-name>portlet-class</param-name><param-");
+			sb.append("value>");
 			sb.append(portletClassName);
-			sb.append("</param-value>");
-			sb.append("</init-param>");
-			sb.append("<load-on-startup>1</load-on-startup>");
-			sb.append("</servlet>");
-
-			sb.append("<servlet-mapping>");
-			sb.append("<servlet-name>");
+			sb.append("</param-value></init-param><load-on-startup>1</load-");
+			sb.append("on-startup></servlet><servlet-mapping><servlet-name>");
 			sb.append(servletName);
-			sb.append("</servlet-name>");
-			sb.append("<url-pattern>/");
+			sb.append("</servlet-name><url-pattern>/");
 			sb.append(portletName);
-			sb.append("/*</url-pattern>");
-			sb.append("</servlet-mapping>");
+			sb.append("/*</url-pattern></servlet-mapping>");
 		}
 
 		return sb.toString();

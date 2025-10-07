@@ -48,6 +48,20 @@ export default function (context) {
 
 			const formData = new FormData(form);
 
+			const prefix = `${context.namespace}ExpandoAttribute--`;
+			const customFields = Array.from(formData.entries())
+				.filter(([name]) => name.startsWith(prefix))
+				.map(([name, value]) => {
+					const fieldName = name.slice(prefix.length, -2);
+
+					return {
+						customValue: {
+							data: value,
+						},
+						name: fieldName,
+					};
+				});
+
 			const displayDate = parseDate(
 				formData.get(`${context.namespace}displayDateYear`),
 				formData.get(`${context.namespace}displayDateMonth`),
@@ -71,6 +85,7 @@ export default function (context) {
 				`/o/headless-commerce-admin-catalog/v1.0/product-configuration-lists/${context.cpConfigurationListId}`,
 				{
 					body: JSON.stringify({
+						customFields,
 						displayDate,
 						expirationDate,
 						name: formData.get(`${context.namespace}name`),
@@ -177,10 +192,6 @@ export default function (context) {
 								purchasable:
 									formData.get(
 										`${context.namespace}purchasable`
-									) === 'on',
-								visible:
-									formData.get(
-										`${context.namespace}visible`
 									) === 'on',
 							}),
 							headers: fetchParams.headers,

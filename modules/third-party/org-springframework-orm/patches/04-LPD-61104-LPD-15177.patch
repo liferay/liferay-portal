@@ -1,0 +1,19 @@
+diff --git a/org/springframework/orm/hibernate5/SessionFactoryUtils.java b/org/springframework/orm/hibernate5/SessionFactoryUtils.java
+index 9719081da3d35..8c09c3f9f313b 100644
+--- a/org/springframework/orm/hibernate5/SessionFactoryUtils.java
++++ b/org/springframework/orm/hibernate5/SessionFactoryUtils.java
+@@ -90,7 +90,7 @@ public abstract class SessionFactoryUtils {
+ 	public static final int SESSION_SYNCHRONIZATION_ORDER =
+ 			DataSourceUtils.CONNECTION_SYNCHRONIZATION_ORDER - 100;
+ 
+-	static final Log logger = LogFactory.getLog(SessionFactoryUtils.class);
++	static Log logger = LogFactory.getLog(SessionFactoryUtils.class);
+ 
+ 
+ 	/**
+@@ -261,3 +261,4 @@ public abstract class SessionFactoryUtils {
+ 	}
+ 
+ }
++/* @generated */
+\ No newline at end of file

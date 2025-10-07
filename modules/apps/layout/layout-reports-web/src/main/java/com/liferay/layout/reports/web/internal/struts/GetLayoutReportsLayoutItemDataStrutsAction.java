@@ -454,8 +454,7 @@ public class GetLayoutReportsLayoutItemDataStrutsAction
 			return StringPool.BLANK;
 		}
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject jsonObject = fragmentEntryLink.getEditableValuesJSONObject();
 
 		return jsonObject.getString("portletId");
 	}

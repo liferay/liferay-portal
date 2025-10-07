@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.PortletPreferenceValueTable;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.model.PortletPreferencesTable;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.PortletPreferenceValueLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
 
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -167,8 +169,7 @@ public class WidgetTemplatesTemplateViewUsagesDisplayContext {
 
 		SearchContainer<PortletPreferences>
 			widgetTemplatesUsagesSearchContainer = new SearchContainer<>(
-				_renderRequest, _renderResponse.createRenderURL(), null,
-				"there-are-no-usages");
+				_renderRequest, _getPortletURL(), null, "there-are-no-usages");
 
 		DDMTemplate ddmTemplate = getDDMTemplate();
 
@@ -199,6 +200,18 @@ public class WidgetTemplatesTemplateViewUsagesDisplayContext {
 
 		return LayoutPageTemplateEntryLocalServiceUtil.
 			fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
+	}
+
+	private PortletURL _getPortletURL() {
+		return PortletURLBuilder.createRenderURL(
+			_renderResponse
+		).setMVCRenderCommandName(
+			"/template/view_widget_templates_usages"
+		).setRedirect(
+			_themeDisplay.getURLCurrent()
+		).setParameter(
+			"ddmTemplateId", _ddmTemplate.getTemplateId()
+		).buildPortletURL();
 	}
 
 	private List<PortletPreferences> _getWidgetTemplatesUsages(

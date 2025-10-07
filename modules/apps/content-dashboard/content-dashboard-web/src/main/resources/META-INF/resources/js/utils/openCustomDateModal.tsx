@@ -10,7 +10,7 @@ import ClayModal, {useModal} from '@clayui/modal';
 import {render} from '@liferay/frontend-js-react-web';
 import classNames from 'classnames';
 import {useId} from 'frontend-js-components-web';
-import {navigate} from 'frontend-js-web';
+import {dateUtils, navigate} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 const NOT_SELECTED_OPTION = {
@@ -114,6 +114,38 @@ export function CustomDateModal({
 						</label>
 
 						<ClayDatePicker
+							ariaLabels={{
+								buttonChooseDate: `${Liferay.Language.get(
+									'select-date'
+								)}`,
+								buttonDot: `${Liferay.Language.get(
+									'select-current-date'
+								)}`,
+								buttonNextMonth: `${Liferay.Language.get(
+									'select-next-month'
+								)}`,
+								buttonPreviousMonth: `${Liferay.Language.get(
+									'select-previous-month'
+								)}`,
+								dialog: `${Liferay.Language.get('select-date')}`,
+								selectMonth: `${Liferay.Language.get('select-a-month')}`,
+								selectYear: `${Liferay.Language.get('select-a-year')}`,
+							}}
+							firstDayOfWeek={dateUtils.getFirstDayOfWeek()}
+							months={[
+								`${Liferay.Language.get('january')}`,
+								`${Liferay.Language.get('february')}`,
+								`${Liferay.Language.get('march')}`,
+								`${Liferay.Language.get('april')}`,
+								`${Liferay.Language.get('may')}`,
+								`${Liferay.Language.get('june')}`,
+								`${Liferay.Language.get('july')}`,
+								`${Liferay.Language.get('august')}`,
+								`${Liferay.Language.get('september')}`,
+								`${Liferay.Language.get('october')}`,
+								`${Liferay.Language.get('november')}`,
+								`${Liferay.Language.get('december')}`,
+							]}
 							onChange={(range: string) => {
 								const [start, end] = range!.split(' - ');
 
@@ -125,6 +157,7 @@ export function CustomDateModal({
 							placeholder="YYYY-MM-DD - YYYY-MM-DD"
 							range
 							value={getDateRange(startDate, endDate)}
+							weekdaysShort={dateUtils.getWeekdaysShort()}
 							years={{
 								end: new Date().getFullYear() + 10,
 								start: new Date().getFullYear() - 10,

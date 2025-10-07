@@ -71,4 +71,10 @@ String className = workflowDefinitionLinkSearchEntry.getClassName();
 
 <div id="<%= randomNamespace %>definitionLabel">
 	<%= HtmlUtil.escape(workflowDefinitionLinkSearchEntry.getWorkflowDefinitionLabel()) %>
+
+	<c:if test="<%= !workflowDefinitionLinkDisplayContext.isWorkflowDefinitionActive(workflowDefinitionLinkSearchEntry) %>">
+		<clay:label
+			label="not-published"
+		/>
+	</c:if>
 </div>

@@ -135,12 +135,23 @@ export interface ITicket {
 	selected?: boolean;
 	status: string;
 	subject: string;
-	ticketId: number;
+	ticketId: string | number;
 }
 
 export interface ITimeInput {
 	hours: string;
 	minutes: string;
+}
+
+export interface IUpload {
+	accountKey?: string;
+	attachmentName?: string;
+	errorCode?: string;
+	errorMessage?: string;
+	gcsSessionURL?: string;
+	ticketAttachmentId?: string;
+	ticketId?: string;
+	uploadAccountKey?: string;
 }
 
 export interface IUserAccount {

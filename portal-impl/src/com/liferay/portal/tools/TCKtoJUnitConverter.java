@@ -100,9 +100,8 @@ public class TCKtoJUnitConverter {
 
 		StringBundler sb = new StringBundler();
 
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n");
-
-		sb.append("<testsuite errors=\"");
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n<testsuite ");
+		sb.append("errors=\"");
 
 		if (passed) {
 			sb.append("0");
@@ -126,8 +125,7 @@ public class TCKtoJUnitConverter {
 		sb.append(className);
 		sb.append("\" tests=\"1\" time=\"0.0\" timestamp=\"");
 		sb.append(System.currentTimeMillis());
-		sb.append("\">\n");
-		sb.append("\t<properties>\n");
+		sb.append("\">\n\t<properties>\n");
 
 		Properties properties = System.getProperties();
 
@@ -144,8 +142,7 @@ public class TCKtoJUnitConverter {
 			sb.append("\" />\n");
 		}
 
-		sb.append("\t</properties>\n");
-		sb.append("\t<testcase classname=\"");
+		sb.append("\t</properties>\n\t<testcase classname=\"");
 		sb.append(className);
 		sb.append("\" name=\"test\" time=\"0.0\"");
 
@@ -155,18 +152,15 @@ public class TCKtoJUnitConverter {
 		else {
 			String failureMessage = HtmlUtil.escape(message.substring(8));
 
-			sb.append(">\n");
-			sb.append("\t\t<failure message=\"");
+			sb.append(">\n\t\t<failure message=\"");
 			sb.append(failureMessage);
 			sb.append("\" type=\"junit.framework.AssertionFailedError\">\n");
 			sb.append(failureMessage);
-			sb.append("\n\t\t</failure>\n");
-			sb.append("\t</testcase>\n");
+			sb.append("\n\t\t</failure>\n\t</testcase>\n");
 		}
 
-		sb.append("\t<system-out><![CDATA[]]></system-out>\n");
-		sb.append("\t<system-err><![CDATA[]]></system-err>\n");
-		sb.append("</testsuite>");
+		sb.append("\t<system-out><![CDATA[]]></system-out>\n\t<system-err><![");
+		sb.append("CDATA[]]></system-err>\n</testsuite>");
 
 		FileUtil.write(
 			StringBundler.concat(outputDir, "/TEST-", className, ".xml"),

@@ -36,7 +36,7 @@ public abstract class BasePercentileRanksAggregationTestCase
 
 		assertPercentileRanks(
 			PercentilesMethod.TDIGEST, new double[] {10, 20, 30, 40, 50},
-			"{10.0=37.5, 20.0=56.25, 30.0=68.75, 40.0=81.25, 50.0=100.0}");
+			getTDigestExpectedResult());
 	}
 
 	protected void assertPercentileRanks(
@@ -66,6 +66,10 @@ public abstract class BasePercentileRanksAggregationTestCase
 					String.valueOf(
 						percentileRanksAggregationResult.getPercentiles()));
 			});
+	}
+
+	protected String getTDigestExpectedResult() {
+		return "{10.0=37.5, 20.0=56.25, 30.0=68.75, 40.0=81.25, 50.0=100.0}";
 	}
 
 	protected void index(int... values) {

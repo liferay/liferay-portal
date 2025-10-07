@@ -48,11 +48,11 @@ import java.util.function.Supplier;
 @JsonSubTypes(
 	{
 		@JsonSubTypes.Type(
-			name = "ContentPageTemplate",
+			name = "ContentPageTemplateSettings",
 			value = ContentPageTemplateSettings.class
 		),
 		@JsonSubTypes.Type(
-			name = "WidgetPageTemplate",
+			name = "WidgetPageTemplateSettings",
 			value = WidgetPageTemplateSettings.class
 		)
 	}

@@ -18,6 +18,7 @@ import com.liferay.layout.seo.model.LayoutSEOEntry;
 import com.liferay.layout.seo.model.LayoutSEOSite;
 import com.liferay.layout.seo.service.LayoutSEOSiteLocalService;
 import com.liferay.layout.seo.template.LayoutSEOTemplateProcessor;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -197,11 +198,12 @@ public class OpenGraphImageProvider {
 			null, "openGraphImage", infoItemFieldValues, layout,
 			themeDisplay.getLocale());
 
-		if (!(mappedImageObject instanceof WebImage)) {
+		if ((!(mappedImageObject instanceof String) ||
+			 !Validator.isUri((String)mappedImageObject)) &&
+			!(mappedImageObject instanceof WebImage)) {
+
 			return null;
 		}
-
-		WebImage mappedWebImage = (WebImage)mappedImageObject;
 
 		return new OpenGraphImage() {
 
@@ -214,6 +216,12 @@ public class OpenGraphImageProvider {
 				if (Validator.isNotNull(openGraphImageAlt)) {
 					return openGraphImageAlt;
 				}
+
+				if (!(mappedImageObject instanceof WebImage)) {
+					return null;
+				}
+
+				WebImage mappedWebImage = (WebImage)mappedImageObject;
 
 				InfoLocalizedValue<String> altInfoLocalizedValue =
 					mappedWebImage.getAltInfoLocalizedValue();
@@ -237,7 +245,18 @@ public class OpenGraphImageProvider {
 
 			@Override
 			public String getURL() {
-				return _getAbsoluteURL(themeDisplay, mappedWebImage.getURL());
+				String url = StringPool.BLANK;
+
+				if (mappedImageObject instanceof WebImage) {
+					WebImage mappedWebImage = (WebImage)mappedImageObject;
+
+					url = mappedWebImage.getURL();
+				}
+				else {
+					url = mappedImageObject.toString();
+				}
+
+				return _getAbsoluteURL(themeDisplay, url);
 			}
 
 		};

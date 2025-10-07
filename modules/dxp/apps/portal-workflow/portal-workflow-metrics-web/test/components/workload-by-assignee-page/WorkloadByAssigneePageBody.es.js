@@ -42,9 +42,10 @@ describe('The workload by assignee page body should', () => {
 	beforeEach(async () => {
 		const renderResult = render(
 			<WorkloadByAssigneePage.Body
-				{...{items, totalCount: items.length}}
+				items={items}
 				page="1"
 				pageSize="5"
+				totalCount={items.length}
 			/>,
 			{wrapper}
 		);

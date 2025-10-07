@@ -257,7 +257,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 
 		return _getLayoutDisplayPageObjectProvider(
 			layoutDisplayPageProvider, groupId, friendlyURL,
-			_getVersion(params));
+			getVersion(params));
 	}
 
 	protected Layout getLayoutDisplayPageObjectProviderLayout(
@@ -294,6 +294,16 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return locale;
+	}
+
+	protected String getVersion(Map<String, String[]> params) {
+		String[] versions = params.get("version");
+
+		if (ArrayUtil.isEmpty(versions)) {
+			return StringPool.BLANK;
+		}
+
+		return versions[0];
 	}
 
 	protected boolean isSameFriendlyURL(String url1, String url2) {
@@ -379,7 +389,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			Map<String, String[]> params)
 		throws NoSuchInfoItemException {
 
-		String version = _getVersion(params);
+		String version = getVersion(params);
 
 		if (Validator.isNull(version)) {
 			return layoutDisplayPageObjectProvider.getDisplayObject();
@@ -541,16 +551,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		return StringPool.BLANK;
-	}
-
-	private String _getVersion(Map<String, String[]> params) {
-		String[] versions = params.get("version");
-
-		if (ArrayUtil.isEmpty(versions)) {
-			return StringPool.BLANK;
-		}
-
-		return versions[0];
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

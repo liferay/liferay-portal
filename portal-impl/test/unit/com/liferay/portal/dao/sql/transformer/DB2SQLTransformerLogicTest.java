@@ -33,9 +33,8 @@ public class DB2SQLTransformerLogicTest
 
 	@Override
 	public String getDropTableIfExistsTextTransformedSQL() {
-		return StringBundler.concat(
-			"BEGIN\n", "DECLARE CONTINUE HANDLER FOR SQLSTATE '42704'\n",
-			"BEGIN END;\n", "EXECUTE IMMEDIATE 'DROP TABLE Foo';\n", "END");
+		return "BEGIN\nDECLARE CONTINUE HANDLER FOR SQLSTATE '42704'\nBEGIN " +
+			"END;\nEXECUTE IMMEDIATE 'DROP TABLE Foo';\nEND";
 	}
 
 	@Override
@@ -114,6 +113,11 @@ public class DB2SQLTransformerLogicTest
 	@Override
 	protected String getNullDateTransformedSQL() {
 		return "select NULL from Foo";
+	}
+
+	@Override
+	protected String getTruncateTableTransformedSQL() {
+		return super.getTruncateTableTransformedSQL() + " IMMEDIATE";
 	}
 
 	private void _testReplaceQuestionMark(String sql) {

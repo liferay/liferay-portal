@@ -15,8 +15,8 @@ ViewCategoriesDisplayContext viewCategoriesDisplayContext = (ViewCategoriesDispl
 	<div class="categorization-section">
 		<div>
 			<react:component
-				module="{CategorizationBreadcrumb} from site-cms-site-initializer"
-				props="<%= viewCategoriesDisplayContext.getBreadcrumbReactData() %>"
+				module="{Breadcrumb} from site-cms-site-initializer"
+				props="<%= viewCategoriesDisplayContext.getBreadcrumbProps() %>"
 			/>
 		</div>
 

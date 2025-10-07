@@ -115,11 +115,13 @@ public class FileEntrySXPBlueprintInfoCollectionProvider
 				assetSubtypeIdentifier.getGroupExternalReferenceCode(),
 				sxpBlueprint.getCompanyId());
 		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to get group with external reference code " +
-					assetSubtypeIdentifier.getGroupExternalReferenceCode(),
-				portalException);
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get group with external reference code " +
+						assetSubtypeIdentifier.getGroupExternalReferenceCode(),
+					exception);
+			}
 
 			return StringPool.BLANK;
 		}
@@ -135,11 +137,14 @@ public class FileEntrySXPBlueprintInfoCollectionProvider
 
 			return String.valueOf(dlFileEntryType.getFileEntryTypeId());
 		}
-		catch (PortalException portalException) {
-			_log.error(
-				"Unable to get document library file entry type with " +
-					"external reference code " + subtypeExternalReferenceCode,
-				portalException);
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get document library file entry type with " +
+						"external reference code " +
+							subtypeExternalReferenceCode,
+					exception);
+			}
 		}
 
 		return StringPool.BLANK;

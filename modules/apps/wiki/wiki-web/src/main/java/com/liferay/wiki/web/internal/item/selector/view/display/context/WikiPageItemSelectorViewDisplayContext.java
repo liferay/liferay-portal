@@ -81,7 +81,7 @@ public class WikiPageItemSelectorViewDisplayContext {
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(_portletURL, liferayPortletResponse)
 		).setParameter(
-			"selectedTab", getTitle(httpServletRequest.getLocale())
+			"selectedTab", _getSelectedTab(httpServletRequest)
 		).buildPortletURL();
 	}
 
@@ -189,12 +189,23 @@ public class WikiPageItemSelectorViewDisplayContext {
 		return _search;
 	}
 
+	private String _getSelectedTab(HttpServletRequest httpServletRequest) {
+		if (_selectedTab != null) {
+			return _selectedTab;
+		}
+
+		_selectedTab = ParamUtil.getString(httpServletRequest, "selectedTab");
+
+		return _selectedTab;
+	}
+
 	private final String _itemSelectedEventName;
 	private final ItemSelectorReturnTypeResolverHandler
 		_itemSelectorReturnTypeResolverHandler;
 	private final PortletURL _portletURL;
 	private final boolean _search;
 	private SearchContainer<WikiPage> _searchContainer;
+	private String _selectedTab;
 	private final WikiNodeLocalService _wikiNodeLocalService;
 	private final WikiPageItemSelectorCriterion _wikiPageItemSelectorCriterion;
 	private final WikiPageItemSelectorView _wikiPageItemSelectorView;

@@ -87,9 +87,9 @@ definition {
 	test CanAddSKUWithAllowedQuantities {
 		property portal.acceptance = "true";
 
-		task ("Given allowed quantities are configured for a product (e.g. allowed quantities 3,7 for Brake Fluid)") {
+		task ("Given allowed quantities are configured for a product (e.g. allowed quantities 3 and 7 for Brake Fluid)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "3,7",
+				allowedOrderQuantities = "3, 7",
 				productName = "Brake Fluid");
 		}
 
@@ -1198,9 +1198,9 @@ definition {
 	test CannotAddSKUWithAllowedQuantitiesWhenTheyAreHigherThanMaximumQuantity {
 		property portal.acceptance = "false";
 
-		task ("Given allowed quantities (6,8) and maximum quantity (7) are configured for a product (e.g. MIN55860)") {
+		task ("Given allowed quantities (6 and 8) and maximum quantity (7) are configured for a product (e.g. MIN55860)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "6,8",
+				allowedOrderQuantities = "6, 8",
 				maxOrderQuantity = 7,
 				productName = "Transmission Cooler Line Assembly");
 		}
@@ -1267,9 +1267,9 @@ definition {
 			CommerceLogin.miniumLogin(urlAppend = "web/minium");
 		}
 
-		task ("And allowed quantities are changed to 8,9 for the same product (e.g. MIN55860)") {
+		task ("And allowed quantities are changed to 8 and 9 for the same product (e.g. MIN55860)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "8,9",
+				allowedOrderQuantities = "8, 9",
 				productName = "Transmission Cooler Line Assembly");
 		}
 
@@ -1312,9 +1312,9 @@ definition {
 	test CannotAddSKUWithAllowedQuantitiesWhenTheyAreLowerThanMinimumQuantity {
 		property portal.acceptance = "false";
 
-		task ("Given allowed quantities (7,8) and minimum quantity (8) are configured for a product (e.g. MIN55860)") {
+		task ("Given allowed quantities (7 and 8) and minimum quantity (8) are configured for a product (e.g. MIN55860)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "7,8",
+				allowedOrderQuantities = "7, 8",
 				minOrderQuantity = 8,
 				productName = "Transmission Cooler Line Assembly");
 		}
@@ -1366,9 +1366,9 @@ definition {
 			CommerceLogin.miniumLogin(urlAppend = "web/minium");
 		}
 
-		task ("And allowed quantities are changed to 6,7 for the same product") {
+		task ("And allowed quantities are changed to 6 and 7 for the same product") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "6,7",
+				allowedOrderQuantities = "6, 7",
 				productName = "Transmission Cooler Line Assembly");
 		}
 
@@ -1411,9 +1411,9 @@ definition {
 	test CannotAddSKUWithAllowedQuantitiesWhichAreNotMultiples {
 		property portal.acceptance = "false";
 
-		task ("Given allowed quantities (5,6,10) and multiple quantity (5) are configured for a product (e.g. MIN55860)") {
+		task ("Given allowed quantities (5, 6 and 10) and multiple quantity (5) are configured for a product (e.g. MIN55860)") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
-				allowedOrderQuantities = "5,6,10",
+				allowedOrderQuantities = "5, 6, 10",
 				multipleOrderQuantity = 5,
 				productName = "Transmission Cooler Line Assembly");
 		}

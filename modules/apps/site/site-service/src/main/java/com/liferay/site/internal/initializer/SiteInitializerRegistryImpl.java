@@ -9,12 +9,15 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -55,19 +58,17 @@ public class SiteInitializerRegistryImpl implements SiteInitializerRegistry {
 	public List<SiteInitializer> getSiteInitializers(
 		long companyId, boolean activeOnly) {
 
-		if (!activeOnly) {
-			return new ArrayList<>(_serviceTrackerMap.values());
+		Predicate<SiteInitializer> predicate =
+			siteInitializer -> !Objects.equals(
+				siteInitializer.getKey(), "com.liferay.site.initializer.cms");
+
+		if (activeOnly) {
+			predicate = predicate.and(
+				siteInitializer -> siteInitializer.isActive(companyId));
 		}
 
-		List<SiteInitializer> siteInitializers = new ArrayList<>();
-
-		for (SiteInitializer siteInitializer : _serviceTrackerMap.values()) {
-			if (siteInitializer.isActive(companyId)) {
-				siteInitializers.add(siteInitializer);
-			}
-		}
-
-		return siteInitializers;
+		return ListUtil.filter(
+			new ArrayList<>(_serviceTrackerMap.values()), predicate);
 	}
 
 	@Activate

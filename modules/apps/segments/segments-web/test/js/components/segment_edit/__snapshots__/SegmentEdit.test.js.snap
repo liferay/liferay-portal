@@ -58,36 +58,30 @@ exports[`SegmentEdit renders 1`] = `
               <div
                 class="input-group-item input-group-item-shrink"
               >
-                <div
-                  class="dropdown"
+                <button
+                  aria-activedescendant=""
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-label="Open Localizations"
+                  class="form-control form-control-select form-control-select-secondary form-control-shrink hidden-label"
+                  role="combobox"
+                  tabindex="0"
+                  title="en-US"
+                  type="button"
                 >
-                  <button
-                    aria-controls="clay-dropdown-menu-1"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="dropdown-toggle btn btn-monospaced btn-secondary"
-                    title="Open Localizations"
-                    type="button"
+                  <span
+                    class="inline-item-before"
                   >
-                    <span
-                      class="inline-item"
+                    <svg
+                      class="lexicon-icon lexicon-icon-en-us"
+                      role="presentation"
                     >
-                      <svg
-                        class="lexicon-icon lexicon-icon-en-us"
-                        role="presentation"
-                      >
-                        <use
-                          href="#en-us"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="btn-section"
-                    >
-                      en-US
-                    </span>
-                  </button>
-                </div>
+                      <use
+                        href="#en-us"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -159,36 +153,30 @@ exports[`SegmentEdit renders with edit buttons if the user has update permission
               <div
                 class="input-group-item input-group-item-shrink"
               >
-                <div
-                  class="dropdown"
+                <button
+                  aria-activedescendant=""
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-label="Open Localizations"
+                  class="form-control form-control-select form-control-select-secondary form-control-shrink hidden-label"
+                  role="combobox"
+                  tabindex="0"
+                  title="en-US"
+                  type="button"
                 >
-                  <button
-                    aria-controls="clay-dropdown-menu-2"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="dropdown-toggle btn btn-monospaced btn-secondary"
-                    title="Open Localizations"
-                    type="button"
+                  <span
+                    class="inline-item-before"
                   >
-                    <span
-                      class="inline-item"
+                    <svg
+                      class="lexicon-icon lexicon-icon-en-us"
+                      role="presentation"
                     >
-                      <svg
-                        class="lexicon-icon lexicon-icon-en-us"
-                        role="presentation"
-                      >
-                        <use
-                          href="#en-us"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="btn-section"
-                    >
-                      en-US
-                    </span>
-                  </button>
-                </div>
+                      <use
+                        href="#en-us"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -308,36 +296,30 @@ exports[`SegmentEdit renders with given values 1`] = `
               <div
                 class="input-group-item input-group-item-shrink"
               >
-                <div
-                  class="dropdown"
+                <button
+                  aria-activedescendant=""
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-label="Open Localizations"
+                  class="form-control form-control-select form-control-select-secondary form-control-shrink hidden-label"
+                  role="combobox"
+                  tabindex="0"
+                  title="en-US"
+                  type="button"
                 >
-                  <button
-                    aria-controls="clay-dropdown-menu-4"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="dropdown-toggle btn btn-monospaced btn-secondary"
-                    title="Open Localizations"
-                    type="button"
+                  <span
+                    class="inline-item-before"
                   >
-                    <span
-                      class="inline-item"
+                    <svg
+                      class="lexicon-icon lexicon-icon-en-us"
+                      role="presentation"
                     >
-                      <svg
-                        class="lexicon-icon lexicon-icon-en-us"
-                        role="presentation"
-                      >
-                        <use
-                          href="#en-us"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="btn-section"
-                    >
-                      en-US
-                    </span>
-                  </button>
-                </div>
+                      <use
+                        href="#en-us"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -524,7 +506,7 @@ exports[`SegmentEdit renders with given values 1`] = `
                   id="first-test-values-group"
                 >
                   <button
-                    aria-controls="clay-id-5"
+                    aria-controls="clay-id-9"
                     aria-expanded="true"
                     class="panel-header panel-header-link collapse-icon collapse-icon-middle show btn btn-unstyled"
                     tabindex="0"
@@ -561,9 +543,9 @@ exports[`SegmentEdit renders with given values 1`] = `
                     </span>
                   </button>
                   <div
-                    aria-labelledby="clay-id-5"
+                    aria-labelledby="clay-id-9"
                     class="panel-collapse"
-                    id="clay-id-5"
+                    id="clay-id-9"
                     role="region"
                   >
                     <div
@@ -881,36 +863,30 @@ exports[`SegmentEdit renders without edit buttons if the user does not have upda
               <div
                 class="input-group-item input-group-item-shrink"
               >
-                <div
-                  class="dropdown"
+                <button
+                  aria-activedescendant=""
+                  aria-expanded="false"
+                  aria-haspopup="listbox"
+                  aria-label="Open Localizations"
+                  class="form-control form-control-select form-control-select-secondary form-control-shrink hidden-label"
+                  role="combobox"
+                  tabindex="0"
+                  title="en-US"
+                  type="button"
                 >
-                  <button
-                    aria-controls="clay-dropdown-menu-3"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    class="dropdown-toggle btn btn-monospaced btn-secondary"
-                    title="Open Localizations"
-                    type="button"
+                  <span
+                    class="inline-item-before"
                   >
-                    <span
-                      class="inline-item"
+                    <svg
+                      class="lexicon-icon lexicon-icon-en-us"
+                      role="presentation"
                     >
-                      <svg
-                        class="lexicon-icon lexicon-icon-en-us"
-                        role="presentation"
-                      >
-                        <use
-                          href="#en-us"
-                        />
-                      </svg>
-                    </span>
-                    <span
-                      class="btn-section"
-                    >
-                      en-US
-                    </span>
-                  </button>
-                </div>
+                      <use
+                        href="#en-us"
+                      />
+                    </svg>
+                  </span>
+                </button>
               </div>
             </div>
           </div>

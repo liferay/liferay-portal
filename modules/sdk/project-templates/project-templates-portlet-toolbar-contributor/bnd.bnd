@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay module project that customizes a Liferay portlet's toolbar.
 Bundle-Name: Liferay Project Templates Portlet Toolbar Contributor
 Bundle-SymbolicName: com.liferay.project.templates.portlet.toolbar.contributor
-Bundle-Version: 1.0.197
+Bundle-Version: 1.0.199
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

@@ -111,6 +111,27 @@ public class PlacedOrder implements Cloneable, Serializable {
 
 	protected String author;
 
+	public Long getAuthorId() {
+		return authorId;
+	}
+
+	public void setAuthorId(Long authorId) {
+		this.authorId = authorId;
+	}
+
+	public void setAuthorId(
+		UnsafeSupplier<Long, Exception> authorIdUnsafeSupplier) {
+
+		try {
+			authorId = authorIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long authorId;
+
 	public Long getChannelId() {
 		return channelId;
 	}

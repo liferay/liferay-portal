@@ -1,0 +1,16 @@
+.mobile-menu-button {
+	background-color: #ffffff;
+	border: none;
+	border-radius: 8px;
+	height: 48px;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	width: 48px;
+}
+
+.mobile-menu-button:hover {
+	background: #edf3fe;
+	border: none;
+	border-radius: 8px;
+	color: #0053f0;
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}

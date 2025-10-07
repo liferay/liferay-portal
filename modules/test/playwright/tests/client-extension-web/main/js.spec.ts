@@ -221,7 +221,7 @@ test('Assert the help link is pointing to the correct url', async ({
 	await expect(link).toBeVisible();
 
 	expect(await link.getAttribute('href')).toBe(
-		'https://learn.liferay.com/w/dxp/liferay-development/customizing-liferays-look-and-feel'
+		'https://learn.liferay.com/w/dxp/development/customizing-liferays-look-and-feel'
 	);
 });
 

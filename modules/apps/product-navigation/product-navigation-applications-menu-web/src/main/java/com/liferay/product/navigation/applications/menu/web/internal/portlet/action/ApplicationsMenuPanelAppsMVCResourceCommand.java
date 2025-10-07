@@ -10,16 +10,27 @@ import com.liferay.application.list.PanelAppRegistry;
 import com.liferay.application.list.PanelCategory;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.expando.kernel.model.ExpandoBridge;
+import com.liferay.headless.asset.library.dto.v1_0.AssetLibrary;
+import com.liferay.headless.asset.library.dto.v1_0.Settings;
+import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
+import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
@@ -30,8 +41,12 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.webserver.WebServerServletToken;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.product.navigation.applications.menu.web.internal.constants.ProductNavigationApplicationsMenuPortletKeys;
 import com.liferay.product.navigation.applications.menu.web.internal.util.ApplicationsMenuUtil;
 import com.liferay.site.item.selector.SiteItemSelectorCriterion;
@@ -44,6 +59,8 @@ import jakarta.portlet.ResourceResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Activate;
@@ -89,6 +106,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 			WebKeys.THEME_DISPLAY);
 
 		return JSONUtil.put(
+			"cms", _getCMSJSONObject(httpServletRequest, themeDisplay)
+		).put(
 			"items",
 			_getPanelCategoriesJSONArray(httpServletRequest, themeDisplay)
 		).put(
@@ -99,6 +118,65 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 				httpServletRequest, resourceRequest, resourceResponse,
 				themeDisplay)
 		);
+	}
+
+	private Collection<AssetLibrary> _getAssetLibraries(
+		Page<AssetLibrary> assetLibrariesPage,
+		Page<AssetLibrary> pinnedByMeAssetLibrariesPage) {
+
+		if (assetLibrariesPage.getTotalCount() == 0) {
+			return Collections.emptyList();
+		}
+
+		if (pinnedByMeAssetLibrariesPage.getTotalCount() == 5) {
+			return pinnedByMeAssetLibrariesPage.getItems();
+		}
+
+		List<AssetLibrary> assetLibraries = new ArrayList<>(
+			pinnedByMeAssetLibrariesPage.getItems());
+
+		List<Long> assetLibraryIds = ListUtil.toList(
+			assetLibraries, AssetLibrary::getId);
+
+		for (AssetLibrary assetLibrary : assetLibrariesPage.getItems()) {
+			if (!assetLibraryIds.contains(assetLibrary.getId())) {
+				assetLibraries.add(assetLibrary);
+			}
+
+			if (assetLibraries.size() == 5) {
+				return assetLibraries;
+			}
+		}
+
+		return assetLibraries;
+	}
+
+	private Page<AssetLibrary> _getAssetLibrariesPage(ThemeDisplay themeDisplay)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+			return null;
+		}
+
+		AssetLibraryResource.Builder builder =
+			_assetLibraryResourceFactory.create();
+
+		AssetLibraryResource assetLibraryResource = builder.user(
+			themeDisplay.getUser()
+		).build();
+
+		Page<AssetLibrary> assetLibrariesPage =
+			assetLibraryResource.getAssetLibrariesPage(
+				null, null, assetLibraryResource.toFilter("type eq 'Space'"),
+				Pagination.of(1, 5), null);
+
+		return Page.of(
+			assetLibrariesPage.getActions(),
+			_getAssetLibraries(
+				assetLibrariesPage,
+				assetLibraryResource.getAssetLibrariesPinnedByMePage(
+					Pagination.of(1, 5))),
+			Pagination.of(1, 5), assetLibrariesPage.getTotalCount());
 	}
 
 	private JSONArray _getChildPanelCategoriesJSONArray(
@@ -152,6 +230,118 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		}
 
 		return childPanelCategoriesJSONArray;
+	}
+
+	private JSONObject _getCMSJSONObject(
+			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+		throws Exception {
+
+		Page<AssetLibrary> assetLibraryPage = _getAssetLibrariesPage(
+			themeDisplay);
+		Company company = themeDisplay.getCompany();
+
+		return JSONUtil.put(
+			"allSpacesCount",
+			() -> {
+				if (assetLibraryPage == null) {
+					return null;
+				}
+
+				return assetLibraryPage.getTotalCount();
+			}
+		).put(
+			"allSpacesURL",
+			StringBundler.concat(
+				themeDisplay.getPathFriendlyURLPublic(),
+				GroupConstants.CMS_FRIENDLY_URL, "/all-spaces")
+		).put(
+			"firstTimeAccess",
+			() -> {
+				ExpandoBridge bridge = company.getExpandoBridge();
+
+				return !bridge.hasAttribute("cmsFirstTimeAccess");
+			}
+		).put(
+			"logoURL",
+			StringBundler.concat(
+				themeDisplay.getPathImage(), "/company_logo?img_id=",
+				company.getLogoId(), "&t=",
+				_webServerServletToken.getToken(company.getLogoId()))
+		).put(
+			"spaces",
+			() -> {
+				if (assetLibraryPage == null) {
+					return null;
+				}
+
+				return JSONUtil.toJSONArray(
+					assetLibraryPage.getItems(),
+					assetLibrary -> JSONUtil.put(
+						"active",
+						_isCMSSpaceAssetLibraryActive(
+							assetLibrary, httpServletRequest)
+					).put(
+						"id", assetLibrary.getId()
+					).put(
+						"logoColor",
+						() -> {
+							Settings settings = assetLibrary.getSettings();
+
+							return settings.getLogoColor();
+						}
+					).put(
+						"name", assetLibrary.getName()
+					).put(
+						"url",
+						() -> StringBundler.concat(
+							themeDisplay.getPathFriendlyURLPublic(),
+							GroupConstants.CMS_FRIENDLY_URL, "/e/space/",
+							PortalUtil.getClassNameId(DepotEntry.class),
+							StringPool.SLASH, assetLibrary.getId())
+					));
+			}
+		).put(
+			"url",
+			themeDisplay.getPathFriendlyURLPublic() +
+				GroupConstants.CMS_FRIENDLY_URL + "/home"
+		);
+	}
+
+	private long _getCMSSpaceDepotEntryId(
+		HttpServletRequest httpServletRequest) {
+
+		Object object = httpServletRequest.getAttribute(
+			InfoDisplayWebKeys.INFO_ITEM);
+
+		DepotEntry depotEntry =
+			object instanceof DepotEntry ? (DepotEntry)object : null;
+
+		if (depotEntry != null) {
+			return depotEntry.getDepotEntryId();
+		}
+
+		return 0;
+	}
+
+	private long _getCMSSpaceGroupId(HttpServletRequest httpServletRequest) {
+		Object object = httpServletRequest.getAttribute(
+			InfoDisplayWebKeys.INFO_ITEM);
+
+		DepotEntry depotEntry =
+			object instanceof DepotEntry ? (DepotEntry)object : null;
+
+		if (depotEntry != null) {
+			return depotEntry.getGroupId();
+		}
+
+		ObjectEntry objectEntry =
+			object instanceof ObjectEntry ? (ObjectEntry)object : null;
+
+		if (objectEntry != null) {
+			return objectEntry.getGroupId();
+		}
+
+		return 0;
 	}
 
 	private JSONObject _getPanelAppJSONObject(
@@ -357,6 +547,22 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 		return true;
 	}
 
+	private boolean _isCMSSpaceAssetLibraryActive(
+		AssetLibrary assetLibrary, HttpServletRequest httpServletRequest) {
+
+		if ((_getCMSSpaceDepotEntryId(httpServletRequest) ==
+				assetLibrary.getId()) ||
+			(_getCMSSpaceGroupId(httpServletRequest) == assetLibrary.getId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	@Reference
+	private AssetLibraryResource.Factory _assetLibraryResourceFactory;
+
 	@Reference
 	private ConfigurationProvider _configurationProvider;
 
@@ -379,5 +585,8 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 	@Reference
 	private RecentGroupManager _recentGroupManager;
+
+	@Reference
+	private WebServerServletToken _webServerServletToken;
 
 }

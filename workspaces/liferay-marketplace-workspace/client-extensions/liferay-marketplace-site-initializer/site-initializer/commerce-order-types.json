@@ -98,9 +98,21 @@
 	{
 		"active": true,
 		"description": {
-			"en_US": "Designates that the order contains a 7-day solution trial."
+			"en_US": "Designates that the order is an SSA trial used by our sales engineers."
 		},
 		"displayOrder": 8,
+		"externalReferenceCode": "SSA_SAAS",
+		"name": {
+			"en_US": "SSA SaaS"
+		},
+		"neverExpire": true
+	},
+	{
+		"active": true,
+		"description": {
+			"en_US": "Designates that the order contains a 7-day solution trial."
+		},
+		"displayOrder": 9,
 		"externalReferenceCode": "SOLUTIONS7",
 		"name": {
 			"en_US": "Solutions - 7 day trial"
@@ -112,7 +124,7 @@
 		"description": {
 			"en_US": "Designates that the order contains a 30-day solution trial."
 		},
-		"displayOrder": 9,
+		"displayOrder": 10,
 		"externalReferenceCode": "SOLUTIONS30",
 		"name": {
 			"en_US": "Solutions - 30 day trial"
@@ -124,7 +136,7 @@
 		"description": {
 			"en_US": "Designates that the order contains a 30-day cloud app trial."
 		},
-		"displayOrder": 10,
+		"displayOrder": 11,
 		"externalReferenceCode": "CLOUDAPP30",
 		"name": {
 			"en_US": "Cloud App - 30 day trial"
@@ -136,7 +148,7 @@
 		"description": {
 			"en_US": "Designates that the order contains a 30-day DXP app trial."
 		},
-		"displayOrder": 11,
+		"displayOrder": 12,
 		"externalReferenceCode": "DXPAPP30",
 		"name": {
 			"en_US": "DXP App - 30 day trial"

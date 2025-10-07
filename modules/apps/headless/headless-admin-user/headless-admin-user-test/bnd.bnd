@@ -2,6 +2,7 @@ Bundle-Name: Liferay Headless Admin User Test
 Bundle-SymbolicName: com.liferay.headless.admin.user.test
 Bundle-Version: 1.0.0
 -includeresource:\
+	com.liferay.captcha.rest.client.jar=com.liferay.captcha.rest.client-*.jar;lib:=true,\
 	com.liferay.headless.admin.user.client.jar=com.liferay.headless.admin.user.client-*.jar;lib:=true,\
 	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
 	META-INF/module-log4j.xml=src/testIntegration/resources/META-INF/module-log4j.xml,\

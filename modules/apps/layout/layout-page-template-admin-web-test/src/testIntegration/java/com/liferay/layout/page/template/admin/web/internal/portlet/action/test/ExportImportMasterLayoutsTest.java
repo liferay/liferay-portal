@@ -98,7 +98,8 @@ public class ExportImportMasterLayoutsTest {
 
 		_layoutPageTemplateStructureLocalService.
 			updateLayoutPageTemplateStructureData(
-				_group1.getGroupId(), layoutPageTemplateEntry1.getPlid(),
+				TestPropsValues.getUserId(), _group1.getGroupId(),
+				layoutPageTemplateEntry1.getPlid(),
 				_segmentsExperienceLocalService.
 					fetchDefaultSegmentsExperienceId(
 						layoutPageTemplateEntry1.getPlid()),

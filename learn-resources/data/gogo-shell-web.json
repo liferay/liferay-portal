@@ -2,7 +2,7 @@
 	"general": {
 		"en_US": {
 			"message": "What can I do in the Gogo Shell?",
-			"url": "https://learn.liferay.com/w/dxp/liferay-development/liferay-internals/fundamentals/using-the-gogo-shell"
+			"url": "https://learn.liferay.com/w/dxp/development/traditional-java-based-development/fundamentals/using-the-gogo-shell"
 		}
 	}
 }

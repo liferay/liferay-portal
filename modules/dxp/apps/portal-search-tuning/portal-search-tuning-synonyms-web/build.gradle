@@ -29,4 +29,5 @@ dependencies {
 	compileOnly project(":dxp:apps:portal-search-tuning:portal-search-tuning-synonyms-api")
 	compileOnly project(":dxp:apps:portal-search-tuning:portal-search-tuning-web-api")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }

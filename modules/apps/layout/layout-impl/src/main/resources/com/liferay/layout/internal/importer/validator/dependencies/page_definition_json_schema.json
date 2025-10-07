@@ -1473,6 +1473,54 @@
 					"if": {
 						"properties": {
 							"type": {
+								"const": "FormRelationship"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"definition": {
+								"$ref": "#/definitions/PageFormRelationshipDefinition"
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
+								"const": "FormStep"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"definition": {
+								"$ref": "#/definitions/PageFormStepDefinition"
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
+								"const": "FormStepContainer"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"definition": {
+								"$ref": "#/definitions/PageFormStepContainerDefinition"
+							}
+						}
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"type": {
 								"const": "Fragment"
 							}
 						}
@@ -1589,6 +1637,7 @@
 						"Column",
 						"DropZone",
 						"Form",
+						"FormRelationship",
 						"FormStep",
 						"FormStepContainer",
 						"Fragment",
@@ -1751,6 +1800,52 @@
 				}
 			},
 			"title": "The PageFormDefinition Schema",
+			"type": "object"
+		},
+		"PageFormRelationshipDefinition": {
+			"additionalProperties": false,
+			"properties": {
+				"buttonLabel": {
+					"$ref": "#/definitions/FragmentInlineValue"
+				},
+				"contentType": {
+					"title": "The content type Schema",
+					"type": "string"
+				},
+				"cssClasses": {
+					"items": {
+						"type": "string"
+					},
+					"title": "The CSS Classes Schema",
+					"type": "array"
+				},
+				"customCSS": {
+					"title": "The Custom CSS Schema",
+					"type": "string"
+				},
+				"customCSSViewports": {
+					"items": {
+						"$ref": "#/definitions/CustomCSSViewport"
+					},
+					"title": "The customCSSViewports Schema",
+					"type": "array"
+				},
+				"fragmentStyle": {
+					"$ref": "#/definitions/FragmentStyle"
+				},
+				"fragmentViewports": {
+					"items": {
+						"$ref": "#/definitions/FragmentViewport"
+					},
+					"title": "The fragmentViewports Schema",
+					"type": "array"
+				},
+				"name": {
+					"title": "The name Schema",
+					"type": "string"
+				}
+			},
+			"title": "The PageFormRelationshipDefinition Schema",
 			"type": "object"
 		},
 		"PageFormStepContainerDefinition": {

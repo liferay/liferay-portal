@@ -5,6 +5,7 @@
 
 package com.liferay.object.internal.action.executor;
 
+import com.liferay.object.action.executor.BaseObjectActionExecutor;
 import com.liferay.object.action.executor.ObjectActionExecutor;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.internal.action.util.ObjectEntryVariablesUtil;
@@ -28,10 +29,15 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(service = ObjectActionExecutor.class)
-public class GroovyObjectActionExecutorImpl implements ObjectActionExecutor {
+public class GroovyObjectActionExecutorImpl extends BaseObjectActionExecutor {
 
 	@Override
-	public void execute(
+	public String getKey() {
+		return ObjectActionExecutorConstants.KEY_GROOVY;
+	}
+
+	@Override
+	protected void doExecute(
 			long companyId, long objectActionId,
 			UnicodeProperties parametersUnicodeProperties,
 			JSONObject payloadJSONObject, long userId)
@@ -53,11 +59,6 @@ public class GroovyObjectActionExecutorImpl implements ObjectActionExecutor {
 		if (GetterUtil.getBoolean(results.get("invalidScript"))) {
 			throw new ScriptingException();
 		}
-	}
-
-	@Override
-	public String getKey() {
-		return ObjectActionExecutorConstants.KEY_GROOVY;
 	}
 
 	@Reference

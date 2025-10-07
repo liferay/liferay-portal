@@ -162,6 +162,17 @@ public class LocalRepositoryProxyBean
 	}
 
 	@Override
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
+		FileEntry fileEntry = _localRepository.fetchFileEntry(fileEntryId);
+
+		if (fileEntry == null) {
+			return null;
+		}
+
+		return newFileEntryProxyBean(fileEntry);
+	}
+
+	@Override
 	public FileEntry fetchFileEntry(long folderId, String title)
 		throws PortalException {
 

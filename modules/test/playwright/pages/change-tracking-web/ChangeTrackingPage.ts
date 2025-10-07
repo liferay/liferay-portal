@@ -12,6 +12,8 @@ import {PORTLET_URLS} from '../../utils/portletUrls';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 
+type CTCollection = {body: any; response?: Response};
+
 export class ChangeTrackingPage {
 	readonly frontendDataSetEntries: Locator;
 	readonly instanceSettingsPage: InstanceSettingsPage;
@@ -232,8 +234,12 @@ export class ChangeTrackingPage {
 		}
 	}
 
-	async goto() {
-		await this.page.goto(`/group/guest${PORTLET_URLS.publications}`);
+	async goto(languageCode?: string) {
+		const languageUrlPath = languageCode ? `/${languageCode}` : '';
+
+		await this.page.goto(
+			`${languageUrlPath}/group/guest${PORTLET_URLS.publications}`
+		);
 
 		const changeTrackingIndicatorButton = this.page.locator(
 			'.change-tracking-indicator-button'
@@ -264,23 +270,46 @@ export class ChangeTrackingPage {
 		await this.selectTab('History');
 	}
 
-	async goToReviewChanges(title: string) {
+	async gotoPublicationsPermissions() {
 		await this.goto();
 
+		await this.page.getByLabel('Options').click();
+
+		await this.page.getByRole('menuitem', {name: 'Settings'}).click();
+
+		await expect(
+			this.page.getByRole('heading', {name: 'Permissions'})
+		).toBeVisible();
+
+		await expect(this.page.getByRole('alert')).toBeVisible();
+
+		await this.page.getByRole('button', {name: 'Edit Permissions'}).click();
+	}
+
+	async goToReviewChanges(title: string, languageCode?: string) {
+		if (languageCode) {
+			await this.goto(languageCode);
+		}
+		else {
+			await this.goto();
+		}
+
 		await this.page
-			.locator('#fnsd___table-id div')
+			.locator('#fnsd___table-id  .table-list-title')
 			.filter({hasText: title})
 			.first()
 			.waitFor();
 
 		await this.page.getByRole('link', {exact: true, name: title}).click();
 
-		await this.page
-			.locator(
-				'#_com_liferay_change_tracking_web_portlet_PublicationsPortlet_controlMenu'
-			)
-			.filter({hasText: 'Review Changes'})
-			.waitFor();
+		if (!languageCode) {
+			await this.page
+				.locator(
+					'#_com_liferay_change_tracking_web_portlet_PublicationsPortlet_controlMenu'
+				)
+				.filter({hasText: 'Review Changes'})
+				.waitFor();
+		}
 	}
 
 	async goToReviewChangesHistory(title: string) {
@@ -347,7 +376,7 @@ export class ChangeTrackingPage {
 		await this.page.reload();
 	}
 
-	async workOnPublication(ctCollection) {
+	async workOnPublication(ctCollection: CTCollection) {
 		const apiHelpers = new ApiHelpers(this.page);
 
 		await apiHelpers.headlessChangeTracking.checkoutCTCollection(
@@ -448,12 +477,14 @@ export class ChangeTrackingPage {
 
 	async viewChanges({
 		changed,
+		click,
 		isVisible,
 		site,
 		title,
 		type,
 	}: {
 		changed?: string;
+		click?: boolean;
 		isVisible?: boolean;
 		site?: string;
 		title: string;
@@ -485,6 +516,10 @@ export class ChangeTrackingPage {
 		}
 		else if (isVisible === false) {
 			await expect(fdsRow).toBeHidden();
+		}
+
+		if (click === true) {
+			await fdsRow.getByRole('link', {name: title}).first().click();
 		}
 	}
 

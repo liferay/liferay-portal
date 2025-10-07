@@ -9,7 +9,7 @@ import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.util.Map;
 
@@ -21,7 +21,7 @@ import org.owasp.html.PolicyFactory;
 /**
  * @author Sergio González
  */
-@Component(service = Sanitizer.class)
+@Component(property = "sanitizer.order:Integer=20", service = Sanitizer.class)
 public class CommentSanitizerImpl implements Sanitizer {
 
 	public CommentSanitizerImpl() {

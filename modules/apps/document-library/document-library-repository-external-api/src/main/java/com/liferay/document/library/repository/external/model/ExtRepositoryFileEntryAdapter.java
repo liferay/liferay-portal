@@ -384,6 +384,11 @@ public class ExtRepositoryFileEntryAdapter
 		return true;
 	}
 
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		throw new UnsupportedOperationException();
+	}
+
 	private List<ExtRepositoryFileVersionAdapter>
 			_getExtRepositoryFileVersionAdapters()
 		throws PortalException {

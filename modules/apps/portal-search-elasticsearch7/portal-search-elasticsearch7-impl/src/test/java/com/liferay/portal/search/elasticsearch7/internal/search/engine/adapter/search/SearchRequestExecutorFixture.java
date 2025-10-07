@@ -497,7 +497,7 @@ public class SearchRequestExecutorFixture {
 	private ElasticsearchClientResolver _elasticsearchClientResolver;
 	private final ElasticsearchSuggesterTranslator
 		_elasticsearchSuggesterTranslator =
-			new ElasticsearchSuggesterTranslator();
+			new ElasticsearchSuggesterTranslator(null);
 	private FacetProcessor<?> _facetProcessor;
 	private SearchRequestExecutor _searchRequestExecutor;
 

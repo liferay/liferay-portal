@@ -69,4 +69,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }

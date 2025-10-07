@@ -5,6 +5,9 @@
 
 package com.liferay.document.library.repository.portlet.file.repository.test;
 
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
+import com.liferay.adaptive.media.image.service.AMImageEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.exception.DuplicateFileEntryException;
 import com.liferay.document.library.kernel.exception.NoSuchFolderException;
@@ -27,7 +30,10 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.InputStream;
@@ -232,6 +238,44 @@ public class PortletFileRepositoryTest {
 		Assert.assertEquals(0, count);
 	}
 
+	@Test
+	public void testFolderDeleteShouldDeleteAMImageEntries() throws Exception {
+		byte[] bytes = FileUtil.getBytes(
+			getClass(), "dependencies/liferay.jpg");
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			User.class.getName(), TestPropsValues.getUserId(), _portletId,
+			_folder.getFolderId(), bytes, RandomTestUtil.randomString(),
+			ContentTypes.IMAGE_JPEG, false);
+
+		AMImageConfigurationEntry amImageConfigurationEntry =
+			_amImageConfigurationHelper.addAMImageConfigurationEntry(
+				_group.getCompanyId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				HashMapBuilder.put(
+					"max-height", String.valueOf(100)
+				).put(
+					"max-width", String.valueOf(200)
+				).build());
+
+		_amImageEntryLocalService.addAMImageEntry(
+			amImageConfigurationEntry, fileEntry.getFileVersion(), 100, 200,
+			new UnsyncByteArrayInputStream(bytes), 12345);
+
+		Assert.assertNotEquals(
+			0,
+			_amImageEntryLocalService.getAMImageEntriesCount(
+				_group.getCompanyId(), amImageConfigurationEntry.getUUID()));
+
+		PortletFileRepositoryUtil.deletePortletFolder(_folder.getFolderId());
+
+		Assert.assertEquals(
+			0,
+			_amImageEntryLocalService.getAMImageEntriesCount(
+				_group.getCompanyId(), amImageConfigurationEntry.getUUID()));
+	}
+
 	@Test(expected = NoSuchFolderException.class)
 	public void testFolderDeleteShouldSucceedIfFolderExists() throws Exception {
 		PortletFileRepositoryUtil.deletePortletFolder(_folder.getFolderId());
@@ -273,6 +317,12 @@ public class PortletFileRepositoryTest {
 			_folder.getFolderId(), name,
 			ServiceContextTestUtil.getServiceContext());
 	}
+
+	@Inject
+	private AMImageConfigurationHelper _amImageConfigurationHelper;
+
+	@Inject
+	private AMImageEntryLocalService _amImageEntryLocalService;
 
 	private Folder _folder;
 

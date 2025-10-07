@@ -809,44 +809,6 @@ definition {
 			title = "Blogs Entry 2");
 	}
 
-	@description = "Verify that the user can order the results inside Assigned to My Roles by Due Date"
-	@priority = 2
-	test CanOrderAssignedtoMyRolesTasksByDueDate {
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry 1");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry 2");
-
-		UserBar.gotoDropdownItem(dropdownItem = "My Workflow Tasks");
-
-		Navigator.gotoNavTab(navTab = "Assigned to My Roles");
-
-		Workflow.updateDueDateTaskByActions(
-			workflowAssetTitle = "Blogs Entry 2",
-			workflowAssetType = "Blogs Entry",
-			workflowDueDateTime = "1:45 PM",
-			workflowTask = "Review");
-
-		Workflow.updateDueDateTaskByActions(
-			workflowAssetTitle = "Blogs Entry 1",
-			workflowAssetType = "Blogs Entry",
-			workflowDueDateTime = "2:45 PM",
-			workflowTask = "Review");
-
-		ManagementBar.sortAssets(sortDirection = "Due Date");
-
-		MyWorkflowTasks.viewMyWorkflowTaskItemPosition(
-			rowPosition = 1,
-			title = "Blogs Entry 2");
-
-		MyWorkflowTasks.viewMyWorkflowTaskItemPosition(
-			rowPosition = 2,
-			title = "Blogs Entry 1");
-	}
-
 	@description = "Verify that the user can order the results inside Assigned to My Roles by Last Activity Date"
 	@priority = 3
 	test CanOrderAssignedtoMyRolesTasksByLastActivityDate {

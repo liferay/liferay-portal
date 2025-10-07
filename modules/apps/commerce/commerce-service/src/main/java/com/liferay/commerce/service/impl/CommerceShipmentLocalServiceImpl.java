@@ -15,7 +15,6 @@ import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceShipment;
-import com.liferay.commerce.model.CommerceShipmentItem;
 import com.liferay.commerce.model.CommerceShippingMethod;
 import com.liferay.commerce.model.attributes.provider.CommerceModelAttributesProvider;
 import com.liferay.commerce.service.CommerceAddressLocalService;
@@ -54,7 +53,6 @@ import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -62,8 +60,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
-
-import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -661,23 +657,20 @@ public class CommerceShipmentLocalServiceImpl
 		CommerceShipment commerceShipment =
 			commerceShipmentPersistence.findByPrimaryKey(commerceShipmentId);
 
-		List<CommerceShipmentItem> commerceShipmentItems =
-			_commerceShipmentItemLocalService.getCommerceShipmentItems(
-				commerceShipmentId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		int commerceShipmentItemsCount =
+			_commerceShipmentItemLocalService.getCommerceShipmentItemsCount(
+				commerceShipmentId);
 
-		if (commerceShipmentItems.isEmpty()) {
+		if (commerceShipmentItemsCount == 0) {
 			throw new CommerceShipmentItemQuantityException();
 		}
 
-		for (CommerceShipmentItem commerceShipmentItem :
-				commerceShipmentItems) {
+		int validCommerceShipmentItemsCount =
+			_commerceShipmentItemLocalService.
+				getValidCommerceShipmentItemsCount(commerceShipmentId);
 
-			if (BigDecimalUtil.lte(
-					commerceShipmentItem.getQuantity(), BigDecimal.ZERO) ||
-				(commerceShipmentItem.getCommerceInventoryWarehouseId() <= 0)) {
-
-				throw new CommerceShipmentStatusException();
-			}
+		if (validCommerceShipmentItemsCount != commerceShipmentItemsCount) {
+			throw new CommerceShipmentStatusException();
 		}
 
 		commerceShipment.setStatus(status);

@@ -71,8 +71,8 @@ public class CPSpecificationOptionUpgradeProcessTest {
 					connection,
 					StringBundler.concat(
 						"insert into CPSpecificationOption (",
-						"CPSpecificationOptionId, listTypeDefinitionId",
-						") values (?, ?)"))) {
+						"CPSpecificationOptionId, listTypeDefinitionId) ",
+						"values (?, ?)"))) {
 
 			preparedStatement.setLong(1, cpSpecificationOptionId);
 

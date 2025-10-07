@@ -29,7 +29,16 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
-	async getObjectDefinitionObjectEntries(applicationName: string) {
+	async getObjectDefinitionObjectEntries(
+		applicationName: string,
+		searchParams?: URLSearchParams
+	) {
+		if (searchParams) {
+			return this.apiHelpers.get(
+				`${this.apiHelpers.baseUrl}${applicationName}/?${searchParams.toString()}`
+			);
+		}
+
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${applicationName}/`
 		);
@@ -44,12 +53,29 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
-	async getObjectEntryByExternalReferenceCode(
-		applicationName: string,
-		externalReferenceCode: string
-	) {
+	async getObjectEntryByExternalReferenceCode({
+		applicationName,
+		externalReferenceCode,
+		nestedField,
+	}: {
+		applicationName: string;
+		externalReferenceCode: string;
+		nestedField?: string;
+	}) {
+		if (nestedField) {
+			return this.apiHelpers.get(
+				`${this.apiHelpers.baseUrl}${applicationName}/by-external-reference-code/${externalReferenceCode}?nestedFields=${nestedField}`
+			);
+		}
+
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${applicationName}/by-external-reference-code/${externalReferenceCode}`
+		);
+	}
+
+	async getObjectEntryById(applicationName: string, id: string) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${applicationName}/${id}`
 		);
 	}
 
@@ -68,6 +94,25 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
+	async patchObjectEntry(
+		data: DataObject,
+		applicationName: string,
+		objectEntryId: number,
+		scopeKey?: string
+	): Promise<ObjectEntry> {
+		if (scopeKey) {
+			return this.apiHelpers.patch(
+				`${this.apiHelpers.baseUrl}${applicationName}/scopes/${scopeKey}/${objectEntryId}`,
+				data
+			);
+		}
+
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${applicationName}/${objectEntryId}`,
+			data
+		);
+	}
+
 	async postObjectEntry(
 		data: DataObject,
 		applicationName: string,
@@ -83,6 +128,22 @@ export class ObjectEntryApiHelper {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${applicationName}/`,
 			{data}
+		);
+	}
+
+	async putByExternalReferenceCodeCurrentExternalReferenceCodeObjectRelationshipNameRelatedExternalReferenceCode({
+		applicationName,
+		currentExternalReferenceCode,
+		objectRelationshipName,
+		relatedExternalReferenceCode,
+	}: {
+		applicationName: string;
+		currentExternalReferenceCode: string;
+		objectRelationshipName: string;
+		relatedExternalReferenceCode: string;
+	}): Promise<ObjectEntry> {
+		return this.apiHelpers.put(
+			`${this.apiHelpers.baseUrl}${applicationName}/by-external-reference-code/${currentExternalReferenceCode}/${objectRelationshipName}/${relatedExternalReferenceCode}`
 		);
 	}
 

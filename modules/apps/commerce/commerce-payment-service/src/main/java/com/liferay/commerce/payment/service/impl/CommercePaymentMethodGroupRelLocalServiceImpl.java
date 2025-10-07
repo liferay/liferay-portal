@@ -389,6 +389,7 @@ public class CommercePaymentMethodGroupRelLocalServiceImpl
 
 		if (imageFile != null) {
 			_imageLocalService.updateImage(
+				commercePaymentMethodGroupRel.getCompanyId(),
 				commercePaymentMethodGroupRel.getImageId(), imageFile);
 		}
 

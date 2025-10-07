@@ -54,29 +54,29 @@ public class AssetLibraryTestEntity implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public Long getAssetLibraryId() {
-		if (_assetLibraryIdSupplier != null) {
-			assetLibraryId = _assetLibraryIdSupplier.get();
+	public String getAssetLibraryKey() {
+		if (_assetLibraryKeySupplier != null) {
+			assetLibraryKey = _assetLibraryKeySupplier.get();
 
-			_assetLibraryIdSupplier = null;
+			_assetLibraryKeySupplier = null;
 		}
 
-		return assetLibraryId;
+		return assetLibraryKey;
 	}
 
-	public void setAssetLibraryId(Long assetLibraryId) {
-		this.assetLibraryId = assetLibraryId;
+	public void setAssetLibraryKey(String assetLibraryKey) {
+		this.assetLibraryKey = assetLibraryKey;
 
-		_assetLibraryIdSupplier = null;
+		_assetLibraryKeySupplier = null;
 	}
 
 	@JsonIgnore
-	public void setAssetLibraryId(
-		UnsafeSupplier<Long, Exception> assetLibraryIdUnsafeSupplier) {
+	public void setAssetLibraryKey(
+		UnsafeSupplier<String, Exception> assetLibraryKeyUnsafeSupplier) {
 
-		_assetLibraryIdSupplier = () -> {
+		_assetLibraryKeySupplier = () -> {
 			try {
-				return assetLibraryIdUnsafeSupplier.get();
+				return assetLibraryKeyUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -89,10 +89,10 @@ public class AssetLibraryTestEntity implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Long assetLibraryId;
+	protected String assetLibraryKey;
 
 	@JsonIgnore
-	private Supplier<Long> _assetLibraryIdSupplier;
+	private Supplier<String> _assetLibraryKeySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Date getDateCreated() {
@@ -336,16 +336,20 @@ public class AssetLibraryTestEntity implements Serializable {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-		Long assetLibraryId = getAssetLibraryId();
+		String assetLibraryKey = getAssetLibraryKey();
 
-		if (assetLibraryId != null) {
+		if (assetLibraryKey != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"assetLibraryId\": ");
+			sb.append("\"assetLibraryKey\": ");
 
-			sb.append(assetLibraryId);
+			sb.append("\"");
+
+			sb.append(_escape(assetLibraryKey));
+
+			sb.append("\"");
 		}
 
 		Date dateCreated = getDateCreated();

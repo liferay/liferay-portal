@@ -70,6 +70,10 @@ public class AssetCategoriesSearchFacetDisplayContext
 			_themeDisplay);
 	}
 
+	public List<String> getGroupVocabularyExternalReferenceCodes() {
+		return _groupVocabularyExternalReferenceCodes;
+	}
+
 	@Override
 	public String getPaginationStartParameterName() {
 		return _paginationStartParameterName;
@@ -88,6 +92,10 @@ public class AssetCategoriesSearchFacetDisplayContext
 	@Override
 	public List<String> getParameterValues() {
 		return _parameterValues;
+	}
+
+	public List<Long> getVocabularyIds() {
+		return _vocabularyIds;
 	}
 
 	public List<String> getVocabularyNames() {
@@ -124,6 +132,13 @@ public class AssetCategoriesSearchFacetDisplayContext
 		_cloud = cloud;
 	}
 
+	public void setGroupVocabularyExternalReferenceCodes(
+		List<String> groupVocabularyExternalReferenceCodes) {
+
+		_groupVocabularyExternalReferenceCodes =
+			groupVocabularyExternalReferenceCodes;
+	}
+
 	public void setNothingSelected(boolean nothingSelected) {
 		_nothingSelected = nothingSelected;
 	}
@@ -150,6 +165,10 @@ public class AssetCategoriesSearchFacetDisplayContext
 		_renderNothing = renderNothing;
 	}
 
+	public void setVocabularyIds(List<Long> vocabularyIds) {
+		_vocabularyIds = vocabularyIds;
+	}
+
 	public void setVocabularyNames(List<String> vocabularyNames) {
 		_vocabularyNames = vocabularyNames;
 	}
@@ -159,6 +178,7 @@ public class AssetCategoriesSearchFacetDisplayContext
 	private final CategoryFacetPortletInstanceConfiguration
 		_categoryFacetPortletInstanceConfiguration;
 	private boolean _cloud;
+	private List<String> _groupVocabularyExternalReferenceCodes;
 	private boolean _nothingSelected;
 	private String _paginationStartParameterName;
 	private String _parameterName;
@@ -166,6 +186,7 @@ public class AssetCategoriesSearchFacetDisplayContext
 	private List<String> _parameterValues;
 	private boolean _renderNothing;
 	private final ThemeDisplay _themeDisplay;
+	private List<Long> _vocabularyIds;
 	private List<String> _vocabularyNames;
 
 }

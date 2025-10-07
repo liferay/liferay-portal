@@ -286,21 +286,6 @@ public interface BatchEngineExportTaskModel
 	public void setErrorMessage(String errorMessage);
 
 	/**
-	 * Returns the field names of this batch engine export task.
-	 *
-	 * @return the field names of this batch engine export task
-	 */
-	@AutoEscape
-	public String getFieldNames();
-
-	/**
-	 * Sets the field names of this batch engine export task.
-	 *
-	 * @param fieldNames the field names of this batch engine export task
-	 */
-	public void setFieldNames(String fieldNames);
-
-	/**
 	 * Returns the execute status of this batch engine export task.
 	 *
 	 * @return the execute status of this batch engine export task
@@ -314,6 +299,21 @@ public interface BatchEngineExportTaskModel
 	 * @param executeStatus the execute status of this batch engine export task
 	 */
 	public void setExecuteStatus(String executeStatus);
+
+	/**
+	 * Returns the field names of this batch engine export task.
+	 *
+	 * @return the field names of this batch engine export task
+	 */
+	@AutoEscape
+	public String getFieldNames();
+
+	/**
+	 * Sets the field names of this batch engine export task.
+	 *
+	 * @param fieldNames the field names of this batch engine export task
+	 */
+	public void setFieldNames(String fieldNames);
 
 	/**
 	 * Returns the parameters of this batch engine export task.

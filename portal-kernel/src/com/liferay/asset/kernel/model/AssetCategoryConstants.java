@@ -22,7 +22,7 @@ public class AssetCategoryConstants {
 
 	public static final long DEFAULT_PARENT_CATEGORY_ID = 0;
 
-	public static final long INCOMPLETE_PARENT_CATEGORY_ID = -1;
+	public static final long EMPTY_PARENT_CATEGORY_ID = -1;
 
 	public static final String PROPERTY_KEY_VALUE_SEPARATOR = "_KEY_VALUE_";
 

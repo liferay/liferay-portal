@@ -120,14 +120,14 @@ public class ObjectRelationshipExtensionProvider
 							objectDefinition.getStorageType()));
 
 				Page<ObjectEntry> relatedObjectEntriesPage =
-					defaultObjectEntryManager.
-						getObjectEntryRelatedObjectEntries(
-							_getDefaultDTOConverterContext(
-								objectDefinition, primaryKey, null, userId),
-							objectDefinition, primaryKey,
-							objectRelationship.getName(),
-							Pagination.of(
-								QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+					defaultObjectEntryManager.getRelatedObjectEntries(
+						_getDefaultDTOConverterContext(
+							objectDefinition, primaryKey, null, userId),
+						primaryKey,
+						_objectRelationshipLocalService.getObjectRelationship(
+							objectDefinition.getObjectDefinitionId(),
+							objectRelationship.getName()),
+						Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
 				return (Serializable)relatedObjectEntriesPage.getItems();
 			});

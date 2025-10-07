@@ -2743,6 +2743,8 @@ public class Mutation {
 
 	@GraphQLField(description = "Creates a new user account")
 	public UserAccount createUserAccount(
+			@GraphQLName("captchaAnswer") String captchaAnswer,
+			@GraphQLName("captchaToken") String captchaToken,
 			@GraphQLName("userAccount") UserAccount userAccount)
 		throws Exception {
 
@@ -2750,11 +2752,13 @@ public class Mutation {
 			_userAccountResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			userAccountResource -> userAccountResource.postUserAccount(
-				userAccount));
+				captchaAnswer, captchaToken, userAccount));
 	}
 
 	@GraphQLField
 	public Response createUserAccountBatch(
+			@GraphQLName("captchaAnswer") String captchaAnswer,
+			@GraphQLName("captchaToken") String captchaToken,
 			@GraphQLName("callbackURL") String callbackURL,
 			@GraphQLName("object") Object object)
 		throws Exception {
@@ -2763,7 +2767,7 @@ public class Mutation {
 			_userAccountResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			userAccountResource -> userAccountResource.postUserAccountBatch(
-				callbackURL, object));
+				captchaAnswer, captchaToken, callbackURL, object));
 	}
 
 	@GraphQLField

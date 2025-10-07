@@ -5,6 +5,7 @@
 
 package com.liferay.calendar.service.persistence.impl;
 
+import com.liferay.calendar.exception.DuplicateCalendarBookingExternalReferenceCodeException;
 import com.liferay.calendar.exception.NoSuchBookingException;
 import com.liferay.calendar.model.CalendarBooking;
 import com.liferay.calendar.model.CalendarBookingTable;
@@ -26,14 +27,20 @@ import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -5346,6 +5353,218 @@ public class CalendarBookingPersistenceImpl
 	private static final String _FINDER_COLUMN_P_S_STATUS_2 =
 		"calendarBooking.status = ?";
 
+	private FinderPath _finderPathFetchByERC_G;
+
+	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or throws a <code>NoSuchBookingException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching calendar booking
+	 * @throws NoSuchBookingException if a matching calendar booking could not be found
+	 */
+	@Override
+	public CalendarBooking findByERC_G(
+			String externalReferenceCode, long groupId)
+		throws NoSuchBookingException {
+
+		CalendarBooking calendarBooking = fetchByERC_G(
+			externalReferenceCode, groupId);
+
+		if (calendarBooking == null) {
+			StringBundler sb = new StringBundler(6);
+
+			sb.append(_NO_SUCH_ENTITY_WITH_KEY);
+
+			sb.append("externalReferenceCode=");
+			sb.append(externalReferenceCode);
+
+			sb.append(", groupId=");
+			sb.append(groupId);
+
+			sb.append("}");
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(sb.toString());
+			}
+
+			throw new NoSuchBookingException(sb.toString());
+		}
+
+		return calendarBooking;
+	}
+
+	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the matching calendar booking, or <code>null</code> if a matching calendar booking could not be found
+	 */
+	@Override
+	public CalendarBooking fetchByERC_G(
+		String externalReferenceCode, long groupId) {
+
+		return fetchByERC_G(externalReferenceCode, groupId, true);
+	}
+
+	/**
+	 * Returns the calendar booking where externalReferenceCode = &#63; and groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching calendar booking, or <code>null</code> if a matching calendar booking could not be found
+	 */
+	@Override
+	public CalendarBooking fetchByERC_G(
+		String externalReferenceCode, long groupId, boolean useFinderCache) {
+
+		try (SafeCloseable safeCloseable =
+				ctPersistenceHelper.setCTCollectionIdWithSafeCloseable(
+					CalendarBooking.class)) {
+
+			externalReferenceCode = Objects.toString(externalReferenceCode, "");
+
+			Object[] finderArgs = null;
+
+			if (useFinderCache) {
+				finderArgs = new Object[] {externalReferenceCode, groupId};
+			}
+
+			Object result = null;
+
+			if (useFinderCache) {
+				result = finderCache.getResult(
+					_finderPathFetchByERC_G, finderArgs, this);
+			}
+
+			if (result instanceof CalendarBooking) {
+				CalendarBooking calendarBooking = (CalendarBooking)result;
+
+				if (!Objects.equals(
+						externalReferenceCode,
+						calendarBooking.getExternalReferenceCode()) ||
+					(groupId != calendarBooking.getGroupId())) {
+
+					result = null;
+				}
+			}
+
+			if (result == null) {
+				StringBundler sb = new StringBundler(4);
+
+				sb.append(_SQL_SELECT_CALENDARBOOKING_WHERE);
+
+				boolean bindExternalReferenceCode = false;
+
+				if (externalReferenceCode.isEmpty()) {
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3);
+				}
+				else {
+					bindExternalReferenceCode = true;
+
+					sb.append(_FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2);
+				}
+
+				sb.append(_FINDER_COLUMN_ERC_G_GROUPID_2);
+
+				String sql = sb.toString();
+
+				Session session = null;
+
+				try {
+					session = openSession();
+
+					Query query = session.createQuery(sql);
+
+					QueryPos queryPos = QueryPos.getInstance(query);
+
+					if (bindExternalReferenceCode) {
+						queryPos.add(externalReferenceCode);
+					}
+
+					queryPos.add(groupId);
+
+					List<CalendarBooking> list = query.list();
+
+					if (list.isEmpty()) {
+						if (useFinderCache) {
+							finderCache.putResult(
+								_finderPathFetchByERC_G, finderArgs, list);
+						}
+					}
+					else {
+						CalendarBooking calendarBooking = list.get(0);
+
+						result = calendarBooking;
+
+						cacheResult(calendarBooking);
+					}
+				}
+				catch (Exception exception) {
+					throw processException(exception);
+				}
+				finally {
+					closeSession(session);
+				}
+			}
+
+			if (result instanceof List<?>) {
+				return null;
+			}
+			else {
+				return (CalendarBooking)result;
+			}
+		}
+	}
+
+	/**
+	 * Removes the calendar booking where externalReferenceCode = &#63; and groupId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the calendar booking that was removed
+	 */
+	@Override
+	public CalendarBooking removeByERC_G(
+			String externalReferenceCode, long groupId)
+		throws NoSuchBookingException {
+
+		CalendarBooking calendarBooking = findByERC_G(
+			externalReferenceCode, groupId);
+
+		return remove(calendarBooking);
+	}
+
+	/**
+	 * Returns the number of calendar bookings where externalReferenceCode = &#63; and groupId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param groupId the group ID
+	 * @return the number of matching calendar bookings
+	 */
+	@Override
+	public int countByERC_G(String externalReferenceCode, long groupId) {
+		CalendarBooking calendarBooking = fetchByERC_G(
+			externalReferenceCode, groupId);
+
+		if (calendarBooking == null) {
+			return 0;
+		}
+
+		return 1;
+	}
+
+	private static final String _FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_2 =
+		"calendarBooking.externalReferenceCode = ? AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_EXTERNALREFERENCECODE_3 =
+		"(calendarBooking.externalReferenceCode IS NULL OR calendarBooking.externalReferenceCode = '') AND ";
+
+	private static final String _FINDER_COLUMN_ERC_G_GROUPID_2 =
+		"calendarBooking.groupId = ?";
+
 	public CalendarBookingPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -5396,6 +5615,14 @@ public class CalendarBookingPersistenceImpl
 				new Object[] {
 					calendarBooking.getCalendarId(),
 					calendarBooking.getVEventUid()
+				},
+				calendarBooking);
+
+			finderCache.putResult(
+				_finderPathFetchByERC_G,
+				new Object[] {
+					calendarBooking.getExternalReferenceCode(),
+					calendarBooking.getGroupId()
 				},
 				calendarBooking);
 		}
@@ -5506,6 +5733,14 @@ public class CalendarBookingPersistenceImpl
 
 			finderCache.putResult(
 				_finderPathFetchByC_V, args, calendarBookingModelImpl);
+
+			args = new Object[] {
+				calendarBookingModelImpl.getExternalReferenceCode(),
+				calendarBookingModelImpl.getGroupId()
+			};
+
+			finderCache.putResult(
+				_finderPathFetchByERC_G, args, calendarBookingModelImpl);
 		}
 	}
 
@@ -5647,6 +5882,69 @@ public class CalendarBookingPersistenceImpl
 			String uuid = PortalUUIDUtil.generate();
 
 			calendarBooking.setUuid(uuid);
+		}
+
+		if (Validator.isNull(calendarBooking.getExternalReferenceCode())) {
+			calendarBooking.setExternalReferenceCode(calendarBooking.getUuid());
+		}
+		else {
+			if (!Objects.equals(
+					calendarBookingModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					calendarBooking.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = calendarBooking.getCompanyId();
+
+					long groupId = calendarBooking.getGroupId();
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = calendarBooking.getPrimaryKey();
+					}
+
+					try {
+						calendarBooking.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								CalendarBooking.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								calendarBooking.getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+
+			CalendarBooking ercCalendarBooking = fetchByERC_G(
+				calendarBooking.getExternalReferenceCode(),
+				calendarBooking.getGroupId());
+
+			if (isNew) {
+				if (ercCalendarBooking != null) {
+					throw new DuplicateCalendarBookingExternalReferenceCodeException(
+						"Duplicate calendar booking with external reference code " +
+							calendarBooking.getExternalReferenceCode() +
+								" and group " + calendarBooking.getGroupId());
+				}
+			}
+			else {
+				if ((ercCalendarBooking != null) &&
+					(calendarBooking.getCalendarBookingId() !=
+						ercCalendarBooking.getCalendarBookingId())) {
+
+					throw new DuplicateCalendarBookingExternalReferenceCodeException(
+						"Duplicate calendar booking with external reference code " +
+							calendarBooking.getExternalReferenceCode() +
+								" and group " + calendarBooking.getGroupId());
+				}
+			}
 		}
 
 		ServiceContext serviceContext =
@@ -6196,6 +6494,7 @@ public class CalendarBookingPersistenceImpl
 		ctControlColumnNames.add("mvccVersion");
 		ctControlColumnNames.add("ctCollectionId");
 		ctStrictColumnNames.add("uuid_");
+		ctStrictColumnNames.add("externalReferenceCode");
 		ctStrictColumnNames.add("groupId");
 		ctStrictColumnNames.add("companyId");
 		ctStrictColumnNames.add("userId");
@@ -6241,6 +6540,9 @@ public class CalendarBookingPersistenceImpl
 			new String[] {"calendarId", "parentCalendarBookingId"});
 
 		_uniqueIndexColumnNames.add(new String[] {"calendarId", "vEventUid"});
+
+		_uniqueIndexColumnNames.add(
+			new String[] {"externalReferenceCode", "groupId"});
 	}
 
 	/**
@@ -6438,6 +6740,11 @@ public class CalendarBookingPersistenceImpl
 			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_S",
 			new String[] {Long.class.getName(), Integer.class.getName()},
 			new String[] {"parentCalendarBookingId", "status"}, false);
+
+		_finderPathFetchByERC_G = new FinderPath(
+			FINDER_CLASS_NAME_ENTITY, "fetchByERC_G",
+			new String[] {String.class.getName(), Long.class.getName()},
+			new String[] {"externalReferenceCode", "groupId"}, true);
 
 		CalendarBookingUtil.setPersistence(this);
 	}

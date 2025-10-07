@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import Checkbox from '@clayui/form/lib/Checkbox';
+import {ClayCheckbox} from '@clayui/form';
 import {useSelector} from '@xstate/store/react';
 
 import {useMarketplaceContext} from '../../../../../context/MarketplaceContext';
@@ -36,7 +36,7 @@ const LicenseTermsCheckbox = () => {
 
 	return (
 		<div className="align-items-start d-flex eula-container mt-4">
-			<Checkbox
+			<ClayCheckbox
 				checked={eulaAgreement}
 				className="mr-2"
 				onChange={() =>

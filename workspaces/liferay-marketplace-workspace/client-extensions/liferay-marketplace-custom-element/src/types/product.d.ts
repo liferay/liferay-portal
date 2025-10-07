@@ -67,6 +67,7 @@ type DeliverySKU = {
 	customFields?: CustomField[];
 	externalReferenceCode: string;
 	id: number;
+	neverExpire?: boolean;
 	price: {price: number; priceFormatted: string};
 	purchasable: boolean;
 	sku: string;
@@ -113,6 +114,7 @@ type Product = {
 	active: boolean;
 	attachments: ProductAttachment[];
 	catalog: Catalog;
+	catalogExternalReferenceCode: string;
 	catalogId: number;
 	catalogName: string;
 	categories: ProductCategories[];
@@ -215,6 +217,7 @@ type SKU = {
 	externalReferenceCode: string;
 	id: number;
 	price: number;
+	productId: number;
 	sku: string;
 	skuOptions: {key: string; value: string}[];
 };

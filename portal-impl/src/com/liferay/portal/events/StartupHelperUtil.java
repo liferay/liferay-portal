@@ -10,6 +10,7 @@ import com.liferay.petra.io.Deserializer;
 import com.liferay.petra.io.Serializer;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.exception.ResourceActionsException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -25,13 +26,13 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.version.Version;
 import com.liferay.portal.tools.DBUpgrader;
 import com.liferay.portal.upgrade.PortalUpgradeProcess;
 import com.liferay.portal.upgrade.log.UpgradeLogContext;
-import com.liferay.portal.util.PropsValues;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -128,6 +129,8 @@ public class StartupHelperUtil {
 		_upgrading = upgrading;
 
 		if (upgrading) {
+			ThreadLocalCacheManager.disable();
+
 			if (PropsValues.UPGRADE_LOG_CONTEXT_ENABLED) {
 				BundleContext bundleContext =
 					SystemBundleUtil.getBundleContext();
@@ -148,6 +151,8 @@ public class StartupHelperUtil {
 
 				_serviceRegistration = null;
 			}
+
+			ThreadLocalCacheManager.enable();
 		}
 	}
 

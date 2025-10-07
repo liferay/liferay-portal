@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay WAR-style Core Ext project.
 Bundle-Name: Liferay Project Templates WAR Core Ext
 Bundle-SymbolicName: com.liferay.project.templates.war.core.ext
-Bundle-Version: 1.0.165
+Bundle-Version: 1.0.167
 Liferay-Versions: [7,7.3)
 -removeheaders:\
 	Import-Package,\

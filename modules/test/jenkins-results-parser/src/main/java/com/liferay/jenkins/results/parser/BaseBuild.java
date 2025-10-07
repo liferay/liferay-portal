@@ -57,6 +57,15 @@ public abstract class BaseBuild implements Build {
 	}
 
 	@Override
+	public void addTestrayAttachmentURL(URL testrayAttachmentURL) {
+		if (_testrayAttachmentURLs.contains(testrayAttachmentURL)) {
+			return;
+		}
+
+		_testrayAttachmentURLs.add(testrayAttachmentURL);
+	}
+
+	@Override
 	public void archive() {
 		archive(getArchiveName());
 	}
@@ -164,7 +173,7 @@ public abstract class BaseBuild implements Build {
 		List<String> badBuildURLs = new ArrayList<>();
 
 		for (Invocation invocation :
-				_invocations.subList(0, _invocations.size() - 2)) {
+				_invocations.subList(0, _invocations.size() - 1)) {
 
 			badBuildURLs.add(invocation.getBuildURL());
 		}
@@ -297,7 +306,16 @@ public abstract class BaseBuild implements Build {
 			sb.append("C:");
 		}
 
-		sb.append("/opt/dev/projects/github/.tmp/jenkins/");
+		Properties buildProperties = null;
+
+		try {
+			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		sb.append(buildProperties.getProperty("jenkins.tmp.dir"));
 
 		JenkinsMaster jenkinsMaster = getJenkinsMaster();
 
@@ -322,17 +340,31 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public JSONObject getBuildJSONObject() {
+		if (_buildJSONObject != null) {
+			return _buildJSONObject;
+		}
+
 		String archiveFileContent = getArchiveFileContent("api/json");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(archiveFileContent)) {
-			return new JSONObject(archiveFileContent);
+			_buildJSONObject = new JSONObject(archiveFileContent);
+
+			return _buildJSONObject;
 		}
 
 		try {
-			return JenkinsResultsParserUtil.toJSONObject(
+			JSONObject buildJSONObject = JenkinsResultsParserUtil.toJSONObject(
 				JenkinsResultsParserUtil.getLocalURL(
 					getBuildURL() + "api/json"),
 				false);
+
+			if (!isCompleted()) {
+				return buildJSONObject;
+			}
+
+			_buildJSONObject = buildJSONObject;
+
+			return _buildJSONObject;
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
@@ -431,14 +463,6 @@ public abstract class BaseBuild implements Build {
 
 		buildReportJSONObject.put(
 			"testrayAttachmentURLs", getTestrayAttachmentURLs());
-
-		JSONArray testResultsJSONArray = new JSONArray();
-
-		for (TestResult testResult : getTestResults(null)) {
-			testResultsJSONArray.put(testResult.getTestReportJSONObject());
-		}
-
-		buildReportJSONObject.put("testResults", testResultsJSONArray);
 
 		return buildReportJSONObject;
 	}
@@ -708,11 +732,6 @@ public abstract class BaseBuild implements Build {
 		_gitHubMessageElement = messageElement;
 
 		return _gitHubMessageElement;
-	}
-
-	@Override
-	public Element getGitHubMessageUpstreamJobFailureElement() {
-		return upstreamJobFailureMessageElement;
 	}
 
 	@Override
@@ -1272,28 +1291,30 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public synchronized List<URL> getTestrayAttachmentURLs() {
-		if (_testrayAttachmentURLs != null) {
+		if (!Objects.equals(getStatus(), "completed") ||
+			_testrayAttachmentURLsFound) {
+
 			return _testrayAttachmentURLs;
 		}
-
-		_testrayAttachmentURLs = new ArrayList<>();
 
 		String consoleText = getConsoleText();
 
 		for (String line : consoleText.split("\\n")) {
-			Matcher matcher = _testrayS3ObjectURLPattern.matcher(line);
+			Matcher matcher = _testrayCloudObjectURLPattern.matcher(line);
 
 			if (!matcher.find()) {
 				continue;
 			}
 
 			try {
-				_testrayAttachmentURLs.add(new URL(matcher.group("url")));
+				addTestrayAttachmentURL(new URL(matcher.group("url")));
 			}
 			catch (MalformedURLException malformedURLException) {
 				throw new RuntimeException(malformedURLException);
 			}
 		}
+
+		_testrayAttachmentURLsFound = true;
 
 		return _testrayAttachmentURLs;
 	}
@@ -1307,6 +1328,10 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public JSONObject getTestReportJSONObject(boolean checkCache) {
+		if (_testReportJSONObject != null) {
+			return _testReportJSONObject;
+		}
+
 		String result = getResult();
 
 		if (result == null) {
@@ -1318,17 +1343,23 @@ public abstract class BaseBuild implements Build {
 		String archiveFileContent = getArchiveFileContent(urlSuffix);
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(archiveFileContent)) {
-			return new JSONObject(archiveFileContent);
+			_testReportJSONObject = new JSONObject(archiveFileContent);
+
+			return _testReportJSONObject;
 		}
 
 		try {
-			return JenkinsResultsParserUtil.toJSONObject(
+			_testReportJSONObject = JenkinsResultsParserUtil.toJSONObject(
 				JenkinsResultsParserUtil.getLocalURL(getBuildURL() + urlSuffix),
 				checkCache, 5000);
+
+			return _testReportJSONObject;
 		}
 		catch (Exception exception) {
-			return new JSONObject();
+			_testReportJSONObject = new JSONObject();
 		}
+
+		return _testReportJSONObject;
 	}
 
 	@Override
@@ -1500,6 +1531,17 @@ public abstract class BaseBuild implements Build {
 	}
 
 	@Override
+	public boolean isBuildCachingEnabled() {
+		Job job = getJob();
+
+		if (job == null) {
+			return false;
+		}
+
+		return job.isBuildCachingEnabled();
+	}
+
+	@Override
 	public boolean isBuildModified() {
 		return _isDifferent(_status, _previousStatus);
 	}
@@ -1547,31 +1589,6 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public boolean isUniqueFailure() {
-		if (!isFailing()) {
-			return false;
-		}
-
-		List<TestResult> testResults = new ArrayList<>();
-
-		testResults.addAll(getTestResults("FAILED"));
-		testResults.addAll(getTestResults("REGRESSION"));
-
-		List<TestResult> passedTestResults = getTestResults("PASSED");
-
-		if (passedTestResults.size() == 1) {
-			testResults.addAll(passedTestResults);
-		}
-
-		if (testResults.isEmpty()) {
-			return true;
-		}
-
-		for (TestResult testResult : testResults) {
-			if (testResult.isUniqueFailure()) {
-				return true;
-			}
-		}
-
 		return false;
 	}
 
@@ -1613,10 +1630,12 @@ public abstract class BaseBuild implements Build {
 
 		_jenkinsConsoleTextLoader = null;
 
+		_buildJSONObject = null;
 		_jenkinsMaster = null;
 		_jenkinsSlave = null;
 		_result = null;
 		_statusModifiedTime = JenkinsResultsParserUtil.getCurrentTimeMillis();
+		_testReportJSONObject = null;
 
 		if (_buildUpdater != null) {
 			_buildUpdater.reset();
@@ -3040,6 +3059,9 @@ public abstract class BaseBuild implements Build {
 			JenkinsResultsParserUtil.redact(replaceBuildURL(content)));
 	}
 
+	protected static final String BAD_BUILD_URLS_PROPERTIES_KEY =
+		"bad-build-urls.properties";
+
 	protected static final String BUILD_URLS_PROPERTIES_KEY =
 		"build-urls.properties";
 
@@ -3066,7 +3088,6 @@ public abstract class BaseBuild implements Build {
 	protected String gitRepositoryName;
 	protected Long invokedTime;
 	protected Long startTime;
-	protected Element upstreamJobFailureMessageElement;
 
 	private void _archive(String content, boolean required, String urlSuffix) {
 		boolean readyToArchive = true;
@@ -3533,10 +3554,11 @@ public abstract class BaseBuild implements Build {
 			"\\w+://(?<cohortName>test-\\d+)(-(?<masterId>\\d+))?",
 			"(\\.liferay\\.com)?/+job\\/+(?<jobName>[^\\/]+).*\\/",
 			"buildWithParameters\\?(?<queryString>.*)"));
-	private static final Pattern _testrayS3ObjectURLPattern = Pattern.compile(
-		JenkinsResultsParserUtil.combine(
-			"\\[beanshell\\] Created S3 Object (?<url>",
-			"https://storage.cloud.google.com/[^\\s?]+).*"));
+	private static final Pattern _testrayCloudObjectURLPattern =
+		Pattern.compile(
+			JenkinsResultsParserUtil.combine(
+				"\\[(beanshell|exec)\\] Created Cloud Object (?<url>",
+				"https://storage.cloud.google.com/[^\\s?]+).*"));
 
 	static {
 		Properties properties = null;
@@ -3563,6 +3585,7 @@ public abstract class BaseBuild implements Build {
 	private BuildDatabase _buildDatabase;
 	private String _buildDescription;
 	private Boolean _buildDurationsEnabled;
+	private JSONObject _buildJSONObject;
 	private final BuildUpdater _buildUpdater;
 	private String _buildURL;
 	private Long _duration;
@@ -3586,6 +3609,8 @@ public abstract class BaseBuild implements Build {
 	private long _statusModifiedTime;
 	private StopWatchRecordsGroup _stopWatchRecordsGroup;
 	private Map<String, TestClassResult> _testClassResults;
-	private List<URL> _testrayAttachmentURLs;
+	private final List<URL> _testrayAttachmentURLs = new ArrayList<>();
+	private boolean _testrayAttachmentURLsFound;
+	private JSONObject _testReportJSONObject;
 
 }

@@ -9,6 +9,7 @@
 			const instance = this;
 
 			AUI().use(
+				'aui-event-base',
 				'aui-event-key',
 				'aui-debounce',
 				'aui-base',

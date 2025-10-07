@@ -18,7 +18,8 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-165176. The site administrater could invoke getObjectEntriesPage inside information template."
+	@description = "Ignored due to LPD-66917 | This is a use case for LPS-165176. The site administrater could invoke getObjectEntriesPage inside information template."
+	@ignore = "true"
 	@priority = 4
 	test InvokeGetObjectEntriesPageInsideInformationTemplate {
 		property portal.acceptance = "true";

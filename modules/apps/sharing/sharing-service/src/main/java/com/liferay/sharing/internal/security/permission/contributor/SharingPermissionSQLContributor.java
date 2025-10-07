@@ -15,20 +15,27 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.security.permission.contributor.PermissionSQLContributor;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
+import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.model.SharingEntryTable;
+import com.liferay.sharing.service.SharingEntryLocalService;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Extends inline permission SQL queries to also consider sharing entries when
@@ -44,12 +51,63 @@ public class SharingPermissionSQLContributor
 		ClassNameLocalService classNameLocalService,
 		GroupLocalService groupLocalService,
 		SharingConfigurationFactory sharingConfigurationFactory,
-		UserGroupLocalService userGroupLocalService) {
+		SharingEntryLocalService sharingEntryLocalService,
+		UserGroupLocalService userGroupLocalService,
+		UserLocalService userLocalService) {
 
 		_classNameLocalService = classNameLocalService;
 		_groupLocalService = groupLocalService;
 		_sharingConfigurationFactory = sharingConfigurationFactory;
+		_sharingEntryLocalService = sharingEntryLocalService;
 		_userGroupLocalService = userGroupLocalService;
+		_userLocalService = userLocalService;
+	}
+
+	@Override
+	public void collectPermittedClassPKs(
+		String className, long userId, long[] groupIds,
+		Set<Long> permittedClassPKs) {
+
+		SharingConfiguration sharingConfiguration =
+			_sharingConfigurationFactory.getSystemSharingConfiguration();
+
+		if (!sharingConfiguration.isEnabled()) {
+			return;
+		}
+
+		List<SharingEntry> sharingEntries =
+			_sharingEntryLocalService.getToUserSharingEntries(
+				userId, _classNameLocalService.getClassNameId(className));
+
+		if (sharingEntries.isEmpty()) {
+			return;
+		}
+
+		Set<Long> disabledGroupIds = new HashSet<>();
+
+		for (long groupId : groupIds) {
+			if (groupId == GroupConstants.DEFAULT_LIVE_GROUP_ID) {
+				continue;
+			}
+
+			SharingConfiguration groupSharingConfiguration =
+				_getSharingConfiguration(groupId);
+
+			if (!groupSharingConfiguration.isEnabled()) {
+				disabledGroupIds.add(groupId);
+			}
+		}
+
+		Set<Long> userGroupIds = SetUtil.fromArray(
+			_userLocalService.getUserGroupPrimaryKeys(userId));
+
+		for (SharingEntry sharingEntry : sharingEntries) {
+			if (!disabledGroupIds.contains(sharingEntry.getGroupId()) &&
+				userGroupIds.contains(sharingEntry.getToUserGroupId())) {
+
+				permittedClassPKs.add(sharingEntry.getClassPK());
+			}
+		}
 	}
 
 	@Override
@@ -112,8 +170,8 @@ public class SharingPermissionSQLContributor
 
 	@Override
 	public String getPermissionSQL(
-		String className, String classPKField, String userIdField,
-		String groupIdField, long[] groupIds) {
+		String className, String classPKField, String groupIdField,
+		long[] groupIds) {
 
 		SharingConfiguration sharingConfiguration =
 			_sharingConfigurationFactory.getSystemSharingConfiguration();
@@ -207,9 +265,9 @@ public class SharingPermissionSQLContributor
 			permissionChecker.getUserId()
 		).or(
 			() -> {
-				List<UserGroup> userGroups =
-					_userGroupLocalService.getUserUserGroups(
-						permissionChecker.getUserId());
+				User user = permissionChecker.getUser();
+
+				List<UserGroup> userGroups = user.getUserGroups();
 
 				if (userGroups.isEmpty()) {
 					return null;
@@ -225,6 +283,8 @@ public class SharingPermissionSQLContributor
 	private final ClassNameLocalService _classNameLocalService;
 	private final GroupLocalService _groupLocalService;
 	private final SharingConfigurationFactory _sharingConfigurationFactory;
+	private final SharingEntryLocalService _sharingEntryLocalService;
 	private final UserGroupLocalService _userGroupLocalService;
+	private final UserLocalService _userLocalService;
 
 }

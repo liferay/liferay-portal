@@ -30,6 +30,7 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Charles May
@@ -78,8 +79,8 @@ public class PermissionCacheUtil {
 
 		for (long userId : userIds) {
 			_userBagPortalCache.remove(userId);
+			_userGroupRoleIdsPortalCache.remove(userId);
 
-			_userGroupRoleIdsPortalCacheIndexer.removeKeys(userId);
 			_userPrimaryKeyRolePortalCacheUserIdIndexer.removeKeys(userId);
 			_userRolePortalCacheIndexer.removeKeys(userId);
 		}
@@ -161,11 +162,18 @@ public class PermissionCacheUtil {
 		return _userBagPortalCache.get(userId);
 	}
 
-	public static long[] getUserGroupRoleIds(long userId, long groupId) {
-		UserGroupRoleIdsKey userGroupRoleIdsKey = new UserGroupRoleIdsKey(
-			userId, groupId);
+	public static Map<Long, long[]> getUserGroupRoleIds(long userId) {
+		Map<Long, long[]> groupRoleIds = _userGroupRoleIdsPortalCache.get(
+			userId);
 
-		return _userGroupRoleIdsPortalCache.get(userGroupRoleIdsKey);
+		if (groupRoleIds == null) {
+			groupRoleIds = new ConcurrentHashMap<>();
+
+			PortalCacheHelperUtil.putWithoutReplicator(
+				_userGroupRoleIdsPortalCache, userId, groupRoleIds);
+		}
+
+		return groupRoleIds;
 	}
 
 	public static Boolean getUserPrimaryKeyRole(
@@ -220,20 +228,6 @@ public class PermissionCacheUtil {
 			PortalCacheHelperUtil.putWithoutReplicator(
 				_userBagPortalCache, userId, userBag);
 		}
-	}
-
-	public static void putUserGroupRoleIds(
-		long userId, long groupId, long[] roleIds) {
-
-		if (roleIds == null) {
-			return;
-		}
-
-		UserGroupRoleIdsKey userGroupRoleIdsKey = new UserGroupRoleIdsKey(
-			userId, groupId);
-
-		PortalCacheHelperUtil.putWithoutReplicator(
-			_userGroupRoleIdsPortalCache, userGroupRoleIdsKey, roleIds);
 	}
 
 	public static void putUserPrimaryKeyRole(
@@ -310,14 +304,10 @@ public class PermissionCacheUtil {
 	private static final PortalCache<Long, UserBag> _userBagPortalCache =
 		PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.MULTI_VM, USER_BAG_CACHE_NAME);
-	private static final PortalCache<UserGroupRoleIdsKey, long[]>
+	private static final PortalCache<Long, Map<Long, long[]>>
 		_userGroupRoleIdsPortalCache = PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.MULTI_VM,
 			PERMISSION_CHECKER_BAG_CACHE_NAME);
-	private static final PortalCacheIndexer<Long, UserGroupRoleIdsKey, long[]>
-		_userGroupRoleIdsPortalCacheIndexer = new PortalCacheIndexer<>(
-			new UserGroupRoleIdsKeyIndexEncoder(),
-			_userGroupRoleIdsPortalCache);
 	private static final PortalCache<UserPrimaryKeyRoleKey, Boolean>
 		_userPrimaryKeyRolePortalCache = PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.MULTI_VM, USER_PRIMARY_KEY_ROLE_CACHE_NAME);
@@ -408,51 +398,6 @@ public class PermissionCacheUtil {
 		@Override
 		public Map.Entry<?, ?> encode(PermissionKey permissionKey) {
 			return encode(permissionKey._name, permissionKey._primKey);
-		}
-
-	}
-
-	private static class UserGroupRoleIdsKey implements Serializable {
-
-		@Override
-		public boolean equals(Object object) {
-			UserGroupRoleIdsKey userGroupRoleIdsKey =
-				(UserGroupRoleIdsKey)object;
-
-			if ((userGroupRoleIdsKey._userId == _userId) &&
-				(userGroupRoleIdsKey._groupId == _groupId)) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		@Override
-		public int hashCode() {
-			int hashCode = HashUtil.hash(0, _userId);
-
-			return HashUtil.hash(hashCode, _groupId);
-		}
-
-		private UserGroupRoleIdsKey(long userId, long groupId) {
-			_userId = userId;
-			_groupId = groupId;
-		}
-
-		private static final long serialVersionUID = 1L;
-
-		private final long _groupId;
-		private final long _userId;
-
-	}
-
-	private static class UserGroupRoleIdsKeyIndexEncoder
-		implements IndexEncoder<Long, UserGroupRoleIdsKey> {
-
-		@Override
-		public Long encode(UserGroupRoleIdsKey userGroupRoleIdsKey) {
-			return userGroupRoleIdsKey._userId;
 		}
 
 	}

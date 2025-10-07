@@ -203,7 +203,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Channel"
-                    descritpion:
+                    description:
                         Patch Channel
                 500:
                     content:
@@ -235,7 +235,7 @@ paths:
                         application/xml:
                             schema:
                                 $ref: "#/components/schemas/Channel"
-                    descritpion:
+                    description:
                         Post New Channel
                 500:
                     content:
@@ -429,7 +429,7 @@ paths:
                     content:
                         application/json: {}
                         application/xml: {}
-                    descritpion:
+                    description:
                         Disconnected
                 500:
                     content:

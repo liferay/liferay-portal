@@ -24,6 +24,7 @@
 		<suppress checks="VariableNameCheck" files="petra-reflect/src/main/java/com/liferay/petra/reflect/GenericUtil\.java" />
 	</checkstyle>
 	<source-check>
+		<suppress checks="GradlePetraModuleDependenciesCheck" files="petra-io/build\.gradle" />
 		<suppress checks="GradlePetraModuleDependenciesCheck" files="petra-reflect/build\.gradle" />
 		<suppress checks="GradlePetraModuleDependenciesCheck" files="petra-string/build\.gradle" />
 		<suppress checks="JavaAnnotationDefaultAttributeCheck" files="petra-reflect/src/test/java/com/liferay/petra/reflect/AnnotationLocatorTest\.java" />

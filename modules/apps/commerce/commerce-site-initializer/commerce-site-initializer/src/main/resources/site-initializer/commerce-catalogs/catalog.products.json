@@ -3,783 +3,6 @@
 		"availabilityEstimate": "3-5 days",
 		"backOrders": true,
 		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93015",
-		"height": 2,
-		"images": [
-			"product_image_24.png"
-		],
-		"length": 7,
-		"manufacturerPartNumber": "BB98318",
-		"minStockQuantity": 5,
-		"name": "ABS Sensor",
-		"price": 50,
-		"promoPrice": 0,
-		"sku": "CLSC93015",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1.00 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "7\" x 5.6\" x 2\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 60,
-		"warehouse2": 60,
-		"warehouse3": 20,
-		"weight": 1,
-		"width": 5.6
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93016",
-		"height": 2.5,
-		"images": [
-			"product_image_103.png"
-		],
-		"length": 4,
-		"minStockQuantity": 5,
-		"name": "Brake Fluid",
-		"options": [
-			{
-				"key": "package-quantity",
-				"values": [
-					"12",
-					"48",
-					"112"
-				]
-			}
-		],
-		"skus": [
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "12"
-					}
-				],
-				"externalReferenceCode": "CLSC93016A",
-				"manufacturerPartNumber": "BB98319",
-				"price": 80,
-				"promoPrice": 72,
-				"sku": "CLSC93016A",
-				"warehouse1": 100,
-				"warehouse2": 40,
-				"warehouse3": 100
-			},
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "48"
-					}
-				],
-				"externalReferenceCode": "CLSC93016B",
-				"manufacturerPartNumber": "BB98320",
-				"price": 80,
-				"promoPrice": 72,
-				"sku": "CLSC93016B",
-				"warehouse1": 100,
-				"warehouse2": 20,
-				"warehouse3": 60
-			},
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "112"
-					}
-				],
-				"externalReferenceCode": "CLSC93016C",
-				"manufacturerPartNumber": "BB98321",
-				"price": 80,
-				"promoPrice": 72,
-				"sku": "CLSC93016C",
-				"warehouse1": 100,
-				"warehouse2": 100,
-				"warehouse3": 40
-			}
-		],
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "12, 48 or 112"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1.75 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "4\" x 9.5\" x 2.5\""
-			}
-		],
-		"tags": [
-			"featured"
-		],
-		"taxCategory": "Normal Product",
-		"weight": 1.75,
-		"width": 9.5
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93017",
-		"height": 2.5,
-		"images": [
-			"product_image_103.png"
-		],
-		"length": 4,
-		"manufacturerPartNumber": "BB98322",
-		"minStockQuantity": 5,
-		"name": "Premium Brake Fluid",
-		"price": 100,
-		"promoPrice": 90,
-		"sku": "CLSC93017",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "6"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "0.875 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "4\" x 9.5\" x 2.5\""
-			}
-		],
-		"tags": [
-			"featured"
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 60,
-		"warehouse2": 60,
-		"warehouse3": 40,
-		"weight": 0.875,
-		"width": 9.5
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": false,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93027",
-		"height": 8.7,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 6.2,
-		"manufacturerPartNumber": "BB98334",
-		"minStockQuantity": 5,
-		"name": "Wear Sensors",
-		"price": 60,
-		"promoPrice": 0,
-		"sku": "CLSC93027",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "6.2\" x 2.1\" x 8.7\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 20,
-		"warehouse2": 60,
-		"warehouse3": 60,
-		"weight": 1,
-		"width": 2.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93018",
-		"height": 8.7,
-		"images": [
-			"product_image_83.png"
-		],
-		"length": 6.2,
-		"manufacturerPartNumber": "BB98323",
-		"minStockQuantity": 5,
-		"name": "Brake Pads",
-		"price": 21,
-		"promoPrice": 18.9,
-		"relatedProducts": [
-			"Wear Sensors"
-		],
-		"sku": "CLSC93018",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "3.96 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "6.2\" x 2.1\" x 8.7\""
-			}
-		],
-		"tags": [
-			"featured"
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 40,
-		"warehouse2": 40,
-		"warehouse3": 40,
-		"weight": 3.96,
-		"width": 2.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93019",
-		"height": 8.7,
-		"images": [
-			"product_image_83.png"
-		],
-		"length": 6.2,
-		"manufacturerPartNumber": "BB98324",
-		"minStockQuantity": 5,
-		"name": "Premium Brake Pads",
-		"price": 29,
-		"promoPrice": 26.1,
-		"relatedProducts": [
-			"Wear Sensors"
-		],
-		"sku": "CLSC93019",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Ceramic"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "4.01 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "6.2\" x 2.1\" x 8.7\""
-			}
-		],
-		"tags": [
-			"featured"
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 20,
-		"warehouse2": 20,
-		"warehouse3": 20,
-		"weight": 4.01,
-		"width": 2.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93020",
-		"height": 1.7,
-		"images": [
-			"product_image_30.png"
-		],
-		"length": 10.2,
-		"manufacturerPartNumber": "BB98325",
-		"minStockQuantity": 5,
-		"name": "Brake Rotors",
-		"price": 40,
-		"promoPrice": 0,
-		"sku": "CLSC93020",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Cast Iron"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "12.45 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "10.2\" x 10.2\" x 1.7\""
-			}
-		],
-		"tags": [
-			"featured"
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 100,
-		"warehouse2": 100,
-		"warehouse3": 100,
-		"weight": 12.45,
-		"width": 10.2
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93021",
-		"height": 5.3,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 9.4,
-		"manufacturerPartNumber": "BB98326",
-		"minStockQuantity": 5,
-		"name": "Calipers",
-		"price": 90,
-		"promoPrice": 0,
-		"sku": "CLSC93021",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "7.34 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "9.4\" x 7.3\" x 5.3\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 60,
-		"warehouse2": 60,
-		"warehouse3": 60,
-		"weight": 7.34,
-		"width": 7.3
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93022",
-		"height": 18,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 12,
-		"minStockQuantity": 5,
-		"name": "Hoses",
-		"options": [
-			{
-				"key": "package-quantity",
-				"values": [
-					"6",
-					"24",
-					"48"
-				]
-			}
-		],
-		"skus": [
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "6"
-					}
-				],
-				"externalReferenceCode": "CLSC93022A",
-				"manufacturerPartNumber": "BB98327",
-				"price": 120,
-				"promoPrice": 0,
-				"sku": "CLSC93022A",
-				"warehouse1": 40,
-				"warehouse2": 40,
-				"warehouse3": 40
-			},
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "24"
-					}
-				],
-				"externalReferenceCode": "CLSC93022B",
-				"manufacturerPartNumber": "BB98328",
-				"price": 120,
-				"promoPrice": 0,
-				"sku": "CLSC93022B",
-				"warehouse1": 40,
-				"warehouse2": 20,
-				"warehouse3": 20
-			},
-			{
-				"contributorOptions": [
-					{
-						"key": "package-quantity",
-						"value": "48"
-					}
-				],
-				"externalReferenceCode": "CLSC93022C",
-				"manufacturerPartNumber": "BB98329",
-				"price": 120,
-				"promoPrice": 0,
-				"sku": "CLSC93022C",
-				"warehouse1": 40,
-				"warehouse2": 100,
-				"warehouse3": 100
-			}
-		],
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "6"
-			},
-			{
-				"key": "material",
-				"value": "Rubber"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "11.7 oz"
-			},
-			{
-				"key": "dimensions",
-				"value": "12\" x 2\" x 18\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"weight": 0.73125,
-		"width": 2
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93023",
-		"height": 18,
-		"images": [
-			"product_image_42.png"
-		],
-		"length": 12,
-		"manufacturerPartNumber": "BB98330",
-		"minStockQuantity": 5,
-		"name": "Timing Belt",
-		"price": 600,
-		"promoPrice": 0,
-		"sku": "CLSC93023",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "12"
-			},
-			{
-				"key": "material",
-				"value": "Rubber"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "12\" x 2\" x 18\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 20,
-		"warehouse2": 60,
-		"warehouse3": 60,
-		"weight": 1,
-		"width": 2
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": false,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93024",
-		"height": 3.8,
-		"images": [
-			"product_image_77.png",
-			"product_image_105.png"
-		],
-		"length": 2.5,
-		"manufacturerPartNumber": "BB98331",
-		"minStockQuantity": 5,
-		"name": "Master Cylinder",
-		"price": 78,
-		"promoPrice": 0,
-		"relatedProducts": [
-			"Wear Sensors"
-		],
-		"sku": "CLSC93024",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Aluminum"
-			},
-			{
-				"key": "warranty",
-				"value": "3 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1.456 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "2.5\" x 4.1\" x 3.8\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 100,
-		"warehouse2": 40,
-		"warehouse3": 40,
-		"weight": 1.456,
-		"width": 4.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": false,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93025",
-		"height": 3.8,
-		"images": [
-			"product_image_77.png",
-			"product_image_105.png"
-		],
-		"length": 2.5,
-		"manufacturerPartNumber": "BB98332",
-		"minStockQuantity": 5,
-		"name": "Master Cylinder",
-		"price": 34,
-		"promoPrice": 0,
-		"relatedProducts": [
-			"Wear Sensors"
-		],
-		"sku": "CLSC93025",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Cast Iron"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "2.5\" x 4.1\" x 3.8\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 60,
-		"warehouse2": 20,
-		"warehouse3": 20,
-		"weight": 1,
-		"width": 4.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": false,
-		"categories": [
-			"Brake System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC93026",
-		"height": 3.8,
-		"images": [
-			"product_image_77.png",
-			"product_image_105.png"
-		],
-		"length": 2.5,
-		"manufacturerPartNumber": "BB98333",
-		"minStockQuantity": 5,
-		"name": "Master Cylinder",
-		"price": 39,
-		"promoPrice": 0,
-		"relatedProducts": [
-			"Wear Sensors"
-		],
-		"sku": "CLSC93026",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "1 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "2.5\" x 4.1\" x 3.8\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 40,
-		"warehouse2": 100,
-		"warehouse3": 100,
-		"weight": 1,
-		"width": 4.1
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
 			"Engine"
 		],
 		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
@@ -1321,206 +544,6 @@
 		"warehouse3": 40,
 		"weight": 0.1,
 		"width": 10.2
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Exhaust System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC77822",
-		"height": 5.3,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 9.4,
-		"manufacturerPartNumber": "ES98205",
-		"minStockQuantity": 5,
-		"name": "Catalytic Converters",
-		"price": 106,
-		"promoPrice": 0,
-		"sku": "CLSC77822",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "4.7 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "9.4\" x 7.3\" x 5.3\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 0,
-		"warehouse2": 0,
-		"warehouse3": 0,
-		"weight": 4.7,
-		"width": 7.3
-	},
-	{
-		"availabilityEstimate": "3-5 days",
-		"backOrders": true,
-		"categories": [
-			"Exhaust System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC77823",
-		"height": 18,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 12,
-		"manufacturerPartNumber": "ES98206",
-		"minStockQuantity": 5,
-		"name": "Exhaust Clamps",
-		"price": 9,
-		"promoPrice": 0,
-		"sku": "CLSC77823",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "0.62 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "12\" x 2\" x 18\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 100,
-		"warehouse2": 20,
-		"warehouse3": 100,
-		"weight": 0.62,
-		"width": 2
-	},
-	{
-		"availabilityEstimate": "7-14 days",
-		"backOrders": true,
-		"categories": [
-			"Exhaust System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC77824",
-		"height": 2.5,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 4,
-		"manufacturerPartNumber": "ES98207",
-		"minStockQuantity": 5,
-		"name": "Muffler/Resonators",
-		"price": 32,
-		"promoPrice": 0,
-		"sku": "CLSC77824",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "11.75 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "4\" x 9.5\" x 2.5\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 60,
-		"warehouse2": 100,
-		"warehouse3": 60,
-		"weight": 11.75,
-		"width": 9.5
-	},
-	{
-		"availabilityEstimate": "7-14 days",
-		"backOrders": true,
-		"categories": [
-			"Exhaust System"
-		],
-		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
-		"displayAvailability": true,
-		"displayStockQuantity": true,
-		"externalReferenceCode": "CLSC77825",
-		"height": 2,
-		"images": [
-			"default_product_image.png"
-		],
-		"length": 7,
-		"manufacturerPartNumber": "ES98208",
-		"minStockQuantity": 5,
-		"name": "Lift Support",
-		"price": 20,
-		"promoPrice": 0,
-		"sku": "CLSC77825",
-		"specificationOptions": [
-			{
-				"key": "quantity",
-				"value": "1"
-			},
-			{
-				"key": "material",
-				"value": "Steel"
-			},
-			{
-				"key": "warranty",
-				"value": "1 Year Unlimited Mileage Warranty"
-			},
-			{
-				"key": "weight",
-				"value": "0.6 lbs"
-			},
-			{
-				"key": "dimensions",
-				"value": "7\" x 5.6\" x 2\""
-			}
-		],
-		"taxCategory": "Normal Product",
-		"warehouse1": 40,
-		"warehouse2": 20,
-		"warehouse3": 40,
-		"weight": 0.6,
-		"width": 5.6
 	},
 	{
 		"availabilityEstimate": "5-7 days",
@@ -2563,5 +1586,982 @@
 		"warehouse3": 40,
 		"weight": 1.3,
 		"width": 5.6
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Exhaust System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC77822",
+		"height": 5.3,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 9.4,
+		"manufacturerPartNumber": "ES98205",
+		"minStockQuantity": 5,
+		"name": "Catalytic Converters",
+		"price": 106,
+		"promoPrice": 0,
+		"sku": "CLSC77822",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "4.7 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "9.4\" x 7.3\" x 5.3\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 0,
+		"warehouse2": 0,
+		"warehouse3": 0,
+		"weight": 4.7,
+		"width": 7.3
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Exhaust System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC77823",
+		"height": 18,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 12,
+		"manufacturerPartNumber": "ES98206",
+		"minStockQuantity": 5,
+		"name": "Exhaust Clamps",
+		"price": 9,
+		"promoPrice": 0,
+		"sku": "CLSC77823",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "0.62 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "12\" x 2\" x 18\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 100,
+		"warehouse2": 20,
+		"warehouse3": 100,
+		"weight": 0.62,
+		"width": 2
+	},
+	{
+		"availabilityEstimate": "7-14 days",
+		"backOrders": true,
+		"categories": [
+			"Exhaust System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC77824",
+		"height": 2.5,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 4,
+		"manufacturerPartNumber": "ES98207",
+		"minStockQuantity": 5,
+		"name": "Muffler/Resonators",
+		"price": 32,
+		"promoPrice": 0,
+		"sku": "CLSC77824",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "11.75 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "4\" x 9.5\" x 2.5\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 60,
+		"warehouse2": 100,
+		"warehouse3": 60,
+		"weight": 11.75,
+		"width": 9.5
+	},
+	{
+		"availabilityEstimate": "7-14 days",
+		"backOrders": true,
+		"categories": [
+			"Exhaust System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC77825",
+		"height": 2,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 7,
+		"manufacturerPartNumber": "ES98208",
+		"minStockQuantity": 5,
+		"name": "Lift Support",
+		"price": 20,
+		"promoPrice": 0,
+		"sku": "CLSC77825",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "0.6 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "7\" x 5.6\" x 2\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 40,
+		"warehouse2": 20,
+		"warehouse3": 40,
+		"weight": 0.6,
+		"width": 5.6
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93015",
+		"height": 2,
+		"images": [
+			"product_image_24.png"
+		],
+		"length": 7,
+		"manufacturerPartNumber": "BB98318",
+		"minStockQuantity": 5,
+		"name": "ABS Sensor",
+		"price": 50,
+		"promoPrice": 0,
+		"sku": "CLSC93015",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1.00 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "7\" x 5.6\" x 2\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 60,
+		"warehouse2": 60,
+		"warehouse3": 20,
+		"weight": 1,
+		"width": 5.6
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93016",
+		"height": 2.5,
+		"images": [
+			"product_image_103.png"
+		],
+		"length": 4,
+		"minStockQuantity": 5,
+		"name": "Brake Fluid",
+		"options": [
+			{
+				"key": "package-quantity",
+				"values": [
+					"12",
+					"48",
+					"112"
+				]
+			}
+		],
+		"skus": [
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "12"
+					}
+				],
+				"externalReferenceCode": "CLSC93016A",
+				"manufacturerPartNumber": "BB98319",
+				"price": 80,
+				"promoPrice": 72,
+				"sku": "CLSC93016A",
+				"warehouse1": 100,
+				"warehouse2": 40,
+				"warehouse3": 100
+			},
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "48"
+					}
+				],
+				"externalReferenceCode": "CLSC93016B",
+				"manufacturerPartNumber": "BB98320",
+				"price": 80,
+				"promoPrice": 72,
+				"sku": "CLSC93016B",
+				"warehouse1": 100,
+				"warehouse2": 20,
+				"warehouse3": 60
+			},
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "112"
+					}
+				],
+				"externalReferenceCode": "CLSC93016C",
+				"manufacturerPartNumber": "BB98321",
+				"price": 80,
+				"promoPrice": 72,
+				"sku": "CLSC93016C",
+				"warehouse1": 100,
+				"warehouse2": 100,
+				"warehouse3": 40
+			}
+		],
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "12, 48 or 112"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1.75 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "4\" x 9.5\" x 2.5\""
+			}
+		],
+		"tags": [
+			"featured"
+		],
+		"taxCategory": "Normal Product",
+		"weight": 1.75,
+		"width": 9.5
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93017",
+		"height": 2.5,
+		"images": [
+			"product_image_103.png"
+		],
+		"length": 4,
+		"manufacturerPartNumber": "BB98322",
+		"minStockQuantity": 5,
+		"name": "Premium Brake Fluid",
+		"price": 100,
+		"promoPrice": 90,
+		"sku": "CLSC93017",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "6"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "0.875 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "4\" x 9.5\" x 2.5\""
+			}
+		],
+		"tags": [
+			"featured"
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 60,
+		"warehouse2": 60,
+		"warehouse3": 40,
+		"weight": 0.875,
+		"width": 9.5
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93018",
+		"height": 8.7,
+		"images": [
+			"product_image_83.png"
+		],
+		"length": 6.2,
+		"manufacturerPartNumber": "BB98323",
+		"minStockQuantity": 5,
+		"name": "Brake Pads",
+		"price": 21,
+		"promoPrice": 18.9,
+		"relatedProducts": [
+			"Wear Sensors"
+		],
+		"sku": "CLSC93018",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "3.96 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "6.2\" x 2.1\" x 8.7\""
+			}
+		],
+		"tags": [
+			"featured"
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 40,
+		"warehouse2": 40,
+		"warehouse3": 40,
+		"weight": 3.96,
+		"width": 2.1
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93019",
+		"height": 8.7,
+		"images": [
+			"product_image_83.png"
+		],
+		"length": 6.2,
+		"manufacturerPartNumber": "BB98324",
+		"minStockQuantity": 5,
+		"name": "Premium Brake Pads",
+		"price": 29,
+		"promoPrice": 26.1,
+		"relatedProducts": [
+			"Wear Sensors"
+		],
+		"sku": "CLSC93019",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Ceramic"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "4.01 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "6.2\" x 2.1\" x 8.7\""
+			}
+		],
+		"tags": [
+			"featured"
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 20,
+		"warehouse2": 20,
+		"warehouse3": 20,
+		"weight": 4.01,
+		"width": 2.1
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93020",
+		"height": 1.7,
+		"images": [
+			"product_image_30.png"
+		],
+		"length": 10.2,
+		"manufacturerPartNumber": "BB98325",
+		"minStockQuantity": 5,
+		"name": "Brake Rotors",
+		"price": 40,
+		"promoPrice": 0,
+		"sku": "CLSC93020",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Cast Iron"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "12.45 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "10.2\" x 10.2\" x 1.7\""
+			}
+		],
+		"tags": [
+			"featured"
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 100,
+		"warehouse2": 100,
+		"warehouse3": 100,
+		"weight": 12.45,
+		"width": 10.2
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93021",
+		"height": 5.3,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 9.4,
+		"manufacturerPartNumber": "BB98326",
+		"minStockQuantity": 5,
+		"name": "Calipers",
+		"price": 90,
+		"promoPrice": 0,
+		"sku": "CLSC93021",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "7.34 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "9.4\" x 7.3\" x 5.3\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 60,
+		"warehouse2": 60,
+		"warehouse3": 60,
+		"weight": 7.34,
+		"width": 7.3
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93022",
+		"height": 18,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 12,
+		"minStockQuantity": 5,
+		"name": "Hoses",
+		"options": [
+			{
+				"key": "package-quantity",
+				"values": [
+					"6",
+					"24",
+					"48"
+				]
+			}
+		],
+		"skus": [
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "6"
+					}
+				],
+				"externalReferenceCode": "CLSC93022A",
+				"manufacturerPartNumber": "BB98327",
+				"price": 120,
+				"promoPrice": 0,
+				"sku": "CLSC93022A",
+				"warehouse1": 40,
+				"warehouse2": 40,
+				"warehouse3": 40
+			},
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "24"
+					}
+				],
+				"externalReferenceCode": "CLSC93022B",
+				"manufacturerPartNumber": "BB98328",
+				"price": 120,
+				"promoPrice": 0,
+				"sku": "CLSC93022B",
+				"warehouse1": 40,
+				"warehouse2": 20,
+				"warehouse3": 20
+			},
+			{
+				"contributorOptions": [
+					{
+						"key": "package-quantity",
+						"value": "48"
+					}
+				],
+				"externalReferenceCode": "CLSC93022C",
+				"manufacturerPartNumber": "BB98329",
+				"price": 120,
+				"promoPrice": 0,
+				"sku": "CLSC93022C",
+				"warehouse1": 40,
+				"warehouse2": 100,
+				"warehouse3": 100
+			}
+		],
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "6"
+			},
+			{
+				"key": "material",
+				"value": "Rubber"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "11.7 oz"
+			},
+			{
+				"key": "dimensions",
+				"value": "12\" x 2\" x 18\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"weight": 0.73125,
+		"width": 2
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": true,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93023",
+		"height": 18,
+		"images": [
+			"product_image_42.png"
+		],
+		"length": 12,
+		"manufacturerPartNumber": "BB98330",
+		"minStockQuantity": 5,
+		"name": "Timing Belt",
+		"price": 600,
+		"promoPrice": 0,
+		"sku": "CLSC93023",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "12"
+			},
+			{
+				"key": "material",
+				"value": "Rubber"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "12\" x 2\" x 18\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 20,
+		"warehouse2": 60,
+		"warehouse3": 60,
+		"weight": 1,
+		"width": 2
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": false,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93024",
+		"height": 3.8,
+		"images": [
+			"product_image_77.png",
+			"product_image_105.png"
+		],
+		"length": 2.5,
+		"manufacturerPartNumber": "BB98331",
+		"minStockQuantity": 5,
+		"name": "Master Cylinder",
+		"price": 78,
+		"promoPrice": 0,
+		"relatedProducts": [
+			"Wear Sensors"
+		],
+		"sku": "CLSC93024",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Aluminum"
+			},
+			{
+				"key": "warranty",
+				"value": "3 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1.456 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "2.5\" x 4.1\" x 3.8\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 100,
+		"warehouse2": 40,
+		"warehouse3": 40,
+		"weight": 1.456,
+		"width": 4.1
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": false,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93025",
+		"height": 3.8,
+		"images": [
+			"product_image_77.png",
+			"product_image_105.png"
+		],
+		"length": 2.5,
+		"manufacturerPartNumber": "BB98332",
+		"minStockQuantity": 5,
+		"name": "Master Cylinder",
+		"price": 34,
+		"promoPrice": 0,
+		"relatedProducts": [
+			"Wear Sensors"
+		],
+		"sku": "CLSC93025",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Cast Iron"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "2.5\" x 4.1\" x 3.8\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 60,
+		"warehouse2": 20,
+		"warehouse3": 20,
+		"weight": 1,
+		"width": 4.1
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": false,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93026",
+		"height": 3.8,
+		"images": [
+			"product_image_77.png",
+			"product_image_105.png"
+		],
+		"length": 2.5,
+		"manufacturerPartNumber": "BB98333",
+		"minStockQuantity": 5,
+		"name": "Master Cylinder",
+		"price": 39,
+		"promoPrice": 0,
+		"relatedProducts": [
+			"Wear Sensors"
+		],
+		"sku": "CLSC93026",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "material",
+				"value": "Steel"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "2.5\" x 4.1\" x 3.8\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 40,
+		"warehouse2": 100,
+		"warehouse3": 100,
+		"weight": 1,
+		"width": 4.1
+	},
+	{
+		"availabilityEstimate": "3-5 days",
+		"backOrders": false,
+		"categories": [
+			"Brake System"
+		],
+		"description": "Product designed and manufactured to accommodate OEM applications. All products are tested and inspected in an ISO-9000 compliant environment",
+		"displayAvailability": true,
+		"displayStockQuantity": true,
+		"externalReferenceCode": "CLSC93027",
+		"height": 8.7,
+		"images": [
+			"default_product_image.png"
+		],
+		"length": 6.2,
+		"manufacturerPartNumber": "BB98334",
+		"minStockQuantity": 5,
+		"name": "Wear Sensors",
+		"price": 60,
+		"promoPrice": 0,
+		"sku": "CLSC93027",
+		"specificationOptions": [
+			{
+				"key": "quantity",
+				"value": "1"
+			},
+			{
+				"key": "warranty",
+				"value": "1 Year Unlimited Mileage Warranty"
+			},
+			{
+				"key": "weight",
+				"value": "1 lbs"
+			},
+			{
+				"key": "dimensions",
+				"value": "6.2\" x 2.1\" x 8.7\""
+			}
+		],
+		"taxCategory": "Normal Product",
+		"warehouse1": 20,
+		"warehouse2": 60,
+		"warehouse3": 60,
+		"weight": 1,
+		"width": 2.1
 	}
 ]

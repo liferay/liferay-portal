@@ -38,6 +38,13 @@ public class SearchBarPortletPreferencesImpl
 	}
 
 	@Override
+	public String getInputPlaceholder() {
+		return getString(
+			SearchBarPortletPreferences.PREFERENCE_KEY_INPUT_PLACEHOLDER,
+			"search-...");
+	}
+
+	@Override
 	public String getKeywordsParameterName() {
 		return getString(
 			SearchBarPortletPreferences.PREFERENCE_KEY_KEYWORDS_PARAMETER_NAME,

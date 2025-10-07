@@ -13,7 +13,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import org.json.JSONObject;
 
@@ -62,8 +61,8 @@ public class LiferayJSONSerializerTest {
 			"javaClass", ServiceContext.class.getName()
 		);
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				LiferayJSONSerializer.class.getName(), Level.WARNING)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				LiferayJSONSerializer.class.getName(), LoggerTestUtil.WARN)) {
 
 			Assert.assertEquals(
 				ServiceContext.class,

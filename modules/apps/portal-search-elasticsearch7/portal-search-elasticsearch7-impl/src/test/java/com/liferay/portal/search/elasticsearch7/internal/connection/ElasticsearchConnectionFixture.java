@@ -15,13 +15,12 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration;
 import com.liferay.portal.search.elasticsearch7.internal.configuration.ElasticsearchConfigurationWrapper;
 import com.liferay.portal.search.elasticsearch7.internal.connection.constants.ConnectionConstants;
-import com.liferay.portal.search.elasticsearch7.internal.sidecar.ElasticsearchInstancePaths;
 import com.liferay.portal.search.elasticsearch7.internal.sidecar.HttpPortRange;
 import com.liferay.portal.search.elasticsearch7.internal.sidecar.PathUtil;
 import com.liferay.portal.search.elasticsearch7.internal.sidecar.Sidecar;
 import com.liferay.portal.search.elasticsearch7.internal.sidecar.SidecarManager;
-import com.liferay.portal.util.PropsImpl;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
@@ -51,9 +50,8 @@ public class ElasticsearchConnectionFixture
 	}
 
 	public ElasticsearchConnection createElasticsearchConnection() {
-		PropsUtil.setProps(new PropsImpl());
-
-		com.liferay.portal.util.PropsUtil.set(
+		PropsUtil.set(PropsKeys.LIFERAY_HOME, _TMP_PATH.toString());
+		PropsUtil.set(
 			PropsKeys.LIFERAY_SHIELDED_CONTAINER_LIB_PORTAL_DIR,
 			String.valueOf(_TMP_PATH.resolve("lib-process-executor")));
 
@@ -65,12 +63,19 @@ public class ElasticsearchConnectionFixture
 							ElasticsearchConfiguration.class,
 							_elasticsearchConfigurationProperties));
 				}
+
+				@Override
+				public String httpCORSAllowOrigin() {
+					return "'*'";
+				}
+
 			};
 
 		Sidecar sidecar = new Sidecar(
-			elasticsearchConfigurationWrapper,
-			_createElasticsearchInstancePaths(), new LocalProcessExecutor(),
-			Mockito.mock(SidecarManager.class));
+			elasticsearchConfigurationWrapper, new LocalProcessExecutor(),
+			_TMP_PATH.resolve("sidecar-elasticsearch"),
+			Mockito.mock(SidecarManager.class),
+			new File(_workPath.toFile(), "sidecar.process"), _workPath);
 
 		ElasticsearchConnectionBuilder elasticsearchConnectionBuilder =
 			new ElasticsearchConnectionBuilder();
@@ -210,25 +215,6 @@ public class ElasticsearchConnectionFixture
 		private Map<String, Object> _elasticsearchConfigurationProperties =
 			Collections.<String, Object>emptyMap();
 
-	}
-
-	private ElasticsearchInstancePaths _createElasticsearchInstancePaths() {
-		ElasticsearchInstancePaths elasticsearchInstancePaths = Mockito.mock(
-			ElasticsearchInstancePaths.class);
-
-		Mockito.doReturn(
-			_TMP_PATH.resolve("sidecar-elasticsearch")
-		).when(
-			elasticsearchInstancePaths
-		).getHomePath();
-
-		Mockito.doReturn(
-			_workPath
-		).when(
-			elasticsearchInstancePaths
-		).getWorkPath();
-
-		return elasticsearchInstancePaths;
 	}
 
 	private void _deleteTmpDir() {

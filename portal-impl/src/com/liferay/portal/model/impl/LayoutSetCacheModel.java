@@ -224,7 +224,7 @@ public class LayoutSetCacheModel
 
 		companyFallbackVirtualHostname = (String)objectInput.readObject();
 
-		virtualHostnames = (java.util.TreeMap)objectInput.readObject();
+		virtualHostnames = (java.util.NavigableMap)objectInput.readObject();
 	}
 
 	@Override
@@ -306,7 +306,7 @@ public class LayoutSetCacheModel
 	public String layoutSetPrototypeUuid;
 	public boolean layoutSetPrototypeLinkEnabled;
 	public volatile String companyFallbackVirtualHostname;
-	public volatile java.util.TreeMap virtualHostnames;
+	public volatile java.util.NavigableMap virtualHostnames;
 
 	private static final MethodHandle
 		_companyFallbackVirtualHostnameMethodHandle;
@@ -322,7 +322,7 @@ public class LayoutSetCacheModel
 
 			_virtualHostnamesMethodHandle = lookup.findSetter(
 				LayoutSetImpl.class, "_virtualHostnames",
-				java.util.TreeMap.class);
+				java.util.NavigableMap.class);
 		}
 		catch (ReflectiveOperationException reflectiveOperationException) {
 			throw new ExceptionInInitializerError(reflectiveOperationException);

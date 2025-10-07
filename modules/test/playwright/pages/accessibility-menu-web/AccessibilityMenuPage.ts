@@ -16,7 +16,9 @@ export class AccessibilityMenuPage {
 	readonly underlinedLinksToggle: Locator;
 
 	constructor(page: Page) {
-		this.closeButton = page.getByLabel('close', {exact: true});
+		this.closeButton = page
+			.locator('.modal')
+			.getByLabel('Close', {exact: true});
 		this.enableAccessibilityMenuCheckbox = page.getByRole('checkbox', {
 			name: 'Enable Accessibility Menu',
 		});

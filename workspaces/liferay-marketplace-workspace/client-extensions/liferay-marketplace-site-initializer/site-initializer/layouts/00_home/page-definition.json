@@ -1,0 +1,230 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"cssClasses": [
+						"marketplace-page-container"
+					],
+					"customCSS": " .marketplace-page-container {\n  background:\n    linear-gradient(80deg, rgba(255, 255, 255, 1), transparent 50%),\n    linear-gradient(0deg, rgba(255, 255, 255, 1), transparent 80%),\n    radial-gradient(circle, #ffffff 35%, rgba(243, 229, 254, 1));\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  min-height: 100vh;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n}\n\n.marketplace-page-container > * {\n  position: relative;\n  z-index: 1;\n}\n\n.marketplace-page-container::after {\n  background: radial-gradient(circle, rgba(202, 209, 247, 1), transparent 40%);\n  content: \"\";\n  height: 100vh;\n  pointer-events: none;\n  position: absolute;\n  right: 0;\n  top: 0;\n  transform: translate3d(55%, -50%, 0);\n  width: 100vw;\n  z-index: 0;\n}\n\n@media (max-width: 1024px) {\n  .marketplace-page-container::after {\n    background: radial-gradient(circle, rgba(202, 209, 247, 0.9), transparent 50%);\n    transform: translate3d(30%, -40%, 0);\n  }\n}\n\n@media (max-width: 600px) {\n  .marketplace-page-container::after {\n    background: radial-gradient(circle, rgba(202, 209, 247, 0.6), transparent 60%);\n    height: 80vh;\n    transform: translate3d(0%, -30%, 0);\n    width: 120vw;\n  }\n} ",
+					"indexed": true,
+					"layout": {
+					}
+				},
+				"pageElements": [
+					{
+						"definition": {
+							"indexed": true,
+							"layout": {
+								"widthType": "Fixed"
+							}
+						},
+						"pageElements": [
+							{
+								"definition": {
+									"fragmentStyle": {
+										"marginBottom": "7",
+										"marginTop": "40px"
+									},
+									"indexed": true,
+									"layout": {
+										"marginBottom": 8,
+										"marginTop": 8
+									}
+								},
+								"pageElements": [
+									{
+										"definition": {
+											"indexed": true,
+											"layout": {
+											}
+										},
+										"pageElements": [
+											{
+												"definition": {
+													"fragment": {
+														"key": "text-0",
+														"siteKey": "[$GROUP_KEY$]"
+													},
+													"fragmentConfig": {
+														"fontSize": "font-size-paragraph-base",
+														"smallCaps": false,
+														"tabletScreenCenter": false
+													},
+													"fragmentFields": [
+														{
+															"id": "text",
+															"value": {
+																"fragmentLink": {
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "<p><strong>Browse Liferay’s World</strong></p>\n"
+																	}
+																}
+															}
+														}
+													],
+													"fragmentStyle": {
+														"fontSize": "36px"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"indexed": true,
+													"layout": {
+													}
+												},
+												"pageElements": [
+													{
+														"definition": {
+															"fragmentStyle": {
+																"marginBottom": "9"
+															},
+															"indexed": true,
+															"layout": {
+															}
+														},
+														"pageElements": [
+															{
+																"definition": {
+																	"fragment": {
+																		"key": "home-categories-display",
+																		"siteKey": "[$GROUP_KEY$]"
+																	},
+																	"fragmentConfig": {
+																		"sectionTitle": "EXPLORE BY CATEGORY"
+																	},
+																	"fragmentFields": [
+																	],
+																	"indexed": true
+																},
+																"type": "Fragment"
+															}
+														],
+														"type": "Section"
+													}
+												],
+												"type": "Section"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "home-apps-display",
+														"siteKey": "[$GROUP_KEY$]"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"fragmentStyle": {
+														"marginBottom": "9"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "home-apps-display",
+														"siteKey": "[$GROUP_KEY$]"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"fragmentStyle": {
+														"marginBottom": "9"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "home-apps-display",
+														"siteKey": "[$GROUP_KEY$]"
+													},
+													"fragmentConfig": {
+													},
+													"fragmentFields": [
+													],
+													"fragmentStyle": {
+														"marginBottom": "9"
+													},
+													"indexed": true
+												},
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									},
+									{
+										"definition": {
+											"fragment": {
+												"key": "home-publisher-display",
+												"siteKey": "[$GROUP_KEY$]"
+											},
+											"fragmentConfig": {
+											},
+											"fragmentFields": [
+											],
+											"indexed": true
+										},
+										"type": "Fragment"
+									}
+								],
+								"type": "Section"
+							}
+						],
+						"type": "Section"
+					},
+					{
+						"definition": {
+							"customCSS": ".marketplace-page-container {\n  background:\n    linear-gradient(90deg, rgba(255, 255, 255, 1), transparent 50%),\n    linear-gradient(0deg, rgba(255, 255, 255, 1), transparent 80%),\n    radial-gradient(circle, #ffffff 60%, rgba(243, 229, 254, 1));\n  background-position: center;\n  background-repeat: no-repeat;\n  background-size: cover;\n  min-height: 100vh;\n  overflow: hidden;\n  position: relative;\n  width: 100%;\n}\n\n.marketplace-page-container > * {\n  position: relative;\n  z-index: 1;\n}\n\n.marketplace-page-container::after {\n  background: radial-gradient(circle, rgba(202, 209, 247, 1), transparent 40%);\n  content: \"\";\n  height: 100vh;\n  pointer-events: none;\n  position: absolute;\n  right: 0;\n  top: 0;\n  transform: translate3d(55%, -50%, 0);\n  width: 100vw;\n  z-index: 0;\n}\n\n@media (max-width: 1024px) {\n  .marketplace-page-container::after {\n    background: radial-gradient(circle, rgba(202, 209, 247, 0.9), transparent 50%);\n    transform: translate3d(30%, -40%, 0);\n  }\n}\n\n@media (max-width: 600px) {\n  .marketplace-page-container::after {\n    background: radial-gradient(circle, rgba(202, 209, 247, 0.6), transparent 60%);\n    height: 80vh;\n    transform: translate3d(0%, -30%, 0);\n    width: 120vw;\n  }\n}\n.[$FRAGMENT_CLASS$] {\n  height: 680px;\n  position: absolute;\n  right: 0;\n  top: -120px;\n  width: 680px;\n  z-index: 0;\n}\n\n.parallax-500 {\n  animation: parallax-500;\n  animation-range: 0% 100%;\n  animation-timeline: scroll();\n}\n\n@keyframes parallax-500 {\n  from {\n    transform: translateY(0px);\n  }\n  to {\n    transform: translateY(500px);\n  }\n}",
+							"fragment": {
+								"key": "BASIC_COMPONENT-html"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+								{
+									"id": "element-html",
+									"value": {
+										"html": {
+											"value_i18n": {
+												"en_US": "<svg width=\"780\" height=\"780\" viewBox=\"0 0 680 680\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<g clip-path=\"url(#clip0_974_5939)\">\n<path d=\"M822.16 210.53C539.06 -379.9 -358.84 671.62 266 792.02C843.59 903.38 957.84 493.46 822.17 210.53H822.16Z\" fill=\"url(#paint0_linear_974_5939)\"></path>\n<path d=\"M244.1 196.87C-215.03 296.1 226.99 964.09 512.17 933.57C797.39 903.15 1047.54 439.47 836.48 207.16C625.28 -25.2 530.53 136.88 244.1 196.87Z\" fill=\"url(#paint1_linear_974_5939)\"></path>\n</g>\n<defs>\n<linearGradient id=\"paint0_linear_974_5939\" x1=\"810.25\" y1=\"14.9901\" x2=\"159.98\" y2=\"924.35\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"white\" stop-opacity=\"0.25\"></stop>\n<stop offset=\"0.64\" stop-color=\"white\" stop-opacity=\"0.08\"></stop>\n<stop offset=\"1\" stop-color=\"white\" stop-opacity=\"0\"></stop>\n</linearGradient>\n<linearGradient id=\"paint1_linear_974_5939\" x1=\"935.1\" y1=\"135.14\" x2=\"79.9298\" y2=\"812.51\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"white\"></stop>\n<stop offset=\"0.01\" stop-color=\"white\" stop-opacity=\"0.97\"></stop>\n<stop offset=\"0.13\" stop-color=\"white\" stop-opacity=\"0.75\"></stop>\n<stop offset=\"0.25\" stop-color=\"white\" stop-opacity=\"0.55\"></stop>\n<stop offset=\"0.37\" stop-color=\"white\" stop-opacity=\"0.38\"></stop>\n<stop offset=\"0.49\" stop-color=\"white\" stop-opacity=\"0.24\"></stop>\n<stop offset=\"0.62\" stop-color=\"white\" stop-opacity=\"0.14\"></stop>\n<stop offset=\"0.74\" stop-color=\"white\" stop-opacity=\"0.06\"></stop>\n<stop offset=\"0.87\" stop-color=\"white\" stop-opacity=\"0.01\"></stop>\n<stop offset=\"1\" stop-color=\"white\" stop-opacity=\"0\"></stop>\n</linearGradient>\n<clipPath id=\"clip0_974_5939\">\n<rect width=\"980\" height=\"980\" fill=\"white\"></rect>\n</clipPath>\n</defs>\n</svg>"
+											}
+										}
+									}
+								}
+							],
+							"fragmentStyle": {
+								"hidden": true
+							},
+							"indexed": true
+						},
+						"type": "Fragment"
+					}
+				],
+				"type": "Section"
+			}
+		],
+		"type": "Root"
+	},
+	"settings": {
+		"masterPage": {
+			"key": "marketplace-master"
+		},
+		"styleBook": {
+			"key": "Marketplace",
+			"name": "Marketplace"
+		}
+	},
+	"version": 1.1
+}

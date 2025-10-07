@@ -7,8 +7,8 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.authorize.message.bod
 
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.ws.rs.Produces;
@@ -28,7 +28,6 @@ import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Carlos Sierra Andrés
@@ -64,7 +63,7 @@ public class OAuthAuthorizationDataMessageBodyWriter
 	@Activate
 	protected void activate() {
 		_invokerFilterURIMaxLength = GetterUtil.getInteger(
-			_props.get(PropsKeys.INVOKER_FILTER_URI_MAX_LENGTH),
+			PropsUtil.get(PropsKeys.INVOKER_FILTER_URI_MAX_LENGTH),
 			_invokerFilterURIMaxLength);
 	}
 
@@ -130,8 +129,5 @@ public class OAuthAuthorizationDataMessageBodyWriter
 	}
 
 	private int _invokerFilterURIMaxLength = 4000;
-
-	@Reference
-	private Props _props;
 
 }

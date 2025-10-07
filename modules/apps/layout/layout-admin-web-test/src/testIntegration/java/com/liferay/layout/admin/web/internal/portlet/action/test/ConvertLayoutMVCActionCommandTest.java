@@ -216,8 +216,8 @@ public class ConvertLayoutMVCActionCommandTest {
 
 		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(0);
 
-		JSONObject editableValuesJSONObject = _jsonFactory.createJSONObject(
-			fragmentEntryLink.getEditableValues());
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
 
 		PortletPreferences portletPreferences =
 			_portletPreferenceValueLocalService.getPreferences(

@@ -1,6 +1,6 @@
 assemble:
     -   fromTask: bootJar
-liferay-jethr0-etc-spring-boot-oauth-application-headless-server:
+liferay-jethr0-etc-spring-boot-oahs:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Jethr0 Etc Spring Boot OAuth Application Headless Server
@@ -26,13 +26,13 @@ liferay-jethr0-etc-spring-boot-oauth-application-headless-server:
         -   c_taskrun.everything
         -   c_testsuite.everything
     type: oAuthApplicationHeadlessServer
-liferay-jethr0-etc-spring-boot-oauth-application-user-agent:
+liferay-jethr0-etc-spring-boot-oaua:
     .serviceAddress: localhost:58081
     .serviceScheme: http
     name: Liferay Jethr0 Etc Spring Boot OAuth Application User Agent
     type: oAuthApplicationUserAgent
 liferay-jethr0-etc-spring-boot-object-actions:
     name: Liferay Jethr0 Etc Spring Boot Object Actions
-    oAuth2ApplicationExternalReferenceCode: liferay-jethr0-etc-spring-boot-oauth-application-user-agent
+    oAuth2ApplicationExternalReferenceCode: liferay-jethr0-etc-spring-boot-oaua
     resourcePath: /object-actions
     type: objectAction

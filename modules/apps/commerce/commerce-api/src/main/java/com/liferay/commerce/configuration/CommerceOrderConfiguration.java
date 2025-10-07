@@ -36,4 +36,21 @@ public interface CommerceOrderConfiguration {
 	)
 	public int guestCartItemMaxAllowed();
 
+	@Meta.AD(
+		deflt = "false", name = "order-selection-disabled", required = false
+	)
+	public boolean orderSelectionDisabled();
+
+	@Meta.AD(
+		deflt = "false", name = "slow-connection-order-flow-enabled",
+		required = false
+	)
+	public boolean slowConnectionOrderFlowEnabled();
+
+	@Meta.AD(
+		deflt = "false", name = "undo-cart-item-deletion-disabled",
+		required = false
+	)
+	public boolean undoCartItemDeletionDisabled();
+
 }

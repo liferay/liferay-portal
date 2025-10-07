@@ -160,9 +160,10 @@ definition {
 			fieldName = "displayStyleGroupId",
 			fieldValue = ${siteId});
 
-		FormFields.editTextMultiline(
-			fieldName = "displayStyle",
-			fieldValue = "ddmTemplate_${templateKey}");
+		Type(
+			key_fieldName = "displayStyle",
+			locator1 = "FormFields#TEXT_MULTILINE_FIELD_EXACT_MATCH",
+			value1 = "ddmTemplate_${templateKey}");
 
 		PortletEntry.save();
 
@@ -1144,7 +1145,7 @@ definition {
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "Portlet#HEADER",
-			value1 = "Búsquedas");
+			value1 = "Buscar");
 
 		AssertTextEquals.assertPartialText(
 			key_navItem = "Conexiones",
@@ -2422,6 +2423,10 @@ definition {
 			facetName = "User Facet",
 			facetTerm = "userfn userln");
 
+		AssertChecked(
+			checkboxName = "userfn userln",
+			locator1 = "Checkbox#ANY_CHECKBOX");
+
 		var currentURL = selenium.getLocation();
 
 		if (!(contains(${currentURL}, "username"))) {
@@ -3070,6 +3075,8 @@ definition {
 	@description = "This is a use case for LPS-193198."
 	@priority = 3
 	test ViewSearchBarVisibility {
+		property test.run.type = "single";
+
 		task ("Configure the embedded search bar to be invisible") {
 			SearchPage.openSearchPage();
 
@@ -3209,6 +3216,8 @@ definition {
 		SearchPage.chooseSortOption(sortOption = "Created (oldest first)");
 
 		SearchResults.viewSearchResultsSpecificOrder(resultsList = "Apple,Banana,Cantaloupe");
+
+		Portlet.deletePG(portletName = "Sort");
 	}
 
 	@description = "This is a use case for LPS-134052."
@@ -3338,10 +3347,16 @@ definition {
 				locator1 = "Search#SORT_WIDGET_SORT_OPTION_POSITION",
 				value1 = "Relevant Test");
 		}
+
+		task ("Remove Sort widget for teardown") {
+			Portlet.deletePG(portletName = "Sort");
+		}
 	}
 
 	@priority = 4
 	test ViewStagedAndLiveContentInSearchResults {
+		property portal.acceptance = "quarantine";
+
 		HeadlessSite.addSite(siteName = "Site Name");
 
 		PagesAdmin.openPagesAdmin(siteURLKey = "Site Name");

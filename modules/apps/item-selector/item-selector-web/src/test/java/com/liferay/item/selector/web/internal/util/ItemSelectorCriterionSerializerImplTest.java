@@ -6,10 +6,10 @@
 package com.liferay.item.selector.web.internal.util;
 
 import com.liferay.item.selector.ItemSelectorReturnType;
-import com.liferay.item.selector.web.internal.FlickrItemSelectorCriterion;
 import com.liferay.item.selector.web.internal.TestFileEntryItemSelectorReturnType;
 import com.liferay.item.selector.web.internal.TestStringItemSelectorReturnType;
 import com.liferay.item.selector.web.internal.TestURLItemSelectorReturnType;
+import com.liferay.item.selector.web.internal.item.selector.FlickrItemSelectorCriterion;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;

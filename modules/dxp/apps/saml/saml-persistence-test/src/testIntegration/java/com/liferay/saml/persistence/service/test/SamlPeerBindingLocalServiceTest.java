@@ -44,8 +44,8 @@ public class SamlPeerBindingLocalServiceTest {
 
 		SamlPeerBinding samlPeerBinding =
 			_samlPeerBindingLocalService.addSamlPeerBinding(
-				user.getUserId(), StringPool.BLANK, samlNameIdNameQualifier,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+				user.getUserId(), StringPool.BLANK, StringPool.BLANK,
+				samlNameIdNameQualifier, StringPool.BLANK, StringPool.BLANK,
 				StringPool.BLANK);
 
 		Assert.assertEquals(

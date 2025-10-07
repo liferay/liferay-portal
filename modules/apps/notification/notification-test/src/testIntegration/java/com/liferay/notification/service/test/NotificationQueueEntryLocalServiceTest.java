@@ -8,6 +8,7 @@ package com.liferay.notification.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.constants.NotificationQueueEntryConstants;
+import com.liferay.notification.constants.NotificationRecipientSettingConstants;
 import com.liferay.notification.exception.NotificationQueueEntryStatusException;
 import com.liferay.notification.exception.NotificationQueueEntrySubjectException;
 import com.liferay.notification.exception.NotificationRecipientSettingValueException;
@@ -15,17 +16,27 @@ import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.service.NotificationQueueEntryLocalService;
+import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
+import com.liferay.notification.util.NotificationRecipientSettingUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.test.util.ObjectActionTestUtil;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectEntryTestUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -50,16 +61,21 @@ public class NotificationQueueEntryLocalServiceTest {
 	@BeforeClass
 	public static void setUpClass() {
 		_notificationRecipientSettings = Arrays.asList(
-			NotificationTemplateUtil.createNotificationRecipientSetting(
-				"bcc", "bcc@liferay.com"),
-			NotificationTemplateUtil.createNotificationRecipientSetting(
-				"cc", "cc@liferay.com"),
-			NotificationTemplateUtil.createNotificationRecipientSetting(
-				"from", "from@liferay.com"),
-			NotificationTemplateUtil.createNotificationRecipientSetting(
-				"fromName", "From Name"),
-			NotificationTemplateUtil.createNotificationRecipientSetting(
-				"to", "to@liferay.com"));
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_BCC,
+				"bcc@liferay.com"),
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_CC,
+				"cc@liferay.com"),
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_FROM,
+				"from@liferay.com"),
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_FROM_NAME,
+				"From Name"),
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_TO,
+				"to@liferay.com"));
 	}
 
 	@Test
@@ -74,20 +90,29 @@ public class NotificationQueueEntryLocalServiceTest {
 			"From is null",
 			() -> _addNotificationQueueEntry(
 				Arrays.asList(
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"fromName", "From Name"),
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"to", "to@liferay.com"))));
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.
+								NAME_FROM_NAME,
+							"From Name"),
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.NAME_TO,
+							"to@liferay.com"))));
 		AssertUtils.assertFailure(
 			NotificationRecipientSettingValueException.FromNameMustNotBeNull.
 				class,
 			"From name is null",
 			() -> _addNotificationQueueEntry(
 				Arrays.asList(
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"from", "from@liferay.com"),
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"to", "to@liferay.com"))));
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.NAME_FROM,
+							"from@liferay.com"),
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.NAME_TO,
+							"to@liferay.com"))));
 
 		User user = TestPropsValues.getUser();
 
@@ -102,10 +127,15 @@ public class NotificationQueueEntryLocalServiceTest {
 			"To is null",
 			() -> _addNotificationQueueEntry(
 				Arrays.asList(
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"from", "from@liferay.com"),
-					NotificationTemplateUtil.createNotificationRecipientSetting(
-						"fromName", "From Name"))));
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.NAME_FROM,
+							"from@liferay.com"),
+					NotificationRecipientSettingUtil.
+						createNotificationRecipientSetting(
+							NotificationRecipientSettingConstants.
+								NAME_FROM_NAME,
+							"From Name"))));
 
 		String body = StringUtil.randomString();
 		String subject = StringUtil.randomString();
@@ -145,6 +175,36 @@ public class NotificationQueueEntryLocalServiceTest {
 
 		_notificationQueueEntryLocalService.deleteNotificationQueueEntry(
 			notificationQueueEntry);
+	}
+
+	@Test
+	public void testDeleteNotificationQueueEntries() throws Exception {
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectActionTestUtil.addObjectAction(
+			_notificationTemplateLocalService.addNotificationTemplate(
+				NotificationTemplateUtil.createNotificationContext(
+					NotificationConstants.TYPE_EMAIL)),
+			objectDefinition);
+
+		ObjectEntryTestUtil.addObjectEntry(objectDefinition);
+
+		Assert.assertTrue(
+			ListUtil.isNotEmpty(
+				_notificationQueueEntryLocalService.getNotificationQueueEntries(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
+
+		_notificationQueueEntryLocalService.deleteNotificationQueueEntries(
+			new Date(System.currentTimeMillis()));
+
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				_notificationQueueEntryLocalService.getNotificationQueueEntries(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
 	}
 
 	@Test
@@ -212,5 +272,11 @@ public class NotificationQueueEntryLocalServiceTest {
 	@Inject
 	private NotificationQueueEntryLocalService
 		_notificationQueueEntryLocalService;
+
+	@Inject
+	private NotificationTemplateLocalService _notificationTemplateLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }

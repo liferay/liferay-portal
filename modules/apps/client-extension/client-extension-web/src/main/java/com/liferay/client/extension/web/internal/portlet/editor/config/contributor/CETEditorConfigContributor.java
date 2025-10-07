@@ -26,9 +26,10 @@ public class CETEditorConfigContributor
 	implements EditorConfigContributor, Registrable {
 
 	public CETEditorConfigContributor(
-		String editorConfigKeys, String editorNames, String portletNames,
-		String url) {
+		long companyId, String editorConfigKeys, String editorNames,
+		String portletNames, String url) {
 
+		_companyId = companyId;
 		_editorConfigKeys = editorConfigKeys;
 		_editorNames = editorNames;
 		_portletNames = portletNames;
@@ -73,6 +74,10 @@ public class CETEditorConfigContributor
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
+		if (themeDisplay.getCompanyId() != _companyId) {
+			return;
+		}
+
 		JSONArray jsonArray = jsonObject.getJSONArray("editorTransformerURLs");
 
 		if (jsonArray == null) {
@@ -84,6 +89,7 @@ public class CETEditorConfigContributor
 		jsonArray.put(_url);
 	}
 
+	private final long _companyId;
 	private final String _editorConfigKeys;
 	private final String _editorNames;
 	private final String _portletNames;

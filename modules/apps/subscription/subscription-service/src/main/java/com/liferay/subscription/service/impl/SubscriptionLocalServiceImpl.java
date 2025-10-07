@@ -289,6 +289,18 @@ public class SubscriptionLocalServiceImpl
 		}
 	}
 
+	@Override
+	public void deleteSubscriptions(long companyId, String className)
+		throws PortalException {
+
+		List<Subscription> subscriptions = subscriptionPersistence.findByC_C(
+			companyId, _classNameLocalService.getClassNameId(className));
+
+		for (Subscription subscription : subscriptions) {
+			deleteSubscription(subscription);
+		}
+	}
+
 	/**
 	 * Deletes all the subscriptions to the entity.
 	 *

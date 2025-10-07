@@ -50,6 +50,18 @@ renderResponse.setTitle(accountEntryDisplay.getName());
 					value="<%= HtmlUtil.escape(accountOrganization.getParentOrganizationName()) %>"
 				/>
 
+				<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-35914") %>'>
+					<liferay-ui:search-container-column-text
+						cssClass="table-cell-expand-small table-cell-minw-150"
+						name="status"
+					>
+						<clay:label
+							displayType="<%= WorkflowConstants.getStatusStyle(accountOrganization.getStatus()) %>"
+							label="<%= WorkflowConstants.getStatusLabel(accountOrganization.getStatus()) %>"
+						/>
+					</liferay-ui:search-container-column-text>
+				</c:if>
+
 				<c:if test="<%= AccountEntryPermission.hasEditOrManageOrganizationsPermission(permissionChecker, accountEntryDisplay.getAccountEntryId()) %>">
 					<liferay-ui:search-container-column-text>
 						<portlet:actionURL name="/account_admin/remove_account_organizations" var="removeAccountOrganizationsURL">

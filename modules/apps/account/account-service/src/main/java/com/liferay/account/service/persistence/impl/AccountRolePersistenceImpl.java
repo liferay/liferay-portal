@@ -575,6 +575,15 @@ public class AccountRolePersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -924,6 +933,14 @@ public class AccountRolePersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<AccountRole> accountRoles = findByCompanyId(companyId);
+
+			accountRoles = InlineSQLHelperUtil.filter(accountRoles);
+
+			return accountRoles.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1452,6 +1469,15 @@ public class AccountRolePersistenceImpl
 				accountEntryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByAccountEntryId(
+					accountEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1781,6 +1807,15 @@ public class AccountRolePersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return findByAccountEntryId(
 				accountEntryIds, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByAccountEntryId(
+					accountEntryIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
 		}
 
 		if (accountEntryIds == null) {
@@ -2194,6 +2229,15 @@ public class AccountRolePersistenceImpl
 			return countByAccountEntryId(accountEntryId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<AccountRole> accountRoles = findByAccountEntryId(
+				accountEntryId);
+
+			accountRoles = InlineSQLHelperUtil.filter(accountRoles);
+
+			return accountRoles.size();
+		}
+
 		StringBundler sb = new StringBundler(2);
 
 		sb.append(_FILTER_SQL_COUNT_ACCOUNTROLE_WHERE);
@@ -2240,6 +2284,13 @@ public class AccountRolePersistenceImpl
 	public int filterCountByAccountEntryId(long[] accountEntryIds) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByAccountEntryId(accountEntryIds);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<AccountRole> accountRoles = InlineSQLHelperUtil.filter(
+				findByAccountEntryId(accountEntryIds));
+
+			return accountRoles.size();
 		}
 
 		if (accountEntryIds == null) {
@@ -2998,6 +3049,15 @@ public class AccountRolePersistenceImpl
 				companyId, accountEntryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A(
+					companyId, accountEntryId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3343,6 +3403,15 @@ public class AccountRolePersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return findByC_A(
 				companyId, accountEntryIds, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A(
+					companyId, accountEntryIds, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
 		}
 
 		if (accountEntryIds == null) {
@@ -3790,6 +3859,15 @@ public class AccountRolePersistenceImpl
 			return countByC_A(companyId, accountEntryId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<AccountRole> accountRoles = findByC_A(
+				companyId, accountEntryId);
+
+			accountRoles = InlineSQLHelperUtil.filter(accountRoles);
+
+			return accountRoles.size();
+		}
+
 		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_ACCOUNTROLE_WHERE);
@@ -3841,6 +3919,13 @@ public class AccountRolePersistenceImpl
 	public int filterCountByC_A(long companyId, long[] accountEntryIds) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_A(companyId, accountEntryIds);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<AccountRole> accountRoles = InlineSQLHelperUtil.filter(
+				findByC_A(companyId, accountEntryIds));
+
+			return accountRoles.size();
 		}
 
 		if (accountEntryIds == null) {

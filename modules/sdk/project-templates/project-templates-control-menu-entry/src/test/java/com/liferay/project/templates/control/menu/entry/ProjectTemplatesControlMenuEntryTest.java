@@ -43,7 +43,7 @@ public class ProjectTemplatesControlMenuEntryTest
 			new Object[][] {
 				{"dxp", "7.0.10.17"}, {"dxp", "7.1.10.7"}, {"dxp", "7.2.10.7"},
 				{"portal", "7.3.7"}, {"portal", "7.4.3.56"},
-				{"dxp", "2024.q1.1"}
+				{"dxp", "2024.q1.1"}, {"dxp", "2025.q3.1"}
 			});
 	}
 
@@ -97,23 +97,21 @@ public class ProjectTemplatesControlMenuEntryTest
 
 		testExists(gradleProjectDir, "bnd.bnd");
 
-		if (VersionUtil.getMinorVersion(_liferayVersion) < 3) {
-			testContains(
-				gradleProjectDir, "build.gradle", DEPENDENCY_RELEASE_DXP_API);
-		}
-		else {
-			testContains(
-				gradleProjectDir, "build.gradle",
-				DEPENDENCY_RELEASE_PORTAL_API);
-		}
+		testGradlePortalReleaseDependency(gradleProjectDir, _liferayVersion);
+
+		String generatedJavaClassPath =
+			"src/main/java/foo/bar/control/menu" +
+				"/FooBarProductNavigationControlMenuEntry.java";
 
 		testContains(
-			gradleProjectDir,
-			"src/main/java/foo/bar/control/menu" +
-				"/FooBarProductNavigationControlMenuEntry.java",
+			gradleProjectDir, generatedJavaClassPath,
 			"public class FooBarProductNavigationControlMenuEntry",
 			"extends BaseProductNavigationControlMenuEntry",
 			"implements ProductNavigationControlMenuEntry");
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(gradleProjectDir, generatedJavaClassPath);
+		}
 
 		testNotContains(gradleProjectDir, "build.gradle", "version: \"[0-9].*");
 

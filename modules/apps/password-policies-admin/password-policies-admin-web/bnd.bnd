@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Password Policies Admin Web
 Bundle-SymbolicName: com.liferay.password.policies.admin.web
-Bundle-Version: 5.0.72
+Bundle-Version: 5.0.73
 Web-ContextPath: /password-policies-admin-web

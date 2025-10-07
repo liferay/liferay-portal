@@ -345,6 +345,9 @@ public interface DLAppLocalService extends BaseLocalService {
 	 */
 	public void deleteFolder(long folderId) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException;
+
 	/**
 	 * Returns the document library file entry with the matching external
 	 * reference code and group.

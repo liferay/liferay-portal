@@ -20,16 +20,13 @@ import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvoker;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.ProxyFactory;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.spring.aop.AopCacheManager;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsValues;
 
 import freemarker.ext.beans.InvalidPropertyException;
 import freemarker.ext.beans.SimpleMethodModel;
@@ -47,7 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
-import java.util.logging.Level;
 
 import org.hamcrest.CoreMatchers;
 
@@ -80,8 +76,9 @@ public class RestrictedLiferayObjectWrapperTest
 
 	@Test
 	public void testConstructor() {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				RestrictedLiferayObjectWrapper.class.getName(), Level.INFO)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				RestrictedLiferayObjectWrapper.class.getName(),
+				LoggerTestUtil.INFO)) {
 
 			Assert.assertEquals(
 				Collections.singletonList("com.liferay.package.name"),
@@ -102,8 +99,9 @@ public class RestrictedLiferayObjectWrapperTest
 				logEntry.getMessage());
 		}
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				RestrictedLiferayObjectWrapper.class.getName(), Level.OFF)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				RestrictedLiferayObjectWrapper.class.getName(),
+				LoggerTestUtil.OFF)) {
 
 			Assert.assertEquals(
 				Collections.singletonList("com.liferay.package.name"),
@@ -263,8 +261,9 @@ public class RestrictedLiferayObjectWrapperTest
 
 	@Test
 	public void testRestrictedMethodNamesIncorrectSyntax() {
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				RestrictedLiferayObjectWrapper.class.getName(), Level.INFO)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				RestrictedLiferayObjectWrapper.class.getName(),
+				LoggerTestUtil.INFO)) {
 
 			String methodName =
 				TestLiferayMethodObject.class.getName() + ".getName";
@@ -289,8 +288,6 @@ public class RestrictedLiferayObjectWrapperTest
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testWrapWithCompanyRestrictForFalse() throws Exception {
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
-
 		TransactionInvokerUtil transactionInvokerUtil =
 			new TransactionInvokerUtil();
 
@@ -307,8 +304,6 @@ public class RestrictedLiferayObjectWrapperTest
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testWrapWithCompanyRestrictForTrue() throws Exception {
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
-
 		TransactionInvokerUtil transactionInvokerUtil =
 			new TransactionInvokerUtil();
 
@@ -327,8 +322,6 @@ public class RestrictedLiferayObjectWrapperTest
 	public void testWrapWithTransactionStrictReadOnlyForFalse()
 		throws Exception {
 
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
-
 		TransactionInvokerUtil transactionInvokerUtil =
 			new TransactionInvokerUtil();
 
@@ -346,8 +339,6 @@ public class RestrictedLiferayObjectWrapperTest
 	@Test
 	public void testWrapWithTransactionStrictReadOnlyForTrue()
 		throws Exception {
-
-		PropsUtil.setProps(ProxyFactory.newDummyInstance(Props.class));
 
 		TransactionInvokerUtil transactionInvokerUtil =
 			new TransactionInvokerUtil();
@@ -432,8 +423,8 @@ public class RestrictedLiferayObjectWrapperTest
 			StringModel.class.cast(
 				objectWrapper.wrap(new TestBaseModel(123L))));
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				CompanyThreadLocal.class.getName(), Level.OFF);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				CompanyThreadLocal.class.getName(), LoggerTestUtil.OFF);
 			SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 					Long.valueOf(1))) {

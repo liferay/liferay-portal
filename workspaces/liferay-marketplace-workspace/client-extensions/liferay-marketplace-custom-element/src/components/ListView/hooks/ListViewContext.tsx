@@ -52,6 +52,7 @@ export type InitialState = {
 	keywords: string;
 	page: number;
 	pageSize: number;
+	paginationDeltaOptions: number[];
 	selectedRows: number[];
 	sort: Sort;
 };
@@ -68,6 +69,7 @@ const initialState: InitialState = {
 	keywords: '',
 	page: 1,
 	pageSize: PAGINATION_DELTA[0],
+	paginationDeltaOptions: PAGINATION_DELTA,
 	selectedRows: [],
 	sort: {direction: SortOption.ASC, key: ''},
 };

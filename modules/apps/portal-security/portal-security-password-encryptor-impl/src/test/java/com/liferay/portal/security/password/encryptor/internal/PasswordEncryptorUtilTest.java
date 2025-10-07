@@ -15,10 +15,8 @@ import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.DigesterImpl;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,10 +38,6 @@ public class PasswordEncryptorUtilTest {
 
 	@Before
 	public void setUp() {
-		DigesterUtil digesterUtil = new DigesterUtil();
-
-		digesterUtil.setDigester(new DigesterImpl());
-
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		bundleContext.registerService(

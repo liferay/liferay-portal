@@ -21,6 +21,8 @@ import com.liferay.data.engine.rest.resource.v2_0.DataRecordResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1164,6 +1166,10 @@ public class Query {
 		dataDefinitionResource.setContextUriInfo(_uriInfo);
 		dataDefinitionResource.setContextUser(_user);
 		dataDefinitionResource.setGroupLocalService(_groupLocalService);
+		dataDefinitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataDefinitionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataDefinitionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1182,6 +1188,10 @@ public class Query {
 		dataDefinitionFieldLinkResource.setContextUser(_user);
 		dataDefinitionFieldLinkResource.setGroupLocalService(
 			_groupLocalService);
+		dataDefinitionFieldLinkResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataDefinitionFieldLinkResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataDefinitionFieldLinkResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1195,6 +1205,10 @@ public class Query {
 		dataLayoutResource.setContextUriInfo(_uriInfo);
 		dataLayoutResource.setContextUser(_user);
 		dataLayoutResource.setGroupLocalService(_groupLocalService);
+		dataLayoutResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataLayoutResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataLayoutResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1210,6 +1224,10 @@ public class Query {
 		dataListViewResource.setContextUriInfo(_uriInfo);
 		dataListViewResource.setContextUser(_user);
 		dataListViewResource.setGroupLocalService(_groupLocalService);
+		dataListViewResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataListViewResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataListViewResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1223,6 +1241,10 @@ public class Query {
 		dataRecordResource.setContextUriInfo(_uriInfo);
 		dataRecordResource.setContextUser(_user);
 		dataRecordResource.setGroupLocalService(_groupLocalService);
+		dataRecordResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataRecordResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataRecordResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1239,6 +1261,10 @@ public class Query {
 		dataRecordCollectionResource.setContextUriInfo(_uriInfo);
 		dataRecordCollectionResource.setContextUser(_user);
 		dataRecordCollectionResource.setGroupLocalService(_groupLocalService);
+		dataRecordCollectionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		dataRecordCollectionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		dataRecordCollectionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1263,6 +1289,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

@@ -179,6 +179,8 @@ function renderMappingSelector({
 
 describe('MappingSelector', () => {
 	beforeAll(() => {
+		Liferay.FeatureFlags['LPD-60546'] = true;
+
 		State.writeAtom(pageContentsAtom, {
 			data: [
 				{
@@ -195,6 +197,8 @@ describe('MappingSelector', () => {
 	});
 
 	afterAll(() => {
+		Liferay.FeatureFlags['LPD-60546'] = false;
+
 		State.writeAtom(pageContentsAtom, {
 			data: [],
 			status: 'idle',

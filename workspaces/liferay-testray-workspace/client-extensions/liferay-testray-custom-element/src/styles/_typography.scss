@@ -1,3 +1,46 @@
+.tr-issue-description {
+	color: #333;
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+.tr-issue-description em {
+	color: #555;
+	font-style: italic;
+}
+
+.tr-issue-description li {
+	margin-bottom: 0.75rem;
+}
+
+.tr-issue-description li ol {
+	margin-top: 0.5rem;
+}
+
+.tr-issue-description li p {
+	margin: 0.25rem 0;
+}
+
+.tr-issue-description ol {
+	margin-bottom: 1rem;
+	margin-left: 1.5rem;
+	padding-left: 1rem;
+}
+
+.tr-issue-description p {
+	margin-bottom: 1rem;
+}
+
+.tr-issue-description strong {
+	font-weight: 600;
+}
+
+.tr-issue-description ul {
+	list-style-type: disc;
+	margin-bottom: 1rem;
+	padding-left: 1.5rem;
+}
+
 .tr-small-heading {
 	color: $color-gray;
 	font-size: 11px;

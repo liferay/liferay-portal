@@ -131,7 +131,6 @@ definition {
 	@description = "This is a use case for LPS-68377."
 	@priority = 3
 	test AddFormToUserSiteAndViewNoDuplicates {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -239,7 +238,6 @@ definition {
 	@description = "LPS-68390 - Verify that a notification appears when a Form is autosaved."
 	@priority = 3
 	test AutosaveDisplaysANotification {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -264,7 +262,6 @@ definition {
 	@description = "LPS-68418 - Verify that a Form's autosave interval can be configured"
 	@priority = 3
 	test AutosaveIntervalCanBeConfigured {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -726,7 +723,6 @@ definition {
 	@description = "LPS-69334 - Verify that a Form can be edited after the default language is changed"
 	@priority = 3
 	test CanBeEditedAfterChangingLanguage {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -771,7 +767,6 @@ definition {
 	@description = "LPS-69100 - Verify that a Form can be edited after the Site's default locale is changed"
 	@priority = 3
 	test CanBeEditedAfterChangingLocale {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
@@ -1166,7 +1161,6 @@ definition {
 	@description = "LPS-69214 - Verify that a confirmation appears when attempting to leave a Form without saving."
 	@priority = 3
 	test ConfirmationAppearsWhenLeavingFormWithoutSaving {
-		property portal.acceptance = "true";
 		property portal.upstream = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

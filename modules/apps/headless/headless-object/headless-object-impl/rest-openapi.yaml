@@ -145,12 +145,32 @@ components:
                         The ID of the object entry folder's parent, if it exists.
                     format: int64
                     type: integer
+                permissions:
+                    items:
+                        type: permission
+                    type: array
+                removedBy:
+                    $ref: ../../headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
+                removedDate:
+                    format: date
+                    readOnly: true
+                    type: string
+                scopeId:
+                    # @review
+                    description:
+                        The scope id of the object entry folder.
+                    format: int64
+                    readOnly: true
+                    type: integer
                 scopeKey:
                     # @review
                     description:
                         The scope key of the object entry folder.
                     readOnly: true
                     type: string
+                status:
+                    $ref: "#/components/schemas/Status"
                 title:
                     description:
                         The object entry folder's main title/name.
@@ -192,6 +212,18 @@ components:
                     description:
                         The parent object entry folder's main title/name.
                     type: string
+            type: object
+        Status:
+            properties:
+                code:
+                    format: int32
+                    type: integer
+                label:
+                    type: string
+                label_i18n:
+                    type: string
+            required:
+                -   code
             type: object
 info:
     license:
@@ -256,6 +288,33 @@ paths:
             description:
                 Updates only the fields received in the request body, leaving any other fields untouched.
             operationId: patchObjectEntryFolder
+            parameters:
+                -   in: path
+                    name: objectEntryFolderId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ObjectEntryFolder"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ObjectEntryFolder"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntryFolder"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntryFolder"
+            tags: ["ObjectEntryFolder"]
+        put:
+            operationId: putObjectEntryFolder
             parameters:
                 -   in: path
                     name: objectEntryFolderId
@@ -478,6 +537,57 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Collaborator"
             tags: ["Collaborator"]
+    "/object-entry-folders/{objectEntryFolderId}/permissions":
+        get:
+            operationId: getObjectEntryFolderPermissionsPage
+            parameters:
+                -   in: path
+                    name: objectEntryFolderId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: fields
+                    schema:
+                        type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: restrictFields
+                    schema:
+                        type: string
+                -   in: query
+                    name: roleNames
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntryFolder"]
+        put:
+            operationId: putObjectEntryFolderPermissionsPage
+            parameters:
+                -   in: path
+                    name: objectEntryFolderId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            requestBody:
+                content:
+                    application/json: {}
+                    application/xml: {}
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntryFolder"]
     "/scopes/{scopeKey}/object-entry-folder/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCode
@@ -903,3 +1013,67 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Collaborator"
             tags: ["Collaborator"]
+    "/scopes/{scopeKey}/object-entry-folders/by-external-reference-code/{externalReferenceCode}/restore":
+        post:
+            operationId: postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntryFolder"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ObjectEntryFolder"
+            tags: ["ObjectEntryFolder"]
+    "/scopes/{scopeKey}/object-entry-folders/by-external-reference-code/{externalReferenceCode}/subscribe":
+        post:
+            operationId: postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeSubscribe
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntryFolder"]
+    "/scopes/{scopeKey}/object-entry-folders/by-external-reference-code/{externalReferenceCode}/unsubscribe":
+        post:
+            operationId: postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe
+            parameters:
+                -   in: path
+                    name: scopeKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectEntryFolder"]

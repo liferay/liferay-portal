@@ -12,6 +12,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {performLogout} from '../../../utils/performLogin';
 import {openProductMenu} from '../../../utils/productMenu';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {TAccount} from '../../workspaces/liferay-partner-workspace/main/types/account';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../workspaces/liferay-workspace-marketplace/main/utils/constants';
 
 export async function classicCommerceSetUp(
@@ -133,6 +134,47 @@ export async function commerceReturnSetUp(
 		site,
 		sku,
 	};
+}
+
+export async function configureBuyerUserForSite(
+	account: TAccount,
+	apiHelpers: DataApiHelpers,
+	site: Site,
+	userEmail: any
+) {
+	const user =
+		await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
+			userEmail
+		);
+
+	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
+		account.id
+	);
+
+	const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
+		return role.name === 'Buyer';
+	});
+
+	await apiHelpers.headlessAdminUser.assignAccountRoles(
+		account.externalReferenceCode,
+		accountRoleBuyer[0].id,
+		user.emailAddress
+	);
+
+	const siteRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+	await apiHelpers.headlessAdminUser.assignUserToSite(
+		siteRole.id,
+		site.id,
+		user.id
+	);
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		[user.emailAddress]
+	);
+
+	return user;
 }
 
 export async function completedVirtualOrderItemSetUp(

@@ -235,7 +235,7 @@ public abstract class BasePortletDataHandlerTestCase {
 			portletDataHandlerControls = portletDataHandler.getExportControls();
 		}
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportConfigurationControls(
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portletDataHandlerControls, -1,
@@ -244,7 +244,7 @@ public abstract class BasePortletDataHandlerTestCase {
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portlet, false));
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportConfigurationControls(
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portletDataHandlerControls, -1,
@@ -253,7 +253,7 @@ public abstract class BasePortletDataHandlerTestCase {
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portlet, true));
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportConfigurationControls(
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portletDataHandlerControls,
@@ -263,7 +263,7 @@ public abstract class BasePortletDataHandlerTestCase {
 				portletDataContext.getGroupId(), portlet,
 				portletDataContext.getPlid(), false));
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportConfigurationControls(
 				portletDataContext.getCompanyId(),
 				portletDataContext.getGroupId(), portletDataHandlerControls,
@@ -276,13 +276,13 @@ public abstract class BasePortletDataHandlerTestCase {
 
 	@Test
 	public void testGetExportControls() throws Exception {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportControls(), portletDataHandler.getExportControls());
 	}
 
 	@Test
 	public void testGetExportMetadataControls() throws Exception {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getExportMetadataControls(),
 			portletDataHandler.getExportMetadataControls());
 	}
@@ -309,7 +309,7 @@ public abstract class BasePortletDataHandlerTestCase {
 
 	@Test
 	public void testGetImportConfigurationControls() {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			new PortletDataHandlerControl[] {
 				new PortletDataHandlerBoolean(
 					null, PortletDataHandlerKeys.PORTLET_SETUP, "setup", true,
@@ -318,7 +318,7 @@ public abstract class BasePortletDataHandlerTestCase {
 			portletDataHandler.getImportConfigurationControls(
 				new String[] {"setup"}));
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			new PortletDataHandlerControl[] {
 				new PortletDataHandlerBoolean(
 					null, PortletDataHandlerKeys.PORTLET_ARCHIVED_SETUPS,
@@ -327,7 +327,7 @@ public abstract class BasePortletDataHandlerTestCase {
 			portletDataHandler.getImportConfigurationControls(
 				new String[] {"archived-setups"}));
 
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			new PortletDataHandlerControl[] {
 				new PortletDataHandlerBoolean(
 					null, PortletDataHandlerKeys.PORTLET_USER_PREFERENCES,
@@ -339,20 +339,20 @@ public abstract class BasePortletDataHandlerTestCase {
 
 	@Test
 	public void testGetImportControls() throws Exception {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getImportControls(), portletDataHandler.getImportControls());
 	}
 
 	@Test
 	public void testGetImportMetadataControls() throws Exception {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getImportMetadataControls(),
 			portletDataHandler.getImportMetadataControls());
 	}
 
 	@Test
 	public void testGetStagingControls() {
-		_assertControls(
+		_assertPortletDataHandlerControls(
 			getStagingControls(), portletDataHandler.getStagingControls());
 	}
 
@@ -654,22 +654,26 @@ public abstract class BasePortletDataHandlerTestCase {
 
 	protected ZipWriter zipWriter;
 
-	private void _assertControls(
-		PortletDataHandlerControl[] expectedControls,
-		PortletDataHandlerControl[] actualControls) {
+	private void _assertPortletDataHandlerControls(
+		PortletDataHandlerControl[] expectedPortletDataHandlerControls,
+		PortletDataHandlerControl[] portletDataHandlerControls) {
 
-		for (PortletDataHandlerControl expectedControl : expectedControls) {
+		for (PortletDataHandlerControl expectedPortletDataHandlerControl :
+				expectedPortletDataHandlerControls) {
+
 			boolean contains = false;
 
-			for (PortletDataHandlerControl actualControl : actualControls) {
+			for (PortletDataHandlerControl portletDataHandlerControl :
+					portletDataHandlerControls) {
+
 				if (Objects.equals(
-						expectedControl.getControlName(),
-						actualControl.getControlName()) &&
+						expectedPortletDataHandlerControl.getControlName(),
+						portletDataHandlerControl.getControlName()) &&
 					Objects.equals(
-						expectedControl.getControlLabel(),
-						actualControl.getControlLabel()) &&
-					(expectedControl.isDisabled() ==
-						actualControl.isDisabled())) {
+						expectedPortletDataHandlerControl.getControlLabel(),
+						portletDataHandlerControl.getControlLabel()) &&
+					(expectedPortletDataHandlerControl.isDisabled() ==
+						portletDataHandlerControl.isDisabled())) {
 
 					contains = true;
 

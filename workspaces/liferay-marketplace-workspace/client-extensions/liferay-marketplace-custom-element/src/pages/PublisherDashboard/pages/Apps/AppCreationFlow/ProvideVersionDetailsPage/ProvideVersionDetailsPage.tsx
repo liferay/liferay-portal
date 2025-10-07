@@ -240,7 +240,7 @@ export function ProvideVersionDetailsPage({
 					placeholder="0.0.0"
 					required
 					tooltip={i18n.translate(
-						'specify-your-apps-version-this-will-help-the-user-to-understand-the-latest-version-of-your-app-offered-on-the-marketplace'
+						'specify-your-apps-version-this-will-help-the-user-understand-the-latest-version-of-your-app-offered-on-the-marketplace'
 					)}
 					value={appVersion}
 				/>

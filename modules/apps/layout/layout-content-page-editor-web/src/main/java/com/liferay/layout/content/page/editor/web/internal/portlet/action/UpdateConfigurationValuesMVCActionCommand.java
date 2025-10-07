@@ -93,7 +93,7 @@ public class UpdateConfigurationValuesMVCActionCommand
 
 		JSONObject newEditableValuesJSONObject = _mergeEditableValuesJSONObject(
 			_fragmentEntryProcessorRegistry.getDefaultEditableValuesJSONObject(
-				processedHTML, fragmentEntryLink.getConfiguration()),
+				processedHTML, fragmentEntryLink.getConfigurationJSONObject()),
 			editableValues);
 
 		fragmentEntryLink = _fragmentEntryLinkService.updateFragmentEntryLink(

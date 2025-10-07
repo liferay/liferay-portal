@@ -736,6 +736,48 @@ public class WorkflowTask implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _workflowInstanceIdSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public WorkflowLog[] getWorkflowLogs() {
+		if (_workflowLogsSupplier != null) {
+			workflowLogs = _workflowLogsSupplier.get();
+
+			_workflowLogsSupplier = null;
+		}
+
+		return workflowLogs;
+	}
+
+	public void setWorkflowLogs(WorkflowLog[] workflowLogs) {
+		this.workflowLogs = workflowLogs;
+
+		_workflowLogsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setWorkflowLogs(
+		UnsafeSupplier<WorkflowLog[], Exception> workflowLogsUnsafeSupplier) {
+
+		_workflowLogsSupplier = () -> {
+			try {
+				return workflowLogsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected WorkflowLog[] workflowLogs;
+
+	@JsonIgnore
+	private Supplier<WorkflowLog[]> _workflowLogsSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -998,6 +1040,28 @@ public class WorkflowTask implements Serializable {
 			sb.append("\"workflowInstanceId\": ");
 
 			sb.append(workflowInstanceId);
+		}
+
+		WorkflowLog[] workflowLogs = getWorkflowLogs();
+
+		if (workflowLogs != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"workflowLogs\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < workflowLogs.length; i++) {
+				sb.append(String.valueOf(workflowLogs[i]));
+
+				if ((i + 1) < workflowLogs.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		sb.append("}");

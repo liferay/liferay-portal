@@ -12,7 +12,6 @@ import com.liferay.object.internal.action.trigger.messaging.ObjectActionTriggerM
 import com.liferay.object.internal.action.trigger.util.ObjectActionTriggerUtil;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -61,9 +60,8 @@ public class ObjectActionTriggerRegistryImpl
 		_serviceTracker = new ServiceTracker<>(
 			bundleContext,
 			bundleContext.createFilter(
-				StringBundler.concat(
-					"(&(object.action.trigger.class.name=*)(objectClass=",
-					Destination.class.getName(), "))")),
+				"(&(object.action.trigger.class.name=*)(objectClass=" +
+					Destination.class.getName() + "))"),
 			new ServiceTrackerCustomizer
 				<Destination, List<ServiceRegistration<?>>>() {
 

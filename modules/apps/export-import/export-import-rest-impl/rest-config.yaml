@@ -1,0 +1,13 @@
+apiDir: ../export-import-rest-api/src/main/java
+apiPackagePath: com.liferay.exportimport.rest
+application:
+    baseURI: /export-import
+    className: ExportImportRESTApplication
+    name: Export.Import.REST
+author: Petteri Karttunen
+clientDir: ../export-import-rest-client/src/main/java
+compatibilityVersion: 12
+forcePredictableOperationId: true
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../export-import-rest-test/src/testIntegration/java

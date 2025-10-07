@@ -11,20 +11,12 @@ import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.site.cms.site.initializer.internal.util.CMSRoleUtil;
 
 import java.util.Objects;
 
@@ -37,50 +29,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ModelListener.class)
 public class ObjectDefinitionModelListener
 	extends BaseModelListener<ObjectDefinition> {
-
-	@Override
-	public void onAfterCreate(ObjectDefinition objectDefinition)
-		throws ModelListenerException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
-
-		try {
-			String objectFolderExternalReferenceCode =
-				objectDefinition.getObjectFolderExternalReferenceCode();
-
-			if (!Objects.equals(
-					objectFolderExternalReferenceCode,
-					ObjectFolderConstants.
-						EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES) &&
-				!Objects.equals(
-					objectFolderExternalReferenceCode,
-					ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
-
-				return;
-			}
-
-			Role role = CMSRoleUtil.getOrAddCMSAdministratorRoleAndPermissions(
-				objectDefinition.getCompanyId());
-
-			_resourcePermissionLocalService.setResourcePermissions(
-				objectDefinition.getCompanyId(),
-				ObjectDefinition.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(objectDefinition.getObjectDefinitionId()),
-				role.getRoleId(),
-				new String[] {
-					ActionKeys.DELETE, ActionKeys.PERMISSIONS,
-					ActionKeys.UPDATE, ActionKeys.VIEW
-				});
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-	}
 
 	@Override
 	public void onAfterRemove(ObjectDefinition objectDefinition)
@@ -124,9 +72,6 @@ public class ObjectDefinitionModelListener
 		}
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		ObjectDefinitionModelListener.class);
-
 	@Reference
 	private GroupLocalService _groupLocalService;
 
@@ -136,8 +81,5 @@ public class ObjectDefinitionModelListener
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 }

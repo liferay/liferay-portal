@@ -39,6 +39,11 @@ public interface CommerceMediaResolver {
 			long commerceAccountId, long cpAttachmentFileEntryId)
 		throws PortalException;
 
+	public String getThumbnailURL(
+			long commerceAccountId, long cpAttachmentFileEntryId,
+			boolean secure)
+		throws PortalException;
+
 	public String getURL(long commerceAccountId, long cpAttachmentFileEntryId)
 		throws PortalException;
 

@@ -38,6 +38,21 @@ export async function createCustomField(
 	await addCustomFieldPage.addCustomField(customField);
 }
 
+export async function createIdentityBrokerVirtualInstance(
+	browser,
+	page: Page,
+	name = SECONDARY_IDP_NAME,
+	entityId = name
+): Promise<Page> {
+	return await createSamlVirtualInstance(
+		browser,
+		entityId,
+		name,
+		page,
+		'Identity Broker'
+	);
+}
+
 export async function createIdentityProviderVirtualInstance(
 	browser,
 	page: Page,

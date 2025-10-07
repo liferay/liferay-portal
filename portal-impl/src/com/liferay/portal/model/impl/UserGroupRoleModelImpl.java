@@ -142,7 +142,7 @@ public class UserGroupRoleModelImpl
 	public static final long USERGROUPROLEID_COLUMN_BITMASK = 8L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.UserGroupRole"));
 
 	public UserGroupRoleModelImpl() {

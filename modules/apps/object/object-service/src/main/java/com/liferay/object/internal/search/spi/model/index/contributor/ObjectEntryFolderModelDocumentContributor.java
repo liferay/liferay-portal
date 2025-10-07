@@ -36,6 +36,7 @@ public class ObjectEntryFolderModelDocumentContributor
 		document.addKeyword(
 			Field.FOLDER_ID, objectEntryFolder.getParentObjectEntryFolderId());
 		document.addText(Field.NAME, objectEntryFolder.getName());
+		document.addKeyword(Field.STATUS, objectEntryFolder.getStatus());
 		document.addText(Field.TITLE, objectEntryFolder.getName());
 
 		String[] parts = StringUtil.split(

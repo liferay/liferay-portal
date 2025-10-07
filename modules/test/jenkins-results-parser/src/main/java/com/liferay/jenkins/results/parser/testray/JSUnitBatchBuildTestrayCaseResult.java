@@ -12,13 +12,14 @@ import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.TestReport;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
-import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
+import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Michael Hashimoto
@@ -28,15 +29,25 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 	public JSUnitBatchBuildTestrayCaseResult(
 		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport,
-		AxisTestClassGroup axisTestClassGroup,
-		TestClassMethod testClassMethod) {
+		AxisTestClassGroup axisTestClassGroup, TestClass testClass) {
 
 		super(testrayBuild, topLevelBuildReport, axisTestClassGroup);
 
-		_testClassMethod = testClassMethod;
+		_jsUnitModulesTestClass = (JSUnitModulesTestClass)testClass;
+	}
 
-		_jsUnitModulesTestClass =
-			(JSUnitModulesTestClass)testClassMethod.getTestClass();
+	@Override
+	public BuildReport getBuildReport() {
+		if (_jsUnitModulesTestClass.isBuildCachingEnabled()) {
+			DownstreamBuildReport cachedDownstreamBuildReport =
+				_jsUnitModulesTestClass.getCachedDownstreamBuildReport();
+
+			if (cachedDownstreamBuildReport != null) {
+				return cachedDownstreamBuildReport;
+			}
+		}
+
+		return super.getBuildReport();
 	}
 
 	@Override
@@ -53,28 +64,22 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 	@Override
 	public long getDuration() {
-		List<TestClassReport> testClassResults = _getTestClassReports();
+		TestClassReport testClassResult = _getTestClassReport();
 
-		if (testClassResults == null) {
+		if (testClassResult == null) {
 			return 0;
 		}
 
-		long duration = 0;
-
-		for (TestClassReport testClassResult : testClassResults) {
-			duration += testClassResult.getDuration();
-		}
-
-		return duration;
+		return testClassResult.getDuration();
 	}
 
 	@Override
 	public String getErrors() {
 		BuildReport buildReport = getBuildReport();
 
-		List<TestClassReport> testClassResults = _getTestClassReports();
+		TestClassReport testClassResult = _getTestClassReport();
 
-		if ((testClassResults == null) || testClassResults.isEmpty()) {
+		if (testClassResult == null) {
 			if (buildReport == null) {
 				return "Unable to run build on CI";
 			}
@@ -96,57 +101,50 @@ public class JSUnitBatchBuildTestrayCaseResult
 			return "Failed prior to running test";
 		}
 
-		if (!_isTestClassResultsFailing()) {
+		if (!_isTestClassResultsFailing() || !testClassResult.isFailing()) {
 			return null;
 		}
 
 		Map<String, String> errorMessages = new HashMap<>();
 
-		for (TestClassReport testClassResult : testClassResults) {
-			if ((testClassResult == null) || !testClassResult.isFailing()) {
+		for (TestReport testResult : testClassResult.getTestReports()) {
+			if (!testResult.isFailing()) {
 				continue;
 			}
 
-			for (TestReport testResult : testClassResult.getTestReports()) {
-				if (!testResult.isFailing()) {
-					continue;
-				}
+			String errorMessage = testResult.getErrorDetails();
 
-				String errorMessage = testResult.getErrorDetails();
-
-				if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-					errorMessage = buildReport.getFailureMessage();
-				}
-
-				if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-					errorMessage = "Failed for unknown reason";
-				}
-
-				if (errorMessage.contains("\n")) {
-					errorMessage = errorMessage.substring(
-						0, errorMessage.indexOf("\n"));
-				}
-
-				errorMessage = errorMessage.trim();
-
-				if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
-					errorMessage = "Failed for unknown reason";
-				}
-
-				String testName = testResult.getTestName();
-
-				errorMessages.put(
-					testName,
-					JenkinsResultsParserUtil.combine(
-						testName, ": ", errorMessage));
+			if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
+				errorMessage = buildReport.getFailureMessage();
 			}
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
+				errorMessage = "Failed for unknown reason";
+			}
+
+			if (errorMessage.contains("\n")) {
+				errorMessage = errorMessage.substring(
+					0, errorMessage.indexOf("\n"));
+			}
+
+			errorMessage = errorMessage.trim();
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(errorMessage)) {
+				errorMessage = "Failed for unknown reason";
+			}
+
+			String testName = testResult.getTestName();
+
+			errorMessages.put(
+				testName,
+				JenkinsResultsParserUtil.combine(testName, ": ", errorMessage));
 		}
 
 		if (errorMessages.size() > 1) {
 			return JenkinsResultsParserUtil.combine(
-				"Failed tests: ",
+				"Failed tests:\n",
 				JenkinsResultsParserUtil.join(
-					", ", new ArrayList<>(errorMessages.keySet())));
+					"\n", new ArrayList<>(errorMessages.keySet())));
 		}
 		else if (errorMessages.size() == 1) {
 			List<String> values = new ArrayList<>(errorMessages.values());
@@ -159,7 +157,7 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 	@Override
 	public String getName() {
-		return _testClassMethod.getName();
+		return _jsUnitModulesTestClass.getTestTaskName();
 	}
 
 	@Override
@@ -170,9 +168,9 @@ public class JSUnitBatchBuildTestrayCaseResult
 			return Status.UNTESTED;
 		}
 
-		List<TestClassReport> testClassResults = _getTestClassReports();
+		TestClassReport testClassResult = _getTestClassReport();
 
-		if ((testClassResults == null) || testClassResults.isEmpty()) {
+		if (testClassResult == null) {
 			String result = buildReport.getResult();
 
 			if ((result == null) || result.equals("ABORTED") ||
@@ -192,63 +190,53 @@ public class JSUnitBatchBuildTestrayCaseResult
 		return Status.PASSED;
 	}
 
-	private List<TestClassReport> _getTestClassReports() {
-		if (_testClassReports != null) {
-			return _testClassReports;
+	private TestClassReport _getTestClassReport() {
+		if (_testClassReport != null) {
+			return _testClassReport;
 		}
 
-		_testClassReports = new ArrayList<>();
+		if (_jsUnitModulesTestClass.isBuildCachingEnabled()) {
+			TestClassReport cachedTestClassReport =
+				_jsUnitModulesTestClass.getCachedTestClassReport();
+
+			if (cachedTestClassReport != null) {
+				_testClassReport = cachedTestClassReport;
+
+				return _testClassReport;
+			}
+		}
 
 		DownstreamBuildReport downstreamBuildReport =
 			getDownstreamBuildReport();
 
 		if (downstreamBuildReport == null) {
-			return _testClassReports;
+			return _testClassReport;
 		}
-
-		String taskDirectoryName = getName();
-
-		taskDirectoryName = taskDirectoryName.replace(":packageRunTest", "");
 
 		for (TestClassReport testClassResult :
 				downstreamBuildReport.getTestClassReports()) {
 
-			String testResultTaskName = _getTestResultTaskName(testClassResult);
+			if (Objects.equals(testClassResult.getTestClassName(), getName())) {
+				_testClassReport = testClassResult;
 
-			if (testResultTaskName.startsWith(taskDirectoryName)) {
-				_testClassReports.add(testClassResult);
+				return _testClassReport;
 			}
 		}
 
-		return _testClassReports;
-	}
-
-	private String _getTestResultTaskName(TestClassReport testClassReport) {
-		String testClassName = testClassReport.getTestClassName();
-
-		if (testClassName.contains(".modules.")) {
-			testClassName = testClassName.replaceAll(
-				".*\\.modules(\\..+)", "$1");
-		}
-		else {
-			testClassName = ".apps." + testClassName;
-		}
-
-		return testClassName.replaceAll("\\.", ":");
+		return _testClassReport;
 	}
 
 	private boolean _isTestClassResultsFailing() {
-		for (TestClassReport testClassResult : _getTestClassReports()) {
-			if (testClassResult.isFailing()) {
-				return true;
-			}
+		TestClassReport testClassReport = _getTestClassReport();
+
+		if ((testClassReport == null) || testClassReport.isFailing()) {
+			return true;
 		}
 
 		return false;
 	}
 
 	private final JSUnitModulesTestClass _jsUnitModulesTestClass;
-	private final TestClassMethod _testClassMethod;
-	private List<TestClassReport> _testClassReports;
+	private TestClassReport _testClassReport;
 
 }

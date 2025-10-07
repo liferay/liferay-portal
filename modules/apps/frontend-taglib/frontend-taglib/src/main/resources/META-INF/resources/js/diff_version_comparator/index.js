@@ -33,11 +33,14 @@ function Comparator({
 
 	const availableVersions = useMemo(
 		() =>
-			diffVersions.filter(
-				(diffVersion) =>
-					sourceVersion !== diffVersion.version &&
-					targetVersion !== diffVersion.version
-			),
+			diffVersions.filter((diffVersion) => {
+				const diffVersionNumber = parseInt(diffVersion.version, 10);
+
+				return (
+					sourceVersion !== diffVersionNumber &&
+					targetVersion !== diffVersionNumber
+				);
+			}),
 		[diffVersions, sourceVersion, targetVersion]
 	);
 

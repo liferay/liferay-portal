@@ -1,0 +1,18 @@
+[
+	{
+		"active": true,
+		"conditionExpression": "dueStatus != \"AutoApproved\"",
+		"externalReferenceCode": "TRIAL-EXTENSION-REQUEST-EMAIL",
+		"label": {
+			"en_US": "Extension Request Email"
+		},
+		"name": "extensionRequestEmail",
+		"objectActionExecutorKey": "notification",
+		"objectActionTriggerKey": "onAfterAdd",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:TrialExtensionRequest$]",
+		"parameters": {
+			"notificationTemplateExternalReferenceCode": "TRIAL-EXTENSION-REQUEST",
+			"type": "email"
+		}
+	}
+]

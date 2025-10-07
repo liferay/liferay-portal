@@ -6,7 +6,6 @@
 package com.liferay.marketplace.settings.web.internal.configuration.admin.display;
 
 import com.liferay.configuration.admin.display.ConfigurationScreen;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 
 import jakarta.servlet.ServletContext;
 
@@ -24,11 +23,6 @@ public class MarketplaceConfigurationScreen
 	@Override
 	public String getKey() {
 		return "marketplace";
-	}
-
-	@Override
-	public boolean isVisible() {
-		return FeatureFlagManagerUtil.isEnabled("LPD-35941");
 	}
 
 	@Override

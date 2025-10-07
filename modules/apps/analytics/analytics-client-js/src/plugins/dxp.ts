@@ -33,6 +33,8 @@ function dxp(analytics: Analytics) {
 			AnalyticsType.EventId.PageUnloaded,
 			AnalyticsType.ApplicationId.Page,
 			{
+				externalReferenceCode:
+					analytics._getContext().layoutExternalReferenceCode,
 				viewDuration: getDuration(
 					MARK_VIEW_DURATION,
 					MARK_NAVIGATION_START
@@ -49,6 +51,8 @@ function dxp(analytics: Analytics) {
 			AnalyticsType.EventId.PageLoaded,
 			AnalyticsType.ApplicationId.Page,
 			{
+				externalReferenceCode:
+					analytics._getContext().layoutExternalReferenceCode,
 				pageLoadTime: getDuration(
 					MARK_PAGE_LOAD_TIME,
 					MARK_LOAD_EVENT_START,

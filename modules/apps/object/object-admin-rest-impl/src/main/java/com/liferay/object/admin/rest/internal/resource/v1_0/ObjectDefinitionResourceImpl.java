@@ -21,6 +21,7 @@ import com.liferay.object.admin.rest.internal.dto.v1_0.converter.constants.DTOCo
 import com.liferay.object.admin.rest.internal.dto.v1_0.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.admin.rest.internal.dto.v1_0.util.ObjectFieldSettingUtil;
 import com.liferay.object.admin.rest.internal.dto.v1_0.util.ObjectFieldUtil;
+import com.liferay.object.admin.rest.internal.dto.v1_0.util.WorkflowDefinitionLinkUtil;
 import com.liferay.object.admin.rest.internal.odata.entity.v1_0.ObjectDefinitionEntityModel;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectActionResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
@@ -28,6 +29,7 @@ import com.liferay.object.admin.rest.resource.v1_0.ObjectLayoutResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectRelationshipResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectValidationRuleResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectViewResource;
+import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -69,6 +71,7 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
@@ -243,6 +246,23 @@ public class ObjectDefinitionResourceImpl
 		com.liferay.object.model.ObjectDefinition
 			serviceBuilderObjectDefinition;
 
+		List<com.liferay.object.model.ObjectField> objectFields =
+			transformToList(
+				ArrayUtil.filter(
+					objectDefinition.getObjectFields(),
+					objectField ->
+						!StringUtil.equals(
+							objectField.getBusinessTypeAsString(),
+							ObjectFieldConstants.BUSINESS_TYPE_AGGREGATION) &&
+						!StringUtil.equals(
+							objectField.getBusinessTypeAsString(),
+							ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)),
+				objectField -> ObjectFieldUtil.toObjectField(
+					objectDefinition.getDefaultLanguageId(),
+					_listTypeDefinitionLocalService, objectField,
+					_objectFieldLocalService, _objectFieldSettingLocalService,
+					_objectFilterLocalService));
+
 		if (GetterUtil.getBoolean(objectDefinition.getSystem())) {
 			serviceBuilderObjectDefinition =
 				_objectDefinitionService.addSystemObjectDefinition(
@@ -254,6 +274,8 @@ public class ObjectDefinitionResourceImpl
 					objectDefinition.getClassName(),
 					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
 						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch()),
@@ -263,6 +285,10 @@ public class ObjectDefinitionResourceImpl
 							contextUser.getCompanyId(), "LPD-32050")),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryDraft()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					objectDefinition.getFriendlyURLSeparator(),
@@ -281,14 +307,12 @@ public class ObjectDefinitionResourceImpl
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
 						_objectDefinitionSettingLocalService),
-					transformToList(
-						objectDefinition.getObjectFields(),
-						objectField -> ObjectFieldUtil.toObjectField(
-							objectDefinition.getDefaultLanguageId(),
-							_listTypeDefinitionLocalService, objectField,
-							_objectFieldLocalService,
-							_objectFieldSettingLocalService,
-							_objectFilterLocalService)));
+					objectFields,
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
 		else {
 			serviceBuilderObjectDefinition =
@@ -299,6 +323,8 @@ public class ObjectDefinitionResourceImpl
 					objectDefinition.getClassName(),
 					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
 						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch(), true),
@@ -308,6 +334,10 @@ public class ObjectDefinitionResourceImpl
 							contextUser.getCompanyId(), "LPD-32050")),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryDraft()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					objectDefinition.getFriendlyURLSeparator(),
@@ -327,24 +357,12 @@ public class ObjectDefinitionResourceImpl
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
 						_objectDefinitionSettingLocalService),
-					transformToList(
-						ArrayUtil.filter(
-							objectDefinition.getObjectFields(),
-							objectField ->
-								!StringUtil.equals(
-									objectField.getBusinessTypeAsString(),
-									ObjectFieldConstants.
-										BUSINESS_TYPE_AGGREGATION) &&
-								!StringUtil.equals(
-									objectField.getBusinessTypeAsString(),
-									ObjectFieldConstants.
-										BUSINESS_TYPE_RELATIONSHIP)),
-						objectField -> ObjectFieldUtil.toObjectField(
-							objectDefinition.getDefaultLanguageId(),
-							_listTypeDefinitionLocalService, objectField,
-							_objectFieldLocalService,
-							_objectFieldSettingLocalService,
-							_objectFilterLocalService)));
+					objectFields,
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
 
 		if (!Validator.isBlank(objectDefinition.getExternalReferenceCode())) {
@@ -414,6 +432,35 @@ public class ObjectDefinitionResourceImpl
 							_objectFieldLocalService,
 							_objectFieldSettingLocalService,
 							_objectFilterLocalService))) {
+
+			if (aggregationServiceBuilderObjectField.isSystem()) {
+				_objectFieldLocalService.addOrUpdateSystemObjectField(
+					aggregationServiceBuilderObjectField.
+						getExternalReferenceCode(),
+					GuestOrUserUtil.getUserId(),
+					aggregationServiceBuilderObjectField.
+						getListTypeDefinitionId(),
+					serviceBuilderObjectDefinition.getObjectDefinitionId(),
+					aggregationServiceBuilderObjectField.getBusinessType(),
+					aggregationServiceBuilderObjectField.getDBColumnName(),
+					serviceBuilderObjectDefinition.getDBTableName(),
+					aggregationServiceBuilderObjectField.getDBType(),
+					aggregationServiceBuilderObjectField.isIndexed(),
+					aggregationServiceBuilderObjectField.isIndexedAsKeyword(),
+					aggregationServiceBuilderObjectField.getIndexedLanguageId(),
+					aggregationServiceBuilderObjectField.getLabelMap(),
+					aggregationServiceBuilderObjectField.isLocalized(),
+					aggregationServiceBuilderObjectField.getName(),
+					aggregationServiceBuilderObjectField.getReadOnly(),
+					aggregationServiceBuilderObjectField.
+						getReadOnlyConditionExpression(),
+					aggregationServiceBuilderObjectField.isRequired(),
+					aggregationServiceBuilderObjectField.isState(),
+					aggregationServiceBuilderObjectField.
+						getObjectFieldSettings());
+
+				continue;
+			}
 
 			_objectFieldLocalService.addCustomObjectField(
 				aggregationServiceBuilderObjectField.getExternalReferenceCode(),
@@ -543,7 +590,12 @@ public class ObjectDefinitionResourceImpl
 					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
-						_objectDefinitionSettingLocalService));
+						_objectDefinitionSettingLocalService),
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
 		else {
 			serviceBuilderObjectDefinition =
@@ -565,6 +617,8 @@ public class ObjectDefinitionResourceImpl
 						objectDefinition.getEnableCategorization(), true),
 					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
 						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch()),
@@ -577,6 +631,10 @@ public class ObjectDefinitionResourceImpl
 						objectDefinition.getEnableObjectEntryDraft()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryHistory()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					GetterUtil.getString(
@@ -597,7 +655,12 @@ public class ObjectDefinitionResourceImpl
 					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
-						_objectDefinitionSettingLocalService));
+						_objectDefinitionSettingLocalService),
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
 
 		List<ObjectAction> objectActions = ListUtil.fromArray(
@@ -666,7 +729,15 @@ public class ObjectDefinitionResourceImpl
 				objectValidationRule -> GetterUtil.getBoolean(
 					objectValidationRule.getSystem()));
 
-			serviceBuilderObjectActions.removeIf(ObjectActionModel::isSystem);
+			serviceBuilderObjectActions.removeIf(
+				objectAction ->
+					objectAction.isSystem() ||
+					(FeatureFlagManagerUtil.isEnabled(
+						contextCompany.getCompanyId(), "LPD-17564") &&
+					 ArrayUtil.contains(
+						 ObjectActionConstants.
+							 getSubscriptionObjectActionNames(),
+						 objectAction.getName())));
 			serviceBuilderObjectFields.removeIf(ObjectFieldModel::isSystem);
 			serviceBuilderObjectRelationships.removeIf(
 				ObjectRelationshipModel::isSystem);
@@ -909,6 +980,17 @@ public class ObjectDefinitionResourceImpl
 							objectDefinitionId);
 
 				if (serviceBuilderObjectAction != null) {
+					if (FeatureFlagManagerUtil.isEnabled(
+							contextCompany.getCompanyId(), "LPD-17564") &&
+						ArrayUtil.contains(
+							ObjectActionConstants.
+								getSubscriptionObjectActionNames(),
+							objectAction.getName())) {
+
+						objectAction.setActive(
+							serviceBuilderObjectAction::isActive);
+					}
+
 					objectActionResource.putObjectAction(
 						serviceBuilderObjectAction.getObjectActionId(),
 						objectAction);
@@ -1263,9 +1345,9 @@ public class ObjectDefinitionResourceImpl
 				).put(
 					"exportObjectDefinition",
 					() -> {
-						if (serviceBuilderObjectDefinition.
-								isRootDescendantNode() ||
-							serviceBuilderObjectDefinition.isRootNode()) {
+						if (ArrayUtil.isNotEmpty(
+								serviceBuilderObjectDefinition.
+									getRootObjectDefinitionIds())) {
 
 							return null;
 						}
@@ -1424,5 +1506,9 @@ public class ObjectDefinitionResourceImpl
 	@Reference
 	private SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
+
+	@Reference
+	private WorkflowDefinitionLinkLocalService
+		_workflowDefinitionLinkLocalService;
 
 }

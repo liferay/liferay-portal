@@ -60,7 +60,8 @@ const TrialDetails: React.FC<TrialDetailsProps> = ({order}) => {
 				{
 					title: i18n.translate('trial-url'),
 					value:
-						customFields[OrderCustomFields.VIRTUAL_HOST] || 'N/A',
+						customFields[OrderCustomFields.TRIAL_VIRTUAL_HOST] ||
+						'N/A',
 				},
 				{
 					title: i18n.translate('trial-status'),
@@ -85,18 +86,18 @@ const TrialDetails: React.FC<TrialDetailsProps> = ({order}) => {
 				{
 					title: i18n.translate('start-date'),
 					value: getDateOrDefault(
-						customFields[OrderCustomFields.START_DATE]
+						customFields[OrderCustomFields.TRIAL_START_DATE]
 					),
 				},
 				{
 					title: i18n.translate('trial-end-date'),
 					value: getDateOrDefault(
-						customFields[OrderCustomFields.END_DATE]
+						customFields[OrderCustomFields.TRIAL_END_DATE]
 					),
 				},
 				{
 					title: 'Console Invited Email Addresses',
-					value: trialSettings.consoleInviteEmailAddresses.join(
+					value: trialSettings.consoleInviteEmailAddresses?.join(
 						', \n'
 					),
 				},

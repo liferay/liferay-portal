@@ -30,6 +30,17 @@ public class TestReportFactory {
 
 			return new JUnitTestReport(downstreamBuildReport, jsonObject);
 		}
+		else if (batchName.startsWith("js-unit")) {
+			return new JSUnitTestReport(downstreamBuildReport, jsonObject);
+		}
+		else if (batchName.startsWith("modules-compile") ||
+				 batchName.startsWith("modules-semantic-versioning") ||
+				 batchName.startsWith("rest-builder") ||
+				 batchName.startsWith("service-builder") ||
+				 batchName.startsWith("workspaces-compile")) {
+
+			return new ModulesTestReport(downstreamBuildReport, jsonObject);
+		}
 		else if (batchName.startsWith("playwright-js")) {
 			return new PlaywrightTestReport(downstreamBuildReport, jsonObject);
 		}

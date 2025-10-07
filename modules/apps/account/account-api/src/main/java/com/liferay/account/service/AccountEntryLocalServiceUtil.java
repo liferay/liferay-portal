@@ -412,12 +412,12 @@ public class AccountEntryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static AccountEntry getOrAddIncompleteAccountEntry(
+	public static AccountEntry getOrAddEmptyAccountEntry(
 			String externalReferenceCode, long companyId, long userId,
 			String name, String type)
-		throws Exception {
+		throws PortalException {
 
-		return getService().getOrAddIncompleteAccountEntry(
+		return getService().getOrAddEmptyAccountEntry(
 			externalReferenceCode, companyId, userId, name, type);
 	}
 

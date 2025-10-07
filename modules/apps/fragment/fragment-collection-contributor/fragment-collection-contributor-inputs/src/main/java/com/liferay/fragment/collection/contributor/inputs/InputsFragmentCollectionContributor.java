@@ -16,6 +16,7 @@ import jakarta.servlet.ServletContext;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -64,11 +65,13 @@ public class InputsFragmentCollectionContributor
 		if (!FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-17564")) {
 
+			Set<String> excludedKeys = Set.of(
+				"INPUTS-drag-and-drop-upload", "INPUTS-video-previewer-input");
+
 			fragmentEntries = ListUtil.filter(
 				fragmentEntries,
-				fragmentEntry -> !Objects.equals(
-					fragmentEntry.getFragmentEntryKey(),
-					"INPUTS-video-previewer-input"));
+				fragmentEntry -> !excludedKeys.contains(
+					fragmentEntry.getFragmentEntryKey()));
 		}
 
 		return fragmentEntries;

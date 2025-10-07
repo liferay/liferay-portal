@@ -165,7 +165,8 @@ public class BlogPostingImageResourceImpl
 			{
 				setContentUrl(
 					() -> _dlURLHelper.getPreviewURL(
-						fileEntry, fileEntry.getFileVersion(), null, ""));
+						fileEntry, fileEntry.getFileVersion(), null, "", true,
+						false));
 				setContentValue(
 					() -> ContentValueUtil.toContentValue(
 						"contentValue", fileEntry::getContentStream,

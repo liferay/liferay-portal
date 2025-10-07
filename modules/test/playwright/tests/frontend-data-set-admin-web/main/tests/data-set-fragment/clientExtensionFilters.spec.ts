@@ -57,7 +57,7 @@ test('Deployed client extension filter is available in fragment @LPS-190457', as
 	await test.step('Create a new client extension filter', async () => {
 		await dataSetManagerApiHelpers.createDataSetClientExtensionFilter({
 			clientExtensionEntryERC: 'LXC:liferay-sample-fds-filter',
-			dataSetId: dataSet.id,
+			dataSetERC: dataSet.externalReferenceCode,
 			fieldName: DATE_FIELD_NAME,
 			label_i18n: {en_US: filterLabel},
 		});
@@ -109,7 +109,7 @@ test(
 			await dataSetManagerApiHelpers.createDataSetClientExtensionFilter({
 				active: false,
 				clientExtensionEntryERC: 'LXC:liferay-sample-fds-filter',
-				dataSetId: dataSet.id,
+				dataSetERC: dataSet.externalReferenceCode,
 				fieldName: DATE_FIELD_NAME,
 				label_i18n: {en_US: filterLabel},
 			});

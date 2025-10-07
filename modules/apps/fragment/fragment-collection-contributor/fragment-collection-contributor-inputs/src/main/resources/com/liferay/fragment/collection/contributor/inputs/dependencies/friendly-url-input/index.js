@@ -1,5 +1,5 @@
 const inputElement = document.getElementById(
-	`${fragmentNamespace}-friendly-url-input`
+	`${fragmentElementId}-friendly-url-input`
 );
 
 function main() {
@@ -15,7 +15,7 @@ function main() {
 					inputElement,
 					inputName: input.name,
 					localizationInputsContainer: inputElement.parentNode,
-					namespace: fragmentNamespace,
+					namespace: fragmentElementId,
 				});
 
 				inputElement.addEventListener('change', (event) => {

@@ -451,7 +451,8 @@ public interface SharingEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SharingEntry> getSharingEntries(
-		long classNameId, long classPK, int start, int end);
+		long classNameId, long classPK, int start, int end,
+		OrderByComparator<SharingEntry> orderByComparator);
 
 	/**
 	 * Returns all the sharing entries matching the UUID and company.

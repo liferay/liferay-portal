@@ -21,7 +21,7 @@ definition {
 
 		var script = '''
 			import com.liferay.portal.kernel.util.PropsKeys;
-			import com.liferay.portal.util.PropsUtil;
+			import com.liferay.portal.kernel.util.PropsUtil;
 
 			out.println(PropsUtil.get(PropsKeys.${propsKey}));
 		''';

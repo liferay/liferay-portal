@@ -508,6 +508,11 @@ public class LiferayFileEntry extends LiferayModel implements FileEntry {
 	}
 
 	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_dlFileEntry.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	@Override
 	public void setGroupId(long groupId) {
 		_dlFileEntry.setGroupId(groupId);
 	}

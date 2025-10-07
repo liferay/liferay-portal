@@ -124,10 +124,11 @@ public class ContentTemplateResourceTest
 	}
 
 	@Override
-	protected ContentTemplate testGraphQLContentTemplate_addContentTemplate()
+	protected ContentTemplate
+			testGraphQLSiteContentTemplate_addContentTemplate()
 		throws Exception {
 
-		return testGetSiteContentTemplate_addContentTemplate();
+		return _getContentTemplate(testGroup);
 	}
 
 	private DDMForm _deserialize(String content) {

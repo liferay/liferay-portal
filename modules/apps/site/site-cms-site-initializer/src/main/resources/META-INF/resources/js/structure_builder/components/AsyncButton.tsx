@@ -9,7 +9,7 @@ import React, {useState} from 'react';
 
 type Props = {
 	disabled?: boolean;
-	displayType: 'primary' | 'secondary';
+	displayType?: 'primary' | 'secondary';
 	label: string;
 	onClick: () => Promise<void>;
 };
@@ -18,7 +18,7 @@ type Status = 'loading' | 'idle';
 
 export default function AsyncButton({
 	disabled,
-	displayType,
+	displayType = 'primary',
 	label,
 	onClick,
 }: Props) {

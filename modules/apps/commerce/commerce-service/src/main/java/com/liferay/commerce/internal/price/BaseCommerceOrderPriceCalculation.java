@@ -499,7 +499,9 @@ public abstract class BaseCommerceOrderPriceCalculation
 		BigDecimal unitOfMeasureIncrementalOrderQuantity =
 			commerceOrderItem.getUnitOfMeasureIncrementalOrderQuantity();
 
-		if (unitOfMeasureIncrementalOrderQuantity == null) {
+		if ((unitOfMeasureIncrementalOrderQuantity == null) ||
+			unitOfMeasureIncrementalOrderQuantity.equals(BigDecimal.ZERO)) {
+
 			unitOfMeasureIncrementalOrderQuantity = BigDecimal.ONE;
 		}
 

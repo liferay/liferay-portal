@@ -912,6 +912,86 @@ const filterSchema = {
 		] as RendererFields[],
 		name: 'components',
 	},
+	issueResults: {
+		fields: [
+			{
+				isCustomFilter: false,
+				label: i18n.translate('case-name'),
+				name: 'caseToCaseDetails/name',
+				operator: 'contains',
+				type: 'text',
+			},
+			{
+				isCustomFilter: false,
+				label: i18n.translate('test-name'),
+				name: 'name',
+				operator: 'contains',
+				type: 'text',
+			},
+			overrides(baseFilters.priority, {
+				name: 'caseToCaseDetails/priority',
+				removeQuoteMark: true,
+			}),
+			overrides(baseFilters.dueStatus, {
+				isCustomFilter: false,
+				name: 'dueStatus',
+				options: [
+					{
+						label: i18n.translate('blocked'),
+						value: CaseResultStatuses.BLOCKED,
+					},
+					{
+						label: i18n.translate('failed'),
+						value: CaseResultStatuses.FAILED,
+					},
+					{
+						label: i18n.translate('in-progress'),
+						value: CaseResultStatuses.IN_PROGRESS,
+					},
+					{
+						label: i18n.translate('incomplete'),
+						value: CaseResultStatuses.INCOMPLETE,
+					},
+					{
+						label: i18n.translate('passed'),
+						value: CaseResultStatuses.PASSED,
+					},
+					{
+						label: i18n.translate('test-fix'),
+						value: CaseResultStatuses.TEST_FIX,
+					},
+					{
+						label: i18n.translate('untested'),
+						value: CaseResultStatuses.UNTESTED,
+					},
+				],
+			}),
+			overrides(baseFilters.issues, {
+				name: 'caseDetailsToJiraIssues/externalReferenceCode',
+				operator: 'contains',
+			}),
+		] as RendererFields[],
+		name: 'issueResults',
+	},
+	issues: {
+		fields: [
+			{
+				isCustomFilter: false,
+				label: i18n.translate('issue-key'),
+				name: 'externalReferenceCode',
+				operator: 'contains',
+				type: 'text',
+			},
+			{
+				isCustomFilter: false,
+				label: i18n.translate('title'),
+				name: 'title',
+				operator: 'contains',
+				type: 'text',
+			},
+		] as RendererFields[],
+		name: 'issues',
+	},
 	requirementCases: {
 		fields: [
 			baseFilters.priority,

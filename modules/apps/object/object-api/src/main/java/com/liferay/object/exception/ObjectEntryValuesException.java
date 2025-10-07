@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import java.io.Serializable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -256,6 +257,12 @@ public class ObjectEntryValuesException extends PortalException {
 			_objectFieldName = objectFieldName;
 		}
 
+		public InvalidValue(String message, String objectFieldName) {
+			super(message);
+
+			_objectFieldName = objectFieldName;
+		}
+
 		public String getObjectFieldName() {
 			return _objectFieldName;
 		}
@@ -288,6 +295,20 @@ public class ObjectEntryValuesException extends PortalException {
 
 		public MustNotBeDuplicate(String value) {
 			super("Duplicate value " + value);
+		}
+
+	}
+
+	public static class NoSuchRelatedObjectEntry
+		extends ObjectEntryValuesException {
+
+		public NoSuchRelatedObjectEntry(String relationshipObjectFieldName) {
+			super(
+				Collections.singletonList(relationshipObjectFieldName),
+				String.format(
+					"The value for %s does not exist",
+					relationshipObjectFieldName),
+				"the-value-for-x-does-not-exist");
 		}
 
 	}

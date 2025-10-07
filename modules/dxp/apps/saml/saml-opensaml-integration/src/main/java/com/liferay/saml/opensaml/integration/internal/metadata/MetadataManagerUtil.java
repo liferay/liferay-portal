@@ -60,7 +60,17 @@ public class MetadataManagerUtil {
 				PortalUtil.isSecure(httpServletRequest));
 			String localEntityId = localEntityManager.getLocalEntityId();
 
-			if (samlProviderConfigurationHelper.isRoleIdp()) {
+			if (samlProviderConfigurationHelper.isRoleIb()) {
+				return MetadataGeneratorUtil.buildIbEntityDescriptor(
+					portalURL, localEntityId,
+					_isSignAuthnRequest(samlProviderConfigurationHelper),
+					_isWantAuthnRequestSigned(samlProviderConfigurationHelper),
+					_isSignMetadata(samlProviderConfigurationHelper),
+					_getSigningCredential(
+						credentialResolver, localEntityManager),
+					encryptionCredential);
+			}
+			else if (samlProviderConfigurationHelper.isRoleIdp()) {
 				return MetadataGeneratorUtil.buildIdpEntityDescriptor(
 					portalURL, localEntityId,
 					_isWantAuthnRequestSigned(samlProviderConfigurationHelper),

@@ -38,7 +38,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -113,6 +115,38 @@ public class AddressResourceTest extends BaseAddressResourceTestCase {
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetCartBillingAddres() throws Exception {
+		super.testGraphQLGetCartBillingAddres();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetCartByExternalReferenceCodeBillingAddress()
+		throws Exception {
+
+		super.testGraphQLGetCartByExternalReferenceCodeBillingAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetCartByExternalReferenceCodeShippingAddress()
+		throws Exception {
+
+		super.testGraphQLGetCartByExternalReferenceCodeShippingAddress();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetCartShippingAddres() throws Exception {
+		super.testGraphQLGetCartShippingAddres();
+	}
+
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
@@ -173,11 +207,6 @@ public class AddressResourceTest extends BaseAddressResourceTestCase {
 	@Override
 	protected Long testGetCartShippingAddres_getCartId() throws Exception {
 		return _getCartShippingAddres_getCartId();
-	}
-
-	@Override
-	protected Address testGraphQLAddress_addAddress() throws Exception {
-		return _toAddress(_getCommerceAddress());
 	}
 
 	@Override

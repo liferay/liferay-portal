@@ -47,7 +47,7 @@ public class ExportDataDefinitionMVCActionCommandTest {
 
 		String json = StringUtil.read(
 			clazz.getResourceAsStream(
-				"dependencies/valid_data_definition.json"));
+				"dependencies/data_definition_with_valid_fields.json"));
 
 		DataDefinition dataDefinition =
 			DataDefinitionTestUtil.addDataDefinition(

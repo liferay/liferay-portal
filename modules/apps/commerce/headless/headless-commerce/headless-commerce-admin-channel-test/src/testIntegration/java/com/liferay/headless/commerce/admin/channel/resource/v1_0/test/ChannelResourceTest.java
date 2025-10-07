@@ -205,6 +205,13 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 	}
 
 	@Override
+	protected Channel testGraphQLChannel_addChannel(Channel channel)
+		throws Exception {
+
+		return channelResource.postChannel(channel);
+	}
+
+	@Override
 	protected Channel testGraphQLGetAccountAddressChannelChannel_addChannel()
 		throws Exception {
 

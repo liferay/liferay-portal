@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Feature Flag Test Utilities
 Bundle-SymbolicName: com.liferay.feature.flag.test.util
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Export-Package: com.liferay.feature.flag.test.util

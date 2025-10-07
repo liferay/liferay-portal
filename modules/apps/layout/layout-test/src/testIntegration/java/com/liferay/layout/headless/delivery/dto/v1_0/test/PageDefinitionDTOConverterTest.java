@@ -617,7 +617,8 @@ public class PageDefinitionDTOConverterTest {
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
 			_layoutPageTemplateStructureLocalService.
 				updateLayoutPageTemplateStructureData(
-					_group.getGroupId(), _layoutPageTemplateEntry.getPlid(),
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					_layoutPageTemplateEntry.getPlid(),
 					defaultSegmentsExperienceId,
 					StringUtil.replace(_read(fileName), "${", "}", valuesMap));
 

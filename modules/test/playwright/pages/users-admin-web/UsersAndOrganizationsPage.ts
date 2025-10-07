@@ -57,6 +57,10 @@ export class UsersAndOrganizationsPage {
 	readonly assignOrganizationRolesTableRowLink: (
 		roleName: string
 	) => Promise<Locator>;
+	readonly assignOrganizationRolesTableStatus: (
+		roleName: string,
+		status: string
+	) => Promise<Locator>;
 	readonly assignOrganizationRolesUserCell: (
 		userName: string
 	) => Promise<Locator>;
@@ -80,6 +84,7 @@ export class UsersAndOrganizationsPage {
 	readonly assignUsersCheckbox: (userName: string) => Promise<Locator>;
 	readonly assignUsersDoneButton: Locator;
 	readonly clearButton: Locator;
+	readonly commentsInput: Locator;
 	readonly deactivateButton: Locator;
 	readonly deactivateUserMenuItem: Locator;
 	readonly deleteButton: Locator;
@@ -155,6 +160,7 @@ export class UsersAndOrganizationsPage {
 	readonly tableOrderMenuItem: (option: string) => Locator;
 	readonly userIdInput: Locator;
 	readonly usersCheckbox: (userName: string) => Promise<Locator>;
+	readonly usersDataTable: DataTablePage;
 	readonly usersSearchBar: Locator;
 	readonly usersSearchBarButton: Locator;
 	readonly usersTableRow: (
@@ -228,6 +234,20 @@ export class UsersAndOrganizationsPage {
 
 			throw new Error(`Cannot locate role row with name ${roleName}`);
 		};
+		this.assignOrganizationRolesTableStatus = async (
+			roleName: string,
+			status: string
+		) => {
+			const assignOrganizationRolesTableRow =
+				await this.assignOrganizationRolesTableRow(0, roleName);
+
+			if (
+				assignOrganizationRolesTableRow &&
+				assignOrganizationRolesTableRow.row
+			) {
+				return assignOrganizationRolesTableRow.row.getByText(status);
+			}
+		};
 		this.assignOrganizationRolesUserCell = async (userName: string) => {
 			return page.getByRole('cell', {
 				exact: true,
@@ -281,6 +301,7 @@ export class UsersAndOrganizationsPage {
 			name: 'Assign Users',
 		});
 		this.clearButton = page.getByRole('button', {name: 'Clear'});
+		this.commentsInput = page.getByLabel('Characters Maximum:');
 		this.deactivateButton = page.getByRole('button', {name: 'Deactivate'});
 		this.deactivateUserMenuItem = page.getByRole('menuitem', {
 			name: 'Deactivate',
@@ -492,6 +513,12 @@ export class UsersAndOrganizationsPage {
 				return usersTableRow.row.getByRole('checkbox');
 			}
 		};
+		this.usersDataTable = new DataTablePage(
+			page,
+			page.locator(
+				'#_com_liferay_users_admin_web_portlet_UsersAdminPortlet_usersSearchContainer'
+			)
+		);
 		this.usersSearchBar = page.getByPlaceholder('Search for');
 		this.usersSearchBarButton = page.getByRole('button', {
 			name: 'Search for',
@@ -591,7 +618,8 @@ export class UsersAndOrganizationsPage {
 
 	async createUser(
 		apiHelpers: DataApiHelpers,
-		userName = `user${getRandomInt()}`
+		userName = `user${getRandomInt()}`,
+		comment?: string
 	) {
 		await this.goto();
 
@@ -601,6 +629,11 @@ export class UsersAndOrganizationsPage {
 			await this.emailAddressInput.fill(`${userName}@liferay.com`);
 			await this.firstNameInput.fill(userName);
 			await this.lastNameInput.fill(userName);
+
+			if (comment) {
+				await this.commentsInput.fill(comment);
+			}
+
 			await this.saveUserButton.click();
 
 			await waitForAlert(this.page, 'The user was created successfully.');
@@ -738,6 +771,8 @@ export class UsersAndOrganizationsPage {
 	}
 
 	async goToUser(userName: string) {
-		await this.page.getByRole('link', {name: userName}).click();
+		await this.page
+			.getByRole('link', {exact: true, name: userName})
+			.click();
 	}
 }

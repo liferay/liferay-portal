@@ -8,6 +8,7 @@ package com.liferay.project.templates.spring.mvc.portlet;
 import com.liferay.maven.executor.MavenExecutor;
 import com.liferay.project.templates.BaseProjectTemplatesTestCase;
 import com.liferay.project.templates.extensions.util.Validator;
+import com.liferay.project.templates.extensions.util.VersionUtil;
 import com.liferay.project.templates.util.FileTestUtil;
 
 import java.io.File;
@@ -51,6 +52,7 @@ public class ProjectTemplatesSpringPortletMVCTest
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "7.1.10.7"},
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "7.2.10.7"},
 				{"portletmvc4spring", "embedded", "jsp", "dxp", "2024.q1.1"},
+				{"portletmvc4spring", "embedded", "jsp", "dxp", "2025.q3.1"},
 				{"portletmvc4spring", "embedded", "jsp", "portal", "7.3.7"},
 				{"portletmvc4spring", "embedded", "jsp", "portal", "7.4.3.56"},
 				{
@@ -64,6 +66,10 @@ public class ProjectTemplatesSpringPortletMVCTest
 				{
 					"portletmvc4spring", "embedded", "thymeleaf", "dxp",
 					"2024.q1.1"
+				},
+				{
+					"portletmvc4spring", "embedded", "thymeleaf", "dxp",
+					"2025.q3.1"
 				},
 				{
 					"portletmvc4spring", "embedded", "thymeleaf", "portal",
@@ -131,13 +137,31 @@ public class ProjectTemplatesSpringPortletMVCTest
 		testExists(
 			gradleProjectDir,
 			"src/main/webapp/WEB-INF/spring-context/portlet/Sample.xml");
-		testExists(
-			gradleProjectDir,
-			"src/main/java/com/test/controller/UserController.java");
+
+		String userControllerFilePath =
+			"src/main/java/com/test/controller/UserController.java";
+
+		testExists(gradleProjectDir, userControllerFilePath);
+
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testFileUpdatedForJakarta(gradleProjectDir, userControllerFilePath);
+			testFileUpdatedForJakarta(
+				gradleProjectDir, "src/main/java/com/test/dto/User.java");
+			testFileUpdatedForJakarta(
+				gradleProjectDir,
+				"src/main/resources/content/Language.properties");
+		}
 
 		testTemplateWarPortletDTD(gradleProjectDir, _liferayVersion);
 
-		if (_liferayVersion.startsWith("7.0")) {
+		if (VersionUtil.isJakartaCompatibleVersion(_liferayVersion)) {
+			testContains(
+				gradleProjectDir, "src/main/webapp/WEB-INF/web.xml",
+				"version=\"6.0\" xmlns=\"https://jakarta.ee/xml/ns/jakartaee",
+				"xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee " +
+					"https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd");
+		}
+		else if (_liferayVersion.startsWith("7.0")) {
 			testContains(
 				gradleProjectDir, "src/main/webapp/WEB-INF/web.xml",
 				"version=\"3.0\" xmlns=\"http://java.sun.com/xml/ns/javaee");

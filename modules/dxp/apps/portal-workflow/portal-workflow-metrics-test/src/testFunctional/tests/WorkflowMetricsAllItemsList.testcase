@@ -2617,7 +2617,6 @@ definition {
 	@description = "LPS-86652 - Verify that hovering the cursor on the process step, when it contains more than 1 option, the toolip will display a bullet list"
 	@priority = 3
 	test TooltipDisplaysStepsListWhenMultipleItems {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

@@ -4,5 +4,6 @@
 	<source-check>
 		<suppress checks="IllegalTaglibsCheck" files="knowledge-base-web/src/main/resources/META-INF/resources/admin/view_descriptive\.jsp" />
 		<suppress checks="IllegalTaglibsCheck" files="knowledge-base-web/src/main/resources/META-INF/resources/admin/view_table\.jsp" />
+		<suppress checks="JavaLocalServiceImplUserIdUsageCheck" files="knowledge-base-service/src/main/java/com/liferay/knowledge/base/service/impl/KBArticleLocalServiceImpl\.java" />
 	</source-check>
 </suppressions>

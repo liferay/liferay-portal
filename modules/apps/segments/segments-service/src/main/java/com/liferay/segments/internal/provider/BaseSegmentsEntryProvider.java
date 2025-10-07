@@ -227,11 +227,14 @@ public abstract class BaseSegmentsEntryProvider
 
 		String contextFilterString = getFilterString(
 			segmentsEntry, Criteria.Type.CONTEXT);
+		String modelFilterString = getFilterString(
+			segmentsEntry, Criteria.Type.MODEL);
 
 		if (ArrayUtil.contains(
 				(long[])userAttributes.get("segmentsEntryIds"),
 				segmentsEntry.getSegmentsEntryId()) &&
-			Validator.isNull(contextFilterString)) {
+			Validator.isNull(contextFilterString) &&
+			Validator.isNull(modelFilterString)) {
 
 			return true;
 		}
@@ -244,10 +247,8 @@ public abstract class BaseSegmentsEntryProvider
 
 		Criteria.Conjunction contextConjunction = getConjunction(
 			segmentsEntry, Criteria.Type.CONTEXT);
-		String modelFilterString = getFilterString(
-			segmentsEntry, Criteria.Type.MODEL);
 
-		if (context != null) {
+		if ((context != null) && Validator.isNotNull(contextFilterString)) {
 			boolean guestUser = !GetterUtil.getBoolean(
 				context.get(Context.SIGNED_IN), true);
 
@@ -259,28 +260,26 @@ public abstract class BaseSegmentsEntryProvider
 
 			boolean matchesContext = false;
 
-			if (Validator.isNotNull(contextFilterString)) {
-				try {
-					matchesContext = oDataMatcher.matches(
-						contextFilterString, context);
+			try {
+				matchesContext = oDataMatcher.matches(
+					contextFilterString, context);
+			}
+			catch (PortalException portalException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(portalException);
 				}
-				catch (PortalException portalException) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(portalException);
-					}
-				}
+			}
 
-				if (matchesContext &&
-					contextConjunction.equals(Criteria.Conjunction.OR)) {
+			if (matchesContext &&
+				contextConjunction.equals(Criteria.Conjunction.OR)) {
 
-					return true;
-				}
+				return true;
+			}
 
-				if (!matchesContext &&
-					contextConjunction.equals(Criteria.Conjunction.AND)) {
+			if (!matchesContext &&
+				contextConjunction.equals(Criteria.Conjunction.AND)) {
 
-					return false;
-				}
+				return false;
 			}
 
 			if (guestUser) {
@@ -294,8 +293,7 @@ public abstract class BaseSegmentsEntryProvider
 			try {
 				matchesModel = UserSegmentsEntryMembershipChecker.isMember(
 					StringBundler.concat(
-						"(", modelFilterString, ") and (classPK eq '", classPK,
-						"')"),
+						"(", modelFilterString, ") and (classPK eq CLASS_PK)"),
 					userAttributes);
 			}
 			catch (Exception exception) {
@@ -389,12 +387,15 @@ public abstract class BaseSegmentsEntryProvider
 					expandoTable.getTableId(), expandoColumn.getColumnId(),
 					user.getUserId());
 
+				String expandoColumnName = expandoColumn.getName();
+
 				String key = StringBundler.concat(
 					"customField/_", expandoColumn.getColumnId(),
 					StringPool.UNDERLINE,
 					StringUtil.replace(
-						expandoColumn.getName(), CharPool.SPACE,
-						CharPool.UNDERLINE));
+						expandoColumnName.replaceAll(
+							":|;|'|\"", StringPool.BLANK),
+						CharPool.SPACE, CharPool.UNDERLINE));
 
 				if (expandoValue != null) {
 					expandoValues.put(key, expandoValue.getData());

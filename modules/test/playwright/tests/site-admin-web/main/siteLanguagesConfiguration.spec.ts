@@ -10,7 +10,8 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import getRandomString from '../../../utils/getRandomString';
-import {localizationPagesTest} from '../../site-admin-web/main/fixtures/localizationPagesTest';
+import {waitForAlert} from '../../../utils/waitForAlert';
+import {localizationPagesTest} from './fixtures/localizationPagesTest';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -39,11 +40,6 @@ test(
 
 		await localizationInstanceSettingsPage.goto('Language');
 
-		let currentInstanceLanguages =
-			await localizationInstanceSettingsPage.currentLanguages.allInnerTexts();
-
-		currentInstanceLanguages = currentInstanceLanguages[0].split('\n');
-
 		let defaultInstanceLanguage =
 			await localizationInstanceSettingsPage.defaultLanguage.textContent();
 
@@ -52,72 +48,132 @@ test(
 			''
 		);
 
-		for (let i = 0; i < currentInstanceLanguages.length; i++) {
-			await expect
-				.soft(
-					page.getByLabel('Current').getByRole('option', {
-						name: currentInstanceLanguages[i],
-					})
-				)
-				.toBeVisible();
-		}
+		const removedLanguage = 'Spanish (Spain)';
 
-		await siteSettingsLocalizationPage.goto(site.friendlyUrlPath);
+		await page.waitForTimeout(500);
 
-		for (let i = 0; i < currentInstanceLanguages.length; i++) {
-			await expect
-				.soft(siteSettingsLocalizationPage.availableLanguages)
-				.toContainText(currentInstanceLanguages[i]);
-		}
-
-		currentInstanceLanguages = currentInstanceLanguages.filter(
-			(item) => item !== defaultInstanceLanguage
-		);
-
-		await localizationInstanceSettingsPage.goto('Language');
-
-		for (let i = 0; i < currentInstanceLanguages.length; i++) {
-			await page.waitForTimeout(500);
-			await page
-				.getByLabel('Current', {exact: true})
-				.selectOption(currentInstanceLanguages[i]);
-			await page
-				.getByRole('button', {
-					name: 'Move selected items from Current to Available',
-				})
-				.click({force: true});
-		}
+		await page
+			.getByLabel('Current', {exact: true})
+			.selectOption(removedLanguage);
+		await page
+			.getByRole('button', {
+				name: 'Move selected items from Current to Available',
+			})
+			.click({force: true});
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
-		await page.waitForTimeout(500);
+		await waitForAlert(page);
 
 		await siteSettingsLocalizationPage.goto(site.friendlyUrlPath);
 
 		await expect
-			.soft(siteSettingsLocalizationPage.availableLanguages)
-			.toContainText(defaultInstanceLanguage);
+			.soft(
+				siteSettingsLocalizationPage.availableLanguages.getByText(
+					defaultInstanceLanguage
+				)
+			)
+			.toHaveCount(2);
 
-		for (let i = 0; i < currentInstanceLanguages.length; i++) {
-			await expect
-				.soft(siteSettingsLocalizationPage.availableLanguages)
-				.not.toContainText(currentInstanceLanguages[i]);
-		}
+		await expect
+			.soft(
+				siteSettingsLocalizationPage.availableLanguages.getByText(
+					removedLanguage
+				)
+			)
+			.toHaveCount(0);
 
 		await localizationInstanceSettingsPage.goto('Language');
 
-		for (let i = 0; i < currentInstanceLanguages.length; i++) {
-			await page.waitForTimeout(500);
-			await page
-				.getByLabel('Available', {exact: true})
-				.selectOption(currentInstanceLanguages[i]);
-			await page
-				.getByRole('button', {
-					name: 'Move selected items from Available to Current',
-				})
-				.click({force: true});
-		}
+		await page.waitForTimeout(500);
+
+		await page
+			.getByLabel('Available', {exact: true})
+			.selectOption(removedLanguage);
+		await page
+			.getByRole('button', {
+				name: 'Move selected items from Available to Current',
+			})
+			.click({force: true});
 
 		await page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(page);
 	}
 );
+
+test('Add site name translation in site settings', async ({
+	apiHelpers,
+	page,
+	site,
+	siteSettingsPage,
+}) => {
+	await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		title: getRandomString(),
+	});
+
+	await siteSettingsPage.goToSiteSetting(
+		'Site Configuration',
+		null,
+		site.friendlyUrlPath
+	);
+
+	await page.waitForTimeout(300);
+
+	await page
+		.locator(
+			'[id="_com_liferay_site_admin_web_portlet_SiteSettingsPortlet__com_liferay_site_admin_web_portlet_SiteSettingsPortlet_nameMenu"]'
+		)
+		.click();
+
+	await page.getByRole('menuitem', {name: 'Spanish'}).click();
+
+	const localizedSiteName = getRandomString();
+
+	await page.getByLabel('Name').fill(localizedSiteName);
+
+	await page.getByRole('button', {name: 'Save'}).click();
+
+	await waitForAlert(page);
+
+	await page.goto(`/es/web${site.friendlyUrlPath}`);
+
+	await expect(page.getByText(localizedSiteName).first()).toBeVisible();
+
+	await page.goto(`/en/web${site.friendlyUrlPath}`);
+
+	await expect(page.getByText(site.name).first()).toBeVisible();
+});
+
+test('Cannot remove the site default language in instance settings', async ({
+	localizationInstanceSettingsPage,
+	page,
+	site,
+	siteSettingsLocalizationPage,
+}) => {
+	await siteSettingsLocalizationPage.setCustomDefaultLanguage(
+		'Spanish (Spain)',
+		site.friendlyUrlPath
+	);
+
+	await localizationInstanceSettingsPage.goto('Language');
+
+	await page.waitForTimeout(500);
+	await page
+		.getByLabel('Current', {exact: true})
+		.selectOption('Spanish (Spain)');
+	await page
+		.getByRole('button', {
+			name: 'Move selected items from Current to Available',
+		})
+		.click({force: true});
+
+	await page.getByRole('button', {name: 'Save'}).click();
+
+	await waitForAlert(page, 'Your request failed to complete', {
+		type: 'danger',
+	});
+
+	await expect(page.getByText(site.name)).toBeVisible();
+});

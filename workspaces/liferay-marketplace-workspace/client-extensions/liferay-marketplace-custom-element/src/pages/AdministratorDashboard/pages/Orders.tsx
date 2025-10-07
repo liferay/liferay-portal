@@ -7,15 +7,15 @@ import Button from '@clayui/button';
 import Icon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import {Status} from '@clayui/modal/lib/types';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import {formatDistance} from 'date-fns';
-import {useMemo} from 'react';
-import useSWR from 'swr';
+import {Fragment, useMemo} from 'react';
 
 import ListView, {ListViewProps} from '../../../components/ListView';
 import {ManagementToolbarProps} from '../../../components/ListView/components/ManagementToolbar';
 import Page from '../../../components/Page';
-import SearchBuilder from '../../../core/SearchBuilder';
 import {
+	OrderCustomFields,
 	OrderTypes,
 	orderTypeLabel,
 	orderWorkflowDisplayType,
@@ -26,8 +26,7 @@ import {Liferay} from '../../../liferay/liferay';
 import {FilterSchemaOption} from '../../../schema/filters';
 import marketplaceOAuth2 from '../../../services/oauth/Marketplace';
 import CommerceSelectAccount from '../../../services/rest/CommerceSelectAccount';
-import HeadlessCommerceAdminOrder from '../../../services/rest/HeadlessCommerceAdminOrder';
-import {getLastDayOfMonth} from '../../../utils/date';
+import {safeJSONParse} from '../../../utils/util';
 import InfoCard from '../components/InfoCard';
 import useOrderMetrics from '../hooks/useOrderMetrics';
 
@@ -92,9 +91,7 @@ export function AdministratorOrdersListView({
 							}
 						>
 							<Icon className="mr-2" symbol="download" />
-							<span className="d-block text-center">
-								{i18n.translate('export-csv')}
-							</span>
+							<b>{i18n.translate('export')}</b>
 						</Button>
 					);
 				},
@@ -139,7 +136,11 @@ export function AdministratorOrdersListView({
 					{
 						id: 'orderItems',
 						name: i18n.translate('app-name'),
-						render: (orderItems) => orderItems[0]?.name?.en_US,
+						render: (orderItems) => (
+							<span className="text-wrap">
+								{orderItems[0]?.name?.en_US}
+							</span>
+						),
 					},
 					{
 						id: 'account',
@@ -196,10 +197,45 @@ export function AdministratorOrdersListView({
 						),
 					},
 					{
+						id: 'customFields',
+						name: i18n.translate('customer-project'),
+						render: (customFields) => {
+							const projects = safeJSONParse(
+								customFields![
+									OrderCustomFields.KORONEIKI_PROJECT
+								],
+								[]
+							);
+
+							const Wrapper = projects.length
+								? ClayTooltipProvider
+								: Fragment;
+
+							return (
+								<Wrapper>
+									<div
+										data-tooltip-align="bottom"
+										title={projects
+											.map(
+												({name}, index) =>
+													`${projects.length > 1 ? `(${index + 1})` : ''} ${name}`
+											)
+											.join('\n')}
+									>
+										{projects.length ? 'Yes' : 'No'}
+									</div>
+								</Wrapper>
+							);
+						},
+					},
+					{
 						id: 'createDate',
 						name: i18n.translate('created-at'),
 						render: (createDate) => (
-							<span className="ml-2 text-capitalize text-nowrap">
+							<span
+								className="ml-2 text-capitalize text-nowrap"
+								title={createDate}
+							>
 								{formatDistance(
 									new Date(createDate ?? ''),
 									Date.now(),
@@ -216,99 +252,32 @@ export function AdministratorOrdersListView({
 	);
 }
 
-async function getOrders(params = new URLSearchParams()) {
-	const response = await HeadlessCommerceAdminOrder.getOrders(params);
-
-	return response.totalCount;
-}
-
-const baseSearchParams = {
-	fields: 'id',
-	pageSize: '1',
-};
-
-const today = new Date();
-
 export default function Orders() {
-	const {
-		data: [totalOrders = 0, montlyOrders = 0, currentYearOrders = 0] = [],
-	} = useSWR('/administrator/orders/metrics', () =>
-		Promise.all([
-			getOrders(new URLSearchParams(baseSearchParams)),
-			getOrders(
-				new URLSearchParams({
-					...baseSearchParams,
-					filter: new SearchBuilder()
-						.gt(
-							'createDate',
-							new Date(
-								today.getFullYear(),
-								today.getMonth(),
-								1,
-								0,
-								0,
-								0
-							).toISOString()
-						)
-						.and()
-						.lt(
-							'createDate',
-							new Date(
-								today.getFullYear(),
-								today.getMonth(),
-								getLastDayOfMonth(
-									today.getMonth(),
-									today.getFullYear()
-								),
-								23,
-								59,
-								59
-							).toISOString()
-						)
-						.build(),
-				})
-			),
-			getOrders(
-				new URLSearchParams({
-					...baseSearchParams,
-					filter: SearchBuilder.gt(
-						'createDate',
-						new Date(today.getFullYear(), 0, 1).toISOString()
-					),
-				})
-			),
-		])
-	);
-
-	const {data: orders} = useOrderMetrics('week');
+	const {data: metrics} = useOrderMetrics('week');
 
 	const infoCard = useMemo(
 		() => [
 			{
-				growth: orders?.growth ?? 0,
-				growthContext: `+${orders?.lastPeriod ?? 0} this week `,
+				growth: metrics?.growth ?? 0,
+				growthContext: `+${metrics?.lastPeriod ?? 0} this week `,
 				title: 'Total Orders',
-				value: totalOrders,
+				value: metrics?.totalCount,
 			},
 			{
-				growth: orders?.growth ?? 0,
-				growthContext: `+${orders?.lastPeriod ?? 0} this week `,
 				title: 'Monthly Orders',
-				value: montlyOrders,
+				value: metrics?.ordersThisMonth,
 			},
 			{
-				growth: orders?.growth ?? 0,
-				growthContext: `+${orders?.lastPeriod ?? 0} this week `,
 				title: 'Current Year Orders',
-				value: currentYearOrders,
+				value: metrics?.ordersThisYear,
 			},
 		],
 		[
-			currentYearOrders,
-			montlyOrders,
-			orders?.growth,
-			orders?.lastPeriod,
-			totalOrders,
+			metrics?.growth,
+			metrics?.lastPeriod,
+			metrics?.ordersThisMonth,
+			metrics?.ordersThisYear,
+			metrics?.totalCount,
 		]
 	);
 
@@ -316,22 +285,18 @@ export default function Orders() {
 		<>
 			<div className="d-flex flex-column">
 				<div className="d-flex flex-wrap info-container mb-4">
-					{infoCard.map((card, index) => {
-						return (
-							<InfoCard
-								expanded
-								growth={card?.growth ?? 0}
-								growthContext={card?.growthContext ?? 0}
-								key={index}
-								symbol="shopping-cart"
-								title={card.title}
-								value={card.value}
-							/>
-						);
-					})}
+					{infoCard.map((card, index) => (
+						<InfoCard
+							{...card}
+							expanded
+							key={index}
+							symbol="shopping-cart"
+							title={card.title}
+							value={card.value}
+						/>
+					))}
 				</div>
 			</div>
-
 			<Page
 				pageRendererProps={{className: 'border py-2'}}
 				title={i18n.translate('orders')}

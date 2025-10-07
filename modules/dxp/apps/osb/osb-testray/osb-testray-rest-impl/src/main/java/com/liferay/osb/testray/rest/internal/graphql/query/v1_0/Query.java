@@ -10,6 +10,8 @@ import com.liferay.osb.testray.rest.resource.v1_0.CompareRunsResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -124,6 +126,10 @@ public class Query {
 		compareRunsResource.setContextUriInfo(_uriInfo);
 		compareRunsResource.setContextUser(_user);
 		compareRunsResource.setGroupLocalService(_groupLocalService);
+		compareRunsResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		compareRunsResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		compareRunsResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -138,6 +144,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

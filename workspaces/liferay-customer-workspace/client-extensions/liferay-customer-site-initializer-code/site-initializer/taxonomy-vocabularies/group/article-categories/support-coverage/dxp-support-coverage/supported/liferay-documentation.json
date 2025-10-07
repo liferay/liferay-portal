@@ -1,0 +1,10 @@
+{
+	"name": "Liferay Documentation",
+	"name_i18n": {
+		"en_US": "Liferay Documentation",
+		"es-ES": "Documentación de Liferay",
+		"ja-JP": "Liferay ドキュメンテーション",
+		"pt-BR": "Documentação Liferay "
+	},
+	"viewableBy": "Anyone"
+}

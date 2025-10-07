@@ -393,7 +393,7 @@ definition {
 	test CanImportValidAllowedQuantity {
 		property portal.acceptance = "false";
 
-		var allowedOrderQuantities = "1,3,6";
+		var allowedOrderQuantities = "1, 3, 6";
 		var orderIds = ListUtil.newList();
 
 		task ("Given 2 placed orders are created") {
@@ -409,7 +409,7 @@ definition {
 			}
 		}
 
-		task ("And U-Joint Minimum Order Quantity is set to '1,3,6'") {
+		task ("And U-Joint Minimum Order Quantity is set to '1, 3 and 6'") {
 			CommerceJSONProductsAPI._patchCommerceProductConfiguration(
 				allowedOrderQuantities = ${allowedOrderQuantities},
 				productName = "U-Joint");

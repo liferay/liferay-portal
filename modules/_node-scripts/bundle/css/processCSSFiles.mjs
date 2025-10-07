@@ -9,6 +9,7 @@ import path from 'path';
 import rtlcss from 'rtlcss';
 
 import {BUILD_RESOURCES_PATH, SRC_PATH} from '../../util/constants.mjs';
+import calculateFileHash from '../util/calculateFileHash.mjs';
 
 export default async function processCSSFiles() {
 	const cssFiles = await fg(['**/*.css'], {absolute: true, cwd: SRC_PATH});
@@ -54,8 +55,15 @@ async function processCssFile(filePath) {
 
 	await fs.mkdir(path.dirname(outFilePath), {recursive: true});
 
+	const hash = await calculateFileHash(css);
+
+	const finalExt = `.(${hash}).css`;
+
+	const finalOutFilePath = outFilePath.replace(/\.css$/, finalExt);
+	const finalOutRtlFilePath = outRtlFilePath.replace(/\.css$/, finalExt);
+
 	await Promise.all([
-		fs.writeFile(outFilePath, css, 'utf-8'),
-		fs.writeFile(outRtlFilePath, rtlCssContent, 'utf-8'),
+		fs.writeFile(finalOutFilePath, css, 'utf-8'),
+		fs.writeFile(finalOutRtlFilePath, rtlCssContent, 'utf-8'),
 	]);
 }

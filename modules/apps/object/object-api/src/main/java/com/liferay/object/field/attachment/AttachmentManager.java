@@ -25,6 +25,11 @@ public interface AttachmentManager {
 			ServiceContext serviceContext, long userId)
 		throws PortalException;
 
+	public DLFolder getDLFolder(
+			long companyId, long groupId, String portletId,
+			ServiceContext serviceContext, long userId)
+		throws PortalException;
+
 	public long getMaximumFileSize(long objectFieldId, boolean signedIn);
 
 	public FileEntry getOrAddFileEntry(

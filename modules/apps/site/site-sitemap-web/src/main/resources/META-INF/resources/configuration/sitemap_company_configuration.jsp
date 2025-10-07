@@ -73,12 +73,12 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 		<clay:content-col
 			expand="<%= true %>"
 		>
-			<span class="heading-text text-secondary" id="<portlet:namespace />sitesIncludedTitle"><liferay-ui:message key="sites-included-in-the-xml-sitemap" /></span>
+			<span class="heading-text text-secondary" id="<portlet:namespace />sitesIncludedTitle"><liferay-ui:message key="company-sitemap-group-ids" /></span>
 		</clay:content-col>
 
 		<clay:content-col>
 			<clay:button
-				aria-label='<%= LanguageUtil.format(request, "select-x", "sites-included-in-the-xml-sitemap") %>'
+				aria-label='<%= LanguageUtil.format(request, "select-x", "company-sitemap-group-ids") %>'
 				displayType="secondary"
 				id='<%= liferayPortletResponse.getNamespace() + "selectSiteLink" %>'
 				label="select"
@@ -106,7 +106,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			<liferay-ui:search-container
 				compactEmptyResultsMessage="<%= true %>"
 				id="groupsSearchContainer"
-				searchContainer="<%= sitemapCompanyConfigurationDisplayContext.getSearchContainer() %>"
+				searchContainer="<%= sitemapCompanyConfigurationDisplayContext.getGroupSearchContainer() %>"
 			>
 				<liferay-ui:search-container-row
 					className="com.liferay.portal.kernel.model.Group"
@@ -152,6 +152,83 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 								type="button"
 							/>
 						</c:if>
+					</liferay-ui:search-container-column-text>
+				</liferay-ui:search-container-row>
+
+				<liferay-ui:search-iterator
+					markupView="lexicon"
+					paginate="<%= false %>"
+				/>
+			</liferay-ui:search-container>
+		</clay:content-col>
+	</clay:content-row>
+</clay:sheet-section>
+
+<clay:sheet-section
+	aria-labelledby='<%= liferayPortletResponse.getNamespace() + "objectsIncludedTitle" %>'
+	cssClass="c-mb-0"
+	role="group"
+>
+	<clay:content-row
+		containerElement="h3"
+		cssClass="c-mb-3 sheet-subtitle"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<span class="heading-text text-secondary" id="<portlet:namespace />objectsIncludedTitle"><liferay-ui:message key="company-sitemap-object-definition-ids" /></span>
+		</clay:content-col>
+
+		<clay:content-col>
+			<clay:button
+				aria-label='<%= LanguageUtil.format(request, "select-x", "company-sitemap-object-definition-ids") %>'
+				displayType="secondary"
+				id='<%= liferayPortletResponse.getNamespace() + "selectObjectDefinitionLink" %>'
+				label="select"
+				small="<%= true %>"
+				title="select"
+			/>
+		</clay:content-col>
+	</clay:content-row>
+
+	<p class="c-mb-0 c-mt-2 small text-secondary"><liferay-ui:message key="when-an-object-or-a-cms-structure-is-added-to-this-list,-search-engines-will-be-notified-that-it-is-available-for-crawling" /></p>
+
+	<clay:content-row>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<liferay-ui:search-container
+				compactEmptyResultsMessage="<%= true %>"
+				id="objectDefinitionsSearchContainer"
+				searchContainer="<%= sitemapCompanyConfigurationDisplayContext.getObjectDefinitionSearchContainer() %>"
+			>
+				<liferay-ui:search-container-row
+					className="com.liferay.object.model.ObjectDefinition"
+					escapedModel="<%= true %>"
+					keyProperty="objectDefinitionId"
+					modelVar="objectDefinition"
+					rowIdProperty="objectDefinitionId"
+				>
+					<liferay-ui:search-container-column-text
+						name="object-label"
+						truncate="<%= true %>"
+					>
+						<%= HtmlUtil.escape(objectDefinition.getLabel(locale)) %>
+					</liferay-ui:search-container-column-text>
+
+					<liferay-ui:search-container-column-text>
+						<clay:button
+							aria-label='<%= LanguageUtil.format(request, "remove-x", HtmlUtil.escape(objectDefinition.getLabel(locale))) %>'
+							borderless="<%= true %>"
+							cssClass="lfr-portal-tooltip remove-button"
+							data-rowId="<%= objectDefinition.getObjectDefinitionId() %>"
+							displayType=""
+							icon="times-circle"
+							monospaced="<%= true %>"
+							small="<%= true %>"
+							title='<%= LanguageUtil.format(request, "remove-x", HtmlUtil.escape(objectDefinition.getLabel(locale))) %>'
+							type="button"
+						/>
 					</liferay-ui:search-container-column-text>
 				</liferay-ui:search-container-row>
 
@@ -267,7 +344,11 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			HashMapBuilder.<String, Object>put(
 				"groupSelectorURL", sitemapCompanyConfigurationDisplayContext.getGroupSelectorURL()
 			).put(
-				"selectEventName", sitemapCompanyConfigurationDisplayContext.getEventName()
+				"objectDefinitionSelectorURL", sitemapCompanyConfigurationDisplayContext.getObjectDefinitionSelectorURL()
+			).put(
+				"selectGroupEventName", sitemapCompanyConfigurationDisplayContext.getSelectGroupEventName()
+			).put(
+				"selectObjectDefinitionEventName", sitemapCompanyConfigurationDisplayContext.getSelectObjectDefinitionEventName()
 			).build()
 		%>'
 		module="{SitemapCompanyConfiguration} from site-sitemap-web"

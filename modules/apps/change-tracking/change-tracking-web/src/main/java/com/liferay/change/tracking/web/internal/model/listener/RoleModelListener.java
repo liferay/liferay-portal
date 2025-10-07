@@ -46,7 +46,8 @@ public class RoleModelListener extends BaseModelListener<Role> {
 			Role role = _roleLocalService.getRole((Long)classPK);
 
 			if (!ArrayUtil.contains(
-					PublicationsRegularRolesUtil.PUBLICATIONS_REGULAR_ROLES,
+					PublicationsRegularRolesUtil.
+						PUBLICATIONS_REGULAR_ROLE_NAMES,
 					role.getName())) {
 
 				return;

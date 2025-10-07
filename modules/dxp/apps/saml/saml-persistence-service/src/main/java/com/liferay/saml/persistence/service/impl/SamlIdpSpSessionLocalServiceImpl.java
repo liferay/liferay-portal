@@ -57,13 +57,13 @@ public class SamlIdpSpSessionLocalServiceImpl
 
 		SamlPeerBinding samlPeerBinding =
 			_samlPeerBindingLocalService.fetchSamlPeerBinding(
-				user.getCompanyId(), false, nameIdFormat, null, nameIdValue,
-				samlSpEntityId);
+				user.getCompanyId(), samlSpEntityId, false, nameIdFormat, null,
+				nameIdValue);
 
 		if (samlPeerBinding == null) {
 			samlPeerBinding = _samlPeerBindingLocalService.addSamlPeerBinding(
-				user.getUserId(), nameIdFormat, null, null, null, nameIdValue,
-				samlSpEntityId);
+				user.getUserId(), samlSpEntityId, nameIdFormat, null, null,
+				null, nameIdValue);
 		}
 
 		long samlIdpSpSessionId = counterLocalService.increment(

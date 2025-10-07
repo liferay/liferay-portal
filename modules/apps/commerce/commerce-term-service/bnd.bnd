@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Term Service
 Bundle-SymbolicName: com.liferay.commerce.term.service
-Bundle-Version: 1.0.57
+Bundle-Version: 1.0.58
 Liferay-Require-SchemaVersion: 1.1.1
 Liferay-Service: true
 -dsannotations-options: inherit

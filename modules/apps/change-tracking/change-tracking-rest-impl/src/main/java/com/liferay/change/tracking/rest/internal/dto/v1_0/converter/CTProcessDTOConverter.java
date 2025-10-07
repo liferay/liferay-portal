@@ -70,8 +70,12 @@ public class CTProcessDTOConverter
 		};
 	}
 
-	private String _getUserName(long userId) throws Exception {
-		User user = _userLocalService.getUser(userId);
+	private String _getUserName(long userId) {
+		User user = _userLocalService.fetchUser(userId);
+
+		if (user == null) {
+			return StringPool.BLANK;
+		}
 
 		return user.getFullName();
 	}

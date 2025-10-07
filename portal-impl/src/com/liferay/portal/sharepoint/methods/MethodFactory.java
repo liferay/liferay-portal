@@ -9,9 +9,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.InstancePool;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.sharepoint.SharepointException;
 import com.liferay.portal.sharepoint.SharepointRequest;
-import com.liferay.portal.util.PropsUtil;
 
 import java.util.Map;
 

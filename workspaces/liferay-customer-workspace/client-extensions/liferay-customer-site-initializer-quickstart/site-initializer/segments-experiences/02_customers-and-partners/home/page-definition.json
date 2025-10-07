@@ -29,7 +29,7 @@
 						"definition": {
 							"fragment": {
 								"key": "cp-welcome-text",
-								"siteKey": "Customer Portal"
+								"siteKey": "[$GROUP_KEY$]"
 							},
 							"fragmentConfig": {
 							},
@@ -99,8 +99,25 @@
 					{
 						"definition": {
 							"fragment": {
+								"key": "project-card"
+							},
+							"fragmentConfig": {
+							},
+							"fragmentFields": [
+							],
+							"fragmentStyle": {
+								"marginBottom": "4"
+							},
+							"indexed": true
+						},
+						"id": "5bc7c00d-68f0-327a-9c46-6a12f633c649",
+						"type": "Fragment"
+					},
+					{
+						"definition": {
+							"fragment": {
 								"key": "cp-layout",
-								"siteKey": "Customer Portal"
+								"siteKey": "[$GROUP_KEY$]"
 							},
 							"fragmentConfig": {
 								"alignDesktop": "center",
@@ -216,7 +233,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "h5",
@@ -249,7 +266,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "text-paragraph",
@@ -263,7 +280,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Find documentation, tutorials, and guides."
+																		"en_US": "Find documentation, tutorials, and guides.",
+																		"es_ES": "Encuentra documentación, tutoriales y guías.",
+																		"ja_JP": "ドキュメント、チュートリアル、ガイドを検索します。",
+																		"pt_BR": "Encontre documentação, tutoriais e guias."
 																	}
 																}
 															}
@@ -338,7 +358,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "h5",
@@ -352,7 +372,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Security Reports"
+																		"en_US": "Security Reports",
+																		"es_ES": "Informes de seguridad",
+																		"ja_JP": "セキュリティレポート",
+																		"pt_BR": "Relatórios de segurança"
 																	}
 																}
 															}
@@ -371,7 +394,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "text-paragraph",
@@ -385,7 +408,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Latest vulnerability alerts and incident updates."
+																		"en_US": "Latest vulnerability alerts and incident updates.",
+																		"es_ES": "Alertas de vulnerabilidades más recientes y actualizaciones sobre incidencias.",
+																		"ja_JP": "最新の脆弱性アラートとインシデントのアップデート。",
+																		"pt_BR": "Alertas de vulnerabilidades mais recentes e atualizações de incidentes."
 																	}
 																}
 															}
@@ -460,7 +486,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "h5",
@@ -474,7 +500,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Release Notes"
+																		"en_US": "Release Notes",
+																		"es_ES": "Notas de las actualizaciones",
+																		"ja_JP": "リリースノート",
+																		"pt_BR": "Notas de versão"
 																	}
 																}
 															}
@@ -493,7 +522,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "text-paragraph",
@@ -507,7 +536,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Review version highlights and technical details."
+																		"en_US": "Review version highlights and technical details.",
+																		"es_ES": "Revisa los detalles técnicos y aspectos destacados de la versión.",
+																		"ja_JP": "バージョンのハイライトと技術的な詳細を確認する。",
+																		"pt_BR": "Revise os destaques da versão e os detalhes técnicos."
 																	}
 																}
 															}
@@ -582,7 +614,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "h5",
@@ -596,7 +628,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "My Tickets"
+																		"en_US": "My Tickets",
+																		"es_ES": "Mis tickets",
+																		"ja_JP": "マイチケット",
+																		"pt_BR": "Meus tickets"
 																	}
 																}
 															}
@@ -615,7 +650,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "text-paragraph",
@@ -629,7 +664,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Track open and closed support requests."
+																		"en_US": "Track open and closed support requests.",
+																		"es_ES": "Haz seguimiento de tus peticiones a soporte abiertas o cerradas.",
+																		"ja_JP": "オープンおよびクローズ済みのサポートリクエストを追跡する。",
+																		"pt_BR": "Acompanhe solicitações de suporte abertas e encerradas."
 																	}
 																}
 															}
@@ -704,7 +742,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "h5",
@@ -718,7 +756,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Submit a Ticket"
+																		"en_US": "Submit a Ticket",
+																		"es_ES": "Crea un ticket",
+																		"ja_JP": "チケットを作成する",
+																		"pt_BR": "Enviar um chamado"
 																	}
 																}
 															}
@@ -737,7 +778,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-text",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"textType": "text-paragraph",
@@ -751,7 +792,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Need help? Log an issue or ask a question."
+																		"en_US": "Need help? Log an issue or ask a question.",
+																		"es_ES": "¿Necesitas ayuda? Registra un problema o haz una pregunta.",
+																		"ja_JP": "お困りですか？ 問題を記録したり、質問をする。",
+																		"pt_BR": "Precisa de ajuda? Registre um problema ou faça uma pergunta."
 																	}
 																}
 															}
@@ -774,8 +818,363 @@
 					{
 						"definition": {
 							"fragmentStyle": {
+								"marginBottom": "4"
+							},
+							"indexed": true,
+							"layout": {
+								"contentDisplay": "FlexRow",
+								"justify": "SpaceBetween",
+								"marginBottom": 2
+							}
+						},
+						"id": "52e9c9ec-c19d-183f-86a4-54d02ec73b93",
+						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "cp-text",
+										"siteKey": "Customer Portal"
+									},
+									"fragmentConfig": {
+										"textType": "h2",
+										"truncateText": false
+									},
+									"fragmentFields": [
+										{
+											"id": "element-text",
+											"value": {
+												"fragmentLink": {
+												},
+												"text": {
+													"value_i18n": {
+														"en_US": "Announcements",
+														"es_ES": "Anuncios",
+														"ja_JP": "アナウンスメント",
+														"pt_BR": "Avisos"
+													}
+												}
+											}
+										}
+									],
+									"indexed": true
+								},
+								"id": "66b06396-acae-e109-a95b-104f81d1abd3",
+								"type": "Fragment"
+							},
+							{
+								"definition": {
+									"fragment": {
+										"key": "cp-button",
+										"siteKey": "Customer Portal"
+									},
+									"fragmentConfig": {
+										"iconLeft": false,
+										"iconRight": true,
+										"inverted": false,
+										"size": "small",
+										"style": "primary",
+										"type": "solid",
+										"url": {
+											"en_US": {
+												"layout": {
+													"groupId": "[$GROUP_ID$]",
+													"layoutUuid": "4ff091a3-fb4d-ee7e-36cb-e9c537587a6c",
+													"privateLayout": false,
+													"title": "Announcements"
+												}
+											}
+										}
+									},
+									"fragmentFields": [
+										{
+											"id": "button-text",
+											"value": {
+												"fragmentLink": {
+												},
+												"text": {
+													"value_i18n": {
+														"en_US": "View all",
+														"es_ES": "Ver todos",
+														"ja_JP": "全てを見る",
+														"pt_BR": "Ver tudo"
+													}
+												}
+											}
+										},
+										{
+											"id": "button-icon-right",
+											"value": {
+												"html": {
+													"value_i18n": {
+													}
+												}
+											}
+										}
+									],
+									"indexed": true
+								},
+								"id": "b1912036-4e26-ed6b-bdfd-b292103ad75e",
+								"type": "Fragment"
+							}
+						],
+						"type": "Section"
+					},
+					{
+						"definition": {
+							"collectionConfig": {
+								"collectionReference": {
+									"className": "com.liferay.asset.internal.info.collection.provider.RecentContentInfoCollectionProvider"
+								},
+								"collectionType": "CollectionProvider"
+							},
+							"collectionViewports": [
+								{
+									"collectionViewportDefinition": {
+										"numberOfColumns": 1
+									},
+									"id": "landscapeMobile"
+								},
+								{
+									"collectionViewportDefinition": {
+										"numberOfColumns": 1
+									},
+									"id": "portraitMobile"
+								},
+								{
+									"collectionViewportDefinition": {
+										"numberOfColumns": 1
+									},
+									"id": "tablet"
+								}
+							],
+							"displayAllItems": false,
+							"displayAllPages": true,
+							"emptyCollectionConfig": {
+								"displayMessage": true
+							},
+							"listItemStyle": "",
+							"listStyle": "",
+							"numberOfColumns": 1,
+							"numberOfItems": 4,
+							"numberOfItemsPerPage": 4,
+							"numberOfPages": 5,
+							"paginationType": "None",
+							"showAllItems": false,
+							"templateKey": ""
+						},
+						"id": "7db02636-0184-6be2-b9b5-f764396a8da9",
+						"pageElements": [
+							{
+								"definition": {
+									"collectionItemConfig": {
+									}
+								},
+								"id": "3a3181d6-dc81-c518-1c14-896b40afe9ad",
+								"pageElements": [
+									{
+										"definition": {
+											"customCSS": ".[$FRAGMENT_CLASS$]:hover {\n\toutline: 2px solid var(--color-action-primary-hover);\n\toutline-offset: 2px;\n}",
+											"fragmentLink": {
+												"href": {
+													"mapping": {
+														"fieldKey": "AssetEntry_displayPageURL",
+														"itemReference": {
+															"contextSource": "CollectionItem"
+														}
+													}
+												}
+											},
+											"fragmentStyle": {
+												"backgroundColor": "#F1F5FB",
+												"borderRadius": "borderRadiusLg",
+												"marginBottom": "3",
+												"marginLeft": "1",
+												"marginRight": "1",
+												"marginTop": "1",
+												"paddingBottom": "4",
+												"paddingLeft": "4",
+												"paddingRight": "4",
+												"paddingTop": "4"
+											},
+											"indexed": true,
+											"layout": {
+												"align": "End",
+												"contentDisplay": "FlexRow",
+												"justify": "SpaceBetween",
+												"marginBottom": 1,
+												"paddingBottom": 2,
+												"paddingLeft": 2,
+												"paddingRight": 2,
+												"paddingTop": 2
+											}
+										},
+										"id": "a61fdd24-b5ef-27c3-3823-43a5d678f577",
+										"pageElements": [
+											{
+												"definition": {
+													"fragmentStyle": {
+														"backgroundColor": ""
+													},
+													"indexed": true,
+													"layout": {
+													}
+												},
+												"id": "74b72aeb-6c1a-86b8-f190-a713d0b5240b",
+												"pageElements": [
+													{
+														"definition": {
+															"fragment": {
+																"key": "BASIC_COMPONENT-heading"
+															},
+															"fragmentConfig": {
+																"headingLevel": "h5"
+															},
+															"fragmentFields": [
+																{
+																	"id": "element-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"mapping": {
+																				"fieldKey": "AssetEntry_title",
+																				"itemReference": {
+																					"contextSource": "CollectionItem"
+																				}
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"id": "87948ea1-99e5-f939-fd5f-76d017d737e8",
+														"type": "Fragment"
+													},
+													{
+														"definition": {
+															"fragment": {
+																"key": "cp-text",
+																"siteKey": "Customer Portal"
+															},
+															"fragmentConfig": {
+																"textType": "text-paragraph",
+																"truncateText": true
+															},
+															"fragmentFields": [
+																{
+																	"id": "element-text",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"mapping": {
+																				"fieldKey": "AssetEntry_description",
+																				"itemReference": {
+																					"contextSource": "CollectionItem"
+																				}
+																			}
+																		}
+																	}
+																}
+															],
+															"indexed": true
+														},
+														"id": "4aded0e3-e7e1-2beb-9d8c-6f60f3312e58",
+														"type": "Fragment"
+													},
+													{
+														"definition": {
+															"fragment": {
+																"key": "BASIC_COMPONENT-date"
+															},
+															"fragmentConfig": {
+															},
+															"fragmentFields": [
+																{
+																	"id": "element-date",
+																	"value": {
+																		"fragmentLink": {
+																		},
+																		"text": {
+																			"mapping": {
+																				"fieldKey": "AssetEntry_createDate",
+																				"itemReference": {
+																					"contextSource": "CollectionItem"
+																				}
+																			}
+																		}
+																	}
+																}
+															],
+															"fragmentStyle": {
+																"fontWeight": "fontWeightBold"
+															},
+															"indexed": true
+														},
+														"id": "c74926cb-a003-b166-9ad8-bf7fa9609a27",
+														"type": "Fragment"
+													}
+												],
+												"type": "Section"
+											},
+											{
+												"definition": {
+													"fragment": {
+														"key": "cp-text",
+														"siteKey": "Customer Portal"
+													},
+													"fragmentConfig": {
+														"textType": "text-link-md",
+														"truncateText": false
+													},
+													"fragmentFields": [
+														{
+															"id": "element-text",
+															"value": {
+																"fragmentLink": {
+																	"value": {
+																		"href": {
+																			"mapping": {
+																				"fieldKey": "LayoutPageTemplateEntry_38235",
+																				"itemReference": {
+																					"contextSource": "CollectionItem"
+																				}
+																			}
+																		}
+																	}
+																},
+																"text": {
+																	"value_i18n": {
+																		"en_US": "Read more&nbsp;→",
+																		"es_ES": "Lee más&nbsp;→",
+																		"ja_JP": "さらに読む&nbsp;→",
+																		"pt_BR": "Ler mais&nbsp;→"
+																	}
+																}
+															}
+														}
+													],
+													"indexed": true
+												},
+												"id": "356ce347-0b50-179b-48f2-d80ec82c99a2",
+												"type": "Fragment"
+											}
+										],
+										"type": "Section"
+									}
+								],
+								"type": "CollectionItem"
+							}
+						],
+						"type": "Collection"
+					},
+					{
+						"definition": {
+							"fragmentStyle": {
 								"backgroundColor": "colorBrandPrimary",
 								"borderRadius": "borderRadiusLg",
+								"marginTop": "5",
 								"paddingBottom": "3",
 								"paddingLeft": "3",
 								"paddingRight": "3",
@@ -784,6 +1183,7 @@
 							},
 							"indexed": true,
 							"layout": {
+								"marginTop": 4,
 								"paddingBottom": 1,
 								"paddingLeft": 1,
 								"paddingRight": 1,
@@ -796,7 +1196,7 @@
 								"definition": {
 									"fragment": {
 										"key": "cp-layout",
-										"siteKey": "Customer Portal"
+										"siteKey": "[$GROUP_KEY$]"
 									},
 									"fragmentConfig": {
 										"alignDesktop": "center",
@@ -884,7 +1284,7 @@
 														"definition": {
 															"fragment": {
 																"key": "cp-text",
-																"siteKey": "Customer Portal"
+																"siteKey": "[$GROUP_KEY$]"
 															},
 															"fragmentConfig": {
 																"textType": "text-paragraph-lg",
@@ -898,7 +1298,10 @@
 																		},
 																		"text": {
 																			"value_i18n": {
-																				"en_US": "Get the latest updates on products, security, and system improvements."
+																				"en_US": "Get the latest updates on products, security, and system improvements.",
+																				"es_ES": "Recibe las últimas actualizaciones sobre productos, seguridad y mejoras de sistema.",
+																				"ja_JP": "製品、セキュリティ、システム改善に関する最新情報を入手できます。",
+																				"pt_BR": "Receba as últimas atualizações sobre produtos, segurança e melhorias do sistema."
 																			}
 																		}
 																	}
@@ -916,7 +1319,7 @@
 												"definition": {
 													"fragment": {
 														"key": "cp-button",
-														"siteKey": "Customer Portal"
+														"siteKey": "[$GROUP_KEY$]"
 													},
 													"fragmentConfig": {
 														"iconLeft": true,
@@ -925,7 +1328,11 @@
 														"size": "medium",
 														"style": "neutral",
 														"type": "ghost",
-														"url": ""
+														"url": {
+															"en_US": {
+																"href": "https://www.subscribepage.com/liferay"
+															}
+														}
 													},
 													"fragmentFields": [
 														{
@@ -935,7 +1342,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Subscribe"
+																		"en_US": "Subscribe",
+																		"es_ES": "Suscríbete",
+																		"ja_JP": "サブスクライブ",
+																		"pt_BR": "Inscrever-se"
 																	}
 																}
 															}
@@ -947,7 +1357,10 @@
 																},
 																"text": {
 																	"value_i18n": {
-																		"en_US": "Subscribe"
+																		"en_US": "Subscribe",
+																		"es_ES": "Suscríbete",
+																		"ja_JP": "サブスクライブ",
+																		"pt_BR": "Inscrever-se"
 																	}
 																}
 															}

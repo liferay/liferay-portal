@@ -15,6 +15,7 @@ export class ApplicationsMenuPage {
 	private readonly announcementsItem: Locator;
 	private readonly apiBuilderMenuItem: Locator;
 	readonly applicationsMenuTabButton: Locator;
+	private readonly appManagerMenuItem: Locator;
 	private readonly auditItem: Locator;
 	private readonly blueprintsItem: Locator;
 	private readonly clientExtensionsLink: Locator;
@@ -23,6 +24,7 @@ export class ApplicationsMenuPage {
 	private readonly commerceCurrenciesMenuItem: Locator;
 	private readonly commerceDiscountsMenuItem: Locator;
 	private readonly commerceHealthCheckMenuItem: Locator;
+	private readonly commerceInventoryMenuItem: Locator;
 	private readonly commerceOrdersMenuItem: Locator;
 	private readonly commerceOrderTypesMenuItem: Locator;
 	private readonly commercePanelButton: Locator;
@@ -45,6 +47,7 @@ export class ApplicationsMenuPage {
 	readonly importMenuItem: Locator;
 	private readonly instanceSettingsMenuItem: Locator;
 	private readonly jobSchedulerMenuItem: Locator;
+	private readonly licenseManagerMenuItem: Locator;
 	private readonly metricsItem: Locator;
 	private readonly oAuth2Administration: Locator;
 	private readonly objectsMenuItem: Locator;
@@ -96,6 +99,10 @@ export class ApplicationsMenuPage {
 		this.applicationsMenuTabButton = page.getByRole('tab', {
 			name: 'Applications',
 		});
+		this.appManagerMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'App Manager',
+		});
 		this.auditItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Audit',
@@ -126,6 +133,10 @@ export class ApplicationsMenuPage {
 		this.commerceHealthCheckMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Health Check',
+		});
+		this.commerceInventoryMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Inventory',
 		});
 		this.commerceOrdersMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -212,6 +223,10 @@ export class ApplicationsMenuPage {
 		this.jobSchedulerMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Job Scheduler',
+		});
+		this.licenseManagerMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'License Manager',
 		});
 		this.metricsItem = page.getByRole('menuitem', {
 			exact: true,
@@ -365,6 +380,11 @@ export class ApplicationsMenuPage {
 		await this.applicationsMenuTabButton.click();
 	}
 
+	async goToAppManager() {
+		await this.goToControlPanel();
+		await this.appManagerMenuItem.click();
+	}
+
 	async goToAudit() {
 		await this.goto();
 		await this.controlPanelButton.click();
@@ -404,6 +424,11 @@ export class ApplicationsMenuPage {
 	async goToCommerceHealthCheck() {
 		await this.goToCommercePanel();
 		await this.commerceHealthCheckMenuItem.click();
+	}
+
+	async goToCommerceInventory(checkTabVisibility = true) {
+		await this.goToCommercePanel(checkTabVisibility);
+		await this.commerceInventoryMenuItem.click();
 	}
 
 	async goToCommerceOrders(checkTabVisibility = true) {
@@ -532,6 +557,11 @@ export class ApplicationsMenuPage {
 	async goToJobScheduler() {
 		await this.goToControlPanel();
 		await this.jobSchedulerMenuItem.click();
+	}
+
+	async goToLicenseManager() {
+		await this.goToControlPanel();
+		await this.licenseManagerMenuItem.click();
 	}
 
 	async goToMetrics() {

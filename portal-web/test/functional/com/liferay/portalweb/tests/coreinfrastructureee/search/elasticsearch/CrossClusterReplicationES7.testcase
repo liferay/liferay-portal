@@ -419,6 +419,7 @@ definition {
 
 	@priority = 3
 	test CreateBlogsEntryWithNewWorkflow {
+		property portal.acceptance = "quarantine";
 		property portal.upstream = "false";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";

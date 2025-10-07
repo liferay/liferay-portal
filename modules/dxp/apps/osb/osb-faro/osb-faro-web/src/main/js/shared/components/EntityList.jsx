@@ -8,7 +8,7 @@ import omitDefinedProps from 'shared/util/omitDefinedProps';
 import React from 'react';
 import Sticker from './Sticker';
 import TextTruncate from './TextTruncate';
-import {EntityTypes, SegmentTypes} from '../util/constants';
+import {EntityTypes} from '../util/constants';
 import {getDataSourceLangKey} from 'shared/util/lang';
 import {getRouteName, Routes, toRoute} from 'shared/util/router';
 import {LIFERAY_SITE_TYPE} from 'shared/util/data-sources';
@@ -77,7 +77,7 @@ class EntityListItem extends React.Component {
 	render() {
 		const {item} = this.props;
 
-		const {name, segmentType, type} = item;
+		const {name, type} = item;
 
 		return (
 			<>
@@ -85,11 +85,7 @@ class EntityListItem extends React.Component {
 					{type === EntityTypes.IndividualsSegment ? (
 						<Sticker
 							display='primary'
-							symbol={
-								segmentType === SegmentTypes.Static
-									? 'individual_static_segment'
-									: 'individual_dynamic_segment'
-							}
+							symbol='individual_dynamic_segment'
 						/>
 					) : (
 						<Avatar

@@ -7,6 +7,7 @@ package com.liferay.layout.page.template.model.impl;
 
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -15,6 +16,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 
 import java.util.Date;
 
@@ -201,6 +205,14 @@ public class LayoutPageTemplateStructureRelCacheModel
 
 		layoutPageTemplateStructureRelImpl.resetOriginalValues();
 
+		try {
+			_dataJSONObjectMethodHandle.invokeExact(
+				layoutPageTemplateStructureRelImpl, dataJSONObject);
+		}
+		catch (Throwable throwable) {
+			ReflectionUtil.throwException(throwable);
+		}
+
 		return layoutPageTemplateStructureRelImpl;
 	}
 
@@ -235,6 +247,9 @@ public class LayoutPageTemplateStructureRelCacheModel
 		statusByUserId = objectInput.readLong();
 		statusByUserName = objectInput.readUTF();
 		statusDate = objectInput.readLong();
+
+		dataJSONObject =
+			(com.liferay.portal.kernel.json.JSONObject)objectInput.readObject();
 	}
 
 	@Override
@@ -293,6 +308,8 @@ public class LayoutPageTemplateStructureRelCacheModel
 		}
 
 		objectOutput.writeLong(statusDate);
+
+		objectOutput.writeObject(dataJSONObject);
 	}
 
 	public long mvccVersion;
@@ -313,5 +330,21 @@ public class LayoutPageTemplateStructureRelCacheModel
 	public long statusByUserId;
 	public String statusByUserName;
 	public long statusDate;
+	public volatile com.liferay.portal.kernel.json.JSONObject dataJSONObject;
+
+	private static final MethodHandle _dataJSONObjectMethodHandle;
+
+	static {
+		MethodHandles.Lookup lookup = ReflectionUtil.getImplLookup();
+
+		try {
+			_dataJSONObjectMethodHandle = lookup.findSetter(
+				LayoutPageTemplateStructureRelImpl.class, "_dataJSONObject",
+				com.liferay.portal.kernel.json.JSONObject.class);
+		}
+		catch (ReflectiveOperationException reflectiveOperationException) {
+			throw new ExceptionInInitializerError(reflectiveOperationException);
+		}
+	}
 
 }

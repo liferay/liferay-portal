@@ -5,13 +5,32 @@ apply plugin: "com.liferay.patcher"
 task deployJar(type: Copy)
 task patch(type: PatchTask)
 
+copyPatchOriginalLibClasses {
+	doLast {
+		File file = file("classes/org/objectweb/asm")
+
+		if (file.exists()) {
+			delete(file)
+		}
+	}
+}
+
 dependencies {
+	compileInclude group: "org.ow2.asm", name: "asm", version: "9.7"
+	compileInclude group: "org.ow2.asm", name: "asm-analysis", version: "9.7"
+	compileInclude group: "org.ow2.asm", name: "asm-commons", version: "9.7"
+	compileInclude group: "org.ow2.asm", name: "asm-tree", version: "9.7"
+	compileInclude group: "org.ow2.asm", name: "asm-util", version: "9.7"
 	compileOnly group: "org.apache.aries.spifly", name: "org.apache.aries.spifly.dynamic.framework.extension", version: "1.2.3"
 	compileOnly group: "org.osgi", name: "osgi.core", transitive: false, version: "6.0.0"
 }
 
 jarSources {
 	mustRunAfter patch
+}
+
+liferayOSGi {
+	expandCompileInclude = true
 }
 
 patch {

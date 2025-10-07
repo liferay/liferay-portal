@@ -6,7 +6,6 @@
 package com.liferay.portal.workflow.kaleo.runtime.internal.notification.recipient;
 
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.workflow.kaleo.definition.NotificationReceptionType;
 import com.liferay.portal.workflow.kaleo.model.KaleoNotificationRecipient;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
@@ -85,15 +84,6 @@ public class AssigneeNotificationRecipientBuilder
 			if (assigneeClassName.equals(User.class.getName())) {
 				notificationRecipientBuilder =
 					_userNotificationRecipientBuilder;
-
-				ServiceContext serviceContext =
-					executionContext.getServiceContext();
-
-				if (serviceContext.getUserId() ==
-						kaleoTaskAssignmentInstance.getAssigneeClassPK()) {
-
-					continue;
-				}
 			}
 
 			notificationRecipientBuilder.processKaleoTaskAssignmentInstance(

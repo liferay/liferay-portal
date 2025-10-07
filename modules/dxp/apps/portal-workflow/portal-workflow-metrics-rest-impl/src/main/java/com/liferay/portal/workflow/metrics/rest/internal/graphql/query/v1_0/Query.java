@@ -8,6 +8,8 @@ package com.liferay.portal.workflow.metrics.rest.internal.graphql.query.v1_0;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -1386,6 +1388,10 @@ public class Query {
 		calendarResource.setContextUriInfo(_uriInfo);
 		calendarResource.setContextUser(_user);
 		calendarResource.setGroupLocalService(_groupLocalService);
+		calendarResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		calendarResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		calendarResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1402,6 +1408,10 @@ public class Query {
 		histogramMetricResource.setContextUriInfo(_uriInfo);
 		histogramMetricResource.setContextUser(_user);
 		histogramMetricResource.setGroupLocalService(_groupLocalService);
+		histogramMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		histogramMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		histogramMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1415,6 +1425,10 @@ public class Query {
 		indexResource.setContextUriInfo(_uriInfo);
 		indexResource.setContextUser(_user);
 		indexResource.setGroupLocalService(_groupLocalService);
+		indexResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		indexResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		indexResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1428,6 +1442,10 @@ public class Query {
 		instanceResource.setContextUriInfo(_uriInfo);
 		instanceResource.setContextUser(_user);
 		instanceResource.setGroupLocalService(_groupLocalService);
+		instanceResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		instanceResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		instanceResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1441,6 +1459,9 @@ public class Query {
 		nodeResource.setContextUriInfo(_uriInfo);
 		nodeResource.setContextUser(_user);
 		nodeResource.setGroupLocalService(_groupLocalService);
+		nodeResource.setResourceActionLocalService(_resourceActionLocalService);
+		nodeResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		nodeResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1454,6 +1475,10 @@ public class Query {
 		nodeMetricResource.setContextUriInfo(_uriInfo);
 		nodeMetricResource.setContextUser(_user);
 		nodeMetricResource.setGroupLocalService(_groupLocalService);
+		nodeMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		nodeMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		nodeMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1467,6 +1492,10 @@ public class Query {
 		processResource.setContextUriInfo(_uriInfo);
 		processResource.setContextUser(_user);
 		processResource.setGroupLocalService(_groupLocalService);
+		processResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		processResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		processResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1482,6 +1511,10 @@ public class Query {
 		processMetricResource.setContextUriInfo(_uriInfo);
 		processMetricResource.setContextUser(_user);
 		processMetricResource.setGroupLocalService(_groupLocalService);
+		processMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		processMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		processMetricResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1498,6 +1531,10 @@ public class Query {
 		processVersionResource.setContextUriInfo(_uriInfo);
 		processVersionResource.setContextUser(_user);
 		processVersionResource.setGroupLocalService(_groupLocalService);
+		processVersionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		processVersionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		processVersionResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1513,6 +1550,10 @@ public class Query {
 		reindexStatusResource.setContextUriInfo(_uriInfo);
 		reindexStatusResource.setContextUser(_user);
 		reindexStatusResource.setGroupLocalService(_groupLocalService);
+		reindexStatusResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		reindexStatusResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		reindexStatusResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1526,6 +1567,9 @@ public class Query {
 		roleResource.setContextUriInfo(_uriInfo);
 		roleResource.setContextUser(_user);
 		roleResource.setGroupLocalService(_groupLocalService);
+		roleResource.setResourceActionLocalService(_resourceActionLocalService);
+		roleResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		roleResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1539,6 +1583,9 @@ public class Query {
 		slaResource.setContextUriInfo(_uriInfo);
 		slaResource.setContextUser(_user);
 		slaResource.setGroupLocalService(_groupLocalService);
+		slaResource.setResourceActionLocalService(_resourceActionLocalService);
+		slaResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		slaResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1552,6 +1599,10 @@ public class Query {
 		slaResultResource.setContextUriInfo(_uriInfo);
 		slaResultResource.setContextUser(_user);
 		slaResultResource.setGroupLocalService(_groupLocalService);
+		slaResultResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		slaResultResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		slaResultResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1565,6 +1616,9 @@ public class Query {
 		taskResource.setContextUriInfo(_uriInfo);
 		taskResource.setContextUser(_user);
 		taskResource.setGroupLocalService(_groupLocalService);
+		taskResource.setResourceActionLocalService(_resourceActionLocalService);
+		taskResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		taskResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1578,6 +1632,10 @@ public class Query {
 		timeRangeResource.setContextUriInfo(_uriInfo);
 		timeRangeResource.setContextUser(_user);
 		timeRangeResource.setGroupLocalService(_groupLocalService);
+		timeRangeResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		timeRangeResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		timeRangeResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -1620,6 +1678,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

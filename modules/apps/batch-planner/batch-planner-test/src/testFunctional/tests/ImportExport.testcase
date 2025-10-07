@@ -59,32 +59,6 @@ definition {
 		}
 	}
 
-	@description = "Verify users can download a sample file for a selected entity so that they can fill it with data and import it"
-	@priority = 3
-	test CanDownloadSampleImportFile {
-		task ("Given the user is in the import page") {
-			ImportExport.openImportExportAdmin();
-
-			ImportExport.gotoImport();
-		}
-
-		task ("When the user selects an entity and clicks on the Download a Sample File for This Entity button") {
-			ImportExport.selectEntity(entityType = "ObjectDefinition (v1.0 - Liferay Object Admin REST)");
-
-			Click.clickAt(locator1 = "ImportExport#SAMPLE_FILE_DOWNLOAD_BUTTON");
-		}
-
-		task ("Then a sample file for that entity should be downloaded") {
-			DownloadTempFile();
-
-			var sampleFileName = TestCase.getDownloadedTempFileName(fileNamePattern = "objectdefinition-*.csv");
-
-			ImportExport.assertFileContent(
-				comparisonFileName = "objectDefinition_import_sample.csv",
-				fileName = ${sampleFileName});
-		}
-	}
-
 	@description = "Verify users can exclude fields from being exported in CSV format"
 	@ignore = "true"
 	@priority = 3

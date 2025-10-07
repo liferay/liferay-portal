@@ -113,3 +113,16 @@ test('LPD-30098 Invite user as admin', async ({
 		ctCollection.body.id
 	);
 });
+
+test('LPD-65173 Assert that the Share Link tab is hidden for Publication Templates', async ({
+	changeTrackingTemplatesPage,
+	page,
+}) => {
+	await changeTrackingTemplatesPage.gotoCreateTemplate();
+
+	await changeTrackingTemplatesPage.openManageCollaboratorsModal();
+
+	await expect(page.getByText('Invite Users')).toBeVisible();
+
+	await expect(page.getByRole('button', {name: 'Share Link'})).toBeHidden();
+});

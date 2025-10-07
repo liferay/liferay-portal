@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -220,8 +219,8 @@ public class FunctionCaptchaImplTest {
 			return;
 		}
 
-		try (LogCapture logCapture = LoggerTestUtil.configureJDKLogger(
-				FunctionCaptchaImpl.class.getName(), Level.SEVERE)) {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				FunctionCaptchaImpl.class.getName(), LoggerTestUtil.ERROR)) {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 

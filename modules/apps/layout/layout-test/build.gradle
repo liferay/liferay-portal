@@ -51,6 +51,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-test-util")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
+	testIntegrationImplementation project(":apps:template:template-api")
 	testIntegrationImplementation project(":apps:template:template-test-util")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

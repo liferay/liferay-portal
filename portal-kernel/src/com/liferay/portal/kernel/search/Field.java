@@ -153,6 +153,8 @@ public class Field implements Serializable {
 
 	public static final String SCOPE_GROUP_ID = "scopeGroupId";
 
+	public static final String SENT_DATE = "sentDate";
+
 	public static final String SNIPPET = "snippet";
 
 	public static final String SORTABLE_FIELD_SUFFIX = "sortable";

@@ -45,8 +45,6 @@ definition {
 
 	@priority = 3
 	test AccessStaging {
-		property portal.acceptance = "true";
-
 		task ("Given: a regular user is added") {
 			JSONStaging.enableLocalStaging(groupName = "Site Name");
 

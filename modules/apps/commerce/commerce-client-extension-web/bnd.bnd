@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Commerce Client Extension Web
 Bundle-SymbolicName: com.liferay.commerce.client.extension.web
-Bundle-Version: 1.0.15
+Bundle-Version: 1.0.16
 Web-ContextPath: /commerce-client-extension-web
 -dsannotations-options: inherit

@@ -64,6 +64,13 @@ public interface ERCAssetLibraryTestEntityResource {
 			String ercAssetLibraryTestEntityExternalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getAssetLibraryERCAssetLibraryTestEntityPermissionsPage(
+				String assetLibraryExternalReferenceCode,
+				String ercAssetLibraryTestEntityExternalReferenceCode,
+				String roleNames)
+		throws Exception;
+
 	public Response postAssetLibraryERCAssetLibraryTestEntitiesPageExportBatch(
 			String assetLibraryExternalReferenceCode, String callbackURL,
 			String contentType, String fieldNames)
@@ -83,6 +90,13 @@ public interface ERCAssetLibraryTestEntityResource {
 			String assetLibraryExternalReferenceCode,
 			String ercAssetLibraryTestEntityExternalReferenceCode,
 			ERCAssetLibraryTestEntity ercAssetLibraryTestEntity)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putAssetLibraryERCAssetLibraryTestEntityPermissionsPage(
+				String assetLibraryExternalReferenceCode,
+				String ercAssetLibraryTestEntityExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

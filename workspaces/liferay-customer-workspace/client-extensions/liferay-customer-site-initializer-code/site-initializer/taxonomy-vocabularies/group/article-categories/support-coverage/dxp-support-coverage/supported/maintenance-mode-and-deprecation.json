@@ -1,0 +1,10 @@
+{
+	"name": "Maintenance Mode and Deprecation",
+	"name_i18n": {
+		"en_US": "Maintenance Mode and Deprecation",
+		"es-ES": "Modo de mantenimiento y en desuso",
+		"ja-JP": "メンテナンス・モードと非推奨",
+		"pt-BR": "Modo de Manutenção e Descontinuação"
+	},
+	"viewableBy": "Anyone"
+}

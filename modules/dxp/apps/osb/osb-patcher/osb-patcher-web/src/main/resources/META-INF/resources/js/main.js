@@ -7,13 +7,6 @@ AUI().use(() => {
 	Liferay.namespace('Patcher');
 
 	Liferay.Patcher = {
-		closeWindow() {
-			const dialog = Liferay.Util.getWindow();
-
-			if (dialog) {
-				dialog.hide();
-			}
-		},
 		compareTicket(a, b) {
 			const aParts = a.split('-');
 			const bParts = b.split('-');
@@ -81,17 +74,6 @@ AUI().use(() => {
 				);
 			});
 		},
-		openWindow(url, title, modal, width) {
-			Liferay.Util.openWindow({
-				dialog: {
-					align: Liferay.Util.Window.ALIGN_CENTER,
-					modal,
-					width,
-				},
-				title,
-				uri: url,
-			});
-		},
 		populateProjectVersionField(productVersionId, select, map) {
 			while (select.firstChild) {
 				select.removeChild(select.firstChild);
@@ -113,32 +95,6 @@ AUI().use(() => {
 					}
 				}
 			}
-		},
-		updateProductVersionId(url, productVersionId, namespace) {
-			let newurl = '';
-
-			if (url.indexOf('patcherProductVersionId') === -1) {
-				if (url.indexOf('?') === -1) {
-					url += '?';
-				}
-				else {
-					url += '&';
-				}
-
-				newurl =
-					url +
-					namespace +
-					'patcherProductVersionId=' +
-					productVersionId;
-			}
-			else {
-				newurl = url.replace(
-					/patcherProductVersionId=[0-9]*/,
-					'patcherProductVersionId=' + productVersionId
-				);
-			}
-
-			return newurl;
 		},
 	};
 });

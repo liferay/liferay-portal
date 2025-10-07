@@ -703,6 +703,179 @@ public class ObjectEntryFolder implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _parentObjectEntryFolderIdSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public com.liferay.portal.vulcan.permission.Permission[] getPermissions() {
+		if (_permissionsSupplier != null) {
+			permissions = _permissionsSupplier.get();
+
+			_permissionsSupplier = null;
+		}
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.portal.vulcan.permission.Permission[] permissions) {
+
+		this.permissions = permissions;
+
+		_permissionsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.portal.vulcan.permission.Permission[], Exception>
+				permissionsUnsafeSupplier) {
+
+		_permissionsSupplier = () -> {
+			try {
+				return permissionsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected com.liferay.portal.vulcan.permission.Permission[] permissions;
+
+	@JsonIgnore
+	private Supplier<com.liferay.portal.vulcan.permission.Permission[]>
+		_permissionsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public Creator getRemovedBy() {
+		if (_removedBySupplier != null) {
+			removedBy = _removedBySupplier.get();
+
+			_removedBySupplier = null;
+		}
+
+		return removedBy;
+	}
+
+	public void setRemovedBy(Creator removedBy) {
+		this.removedBy = removedBy;
+
+		_removedBySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRemovedBy(
+		UnsafeSupplier<Creator, Exception> removedByUnsafeSupplier) {
+
+		_removedBySupplier = () -> {
+			try {
+				return removedByUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Creator removedBy;
+
+	@JsonIgnore
+	private Supplier<Creator> _removedBySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Date getRemovedDate() {
+		if (_removedDateSupplier != null) {
+			removedDate = _removedDateSupplier.get();
+
+			_removedDateSupplier = null;
+		}
+
+		return removedDate;
+	}
+
+	public void setRemovedDate(Date removedDate) {
+		this.removedDate = removedDate;
+
+		_removedDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setRemovedDate(
+		UnsafeSupplier<Date, Exception> removedDateUnsafeSupplier) {
+
+		_removedDateSupplier = () -> {
+			try {
+				return removedDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date removedDate;
+
+	@JsonIgnore
+	private Supplier<Date> _removedDateSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The scope id of the object entry folder."
+	)
+	public Long getScopeId() {
+		if (_scopeIdSupplier != null) {
+			scopeId = _scopeIdSupplier.get();
+
+			_scopeIdSupplier = null;
+		}
+
+		return scopeId;
+	}
+
+	public void setScopeId(Long scopeId) {
+		this.scopeId = scopeId;
+
+		_scopeIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScopeId(
+		UnsafeSupplier<Long, Exception> scopeIdUnsafeSupplier) {
+
+		_scopeIdSupplier = () -> {
+			try {
+				return scopeIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The scope id of the object entry folder.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long scopeId;
+
+	@JsonIgnore
+	private Supplier<Long> _scopeIdSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The scope key of the object entry folder."
 	)
@@ -745,6 +918,48 @@ public class ObjectEntryFolder implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _scopeKeySupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public Status getStatus() {
+		if (_statusSupplier != null) {
+			status = _statusSupplier.get();
+
+			_statusSupplier = null;
+		}
+
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+
+		_statusSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setStatus(
+		UnsafeSupplier<Status, Exception> statusUnsafeSupplier) {
+
+		_statusSupplier = () -> {
+			try {
+				return statusUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Status status;
+
+	@JsonIgnore
+	private Supplier<Status> _statusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The object entry folder's main title/name."
@@ -1072,6 +1287,69 @@ public class ObjectEntryFolder implements Serializable {
 			sb.append(parentObjectEntryFolderId);
 		}
 
+		com.liferay.portal.vulcan.permission.Permission[] permissions =
+			getPermissions();
+
+		if (permissions != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < permissions.length; i++) {
+				sb.append(permissions[i]);
+
+				if ((i + 1) < permissions.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		Creator removedBy = getRemovedBy();
+
+		if (removedBy != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"removedBy\": ");
+
+			sb.append(removedBy);
+		}
+
+		Date removedDate = getRemovedDate();
+
+		if (removedDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"removedDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(removedDate));
+
+			sb.append("\"");
+		}
+
+		Long scopeId = getScopeId();
+
+		if (scopeId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scopeId\": ");
+
+			sb.append(scopeId);
+		}
+
 		String scopeKey = getScopeKey();
 
 		if (scopeKey != null) {
@@ -1086,6 +1364,18 @@ public class ObjectEntryFolder implements Serializable {
 			sb.append(_escape(scopeKey));
 
 			sb.append("\"");
+		}
+
+		Status status = getStatus();
+
+		if (status != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"status\": ");
+
+			sb.append(String.valueOf(status));
 		}
 
 		String title = getTitle();

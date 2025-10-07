@@ -175,6 +175,16 @@ public class GeneralConfigurationSerDes {
 			sb.append("\"");
 		}
 
+		if (generalConfiguration.getLegacyAssetCollectionProvider() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"legacyAssetCollectionProvider\": ");
+
+			sb.append(generalConfiguration.getLegacyAssetCollectionProvider());
+		}
+
 		if (generalConfiguration.getQueryString() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -325,6 +335,16 @@ public class GeneralConfigurationSerDes {
 				String.valueOf(generalConfiguration.getLanguageId()));
 		}
 
+		if (generalConfiguration.getLegacyAssetCollectionProvider() == null) {
+			map.put("legacyAssetCollectionProvider", null);
+		}
+		else {
+			map.put(
+				"legacyAssetCollectionProvider",
+				String.valueOf(
+					generalConfiguration.getLegacyAssetCollectionProvider()));
+		}
+
 		if (generalConfiguration.getQueryString() == null) {
 			map.put("queryString", null);
 		}
@@ -406,6 +426,11 @@ public class GeneralConfigurationSerDes {
 			else if (Objects.equals(jsonParserFieldName, "languageId")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "legacyAssetCollectionProvider")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "queryString")) {
 				return false;
 			}
@@ -484,6 +509,14 @@ public class GeneralConfigurationSerDes {
 				if (jsonParserFieldValue != null) {
 					generalConfiguration.setLanguageId(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "legacyAssetCollectionProvider")) {
+
+				if (jsonParserFieldValue != null) {
+					generalConfiguration.setLegacyAssetCollectionProvider(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "queryString")) {

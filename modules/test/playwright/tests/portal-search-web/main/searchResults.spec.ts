@@ -80,7 +80,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 					value: 'start1',
 				},
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: 'federatedSearchKey1',
 				},
 			]);
@@ -94,7 +94,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 
 			await searchPage.fillPortletConfigurationsInput([
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: 'federatedSearchKey2',
 				},
 			]);
@@ -113,7 +113,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 			]);
 			await searchPage.fillPortletConfigurationsInput([
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: 'federatedSearchKey1',
 				},
 			]);
@@ -133,7 +133,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 			]);
 			await searchPage.fillPortletConfigurationsInput([
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: 'federatedSearchKey2',
 				},
 			]);
@@ -162,7 +162,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 
 			await searchPage.fillPortletConfigurationsInput([
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: '',
 				},
 			]);
@@ -173,7 +173,7 @@ test.describe('Use two Search Results widgets in the same page', () => {
 
 			await searchPage.fillPortletConfigurationsInput([
 				{
-					label: 'Federated Search Key Enter',
+					label: 'Federated Search Key',
 					value: '',
 				},
 			]);

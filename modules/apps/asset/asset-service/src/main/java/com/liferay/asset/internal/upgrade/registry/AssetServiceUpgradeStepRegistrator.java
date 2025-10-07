@@ -40,7 +40,7 @@ public class AssetServiceUpgradeStepRegistrator
 	}
 
 	@Reference(
-		target = "(&(release.bundle.symbolic.name=com.liferay.view.count.service)(&(release.schema.version>=1.0.0)))"
+		target = "(&(release.bundle.symbolic.name=com.liferay.view.count.service)(release.schema.version>=1.0.0))"
 	)
 	private Release _release;
 

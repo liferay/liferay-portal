@@ -3,26 +3,20 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import {useModal} from '@clayui/modal';
-import {useMemo, useState} from 'react';
-import {Link, Outlet} from 'react-router-dom';
+import {useMemo} from 'react';
+import {Link} from 'react-router-dom';
 
-import AppPublish from '../../../../components/AppPublish';
-import {Checkbox} from '../../../../components/Checkbox/Checkbox';
-import ExternalLink from '../../../../components/ExternalLink';
 import Modal from '../../../../components/Modal';
 import {useNewAppContext} from '../../../../context/NewAppContext';
 import {ProductWorkflowStatusCode} from '../../../../enums/Product';
-import {useAccount} from '../../../../hooks/data/useAccounts';
 import i18n from '../../../../i18n';
+import BasePublishAppOutlet from '../../BasePublishAppOutlet';
 import usePublishAppSubmission from '../../hooks/usePublishAppSubmission';
 import usePublishHeader from '../../hooks/usePublishHeader';
 import usePublishNavigation from '../../hooks/usePublishNavigation';
 import {APP_FLOW_ITEMS} from './constants';
-
-import './PublishAppOutlet.scss';
 
 type Context = ReturnType<typeof useNewAppContext>[0];
 
@@ -37,9 +31,7 @@ const isRequiredDraftFormFilled = (context: Context) =>
 const PublishAppOutlet = () => {
 	usePublishHeader();
 
-	const [checkedUserAgreement, setCheckedUserAgreement] = useState(false);
 	const [context, dispatch] = useNewAppContext();
-	const {data: account} = useAccount();
 	const {observer, onOpenChange, open} = useModal();
 	const {onSave, onSaveAsDraft} = usePublishAppSubmission(context, dispatch);
 	const onExitModal = useModal();
@@ -47,15 +39,7 @@ const PublishAppOutlet = () => {
 		context?._product &&
 		context._product.productStatus === ProductWorkflowStatusCode.APPROVED;
 
-	const {
-		activeIndex,
-		activeRoute,
-		isLastStep,
-		onClickContinue,
-		onClickPrevious,
-		onExit,
-		steps,
-	} = usePublishNavigation({
+	const {activeRoute, onExit} = usePublishNavigation({
 		exitLink: '/',
 		flowItems: getFlowItems(context),
 	});
@@ -80,117 +64,19 @@ const PublishAppOutlet = () => {
 	}
 
 	return (
-		<AppPublish>
-			<AppPublish.Navbar
-				accountImage={account?.logoURL}
-				accountName={account?.name as string}
-				appImage={context.profile.file?.preview}
-				appName={context.profile.name}
-				appStatus={context._product?.productStatus}
-				display={{
-					preview: true,
-					saveAsDraft: canSaveAsDraft,
-				}}
-				exitProps={{
-					onClick: () => {
-						canSaveAsDraft
-							? onOpenChange(true)
-							: onExitModal.onOpenChange(true);
-					},
-				}}
-				saveAsDraftProps={{
-					disabled: isValidSchema || !canSaveAsDraft,
-					onClick: onSaveAsDraft,
-				}}
-				submitProps={{
-					onClick: onSave,
-				}}
-			/>
-
-			<AppPublish.Body>
-				<AppPublish.Sidebar activeIndex={activeIndex} items={steps} />
-
-				<AppPublish.Content>
-					{isEditingApp && activeRoute.alertText && (
-						<ClayAlert displayType="info">
-							{activeRoute.alertText}
-						</ClayAlert>
-					)}
-
-					<h1 className="header-title mb-4">
-						{activeRoute.title(isEditingApp)}
-					</h1>
-
-					{activeRoute.description(isEditingApp)}
-
-					<div className="mt-6 new-app-form">
-						<Outlet />
-					</div>
-
-					{isLastStep && (
-						<div className="app-review-page-agreement">
-							<Checkbox
-								checked={checkedUserAgreement}
-								onChange={() => {
-									setCheckedUserAgreement(
-										!checkedUserAgreement
-									);
-								}}
-							/>
-
-							<span>
-								<span className="app-review-page-agreement-highlight">
-									{'Attention: this cannot be undone. '}
-								</span>
-								I am aware I cannot edit any data or information
-								regarding this app submission until Liferay
-								completes its review process and I agree with
-								the Liferay Marketplace{' '}
-								<ExternalLink href="https://www.liferay.com/legal/marketplace-terms-of-service">
-									terms
-								</ExternalLink>
-								{' and '}
-								<ExternalLink href="https://www.liferay.com/privacy-policy">
-									privacy
-								</ExternalLink>
-							</span>
-						</div>
-					)}
-
-					<hr className="my-6" />
-
-					<div className="d-flex justify-content-end">
-						{activeIndex !== 0 && (
-							<ClayButton
-								className="mr-4"
-								displayType="secondary"
-								onClick={onClickPrevious}
-							>
-								{i18n.translate('back')}
-							</ClayButton>
-						)}
-
-						<ClayButton
-							disabled={
-								isLastStep
-									? !checkedUserAgreement
-									: isValidSchema
-							}
-							displayType="primary"
-							onClick={() => {
-								if (isLastStep) {
-									return onSave().then(onExit);
-								}
-
-								onClickContinue();
-							}}
-						>
-							{i18n.translate(isLastStep ? 'submit' : 'continue')}
-						</ClayButton>
-					</div>
-				</AppPublish.Content>
-			</AppPublish.Body>
-
+		<BasePublishAppOutlet
+			canSaveAsDraft={canSaveAsDraft}
+			context={context}
+			flowItems={getFlowItems(context)}
+			isEditingApp={!!isEditingApp}
+			onClickExit={
+				canSaveAsDraft
+					? () => onOpenChange(true)
+					: () => onExitModal.onOpenChange(true)
+			}
+			onSave={onSave}
+			onSaveAsDraft={onSaveAsDraft}
+		>
 			<Modal
 				last={
 					<>
@@ -242,7 +128,7 @@ const PublishAppOutlet = () => {
 					</p>
 				</Modal>
 			)}
-		</AppPublish>
+		</BasePublishAppOutlet>
 	);
 };
 export default PublishAppOutlet;

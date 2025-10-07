@@ -601,6 +601,15 @@ public class PatcherFixPersistenceImpl
 				patcherProjectVersionId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByPatcherProjectVersionId(
+					patcherProjectVersionId, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -954,6 +963,15 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByPatcherProjectVersionId(patcherProjectVersionId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByPatcherProjectVersionId(
+				patcherProjectVersionId);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -1560,6 +1578,15 @@ public class PatcherFixPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByP_L_T(
+					patcherProjectVersionId, latestFix, type, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -1950,6 +1977,15 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByP_L_T(patcherProjectVersionId, latestFix, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByP_L_T(
+				patcherProjectVersionId, latestFix, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -2558,6 +2594,15 @@ public class PatcherFixPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByP_L_NotT(
+					patcherProjectVersionId, latestFix, type, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2948,6 +2993,15 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByP_L_NotT(patcherProjectVersionId, latestFix, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByP_L_NotT(
+				patcherProjectVersionId, latestFix, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -3572,6 +3626,15 @@ public class PatcherFixPersistenceImpl
 				key, keyVersion, type, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByK_GtKV_NotT(
+					key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		key = Objects.toString(key, "");
 
 		StringBundler sb = null;
@@ -3994,6 +4057,15 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByK_GtKV_NotT(key, keyVersion, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByK_GtKV_NotT(
+				key, keyVersion, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		key = Objects.toString(key, "");
@@ -4639,6 +4711,15 @@ public class PatcherFixPersistenceImpl
 				key, keyVersion, type, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByK_LtKV_NotT(
+					key, keyVersion, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		key = Objects.toString(key, "");
 
 		StringBundler sb = null;
@@ -5061,6 +5142,15 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByK_LtKV_NotT(key, keyVersion, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByK_LtKV_NotT(
+				key, keyVersion, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		key = Objects.toString(key, "");
@@ -5706,6 +5796,15 @@ public class PatcherFixPersistenceImpl
 				key, latestFix, type, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByK_L_NotT(
+					key, latestFix, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		key = Objects.toString(key, "");
 
 		StringBundler sb = null;
@@ -6126,6 +6225,15 @@ public class PatcherFixPersistenceImpl
 	public int filterCountByK_L_NotT(String key, boolean latestFix, int type) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByK_L_NotT(key, latestFix, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByK_L_NotT(
+				key, latestFix, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		key = Objects.toString(key, "");
@@ -6804,6 +6912,15 @@ public class PatcherFixPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtM_N_T_S(
+					modifiedDate, notified, type, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -7195,6 +7312,15 @@ public class PatcherFixPersistenceImpl
 			return findByLtM_N_T_S(
 				modifiedDate, notified, types, status, start, end,
 				orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtM_N_T_S(
+					modifiedDate, notified, types, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
 		}
 
 		if (types == null) {
@@ -7758,6 +7884,15 @@ public class PatcherFixPersistenceImpl
 			return countByLtM_N_T_S(modifiedDate, notified, type, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByLtM_N_T_S(
+				modifiedDate, notified, type, status);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
+		}
+
 		StringBundler sb = new StringBundler(5);
 
 		sb.append(_FILTER_SQL_COUNT_PATCHERFIX_WHERE);
@@ -7832,6 +7967,13 @@ public class PatcherFixPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtM_N_T_S(modifiedDate, notified, types, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = InlineSQLHelperUtil.filter(
+				findByLtM_N_T_S(modifiedDate, notified, types, status));
+
+			return patcherFixes.size();
 		}
 
 		if (types == null) {
@@ -8545,6 +8687,15 @@ public class PatcherFixPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByP_L_N_NotT(
+					patcherProjectVersionId, latestFix, name, type,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		name = Objects.toString(name, "");
 
 		StringBundler sb = null;
@@ -8995,6 +9146,15 @@ public class PatcherFixPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByP_L_N_NotT(
 				patcherProjectVersionId, latestFix, name, type);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByP_L_N_NotT(
+				patcherProjectVersionId, latestFix, name, type);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		name = Objects.toString(name, "");
@@ -9659,6 +9819,15 @@ public class PatcherFixPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByP_L_NotT_S(
+					patcherProjectVersionId, latestFix, type, status,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -10067,6 +10236,15 @@ public class PatcherFixPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByP_L_NotT_S(
 				patcherProjectVersionId, latestFix, type, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<PatcherFix> patcherFixes = findByP_L_NotT_S(
+				patcherProjectVersionId, latestFix, type, status);
+
+			patcherFixes = InlineSQLHelperUtil.filter(patcherFixes);
+
+			return patcherFixes.size();
 		}
 
 		StringBundler sb = new StringBundler(5);

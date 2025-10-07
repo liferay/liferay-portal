@@ -671,31 +671,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewNoSiteOrWorkflowLinksCP(portletCategoryName = null) {
-		LexiconEntry.viewEntryName(rowEntry = "Site Template Name");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Manage",
-			rowEntry = "Site Template Name");
-
-		ProductMenuHelper.openProductMenu();
-
-		ProductMenuHelper.expandCategory(category = "Configuration");
-
-		for (var portletName : list "Site Settings,Social Activities,Workflow Configuration") {
-			var key_portletName = ${portletName};
-
-			AssertTextNotPresent(
-				locator1 = "Home#SITE_ADMINISTRATION_NAVIGATION",
-				value1 = ${portletName});
-		}
-
-		var key_portletCategoryName = ${portletCategoryName};
-
-		AssertElementNotPresent(locator1 = "Home#SITE_ADMINISTRATION_CATEGORY_COLLAPSED");
-	}
-
-	@summary = "Default summary"
 	macro viewNoTemplatesDisplay(siteTemplateName = null) {
 		LexiconEntry.gotoAdd();
 

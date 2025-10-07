@@ -71,12 +71,14 @@ const getBaseURL = (url: string | null, options?: APIParametersOptions) => {
 
 export function useFetch<Data = any, Error = any>(
 	url: string | null,
-	fetchParameters?: Record<string, any>
+	fetchParameters?: Record<string, any>,
+	refreshInterval?: number
 ) {
 	const {params} = fetchParameters ?? {};
 
 	const {data, error, isLoading, isValidating, mutate} = useSWR<Data, Error>(
-		() => getBaseURL(url, params)
+		getBaseURL(url, params),
+		{refreshInterval}
 	);
 
 	return {

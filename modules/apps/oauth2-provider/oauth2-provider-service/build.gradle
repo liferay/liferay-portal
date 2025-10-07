@@ -30,4 +30,5 @@ dependencies {
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
 	testImplementation group: "org.apache.commons", name: "commons-compress", version: "1.26.0"
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }

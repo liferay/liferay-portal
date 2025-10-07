@@ -123,8 +123,6 @@ definition {
 	@disable-webdriver = "true"
 	@priority = 3
 	test IncludeCreateBatchInActionsForObjectSchemas {
-		property portal.acceptance = "true";
-
 		task ("When with get request and objectDefinitionId to retrieve objectAction, objectField, objectLayout, objectRelationship, objectValidationRule and objectView") {
 			var objectSchemas = "object-actions,object-fields,object-layouts,object-relationships,object-validation-rules,object-views";
 		}

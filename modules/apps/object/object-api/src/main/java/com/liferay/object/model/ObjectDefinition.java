@@ -67,8 +67,6 @@ public interface ObjectDefinition
 
 	public String getPortletId();
 
-	public String getPreviousRESTContextPath();
-
 	public String getResourceName();
 
 	public String getRESTContextPath();
@@ -76,6 +74,8 @@ public interface ObjectDefinition
 	public String getRootObjectDefinitionExternalReferenceCode();
 
 	public long getRootObjectDefinitionId();
+
+	public long[] getRootObjectDefinitionIds();
 
 	public String getShortName();
 
@@ -87,9 +87,9 @@ public interface ObjectDefinition
 
 	public boolean isModifiableAndSystem();
 
-	public boolean isNodeCandidate();
-
 	public boolean isRootDescendantNode();
+
+	public boolean isRootDescendantNode(long rootObjectDefinitionId);
 
 	public boolean isRootNode();
 
@@ -97,9 +97,5 @@ public interface ObjectDefinition
 
 	public void setObjectDefinitionSettings(
 		java.util.List<ObjectDefinitionSetting> objectDefinitionSettings);
-
-	public void setPreviousRESTContextPath(String previousRESTContextPath);
-
-	public void setRootObjectDefinitionId(long rootObjectDefinitionId);
 
 }

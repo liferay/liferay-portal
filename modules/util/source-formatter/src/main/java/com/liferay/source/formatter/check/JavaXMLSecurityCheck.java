@@ -35,7 +35,7 @@ public class JavaXMLSecurityCheck extends BaseFileCheck {
 	private void _checkXMLSecurity(
 		String fileName, String absolutePath, String content) {
 
-		String[] xmlVulnerabitilies = {
+		String[] xmlVulnerabilities = {
 			"DocumentBuilderFactory.newInstance",
 			"new javax.xml.parsers.SAXParser",
 			"new org.apache.xerces.parsers.SAXParser",
@@ -49,8 +49,8 @@ public class JavaXMLSecurityCheck extends BaseFileCheck {
 		boolean runOutsidePortalExclusion = isExcludedPath(
 			RUN_OUTSIDE_PORTAL_EXCLUDES, absolutePath);
 
-		for (String xmlVulnerabitily : xmlVulnerabitilies) {
-			if (!content.contains(xmlVulnerabitily)) {
+		for (String xmlVulnerability : xmlVulnerabilities) {
+			if (!content.contains(xmlVulnerability)) {
 				continue;
 			}
 
@@ -65,7 +65,7 @@ public class JavaXMLSecurityCheck extends BaseFileCheck {
 				sb.append("newDocumentBuilderFactory instead of ");
 			}
 
-			sb.append(xmlVulnerabitily);
+			sb.append(xmlVulnerability);
 
 			addMessage(fileName, sb.toString());
 		}

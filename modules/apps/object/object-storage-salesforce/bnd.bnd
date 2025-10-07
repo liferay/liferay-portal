@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object Storage Salesforce
 Bundle-SymbolicName: com.liferay.object.storage.salesforce
-Bundle-Version: 1.0.42
+Bundle-Version: 1.0.43
 -dsannotations-options: inherit

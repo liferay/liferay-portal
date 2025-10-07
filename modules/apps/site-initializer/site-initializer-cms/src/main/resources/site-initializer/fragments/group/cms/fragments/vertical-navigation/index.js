@@ -23,6 +23,7 @@ root.render(
 		VerticalNav,
 		{
 			active: props.active,
+			['aria-label']: configuration.ariaLabel,
 			defaultExpandedKeys: new Set(props.expandedKeys),
 			displayType: 'primary',
 			items: props.navItems,

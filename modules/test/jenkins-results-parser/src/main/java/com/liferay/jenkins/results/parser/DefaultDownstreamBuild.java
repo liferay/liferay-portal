@@ -10,6 +10,31 @@ package com.liferay.jenkins.results.parser;
  */
 public class DefaultDownstreamBuild extends BaseDownstreamBuild {
 
+	@Override
+	public boolean isUniqueFailure() {
+		if (!isFailing()) {
+			return false;
+		}
+
+		if (!isCompareToUpstream()) {
+			return true;
+		}
+
+		String currentFailure = JenkinsResultsParserUtil.combine(
+			getBatchName(), ",", getResult());
+
+		for (String upstreamFailure :
+				UpstreamFailureUtil.getUpstreamJobFailures(
+					"build", getTopLevelBuild())) {
+
+			if (upstreamFailure.equals(currentFailure)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	protected DefaultDownstreamBuild(String url, TopLevelBuild topLevelBuild) {
 		super(url, topLevelBuild);
 	}

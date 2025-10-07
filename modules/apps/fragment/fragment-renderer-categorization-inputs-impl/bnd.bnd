@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Fragment Renderer Categorization Inputs Implementation
 Bundle-SymbolicName: com.liferay.fragment.renderer.categorization.inputs.impl
-Bundle-Version: 1.0.12
+Bundle-Version: 1.0.14
 -dsannotations-options: inherit

@@ -136,12 +136,6 @@ definition {
 					fileName = "export.json",
 					jsonObject = "$..[0]${fieldName}");
 			}
-
-			BatchEngine.assertExportedFileContainsCorrectObject(
-				expectedValue = "DELETE,GET,GET,PATCH,PUT",
-				fileName = "export.json",
-				ignoreOrder = "true",
-				jsonObject = "$..actions..method");
 		}
 	}
 

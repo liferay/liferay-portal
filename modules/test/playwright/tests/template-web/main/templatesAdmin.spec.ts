@@ -8,18 +8,24 @@ import {createReadStream} from 'fs';
 import path from 'node:path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {liferayConfig} from '../../../liferay.config';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
+import getGlobalSite from '../../../utils/getGlobalSite';
 import getRandomString from '../../../utils/getRandomString';
+import {data} from './dependencies/payload_page_with_21_breadcrumbs';
 import {templatesPageTest} from './fixtures/templatesPageTest';
 
 const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
+	featureFlagsTest({
+		'LPD-35443': {enabled: true},
+	}),
 	loginTest(),
 	templatesPageTest,
 	pageViewModePagesTest
@@ -338,6 +344,73 @@ test(
 	}
 );
 
+test(
+	'Pagination of View usages of widget templates',
+	{tag: '@LPD-64473'},
+	async ({apiHelpers, page, site, templatesPage}) => {
+		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
+
+		const breadcrumbWidgetTemplateName = getRandomString();
+
+		await templatesPage.createWidgetTemplate(
+			breadcrumbWidgetTemplateName,
+			'Breadcrumb Template'
+		);
+		await templatesPage.editTemplate(breadcrumbWidgetTemplateName);
+		await templatesPage.importInformationTemplate(
+			__dirname,
+			'information_template_breadcrumbs.ftl'
+		);
+
+		const breadcrumbWidgetTemplateKey =
+			await templatesPage.getTemplateKey();
+
+		await templatesPage.saveTemplate(breadcrumbWidgetTemplateName);
+
+		// Payload to create a page with 21 breadcrumbs using the Horizontal Widget Display Template created above
+
+		const customPayload = data(
+			'ddmTemplate_' + breadcrumbWidgetTemplateKey,
+			site.externalReferenceCode,
+			String(site.id)
+		);
+
+		const layout = await apiHelpers.headlessAdminSite.createPage(
+			site.externalReferenceCode,
+			customPayload
+		);
+
+		// Assert usages between page created and payload
+
+		expect(layout.externalReferenceCode).toEqual(
+			customPayload.externalReferenceCode
+		);
+
+		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
+
+		// Assert number of usages
+
+		await expect(
+			page
+				.locator('tr')
+				.filter({hasText: breadcrumbWidgetTemplateName})
+				.locator('.lfr-usages-column')
+		).toHaveText('21');
+
+		await templatesPage.goToViewUsages(breadcrumbWidgetTemplateName);
+
+		// Testing pagination
+
+		await page.getByRole('link', {name: 'Page 2'}).click();
+
+		// Assert redirection is going to the right page
+		// Assert page 2 headers
+
+		const headers = page.locator('tr th');
+		await expect(headers).toHaveText(['Name', 'Type', 'Instance ID']);
+	}
+);
+
 test('View widget template based on script file applied and with corrupt script applied to rss publisher widget', async ({
 	apiHelpers,
 	page,
@@ -450,3 +523,43 @@ test('View widget template based on script file applied and with corrupt script 
 		page.getByText('Unexpected end of file reached.')
 	).toBeVisible();
 });
+
+test(
+	'Check widget template is properly escaped and unescaped',
+	{tag: '@LPD-62889'},
+	async ({apiHelpers, page, site, templatesPage}) => {
+
+		// Go to widget templates administration
+
+		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
+
+		// Create widget template
+
+		const name = getRandomString();
+		const content = '<!-- WRONG COMMENT LINE-- > <script ></script>';
+
+		await templatesPage.createWidgetTemplate(
+			name,
+			'Asset Publisher Template',
+			content
+		);
+
+		// Edit it again and check it's shown properly
+
+		await templatesPage.editTemplate(name);
+
+		await expect(page.getByText(content)).toBeVisible();
+
+		// Now edit Rich Summary global template and check is properly unescaped
+
+		const globalSite = await getGlobalSite(apiHelpers);
+
+		await templatesPage.gotoWidgetTemplates(globalSite.friendlyURL);
+
+		await templatesPage.editWidgetTemplate('Rich Summary');
+
+		await expect(page.getByText('<#if').first()).toBeVisible();
+
+		await expect(page.getByText('&#34')).not.toBeVisible();
+	}
+);

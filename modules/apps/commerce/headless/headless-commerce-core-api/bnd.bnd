@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Headless Commerce Core API
 Bundle-SymbolicName: com.liferay.headless.commerce.core.api
-Bundle-Version: 8.0.1
+Bundle-Version: 8.0.2
 Export-Package:\
 	com.liferay.headless.commerce.core.exception.mapper,\
 	com.liferay.headless.commerce.core.helper,\

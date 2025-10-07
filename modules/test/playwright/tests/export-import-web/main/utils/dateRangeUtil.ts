@@ -7,6 +7,7 @@ export function toDateRangeDate(date: Date) {
 	return new Intl.DateTimeFormat('en-US', {
 		day: '2-digit',
 		month: '2-digit',
+		timeZone: 'UTC',
 		year: 'numeric',
 	}).format(date);
 }
@@ -16,5 +17,6 @@ export function toDateRangeTime(date: Date) {
 		hour: '2-digit',
 		hourCycle: 'h23',
 		minute: '2-digit',
+		timeZone: 'UTC',
 	}).format(date);
 }

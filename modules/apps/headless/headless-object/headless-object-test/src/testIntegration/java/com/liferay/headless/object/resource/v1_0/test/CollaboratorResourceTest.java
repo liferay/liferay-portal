@@ -313,6 +313,31 @@ public class CollaboratorResourceTest extends BaseCollaboratorResourceTestCase {
 
 	@Override
 	protected Long
+			testGraphQLDeleteObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId()
+		throws Exception {
+
+		return _objectEntryFolder.getObjectEntryFolderId();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getExternalReferenceCode(
+				Collaborator collaborator)
+		throws Exception {
+
+		return _objectEntryFolder.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeleteScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorByTypeCollaborator_getScopeKey()
+		throws Exception {
+
+		return testGroup.getGroupKey();
+	}
+
+	@Override
+	protected Long
 			testGraphQLGetObjectEntryFolderCollaboratorByTypeCollaborator_getObjectEntryFolderId()
 		throws Exception {
 

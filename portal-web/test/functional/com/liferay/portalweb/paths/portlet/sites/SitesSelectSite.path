@@ -11,19 +11,6 @@
 
 <tbody>
 
-<!--SELECT_SITE-->
-
-<tr>
-	<td>SELECT_SITE_IFRAME</td>
-	<td>//iframe</td>
-	<td></td>
-</tr>
-<tr>
-	<td></td>
-	<td></td>
-	<td></td>
-</tr>
-
 <!--SELECT_BUTTON-->
 
 <tr>
@@ -39,11 +26,6 @@
 
 <!--SITES_TABLE-->
 
-<tr>
-	<td>SITES_TABLE_NAME</td>
-	<td>//div[contains(@id,'groupsSearchContainerSearchContainer')]//table//tbody/tr[contains(.,'${key_parentSiteName}')]/td[1]</td>
-	<td></td>
-</tr>
 <tr>
 	<td>SITES_TABLE_CHOOSE_SITE_LINK</td>
 	<td>//td[contains(.,'${key_siteName}')]//a | //*[@data-qa-id='row']//a[contains(.,'${key_siteName}')]</td>

@@ -97,8 +97,6 @@
 
 			<echo>build.profile-dxp.properties</echo>
 
-			<loadproperties prefix="working.dir" srcFile="working.dir.properties" />
-
 			<condition else="7z" property="snapshot.bundle.file.extension" value="zip">
 				<equals arg1="${git.working.branch.name}" arg2="7.0.x" />
 			</condition>
@@ -109,8 +107,8 @@
 
 build.profile=dxp
 
-snapshot.bundle.base.url=${working.dir.snapshot.bundle.base.url}
-snapshot.bundle.url=${working.dir.snapshot.bundle.base.url}snapshot-${git.working.branch.name}-private/latest/liferay-portal-tomcat-${git.working.branch.name}-private.${snapshot.bundle.file.extension}</echo>
+snapshot.bundle.base.url=${snapshot.bundle.base.url}
+snapshot.bundle.url=${snapshot.bundle.base.url}snapshot-${git.working.branch.name}-private/latest/liferay-portal-tomcat-${git.working.branch.name}-private.${snapshot.bundle.file.extension}</echo>
 
 			<!-- release.profile-dxp.properties -->
 
@@ -169,7 +167,7 @@ liferay.portal.branch=@{to.branch.name}
 
 test.run.environment=EE
 
-testray.build.type=EE Development (${liferay.portal.branch})</echo>
+testray.build.type=EE Development (@{to.branch.name})</echo>
 		</sequential>
 	</macrodef>
 
@@ -522,6 +520,7 @@ message.
 			file="${jar.file}"
 			preservelastmodified="true"
 			todir="${liferay.home}/osgi/static"
+			verbose="true"
 		/>
 
 		<basename file="${jar.file}" property="file.name" />
@@ -529,6 +528,7 @@ message.
 		<move
 			file="${liferay.home}/osgi/static/${file.name}"
 			tofile="${liferay.home}/osgi/static/${artifact.name}.jar"
+			verbose="true"
 		/>
 	</target>
 
@@ -922,38 +922,6 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 	</target>
 
 	<target name="setup-profile-dxp">
-		<delete dir="git-clone-profile-dxp" />
-
-		<local name="setup.profile.dxp.git.url" />
-
-		<if>
-			<or>
-				<matches pattern="http://release-1" string="${env.JENKINS_URL}" />
-				<matches pattern="http:\/\/test-\d?-\d+/" string="${env.JENKINS_URL}" />
-			</or>
-			<then>
-				<property name="setup.profile.dxp.git.url" value="git@github-dev.liferay.com:liferay/liferay-portal-ee.git" />
-			</then>
-			<else>
-				<property name="setup.profile.dxp.git.url" value="git@github.com:liferay/liferay-portal-ee.git" />
-			</else>
-		</if>
-
-		<retry retrycount="3" retrydelay="60000">
-			<exec executable="git" failonerror="true" timeout="900000">
-				<arg line="clone --branch=master-private --depth=1 --no-checkout --single-branch ${setup.profile.dxp.git.url} git-clone-profile-dxp" />
-			</exec>
-		</retry>
-
-		<exec dir="git-clone-profile-dxp" executable="git" failonerror="true">
-			<arg line="checkout refs/heads/master-private -- working.dir.properties" />
-		</exec>
-
-		<move
-			file="git-clone-profile-dxp/working.dir.properties"
-			todir="."
-		/>
-
 		<if>
 			<matches pattern="release-\d{4}\.[q][1234]" string="${git.working.branch.name}" />
 			<then>
@@ -967,9 +935,6 @@ This target has been renamed to "snapshot-bundle". Please call "snapshot-bundle"
 				/>
 			</else>
 		</if>
-
-		<delete dir="git-clone-profile-dxp" />
-		<delete file="working.dir.properties" />
 
 		<antcall inheritAll="false" target="update-gradle-properties" />
 

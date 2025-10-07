@@ -163,6 +163,11 @@
 			<finder-column name="externalReferenceCode" />
 			<finder-column name="version" />
 		</finder>
+		<finder name="G_ERC_S" return-type="Collection">
+			<finder-column name="groupId" />
+			<finder-column name="externalReferenceCode" />
+			<finder-column name="status" />
+		</finder>
 		<finder name="G_P_L" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
@@ -274,7 +279,7 @@
 			<finder-column name="main" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
-		<finder name="G_KBFI_UT_ST" return-type="Collection">
+		<finder name="G_KBFI_UT_S" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="kbFolderId" />
 			<finder-column name="urlTitle" />

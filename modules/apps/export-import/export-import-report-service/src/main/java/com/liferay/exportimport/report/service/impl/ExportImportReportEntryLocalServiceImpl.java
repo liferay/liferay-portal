@@ -9,6 +9,10 @@ import com.liferay.exportimport.report.constants.ExportImportReportEntryConstant
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.base.ExportImportReportEntryLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
 
 import java.util.List;
 
@@ -25,11 +29,11 @@ import org.osgi.service.component.annotations.Component;
 public class ExportImportReportEntryLocalServiceImpl
 	extends ExportImportReportEntryLocalServiceBaseImpl {
 
-	@Override
-	public ExportImportReportEntry addErrorExportImportReportEntry(
+	@Indexable(type = IndexableType.REINDEX)
+	public ExportImportReportEntry addEmptyExportImportReportEntry(
 		long groupId, long companyId, String classExternalReferenceCode,
-		long classNameId, long exportImportConfigurationId, String error,
-		String errorStacktrace) {
+		long classNameId, long exportImportConfigurationId, String modelName,
+		int origin, String scope, String scopeKey) {
 
 		ExportImportReportEntry exportImportReportEntry =
 			exportImportReportEntryPersistence.create(
@@ -42,19 +46,26 @@ public class ExportImportReportEntryLocalServiceImpl
 		exportImportReportEntry.setClassNameId(classNameId);
 		exportImportReportEntry.setExportImportConfigurationId(
 			exportImportConfigurationId);
-		exportImportReportEntry.setError(error);
-		exportImportReportEntry.setErrorStacktrace(errorStacktrace);
+		exportImportReportEntry.setModelName(modelName);
+		exportImportReportEntry.setOrigin(origin);
+		exportImportReportEntry.setScope(scope);
+		exportImportReportEntry.setScopeKey(scopeKey);
 		exportImportReportEntry.setType(
-			ExportImportReportEntryConstants.TYPE_ERROR);
+			ExportImportReportEntryConstants.TYPE_EMPTY);
+		exportImportReportEntry.setStatus(
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED);
 
 		return exportImportReportEntryPersistence.update(
 			exportImportReportEntry);
 	}
 
-	@Override
-	public ExportImportReportEntry addIncompleteExportImportReportEntry(
+	@Indexable(type = IndexableType.REINDEX)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public ExportImportReportEntry addErrorExportImportReportEntry(
 		long groupId, long companyId, String classExternalReferenceCode,
-		long classNameId, long exportImportConfigurationId) {
+		long classNameId, long classPK, long exportImportConfigurationId,
+		String errorMessage, String errorStacktrace, String modelName,
+		int origin, String scope, String scopeKey) {
 
 		ExportImportReportEntry exportImportReportEntry =
 			exportImportReportEntryPersistence.create(
@@ -65,10 +76,19 @@ public class ExportImportReportEntryLocalServiceImpl
 		exportImportReportEntry.setClassExternalReferenceCode(
 			classExternalReferenceCode);
 		exportImportReportEntry.setClassNameId(classNameId);
+		exportImportReportEntry.setClassPK(classPK);
 		exportImportReportEntry.setExportImportConfigurationId(
 			exportImportConfigurationId);
+		exportImportReportEntry.setErrorMessage(errorMessage);
+		exportImportReportEntry.setErrorStacktrace(errorStacktrace);
+		exportImportReportEntry.setModelName(modelName);
+		exportImportReportEntry.setOrigin(origin);
+		exportImportReportEntry.setScope(scope);
+		exportImportReportEntry.setScopeKey(scopeKey);
 		exportImportReportEntry.setType(
-			ExportImportReportEntryConstants.TYPE_INCOMPLETE);
+			ExportImportReportEntryConstants.TYPE_ERROR);
+		exportImportReportEntry.setStatus(
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED);
 
 		return exportImportReportEntryPersistence.update(
 			exportImportReportEntry);

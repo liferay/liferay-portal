@@ -21,10 +21,14 @@ import {Action, State} from '../reducers';
 
 const DEFAULT_COMPARE_EQUAL = (a: any, b: any) => a === b;
 
-export type Dispatch = (actionOrThunk: Action | Thunk) => void;
+export type Dispatch = (actionOrThunk: Action | Thunk) => any;
 export type GetState = () => State;
-export type Thunk = (dispatch: Dispatch, getState: GetState) => void;
 export type Reducer = (state: State, action: Action) => State;
+
+export type Thunk = (
+	dispatch: Dispatch,
+	getState: GetState
+) => void | Promise<void>;
 
 interface Subscriber<Data> {
 	(data: Data): void;

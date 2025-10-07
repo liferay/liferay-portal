@@ -8,6 +8,7 @@ package com.liferay.portal.search.solr8.internal.query.translator;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.search.query.BooleanQuery;
+import com.liferay.portal.search.query.MatchAllQuery;
 import com.liferay.portal.search.query.Query;
 import com.liferay.portal.search.query.TermQuery;
 import com.liferay.portal.search.query.WildcardQuery;
@@ -17,6 +18,7 @@ import java.util.List;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BoostQuery;
+import org.apache.lucene.search.MatchAllDocsQuery;
 
 /**
  * @author André de Oliveira
@@ -27,6 +29,10 @@ public class SolrQueryTranslator {
 	public org.apache.lucene.search.Query convert(Query query) {
 		if (query instanceof BooleanQuery) {
 			return visit((BooleanQuery)query);
+		}
+
+		if (query instanceof MatchAllQuery) {
+			return visit((MatchAllQuery)query);
 		}
 
 		if (query instanceof TermQuery) {
@@ -72,6 +78,16 @@ public class SolrQueryTranslator {
 
 		if (booleanQuery.getBoost() != null) {
 			return new BoostQuery(query, booleanQuery.getBoost());
+		}
+
+		return query;
+	}
+
+	public org.apache.lucene.search.Query visit(MatchAllQuery matchAllQuery) {
+		org.apache.lucene.search.Query query = new MatchAllDocsQuery();
+
+		if (matchAllQuery.getBoost() != null) {
+			return new BoostQuery(query, matchAllQuery.getBoost());
 		}
 
 		return query;

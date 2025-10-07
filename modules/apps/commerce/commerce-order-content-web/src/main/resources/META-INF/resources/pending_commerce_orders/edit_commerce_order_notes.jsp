@@ -58,7 +58,7 @@ PortletURL backURL = PortletURLBuilder.createRenderURL(
 					</div>
 
 					<div class="lfr-discussion-body">
-						<aui:input label="" name="content" placeholder="type-your-note-here" />
+						<aui:input label="" name="content" placeholder="type-here" />
 
 						<div class="order-notes-submit-actions">
 							<c:if test="<%= manageRestrictedNotesPermission %>">

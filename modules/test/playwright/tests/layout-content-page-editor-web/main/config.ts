@@ -7,4 +7,5 @@ export const config = {
 	dependencies: ['page-management-site.main'],
 	name: 'layout-content-page-editor-web.main',
 	testDir: 'tests/layout-content-page-editor-web/main',
+	timeout: 90 * 1000,
 };

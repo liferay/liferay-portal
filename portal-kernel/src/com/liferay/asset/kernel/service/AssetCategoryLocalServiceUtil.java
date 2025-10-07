@@ -513,11 +513,11 @@ public class AssetCategoryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static AssetCategory getOrAddIncompleteCategory(
+	public static AssetCategory getOrAddEmptyCategory(
 			String externalReferenceCode, long userId, long groupId)
 		throws PortalException {
 
-		return getService().getOrAddIncompleteCategory(
+		return getService().getOrAddEmptyCategory(
 			externalReferenceCode, userId, groupId);
 	}
 

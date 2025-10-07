@@ -1,0 +1,27 @@
+.extend-request-info {
+	background-color: #f7f7f8;
+	border-radius: 0.5rem;
+	min-width: 135px;
+	padding: 8px 12px;
+	width: fit-content;
+
+	&.extend-request-reason {
+		max-height: 200px;
+		min-height: 75px;
+		overflow: auto;
+		width: 100%;
+	}
+}
+
+.published-apps-dashboard-page {
+	&-container {
+		display: flex;
+		gap: 2rem;
+		min-width: 300px;
+		padding: 0;
+
+		.dashboard-navigation-container {
+			min-width: 280px;
+		}
+	}
+}

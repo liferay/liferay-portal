@@ -1,0 +1,119 @@
+@import 'atlas-variables';
+
+.task-status {
+	margin: 0;
+	max-height: 36.25rem !important;
+	overflow-x: hidden;
+	width: 17.5rem;
+
+	&-loading {
+		align-items: center;
+		background-color: $white;
+		display: flex;
+		height: calc(100% - 2.1875rem);
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
+
+	&-item {
+		gap: 0.5rem;
+
+		&-icon {
+			margin-top: 0.05rem;
+
+			.loading-animation {
+				margin-top: 0;
+			}
+		}
+
+		&-text {
+			display: flex;
+			flex-direction: column;
+			gap: 0.1875rem;
+			width: 13rem;
+		}
+	}
+
+	&-toggle {
+		opacity: 0;
+
+		&-show {
+			animation: taskStatusFade 0.1s ease-out 1 forwards;
+		}
+
+		&-processing {
+			opacity: 0;
+			position: absolute;
+			right: 0;
+			width: max-content;
+			z-index: 1020;
+		}
+
+		@keyframes taskStatusFade {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		.tbar-item:has(&) {
+			padding-right: 1rem;
+			position: relative;
+
+			&::before {
+				border-right: 1px solid $gray-300;
+				content: '';
+				height: 35%;
+				position: absolute;
+				right: 0;
+				width: 1px;
+			}
+		}
+	}
+
+	&-view-all {
+		border: 0;
+		border-radius: 0;
+		border-top: 1px solid $gray-300;
+		text-decoration: none !important;
+
+		&:hover {
+			border-top: 1px solid $gray-300;
+		}
+	}
+
+	.dropdown-menu:has(&) {
+		max-height: unset;
+		max-width: unset;
+		padding: 0;
+		z-index: 1020;
+	}
+
+	.panel {
+		border-radius: 0;
+		border-top: 1px solid $gray-300;
+		margin-bottom: 0;
+
+		&-body {
+			padding: 0 0 0.5rem 2.0625rem;
+		}
+
+		&-header {
+			padding: 0.4rem 0.6rem;
+
+			.collapse-icon-closed,
+			.collapse-icon-open {
+				font-size: 0.75rem;
+				margin-right: 0.25rem;
+				margin-top: 0.25rem;
+				top: 0;
+				transform: none;
+			}
+		}
+	}
+}

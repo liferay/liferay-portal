@@ -42,7 +42,6 @@ test('LPD-5742 Can view payments list admin page', async ({
 	apiHelpers.data.push({id: site.id, type: 'site'});
 
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		name: 'Payment Channel',
 		siteGroupId: site.id,
 	});
 

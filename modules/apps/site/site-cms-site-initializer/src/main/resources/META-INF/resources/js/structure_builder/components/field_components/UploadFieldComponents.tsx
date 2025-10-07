@@ -11,7 +11,7 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
-import selectPublishedFields from '../../selectors/selectPublishedFields';
+import selectPublishedChildren from '../../selectors/selectPublishedChildren';
 import {Field, UploadField} from '../../utils/field';
 import Input from '../Input';
 
@@ -47,9 +47,9 @@ function FirstSectionComponent({
 	const uploadField = field as UploadField;
 
 	const dispatch = useStateDispatch();
-	const publishedFields = useSelector(selectPublishedFields);
+	const publishedChildren = useSelector(selectPublishedChildren);
 
-	const isPublished = publishedFields.has(field.uuid);
+	const isPublished = publishedChildren.has(field.uuid);
 
 	const id = useId();
 
@@ -68,7 +68,6 @@ function FirstSectionComponent({
 				</label>
 
 				<Picker
-					aria-label={Liferay.Language.get('file-source')}
 					disabled={disabled || isPublished}
 					id={id}
 					items={FILE_SOURCE_OPTIONS}

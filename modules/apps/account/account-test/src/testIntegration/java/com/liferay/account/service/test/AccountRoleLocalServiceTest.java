@@ -339,12 +339,12 @@ public class AccountRoleLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddIncompleteAccountRole() throws Exception {
+	public void testGetOrAddEmptyAccountRole() throws Exception {
 
 		// Lazy referencing disabled
 
 		try {
-			_accountRoleLocalService.getOrAddIncompleteAccountRole(
+			_accountRoleLocalService.getOrAddEmptyAccountRole(
 				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
 				TestPropsValues.getUserId(), 0, RandomTestUtil.randomString());
 		}
@@ -358,7 +358,7 @@ public class AccountRoleLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			AccountRole accountRole =
-				_accountRoleLocalService.getOrAddIncompleteAccountRole(
+				_accountRoleLocalService.getOrAddEmptyAccountRole(
 					RandomTestUtil.randomString(),
 					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
 					0, RandomTestUtil.randomString());
@@ -366,7 +366,7 @@ public class AccountRoleLocalServiceTest {
 			Role role = accountRole.getRole();
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, role.getStatus());
+				WorkflowConstants.STATUS_EMPTY, role.getStatus());
 		}
 	}
 

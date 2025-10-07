@@ -24,3 +24,12 @@
 		padding: initial;
 	}
 }
+
+li.drop-target {
+	& * {
+		@include common-drop-target;
+	}
+	border: 2px solid $info;
+	z-index: $drop-target-zIndex;
+	@include common-drop-target;
+}

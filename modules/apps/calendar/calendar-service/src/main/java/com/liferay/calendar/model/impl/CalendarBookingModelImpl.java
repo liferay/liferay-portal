@@ -73,11 +73,12 @@ public class CalendarBookingModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ctCollectionId", Types.BIGINT},
-		{"uuid_", Types.VARCHAR}, {"calendarBookingId", Types.BIGINT},
-		{"groupId", Types.BIGINT}, {"companyId", Types.BIGINT},
-		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
-		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"calendarId", Types.BIGINT}, {"calendarResourceId", Types.BIGINT},
+		{"uuid_", Types.VARCHAR}, {"externalReferenceCode", Types.VARCHAR},
+		{"calendarBookingId", Types.BIGINT}, {"groupId", Types.BIGINT},
+		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
+		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
+		{"modifiedDate", Types.TIMESTAMP}, {"calendarId", Types.BIGINT},
+		{"calendarResourceId", Types.BIGINT},
 		{"parentCalendarBookingId", Types.BIGINT},
 		{"recurringCalendarBookingId", Types.BIGINT},
 		{"vEventUid", Types.VARCHAR}, {"title", Types.VARCHAR},
@@ -98,6 +99,7 @@ public class CalendarBookingModelImpl
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ctCollectionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("uuid_", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("calendarBookingId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
@@ -129,7 +131,7 @@ public class CalendarBookingModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CalendarBooking (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,calendarBookingId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,recurringCalendarBookingId LONG,vEventUid VARCHAR(255) null,title STRING null,description TEXT null,location STRING null,startTime LONG,endTime LONG,allDay BOOLEAN,recurrence STRING null,firstReminder LONG,firstReminderType VARCHAR(75) null,secondReminder LONG,secondReminderType VARCHAR(75) null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (calendarBookingId, ctCollectionId))";
+		"create table CalendarBooking (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,calendarBookingId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,calendarId LONG,calendarResourceId LONG,parentCalendarBookingId LONG,recurringCalendarBookingId LONG,vEventUid VARCHAR(255) null,title STRING null,description TEXT null,location STRING null,startTime LONG,endTime LONG,allDay BOOLEAN,recurrence STRING null,firstReminder LONG,firstReminderType VARCHAR(75) null,secondReminder LONG,secondReminderType VARCHAR(75) null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (calendarBookingId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CalendarBooking";
 
@@ -167,51 +169,57 @@ public class CalendarBookingModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 8L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTCALENDARBOOKINGID_COLUMN_BITMASK = 16L;
+	public static final long GROUPID_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long RECURRINGCALENDARBOOKINGID_COLUMN_BITMASK = 32L;
+	public static final long PARENTCALENDARBOOKINGID_COLUMN_BITMASK = 32L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 64L;
+	public static final long RECURRINGCALENDARBOOKINGID_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long STATUS_COLUMN_BITMASK = 128L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long VEVENTUID_COLUMN_BITMASK = 256L;
+	public static final long UUID_COLUMN_BITMASK = 256L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long VEVENTUID_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STARTTIME_COLUMN_BITMASK = 512L;
+	public static final long STARTTIME_COLUMN_BITMASK = 1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TITLE_COLUMN_BITMASK = 1024L;
+	public static final long TITLE_COLUMN_BITMASK = 2048L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -329,6 +337,9 @@ public class CalendarBookingModelImpl
 				"ctCollectionId", CalendarBooking::getCtCollectionId);
 			attributeGetterFunctions.put("uuid", CalendarBooking::getUuid);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CalendarBooking::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"calendarBookingId", CalendarBooking::getCalendarBookingId);
 			attributeGetterFunctions.put(
 				"groupId", CalendarBooking::getGroupId);
@@ -410,6 +421,10 @@ public class CalendarBookingModelImpl
 			attributeSetterBiConsumers.put(
 				"uuid",
 				(BiConsumer<CalendarBooking, String>)CalendarBooking::setUuid);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CalendarBooking, String>)
+					CalendarBooking::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"calendarBookingId",
 				(BiConsumer<CalendarBooking, Long>)
@@ -582,6 +597,35 @@ public class CalendarBookingModelImpl
 	@Deprecated
 	public String getOriginalUuid() {
 		return getColumnOriginalValue("uuid_");
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -1600,6 +1644,8 @@ public class CalendarBookingModelImpl
 		calendarBookingImpl.setMvccVersion(getMvccVersion());
 		calendarBookingImpl.setCtCollectionId(getCtCollectionId());
 		calendarBookingImpl.setUuid(getUuid());
+		calendarBookingImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		calendarBookingImpl.setCalendarBookingId(getCalendarBookingId());
 		calendarBookingImpl.setGroupId(getGroupId());
 		calendarBookingImpl.setCompanyId(getCompanyId());
@@ -1646,6 +1692,8 @@ public class CalendarBookingModelImpl
 			this.<Long>getColumnOriginalValue("ctCollectionId"));
 		calendarBookingImpl.setUuid(
 			this.<String>getColumnOriginalValue("uuid_"));
+		calendarBookingImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		calendarBookingImpl.setCalendarBookingId(
 			this.<Long>getColumnOriginalValue("calendarBookingId"));
 		calendarBookingImpl.setGroupId(
@@ -1802,6 +1850,18 @@ public class CalendarBookingModelImpl
 
 		if ((uuid != null) && (uuid.length() == 0)) {
 			calendarBookingCacheModel.uuid = null;
+		}
+
+		calendarBookingCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			calendarBookingCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			calendarBookingCacheModel.externalReferenceCode = null;
 		}
 
 		calendarBookingCacheModel.calendarBookingId = getCalendarBookingId();
@@ -2012,6 +2072,7 @@ public class CalendarBookingModelImpl
 	private long _mvccVersion;
 	private long _ctCollectionId;
 	private String _uuid;
+	private String _externalReferenceCode;
 	private long _calendarBookingId;
 	private long _groupId;
 	private long _companyId;
@@ -2077,6 +2138,8 @@ public class CalendarBookingModelImpl
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("ctCollectionId", _ctCollectionId);
 		_columnOriginalValues.put("uuid_", _uuid);
+		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
 		_columnOriginalValues.put("calendarBookingId", _calendarBookingId);
 		_columnOriginalValues.put("groupId", _groupId);
 		_columnOriginalValues.put("companyId", _companyId);
@@ -2136,61 +2199,63 @@ public class CalendarBookingModelImpl
 
 		columnBitmasks.put("uuid_", 4L);
 
-		columnBitmasks.put("calendarBookingId", 8L);
+		columnBitmasks.put("externalReferenceCode", 8L);
 
-		columnBitmasks.put("groupId", 16L);
+		columnBitmasks.put("calendarBookingId", 16L);
 
-		columnBitmasks.put("companyId", 32L);
+		columnBitmasks.put("groupId", 32L);
 
-		columnBitmasks.put("userId", 64L);
+		columnBitmasks.put("companyId", 64L);
 
-		columnBitmasks.put("userName", 128L);
+		columnBitmasks.put("userId", 128L);
 
-		columnBitmasks.put("createDate", 256L);
+		columnBitmasks.put("userName", 256L);
 
-		columnBitmasks.put("modifiedDate", 512L);
+		columnBitmasks.put("createDate", 512L);
 
-		columnBitmasks.put("calendarId", 1024L);
+		columnBitmasks.put("modifiedDate", 1024L);
 
-		columnBitmasks.put("calendarResourceId", 2048L);
+		columnBitmasks.put("calendarId", 2048L);
 
-		columnBitmasks.put("parentCalendarBookingId", 4096L);
+		columnBitmasks.put("calendarResourceId", 4096L);
 
-		columnBitmasks.put("recurringCalendarBookingId", 8192L);
+		columnBitmasks.put("parentCalendarBookingId", 8192L);
 
-		columnBitmasks.put("vEventUid", 16384L);
+		columnBitmasks.put("recurringCalendarBookingId", 16384L);
 
-		columnBitmasks.put("title", 32768L);
+		columnBitmasks.put("vEventUid", 32768L);
 
-		columnBitmasks.put("description", 65536L);
+		columnBitmasks.put("title", 65536L);
 
-		columnBitmasks.put("location", 131072L);
+		columnBitmasks.put("description", 131072L);
 
-		columnBitmasks.put("startTime", 262144L);
+		columnBitmasks.put("location", 262144L);
 
-		columnBitmasks.put("endTime", 524288L);
+		columnBitmasks.put("startTime", 524288L);
 
-		columnBitmasks.put("allDay", 1048576L);
+		columnBitmasks.put("endTime", 1048576L);
 
-		columnBitmasks.put("recurrence", 2097152L);
+		columnBitmasks.put("allDay", 2097152L);
 
-		columnBitmasks.put("firstReminder", 4194304L);
+		columnBitmasks.put("recurrence", 4194304L);
 
-		columnBitmasks.put("firstReminderType", 8388608L);
+		columnBitmasks.put("firstReminder", 8388608L);
 
-		columnBitmasks.put("secondReminder", 16777216L);
+		columnBitmasks.put("firstReminderType", 16777216L);
 
-		columnBitmasks.put("secondReminderType", 33554432L);
+		columnBitmasks.put("secondReminder", 33554432L);
 
-		columnBitmasks.put("lastPublishDate", 67108864L);
+		columnBitmasks.put("secondReminderType", 67108864L);
 
-		columnBitmasks.put("status", 134217728L);
+		columnBitmasks.put("lastPublishDate", 134217728L);
 
-		columnBitmasks.put("statusByUserId", 268435456L);
+		columnBitmasks.put("status", 268435456L);
 
-		columnBitmasks.put("statusByUserName", 536870912L);
+		columnBitmasks.put("statusByUserId", 536870912L);
 
-		columnBitmasks.put("statusDate", 1073741824L);
+		columnBitmasks.put("statusByUserName", 1073741824L);
+
+		columnBitmasks.put("statusDate", 2147483648L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}

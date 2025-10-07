@@ -203,7 +203,8 @@ public class UserBagFactoryUtilTest {
 	}
 
 	protected UserBag getUserBag() throws Exception {
-		return UserBagFactoryUtil.create(_user.getUserId());
+		return UserBagFactoryUtil.create(
+			_userLocalService.getUser(_user.getUserId()));
 	}
 
 	protected Collection<Group> getUserGroups() throws Exception {

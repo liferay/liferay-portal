@@ -31,7 +31,23 @@ const ActivationOutlet = () => {
 
 	useEffect(() => {
 		if (subscriptionGroups?.length && isCurrentActivationRoute) {
-			const redirectPage = getKebabCase(subscriptionGroups[0].name);
+			const productName = subscriptionGroups?.filter((subscriptionGroup) => {
+				return (
+					subscriptionGroup.hasActivation
+				);
+			}).map(
+				({activationProductName, name}) => {
+					return activationProductName
+					? activationProductName
+					: name;
+				}
+			).sort(
+				(a, b) => {
+					return a.localeCompare(b);
+				}
+			)[0];
+
+			const redirectPage = getKebabCase(productName);
 
 			navigate(redirectPage);
 		}

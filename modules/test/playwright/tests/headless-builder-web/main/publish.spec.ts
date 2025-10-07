@@ -56,10 +56,10 @@ test('can get  updated title in response after publish', async ({
 
 	expect(
 		(
-			await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode(
-				'headless-builder/applications',
-				application.externalReferenceCode
-			)
+			await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode({
+				applicationName: 'headless-builder/applications',
+				externalReferenceCode: application.externalReferenceCode,
+			})
 		).title
 	).toEqual(`${application.title} 1`);
 });

@@ -483,13 +483,12 @@ public class AccountEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.account.model.AccountEntry
-			getOrAddIncompleteAccountEntry(
-				String externalReferenceCode, long companyId, long userId,
-				String name, String type)
-		throws Exception {
+	public com.liferay.account.model.AccountEntry getOrAddEmptyAccountEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String name, String type)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
-		return _accountEntryLocalService.getOrAddIncompleteAccountEntry(
+		return _accountEntryLocalService.getOrAddEmptyAccountEntry(
 			externalReferenceCode, companyId, userId, name, type);
 	}
 

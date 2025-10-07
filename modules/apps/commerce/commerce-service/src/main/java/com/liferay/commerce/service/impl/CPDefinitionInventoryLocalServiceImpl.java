@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.service.impl;
 
+import com.liferay.commerce.exception.CPDefinitionInventoryAllowedOrderQuantitiesException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMaxOrderQuantityException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMinOrderQuantityException;
 import com.liferay.commerce.exception.CPDefinitionInventoryMultipleOrderQuantityException;
@@ -20,9 +21,13 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 
 import java.math.BigDecimal;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,6 +55,7 @@ public class CPDefinitionInventoryLocalServiceImpl
 
 		_validateOrderQuantity(
 			minOrderQuantity, maxOrderQuantity, multipleOrderQuantity);
+		_validateAllowedOrderQuantities(allowedOrderQuantities);
 
 		User user = _userLocalService.getUser(userId);
 
@@ -181,6 +187,7 @@ public class CPDefinitionInventoryLocalServiceImpl
 
 		_validateOrderQuantity(
 			minOrderQuantity, maxOrderQuantity, multipleOrderQuantity);
+		_validateAllowedOrderQuantities(allowedOrderQuantities);
 
 		CPDefinitionInventory cpDefinitionInventory =
 			cpDefinitionInventoryPersistence.findByPrimaryKey(
@@ -213,6 +220,20 @@ public class CPDefinitionInventoryLocalServiceImpl
 		return cpDefinitionInventoryPersistence.update(cpDefinitionInventory);
 	}
 
+	private void _validateAllowedOrderQuantities(String allowedOrderQuantities)
+		throws PortalException {
+
+		if (Validator.isNull(allowedOrderQuantities)) {
+			return;
+		}
+
+		Matcher matcher = _pattern.matcher(allowedOrderQuantities);
+
+		if (!matcher.matches()) {
+			throw new CPDefinitionInventoryAllowedOrderQuantitiesException();
+		}
+	}
+
 	private void _validateOrderQuantity(
 			BigDecimal minOrderQuantity, BigDecimal maxOrderQuantity,
 			BigDecimal multipleOrderQuantity)
@@ -235,6 +256,10 @@ public class CPDefinitionInventoryLocalServiceImpl
 				"Multiple order quantity must be greater than 0");
 		}
 	}
+
+	private static final Pattern _pattern = Pattern.compile(
+		"^(\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?)" +
+			"(\\s\\d{1,3}(,\\d{3})*(\\.\\d{1,2})?)*$");
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;

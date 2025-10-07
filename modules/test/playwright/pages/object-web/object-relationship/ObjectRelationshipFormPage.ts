@@ -24,7 +24,7 @@ export class ObjectRelationshipFormPage {
 			.locator(formContainerSelector)
 			.getByLabel('Enable Inheritance');
 		this.inheritanceInfo = page.getByText(
-			'Info:When enabled, permissions and workflow are inherited, all API endpoints are grouped under the parent, and the relationship field is always mandatory.'
+			'Info:When enabled and the relationship field is filled, permissions are inherited, all API endpoints are grouped under the parent.'
 		);
 		this.labelInput = page
 			.locator(formContainerSelector)

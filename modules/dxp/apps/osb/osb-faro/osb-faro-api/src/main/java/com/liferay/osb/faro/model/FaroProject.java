@@ -47,7 +47,13 @@ public interface FaroProject extends FaroProjectModel, PersistedModel {
 
 		};
 
+	public java.util.Date getLastAnniversaryDate() throws Exception;
+
 	public String getProjectId();
+
+	public java.util.Date getStartDate() throws Exception;
+
+	public String getSubscriptionName() throws Exception;
 
 	public boolean isAllowedIPAddress(String ipAddress);
 

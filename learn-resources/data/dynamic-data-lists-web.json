@@ -2,7 +2,7 @@
 	"migrate": {
 		"en_US": {
 			"message": "To avoid data loss, you must migrate your data to Liferay Objects.",
-			"url": "https://learn.liferay.com/web/guest/w/dxp/process-automation/forms/dynamic-data-lists/migrating-to-liferay-objects"
+			"url": "https://learn.liferay.com/web/guest/w/dxp/low-code/forms/dynamic-data-lists/migrating-to-liferay-objects"
 		}
 	}
 }

@@ -1,0 +1,157 @@
+@component-name = "portal-content-management"
+definition {
+
+	property custom.properties = "feature.flag.LPD-35013=false";
+	property database.types = "db2,mariadb,mysql,oracle,postgresql,sqlserver";
+	property osgi.modules.includes = "wiki";
+	property portal.release = "true";
+	property portal.upstream = "true";
+	property test.assert.warning.exceptions = "true";
+	property test.liferay.virtual.instance = "false";
+	property test.run.type = "single";
+	property testray.main.component.name = "Upgrades Content Management";
+
+	setUp {
+		SignIn.signIn();
+
+		var portalURL = PropsUtil.get("portal.url");
+
+		AssertLocation(value1 = "${portalURL}/web/guest?SM_USER=test@liferay.com");
+
+		SearchAdministration.executeReindex();
+	}
+
+	@description = "Skip the instance for performance improvement."
+	@priority = 5
+	test ViewArchive71105 {
+		property data.archive.type = "data-archive-collaboration";
+		property portal.version = "7.1.10.5";
+
+		ValidateKnowledgeBaseUpgrade.viewAndAddKBArticle(portalVersion = "7.1.10.5");
+
+		ValidateKnowledgeBaseUpgrade.editAndDeleteKBArticle();
+
+		ValidateBlogsUpgrade.viewAndAddBlogEntry(video = "true");
+
+		ValidateBlogsUpgrade.editAndDeleteBlogEntry(video = "true");
+
+		ValidateMessageBoardsUpgrade.viewAndAddMessageBoard();
+
+		ValidateMessageBoardsUpgrade.editAndDeleteMessageBoard();
+
+		WikiPortlet.enableWiki();
+
+		ValidateWikiUpgrade.viewAndAddWiki();
+
+		ValidateWikiUpgrade.editAndDeleteWiki();
+	}
+
+	@priority = 5
+	test ViewArchive72104 {
+		property data.archive.type = "data-archive-collaboration";
+		property portal.version = "7.2.10.4";
+
+		ValidateBlogsUpgrade.viewAndAddBlogEntry(video = "true");
+
+		ValidateBlogsUpgrade.editAndDeleteBlogEntry(video = "true");
+
+		ValidateMessageBoardsUpgrade.viewAndAddMessageBoard();
+
+		ValidateMessageBoardsUpgrade.editAndDeleteMessageBoard();
+
+		WikiPortlet.enableWiki();
+
+		ValidateWikiUpgrade.viewAndAddWiki();
+
+		ValidateWikiUpgrade.editAndDeleteWiki();
+	}
+
+	@priority = 5
+	test ViewArchive72107 {
+		property data.archive.type = "data-archive-collaboration";
+		property database.types = "mariadb,mysql,postgresql,db2,oracle,sqlserver";
+		property portal.version = "7.2.10.7";
+
+		ValidateKnowledgeBaseUpgrade.viewAndAddKBArticle();
+
+		ValidateKnowledgeBaseUpgrade.editAndDeleteKBArticle();
+	}
+
+	@priority = 5
+	test ViewArchive73101 {
+		property data.archive.type = "data-archive-collaboration";
+		property portal.acceptance = "true";
+		property portal.version = "7.3.10.1";
+
+		ValidateKnowledgeBaseUpgrade.viewAndAddKBArticle();
+
+		ValidateKnowledgeBaseUpgrade.editAndDeleteKBArticle();
+
+		ValidateBlogsUpgrade.viewAndAddBlogEntry(video = "true");
+
+		ValidateBlogsUpgrade.editAndDeleteBlogEntry(video = "true");
+
+		ValidateMessageBoardsUpgrade.viewAndAddMessageBoard();
+
+		ValidateMessageBoardsUpgrade.editAndDeleteMessageBoard();
+
+		WikiPortlet.enableWiki();
+
+		ValidateWikiUpgrade.viewAndAddWiki();
+
+		ValidateWikiUpgrade.editAndDeleteWiki();
+	}
+
+	@priority = 5
+	test ViewArchive701015 {
+		property data.archive.type = "data-archive-collaboration";
+		property portal.version = "7.0.10.15";
+
+		ValidateBlogsUpgrade.viewAndAddBlogEntry();
+
+		ValidateBlogsUpgrade.editAndDeleteBlogEntry();
+
+		ValidateMessageBoardsUpgrade.viewAndAddMessageBoard();
+
+		ValidateMessageBoardsUpgrade.editAndDeleteMessageBoard();
+
+		WikiPortlet.enableWiki();
+
+		ValidateWikiUpgrade.viewAndAddWiki();
+
+		ValidateWikiUpgrade.editAndDeleteWiki();
+	}
+
+	@priority = 5
+	@refactordone
+	test ViewMessageBoardsArchive625 {
+		property data.archive.type = "data-archive-message-boards";
+		property database.types = "mariadb,mysql,postgresql";
+		property portal.version = "6.2.5";
+
+		ValidateMessageBoardsUpgrade.addMessageBoards();
+
+		ValidateMessageBoardsUpgrade.viewMessageBoards();
+	}
+
+	@priority = 5
+	test ViewMessageBoardsArchive621015 {
+		property data.archive.type = "data-archive-message-boards";
+		property portal.version = "6.2.10.15";
+
+		ValidateMessageBoardsUpgrade.addMessageBoards();
+
+		ValidateMessageBoardsUpgrade.viewMessageBoards();
+	}
+
+	@priority = 5
+	test ViewMessageBoardsArchive621021 {
+		property data.archive.type = "data-archive-message-boards";
+		property portal.version = "6.2.10.21";
+
+		ValidateMessageBoardsUpgrade.addMessageBoards();
+
+		ValidateMessageBoardsUpgrade.viewMessageBoards();
+	}
+
+}

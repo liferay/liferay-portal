@@ -7,6 +7,7 @@ package com.liferay.portal.test.log;
 
 import java.io.Closeable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +19,16 @@ public interface LogCapture extends Closeable {
 	public void close();
 
 	public List<LogEntry> getLogEntries();
+
+	public default List<String> getMessages() {
+		List<String> messages = new ArrayList<>();
+
+		for (LogEntry logEntry : getLogEntries()) {
+			messages.add(logEntry.getMessage());
+		}
+
+		return messages;
+	}
 
 	public List<LogEntry> resetPriority(String priority);
 

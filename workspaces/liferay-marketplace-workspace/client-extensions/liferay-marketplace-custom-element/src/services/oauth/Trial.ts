@@ -13,6 +13,22 @@ export type Availability = {
 };
 
 class TrialOAuth2 extends MarketplaceSpringBootOAuth2 {
+	async checkDomainAvailability(projectId: string) {
+		return this.get(`/domain-availability/${projectId}`);
+	}
+
+	async deleteTrial(orderId: number | string) {
+		await this.delete(`/${orderId}`);
+	}
+
+	async expireTrial(orderId: number | string) {
+		await this.post(`/expire/${orderId}`);
+	}
+
+	async extendTrial(extendTrialId: number | string) {
+		return this.post(`/extend/${extendTrialId}`);
+	}
+
 	async getAvailability(): Promise<Availability> {
 		try {
 			return this.get('/availability');
@@ -27,16 +43,8 @@ class TrialOAuth2 extends MarketplaceSpringBootOAuth2 {
 		}
 	}
 
-	async deleteTrial(orderId: number | string) {
-		await this.delete(`/${orderId}`);
-	}
-
-	async provisioningTrial(orderId: number): Promise<any> {
-
-		// No need to await the following request
-		// Will be processed as a Job.
-
-		this.post(`/provisioning/${orderId}`);
+	async provisioningTrial(orderId: number): Promise<void> {
+		await this.post(`/provisioning/${orderId}`);
 	}
 }
 

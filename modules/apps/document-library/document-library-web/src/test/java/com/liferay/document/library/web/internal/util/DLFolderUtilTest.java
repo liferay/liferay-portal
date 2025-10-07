@@ -76,7 +76,8 @@ public class DLFolderUtilTest {
 
 		Mockito.when(
 			depotEntryLocalService.getGroupConnectedDepotEntries(
-				Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt())
+				Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyInt())
 		).thenReturn(
 			depotEntries
 		);
@@ -112,7 +113,8 @@ public class DLFolderUtilTest {
 
 		Mockito.when(
 			depotEntryLocalService.getGroupConnectedDepotEntries(
-				Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt())
+				Mockito.anyLong(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyInt())
 		).thenReturn(
 			depotEntries
 		);

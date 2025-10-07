@@ -23,6 +23,7 @@ import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -32,9 +33,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -42,7 +45,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.annotation.Generated;
@@ -63,6 +65,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -230,6 +233,89 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteAccountAccountRoleUserAccountAssociation()
+		throws Exception {
+
+		// No namespace
+
+		AccountRole accountRole1 =
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAccountAccountRoleUserAccountAssociation",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"accountId",
+									testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getAccountId(
+										accountRole1));
+								put("accountRoleId", accountRole1.getId());
+
+								put(
+									"userAccountId",
+									testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getUserAccountId());
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAccountAccountRoleUserAccountAssociation"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		AccountRole accountRole2 =
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteAccountAccountRoleUserAccountAssociation",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"accountId",
+										testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getAccountId(
+											accountRole2));
+									put("accountRoleId", accountRole2.getId());
+
+									put(
+										"userAccountId",
+										testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getUserAccountId());
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteAccountAccountRoleUserAccountAssociation"));
+	}
+
+	protected Long
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getAccountId(
+				AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_getUserAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole
+			testGraphQLDeleteAccountAccountRoleUserAccountAssociation_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountRole_addAccountRole();
+	}
+
+	@Test
 	public void testDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress()
 		throws Exception {
 
@@ -273,6 +359,104 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress()
+		throws Exception {
+
+		// No namespace
+
+		AccountRole accountRole1 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getExternalReferenceCode(
+											accountRole1) + "\"");
+								put(
+									"accountRoleExternalReferenceCode",
+									"\"" +
+										accountRole1.
+											getExternalReferenceCode() + "\"");
+
+								put(
+									"emailAddress",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		AccountRole accountRole2 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getExternalReferenceCode(
+												accountRole2) + "\"");
+									put(
+										"accountRoleExternalReferenceCode",
+										"\"" +
+											accountRole2.
+												getExternalReferenceCode() +
+													"\"");
+
+									put(
+										"emailAddress",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress() +
+												"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress"));
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getExternalReferenceCode(
+				AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_getEmailAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByEmailAddress_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountRole_addAccountRole();
+	}
+
+	@Test
 	public void testDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode()
 		throws Exception {
 
@@ -303,6 +487,94 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		AccountRole accountRole1 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"accountExternalReferenceCode",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_getAccountExternalReferenceCode() +
+											"\"");
+								put(
+									"accountRoleExternalReferenceCode",
+									"\"" +
+										accountRole1.
+											getExternalReferenceCode() + "\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										accountRole1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		AccountRole accountRole2 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"accountExternalReferenceCode",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_getAccountExternalReferenceCode() +
+												"\"");
+									put(
+										"accountRoleExternalReferenceCode",
+										"\"" +
+											accountRole2.
+												getExternalReferenceCode() +
+													"\"");
+									put(
+										"externalReferenceCode",
+										"\"" +
+											accountRole2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode"));
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleByExternalReferenceCodeUserAccountByExternalReferenceCode_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountRole_addAccountRole();
 	}
 
 	@Test
@@ -349,6 +621,95 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress()
+		throws Exception {
+
+		// No namespace
+
+		AccountRole accountRole1 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getExternalReferenceCode(
+											accountRole1) + "\"");
+								put("accountRoleId", accountRole1.getId());
+
+								put(
+									"emailAddress",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getEmailAddress() +
+											"\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		AccountRole accountRole2 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getExternalReferenceCode(
+												accountRole2) + "\"");
+									put("accountRoleId", accountRole2.getId());
+
+									put(
+										"emailAddress",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getEmailAddress() +
+												"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress"));
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getExternalReferenceCode(
+				AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_getEmailAddress()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountRole_addAccountRole();
+	}
+
+	@Test
 	public void testDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode()
 		throws Exception {
 
@@ -379,6 +740,85 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		AccountRole accountRole1 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"accountExternalReferenceCode",
+									"\"" +
+										testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_getAccountExternalReferenceCode() +
+											"\"");
+								put("accountRoleId", accountRole1.getId());
+								put(
+									"externalReferenceCode",
+									"\"" +
+										accountRole1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode"));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		AccountRole accountRole2 =
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_addAccountRole();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminUser_v1_0",
+						new GraphQLField(
+							"deleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"accountExternalReferenceCode",
+										"\"" +
+											testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_getAccountExternalReferenceCode() +
+												"\"");
+									put("accountRoleId", accountRole2.getId());
+									put(
+										"externalReferenceCode",
+										"\"" +
+											accountRole2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"Object/deleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode"));
+	}
+
+	protected String
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_getAccountExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole
+			testGraphQLDeleteAccountByExternalReferenceCodeAccountRoleUserAccountByExternalReferenceCode_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountRole_addAccountRole();
 	}
 
 	@Test
@@ -844,6 +1284,107 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetAccountAccountRolesByExternalReferenceCodePage()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetAccountAccountRolesByExternalReferenceCodePage_getExternalReferenceCode();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"accountAccountRolesByExternalReferenceCode",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("keywords", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject accountAccountRolesByExternalReferenceCodeJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/accountAccountRolesByExternalReferenceCode");
+
+		long totalCount =
+			accountAccountRolesByExternalReferenceCodeJSONObject.getLong(
+				"totalCount");
+
+		AccountRole accountRole1 =
+			testGraphQLGetAccountAccountRolesByExternalReferenceCodePageAccountAccountRole_addAccountRole(
+				externalReferenceCode, randomAccountRole());
+
+		AccountRole accountRole2 =
+			testGraphQLGetAccountAccountRolesByExternalReferenceCodePageAccountAccountRole_addAccountRole(
+				externalReferenceCode, randomAccountRole());
+
+		accountAccountRolesByExternalReferenceCodeJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/accountAccountRolesByExternalReferenceCode");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			accountAccountRolesByExternalReferenceCodeJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			accountRole1,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesByExternalReferenceCodeJSONObject.
+						getString("items"))));
+		assertContains(
+			accountRole2,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesByExternalReferenceCodeJSONObject.
+						getString("items"))));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		accountAccountRolesByExternalReferenceCodeJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("headlessAdminUser_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+				"JSONObject/accountAccountRolesByExternalReferenceCode");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			accountAccountRolesByExternalReferenceCodeJSONObject.getLong(
+				"totalCount"));
+
+		assertContains(
+			accountRole1,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesByExternalReferenceCodeJSONObject.
+						getString("items"))));
+		assertContains(
+			accountRole2,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesByExternalReferenceCodeJSONObject.
+						getString("items"))));
+	}
+
+	protected AccountRole
+			testGraphQLGetAccountAccountRolesByExternalReferenceCodePageAccountAccountRole_addAccountRole(
+				String externalReferenceCode, AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetAccountAccountRolesPage() throws Exception {
 		Long accountId = testGetAccountAccountRolesPage_getAccountId();
 		Long irrelevantAccountId =
@@ -1272,6 +1813,81 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetAccountAccountRolesPage() throws Exception {
+		Long accountId = testGetAccountAccountRolesPage_getAccountId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"accountAccountRoles",
+			new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+					put("keywords", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject accountAccountRolesJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/accountAccountRoles");
+
+		long totalCount = accountAccountRolesJSONObject.getLong("totalCount");
+
+		AccountRole accountRole1 = testGraphQLAccountAccountRole_addAccountRole(
+			accountId, randomAccountRole());
+
+		AccountRole accountRole2 = testGraphQLAccountAccountRole_addAccountRole(
+			accountId, randomAccountRole());
+
+		accountAccountRolesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/accountAccountRoles");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			accountAccountRolesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			accountRole1,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesJSONObject.getString("items"))));
+		assertContains(
+			accountRole2,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesJSONObject.getString("items"))));
+
+		// Using the namespace headlessAdminUser_v1_0
+
+		accountAccountRolesJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("headlessAdminUser_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/headlessAdminUser_v1_0",
+			"JSONObject/accountAccountRoles");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			accountAccountRolesJSONObject.getLong("totalCount"));
+
+		assertContains(
+			accountRole1,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesJSONObject.getString("items"))));
+		assertContains(
+			accountRole2,
+			Arrays.asList(
+				AccountRoleSerDes.toDTOs(
+					accountAccountRolesJSONObject.getString("items"))));
+	}
+
+	@Test
 	public void testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage()
 		throws Exception {
 
@@ -1530,6 +2146,25 @@ public abstract class BaseAccountRoleResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostAccountAccountRole() throws Exception {
+		AccountRole randomAccountRole = randomAccountRole();
+
+		AccountRole accountRole = testGraphQLAccountAccountRole_addAccountRole(
+			testGraphQLPostAccountAccountRole_getAccountId(randomAccountRole),
+			randomAccountRole);
+
+		Assert.assertTrue(equals(randomAccountRole, accountRole));
+	}
+
+	protected Long testGraphQLPostAccountAccountRole_getAccountId(
+			AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostAccountAccountRoleByExternalReferenceCode()
 		throws Exception {
 
@@ -1545,6 +2180,29 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 	protected AccountRole
 			testPostAccountAccountRoleByExternalReferenceCode_addAccountRole(
+				AccountRole accountRole)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLPostAccountAccountRoleByExternalReferenceCode()
+		throws Exception {
+
+		AccountRole randomAccountRole = randomAccountRole();
+
+		AccountRole accountRole = testGraphQLAccountAccountRole_addAccountRole(
+			testGraphQLPostAccountAccountRoleByExternalReferenceCode_getAccountId(
+				randomAccountRole),
+			randomAccountRole);
+
+		Assert.assertTrue(equals(randomAccountRole, accountRole));
+	}
+
+	protected Long
+			testGraphQLPostAccountAccountRoleByExternalReferenceCode_getAccountId(
 				AccountRole accountRole)
 		throws Exception {
 
@@ -1795,6 +2453,137 @@ public abstract class BaseAccountRoleResourceTestCase {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
+	protected AccountRole testGraphQLAccountRole_addAccountRole()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole testGraphQLAccountAccountRole_addAccountRole()
+		throws Exception {
+
+		return testGraphQLAccountAccountRole_addAccountRole(
+			testGraphQLAccountAccountRole_getAccountId(), randomAccountRole());
+	}
+
+	protected Long testGraphQLAccountAccountRole_getAccountId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AccountRole testGraphQLAccountAccountRole_addAccountRole(
+			Long accountId, AccountRole accountRole)
+		throws Exception {
+
+		JSONDeserializer<AccountRole> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(AccountRole.class)) {
+
+			if (getGraphQLValue(field.get(accountRole)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(accountRole)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createAccountAccountRole",
+						new HashMap<String, Object>() {
+							{
+								put("accountId", accountId);
+								put("accountRole", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createAccountAccountRole"),
+			AccountRole.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+	}
+
 	protected void assertContains(
 		AccountRole accountRole, List<AccountRole> accountRoles) {
 
@@ -1987,6 +2776,10 @@ public abstract class BaseAccountRoleResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

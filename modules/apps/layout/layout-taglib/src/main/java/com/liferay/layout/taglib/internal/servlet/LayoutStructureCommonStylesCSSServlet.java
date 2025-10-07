@@ -312,7 +312,8 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 				continue;
 			}
 
-			String value = frontendToken.getDefaultValue();
+			String value = String.valueOf(
+				frontendToken.<Object>getDefaultValue());
 
 			JSONObject valueJSONObject =
 				frontendTokenValuesJSONObject.getJSONObject(

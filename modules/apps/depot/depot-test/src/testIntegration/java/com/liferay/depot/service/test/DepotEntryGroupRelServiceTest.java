@@ -6,6 +6,7 @@
 package com.liferay.depot.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
@@ -86,7 +87,7 @@ public class DepotEntryGroupRelServiceTest {
 				_permissionCheckerFactory.create(user));
 
 			_depotEntryGroupRelService.getDepotEntryGroupRels(
-				group.getGroupId(), 0, 20);
+				group.getGroupId(), DepotConstants.TYPE_ASSET_LIBRARY, 0, 20);
 		}
 		catch (PrincipalException.MustHavePermission principalException) {
 			String message = principalException.getMessage();
@@ -125,7 +126,8 @@ public class DepotEntryGroupRelServiceTest {
 		try {
 			List<DepotEntryGroupRel> depotEntryGroupRels =
 				_depotEntryGroupRelService.getDepotEntryGroupRels(
-					group.getGroupId(), 0, 20);
+					group.getGroupId(), DepotConstants.TYPE_ASSET_LIBRARY, 0,
+					20);
 
 			Assert.assertEquals(
 				depotEntryGroupRels.toString(), 1, depotEntryGroupRels.size());
@@ -149,6 +151,7 @@ public class DepotEntryGroupRelServiceTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
 		_depotEntries.add(depotEntry);

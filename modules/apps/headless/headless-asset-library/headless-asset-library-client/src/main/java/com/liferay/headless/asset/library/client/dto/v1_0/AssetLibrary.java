@@ -70,6 +70,28 @@ public class AssetLibrary implements Cloneable, Serializable {
 
 	protected String assetLibraryKey;
 
+	public ConnectedSite[] getConnectedSites() {
+		return connectedSites;
+	}
+
+	public void setConnectedSites(ConnectedSite[] connectedSites) {
+		this.connectedSites = connectedSites;
+	}
+
+	public void setConnectedSites(
+		UnsafeSupplier<ConnectedSite[], Exception>
+			connectedSitesUnsafeSupplier) {
+
+		try {
+			connectedSites = connectedSitesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ConnectedSite[] connectedSites;
+
 	public Long getCreatorUserId() {
 		return creatorUserId;
 	}
@@ -257,26 +279,27 @@ public class AssetLibrary implements Cloneable, Serializable {
 
 	protected Map<String, String> name_i18n;
 
-	public Integer getNumberOfSites() {
-		return numberOfSites;
+	public Integer getNumberOfConnectedSites() {
+		return numberOfConnectedSites;
 	}
 
-	public void setNumberOfSites(Integer numberOfSites) {
-		this.numberOfSites = numberOfSites;
+	public void setNumberOfConnectedSites(Integer numberOfConnectedSites) {
+		this.numberOfConnectedSites = numberOfConnectedSites;
 	}
 
-	public void setNumberOfSites(
-		UnsafeSupplier<Integer, Exception> numberOfSitesUnsafeSupplier) {
+	public void setNumberOfConnectedSites(
+		UnsafeSupplier<Integer, Exception>
+			numberOfConnectedSitesUnsafeSupplier) {
 
 		try {
-			numberOfSites = numberOfSitesUnsafeSupplier.get();
+			numberOfConnectedSites = numberOfConnectedSitesUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Integer numberOfSites;
+	protected Integer numberOfConnectedSites;
 
 	public Integer getNumberOfUserAccounts() {
 		return numberOfUserAccounts;
@@ -320,6 +343,35 @@ public class AssetLibrary implements Cloneable, Serializable {
 
 	protected Integer numberOfUserGroups;
 
+	public com.liferay.headless.asset.library.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.headless.asset.library.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.headless.asset.library.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.headless.asset.library.client.permission.Permission[]
+		permissions;
+
 	public Settings getSettings() {
 		return settings;
 	}
@@ -362,26 +414,32 @@ public class AssetLibrary implements Cloneable, Serializable {
 
 	protected Long siteId;
 
-	public Site[] getSites() {
-		return sites;
+	public Type getType() {
+		return type;
 	}
 
-	public void setSites(Site[] sites) {
-		this.sites = sites;
+	public String getTypeAsString() {
+		if (type == null) {
+			return null;
+		}
+
+		return type.toString();
 	}
 
-	public void setSites(
-		UnsafeSupplier<Site[], Exception> sitesUnsafeSupplier) {
+	public void setType(Type type) {
+		this.type = type;
+	}
 
+	public void setType(UnsafeSupplier<Type, Exception> typeUnsafeSupplier) {
 		try {
-			sites = sitesUnsafeSupplier.get();
+			type = typeUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected Site[] sites;
+	protected Type type;
 
 	public UserAccount[] getUserAccounts() {
 		return userAccounts;
@@ -454,6 +512,39 @@ public class AssetLibrary implements Cloneable, Serializable {
 
 	public String toString() {
 		return AssetLibrarySerDes.toJSON(this);
+	}
+
+	public static enum Type {
+
+		ASSET_LIBRARY("AssetLibrary"), SPACE("Space");
+
+		public static Type create(String value) {
+			for (Type type : values()) {
+				if (Objects.equals(type.getValue(), value) ||
+					Objects.equals(type.name(), value)) {
+
+					return type;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Type(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
 	}
 
 }

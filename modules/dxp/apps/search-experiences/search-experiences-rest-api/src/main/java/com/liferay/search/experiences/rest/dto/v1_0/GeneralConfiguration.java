@@ -386,6 +386,51 @@ public class GeneralConfiguration implements Serializable {
 	private Supplier<String> _languageIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Boolean getLegacyAssetCollectionProvider() {
+		if (_legacyAssetCollectionProviderSupplier != null) {
+			legacyAssetCollectionProvider =
+				_legacyAssetCollectionProviderSupplier.get();
+
+			_legacyAssetCollectionProviderSupplier = null;
+		}
+
+		return legacyAssetCollectionProvider;
+	}
+
+	public void setLegacyAssetCollectionProvider(
+		Boolean legacyAssetCollectionProvider) {
+
+		this.legacyAssetCollectionProvider = legacyAssetCollectionProvider;
+
+		_legacyAssetCollectionProviderSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setLegacyAssetCollectionProvider(
+		UnsafeSupplier<Boolean, Exception>
+			legacyAssetCollectionProviderUnsafeSupplier) {
+
+		_legacyAssetCollectionProviderSupplier = () -> {
+			try {
+				return legacyAssetCollectionProviderUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean legacyAssetCollectionProvider;
+
+	@JsonIgnore
+	private Supplier<Boolean> _legacyAssetCollectionProviderSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getQueryString() {
 		if (_queryStringSupplier != null) {
 			queryString = _queryStringSupplier.get();
@@ -667,6 +712,19 @@ public class GeneralConfiguration implements Serializable {
 			sb.append(_escape(languageId));
 
 			sb.append("\"");
+		}
+
+		Boolean legacyAssetCollectionProvider =
+			getLegacyAssetCollectionProvider();
+
+		if (legacyAssetCollectionProvider != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"legacyAssetCollectionProvider\": ");
+
+			sb.append(legacyAssetCollectionProvider);
 		}
 
 		String queryString = getQueryString();

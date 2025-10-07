@@ -28,7 +28,6 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
 import com.liferay.commerce.product.catalog.CPQuery;
-import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.data.source.CPDataSourceResult;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
@@ -37,7 +36,6 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -116,7 +114,7 @@ public class CommerceSearchResource {
 			searchItemModels.addAll(
 				_searchProducts(
 					themeDisplay.getCompanyId(), layout.getGroupId(),
-					commerceContext, queryString, themeDisplay));
+					queryString, themeDisplay));
 
 			if (themeDisplay.isSignedIn()) {
 				searchItemModels.addAll(
@@ -445,8 +443,8 @@ public class CommerceSearchResource {
 	}
 
 	private List<SearchItemModel> _searchProducts(
-			long companyId, long groupId, CommerceContext commerceContext,
-			String queryString, ThemeDisplay themeDisplay)
+			long companyId, long groupId, String queryString,
+			ThemeDisplay themeDisplay)
 		throws PortalException {
 
 		List<SearchItemModel> searchItemModels = new ArrayList<>();
@@ -475,23 +473,15 @@ public class CommerceSearchResource {
 			accountEntryId = accountEntry.getAccountEntryId();
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
+		if (commerceChannel != null) {
 			attributes.put(
-				CPField.CP_CONFIGURATION_LIST_IDS,
-				commerceContext.getCPConfigurationListIds());
+				"commerceChannelGroupId", commerceChannel.getGroupId());
 		}
-		else {
-			if (commerceChannel != null) {
-				attributes.put(
-					"commerceChannelGroupId", commerceChannel.getGroupId());
-			}
 
-			if (accountEntry != null) {
-				attributes.put(
-					"commerceAccountGroupIds",
-					_accountGroupLocalService.getAccountGroupIds(
-						accountEntryId));
-			}
+		if (accountEntry != null) {
+			attributes.put(
+				"commerceAccountGroupIds",
+				_accountGroupLocalService.getAccountGroupIds(accountEntryId));
 		}
 
 		searchContext.setAttributes(attributes);

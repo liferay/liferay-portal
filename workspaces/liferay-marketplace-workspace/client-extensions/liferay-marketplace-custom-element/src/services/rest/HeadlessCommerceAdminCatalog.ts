@@ -7,8 +7,7 @@ import {UploadedImage} from '../../components/FileList/FileList';
 import {MarketplaceProduct} from '../../entity/MarketplaceProduct';
 import {axios} from '../../utils/axios';
 import fetcher from '../fetcher';
-
-type Metrics = {[key: string]: {totalCount: number}};
+import GraphQL from './HeadlessGraphQL';
 
 export default class HeadlessCommerceAdminCatalog {
 	static async addOrUpdateProductImageByExternalReferenceCode(
@@ -79,7 +78,7 @@ export default class HeadlessCommerceAdminCatalog {
 				name: {en_US: name},
 				productConfiguration: {
 					allowBackOrder: true,
-					maxOrderQuantity: 1,
+					maxOrderQuantity: 99,
 				},
 				productSpecifications,
 				productStatus,
@@ -143,12 +142,6 @@ export default class HeadlessCommerceAdminCatalog {
 		);
 	}
 
-	static async getSpecifications(searchParams = new URLSearchParams()) {
-		return fetcher<APIResponse>(
-			`/o/headless-commerce-admin-catalog/v1.0/specifications?${searchParams}`
-		);
-	}
-
 	static async getOptions() {
 		return fetcher<APIResponse<CommerceOption>>(
 			'/o/headless-commerce-admin-catalog/v1.0/options'
@@ -187,49 +180,18 @@ export default class HeadlessCommerceAdminCatalog {
 		};
 	}
 
-	static async getProductsDashboardKPI(filters: Record<string, string>) {
-		const productQueries = Object.entries(filters)
-			.map(
-				([
-					alias,
-					filter,
-				]) => `${alias}: products(filter: "${filter}", pageSize: 1) {
-					totalCount
-			  	}
-			`
-			)
-			.join('\n');
-
-		const query = `
-		  {
-			metrics: headlessCommerceAdminCatalog_v1_0 {
-			  ${productQueries}
-			}
-		  }
-		`;
-
-		try {
-			const response = await fetcher.post<{
-				data: {
-					metrics: Metrics;
-				};
-			}>(`/o/graphql`, {query});
-
-			return response;
-		}
-		catch {
-			const metrics: Metrics = {};
-
-			for (const filterKey in filters) {
-				metrics[filterKey] = {totalCount: 0};
-			}
-
-			return {
-				data: {
-					metrics,
-				},
-			};
-		}
+	static async getProductsDashboardKPI(
+		filters: Record<string, string>,
+		options?: Record<string, any>
+	) {
+		return GraphQL.metrics<Product>(
+			{
+				group: 'headlessCommerceAdminCatalog_v1_0',
+				name: 'products',
+			},
+			filters,
+			options
+		);
 	}
 
 	static async getProductOptions(productId: number) {
@@ -250,6 +212,18 @@ export default class HeadlessCommerceAdminCatalog {
 		);
 
 		return (response?.items ?? []) as ProductSpecification[];
+	}
+
+	static async getSku(skuId: number, searchParams = new URLSearchParams()) {
+		return fetcher<SKU>(
+			`o/headless-commerce-admin-catalog/v1.0/skus/${skuId}?${searchParams}`
+		);
+	}
+
+	static async getSpecifications(searchParams = new URLSearchParams()) {
+		return fetcher<APIResponse>(
+			`/o/headless-commerce-admin-catalog/v1.0/specifications?${searchParams}`
+		);
 	}
 
 	static async updateProductByExternalReferenceCode(

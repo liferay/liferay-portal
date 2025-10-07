@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {filesize} from 'filesize';
 import {ReactNode, createContext, useContext, useReducer} from 'react';
 import {useParams} from 'react-router-dom';
 import useSWR from 'swr';
@@ -21,7 +22,8 @@ import {
 } from '../enums/Product';
 import {useGetVocabulariesAndCategories} from '../hooks/data/useGetVocabulariesAndCategories';
 import HeadlessCommerceAdminCatalogImpl from '../services/rest/HeadlessCommerceAdminCatalog';
-import {getRandomID} from '../utils/string';
+import HeadlessDelivery from '../services/rest/HeadlessDelivery';
+import HeadlessPublisherAsset from '../services/rest/HeadlessPublisherAsset';
 
 export type LicensePrice = {key: number; value: number};
 export type LicenseType = 'Perpetual' | 'Subscription';
@@ -36,6 +38,13 @@ export type LicensingPrices = {
 		};
 		trial?: undefined;
 	};
+};
+
+export type LiferayPackage = {
+	file: any;
+	id: string;
+	uploaded: boolean;
+	versions: string[];
 };
 
 export type PriceEntry = {
@@ -53,6 +62,7 @@ export enum NewAppTypes {
 	SET_BUILD = 'SET_BUILD',
 	SET_CLEANUP = 'SET_CLEANUP',
 	SET_CONTEXT = 'SET_CONTEXT',
+	SET_DELETE_BUILD = 'SET_DELETE_BUILD',
 	SET_DELETE_IMAGE = 'SET_DELETE_IMAGE',
 	SET_LICENSING = 'SET_LICENSING',
 	SET_LICENSING_ADD_PRICE = 'SET_LICENSING_ADD_PRICE',
@@ -75,11 +85,7 @@ export type NewAppInitialState = {
 	build: {
 		appType: ProductType;
 
-		liferayPackages: {
-			file: any;
-			id: string;
-			versions: string[];
-		}[];
+		liferayPackages: LiferayPackage[];
 		resourceRequirements: {
 			cpu?: string;
 			ram?: string;
@@ -114,6 +120,7 @@ export type NewAppInitialState = {
 		}[];
 	};
 	references: {
+		buildsToDelete: LiferayPackage[];
 		flags: {
 			canModifyProductProfileCategory: boolean;
 		};
@@ -144,6 +151,7 @@ type NewAppPayload = {
 	[NewAppTypes.SET_BUILD]: Partial<NewAppInitialState['build']>;
 	[NewAppTypes.SET_CLEANUP]: undefined;
 	[NewAppTypes.SET_CONTEXT]: Product;
+	[NewAppTypes.SET_DELETE_BUILD]: LiferayPackage;
 	[NewAppTypes.SET_DELETE_IMAGE]: string;
 	[NewAppTypes.SET_LICENSING]: Partial<NewAppInitialState['licensing']>;
 	[NewAppTypes.SET_LICENSING_ADD_PRICE]: {
@@ -211,6 +219,7 @@ const newAppInitialState: NewAppInitialState = {
 		tags: [],
 	},
 	references: {
+		buildsToDelete: [],
 		flags: {canModifyProductProfileCategory: false},
 		imagesToDelete: [],
 		vocabulariesAndCategories: {},
@@ -253,6 +262,7 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 				action.payload.appType &&
 				action.payload.appType !== state.build.appType
 			) {
+				state.references.buildsToDelete = state.build.liferayPackages;
 				state.build.liferayPackages = [];
 			}
 
@@ -261,6 +271,19 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 				build: {
 					...state.build,
 					...action.payload,
+				},
+			};
+		}
+
+		case NewAppTypes.SET_DELETE_BUILD: {
+			return {
+				...state,
+				references: {
+					...state.references,
+					buildsToDelete: [
+						...(state?.references?.buildsToDelete || []),
+						action.payload,
+					],
 				},
 			};
 		}
@@ -308,26 +331,8 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 			);
 
 			const appIcon = (_product.images ?? []).find(({tags}) =>
-				tags?.includes(ProductTags.SOLUTION_PROFILE_APP_ICON)
+				tags?.includes(ProductTags.APP_ICON)
 			);
-
-			const liferayPackages = _product.productVirtualSettings
-				? _product.productVirtualSettings.productVirtualSettingsFileEntries.map(
-						(fileEntry) => {
-							return {
-								file: {
-									error: false,
-									fileName: fileEntry.src,
-									id: getRandomID(),
-									readableSize: '',
-									src: fileEntry.src,
-								},
-								id: getRandomID(),
-								versions: fileEntry.version.split(','),
-							};
-						}
-					)
-				: [];
 
 			const categories = filterProductVocabularies(
 				_product,
@@ -344,7 +349,6 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 						ProductSpecificationKey.APP_TYPE
 					),
 					compatibleOffering: [],
-					liferayPackages,
 					resourceRequirements: {
 						cpu: specificationsMap.get(
 							ProductSpecificationKey.APP_BUILD_NUMBER_OF_CPUS
@@ -399,13 +403,14 @@ const reducer = (state: NewAppInitialState, action: AppActions) => {
 				storefront: {
 					...newState.storefront,
 					images: storeFrontImages.map(
-						({externalReferenceCode, src, title}) => ({
+						({externalReferenceCode, src, tags, title}) => ({
 							changed: false,
 							fileName: title.en_US,
 							id: externalReferenceCode,
 							imageDescription: title.en_US,
 							preview: new URL(src).pathname,
 							progress: 100,
+							tags,
 							uploaded: true,
 						})
 					),
@@ -652,7 +657,7 @@ export const NewAppContext = createContext<
 >([newAppInitialState, () => null]);
 
 type NewAppContextProviderProps = {
-	catalog: Catalog;
+	catalog?: Catalog;
 	children: ReactNode;
 };
 
@@ -678,7 +683,7 @@ export default function NewAppContextProvider({
 				productId as string,
 				new URLSearchParams({
 					nestedFields:
-						'attachments,catalog,images,productSpecifications,productOptions,productVirtualSettings,skus',
+						'attachments,catalog,images,productSpecifications,productOptions,skus',
 				})
 			),
 		{
@@ -703,6 +708,47 @@ export default function NewAppContextProvider({
 		}
 	);
 
+	useSWR(
+		product ? `/product/publisher-assetses/${productId}` : null,
+		() =>
+			HeadlessPublisherAsset.getProductPublisherAssetsByProductId(
+				product!.id
+			).then((response) => response.items),
+		{
+			onSuccess: async (publisherAssetses) => {
+				const liferayPackages = await Promise.all(
+					publisherAssetses.map(async (publisherAsset) => {
+						const sourceFileDocument =
+							await HeadlessDelivery.getDocument(
+								publisherAsset.sourceCode.id
+							);
+
+						return {
+							file: {
+								error: false,
+								fileName: publisherAsset.sourceCode.name,
+								id: publisherAsset.sourceCode.id,
+								readableSize: filesize(
+									sourceFileDocument.sizeInBytes
+								),
+								src: publisherAsset.sourceCode.link.href,
+							},
+							id: publisherAsset.id,
+							uploaded: true,
+							versions: publisherAsset.version.split(','),
+						};
+					})
+				);
+				dispatch({
+					payload: {
+						liferayPackages,
+					},
+					type: NewAppTypes.SET_BUILD,
+				});
+			},
+		}
+	);
+
 	if (isLoadingVocabularies) {
 		return <Loading />;
 	}
@@ -712,7 +758,7 @@ export default function NewAppContextProvider({
 			value={[
 				{
 					...state,
-					catalog,
+					catalog: catalog as Catalog,
 					loading: isLoadingVocabularies || isLoading,
 					references: {
 						...state.references,

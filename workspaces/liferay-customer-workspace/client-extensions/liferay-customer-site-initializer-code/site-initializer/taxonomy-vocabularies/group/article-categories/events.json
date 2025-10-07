@@ -1,0 +1,10 @@
+{
+	"name": "Events",
+	"name_i18n": {
+		"en_US": "Events",
+		"es-ES": "Eventos",
+		"ja-JP": "イベント",
+		"pt-BR": "Eventos"
+	},
+	"viewableBy": "Anyone"
+}

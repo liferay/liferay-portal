@@ -5,7 +5,9 @@
 
 package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.ERCAssetLibraryTestEntity;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCAssetLibraryTestEntityResource;
+import com.liferay.portal.vulcan.pagination.Page;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -20,4 +22,45 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 public class ERCAssetLibraryTestEntityResourceImpl
 	extends BaseERCAssetLibraryTestEntityResourceImpl {
+
+	@Override
+	protected Page<ERCAssetLibraryTestEntity>
+			doGetAssetLibraryERCAssetLibraryTestEntitiesPage(
+				String assetLibraryExternalReferenceCode)
+		throws Exception {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ERCAssetLibraryTestEntity
+			doGetAssetLibraryERCAssetLibraryTestEntity(
+				String assetLibraryExternalReferenceCode,
+				String ercAssetLibraryTestEntityExternalReferenceCode)
+		throws Exception {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ERCAssetLibraryTestEntity
+			doPostAssetLibraryERCAssetLibraryTestEntity(
+				String assetLibraryExternalReferenceCode,
+				ERCAssetLibraryTestEntity ercAssetLibraryTestEntity)
+		throws Exception {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ERCAssetLibraryTestEntity
+			doPutAssetLibraryERCAssetLibraryTestEntity(
+				String assetLibraryExternalReferenceCode,
+				String ercAssetLibraryTestEntityExternalReferenceCode,
+				ERCAssetLibraryTestEntity ercAssetLibraryTestEntity)
+		throws Exception {
+
+		throw new UnsupportedOperationException();
+	}
+
 }

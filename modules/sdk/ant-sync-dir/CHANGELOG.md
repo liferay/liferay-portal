@@ -1,5 +1,22 @@
 # Liferay Ant Sync Dir Change Log
 
+## 1.0.3 - 2025-01-07
+
+### Commits
+- [LPD-34518] Fix compile, source option 6 is no longer supported by jdk17
+(e84a22ccfd)
+- [LRCI-4941] Only sync the directory once per Jenkins build (d7dda47562)
+- [LPD-36975] liferay-portal: auto SF (b1c315ad65)
+- [LPS-105380] SF, inline (e11238b1a3)
+- [LPS-115364] Update ant to 1.9.15 (2c4390c048)
+- [LPS-105380] Rename exception variables (b3173da81b)
+
+### Dependencies
+- [LPD-36975] Update the ant dependency to version 1.10.14.
+- [LPS-137126] Update the ant dependency to version 1.10.11.
+- [LPS-129842] Update the ant dependency to version 1.10.9.
+- [LPS-115364] Update the ant dependency to version 1.9.15.
+
 ## 1.0.2 - 2019-07-30
 
 ### Commits
@@ -31,9 +48,16 @@
 - [LPS-73858] Update to specify JDK6 (929ca92937)
 - [LPS-73858] Switch to using JDK6 API (e92a2fb1e6)
 
+[LPD-34518]: https://issues.liferay.com/browse/LPD-34518
+[LPD-36975]: https://issues.liferay.com/browse/LPD-36975
 [LPS-73858]: https://issues.liferay.com/browse/LPS-73858
 [LPS-75049]: https://issues.liferay.com/browse/LPS-75049
 [LPS-77425]: https://issues.liferay.com/browse/LPS-77425
 [LPS-96095]: https://issues.liferay.com/browse/LPS-96095
 [LPS-98801]: https://issues.liferay.com/browse/LPS-98801
+[LPS-105380]: https://issues.liferay.com/browse/LPS-105380
+[LPS-115364]: https://issues.liferay.com/browse/LPS-115364
+[LPS-129842]: https://issues.liferay.com/browse/LPS-129842
+[LPS-137126]: https://issues.liferay.com/browse/LPS-137126
 [LRCI-498]: https://issues.liferay.com/browse/LRCI-498
+[LRCI-4941]: https://issues.liferay.com/browse/LRCI-4941

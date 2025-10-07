@@ -18,6 +18,8 @@ public interface TestClassReport {
 
 	public long getDuration();
 
+	public String getModuleAppPath();
+
 	public long getOverheadDuration();
 
 	public String getStatus();

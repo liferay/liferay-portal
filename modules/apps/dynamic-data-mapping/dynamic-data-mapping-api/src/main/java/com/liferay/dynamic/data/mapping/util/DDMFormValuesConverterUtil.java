@@ -104,8 +104,15 @@ public class DDMFormValuesConverterUtil {
 				ddmFormFieldValuesMap.get(nestedDDMFormField.getName());
 
 			if (nestedDDMFormFieldValues == null) {
+				DDMFormFieldValue nestedDDMFormFieldValue =
+					_createDefaultDDMFormFieldValue(nestedDDMFormField);
+
 				ddmFormFieldValue.addNestedDDMFormFieldValue(
-					_createDefaultDDMFormFieldValue(nestedDDMFormField));
+					nestedDDMFormFieldValue);
+
+				_populateNestedValues(
+					nestedDDMFormField, nestedDDMFormFieldValue,
+					ddmFormFieldValuesMap);
 			}
 			else {
 				for (DDMFormFieldValue nestedDDMFormFieldValue :

@@ -258,7 +258,7 @@ const MillerColumns = ({
 	);
 
 	const onItemDrop = useCallback(
-		(sources, target, position) => {
+		(sources, target, position = DROP_POSITIONS.bottom) => {
 			let targetId;
 			let targetIndex;
 
@@ -375,7 +375,6 @@ const MillerColumns = ({
 								key={index}
 								namespace={namespace}
 								onItemDrop={onItemDrop}
-								parent={column.parent}
 								rtl={rtl}
 							/>
 						))}

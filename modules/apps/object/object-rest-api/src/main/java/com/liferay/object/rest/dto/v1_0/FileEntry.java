@@ -49,6 +49,47 @@ public class FileEntry implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public String getAlternativeText() {
+		if (_alternativeTextSupplier != null) {
+			alternativeText = _alternativeTextSupplier.get();
+
+			_alternativeTextSupplier = null;
+		}
+
+		return alternativeText;
+	}
+
+	public void setAlternativeText(String alternativeText) {
+		this.alternativeText = alternativeText;
+
+		_alternativeTextSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAlternativeText(
+		UnsafeSupplier<String, Exception> alternativeTextUnsafeSupplier) {
+
+		_alternativeTextSupplier = () -> {
+			try {
+				return alternativeTextUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String alternativeText;
+
+	@JsonIgnore
+	private Supplier<String> _alternativeTextSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
 			externalReferenceCode = _externalReferenceCodeSupplier.get();
@@ -300,6 +341,93 @@ public class FileEntry implements Serializable {
 	@JsonIgnore
 	private Supplier<Link> _linkSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "optional field that specifies the metadata of the file, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.metadata`)"
+	)
+	@Valid
+	public Map<String, Object> getMetadata() {
+		if (_metadataSupplier != null) {
+			metadata = _metadataSupplier.get();
+
+			_metadataSupplier = null;
+		}
+
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, Object> metadata) {
+		this.metadata = metadata;
+
+		_metadataSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMetadata(
+		UnsafeSupplier<Map<String, Object>, Exception> metadataUnsafeSupplier) {
+
+		_metadataSupplier = () -> {
+			try {
+				return metadataUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "optional field that specifies the metadata of the file, can be embedded with nestedFields (the format of the nested field must be `<attachment field name>.metadata`)"
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Map<String, Object> metadata;
+
+	@JsonIgnore
+	private Supplier<Map<String, Object>> _metadataSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getMimeType() {
+		if (_mimeTypeSupplier != null) {
+			mimeType = _mimeTypeSupplier.get();
+
+			_mimeTypeSupplier = null;
+		}
+
+		return mimeType;
+	}
+
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+
+		_mimeTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMimeType(
+		UnsafeSupplier<String, Exception> mimeTypeUnsafeSupplier) {
+
+		_mimeTypeSupplier = () -> {
+			try {
+				return mimeTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String mimeType;
+
+	@JsonIgnore
+	private Supplier<String> _mimeTypeSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -496,6 +624,22 @@ public class FileEntry implements Serializable {
 
 		sb.append("{");
 
+		String alternativeText = getAlternativeText();
+
+		if (alternativeText != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"alternativeText\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(alternativeText));
+
+			sb.append("\"");
+		}
+
 		String externalReferenceCode = getExternalReferenceCode();
 
 		if (externalReferenceCode != null) {
@@ -578,6 +722,34 @@ public class FileEntry implements Serializable {
 			sb.append("\"link\": ");
 
 			sb.append(String.valueOf(link));
+		}
+
+		Map<String, Object> metadata = getMetadata();
+
+		if (metadata != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"metadata\": ");
+
+			sb.append(_toJSON(metadata));
+		}
+
+		String mimeType = getMimeType();
+
+		if (mimeType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"mimeType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(mimeType));
+
+			sb.append("\"");
 		}
 
 		String name = getName();

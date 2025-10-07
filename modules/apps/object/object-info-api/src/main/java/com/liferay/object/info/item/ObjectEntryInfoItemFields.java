@@ -7,6 +7,7 @@ package com.liferay.object.info.item;
 
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.type.DateInfoFieldType;
+import com.liferay.info.field.type.DateTimeInfoFieldType;
 import com.liferay.info.field.type.FriendlyURLInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
@@ -37,11 +38,22 @@ public class ObjectEntryInfoItemFields {
 			InfoLocalizedValue.localize(
 				ObjectEntryInfoItemFields.class, "create-date")
 		).build();
+	public static final InfoField<DateTimeInfoFieldType>
+		expirationDateInfoField = BuilderHolder._builder.infoFieldType(
+			DateTimeInfoFieldType.INSTANCE
+		).name(
+			"expirationDate"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				ObjectEntryInfoItemFields.class, "expiration-date")
+		).build();
 	public static final InfoField<TextInfoFieldType>
 		externalReferenceCodeInfoField = BuilderHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
 		).name(
 			"externalReferenceCode"
+		).editable(
+			true
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				ObjectEntryInfoItemFields.class, "external-reference-code")
@@ -72,6 +84,15 @@ public class ObjectEntryInfoItemFields {
 			InfoLocalizedValue.localize(
 				ObjectEntryInfoItemFields.class, "publish-date")
 		).build();
+	public static final InfoField<DateTimeInfoFieldType> reviewDateInfoField =
+		BuilderHolder._builder.infoFieldType(
+			DateTimeInfoFieldType.INSTANCE
+		).name(
+			"reviewDate"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				ObjectEntryInfoItemFields.class, "review-date")
+		).build();
 	public static final InfoField<TextInfoFieldType> statusInfoField =
 		BuilderHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
@@ -90,6 +111,36 @@ public class ObjectEntryInfoItemFields {
 			InfoLocalizedValue.localize(
 				ObjectEntryInfoItemFields.class, "user-profile-image")
 		).build();
+
+	public static InfoField<DateTimeInfoFieldType> getDisplayDateInfoField(
+		ObjectDefinition objectDefinition) {
+
+		return BuilderHolder._builder.infoFieldType(
+			DateTimeInfoFieldType.INSTANCE
+		).name(
+			"displayDate"
+		).editable(
+			objectDefinition.isEnableObjectEntrySchedule()
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				ObjectEntryInfoItemFields.class, "display-date")
+		).build();
+	}
+
+	public static InfoField<DateTimeInfoFieldType> getExpirationDateInfoField(
+		ObjectDefinition objectDefinition) {
+
+		return BuilderHolder._builder.infoFieldType(
+			DateTimeInfoFieldType.INSTANCE
+		).name(
+			"expirationDate"
+		).editable(
+			objectDefinition.isEnableObjectEntrySchedule()
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				ObjectEntryInfoItemFields.class, "expiration-date")
+		).build();
+	}
 
 	public static InfoField getFriendlyURLInfoField(
 		boolean editable, String name, String namespace) {
@@ -124,6 +175,21 @@ public class ObjectEntryInfoItemFields {
 				ObjectEntryInfoItemFields.class, "friendly-url")
 		).localizable(
 			true
+		).build();
+	}
+
+	public static InfoField<DateTimeInfoFieldType> getReviewDateInfoField(
+		ObjectDefinition objectDefinition) {
+
+		return BuilderHolder._builder.infoFieldType(
+			DateTimeInfoFieldType.INSTANCE
+		).name(
+			"reviewDate"
+		).editable(
+			objectDefinition.isEnableObjectEntrySchedule()
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				ObjectEntryInfoItemFields.class, "review-date")
 		).build();
 	}
 

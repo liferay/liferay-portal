@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -143,7 +145,13 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 				GetterUtil.getLong(groupId));
 
 			if (group == null) {
-				continue;
+				group = _groupLocalService.fetchGroup(
+					companyId, PortalUtil.getClassNameId(Organization.class),
+					GetterUtil.getLong(groupId));
+
+				if (group == null) {
+					continue;
+				}
 			}
 
 			UnicodeProperties typeSettingsUnicodeProperties =
@@ -332,9 +340,7 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 			String analyticsChannelId, long companyId, Long[] dataSourceSiteIds)
 		throws Exception {
 
-		_updateTypeSetting(
-			analyticsChannelId, _groupClassNameIdSupplier.get(), companyId,
-			dataSourceSiteIds, false);
+		_updateTypeSetting(analyticsChannelId, dataSourceSiteIds, false);
 
 		AnalyticsConfiguration analyticsConfiguration =
 			getAnalyticsConfiguration(companyId);
@@ -350,9 +356,7 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 			getSiteIds(analyticsChannelId, companyId),
 			siteId -> !ArrayUtil.contains(dataSourceSiteIds, siteId));
 
-		_updateTypeSetting(
-			analyticsChannelId, _groupClassNameIdSupplier.get(), companyId,
-			removeSiteIds, true);
+		_updateTypeSetting(analyticsChannelId, removeSiteIds, true);
 
 		return ArrayUtil.filter(
 			siteIds.toArray(new String[0]),
@@ -365,9 +369,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 		_commerceChannelClassNameIdSupplier =
 			_classNameLocalService.getClassNameIdSupplier(
 				_CLASS_NAME_COMMERCE_CHANNEL);
-		_groupClassNameIdSupplier =
-			_classNameLocalService.getClassNameIdSupplier(
-				Group.class.getName());
 	}
 
 	private String _getConfigurationPid() {
@@ -466,6 +467,46 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 		}
 	}
 
+	private <T> void _updateTypeSetting(
+		String analyticsChannelId, T[] groupIds, boolean remove) {
+
+		for (T groupId : groupIds) {
+			Group group = _groupLocalService.fetchGroup(
+				GetterUtil.getLong(groupId));
+
+			if (group == null) {
+				continue;
+			}
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			if (remove) {
+				if (!analyticsChannelId.equals(
+						typeSettingsUnicodeProperties.get(
+							"analyticsChannelId"))) {
+
+					continue;
+				}
+
+				typeSettingsUnicodeProperties.remove("analyticsChannelId");
+			}
+			else {
+				if (analyticsChannelId.equals(
+						typeSettingsUnicodeProperties.get(
+							"analyticsChannelId"))) {
+
+					continue;
+				}
+
+				typeSettingsUnicodeProperties.setProperty(
+					"analyticsChannelId", analyticsChannelId);
+			}
+
+			_groupLocalService.updateGroup(group);
+		}
+	}
+
 	private static final String _CLASS_NAME_COMMERCE_CHANNEL =
 		"com.liferay.commerce.product.model.CommerceChannel";
 
@@ -501,8 +542,6 @@ public class AnalyticsSettingsManagerImpl implements AnalyticsSettingsManager {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
-
-	private Supplier<Long> _groupClassNameIdSupplier;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

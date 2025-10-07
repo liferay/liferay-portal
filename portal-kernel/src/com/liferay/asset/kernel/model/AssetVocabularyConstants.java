@@ -10,9 +10,9 @@ package com.liferay.asset.kernel.model;
  */
 public class AssetVocabularyConstants {
 
-	public static final long INCOMPLETE_VOCABULARY_ID = -1;
+	public static final long EMPTY_VOCABULARY_ID = -1;
 
-	public static final int VISIBILITY_TYPE_INCOMPLETE = -1;
+	public static final int VISIBILITY_TYPE_EMPTY = -1;
 
 	public static final int VISIBILITY_TYPE_INTERNAL = 1;
 

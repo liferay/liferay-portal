@@ -23,8 +23,8 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.suggest.QuerySuggester;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.search.BaseSearchRequest;
@@ -99,7 +99,7 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 
 			if (end == QueryUtil.ALL_POS) {
 				end = GetterUtil.getInteger(
-					_props.get(PropsKeys.INDEX_SEARCH_LIMIT));
+					PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
 			}
 			else if (end < 0) {
 				throw new IllegalArgumentException("Invalid end " + end);
@@ -401,9 +401,6 @@ public class SolrIndexSearcher extends BaseIndexSearcher {
 
 	private volatile String _defaultCollection;
 	private volatile boolean _logExceptionsOnly;
-
-	@Reference
-	private Props _props;
 
 	@Reference(target = "(search.engine.impl=Solr)")
 	private QuerySuggester _querySuggester;

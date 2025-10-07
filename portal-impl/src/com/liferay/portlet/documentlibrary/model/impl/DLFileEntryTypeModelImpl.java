@@ -207,7 +207,7 @@ public class DLFileEntryTypeModelImpl
 		FINDER_CACHE_ENABLED_DLFILEENTRYTYPES_DLFOLDERS = true;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.document.library.kernel.model.DLFileEntryType"));
 
 	public DLFileEntryTypeModelImpl() {

@@ -20,11 +20,9 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
 
 import jakarta.portlet.ResourceRequest;
 
@@ -54,7 +52,6 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 
 		_setUpAddFormInstanceRecordMVCResourceCommand();
 		_setUpDDMFormInstance();
-		_setUpPropsUtil();
 		_setUpLanguage();
 		_setUpLanguageUtil();
 	}
@@ -163,10 +160,6 @@ public class AddFormInstanceRecordMVCResourceCommandTest {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		languageUtil.setLanguage(_language);
-	}
-
-	private static void _setUpPropsUtil() {
-		PropsUtil.setProps(new PropsImpl());
 	}
 
 	private String _read(String fileName) throws Exception {

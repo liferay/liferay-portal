@@ -28,15 +28,15 @@ public class CPDefinitionInventoryImpl extends CPDefinitionInventoryBaseImpl {
 		}
 
 		allowedOrderQuantitiesString = allowedOrderQuantitiesString.replaceAll(
-			" *(, *)|(\\. *)|( +)", StringPool.COMMA);
+			StringPool.COMMA, StringPool.BLANK);
 
-		int[] allowedOrderQuantities = StringUtil.split(
-			allowedOrderQuantitiesString, 0);
+		BigDecimal[] allowedOrderQuantities = TransformUtil.transform(
+			StringUtil.split(allowedOrderQuantitiesString, StringPool.SPACE),
+			BigDecimal::new, BigDecimal.class);
 
 		Arrays.sort(allowedOrderQuantities);
 
-		return TransformUtil.transform(
-			allowedOrderQuantities, BigDecimal::valueOf, BigDecimal.class);
+		return allowedOrderQuantities;
 	}
 
 }

@@ -1,0 +1,106 @@
+@import 'atlas-variables';
+
+.asset-navigation-container {
+	--asset-sidebar-layout-width: 472px;
+
+	@include media-breakpoint-up(sm) {
+		&.c-slideout-push-end {
+			padding-right: var(--asset-sidebar-layout-width);
+		}
+
+		.sidebar {
+			width: var(--asset-sidebar-layout-width);
+		}
+	}
+}
+
+.sidebar-layout {
+	--fds-sidebar-layout-width: 472px;
+
+	@include media-breakpoint-up(sm) {
+		.fds {
+			&-info-panel {
+				--sidebar-layout-width: var(--fds-sidebar-layout-width);
+			}
+
+			&.c-slideout-push-end {
+				padding-right: var(--fds-sidebar-layout-width);
+			}
+		}
+	}
+}
+
+.c-slideout .sidebar {
+	.asset-metadata-section {
+		margin-top: 1rem;
+
+		&-title {
+			font-weight: 600;
+			margin-bottom: 0;
+		}
+
+		p {
+			display: block;
+			font-size: 0.875rem;
+			margin-bottom: 0;
+		}
+	}
+
+	.asset-type-default-view {
+		.c-empty-state-title {
+			display: none;
+		}
+
+		.c-empty-state-text {
+			color: $gray-600;
+			margin-top: 2rem;
+		}
+	}
+
+	.card-image {
+		height: 250px;
+		object-fit: contain;
+		width: 100%;
+	}
+
+	.nav {
+		flex-wrap: nowrap;
+	}
+
+	.nav-tabs {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	.panel-unstyled .panel-header.panel-header-link {
+		border-radius: 0;
+	}
+
+	.sidebar-header {
+		border-bottom-width: 0;
+
+		.asset-icon {
+			font-size: 20px;
+
+			&-files {
+				color: $red-l1;
+			}
+		}
+
+		.asset-title {
+			margin-bottom: 0;
+		}
+
+		.component-title {
+			margin-right: 0.5rem;
+		}
+	}
+
+	.tab-content {
+		overflow-y: auto;
+	}
+
+	.vocabulary-name {
+		font-size: 0.875rem;
+	}
+}

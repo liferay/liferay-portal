@@ -695,8 +695,6 @@ definition {
 	@description = "User is not able to delete sites templates which are associated to existing sites."
 	@priority = 3
 	test DeleteSiteTemplateAssociatedWithASite {
-		property portal.acceptance = "true";
-
 		task ("Given: User adds new site template and a new site based on this site template") {
 			SiteTemplates.addCP(
 				siteTemplateActive = "Yes",
@@ -916,8 +914,6 @@ definition {
 	@description = "Sites created from templates should only be editable by connecting users with admin rights."
 	@priority = 3
 	test OnlySiteAdminCanModifyPageAssociatedWithSiteTemplate {
-		property portal.acceptance = "true";
-
 		task ("Given: User adds new site template and a new site based on this site template") {
 			SiteTemplates.addCP(siteTemplateName = "Site Template Name");
 
@@ -976,7 +972,6 @@ definition {
 	@description = "User can reset changes made on already existing portlets on sites which are based on site templates."
 	@priority = 3
 	test ResetPageChanges {
-		property portal.acceptance = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 

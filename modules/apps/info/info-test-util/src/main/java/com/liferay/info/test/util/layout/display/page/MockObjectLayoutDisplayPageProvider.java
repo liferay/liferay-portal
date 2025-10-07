@@ -5,6 +5,8 @@
 
 package com.liferay.info.test.util.layout.display.page;
 
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.test.util.model.MockObject;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
@@ -31,6 +33,13 @@ public class MockObjectLayoutDisplayPageProvider
 	public LayoutDisplayPageObjectProvider<MockObject>
 		getLayoutDisplayPageObjectProvider(
 			InfoItemReference infoItemReference) {
+
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		if (!(infoItemIdentifier instanceof ClassPKInfoItemIdentifier)) {
+			return null;
+		}
 
 		return _layoutDisplayPageObjectProvider;
 	}

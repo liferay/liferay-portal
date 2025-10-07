@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<suppressions>
+	<source-check>
+		<suppress checks="IllegalImportsCheck" files="src/main/java/com/liferay/portal/tools/db/migration/importer/jdbc/AutoBatchPreparedStatementUtil\.java" />
+	</source-check>
+</suppressions>

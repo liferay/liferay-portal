@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE routes PUBLIC "-//Liferay//DTD Friendly URL Routes 7.4.0//EN" "http://www.liferay.com/dtd/liferay-friendly-url-routes_7_4_0.dtd">
+
+<routes>
+	<route>
+		<pattern>/builds/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_builds</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_components/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_fix_components</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_packs/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_fix_packs</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fixes/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_fixes</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/product_versions/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_product_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/project_versions/add</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/add_project_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/builds/{patcherBuildId:\d+}/edit</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_builds</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_components/{patcherFixComponentId:\d+}/edit</pattern>
+		<ignored-parameter name="patcherFixComponentId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_fix_components</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_packs/{patcherFixPackId:\d+}/edit</pattern>
+		<ignored-parameter name="patcherFixPackId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_fix_packs</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fixes/{patcherFixId:\d+}/edit</pattern>
+		<ignored-parameter name="patcherFixId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_fixes</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/product_versions/{patcherProductVersionId:\d+}/edit</pattern>
+		<ignored-parameter name="patcherProductVersionId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_product_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/project_versions/{patcherProjectVersionId:\d+}/edit</pattern>
+		<ignored-parameter name="patcherProjectVersionId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/edit_project_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/accounts</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_accounts</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/builds</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_builds</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_components</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_fix_components</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_packs</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_fix_packs</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fixes</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_fixes</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/product_versions</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_product_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/project_versions</pattern>
+		<implicit-parameter name="mvcRenderCommandName">/patcher/index_project_versions</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/accounts/{accountEntryCode}</pattern>
+		<ignored-parameter name="accountEntryCode" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/view_accounts</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/builds/{patcherBuildId:\d+}</pattern>
+		<ignored-parameter name="patcherBuildId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/view_builds</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fix_packs/{patcherFixPackId:\d+}</pattern>
+		<ignored-parameter name="patcherFixPackId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/view_fix_packs</implicit-parameter>
+	</route>
+	<route>
+		<pattern>/fixes/{patcherFixId:\d+}</pattern>
+		<ignored-parameter name="patcherFixId" />
+		<implicit-parameter name="mvcRenderCommandName">/patcher/view_fixes</implicit-parameter>
+	</route>
+</routes>

@@ -42,14 +42,7 @@ describe('The WorkflowStatus should', () => {
 	});
 
 	it('render without a status label', () => {
-		render(
-			<WorkflowStatus
-				{...{
-					...INITIAL_PROPS,
-					showStatusLabel: false,
-				}}
-			/>
-		);
+		render(<WorkflowStatus {...INITIAL_PROPS} showStatusLabel={false} />);
 
 		const hasStatus = document.querySelector('workflow-label');
 

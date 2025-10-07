@@ -605,6 +605,15 @@ public class CommerceOrderTypePersistenceImpl
 			return findByUuid(uuid, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid(
+					uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -1001,6 +1010,14 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByUuid(String uuid) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByUuid(uuid);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByUuid(uuid);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -1612,6 +1629,15 @@ public class CommerceOrderTypePersistenceImpl
 			return findByUuid_C(uuid, companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByUuid_C(
+					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		uuid = Objects.toString(uuid, "");
 
 		StringBundler sb = null;
@@ -2028,6 +2054,15 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByUuid_C(String uuid, long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByUuid_C(uuid, companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByUuid_C(
+				uuid, companyId);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		uuid = Objects.toString(uuid, "");
@@ -2588,6 +2623,15 @@ public class CommerceOrderTypePersistenceImpl
 			return findByCompanyId(companyId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByCompanyId(
+					companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2947,6 +2991,15 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByCompanyId(long companyId) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByCompanyId(companyId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByCompanyId(
+				companyId);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3510,6 +3563,15 @@ public class CommerceOrderTypePersistenceImpl
 			return findByC_A(companyId, active, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByC_A(
+					companyId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3887,6 +3949,15 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByC_A(long companyId, boolean active) {
 		if (!InlineSQLHelperUtil.isEnabled(companyId, 0)) {
 			return countByC_A(companyId, active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByC_A(
+				companyId, active);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -4474,6 +4545,15 @@ public class CommerceOrderTypePersistenceImpl
 				displayDate, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtD_S(
+					displayDate, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4884,6 +4964,15 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByLtD_S(Date displayDate, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtD_S(displayDate, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByLtD_S(
+				displayDate, status);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5485,6 +5574,15 @@ public class CommerceOrderTypePersistenceImpl
 				expirationDate, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByLtE_S(
+					expirationDate, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator));
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5896,6 +5994,15 @@ public class CommerceOrderTypePersistenceImpl
 	public int filterCountByLtE_S(Date expirationDate, int status) {
 		if (!InlineSQLHelperUtil.isEnabled()) {
 			return countByLtE_S(expirationDate, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CommerceOrderType> commerceOrderTypes = findByLtE_S(
+				expirationDate, status);
+
+			commerceOrderTypes = InlineSQLHelperUtil.filter(commerceOrderTypes);
+
+			return commerceOrderTypes.size();
 		}
 
 		StringBundler sb = new StringBundler(3);

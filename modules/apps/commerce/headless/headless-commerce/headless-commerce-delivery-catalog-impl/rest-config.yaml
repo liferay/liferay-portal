@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Delivery.Catalog
 author: Andrea Sbarra
 clientDir: ../headless-commerce-delivery-catalog-client/src/main/java
-compatibilityVersion: 9
+compatibilityVersion: 12
 forcePredictableOperationId: true
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta

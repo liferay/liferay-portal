@@ -139,6 +139,17 @@ public class PortletImportControllerImpl implements PortletImportController {
 	public void deletePortletData(PortletDataContext portletDataContext)
 		throws Exception {
 
+		Portlet portlet = _portletLocalService.getPortletById(
+			portletDataContext.getCompanyId(),
+			portletDataContext.getPortletId());
+
+		PortletDataHandler portletDataHandler =
+			portlet.getPortletDataHandlerInstance();
+
+		if (portletDataHandler.isBatch()) {
+			return;
+		}
+
 		PortletPreferencesIds portletPreferencesIds =
 			_portletPreferencesFactory.getPortletPreferencesIds(
 				portletDataContext.getCompanyId(),
@@ -321,16 +332,28 @@ public class PortletImportControllerImpl implements PortletImportController {
 			PortletDataContext portletDataContext, Element portletDataElement)
 		throws Exception {
 
-		PortletPreferencesIds portletPreferencesIds =
-			_portletPreferencesFactory.getPortletPreferencesIds(
-				portletDataContext.getCompanyId(),
-				portletDataContext.getGroupId(), 0,
-				portletDataContext.getPlid(),
-				portletDataContext.getPortletId());
+		Portlet portlet = _portletLocalService.getPortletById(
+			portletDataContext.getCompanyId(),
+			portletDataContext.getPortletId());
 
-		jakarta.portlet.PortletPreferences portletPreferences =
-			_portletPreferencesLocalService.fetchPreferences(
-				portletPreferencesIds);
+		PortletDataHandler portletDataHandler =
+			portlet.getPortletDataHandlerInstance();
+
+		PortletPreferencesIds portletPreferencesIds = null;
+		jakarta.portlet.PortletPreferences portletPreferences = null;
+
+		if (!portletDataHandler.isBatch()) {
+			portletPreferencesIds =
+				_portletPreferencesFactory.getPortletPreferencesIds(
+					portletDataContext.getCompanyId(),
+					portletDataContext.getGroupId(), 0,
+					portletDataContext.getPlid(),
+					portletDataContext.getPortletId());
+
+			portletPreferences =
+				_portletPreferencesLocalService.fetchPreferences(
+					portletPreferencesIds);
+		}
 
 		if (portletPreferences == null) {
 			portletPreferences = new PortletPreferencesImpl();
@@ -339,7 +362,7 @@ public class PortletImportControllerImpl implements PortletImportController {
 		String xml = importPortletData(
 			portletDataContext, portletPreferences, portletDataElement);
 
-		if (Validator.isNotNull(xml)) {
+		if ((portletPreferencesIds != null) && Validator.isNotNull(xml)) {
 			_portletPreferencesLocalService.updatePreferences(
 				portletPreferencesIds.getOwnerId(),
 				portletPreferencesIds.getOwnerType(),

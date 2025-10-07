@@ -31,6 +31,7 @@ dependencies {
 	implementation group: "com.liferay", name: "com.liferay.headless.admin.user.client", version: "4.0.50"
 	implementation group: "com.liferay", name: "com.liferay.notification.rest.client", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.osb.spring.boot.client.zendesk", version: "latest.release"
+	implementation group: "com.liferay", name: "com.liferay.petra.function", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.io", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"
 	implementation group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"

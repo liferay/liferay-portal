@@ -420,6 +420,14 @@ public class DLAppLocalServiceWrapper
 		_dlAppLocalService.deleteFolder(folderId);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.repository.model.FileEntry fetchFileEntry(
+			long fileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _dlAppLocalService.fetchFileEntry(fileEntryId);
+	}
+
 	/**
 	 * Returns the document library file entry with the matching external
 	 * reference code and group.

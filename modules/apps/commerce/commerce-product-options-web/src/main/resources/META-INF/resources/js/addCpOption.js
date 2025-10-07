@@ -40,6 +40,11 @@ export default function ({
 		formattedData.key = keyInput.value;
 		formattedData.name[defaultLanguageId] = nameInput.value;
 
+		if (defaultLanguageId !== Liferay.ThemeDisplay.getDefaultLanguageId()) {
+			formattedData.name[Liferay.ThemeDisplay.getDefaultLanguageId()] =
+				nameInput.value;
+		}
+
 		AdminCatalogResource.createOption(formattedData)
 			.then((cpOption) => {
 				const redirectURL = createPortletURL(editOptionURL, {

@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Portal Search Elasticsearch 7 Sidecar Agent
+Bundle-SymbolicName: com.liferay.portal.search.elasticsearch7.sidecar.agent
+Bundle-Version: 1.0.0
+Premain-Class: com.liferay.portal.search.elasticsearch7.sidecar.agent.SidecarAgent

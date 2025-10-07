@@ -150,7 +150,7 @@ public class MembershipPolicyTestUtil {
 			populateServiceContext(UserGroup.class, false));
 	}
 
-	public static void updateUser(
+	public static User updateUser(
 			User user, long[] organizationIds, long[] roleIds, long[] siteIds,
 			long[] userGroupIds, List<UserGroupRole> userGroupRoles)
 		throws Exception {
@@ -197,7 +197,7 @@ public class MembershipPolicyTestUtil {
 		List<Website> websites = new ArrayList<>();
 		List<AnnouncementsDelivery> announcementsDelivers = new ArrayList<>();
 
-		UserServiceUtil.updateUser(
+		return UserServiceUtil.updateUser(
 			userId, oldPassword, newPassword1, newPassword2, passwordReset,
 			reminderQueryQuestion, reminderQueryAnswer, screenName,
 			emailAddress, false, null, languageId, timeZoneId, greeting,

@@ -65,9 +65,9 @@ export default function LeftSidebarTreeView({
 			);
 
 			const currentObjectFolderObjectDefinitions =
-				await API.getObjectDefinitions(
-					`filter=objectFolderExternalReferenceCode eq '${currentObjectFolder?.externalReferenceCode}'`
-				);
+				await API.getObjectDefinitions({
+					filter: `objectFolderExternalReferenceCode eq '${currentObjectFolder?.externalReferenceCode}'`,
+				});
 
 			let objectDefinitionToBeMoved =
 				currentObjectFolderObjectDefinitions.find(

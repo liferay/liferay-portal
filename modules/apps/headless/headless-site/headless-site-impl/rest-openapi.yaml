@@ -1,16 +1,20 @@
 components:
     schemas:
         Site:
-            # @review
             description:
                 Represents the site being created.
             properties:
+                active:
+                    type: boolean
+                description:
+                    additionalProperties:
+                        type: string
+                    type: object
                 externalReferenceCode:
                     description:
                         The site's external reference code.
                     type: string
                 friendlyUrlPath:
-                    readOnly: true
                     type: string
                 id:
                     format: int64
@@ -19,6 +23,11 @@ components:
                 key:
                     readOnly: true
                     type: string
+                manualMembership:
+                    type: boolean
+                membershipRestriction:
+                    format: int32
+                    type: integer
                 membershipType:
                     description:
                         The default value is open.
@@ -27,8 +36,13 @@ components:
                         -   private
                         -   restricted
                     type: string
-                    writeOnly: true
                 name:
+                    type: string
+                name_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
+                parentSiteExternalReferenceCode:
                     type: string
                 parentSiteKey:
                     type: string
@@ -42,13 +56,17 @@ components:
                         -   site-template
                     type: string
                     writeOnly: true
+                typeSettings:
+                    additionalProperties:
+                        type: string
+                    type: object
             required:
                 -   name
             type: object
 info:
     description:
         "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID
-        'com.liferay.headless.site.client', and version '1.0.23'."
+        'com.liferay.headless.site.client', and version '1.0.25'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -59,7 +77,6 @@ paths:
     "/sites/{siteId}":
         delete:
             description:
-                # @review
                 Deletes a site and all of its associated content.
             operationId: deleteSite
             parameters:
@@ -75,7 +92,63 @@ paths:
                         application/json: {}
                         application/xml: {}
             tags: ["Site"]
+        get:
+            operationId: getSite
+            parameters:
+                -   in: path
+                    name: siteId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+            tags: ["Site"]
     /sites:
+        get:
+            description:
+                Retrieves the sites. Results can be paginated, filtered, searched, and sorted.
+            operationId: getSitesPage
+            parameters:
+                -   in: query
+                    name: active
+                    schema:
+                        type: boolean
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/Site"
+                                type: array
+                    description:
+                        default response
+            tags: ["Site"]
         post:
             description:
                 Adds a new site
@@ -88,15 +161,6 @@ paths:
                     application/xml:
                         schema:
                             $ref: "#/components/schemas/Site"
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                file:
-                                    format: binary
-                                    type: string
-                                site:
-                                    $ref: "#/components/schemas/Site"
-                            type: object
             responses:
                 200:
                     content:
@@ -108,11 +172,31 @@ paths:
                                 $ref: "#/components/schemas/Site"
                     description:
                         default response
-            # @review
+            tags: ["Site"]
+        put:
+            description:
+                Updates a site and all of its associated content.
+            operationId: putSite
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Site"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
             tags: ["Site"]
     /sites/by-external-reference-code/{externalReferenceCode}:
         delete:
-            # @review
             description:
                 Deletes a site and all of its associated content.
             operationId: deleteSiteByExternalReferenceCode
@@ -195,4 +279,32 @@ paths:
                             schema:
                                 format: binary
                                 type: string
+            tags: ["Site"]
+    /sites/site-initializer:
+        post:
+            description:
+                Adds a new site based on a multipart/form-data
+            operationId: postSiteSiteInitializer
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                file:
+                                    format: binary
+                                    type: string
+                                site:
+                                    $ref: "#/components/schemas/Site"
+                            type: object
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
             tags: ["Site"]

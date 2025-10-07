@@ -291,6 +291,20 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro assertEventPropertyValueIsPresent(eventId = null, property = null, applicationId = null) {
+		var postDataText = ProxyUtil.getHarRecording("$..request..postData..text");
+
+		var attributeValue = JSONUtil.getWithJSONPath("[${postDataText}]", "$..[?(@['applicationId'] == '${applicationId}' && @['eventId'] == '${eventId}')]..${property}");
+
+		if (${attributeValue} != "null") {
+			echo("PASSED");
+		}
+		else {
+			TestUtils.fail(message = "FAILED: Property '${property}' does not exists");
+		}
+	}
+
+	@summary = "Default summary"
 	macro assertIdentityRequestPropertiesValue(expectedDataSourceId = null) {
 		var actualDataSourceId = ACUtils.getPageRefRequestPropertyValue(
 			pageRef = "identity",

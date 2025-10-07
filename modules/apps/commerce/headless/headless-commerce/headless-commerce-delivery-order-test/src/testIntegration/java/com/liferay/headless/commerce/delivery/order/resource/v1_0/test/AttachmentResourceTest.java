@@ -185,6 +185,31 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 	}
 
 	@Override
+	protected Attachment testGraphQLAttachment_addAttachment()
+		throws Exception {
+
+		return attachmentResource.postPlacedOrderAttachmentByBase64(
+			_commerceOrder.getCommerceOrderId(),
+			_toAttachmentBase64(randomAttachment()));
+	}
+
+	@Override
+	protected Long testGraphQLDeletePlacedOrderAttachment_getPlacedOrderId()
+		throws Exception {
+
+		return _commerceOrder.getCommerceOrderId();
+	}
+
+	@Override
+	protected String
+			testGraphQLDeletePlacedOrderByExternalReferenceCodeAttachmentByExternalReferenceCodeAttachmentExternalReferenceCode_getExternalReferenceCode(
+				Attachment attachment)
+		throws Exception {
+
+		return _commerceOrder.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Attachment testPostPlacedOrderAttachmentByBase64_addAttachment(
 			Attachment attachment)
 		throws Exception {

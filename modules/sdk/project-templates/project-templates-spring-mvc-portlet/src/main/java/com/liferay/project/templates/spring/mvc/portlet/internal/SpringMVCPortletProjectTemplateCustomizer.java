@@ -122,6 +122,12 @@ public class SpringMVCPortletProjectTemplateCustomizer
 		setProperty(
 			properties, "viewType",
 			springMVCPortletProjectTemplatesArgsExt.getViewType());
+
+		boolean jakartaCompatible = VersionUtil.isJakartaCompatibleVersion(
+			projectTemplatesArgs.getLiferayVersion());
+
+		setProperty(
+			properties, "jakartaCompatible", String.valueOf(jakartaCompatible));
 	}
 
 	private static final Pattern _jspPattern = Pattern.compile(".*.html");

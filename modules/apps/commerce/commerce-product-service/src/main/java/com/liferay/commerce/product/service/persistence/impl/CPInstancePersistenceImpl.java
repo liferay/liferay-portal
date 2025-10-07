@@ -1922,6 +1922,16 @@ public class CPInstancePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2273,6 +2283,14 @@ public class CPInstancePersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPInstance> cpInstances = findByGroupId(groupId);
+
+			cpInstances = InlineSQLHelperUtil.filter(cpInstances, groupId);
+
+			return cpInstances.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -4410,6 +4428,16 @@ public class CPInstancePersistenceImpl
 			return findByG_ST(groupId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_ST(
+					groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4778,6 +4806,14 @@ public class CPInstancePersistenceImpl
 	public int filterCountByG_ST(long groupId, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_ST(groupId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CPInstance> cpInstances = findByG_ST(groupId, status);
+
+			cpInstances = InlineSQLHelperUtil.filter(cpInstances, groupId);
+
+			return cpInstances.size();
 		}
 
 		StringBundler sb = new StringBundler(3);

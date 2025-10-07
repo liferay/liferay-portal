@@ -344,6 +344,11 @@ public interface PatcherFixPackLocalService
 	public void setPatcherFixPatcherFixPacks(
 		long patcherFixId, long[] patcherFixPackIds);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public PatcherFixPack updatePatcherFixPack(
+			long patcherFixPackId, String requirements, int status)
+		throws Exception;
+
 	/**
 	 * Updates the patcher fix pack in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

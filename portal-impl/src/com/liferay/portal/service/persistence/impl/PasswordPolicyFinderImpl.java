@@ -78,8 +78,7 @@ public class PasswordPolicyFinderImpl
 
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, PasswordPolicy.class.getName(),
-					"PasswordPolicy.passwordPolicyId", null, null,
-					new long[] {0}, null);
+					"PasswordPolicy.passwordPolicyId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
@@ -133,8 +132,7 @@ public class PasswordPolicyFinderImpl
 
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, PasswordPolicy.class.getName(),
-					"PasswordPolicy.passwordPolicyId", null, null,
-					new long[] {0}, null);
+					"PasswordPolicy.passwordPolicyId");
 			}
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);

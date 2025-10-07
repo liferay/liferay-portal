@@ -62,11 +62,6 @@ const FactorStackList: React.FC<FactorStackListProps> = ({
 	remove,
 	update,
 }) => {
-	const factorCategories = factorItems?.map(({factorCategory}) => ({
-		factorCategory: factorCategory?.name,
-		factorCategoryId: factorCategory?.id,
-	}));
-
 	return (
 		<ClayLayout.Row>
 			{fields.map((field, index) => (
@@ -157,7 +152,6 @@ const FactorStackList: React.FC<FactorStackListProps> = ({
 
 							<RunsListActions
 								append={append}
-								defaultItem={{...factorCategories} as any}
 								field={field}
 								index={index}
 								remove={remove}

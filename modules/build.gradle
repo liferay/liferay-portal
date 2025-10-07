@@ -40,7 +40,7 @@ ext {
 		"com.liferay.gradle.plugins.theme.builder.version": "2.0.17",
 		"com.liferay.portal.tools.bundle.support.version": "3.7.5",
 		"com.liferay.portal.tools.service.builder.version": "1.0.501",
-		"com.liferay.portal.tools.rest.builder.version": "1.0.418",
+		"com.liferay.portal.tools.rest.builder.version": "1.0.431",
 		"com.liferay.portal.tools.soy.builder.version": "3.0.4",
 		"com.liferay.portal.tools.theme.builder.version": "1.1.9",
 		"com.liferay.portal.vulcan.api.version": "9.3.1"
@@ -264,10 +264,10 @@ gradle.beforeProject {
 					!project.sourceSets.testIntegration.allSource.isEmpty()) {
 
 					dependencies {
-						testImplementation group: "com.liferay", name: "org.springframework.test", version: "5.3.39.JAKARTA-LIFERAY-PATCHED-1"
 						testImplementation group: "junit", name: "junit", version: "4.13.1"
 						testImplementation group: "org.mockito", name: "mockito-core", version: "4.5.1"
 						testImplementation group: "org.mockito", name: "mockito-inline", version: "4.5.1"
+						testImplementation group: "org.springframework", name: "spring-test", version: "6.2.9"
 					}
 				}
 			}
@@ -869,12 +869,12 @@ gradle.beforeProject {
 
 				dependencies {
 					compileJspClasspath files(Project.class.classLoader.getURLs())
-					compileJspClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.40"
+					compileJspClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.43"
 					compileJspClasspathTransform group: "com.liferay", name: "com.liferay.gradle.plugins.jasper.jspc", transitive: false, version: "2.0.20"
 					jspCClasspath files(tasks.named(sourceSets.main.compileJavaTaskName))
 					jspCClasspath files(tasks.named(sourceSets.main.processResourcesTaskName))
 					jspCClasspath group: "jakarta.servlet.jsp.jstl", name: "jakarta.servlet.jsp.jstl-api", version: "3.0.2"
-					jspCClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.40"
+					jspCClasspath group: "org.apache.tomcat", name: "tomcat-jasper", version: "10.1.43"
 					jspCClasspath group: "org.glassfish.web", name: "jakarta.servlet.jsp.jstl", version: "3.0.1"
 				}
 

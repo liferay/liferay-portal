@@ -16,6 +16,8 @@ import com.liferay.headless.commerce.admin.site.setting.resource.v1_0.WarehouseR
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
@@ -445,6 +447,10 @@ public class Query {
 		availabilityEstimateResource.setContextUriInfo(_uriInfo);
 		availabilityEstimateResource.setContextUser(_user);
 		availabilityEstimateResource.setGroupLocalService(_groupLocalService);
+		availabilityEstimateResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		availabilityEstimateResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		availabilityEstimateResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -461,6 +467,10 @@ public class Query {
 		measurementUnitResource.setContextUriInfo(_uriInfo);
 		measurementUnitResource.setContextUser(_user);
 		measurementUnitResource.setGroupLocalService(_groupLocalService);
+		measurementUnitResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		measurementUnitResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		measurementUnitResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -475,6 +485,10 @@ public class Query {
 		taxCategoryResource.setContextUriInfo(_uriInfo);
 		taxCategoryResource.setContextUser(_user);
 		taxCategoryResource.setGroupLocalService(_groupLocalService);
+		taxCategoryResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		taxCategoryResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		taxCategoryResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -488,6 +502,10 @@ public class Query {
 		warehouseResource.setContextUriInfo(_uriInfo);
 		warehouseResource.setContextUser(_user);
 		warehouseResource.setGroupLocalService(_groupLocalService);
+		warehouseResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		warehouseResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
 		warehouseResource.setRoleLocalService(_roleLocalService);
 	}
 
@@ -508,6 +526,8 @@ public class Query {
 	private GroupLocalService _groupLocalService;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;
+	private ResourceActionLocalService _resourceActionLocalService;
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 	private RoleLocalService _roleLocalService;
 	private BiFunction<Object, String, com.liferay.portal.kernel.search.Sort[]>
 		_sortsBiFunction;

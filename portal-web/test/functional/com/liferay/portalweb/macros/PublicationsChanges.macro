@@ -157,6 +157,8 @@ definition {
 			key_menuItem = "Move Changes",
 			locator1 = "PublicationsChanges#REVIEW_CHANGE_DROPDOWN_ITEM");
 
+		Check.checkToggleSwitch(locator1 = "Publications#SHOW_HIDEABLE_TOGGLE_SWITCH");
+
 		Select(
 			ariaLabel = "Publication",
 			locator1 = "Select#ANY_ARIA_LABEL",

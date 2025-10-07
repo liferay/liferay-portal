@@ -1933,6 +1933,16 @@ public class CalendarResourcePersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2297,6 +2307,15 @@ public class CalendarResourcePersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CalendarResource> calendarResources = findByGroupId(groupId);
+
+			calendarResources = InlineSQLHelperUtil.filter(
+				calendarResources, groupId);
+
+			return calendarResources.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3400,6 +3419,16 @@ public class CalendarResourcePersistenceImpl
 			return findByG_C(groupId, code, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C(
+					groupId, code, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		code = Objects.toString(code, "");
 
 		StringBundler sb = null;
@@ -3777,6 +3806,16 @@ public class CalendarResourcePersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
 			return findByG_C(groupIds, code, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C(
+					groupIds, code, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupIds);
 		}
 
 		if (groupIds == null) {
@@ -4301,6 +4340,15 @@ public class CalendarResourcePersistenceImpl
 			return countByG_C(groupId, code);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CalendarResource> calendarResources = findByG_C(groupId, code);
+
+			calendarResources = InlineSQLHelperUtil.filter(
+				calendarResources, groupId);
+
+			return calendarResources.size();
+		}
+
 		code = Objects.toString(code, "");
 
 		StringBundler sb = new StringBundler(3);
@@ -4365,6 +4413,13 @@ public class CalendarResourcePersistenceImpl
 	public int filterCountByG_C(long[] groupIds, String code) {
 		if (!InlineSQLHelperUtil.isEnabled(groupIds)) {
 			return countByG_C(groupIds, code);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CalendarResource> calendarResources =
+				InlineSQLHelperUtil.filter(findByG_C(groupIds, code), groupIds);
+
+			return calendarResources.size();
 		}
 
 		if (groupIds == null) {
@@ -4984,6 +5039,16 @@ public class CalendarResourcePersistenceImpl
 			return findByG_A(groupId, active, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_A(
+					groupId, active, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5367,6 +5432,16 @@ public class CalendarResourcePersistenceImpl
 	public int filterCountByG_A(long groupId, boolean active) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_A(groupId, active);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<CalendarResource> calendarResources = findByG_A(
+				groupId, active);
+
+			calendarResources = InlineSQLHelperUtil.filter(
+				calendarResources, groupId);
+
+			return calendarResources.size();
 		}
 
 		StringBundler sb = new StringBundler(3);

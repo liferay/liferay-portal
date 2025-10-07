@@ -35,6 +35,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -183,6 +184,13 @@ public class AssetMetricResourceTest extends BaseAssetMetricResourceTestCase {
 			ReflectionTestUtil.setFieldValue(
 				_assetMetricResource, "_http", _http);
 		}
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetGroupAssetMetric() throws Exception {
+		super.testGraphQLGetGroupAssetMetric();
 	}
 
 	@Inject

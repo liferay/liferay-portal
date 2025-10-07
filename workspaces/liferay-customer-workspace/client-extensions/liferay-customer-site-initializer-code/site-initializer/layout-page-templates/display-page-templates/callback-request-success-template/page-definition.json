@@ -102,10 +102,10 @@
 														},
 														"html": {
 															"value_i18n": {
-																"en_US": "For the most efficient assistance, please create a <a href='https://help.liferay.com/hc/en-us'>support ticket</a>.",
-																"es_ES": "Para obtener una asistencia más efectiva, por favor crea un <a href='https://help.liferay.com/hc/es'>ticket de soporte</a>.",
-																"ja_JP": "最も効率的なサポートのために、<a href='https://help.liferay.com/hc/ja'>サポートチケット</a>を作成してください。",
-																"pt_BR": "Para obter a assistência mais eficiente, por favor, crie um <a href='https://help.liferay.com/hc/pt'>ticket de suporte</a>."
+																"en_US": "For the most efficient assistance, please create a <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>support ticket</a>.",
+																"es_ES": "Para obtener una asistencia más efectiva, por favor crea un <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de soporte</a>.",
+																"ja_JP": "最も効率的なサポートのために、<a href='https://liferay.atlassian.net/servicedesk/customer/portals'>サポートチケット</a>を作成してください。",
+																"pt_BR": "Para obter a assistência mais eficiente, por favor, crie um <a href='https://liferay.atlassian.net/servicedesk/customer/portals'>ticket de suporte</a>."
 															}
 														}
 													}

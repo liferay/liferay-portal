@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Headless CMS Test
+Bundle-SymbolicName: com.liferay.headless.cms.test
+Bundle-Version: 1.0.0
+-includeresource:\
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true,\
+	com.liferay.headless.cms.client.jar=com.liferay.headless.cms.client-*.jar;lib:=true

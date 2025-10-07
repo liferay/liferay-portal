@@ -5,7 +5,7 @@
 
 package com.liferay.trash.web.internal.component.enabler;
 
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.trash.web.internal.scheduler.CheckEntrySchedulerJobConfiguration;
 
 import org.osgi.service.component.ComponentContext;

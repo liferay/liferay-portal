@@ -116,8 +116,8 @@ definition {
 		property skip.upgrade-legacy-database = "true";
 		property test.assert.warning.exceptions = "false";
 
-		task ("Given the indexes.sql file from portal-impl.jar is deleted") {
-			AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "delete-indexes-sql");
+		task ("Given the indexes.sql file from portal-impl.jar changed to force index failure") {
+			AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "force-indexes-sql-failure");
 		}
 
 		task ("And the upgrade have finished When a warn is registered during upgrade") {
@@ -177,8 +177,8 @@ definition {
 		property skip.upgrade-legacy-database = "true";
 		property test.assert.warning.exceptions = "false";
 
-		task ("Given the indexes.sql file from portal-impl.jar is deleted") {
-			AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "delete-indexes-sql");
+		task ("Given the indexes.sql file from portal-impl.jar changed to force index failure") {
+			AntCommands.runCommand("modules/util/portal-tools-db-upgrade-client/src/testFunctional/ant/build-test-db-upgrade-client.xml", "force-indexes-sql-failure");
 		}
 
 		task ("And the upgrade have finished When a warn and an error were registered during upgrade") {

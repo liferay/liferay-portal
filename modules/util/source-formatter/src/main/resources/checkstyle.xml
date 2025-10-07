@@ -646,6 +646,11 @@
 			<message key="parentheses.missing.1" value="Missing parentheses between the &quot;{0}&quot; operator and the &quot;{1}&quot; operator" />
 			<message key="parentheses.missing.2" value="Missing parentheses around the {0} hand side argument of the &quot;{1}&quot; operator" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ModelSetCallWithCompanyIdCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks for inserting the companyId as part of a varchar field in the database." />
+			<message key="parameter.incorrect" value="Do not use variable &quot;companyId&quot; as the parameter when calling model set method, see LPD-43079" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ModifiedMethodCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Checks for incorrect `modified` method with `@Modified` annotation." />
@@ -778,8 +783,7 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.ResourceImplCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Performs several checks on `*ResourceImpl` classes (except `Base*ResourceImpl` classes)." />
-			<property name="enabled" value="false" />
-			<message key="invalid.method.parameter.annotation" value="Remove annotation &quot;{0}&quot; from method parameter &quot;{1}&quot;" />
+			<message key="method.parameter.annotation.invalid" value="Remove annotation &quot;{0}&quot; from method parameter &quot;{1}&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ResourcePermissionCheck">
 			<property name="category" value="Bug Prevention" />
@@ -863,6 +867,11 @@
 			<property name="description" value="Finds cases where a redundant `toString()` is called on variable type `String`." />
 			<message key="string.cast.unneeded" value="No need to call &quot;.toString()&quot; on type String" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.StringIndexOfCallCheck">
+			<property name="category" value="Styling" />
+			<property name="description" value="Finds calls to `indexOf` (use `contains` instead)." />
+			<message key="method.use" value="Use method &quot;contains&quot; instead of &quot;indexOf&quot;" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SystemEventCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Finds missing or redundant usage of @SystemEvent for delete events." />
@@ -903,6 +912,13 @@
 			<property name="category" value="Performance" />
 			<property name="description" value="Finds new instances of `java.lang.Thread` (use `ThreadLocalUtil.create` instead)." />
 			<message key="thread.local.util.use" value="Use &quot;ThreadLocalUtil.create&quot; when initializing variable &quot;{0}&quot;" />
+		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.ThreadLocalVariableNameCheck">
+			<property name="category" value="Naming Conventions" />
+			<property name="description" value="Checks for consistent naming on variables of type '*ThreadLocal'." />
+			<property name="enabled" value="false" />
+			<message key="literal.string.incorrect" value="The literal string in the variable assignment for &quot;{0}&quot; should be &quot;{1}&quot;" />
+			<message key="variable.incorrect.ending" value="Name of variable with type &quot;{0}&quot; should not end with &quot;{1}&quot;" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.ThreadNameCheck">
 			<property name="category" value="Naming Conventions" />

@@ -129,6 +129,8 @@ public class CPDefinitionLocalizationPersistenceTest {
 		newCPDefinitionLocalization.setLanguageId(
 			RandomTestUtil.randomString());
 
+		newCPDefinitionLocalization.setCProductId(RandomTestUtil.nextLong());
+
 		newCPDefinitionLocalization.setName(RandomTestUtil.randomString());
 
 		newCPDefinitionLocalization.setShortDescription(
@@ -170,6 +172,9 @@ public class CPDefinitionLocalizationPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionLocalization.getLanguageId(),
 			newCPDefinitionLocalization.getLanguageId());
+		Assert.assertEquals(
+			existingCPDefinitionLocalization.getCProductId(),
+			newCPDefinitionLocalization.getCProductId());
 		Assert.assertEquals(
 			existingCPDefinitionLocalization.getName(),
 			newCPDefinitionLocalization.getName());
@@ -239,9 +244,9 @@ public class CPDefinitionLocalizationPersistenceTest {
 		return OrderByComparatorFactoryUtil.create(
 			"CPDefinitionLocalization", "mvccVersion", true, "ctCollectionId",
 			true, "cpDefinitionLocalizationId", true, "companyId", true,
-			"CPDefinitionId", true, "languageId", true, "name", true,
-			"shortDescription", true, "metaTitle", true, "metaDescription",
-			true, "metaKeywords", true);
+			"CPDefinitionId", true, "languageId", true, "CProductId", true,
+			"name", true, "shortDescription", true, "metaTitle", true,
+			"metaDescription", true, "metaKeywords", true);
 	}
 
 	@Test
@@ -540,6 +545,8 @@ public class CPDefinitionLocalizationPersistenceTest {
 		cpDefinitionLocalization.setCPDefinitionId(RandomTestUtil.nextLong());
 
 		cpDefinitionLocalization.setLanguageId(RandomTestUtil.randomString());
+
+		cpDefinitionLocalization.setCProductId(RandomTestUtil.nextLong());
 
 		cpDefinitionLocalization.setName(RandomTestUtil.randomString());
 

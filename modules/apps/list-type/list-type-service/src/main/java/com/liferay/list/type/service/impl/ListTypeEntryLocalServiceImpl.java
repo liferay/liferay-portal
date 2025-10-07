@@ -5,13 +5,12 @@
 
 package com.liferay.list.type.service.impl;
 
-import com.liferay.exportimport.kernel.incomplete.model.IncompleteModelManager;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.list.type.exception.DuplicateListTypeEntryException;
 import com.liferay.list.type.exception.DuplicateListTypeEntryExternalReferenceCodeException;
 import com.liferay.list.type.exception.ListTypeEntryKeyException;
 import com.liferay.list.type.exception.ListTypeEntryNameException;
 import com.liferay.list.type.exception.ListTypeEntrySystemException;
-import com.liferay.list.type.internal.definition.util.ListTypeDefinitionUtil;
 import com.liferay.list.type.internal.entry.util.ListTypeEntryUtil;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.model.ListTypeEntry;
@@ -20,7 +19,6 @@ import com.liferay.list.type.service.persistence.ListTypeDefinitionPersistence;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
@@ -60,26 +58,15 @@ public class ListTypeEntryLocalServiceImpl
 			_listTypeDefinitionPersistence.findByPrimaryKey(
 				listTypeDefinitionId);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				listTypeDefinition.getCompanyId(), "LPD-24055")) {
-
-			if (listTypeDefinition.isSystem()) {
-				ListTypeEntryUtil.validateInvokerBundle(
-					"Only allowed bundles can add system list type entries",
-					system);
-			}
-			else if (system) {
-				throw new ListTypeEntrySystemException(
-					"System list type entries cannot be added to custom list " +
-						"type definitions");
-			}
-		}
-		else {
-			ListTypeDefinitionUtil.validateInvokerBundle(
+		if (listTypeDefinition.isSystem()) {
+			ListTypeEntryUtil.validateInvokerBundle(
 				"Only allowed bundles can add system list type entries",
-				listTypeDefinition.isSystem());
-
-			system = listTypeDefinition.isSystem();
+				system);
+		}
+		else if (system) {
+			throw new ListTypeEntrySystemException(
+				"System list type entries cannot be added to custom list " +
+					"type definitions");
 		}
 
 		User user = _userLocalService.getUser(userId);
@@ -101,22 +88,9 @@ public class ListTypeEntryLocalServiceImpl
 	public ListTypeEntry deleteListTypeEntry(ListTypeEntry listTypeEntry)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				listTypeEntry.getCompanyId(), "LPD-24055")) {
-
-			ListTypeEntryUtil.validateInvokerBundle(
-				"Only allowed bundles can delete system list type entries",
-				listTypeEntry.isSystem());
-		}
-		else {
-			ListTypeDefinition listTypeDefinition =
-				_listTypeDefinitionPersistence.findByPrimaryKey(
-					listTypeEntry.getListTypeDefinitionId());
-
-			ListTypeDefinitionUtil.validateInvokerBundle(
-				"Only allowed bundles can delete system list type entries",
-				listTypeDefinition.isSystem());
-		}
+		ListTypeEntryUtil.validateInvokerBundle(
+			"Only allowed bundles can delete system list type entries",
+			listTypeEntry.isSystem());
 
 		return listTypeEntryPersistence.remove(listTypeEntry);
 	}
@@ -217,25 +191,25 @@ public class ListTypeEntryLocalServiceImpl
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public ListTypeEntry getOrAddIncompleteListTypeEntry(
+	public ListTypeEntry getOrAddEmptyListTypeEntry(
 			long userId, long listTypeDefinitionId, String key)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
 
-		return _incompleteModelManager.getOrAddIncompleteModel(
-			ListTypeEntry.class, user.getCompanyId(), key,
-			(externalReferenceCode, companyId) -> fetchListTypeEntry(
-				listTypeDefinitionId, key),
-			(externalReferenceCode, companyId) -> getListTypeEntry(
-				listTypeDefinitionId, key),
+		return _emptyModelManager.getOrAddEmptyModel(
+			ListTypeEntry.class, user.getCompanyId(),
 			() -> _addListTypeEntry(
 				null, user, listTypeDefinitionId, key,
 				HashMapBuilder.put(
 					LocaleUtil.getSiteDefault(), key
 				).build(),
-				WorkflowConstants.STATUS_INCOMPLETE, false));
+				WorkflowConstants.STATUS_EMPTY, false),
+			key,
+			(externalReferenceCode, companyId) -> fetchListTypeEntry(
+				listTypeDefinitionId, key),
+			(externalReferenceCode, companyId) -> getListTypeEntry(
+				listTypeDefinitionId, key));
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -252,25 +226,12 @@ public class ListTypeEntryLocalServiceImpl
 
 		listTypeEntry.setNameMap(nameMap);
 
-		if (listTypeEntry.getStatus() == WorkflowConstants.STATUS_INCOMPLETE) {
+		if (listTypeEntry.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			listTypeEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				listTypeEntry.getCompanyId(), "LPD-24055")) {
-
-			ListTypeDefinition listTypeDefinition =
-				_listTypeDefinitionPersistence.findByPrimaryKey(
-					listTypeEntry.getListTypeDefinitionId());
-
-			if (listTypeDefinition.isSystem() &&
-				!ObjectDefinitionUtil.isInvokerBundleAllowed()) {
-
-				return listTypeEntryPersistence.update(listTypeEntry);
-			}
-		}
-		else if (listTypeEntry.isSystem() &&
-				 !ObjectDefinitionUtil.isInvokerBundleAllowed()) {
+		if (listTypeEntry.isSystem() &&
+			!ObjectDefinitionUtil.isInvokerBundleAllowed()) {
 
 			return listTypeEntryPersistence.update(listTypeEntry);
 		}
@@ -375,7 +336,7 @@ public class ListTypeEntryLocalServiceImpl
 	}
 
 	@Reference
-	private IncompleteModelManager _incompleteModelManager;
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ListTypeDefinitionPersistence _listTypeDefinitionPersistence;

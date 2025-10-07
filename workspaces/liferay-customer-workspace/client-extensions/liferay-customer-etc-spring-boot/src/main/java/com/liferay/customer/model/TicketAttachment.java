@@ -26,6 +26,7 @@ public class TicketAttachment {
 		_fileName = jsonObject.getString("fileName");
 		_fileSize = jsonObject.getString("fileSize");
 		_gcsBucketName = jsonObject.getString("gcsBucketName");
+		_jiraIssueKey = jsonObject.optString("jiraIssueKey");
 		_md5Checksum = jsonObject.optString("md5Checksum");
 
 		JSONObject statusJSONObject = jsonObject.getJSONObject("status");
@@ -39,8 +40,6 @@ public class TicketAttachment {
 		JSONObject creatorJSONObject = jsonObject.getJSONObject("creator");
 
 		_userId = creatorJSONObject.getLong("id");
-
-		_zendeskTicketId = jsonObject.getLong("zendeskTicketId");
 	}
 
 	public String getAccountKey() {
@@ -67,13 +66,17 @@ public class TicketAttachment {
 		StringBundler sb = new StringBundler(6);
 
 		sb.append("tickets/");
-		sb.append(_zendeskTicketId);
+		sb.append(_jiraIssueKey);
 		sb.append("/");
 		sb.append(_ticketAttachmentId);
 		sb.append("/");
 		sb.append(_fileName);
 
 		return sb.toString();
+	}
+
+	public String getJiraIssueKey() {
+		return _jiraIssueKey;
 	}
 
 	public String getMD5Checksum() {
@@ -100,10 +103,6 @@ public class TicketAttachment {
 		return _userId;
 	}
 
-	public long getZendeskTicketId() {
-		return _zendeskTicketId;
-	}
-
 	public boolean isApproved() {
 		if (_status == STATUS_APPROVED) {
 			return true;
@@ -117,12 +116,12 @@ public class TicketAttachment {
 	private final String _fileName;
 	private final String _fileSize;
 	private final String _gcsBucketName;
+	private final String _jiraIssueKey;
 	private final String _md5Checksum;
 	private final int _status;
 	private final String _storageProvider;
 	private final long _ticketAttachmentId;
 	private final String _type;
 	private final long _userId;
-	private final long _zendeskTicketId;
 
 }

@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.encryptor.EncryptorException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Base64;
-import com.liferay.portal.kernel.util.Digester;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = Encryptor.class)
 public class EncryptorImpl implements Encryptor {
 
-	public static final String ENCODING = Digester.ENCODING;
+	public static final String ENCODING = DigesterUtil.ENCODING;
 
 	public static final String KEY_ALGORITHM = StringUtil.toUpperCase(
 		GetterUtil.getString(

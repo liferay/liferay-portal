@@ -28,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONDeserializer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -43,9 +44,11 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -53,7 +56,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -86,6 +88,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -274,7 +277,7 @@ public abstract class BaseObjectLayoutResourceTestCase {
 							put("objectLayoutId", objectLayout1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -312,7 +315,7 @@ public abstract class BaseObjectLayoutResourceTestCase {
 								put("objectLayoutId", objectLayout2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -730,6 +733,108 @@ public abstract class BaseObjectLayoutResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPage()
+		throws Exception {
+
+		String externalReferenceCode =
+			testGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPage_getExternalReferenceCode();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionByExternalReferenceCodeObjectLayouts",
+			new HashMap<String, Object>() {
+				{
+					put(
+						"externalReferenceCode",
+						"\"" + externalReferenceCode + "\"");
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject
+			objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject =
+				JSONUtil.getValueAsJSONObject(
+					invokeGraphQLQuery(graphQLField), "JSONObject/data",
+					"JSONObject/objectDefinitionByExternalReferenceCodeObjectLayouts");
+
+		long totalCount =
+			objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+				getLong("totalCount");
+
+		ObjectLayout objectLayout1 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_addObjectLayout(
+				externalReferenceCode, randomObjectLayout());
+
+		ObjectLayout objectLayout2 =
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_addObjectLayout(
+				externalReferenceCode, randomObjectLayout());
+
+		objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectLayout1,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+						getString("items"))));
+		assertContains(
+			objectLayout2,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+						getString("items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(
+					new GraphQLField("objectAdmin_v1_0", graphQLField)),
+				"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+				"JSONObject/objectDefinitionByExternalReferenceCodeObjectLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+				getLong("totalCount"));
+
+		assertContains(
+			objectLayout1,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+						getString("items"))));
+		assertContains(
+			objectLayout2,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionByExternalReferenceCodeObjectLayoutsJSONObject.
+						getString("items"))));
+	}
+
+	protected ObjectLayout
+			testGraphQLGetObjectDefinitionByExternalReferenceCodeObjectLayoutsPageObjectDefinitionObjectLayout_addObjectLayout(
+				String externalReferenceCode, ObjectLayout objectLayout)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetObjectDefinitionObjectLayoutsPage() throws Exception {
 		Long objectDefinitionId =
 			testGetObjectDefinitionObjectLayoutsPage_getObjectDefinitionId();
@@ -1087,6 +1192,91 @@ public abstract class BaseObjectLayoutResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLGetObjectDefinitionObjectLayoutsPage()
+		throws Exception {
+
+		Long objectDefinitionId =
+			testGetObjectDefinitionObjectLayoutsPage_getObjectDefinitionId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"objectDefinitionObjectLayouts",
+			new HashMap<String, Object>() {
+				{
+					put("objectDefinitionId", objectDefinitionId);
+					put("search", null);
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject objectDefinitionObjectLayoutsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/objectDefinitionObjectLayouts");
+
+		long totalCount = objectDefinitionObjectLayoutsJSONObject.getLong(
+			"totalCount");
+
+		ObjectLayout objectLayout1 =
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+				objectDefinitionId, randomObjectLayout());
+
+		ObjectLayout objectLayout2 =
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+				objectDefinitionId, randomObjectLayout());
+
+		objectDefinitionObjectLayoutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/objectDefinitionObjectLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectLayoutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			objectLayout1,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionObjectLayoutsJSONObject.getString(
+						"items"))));
+		assertContains(
+			objectLayout2,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionObjectLayoutsJSONObject.getString(
+						"items"))));
+
+		// Using the namespace objectAdmin_v1_0
+
+		objectDefinitionObjectLayoutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("objectAdmin_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+			"JSONObject/objectDefinitionObjectLayouts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			objectDefinitionObjectLayoutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			objectLayout1,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionObjectLayoutsJSONObject.getString(
+						"items"))));
+		assertContains(
+			objectLayout2,
+			Arrays.asList(
+				ObjectLayoutSerDes.toDTOs(
+					objectDefinitionObjectLayoutsJSONObject.getString(
+						"items"))));
+	}
+
+	@Test
 	public void testGetObjectLayout() throws Exception {
 		ObjectLayout postObjectLayout = testGetObjectLayout_addObjectLayout();
 
@@ -1415,6 +1605,30 @@ public abstract class BaseObjectLayoutResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectLayout()
+		throws Exception {
+
+		ObjectLayout randomObjectLayout = randomObjectLayout();
+
+		ObjectLayout objectLayout =
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+				testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectLayout_getObjectDefinitionId(
+					randomObjectLayout),
+				randomObjectLayout);
+
+		Assert.assertTrue(equals(randomObjectLayout, objectLayout));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionByExternalReferenceCodeObjectLayout_getObjectDefinitionId(
+				ObjectLayout objectLayout)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostObjectDefinitionObjectLayout() throws Exception {
 		ObjectLayout randomObjectLayout = randomObjectLayout();
 
@@ -1433,6 +1647,28 @@ public abstract class BaseObjectLayoutResourceTestCase {
 		return objectLayoutResource.postObjectDefinitionObjectLayout(
 			testGetObjectDefinitionObjectLayoutsPage_getObjectDefinitionId(),
 			objectLayout);
+	}
+
+	@Test
+	public void testGraphQLPostObjectDefinitionObjectLayout() throws Exception {
+		ObjectLayout randomObjectLayout = randomObjectLayout();
+
+		ObjectLayout objectLayout =
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+				testGraphQLPostObjectDefinitionObjectLayout_getObjectDefinitionId(
+					randomObjectLayout),
+				randomObjectLayout);
+
+		Assert.assertTrue(equals(randomObjectLayout, objectLayout));
+	}
+
+	protected Long
+			testGraphQLPostObjectDefinitionObjectLayout_getObjectDefinitionId(
+				ObjectLayout objectLayout)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1521,6 +1757,135 @@ public abstract class BaseObjectLayoutResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected ObjectLayout
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout()
+		throws Exception {
+
+		return testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+			testGraphQLObjectDefinitionObjectLayout_getObjectDefinitionId(),
+			randomObjectLayout());
+	}
+
+	protected Long
+			testGraphQLObjectDefinitionObjectLayout_getObjectDefinitionId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected ObjectLayout
+			testGraphQLObjectDefinitionObjectLayout_addObjectLayout(
+				Long objectDefinitionId, ObjectLayout objectLayout)
+		throws Exception {
+
+		JSONDeserializer<ObjectLayout> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(ObjectLayout.class)) {
+
+			if (getGraphQLValue(field.get(objectLayout)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(objectLayout)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createObjectDefinitionObjectLayout",
+						new HashMap<String, Object>() {
+							{
+								put("objectDefinitionId", objectDefinitionId);
+								put("objectLayout", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createObjectDefinitionObjectLayout"),
+			ObjectLayout.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1723,6 +2088,8 @@ public abstract class BaseObjectLayoutResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(

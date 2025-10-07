@@ -9,10 +9,8 @@ import com.liferay.portal.configuration.persistence.listener.ConfigurationModelL
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoaderUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.util.PropsImpl;
 
 import java.util.Locale;
 
@@ -36,7 +34,6 @@ public class DDMFormWebConfigurationModelListenerTest {
 	@BeforeClass
 	public static void setUpClass() {
 		_setUpDDMFormWebConfigurationModelListener();
-		_setUpPropsUtil();
 		_setUpResourceBundleUtil();
 	}
 
@@ -54,10 +51,6 @@ public class DDMFormWebConfigurationModelListenerTest {
 	private static void _setUpDDMFormWebConfigurationModelListener() {
 		_ddmFormWebConfigurationModelListener =
 			new DDMFormWebConfigurationModelListener();
-	}
-
-	private static void _setUpPropsUtil() {
-		PropsUtil.setProps(new PropsImpl());
 	}
 
 	private static void _setUpResourceBundleUtil() {

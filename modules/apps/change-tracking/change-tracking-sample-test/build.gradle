@@ -1,0 +1,7 @@
+dependencies {
+	testCompileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-sample-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

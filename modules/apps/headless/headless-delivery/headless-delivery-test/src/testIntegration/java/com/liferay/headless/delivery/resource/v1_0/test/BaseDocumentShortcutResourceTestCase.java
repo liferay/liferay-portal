@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
@@ -48,9 +49,11 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.odata.entity.EntityField;
@@ -58,7 +61,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
@@ -91,6 +93,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -134,7 +137,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -145,7 +148,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			null,
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			new ServiceContext() {
 				{
 					setCompanyId(testCompany.getCompanyId());
@@ -310,7 +313,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 								documentShortcut1.getId());
 						}
 					},
-					new GraphQLField("id"))),
+					getGraphQLFields())),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray1.length() > 0);
@@ -350,7 +353,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 									documentShortcut2.getId());
 							}
 						},
-						new GraphQLField("id")))),
+						getGraphQLFields()))),
 			"JSONArray/errors");
 
 		Assert.assertTrue(errorsJSONArray2.length() > 0);
@@ -439,6 +442,118 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 
 		return documentShortcutResource.postSiteDocumentShortcut(
 			testGroup.getGroupId(), randomDocumentShortcut());
+	}
+
+	@Test
+	public void testGraphQLDeleteSiteDocumentShortcutByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		DocumentShortcut documentShortcut1 =
+			testGraphQLDeleteSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteSiteDocumentShortcutByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteKey",
+									"\"" + documentShortcut1.getSiteId() +
+										"\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										documentShortcut1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteSiteDocumentShortcutByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"documentShortcutByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"siteKey",
+								"\"" + documentShortcut1.getSiteId() + "\"");
+							put(
+								"externalReferenceCode",
+								"\"" +
+									documentShortcut1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessDelivery_v1_0
+
+		DocumentShortcut documentShortcut2 =
+			testGraphQLDeleteSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessDelivery_v1_0",
+						new GraphQLField(
+							"deleteSiteDocumentShortcutByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"siteKey",
+										"\"" + documentShortcut2.getSiteId() +
+											"\"");
+									put(
+										"externalReferenceCode",
+										"\"" +
+											documentShortcut2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
+				"Object/deleteSiteDocumentShortcutByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessDelivery_v1_0",
+					new GraphQLField(
+						"documentShortcutByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"siteKey",
+									"\"" + documentShortcut2.getSiteId() +
+										"\"");
+								put(
+									"externalReferenceCode",
+									"\"" +
+										documentShortcut2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected DocumentShortcut
+			testGraphQLDeleteSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut()
+		throws Exception {
+
+		return testGraphQLSiteDocumentShortcut_addDocumentShortcut();
 	}
 
 	@Test
@@ -644,6 +759,90 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		throws Exception {
 
 		return irrelevantDepotEntry.getDepotEntryId();
+	}
+
+	@Test
+	public void testGraphQLGetAssetLibraryDocumentShortcutsPage()
+		throws Exception {
+
+		Long assetLibraryId =
+			testGetAssetLibraryDocumentShortcutsPage_getAssetLibraryId();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"assetLibraryDocumentShortcuts",
+			new HashMap<String, Object>() {
+				{
+					put("assetLibraryId", "\"" + assetLibraryId + "\"");
+					put("page", 1);
+					put("pageSize", 10);
+				}
+			},
+			new GraphQLField("items", getGraphQLFields()),
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		// No namespace
+
+		JSONObject assetLibraryDocumentShortcutsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/assetLibraryDocumentShortcuts");
+
+		long totalCount = assetLibraryDocumentShortcutsJSONObject.getLong(
+			"totalCount");
+
+		DocumentShortcut documentShortcut1 =
+			testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut(
+				assetLibraryId, randomDocumentShortcut());
+
+		DocumentShortcut documentShortcut2 =
+			testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut(
+				assetLibraryId, randomDocumentShortcut());
+
+		assetLibraryDocumentShortcutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(graphQLField), "JSONObject/data",
+			"JSONObject/assetLibraryDocumentShortcuts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			assetLibraryDocumentShortcutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			documentShortcut1,
+			Arrays.asList(
+				DocumentShortcutSerDes.toDTOs(
+					assetLibraryDocumentShortcutsJSONObject.getString(
+						"items"))));
+		assertContains(
+			documentShortcut2,
+			Arrays.asList(
+				DocumentShortcutSerDes.toDTOs(
+					assetLibraryDocumentShortcutsJSONObject.getString(
+						"items"))));
+
+		// Using the namespace headlessDelivery_v1_0
+
+		assetLibraryDocumentShortcutsJSONObject = JSONUtil.getValueAsJSONObject(
+			invokeGraphQLQuery(
+				new GraphQLField("headlessDelivery_v1_0", graphQLField)),
+			"JSONObject/data", "JSONObject/headlessDelivery_v1_0",
+			"JSONObject/assetLibraryDocumentShortcuts");
+
+		Assert.assertEquals(
+			totalCount + 2,
+			assetLibraryDocumentShortcutsJSONObject.getLong("totalCount"));
+
+		assertContains(
+			documentShortcut1,
+			Arrays.asList(
+				DocumentShortcutSerDes.toDTOs(
+					assetLibraryDocumentShortcutsJSONObject.getString(
+						"items"))));
+		assertContains(
+			documentShortcut2,
+			Arrays.asList(
+				DocumentShortcutSerDes.toDTOs(
+					assetLibraryDocumentShortcutsJSONObject.getString(
+						"items"))));
 	}
 
 	@Test
@@ -1111,7 +1310,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			testGraphQLGetSiteDocumentShortcutByExternalReferenceCode_addDocumentShortcut()
 		throws Exception {
 
-		return testGraphQLDocumentShortcut_addDocumentShortcut();
+		return testGraphQLSiteDocumentShortcut_addDocumentShortcut();
 	}
 
 	@Test
@@ -1317,10 +1516,9 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			"documentShortcuts",
 			new HashMap<String, Object>() {
 				{
+					put("siteKey", "\"" + siteId + "\"");
 					put("page", 1);
 					put("pageSize", 10);
-
-					put("siteKey", "\"" + siteId + "\"");
 				}
 			},
 			new GraphQLField("items", getGraphQLFields()),
@@ -1335,9 +1533,12 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		long totalCount = documentShortcutsJSONObject.getLong("totalCount");
 
 		DocumentShortcut documentShortcut1 =
-			testGraphQLGetSiteDocumentShortcutsPage_addDocumentShortcut();
+			testGraphQLSiteDocumentShortcut_addDocumentShortcut(
+				siteId, randomDocumentShortcut());
+
 		DocumentShortcut documentShortcut2 =
-			testGraphQLGetSiteDocumentShortcutsPage_addDocumentShortcut();
+			testGraphQLSiteDocumentShortcut_addDocumentShortcut(
+				siteId, randomDocumentShortcut());
 
 		documentShortcutsJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -1378,13 +1579,6 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 			Arrays.asList(
 				DocumentShortcutSerDes.toDTOs(
 					documentShortcutsJSONObject.getString("items"))));
-	}
-
-	protected DocumentShortcut
-			testGraphQLGetSiteDocumentShortcutsPage_addDocumentShortcut()
-		throws Exception {
-
-		return testGraphQLDocumentShortcut_addDocumentShortcut();
 	}
 
 	@Test
@@ -1444,6 +1638,17 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 	}
 
 	@Test
+	public void testGraphQLPostAssetLibraryDocumentShortcut() throws Exception {
+		DocumentShortcut randomDocumentShortcut = randomDocumentShortcut();
+
+		DocumentShortcut documentShortcut =
+			testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut(
+				testDepotEntry.getDepotEntryId(), randomDocumentShortcut);
+
+		Assert.assertTrue(equals(randomDocumentShortcut, documentShortcut));
+	}
+
+	@Test
 	public void testPostSiteDocumentShortcut() throws Exception {
 		DocumentShortcut randomDocumentShortcut = randomDocumentShortcut();
 
@@ -1468,8 +1673,8 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		DocumentShortcut randomDocumentShortcut = randomDocumentShortcut();
 
 		DocumentShortcut documentShortcut =
-			testGraphQLDocumentShortcut_addDocumentShortcut(
-				randomDocumentShortcut);
+			testGraphQLSiteDocumentShortcut_addDocumentShortcut(
+				testGroup.getGroupId(), randomDocumentShortcut);
 
 		Assert.assertTrue(equals(randomDocumentShortcut, documentShortcut));
 	}
@@ -1628,60 +1833,15 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		}
 	}
 
-	protected void appendGraphQLFieldValue(StringBuilder sb, Object value)
-		throws Exception {
-
-		if (value instanceof Object[]) {
-			StringBuilder arraySB = new StringBuilder("[");
-
-			for (Object object : (Object[])value) {
-				if (arraySB.length() > 1) {
-					arraySB.append(", ");
-				}
-
-				arraySB.append("{");
-
-				Class<?> clazz = object.getClass();
-
-				for (java.lang.reflect.Field field :
-						getDeclaredFields(clazz.getSuperclass())) {
-
-					arraySB.append(field.getName());
-					arraySB.append(": ");
-
-					appendGraphQLFieldValue(arraySB, field.get(object));
-
-					arraySB.append(", ");
-				}
-
-				arraySB.setLength(arraySB.length() - 2);
-
-				arraySB.append("}");
-			}
-
-			arraySB.append("]");
-
-			sb.append(arraySB.toString());
-		}
-		else if (value instanceof String) {
-			sb.append("\"");
-			sb.append(value);
-			sb.append("\"");
-		}
-		else {
-			sb.append(value);
-		}
-	}
-
 	protected DocumentShortcut testGraphQLDocumentShortcut_addDocumentShortcut()
 		throws Exception {
 
 		return testGraphQLDocumentShortcut_addDocumentShortcut(
-			randomDocumentShortcut());
+			testGroup.getGroupId(), randomDocumentShortcut());
 	}
 
 	protected DocumentShortcut testGraphQLDocumentShortcut_addDocumentShortcut(
-			DocumentShortcut documentShortcut)
+			Long siteId, DocumentShortcut documentShortcut)
 		throws Exception {
 
 		JSONDeserializer<DocumentShortcut> jsonDeserializer =
@@ -1692,29 +1852,20 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(DocumentShortcut.class)) {
 
-			if (!ArrayUtil.contains(
-					getAdditionalAssertFieldNames(), field.getName())) {
+			if (getGraphQLValue(field.get(documentShortcut)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
 
-				continue;
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(documentShortcut)));
 			}
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append(field.getName());
-			sb.append(": ");
-
-			appendGraphQLFieldValue(sb, field.get(documentShortcut));
 		}
 
 		sb.append("}");
 
 		List<GraphQLField> graphQLFields = getGraphQLFields();
-
-		graphQLFields.add(new GraphQLField("externalReferenceCode"));
-
-		graphQLFields.add(new GraphQLField("id"));
 
 		return jsonDeserializer.deserialize(
 			JSONUtil.getValueAsString(
@@ -1723,15 +1874,187 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 						"createSiteDocumentShortcut",
 						new HashMap<String, Object>() {
 							{
-								put(
-									"siteKey",
-									"\"" + testGroup.getGroupId() + "\"");
+								put("siteKey", "\"" + siteId + "\"");
 								put("documentShortcut", sb.toString());
 							}
 						},
 						graphQLFields)),
 				"JSONObject/data", "JSONObject/createSiteDocumentShortcut"),
 			DocumentShortcut.class);
+	}
+
+	protected DocumentShortcut
+			testGraphQLSiteDocumentShortcut_addDocumentShortcut()
+		throws Exception {
+
+		return testGraphQLSiteDocumentShortcut_addDocumentShortcut(
+			testGroup.getGroupId(), randomDocumentShortcut());
+	}
+
+	protected DocumentShortcut
+			testGraphQLSiteDocumentShortcut_addDocumentShortcut(
+				Long siteId, DocumentShortcut documentShortcut)
+		throws Exception {
+
+		JSONDeserializer<DocumentShortcut> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(DocumentShortcut.class)) {
+
+			if (getGraphQLValue(field.get(documentShortcut)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(documentShortcut)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createSiteDocumentShortcut",
+						new HashMap<String, Object>() {
+							{
+								put("siteKey", "\"" + siteId + "\"");
+								put("documentShortcut", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data", "JSONObject/createSiteDocumentShortcut"),
+			DocumentShortcut.class);
+	}
+
+	protected DocumentShortcut
+			testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut()
+		throws Exception {
+
+		return testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut(
+			testDepotEntry.getDepotEntryId(), randomDocumentShortcut());
+	}
+
+	protected DocumentShortcut
+			testGraphQLAssetLibraryDocumentShortcut_addDocumentShortcut(
+				Long assetLibraryId, DocumentShortcut documentShortcut)
+		throws Exception {
+
+		JSONDeserializer<DocumentShortcut> jsonDeserializer =
+			JSONFactoryUtil.createJSONDeserializer();
+
+		StringBuilder sb = new StringBuilder("{");
+
+		for (java.lang.reflect.Field field :
+				getDeclaredFields(DocumentShortcut.class)) {
+
+			if (getGraphQLValue(field.get(documentShortcut)) != null) {
+				if (sb.length() > 1) {
+					sb.append(", ");
+				}
+
+				sb.append(field.getName());
+				sb.append(": ");
+				sb.append(getGraphQLValue(field.get(documentShortcut)));
+			}
+		}
+
+		sb.append("}");
+
+		List<GraphQLField> graphQLFields = getGraphQLFields();
+
+		return jsonDeserializer.deserialize(
+			JSONUtil.getValueAsString(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"createAssetLibraryDocumentShortcut",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"assetLibraryId",
+									"\"" + assetLibraryId + "\"");
+								put("documentShortcut", sb.toString());
+							}
+						},
+						graphQLFields)),
+				"JSONObject/data",
+				"JSONObject/createAssetLibraryDocumentShortcut"),
+			DocumentShortcut.class);
+	}
+
+	protected String getGraphQLValue(Object value) throws Exception {
+		if (value == null) {
+			return null;
+		}
+		else if (value instanceof Boolean || value instanceof Number) {
+			return value.toString();
+		}
+		else if (value instanceof Date date) {
+			return "\"" +
+				DateUtil.getDate(
+					date, "yyyy-MM-dd'T'HH:mm:ss'Z'", LocaleUtil.getDefault(),
+					TimeZone.getTimeZone("UTC")) + "\"";
+		}
+		else if (value instanceof Enum<?> enm) {
+			return enm.name();
+		}
+		else if (value instanceof Map<?, ?> map) {
+			List<String> entries = new ArrayList<>();
+
+			for (Map.Entry<?, ?> entry : map.entrySet()) {
+				String graphQLValue = getGraphQLValue(entry.getValue());
+
+				if (graphQLValue != null) {
+					entries.add(entry.getKey() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
+		else if (value instanceof Object[] array) {
+			List<String> entries = new ArrayList<>();
+
+			for (Object entry : array) {
+				String graphQLValue = getGraphQLValue(entry);
+
+				if (graphQLValue != null) {
+					entries.add(graphQLValue);
+				}
+			}
+
+			return "[" + String.join(", ", entries) + "]";
+		}
+		else if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else {
+			List<String> entries = new ArrayList<>();
+
+			Class<?> clazz = value.getClass();
+			java.lang.reflect.Field[] declaredFields = getDeclaredFields(clazz);
+
+			if (declaredFields.length == 0) {
+				declaredFields = getDeclaredFields(clazz.getSuperclass());
+			}
+
+			for (java.lang.reflect.Field field : declaredFields) {
+				String graphQLValue = getGraphQLValue(field.get(value));
+
+				if (graphQLValue != null) {
+					entries.add(field.getName() + ": " + graphQLValue);
+				}
+			}
+
+			return "{" + String.join(", ", entries) + "}";
+		}
 	}
 
 	protected void assertContains(
@@ -1954,6 +2277,10 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
+		graphQLFields.add(new GraphQLField("id"));
 
 		graphQLFields.add(new GraphQLField("siteId"));
 
@@ -2498,8 +2825,8 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 	protected DocumentShortcut randomDocumentShortcut() throws Exception {
 		return new DocumentShortcut() {
 			{
-				assetLibraryKey = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				assetLibraryKey = String.valueOf(
+					testDepotEntry.getDepotEntryId());
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -2518,6 +2845,9 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 
 		DocumentShortcut randomIrrelevantDocumentShortcut =
 			randomDocumentShortcut();
+
+		randomIrrelevantDocumentShortcut.setAssetLibraryKey(
+			String.valueOf(irrelevantDepotEntry.getDepotEntryId()));
 
 		randomIrrelevantDocumentShortcut.setSiteId(
 			irrelevantGroup.getGroupId());

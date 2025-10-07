@@ -1,0 +1,117 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.adaptive.media.image.mime.type.AMImageMimeTypeProvider;
+import com.liferay.adaptive.media.image.processor.AMImageProcessor;
+import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * @author Alan Huang
+ */
+@Component(
+	immediate = true, property = "adaptive.media.key=blogs",
+	service = AMImageOptimizer.class
+)
+public class AnonymousInnerClass {
+
+	public void method(
+		long companyId, String configurationEntryUuid, int total,
+		AtomicInteger atomicCounter) {
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			_dlFileEntryLocalService.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
+
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property companyIdProperty = PropertyFactoryUtil.forName(
+						"companyId");
+
+					dynamicQuery.add(companyIdProperty.eq(companyId));
+
+					Property classNameIdProperty = PropertyFactoryUtil.forName(
+						"classNameId");
+
+					dynamicQuery.add(
+						classNameIdProperty.eq(
+							_classNameLocalService.getClassNameId(
+								BlogsEntry.class.getName())));
+
+					Property mimeTypeProperty = PropertyFactoryUtil.forName(
+						"mimeType");
+
+					dynamicQuery.add(
+						mimeTypeProperty.in(
+							_amImageMimeTypeProvider.getSupportedMimeTypes()));
+				}
+
+			});
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<DLFileEntry>() {
+
+				@Override
+				public void performAction(DLFileEntry dlFileEntry)
+					throws PortalException {
+
+					FileEntry fileEntry = new LiferayFileEntry(dlFileEntry);
+
+					try {
+						_amImageProcessor.process(
+							fileEntry.getFileVersion(), configurationEntryUuid);
+
+						_sendStatusMessage(
+							atomicCounter.incrementAndGet(), total);
+					}
+					catch (PortalException portalException) {
+						_log.error(
+							"Unable to process file entry " +
+								fileEntry.getFileEntryId(),
+							portalException);
+					}
+				}
+
+			});
+
+		try {
+			actionableDynamicQuery.performActions();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AnonymousInnerClass.class);
+
+	@Reference
+	private AMImageMimeTypeProvider _amImageMimeTypeProvider;
+
+	@Reference
+	private AMImageProcessor _amImageProcessor;
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+}

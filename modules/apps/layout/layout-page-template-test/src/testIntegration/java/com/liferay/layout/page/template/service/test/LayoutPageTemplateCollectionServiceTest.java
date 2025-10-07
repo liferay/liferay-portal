@@ -730,7 +730,7 @@ public class LayoutPageTemplateCollectionServiceTest {
 					LayoutPageTemplateConstants.
 						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 					null, "Layout Page Template Collection", null,
-					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
 					serviceContext);
 
 		_layoutPageTemplateEntryService.addLayoutPageTemplateEntry(

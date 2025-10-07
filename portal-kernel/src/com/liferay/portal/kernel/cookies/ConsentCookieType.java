@@ -15,9 +15,11 @@ import java.util.Locale;
 public class ConsentCookieType {
 
 	public ConsentCookieType(
-		LocalizedValuesMap descriptionMap, String name, boolean prechecked) {
+		LocalizedValuesMap descriptionMap, boolean hideFromEndUser, String name,
+		boolean prechecked) {
 
 		_descriptionMap = descriptionMap;
+		_hideFromEndUser = hideFromEndUser;
 		_name = name;
 		_prechecked = prechecked;
 	}
@@ -34,11 +36,16 @@ public class ConsentCookieType {
 		return _name;
 	}
 
+	public boolean isHideFromEndUser() {
+		return _hideFromEndUser;
+	}
+
 	public boolean isPrechecked() {
 		return _prechecked;
 	}
 
 	private final LocalizedValuesMap _descriptionMap;
+	private final boolean _hideFromEndUser;
 	private final String _name;
 	private final boolean _prechecked;
 

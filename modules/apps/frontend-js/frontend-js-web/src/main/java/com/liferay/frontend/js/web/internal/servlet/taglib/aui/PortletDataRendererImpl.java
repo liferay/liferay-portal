@@ -129,8 +129,7 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 				delimiter = StringPool.COMMA_AND_SPACE;
 			}
 
-			writer.write(") {\n");
-			writer.write("try {\n");
+			writer.write(") {\ntry {\n");
 		}
 
 		// Write AUI prologue
@@ -163,11 +162,7 @@ public class PortletDataRendererImpl implements PortletDataRenderer {
 		// Write AMD epilogue
 
 		if (!amdRequiresMap.isEmpty()) {
-			writer.write("} catch (err) {\n");
-			writer.write("\tconsole.error(err);\n");
-			writer.write("}\n");
-
-			writer.write("});\n");
+			writer.write("} catch (err) {\n\tconsole.error(err);\n}\n});\n");
 		}
 
 		writer.write("\n</script>");

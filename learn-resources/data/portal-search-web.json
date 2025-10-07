@@ -2,7 +2,7 @@
 	"custom-facet": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets/search-facets/custom-facet"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets/search-facets/custom-facet"
 		}
 	},
 	"elasticsearch-end-of-life": {
@@ -13,24 +13,24 @@
 	},
 	"install-elasticsearch": {
 		"en_US": {
-			"url": "https://learn.liferay.com/w/dxp/using-search/installing-and-upgrading-a-search-engine/elasticsearch/installing-elasticsearch"
+			"url": "https://learn.liferay.com/w/dxp/search/installing-and-upgrading-a-search-engine/elasticsearch/installing-elasticsearch"
 		}
 	},
 	"install-opensearch": {
 		"en_US": {
-			"url": "https://learn.liferay.com/w/dxp/using-search/installing-and-upgrading-a-search-engine/opensearch"
+			"url": "https://learn.liferay.com/w/dxp/search/installing-and-upgrading-a-search-engine/opensearch"
 		}
 	},
 	"search-bar-suggestions": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets/search-bar-suggestions"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets/search-bar-suggestions"
 		}
 	},
 	"search-bar-suggestions-blueprints": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets/search-bar-suggestions/search-bar-suggestions-blueprints"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets/search-bar-suggestions/search-bar-suggestions-blueprints"
 		}
 	},
 	"search-bar-suggestions-site-activities": {
@@ -46,25 +46,25 @@
 	"search-pages-and-widgets": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets"
 		}
 	},
 	"sidecar-not-supported": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/web/guest/w/dxp/using-search/installing-and-upgrading-a-search-engine/elasticsearch/using-the-sidecar-or-embedded-elasticsearch"
+			"url": "https://learn.liferay.com/web/guest/w/dxp/search/installing-and-upgrading-a-search-engine/elasticsearch/using-the-sidecar-or-embedded-elasticsearch"
 		}
 	},
 	"sorting-search-results": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets/search-results/sorting-search-results"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets/search-results/sorting-search-results"
 		}
 	},
 	"tag-and-category-facet": {
 		"en_US": {
 			"message": "Learn more.",
-			"url": "https://learn.liferay.com/w/dxp/using-search/search-pages-and-widgets/search-facets/category-facet"
+			"url": "https://learn.liferay.com/w/dxp/search/search-pages-and-widgets/search-facets/category-facet"
 		}
 	}
 }

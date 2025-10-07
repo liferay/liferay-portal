@@ -850,6 +850,125 @@ definition {
 		}
 	}
 
+	@description = "LPS-101341: Validate if an alert appears when the user tries to delete an experience with an AB Test in a draft mode, the user should be able to delete the experience"
+	@priority = 4
+	test DeleteExperienceWithDraftABTest {
+		task ("Create an experience and add on content page") {
+			ContentPages.gotoPageEditor();
+
+			PageEditor.addExperience(
+				experienceName = "NewAnyoneExperience",
+				segmentName = "Anyone");
+
+			Button.clickPublish();
+		}
+
+		task ("Select the new experience") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+			ABTest.openABTestPanel();
+
+			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
+		}
+
+		task ("Create AB test with a variant") {
+			ABTest.createABTest(
+				goal = "Bounce Rate",
+				testTitle = "AB test title");
+
+			ABTest.createVariant(variantName = "Variant name");
+		}
+
+		task ("Go to edit the content page.") {
+			ContentPages.gotoPageEditor();
+		}
+
+		task ("Delete the created experience") {
+			var key_experienceName = "NewAnyoneExperience";
+
+			PageEditor.openExperienceMenu();
+
+			ClickNoError(locator1 = "PageEditor#EXPERIENCE_DELETE_BUTTON");
+
+			AssertConfirm(value1 = "Do you want to delete this experience? Its content will be deleted.");
+
+			Alert.viewSuccessMessage();
+		}
+
+		task ("Assert that experience was deleted") {
+			PageEditor.openExperienceMenu();
+
+			AssertElementNotPresent(
+				key_experienceName = "NewAnyoneExperience",
+				locator1 = "PageEditor#EXPERIENCE_SELECT_ITEM");
+		}
+	}
+
+	@description = "LPS-101341: Validate if an alert appears when the user tries to delete an experience with an AB Test in a draft mode, the user should be able to cancel the deletion of the experience"
+	@priority = 3
+	test DeleteExperienceWithDraftABTestCancel {
+		task ("Create an experience and add on content page") {
+			ContentPages.gotoPageEditor();
+
+			PageEditor.addExperience(
+				experienceName = "NewAnyoneExperience",
+				segmentName = "Anyone");
+
+			Button.clickPublish();
+		}
+
+		task ("Select the new experience") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+			ABTest.openABTestPanel();
+
+			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
+		}
+
+		task ("Create AB test with a variant, run and terminate test") {
+			ABTest.createABTest(
+				goal = "Bounce Rate",
+				testTitle = "AB test title");
+
+			ABTest.createVariant(variantName = "Variant name");
+		}
+
+		task ("Go to edit the content page.") {
+			ContentPages.gotoPageEditor();
+		}
+
+		task ("Delete the created experience") {
+			var key_experienceName = "NewAnyoneExperience";
+
+			PageEditor.openExperienceMenu();
+
+			ClickNoError(locator1 = "PageEditor#EXPERIENCE_DELETE_BUTTON");
+
+			Confirm.dismissAlert();
+		}
+
+		task ("Assert that experience is not deleted") {
+			AssertElementPresent(
+				key_experienceName = "NewAnyoneExperience",
+				locator1 = "PageEditor#EXPERIENCE_SELECT_ITEM");
+
+			Click(locator1 = "PageEditor#EXPERIENCE_SELECTOR");
+		}
+
+		task ("Assert that the ABTest draft keeps appearing") {
+			Button.clickPublish();
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
+
+			AssertTextEquals(
+				key_title = "AB test title",
+				locator1 = "ABTest#AB_TEST_TITLE_DXP",
+				value1 = "AB test title");
+		}
+	}
+
 	@description = "LPS-99225: Validate if the admin can delete a segment in an experience with an A/B test in terminated status"
 	@priority = 3
 	test DeleteSegmentABTestTerminated {
@@ -918,125 +1037,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-101341: Validate if an alert appears when the user tries to delete an experience with an AB Test in a draft mode, the user should be able to delete the experience"
-	@priority = 4
-	test DeletExperienceWithDraftABTest {
-		task ("Create an experience and add on content page") {
-			ContentPages.gotoPageEditor();
-
-			PageEditor.addExperience(
-				experienceName = "NewAnyoneExperience",
-				segmentName = "Anyone");
-
-			Button.clickPublish();
-		}
-
-		task ("Select the new experience") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ABTest.openABTestPanel();
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-		}
-
-		task ("Create AB test with a variant") {
-			ABTest.createABTest(
-				goal = "Bounce Rate",
-				testTitle = "AB test title");
-
-			ABTest.createVariant(variantName = "Variant name");
-		}
-
-		task ("Go to edit the content page.") {
-			ContentPages.gotoPageEditor();
-		}
-
-		task ("Delete the created experience") {
-			var key_experienceName = "NewAnyoneExperience";
-
-			PageEditor.openExperienceMenu();
-
-			ClickNoError(locator1 = "PageEditor#EXPERIENCE_DELETE_BUTTON");
-
-			AssertConfirm(value1 = "Do you want to delete this experience? Its content will be deleted.");
-
-			Alert.viewSuccessMessage();
-		}
-
-		task ("Assert that experience was deleted") {
-			PageEditor.openExperienceMenu();
-
-			AssertElementNotPresent(
-				key_experienceName = "NewAnyoneExperience",
-				locator1 = "PageEditor#EXPERIENCE_SELECT_ITEM");
-		}
-	}
-
-	@description = "LPS-101341: Validate if an alert appears when the user tries to delete an experience with an AB Test in a draft mode, the user should be able to cancel the deletion of the experience"
-	@priority = 3
-	test DeletExperienceWithDraftABTestCancel {
-		task ("Create an experience and add on content page") {
-			ContentPages.gotoPageEditor();
-
-			PageEditor.addExperience(
-				experienceName = "NewAnyoneExperience",
-				segmentName = "Anyone");
-
-			Button.clickPublish();
-		}
-
-		task ("Select the new experience") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ABTest.openABTestPanel();
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-		}
-
-		task ("Create AB test with a variant, run and terminate test") {
-			ABTest.createABTest(
-				goal = "Bounce Rate",
-				testTitle = "AB test title");
-
-			ABTest.createVariant(variantName = "Variant name");
-		}
-
-		task ("Go to edit the content page.") {
-			ContentPages.gotoPageEditor();
-		}
-
-		task ("Delete the created experience") {
-			var key_experienceName = "NewAnyoneExperience";
-
-			PageEditor.openExperienceMenu();
-
-			ClickNoError(locator1 = "PageEditor#EXPERIENCE_DELETE_BUTTON");
-
-			Confirm.dismissAlert();
-		}
-
-		task ("Assert that experience is not deleted") {
-			AssertElementPresent(
-				key_experienceName = "NewAnyoneExperience",
-				locator1 = "PageEditor#EXPERIENCE_SELECT_ITEM");
-
-			Click(locator1 = "PageEditor#EXPERIENCE_SELECTOR");
-		}
-
-		task ("Assert that the ABTest draft keeps appearing") {
-			Button.clickPublish();
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-
-			AssertTextEquals(
-				key_title = "AB test title",
-				locator1 = "ABTest#AB_TEST_TITLE_DXP",
-				value1 = "AB test title");
-		}
-	}
-
 	@description = "LPS-96791: Validate if the user can edit the target"
 	@priority = 5
 	test EditClickElementTarget {
@@ -1090,48 +1090,6 @@ definition {
 			AssertTextEquals.assertValue(
 				locator1 = "ABTest#ELEMENT_ID_INPUT",
 				value1 = ${idelement});
-		}
-	}
-
-	@description = "LPS-103334: Validate if the AB Test is in the status draft, the experience about the AB Test is active is in Edition Mode"
-	@priority = 5
-	test EditExperienceWithDraftABTest {
-		property portal.acceptance = "true";
-
-		task ("Create an experience and add on content page") {
-			ContentPages.gotoPageEditor();
-
-			PageEditor.addExperience(
-				experienceName = "NewAnyoneExperience",
-				segmentName = "Anyone");
-
-			Button.clickPublish();
-		}
-
-		task ("Select the new experience") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ABTest.openABTestPanel();
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-		}
-
-		task ("Create AB test with a variant") {
-			ABTest.createABTest(
-				goal = "Bounce Rate",
-				testTitle = "AB test title");
-
-			ABTest.createVariant(variantName = "Variant name");
-		}
-
-		task ("Go to edit the content page.") {
-			ContentPages.gotoPageEditor();
-		}
-
-		task ("Assert the experience can be edited") {
-			PageEditor.openExperienceMenu();
-
-			AssertElementPresent(locator1 = "PageEditor#EXPERIENCE_EDIT_BUTTON");
 		}
 	}
 
@@ -1450,98 +1408,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-101341: Validate if when the user will edit some Experience with an AB Test in a Terminated status, the experience about the AB Test is active is in Non-Edition Mode"
-	@priority = 4
-	test NotPossibleToEditExperienceAfterTerminatedABTest {
-		property portal.acceptance = "true";
-
-		task ("Create an experience and add on content page") {
-			ContentPages.gotoPageEditor();
-
-			PageEditor.addExperience(
-				experienceName = "NewAnyoneExperience",
-				segmentName = "Anyone");
-
-			Button.clickPublish();
-		}
-
-		task ("Select the new experience") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ABTest.openABTestPanel();
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-		}
-
-		task ("Create AB test with a variant, run and terminate test") {
-			ABTest.createABTest(
-				goal = "Bounce Rate",
-				testTitle = "AB test title");
-
-			ABTest.createVariant(variantName = "Variant name");
-
-			ABTest.runTest();
-
-			ABTest.terminateTest();
-		}
-
-		task ("Go to edit the content page.") {
-			ContentPages.gotoPageEditor();
-		}
-
-		task ("Assert the experience cannot be edited") {
-			PageEditor.openExperienceMenu();
-
-			AssertElementNotPresent(locator1 = "PageEditor#EXPERIENCE_EDIT_BUTTON");
-
-			AssertElementPresent(locator1 = "ABTest#AB_TEST_BUTTON");
-		}
-	}
-
-	@description = "LPS-103334: Validate if the AB Test is in the status running, the experience about the AB Test is active is in Non-Edition Mode"
-	@priority = 5
-	test NotPossibleToEditExperienceWithRunningABTest {
-		property portal.acceptance = "true";
-
-		task ("Create an experience and add on content page") {
-			ContentPages.gotoPageEditor();
-
-			PageEditor.addExperience(
-				experienceName = "NewAnyoneExperience",
-				segmentName = "Anyone");
-
-			Button.clickPublish();
-		}
-
-		task ("Select the new experience") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			ABTest.openABTestPanel();
-
-			ContentPages.changeExperience(experienceName = "NewAnyoneExperience");
-		}
-
-		task ("Create AB test with a variant and run test") {
-			ABTest.createABTest(
-				goal = "Bounce Rate",
-				testTitle = "AB test title");
-
-			ABTest.createVariant(variantName = "Variant name");
-
-			ABTest.runTest();
-		}
-
-		task ("Go to edit the content page.") {
-			ContentPages.gotoPageEditor();
-		}
-
-		task ("Assert the experience cannot be edited") {
-			PageEditor.openExperienceMenu();
-
-			AssertElementNotPresent(locator1 = "PageEditor#EXPERIENCE_EDIT_BUTTON");
-		}
-	}
-
 	@description = "LPS-99225: Validate if the admin can reassign a segment in an experience with an A/B test in the draft status"
 	@priority = 3
 	test ReassignSegmentABTestDraft {
@@ -1803,7 +1669,7 @@ definition {
 	@description = "LPS-97882: Validate if each A/B Test is related for one experience, if the user changes between the site pages, the context about the A/B Test changes too"
 	@priority = 3
 	test SwitchSitePage {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		task ("Create content page") {
 			JSONLayout.addPublicLayout(

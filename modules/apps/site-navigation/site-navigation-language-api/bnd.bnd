@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Navigation Language API
 Bundle-SymbolicName: com.liferay.site.navigation.language.api
-Bundle-Version: 5.0.7
+Bundle-Version: 5.0.8
 Export-Package: com.liferay.site.navigation.language.constants

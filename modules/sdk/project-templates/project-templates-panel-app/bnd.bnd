@@ -1,7 +1,7 @@
 Bundle-Description: Creates a Liferay panel app that customizes a panel category (e.g., Control Panel) by inserting an entry that gives access to an application.
 Bundle-Name: Liferay Project Templates Panel App
 Bundle-SymbolicName: com.liferay.project.templates.panel.app
-Bundle-Version: 1.0.198
+Bundle-Version: 1.0.200
 Liferay-Versions: [7,9999.0)
 -removeheaders:\
 	Import-Package,\

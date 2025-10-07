@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {readFileSync} from 'fs';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
@@ -20,6 +21,8 @@ import performLogin, {
 	performUserSwitch,
 	userData,
 } from '../../../utils/performLogin';
+import {PORTLET_URLS} from '../../../utils/portletUrls';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -27,6 +30,7 @@ import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils
 export const test = mergeTests(
 	apiHelpersTest,
 	blogsPagesTest,
+	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
@@ -383,4 +387,85 @@ test('approve or reject modal appear even after doing a comment on the comments 
 	await workflowTaskDetailsPage.rejectMenuItem.click();
 
 	await expect(page.getByRole('heading', {name: 'Reject'})).toBeVisible();
+});
+
+test('verify that the user can order the results inside Assigned to My Roles by Due Date', async ({
+	apiHelpers,
+	page,
+	site,
+	workflowTasksPage,
+}) => {
+	await test.step('assign the "Single Approver" workflow to Web Content Article', async () => {
+		await page.goto(
+			`/group${site.friendlyUrlPath}${PORTLET_URLS.workflow}`
+		);
+
+		await page.waitForLoadState('networkidle');
+
+		await page
+			.getByRole('row', {name: 'Web Content Article'})
+			.getByRole('button', {name: 'Edit'})
+			.click();
+
+		await page.getByRole('combobox').selectOption('Single Approver@1');
+
+		await page.getByRole('button', {name: 'Save'}).click();
+	});
+
+	let webContent1;
+	let webContent2;
+
+	await test.step('create web contents', async () => {
+		const basicWebContentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		webContent1 = await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: 'Web content 1'},
+		});
+
+		apiHelpers.data.push({
+			id: `${site.id}_${webContent1.articleId}`,
+			type: 'webContent',
+		});
+
+		webContent2 = await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: basicWebContentStructureId,
+			groupId: site.id,
+			titleMap: {en_US: 'Web content 2'},
+		});
+
+		apiHelpers.data.push({
+			id: `${site.id}_${webContent2.articleId}`,
+			type: 'webContent',
+		});
+	});
+
+	await test.step('update web content due dates and verify that entries are correctly ordered by date', async () => {
+		await workflowTasksPage.goToAssignedToMyRoles();
+
+		await workflowTasksPage.updateDueDate(webContent1.title, '10/02');
+
+		await workflowTasksPage.updateDueDate(webContent2.title, '09/01');
+
+		await page.getByLabel('Order').click();
+
+		await page.getByRole('menuitem', {name: 'Due Date'}).click();
+
+		await page.waitForLoadState('networkidle');
+
+		const rowWebContent1 = page.getByRole('row', {name: webContent1.title});
+
+		const rowWebContent2 = page.getByRole('row', {name: webContent2.title});
+
+		const webContent1Index = await rowWebContent1.evaluate((row) =>
+			Array.from(row.parentElement!.children).indexOf(row)
+		);
+		const webContent2Index = await rowWebContent2.evaluate((row) =>
+			Array.from(row.parentElement!.children).indexOf(row)
+		);
+
+		expect(webContent2Index).toBeLessThan(webContent1Index);
+	});
 });

@@ -299,7 +299,7 @@ String customCSS = (advancedDataJSONObject != null) ? advancedDataJSONObject.get
 
 // Generated CSS
 
-out.print("#p_p_id_" + portlet.getPortletId() + "_ .portlet-content");
+out.print("#p_p_id_" + portlet.getPortletId() + "_ > .portlet > .portlet-content");
 
 out.print(" {\n");
 

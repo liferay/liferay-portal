@@ -108,10 +108,12 @@ test(
 					[picklist.id]
 				);
 
-			await apiHelpers.listTypeAdmin.postListTypeEntry(
-				picklist.externalReferenceCode,
-				'item1'
-			);
+			await apiHelpers.listTypeAdmin.postListTypeEntry({
+				key: 'item1',
+				listTypeDefinitionExternalReferenceCode:
+					picklist.externalReferenceCode,
+				name_i18n: {en_US: 'item1'},
+			});
 
 			const catalog =
 				await apiHelpers.headlessCommerceAdminCatalog.postCatalog();

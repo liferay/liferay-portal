@@ -95,8 +95,8 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 
 		long totalCount = countriesJSONObject.getLong("totalCount");
 
-		Country country1 = testGraphQLGetCountriesPage_addCountry();
-		Country country2 = testGraphQLGetCountriesPage_addCountry();
+		Country country1 = testGraphQLCountry_addCountry(randomCountry());
+		Country country2 = testGraphQLCountry_addCountry(randomCountry());
 
 		countriesJSONObject = JSONUtil.getValueAsJSONObject(
 			invokeGraphQLQuery(graphQLField), "JSONObject/data",
@@ -359,11 +359,6 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 
 	@Override
 	protected Country testGetCountryByNumber_addCountry() throws Exception {
-		return _addCountry(randomCountry());
-	}
-
-	@Override
-	protected Country testGraphQLCountry_addCountry() throws Exception {
 		return _addCountry(randomCountry());
 	}
 

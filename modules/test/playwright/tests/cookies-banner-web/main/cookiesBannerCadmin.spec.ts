@@ -18,10 +18,7 @@ export const test = mergeTests(
 
 test('LPD-25440 Cookie Banner Cadmin', async ({page, systemSettingsPage}) => {
 	await test.step('Enable Third Party Cookies', async () => {
-		await systemSettingsPage.goToSystemSetting(
-			'Cookies',
-			'Preference Handling'
-		);
+		await systemSettingsPage.goToSystemSetting('Privacy', 'Cookie Manager');
 
 		const enabledButton = page.getByLabel('Enabled');
 

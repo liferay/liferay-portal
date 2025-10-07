@@ -6,6 +6,8 @@
 package com.liferay.portal.verify;
 
 import com.liferay.portal.kernel.util.StringBundler;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
@@ -28,7 +30,10 @@ public class PreupgradeVerifyProcessSuiteTest {
 
 	@Test
 	public void testVerifyExceptionMessages() {
-		try (MockedConstruction<PreupgradeVerifyCompanyUsers>
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.verify.PreupgradeVerifyProcessSuite",
+				LoggerTestUtil.OFF);
+			MockedConstruction<PreupgradeVerifyCompanyUsers>
 				mockedConstruction1 = _mockConstruction(
 					PreupgradeVerifyCompanyUsers.class);
 			MockedConstruction<PreupgradeVerifyDatabaseCharacterSet>
@@ -41,7 +46,13 @@ public class PreupgradeVerifyProcessSuiteTest {
 				mockedConstruction4 = _mockConstruction(
 					PreupgradeVerifyDatabaseState.class);
 			MockedConstruction<PreupgradeVerifyProperties> mockedConstruction5 =
-				_mockConstruction(PreupgradeVerifyProperties.class)) {
+				_mockConstruction(PreupgradeVerifyProperties.class);
+			MockedConstruction<PreupgradeVerifyStoreAccess>
+				mockedConstruction6 = _mockConstruction(
+					PreupgradeVerifyStoreAccess.class);
+			MockedConstruction<PreupgradeVerifyStoreFileSystemStructure>
+				mockedConstruction7 = _mockConstruction(
+					PreupgradeVerifyStoreFileSystemStructure.class)) {
 
 			VerifyProcess verifyProcess = new PreupgradeVerifyProcessSuite();
 
@@ -56,7 +67,9 @@ public class PreupgradeVerifyProcessSuiteTest {
 					"PreupgradeVerifyDatabaseCharacterSet, Exception in ",
 					"PreupgradeVerifyDatabasePrivileges, Exception in ",
 					"PreupgradeVerifyDatabaseState, Exception in ",
-					"PreupgradeVerifyProperties"),
+					"PreupgradeVerifyProperties, Exception in ",
+					"PreupgradeVerifyStoreAccess, Exception in ",
+					"PreupgradeVerifyStoreFileSystemStructure"),
 				verifyException.getMessage());
 		}
 	}

@@ -382,6 +382,11 @@ public class FileEntryWrapper implements FileEntry, ModelWrapper<FileEntry> {
 	}
 
 	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		_fileEntry.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	@Override
 	public void setGroupId(long groupId) {
 		_fileEntry.setGroupId(groupId);
 	}

@@ -44,47 +44,41 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface WidgetPageWidgetInstanceResource {
 
-	public void
-			deleteSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				String widgetInstanceExternalReferenceCode)
+	public void deleteSiteSitePageWidgetInstance(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String widgetInstanceExternalReferenceCode)
 		throws Exception;
 
-	public Page<WidgetPageWidgetInstance>
-			getSiteSiteByExternalReferenceCodeSitePageWidgetInstancesPage(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode)
+	public WidgetPageWidgetInstance getSiteSitePageWidgetInstance(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String widgetInstanceExternalReferenceCode)
 		throws Exception;
 
-	public WidgetPageWidgetInstance
-			getSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				String widgetInstanceExternalReferenceCode)
+	public Page<WidgetPageWidgetInstance> getSiteSitePageWidgetInstancesPage(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode)
 		throws Exception;
 
-	public WidgetPageWidgetInstance
-			patchSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				String widgetInstanceExternalReferenceCode,
-				WidgetPageWidgetInstance widgetPageWidgetInstance)
+	public WidgetPageWidgetInstance patchSiteSitePageWidgetInstance(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String widgetInstanceExternalReferenceCode,
+			WidgetPageWidgetInstance widgetPageWidgetInstance)
 		throws Exception;
 
-	public WidgetPageWidgetInstance
-			postSiteSiteByExternalReferenceCodeSitePageWidgetInstance(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				WidgetPageWidgetInstance widgetPageWidgetInstance)
+	public WidgetPageWidgetInstance postSiteSitePageWidgetInstance(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			WidgetPageWidgetInstance widgetPageWidgetInstance)
 		throws Exception;
 
-	public WidgetPageWidgetInstance
-			putSiteSiteByExternalReferenceCodeWidgetInstanceWidgetInstanceExternalReferenceCode(
-				String siteExternalReferenceCode,
-				String sitePageExternalReferenceCode,
-				String widgetInstanceExternalReferenceCode,
-				WidgetPageWidgetInstance widgetPageWidgetInstance)
+	public WidgetPageWidgetInstance putSiteSitePageWidgetInstance(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String widgetInstanceExternalReferenceCode,
+			WidgetPageWidgetInstance widgetPageWidgetInstance)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(

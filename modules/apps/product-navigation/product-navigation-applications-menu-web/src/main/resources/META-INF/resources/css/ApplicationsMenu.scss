@@ -127,7 +127,8 @@ html#{$cadmin-selector} {
 			}
 		}
 
-		.applications-menu-sites {
+		.applications-menu-sites,
+		.applications-menu-spaces {
 			background-color: $cadmin-light-l1;
 
 			@include media-breakpoint-up(md, $cadmin-grid-breakpoints) {
@@ -135,6 +136,15 @@ html#{$cadmin-selector} {
 			}
 		}
 
+		.applications-menu-spaces {
+			.create-space-step-one-illustration img {
+				height: 160px;
+				object-fit: cover;
+				width: 100%;
+			}
+		}
+
+		.applications-menu-cms,
 		.applications-menu-virtual-instance {
 			font-weight: 600;
 		}

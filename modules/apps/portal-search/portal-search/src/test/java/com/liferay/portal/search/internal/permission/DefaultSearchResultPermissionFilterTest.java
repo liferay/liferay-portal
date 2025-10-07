@@ -119,6 +119,16 @@ public class DefaultSearchResultPermissionFilterTest {
 			searchContext, defaultSearchResultPermissionFilter, 9, 9);
 	}
 
+	@Test
+	public void testSearchWithSizeZero() {
+		_groupAdmin = false;
+		_permissionFilteredSearchResultAccurateCountThreshold = 0;
+
+		_assertPagination(
+			_getSearchContext(0), _getDefaultSearchResultPermissionFilter(), 0,
+			_PRIVATE_DOCUMENTS + _PUBLIC_DOCUMENTS);
+	}
+
 	private void _assertPagination(
 		SearchContext searchContext,
 		DefaultSearchResultPermissionFilter defaultSearchResultPermissionFilter,

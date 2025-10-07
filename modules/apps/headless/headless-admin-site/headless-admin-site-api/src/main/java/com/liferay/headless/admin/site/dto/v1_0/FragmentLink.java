@@ -5,9 +5,12 @@
 
 package com.liferay.headless.admin.site.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -49,33 +52,44 @@ public class FragmentLink implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The localized fragment link's values."
+		description = "The fragment link value's target (blank, self)."
 	)
+	@JsonGetter("target")
 	@Valid
-	public Map<String, FragmentLinkValue> getValue_i18n() {
-		if (_value_i18nSupplier != null) {
-			value_i18n = _value_i18nSupplier.get();
+	public Target getTarget() {
+		if (_targetSupplier != null) {
+			target = _targetSupplier.get();
 
-			_value_i18nSupplier = null;
+			_targetSupplier = null;
 		}
 
-		return value_i18n;
-	}
-
-	public void setValue_i18n(Map<String, FragmentLinkValue> value_i18n) {
-		this.value_i18n = value_i18n;
-
-		_value_i18nSupplier = null;
+		return target;
 	}
 
 	@JsonIgnore
-	public void setValue_i18n(
-		UnsafeSupplier<Map<String, FragmentLinkValue>, Exception>
-			value_i18nUnsafeSupplier) {
+	public String getTargetAsString() {
+		Target target = getTarget();
 
-		_value_i18nSupplier = () -> {
+		if (target == null) {
+			return null;
+		}
+
+		return target.toString();
+	}
+
+	public void setTarget(Target target) {
+		this.target = target;
+
+		_targetSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTarget(
+		UnsafeSupplier<Target, Exception> targetUnsafeSupplier) {
+
+		_targetSupplier = () -> {
 			try {
-				return value_i18nUnsafeSupplier.get();
+				return targetUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -86,12 +100,58 @@ public class FragmentLink implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The localized fragment link's values.")
+	@GraphQLField(
+		description = "The fragment link value's target (blank, self)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Map<String, FragmentLinkValue> value_i18n;
+	protected Target target;
 
 	@JsonIgnore
-	private Supplier<Map<String, FragmentLinkValue>> _value_i18nSupplier;
+	private Supplier<Target> _targetSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The fragment link's value."
+	)
+	@Valid
+	public FragmentLinkValue getValue() {
+		if (_valueSupplier != null) {
+			value = _valueSupplier.get();
+
+			_valueSupplier = null;
+		}
+
+		return value;
+	}
+
+	public void setValue(FragmentLinkValue value) {
+		this.value = value;
+
+		_valueSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setValue(
+		UnsafeSupplier<FragmentLinkValue, Exception> valueUnsafeSupplier) {
+
+		_valueSupplier = () -> {
+			try {
+				return valueUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The fragment link's value.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected FragmentLinkValue value;
+
+	@JsonIgnore
+	private Supplier<FragmentLinkValue> _valueSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -120,16 +180,32 @@ public class FragmentLink implements Serializable {
 
 		sb.append("{");
 
-		Map<String, FragmentLinkValue> value_i18n = getValue_i18n();
+		Target target = getTarget();
 
-		if (value_i18n != null) {
+		if (target != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"value_i18n\": ");
+			sb.append("\"target\": ");
 
-			sb.append(_toJSON(value_i18n));
+			sb.append("\"");
+
+			sb.append(target);
+
+			sb.append("\"");
+		}
+
+		FragmentLinkValue value = getValue();
+
+		if (value != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"value\": ");
+
+			sb.append(String.valueOf(value));
 		}
 
 		sb.append("}");
@@ -143,6 +219,44 @@ public class FragmentLink implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
+
+	@GraphQLName("Target")
+	public static enum Target {
+
+		BLANK("Blank"), SELF("Self");
+
+		@JsonCreator
+		public static Target create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (Target target : values()) {
+				if (Objects.equals(target.getValue(), value)) {
+					return target;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private Target(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(

@@ -55,8 +55,9 @@ public class PortletDocumentFragmentEntryProcessor
 
 		String html = fragmentEntryLink.getHtml();
 
-		if (!html.contains("lfr-widget-") &&
-			!html.contains("@liferay_portlet")) {
+		if (fragmentEntryProcessorContext.isDisablePortletRender() ||
+			(!html.contains("lfr-widget-") &&
+			 !html.contains("@liferay_portlet"))) {
 
 			return;
 		}

@@ -10,7 +10,9 @@
 	}
 
 	&-description {
-		margin-bottom: 1rem;
+		color: $secondary;
+		font-weight: 400;
+		margin: 1rem 0;
 		text-align: justify;
 	}
 }

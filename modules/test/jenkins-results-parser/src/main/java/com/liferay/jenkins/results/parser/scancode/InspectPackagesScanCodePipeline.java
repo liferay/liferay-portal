@@ -29,7 +29,7 @@ public class InspectPackagesScanCodePipeline extends BaseScanCodePipeline {
 
 		waitForScan("populate_purldb");
 
-		sendSlackNotification(getS3URL());
+		sendSlackNotification(getCloudBucketURL());
 	}
 
 	public JSONObject getJSONObject() throws IOException {

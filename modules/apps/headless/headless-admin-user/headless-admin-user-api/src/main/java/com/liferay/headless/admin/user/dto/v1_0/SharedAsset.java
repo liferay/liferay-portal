@@ -441,6 +441,52 @@ public class SharedAsset implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Optional field with the embedded file, can be embedded with nestedFields"
+	)
+	@Valid
+	public FileEntry getFile() {
+		if (_fileSupplier != null) {
+			file = _fileSupplier.get();
+
+			_fileSupplier = null;
+		}
+
+		return file;
+	}
+
+	public void setFile(FileEntry file) {
+		this.file = file;
+
+		_fileSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFile(
+		UnsafeSupplier<FileEntry, Exception> fileUnsafeSupplier) {
+
+		_fileSupplier = () -> {
+			try {
+				return fileUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Optional field with the embedded file, can be embedded with nestedFields"
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected FileEntry file;
+
+	@JsonIgnore
+	private Supplier<FileEntry> _fileSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The shared asset file type icon."
 	)
 	public String getFileTypeIcon() {
@@ -868,6 +914,18 @@ public class SharedAsset implements Serializable {
 			sb.append(_escape(externalReferenceCode));
 
 			sb.append("\"");
+		}
+
+		FileEntry file = getFile();
+
+		if (file != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"file\": ");
+
+			sb.append(String.valueOf(file));
 		}
 
 		String fileTypeIcon = getFileTypeIcon();

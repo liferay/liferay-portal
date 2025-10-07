@@ -5,44 +5,59 @@
 
 import {test} from '@playwright/test';
 
+import {AssetsPage} from '../pages/AssetsPage';
 import {ContentsPage} from '../pages/ContentsPage';
 import {EditVocabularyPage} from '../pages/EditVocabularyPage';
-import {FilesPage} from '../pages/FilesPage';
 import {FolderPage} from '../pages/FolderPage';
+import {HomePage} from '../pages/HomePage';
+import {InfoPanelPage} from '../pages/InfoPanelPage';
 import {PicklistBuilderPage} from '../pages/PicklistBuilderPage';
-import {StructureBuilderPage} from '../pages/StructureBuilderPage';
+import {RecycleBinPage} from '../pages/RecycleBinPage';
+import {SpaceSummaryPage} from '../pages/SpaceSummaryPage';
 import {StructuresPage} from '../pages/StructuresPage';
 import {TagsPage} from '../pages/TagsPage';
 import {VocabulariesPage} from '../pages/VocabulariesPage';
 
 const cmsPagesTest = test.extend<{
+	assetsPage: AssetsPage;
 	contentsPage: ContentsPage;
 	editVocabularyPage: EditVocabularyPage;
-	filesPage: FilesPage;
 	folderPage: FolderPage;
+	homePage: HomePage;
+	infoPanelPage: InfoPanelPage;
 	picklistBuilderPage: PicklistBuilderPage;
-	structureBuilderPage: StructureBuilderPage;
+	recycleBinPage: RecycleBinPage;
+	spaceSummaryPage: SpaceSummaryPage;
 	structuresPage: StructuresPage;
 	tagsPage: TagsPage;
 	vocabulariesPage: VocabulariesPage;
 }>({
+	assetsPage: async ({page}, use) => {
+		await use(new AssetsPage(page));
+	},
 	contentsPage: async ({page}, use) => {
 		await use(new ContentsPage(page));
 	},
 	editVocabularyPage: async ({page}, use) => {
 		await use(new EditVocabularyPage(page));
 	},
-	filesPage: async ({page}, use) => {
-		await use(new FilesPage(page));
-	},
 	folderPage: async ({page}, use) => {
 		await use(new FolderPage(page));
+	},
+	homePage: async ({page}, use) => {
+		await use(new HomePage(page));
+	},
+	infoPanelPage: async ({page}, use) => {
+		await use(new InfoPanelPage(page));
 	},
 	picklistBuilderPage: async ({page}, use) => {
 		await use(new PicklistBuilderPage(page));
 	},
-	structureBuilderPage: async ({page}, use) => {
-		await use(new StructureBuilderPage(page));
+	recycleBinPage: async ({page}, use) => {
+		await use(new RecycleBinPage(page));
+	},
+	spaceSummaryPage: async ({page}, use) => {
+		await use(new SpaceSummaryPage(page));
 	},
 	structuresPage: async ({page}, use) => {
 		await use(new StructuresPage(page));

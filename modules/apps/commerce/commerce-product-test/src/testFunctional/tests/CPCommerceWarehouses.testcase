@@ -874,7 +874,7 @@ definition {
 
 		CommerceNavigator.goToWarehousesAdmin();
 
-		Click(locator1 = "AnalyticsCloudConnection#ADD_NEW_PROPERTY_BUTTON");
+		Click(locator1 = "CommerceEntry#ADD_BUTTON");
 
 		CommerceEntry.addNewWarehousesEntry(warehouseName = "Test Warehouse");
 

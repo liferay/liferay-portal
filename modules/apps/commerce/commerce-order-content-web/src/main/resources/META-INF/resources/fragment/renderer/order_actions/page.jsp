@@ -43,7 +43,7 @@
 	/>
 </div>
 
-<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-10562") && Validator.isNotNull(viewReturnableOrderItemsURL) %>'>
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-10562") && Validator.isNotNull(viewReturnableOrderItemsURL) %>'>
 	<liferay-frontend:component
 		context='<%=
 			HashMapBuilder.<String, Object>put(

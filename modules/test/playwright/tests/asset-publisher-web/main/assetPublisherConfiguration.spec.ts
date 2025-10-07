@@ -115,7 +115,7 @@ test(
 
 		await assetPublisherPage.changeAssetSelection('Dynamic');
 
-		await page.getByLabel('close', {exact: true}).click();
+		await page.locator('.modal').getByLabel('Close', {exact: true}).click();
 
 		await page
 			.locator('.portlet-topper', {hasText: 'Asset Publisher'})

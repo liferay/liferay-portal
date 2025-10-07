@@ -1919,6 +1919,16 @@ public class MBThreadPersistenceImpl
 			return findByGroupId(groupId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByGroupId(
+					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -2270,6 +2280,14 @@ public class MBThreadPersistenceImpl
 	public int filterCountByGroupId(long groupId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByGroupId(groupId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByGroupId(groupId);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(2);
@@ -3020,6 +3038,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C(
+					groupId, categoryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -3357,6 +3385,16 @@ public class MBThreadPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_C(
 				groupId, categoryIds, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C(
+					groupId, categoryIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
 		}
 
 		if (categoryIds == null) {
@@ -3819,6 +3857,14 @@ public class MBThreadPersistenceImpl
 			return countByG_C(groupId, categoryId);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_C(groupId, categoryId);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
+		}
+
 		StringBundler sb = new StringBundler(3);
 
 		sb.append(_FILTER_SQL_COUNT_MBTHREAD_WHERE);
@@ -3870,6 +3916,13 @@ public class MBThreadPersistenceImpl
 	public int filterCountByG_C(long groupId, long[] categoryIds) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C(groupId, categoryIds);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = InlineSQLHelperUtil.filter(
+				findByG_C(groupId, categoryIds), groupId);
+
+			return mbThreads.size();
 		}
 
 		if (categoryIds == null) {
@@ -4450,6 +4503,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_NotC(
+					groupId, categoryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -4820,6 +4883,14 @@ public class MBThreadPersistenceImpl
 	public int filterCountByG_NotC(long groupId, long categoryId) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_NotC(groupId, categoryId);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_NotC(groupId, categoryId);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -5385,6 +5456,16 @@ public class MBThreadPersistenceImpl
 			return findByG_S(groupId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_S(
+					groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -5753,6 +5834,14 @@ public class MBThreadPersistenceImpl
 	public int filterCountByG_S(long groupId, int status) {
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_S(groupId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_S(groupId, status);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(3);
@@ -7525,6 +7614,16 @@ public class MBThreadPersistenceImpl
 				orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_L(
+					groupId, categoryId, lastPostDate, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -7951,6 +8050,15 @@ public class MBThreadPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_L(groupId, categoryId, lastPostDate);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_C_L(
+				groupId, categoryId, lastPostDate);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -8577,6 +8685,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_S(
+					groupId, categoryId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -8931,6 +9049,16 @@ public class MBThreadPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_C_S(
 				groupId, categoryIds, status, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_S(
+					groupId, categoryIds, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		if (categoryIds == null) {
@@ -9428,6 +9556,14 @@ public class MBThreadPersistenceImpl
 			return countByG_C_S(groupId, categoryId, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_C_S(groupId, categoryId, status);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
+		}
+
 		StringBundler sb = new StringBundler(4);
 
 		sb.append(_FILTER_SQL_COUNT_MBTHREAD_WHERE);
@@ -9486,6 +9622,13 @@ public class MBThreadPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_S(groupId, categoryIds, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = InlineSQLHelperUtil.filter(
+				findByG_C_S(groupId, categoryIds, status), groupId);
+
+			return mbThreads.size();
 		}
 
 		if (categoryIds == null) {
@@ -10110,6 +10253,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_NotS(
+					groupId, categoryId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -10464,6 +10617,16 @@ public class MBThreadPersistenceImpl
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return findByG_C_NotS(
 				groupId, categoryIds, status, start, end, orderByComparator);
+		}
+
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_C_NotS(
+					groupId, categoryIds, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
 		}
 
 		if (categoryIds == null) {
@@ -10963,6 +11126,15 @@ public class MBThreadPersistenceImpl
 			return countByG_C_NotS(groupId, categoryId, status);
 		}
 
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_C_NotS(
+				groupId, categoryId, status);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
+		}
+
 		StringBundler sb = new StringBundler(4);
 
 		sb.append(_FILTER_SQL_COUNT_MBTHREAD_WHERE);
@@ -11021,6 +11193,13 @@ public class MBThreadPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_C_NotS(groupId, categoryIds, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = InlineSQLHelperUtil.filter(
+				findByG_C_NotS(groupId, categoryIds, status), groupId);
+
+			return mbThreads.size();
 		}
 
 		if (categoryIds == null) {
@@ -11645,6 +11824,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_NotC_S(
+					groupId, categoryId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -12034,6 +12223,15 @@ public class MBThreadPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_NotC_S(groupId, categoryId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_NotC_S(
+				groupId, categoryId, status);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(4);
@@ -12635,6 +12833,16 @@ public class MBThreadPersistenceImpl
 				groupId, categoryId, status, start, end, orderByComparator);
 		}
 
+		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
+			isPermissionsInMemoryFilterEnabled()) {
+
+			return InlineSQLHelperUtil.filter(
+				findByG_NotC_NotS(
+					groupId, categoryId, status, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, orderByComparator),
+				groupId);
+		}
+
 		StringBundler sb = null;
 
 		if (orderByComparator != null) {
@@ -13024,6 +13232,15 @@ public class MBThreadPersistenceImpl
 
 		if (!InlineSQLHelperUtil.isEnabled(groupId)) {
 			return countByG_NotC_NotS(groupId, categoryId, status);
+		}
+
+		if (isPermissionsInMemoryFilterEnabled()) {
+			List<MBThread> mbThreads = findByG_NotC_NotS(
+				groupId, categoryId, status);
+
+			mbThreads = InlineSQLHelperUtil.filter(mbThreads, groupId);
+
+			return mbThreads.size();
 		}
 
 		StringBundler sb = new StringBundler(4);

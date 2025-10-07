@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
 /**
@@ -135,7 +135,7 @@ public class SiteParamConverterProvider
 	private boolean _hasSiteIdAnnotation(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
 			if ((annotation.annotationType() == PathParam.class) &&
-				StringUtils.equalsAny(
+				Strings.CI.equalsAny(
 					AnnotationUtils.getAnnotationValue(annotation),
 					"assetLibraryId", "siteId")) {
 

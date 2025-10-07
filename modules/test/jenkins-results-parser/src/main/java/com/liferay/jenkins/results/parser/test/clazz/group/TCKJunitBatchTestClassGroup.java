@@ -21,7 +21,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -119,19 +118,17 @@ public class TCKJunitBatchTestClassGroup extends BatchTestClassGroup {
 		}
 
 		for (File tckTestFile : tckTestFiles) {
-			testClasses.add(TestClassFactory.newTestClass(this, tckTestFile));
+			addTestClass(TestClassFactory.newTestClass(this, tckTestFile));
 		}
 
-		if (testClasses.isEmpty()) {
+		if (!containsTestClasses()) {
 			File buildTestBatchFile = new File(
 				portalGitWorkingDirectory.getWorkingDirectory(),
 				"build-test-batch.xml");
 
-			testClasses.add(
+			addTestClass(
 				TestClassFactory.newTestClass(this, buildTestBatchFile));
 		}
-
-		Collections.sort(testClasses);
 	}
 
 	private List<JobProperty> _getExcludesJobProperties() {

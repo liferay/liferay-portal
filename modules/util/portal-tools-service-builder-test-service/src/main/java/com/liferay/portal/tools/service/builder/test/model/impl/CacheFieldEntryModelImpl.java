@@ -37,7 +37,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -622,11 +621,11 @@ public class CacheFieldEntryModelImpl
 
 	private long _columnBitmask;
 
-	protected final transient Consumer<String>
-		nicknameUpdateEntityCacheConsumer = nickname -> {
+	protected static final BiConsumer<CacheFieldEntry, String>
+		nicknameUpdateEntityCacheBiConsumer = (cacheFieldEntry, nickname) -> {
 			CacheFieldEntryCacheModel cacheFieldEntryCacheModel =
 				EntityCacheUtil.fetchCacheModel(
-					CacheFieldEntryImpl.class, _cacheFieldEntryId,
+					CacheFieldEntryImpl.class, cacheFieldEntry.getPrimaryKey(),
 					CacheFieldEntryCacheModel.class);
 
 			if (cacheFieldEntryCacheModel != null) {

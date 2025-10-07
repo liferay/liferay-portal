@@ -14,7 +14,6 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.list.type.service.ListTypeEntryService;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -209,21 +208,7 @@ public class ListTypeEntryResourceImpl extends BaseListTypeEntryResourceImpl {
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
 			() -> {
-				if (!FeatureFlagManagerUtil.isEnabled(
-						serviceBuilderListTypeEntry.getCompanyId(),
-						"LPD-24055")) {
-
-					com.liferay.list.type.model.ListTypeDefinition
-						serviceBuilderlistTypeDefinition =
-							_listTypeDefinitionService.getListTypeDefinition(
-								serviceBuilderListTypeEntry.
-									getListTypeDefinitionId());
-
-					if (serviceBuilderlistTypeDefinition.isSystem()) {
-						return null;
-					}
-				}
-				else if (serviceBuilderListTypeEntry.isSystem()) {
+				if (serviceBuilderListTypeEntry.isSystem()) {
 					return null;
 				}
 

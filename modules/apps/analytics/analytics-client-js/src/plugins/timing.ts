@@ -17,6 +17,8 @@ function onload(analytics: Analytics) {
 	const pageLoadTime = perfData.loadEventStart - perfData.navigationStart;
 
 	const props = {
+		externalReferenceCode:
+			analytics._getContext().layoutExternalReferenceCode,
 		pageLoadTime,
 	};
 
@@ -41,6 +43,8 @@ function unload(analytics: Analytics) {
 	const duration = getDuration(MARK_VIEW_DURATION, navigationStart);
 
 	const props = {
+		externalReferenceCode:
+			analytics._getContext().layoutExternalReferenceCode,
 		viewDuration: duration,
 	};
 

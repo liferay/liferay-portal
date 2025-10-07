@@ -65,15 +65,6 @@ definition {
 		}
 	}
 
-	@description = "Feature ID: Legacy | Automation ID: LRAC-9119 | Test Summary: Property list loading a lot of values"
-	@ignore = "true"
-	@priority = 2
-	test CanPropertyListLoadingALotOfValues {
-
-		// TODO LRAC-9119 CanPropertyListLoadingALotOfValues pending implementation
-
-	}
-
 	@description = "Feature ID: Legacy | Automation ID: LRAC-9121 | Test Summary: Settings page properties list is searchable"
 	@priority = 3
 	test CanSearchForPagePropertiesList {

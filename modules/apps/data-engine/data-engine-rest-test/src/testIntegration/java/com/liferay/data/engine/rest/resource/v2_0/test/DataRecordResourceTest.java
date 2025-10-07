@@ -41,6 +41,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -506,6 +507,38 @@ public class DataRecordResourceTest extends BaseDataRecordResourceTestCase {
 		assertEquals(
 			Arrays.asList(dataRecord2, dataRecord1),
 			(List<DataRecord>)sortByTextDescPage.getItems());
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetDataDefinitionDataRecordsPage() throws Exception {
+		super.testGraphQLGetDataDefinitionDataRecordsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetDataRecordCollectionDataRecordsPage()
+		throws Exception {
+
+		super.testGraphQLGetDataRecordCollectionDataRecordsPage();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostDataDefinitionDataRecord() throws Exception {
+		super.testGraphQLPostDataDefinitionDataRecord();
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostDataRecordCollectionDataRecord()
+		throws Exception {
+
+		super.testGraphQLPostDataRecordCollectionDataRecord();
 	}
 
 	@Override

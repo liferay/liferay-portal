@@ -115,7 +115,7 @@ export class CustomDataSetsPage {
 
 	async createDataSet({
 		name = DEFAULT_LABEL.DATA_SET,
-		restApplication = `${API_ENDPOINT_PATH}/table-sections`,
+		restApplication = '/data-set-admin/table-sections',
 		restEndpoint = '/',
 		restSchema = 'DataSetTableSection',
 	}: {

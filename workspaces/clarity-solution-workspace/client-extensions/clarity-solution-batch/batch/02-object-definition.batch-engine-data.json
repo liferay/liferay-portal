@@ -12,7 +12,6 @@
 	"items": [
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableIndexSearch": true,
 			"enableObjectEntryDraft": true,
@@ -421,7 +420,7 @@
 					"label": {
 						"en_US": "U3A2 Distributor Application to U3A2 Distributor Application Evaluations"
 					},
-					"name": "u3a2DistributorApplicationToU3A2DistributorApplicationEvaluations",
+					"name": "u3a2DistAppToU3A2DistAppEvals",
 					"objectDefinitionExternalReferenceCode1": "U3A2_DISTRIBUTOR_APPLICATION",
 					"objectDefinitionExternalReferenceCode2": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION",
 					"type": "oneToMany"
@@ -539,7 +538,6 @@
 		},
 		{
 			"active": true,
-			"defaultLanguageId": "en_US",
 			"enableCategorization": true,
 			"enableComments": true,
 			"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_EVALUATION",

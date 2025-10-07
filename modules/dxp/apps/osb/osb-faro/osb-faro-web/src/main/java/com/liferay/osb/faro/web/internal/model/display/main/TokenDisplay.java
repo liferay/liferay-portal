@@ -7,6 +7,8 @@ package com.liferay.osb.faro.web.internal.model.display.main;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import com.liferay.osb.faro.util.DateUtil;
+
 import java.util.Date;
 
 /**
@@ -25,24 +27,24 @@ public class TokenDisplay {
 	}
 
 	@JsonFormat(
-		pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-		shape = JsonFormat.Shape.STRING, timezone = "UTC"
+		pattern = DateUtil.PATTERN_DATE_TIME, shape = JsonFormat.Shape.STRING,
+		timezone = "UTC"
 	)
 	public Date getCreateDate() {
 		return new Date(_createDate.getTime());
 	}
 
 	@JsonFormat(
-		pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-		shape = JsonFormat.Shape.STRING, timezone = "UTC"
+		pattern = DateUtil.PATTERN_DATE_TIME, shape = JsonFormat.Shape.STRING,
+		timezone = "UTC"
 	)
 	public Date getExpirationDate() {
 		return new Date(_expirationDate.getTime());
 	}
 
 	@JsonFormat(
-		pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-		shape = JsonFormat.Shape.STRING, timezone = "UTC"
+		pattern = DateUtil.PATTERN_DATE_TIME, shape = JsonFormat.Shape.STRING,
+		timezone = "UTC"
 	)
 	public Date getLastAccessDate() {
 		return new Date(_lastAccessDate.getTime());

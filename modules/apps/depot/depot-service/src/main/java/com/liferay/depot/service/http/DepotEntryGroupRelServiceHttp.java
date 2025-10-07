@@ -211,7 +211,8 @@ public class DepotEntryGroupRelServiceHttp {
 
 	public static java.util.List<com.liferay.depot.model.DepotEntryGroupRel>
 			getDepotEntryGroupRels(
-				HttpPrincipal httpPrincipal, long groupId, int start, int end)
+				HttpPrincipal httpPrincipal, long groupId, int type, int start,
+				int end)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -220,7 +221,7 @@ public class DepotEntryGroupRelServiceHttp {
 				_getDepotEntryGroupRelsParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, groupId, start, end);
+				methodKey, groupId, type, start, end);
 
 			Object returnObj = null;
 
@@ -294,7 +295,7 @@ public class DepotEntryGroupRelServiceHttp {
 	}
 
 	public static int getDepotEntryGroupRelsCount(
-			HttpPrincipal httpPrincipal, long groupId)
+			HttpPrincipal httpPrincipal, long groupId, int type)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -303,7 +304,8 @@ public class DepotEntryGroupRelServiceHttp {
 				"getDepotEntryGroupRelsCount",
 				_getDepotEntryGroupRelsCountParameterTypes6);
 
-			MethodHandler methodHandler = new MethodHandler(methodKey, groupId);
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, groupId, type);
 
 			Object returnObj = null;
 
@@ -432,13 +434,15 @@ public class DepotEntryGroupRelServiceHttp {
 			com.liferay.depot.model.DepotEntry.class, int.class, int.class
 		};
 	private static final Class<?>[] _getDepotEntryGroupRelsParameterTypes4 =
-		new Class[] {long.class, int.class, int.class};
+		new Class[] {long.class, int.class, int.class, int.class};
 	private static final Class<?>[]
 		_getDepotEntryGroupRelsCountParameterTypes5 = new Class[] {
 			com.liferay.depot.model.DepotEntry.class
 		};
 	private static final Class<?>[]
-		_getDepotEntryGroupRelsCountParameterTypes6 = new Class[] {long.class};
+		_getDepotEntryGroupRelsCountParameterTypes6 = new Class[] {
+			long.class, int.class
+		};
 	private static final Class<?>[]
 		_updateDDMStructuresAvailableParameterTypes7 = new Class[] {
 			long.class, boolean.class

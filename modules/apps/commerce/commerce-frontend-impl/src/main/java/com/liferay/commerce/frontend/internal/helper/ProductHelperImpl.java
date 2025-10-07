@@ -15,7 +15,6 @@ import com.liferay.commerce.discount.CommerceDiscountValue;
 import com.liferay.commerce.frontend.helper.ProductHelper;
 import com.liferay.commerce.frontend.model.PriceModel;
 import com.liferay.commerce.frontend.model.ProductSettingsModel;
-import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.percentage.PercentageFormatter;
 import com.liferay.commerce.price.CommerceProductPrice;
 import com.liferay.commerce.price.CommerceProductPriceCalculation;
@@ -30,9 +29,7 @@ import com.liferay.commerce.product.option.CommerceOptionValueHelper;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -144,72 +141,40 @@ public class ProductHelperImpl implements ProductHelper {
 		BigDecimal multipleQuantity =
 			CPDefinitionInventoryConstants.DEFAULT_MULTIPLE_ORDER_QUANTITY;
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-10889")) {
-			CPDefinition cpDefinition =
-				_cpDefinitionLocalService.fetchCPDefinition(cpDefinitionId);
+		CPDefinition cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+			cpDefinitionId);
 
-			if (cpDefinition != null) {
-				CPConfigurationEntry cpConfigurationEntry =
-					cpDefinition.fetchCPConfigurationEntry(
-						commerceContext.getCPConfigurationListId(
-							cpDefinition.getGroupId()));
+		if (cpDefinition != null) {
+			CPConfigurationEntry cpConfigurationEntry =
+				cpDefinition.fetchCPConfigurationEntry(
+					commerceContext.getCPConfigurationListId(
+						cpDefinition.getGroupId()));
 
-				if (cpConfigurationEntry == null) {
-					cpConfigurationEntry =
-						cpDefinition.fetchMasterCPConfigurationEntry();
-				}
-
-				minOrderQuantity = cpConfigurationEntry.getMinOrderQuantity();
-				maxOrderQuantity = cpConfigurationEntry.getMaxOrderQuantity();
-				multipleQuantity =
-					cpConfigurationEntry.getMultipleOrderQuantity();
-
-				BigDecimal[] allowedOrderQuantitiesArray =
-					cpConfigurationEntry.getAllowedOrderQuantitiesArray();
-
-				if ((allowedOrderQuantitiesArray != null) &&
-					(allowedOrderQuantitiesArray.length > 0)) {
-
-					productSettingsModel.setAllowedQuantities(
-						allowedOrderQuantitiesArray);
-				}
-
-				productSettingsModel.setBackOrders(
-					cpConfigurationEntry.isBackOrders());
-				productSettingsModel.setLowStockQuantity(
-					cpConfigurationEntry.getMinStockQuantity());
-				productSettingsModel.setShowAvailabilityDot(
-					cpConfigurationEntry.isDisplayAvailability());
+			if (cpConfigurationEntry == null) {
+				cpConfigurationEntry =
+					cpDefinition.fetchMasterCPConfigurationEntry();
 			}
-		}
-		else {
-			CPDefinitionInventory cpDefinitionInventory =
-				_cpDefinitionInventoryLocalService.
-					fetchCPDefinitionInventoryByCPDefinitionId(cpDefinitionId);
 
-			if (cpDefinitionInventory != null) {
-				minOrderQuantity = cpDefinitionInventory.getMinOrderQuantity();
-				maxOrderQuantity = cpDefinitionInventory.getMaxOrderQuantity();
-				multipleQuantity =
-					cpDefinitionInventory.getMultipleOrderQuantity();
+			minOrderQuantity = cpConfigurationEntry.getMinOrderQuantity();
+			maxOrderQuantity = cpConfigurationEntry.getMaxOrderQuantity();
+			multipleQuantity = cpConfigurationEntry.getMultipleOrderQuantity();
 
-				BigDecimal[] allowedOrderQuantitiesArray =
-					cpDefinitionInventory.getAllowedOrderQuantitiesArray();
+			BigDecimal[] allowedOrderQuantitiesArray =
+				cpConfigurationEntry.getAllowedOrderQuantitiesArray();
 
-				if ((allowedOrderQuantitiesArray != null) &&
-					(allowedOrderQuantitiesArray.length > 0)) {
+			if ((allowedOrderQuantitiesArray != null) &&
+				(allowedOrderQuantitiesArray.length > 0)) {
 
-					productSettingsModel.setAllowedQuantities(
-						allowedOrderQuantitiesArray);
-				}
-
-				productSettingsModel.setBackOrders(
-					cpDefinitionInventory.isBackOrders());
-				productSettingsModel.setLowStockQuantity(
-					cpDefinitionInventory.getMinStockQuantity());
-				productSettingsModel.setShowAvailabilityDot(
-					cpDefinitionInventory.isDisplayAvailability());
+				productSettingsModel.setAllowedQuantities(
+					allowedOrderQuantitiesArray);
 			}
+
+			productSettingsModel.setBackOrders(
+				cpConfigurationEntry.isBackOrders());
+			productSettingsModel.setLowStockQuantity(
+				cpConfigurationEntry.getMinStockQuantity());
+			productSettingsModel.setShowAvailabilityDot(
+				cpConfigurationEntry.isDisplayAvailability());
 		}
 
 		productSettingsModel.setMinQuantity(minOrderQuantity);
@@ -347,10 +312,6 @@ public class ProductHelperImpl implements ProductHelper {
 
 	@Reference
 	private CommerceProductPriceCalculation _commerceProductPriceCalculation;
-
-	@Reference
-	private CPDefinitionInventoryLocalService
-		_cpDefinitionInventoryLocalService;
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;

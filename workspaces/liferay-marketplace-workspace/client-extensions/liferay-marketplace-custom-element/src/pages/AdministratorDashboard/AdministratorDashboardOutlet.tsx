@@ -6,9 +6,10 @@
 import {Outlet} from 'react-router-dom';
 
 import {DashboardNavigation} from '../../components/DashboardNavigation/DashboardNavigation';
+import {useMarketplaceContext} from '../../context/MarketplaceContext';
 import i18n from '../../i18n';
 
-export const dashboardNavigationItems = [
+const dashboardNavigationItems = [
 	{
 		itemTitle: i18n.translate('summary'),
 		items: [],
@@ -16,6 +17,7 @@ export const dashboardNavigationItems = [
 		symbol: 'polls',
 	},
 	{
+		adminOnly: true,
 		itemTitle: i18n.translate('orders'),
 		path: '/orders',
 		symbol: 'order-form',
@@ -26,11 +28,13 @@ export const dashboardNavigationItems = [
 		symbol: 'slideshow',
 	},
 	{
+		adminOnly: true,
 		itemTitle: i18n.translate('solutions'),
 		path: '/solutions',
 		symbol: 'edit-layout',
 	},
 	{
+		adminOnly: true,
 		itemTitle: i18n.translate('trials'),
 		path: '/trial',
 		symbol: 'squares-clock',
@@ -41,26 +45,34 @@ export const dashboardNavigationItems = [
 		symbol: 'users',
 	},
 	{
+		adminOnly: true,
 		itemTitle: i18n.translate('publisher-requests'),
 		path: '/publisher-request',
 		symbol: 'envelope-closed',
 	},
 ];
 
-const AdministratorDashboardOutlet = () => (
-	<div className="d-flex">
-		<div className="d-flex dashboard-navigation-container">
-			<div className="dashboard-navigation-body">
+const AdministratorDashboardOutlet = () => {
+	const {marketplaceUserAccount} = useMarketplaceContext();
+
+	return (
+		<div className="d-flex">
+			<div className="d-flex dashboard-navigation-container">
 				<DashboardNavigation
-					dashboardNavigationItems={dashboardNavigationItems}
+					dashboardNavigationItems={dashboardNavigationItems.filter(
+						({adminOnly}) =>
+							typeof adminOnly === 'boolean'
+								? marketplaceUserAccount.isAdmin
+								: true
+					)}
 				/>
 			</div>
-		</div>
 
-		<span className="h-vh-100 ml-6 w-100">
-			<Outlet />
-		</span>
-	</div>
-);
+			<span className="h-vh-100 ml-6 w-100">
+				<Outlet />
+			</span>
+		</div>
+	);
+};
 
 export default AdministratorDashboardOutlet;

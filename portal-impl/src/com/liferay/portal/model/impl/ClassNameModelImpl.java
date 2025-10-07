@@ -123,7 +123,7 @@ public class ClassNameModelImpl
 	public static final long CLASSNAMEID_COLUMN_BITMASK = 2L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
-		com.liferay.portal.util.PropsUtil.get(
+		com.liferay.portal.kernel.util.PropsUtil.get(
 			"lock.expiration.time.com.liferay.portal.kernel.model.ClassName"));
 
 	public ClassNameModelImpl() {

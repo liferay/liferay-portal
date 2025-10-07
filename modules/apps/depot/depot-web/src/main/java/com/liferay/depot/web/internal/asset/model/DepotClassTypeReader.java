@@ -7,6 +7,7 @@ package com.liferay.depot.web.internal.asset.model;
 
 import com.liferay.asset.kernel.model.ClassType;
 import com.liferay.asset.kernel.model.ClassTypeReader;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -58,13 +59,13 @@ public class DepotClassTypeReader implements ClassTypeReader {
 			IntervalActionProcessor<Void> intervalActionProcessor =
 				new IntervalActionProcessor<>(
 					_depotEntryLocalService.getGroupConnectedDepotEntriesCount(
-						siteGroupId));
+						siteGroupId, DepotConstants.TYPE_ANY));
 
 			intervalActionProcessor.setPerformIntervalActionMethod(
 				(start, end) -> {
 					List<DepotEntry> depotEntries =
 						_depotEntryLocalService.getGroupConnectedDepotEntries(
-							siteGroupId, start, end);
+							siteGroupId, DepotConstants.TYPE_ANY, start, end);
 
 					for (DepotEntry depotEntry : depotEntries) {
 						groupIds.add(depotEntry.getGroupId());

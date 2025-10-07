@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Spring Extender Implementation
 Bundle-SymbolicName: com.liferay.portal.spring.extender.impl
-Bundle-Version: 4.0.61
+Bundle-Version: 4.0.63
 Import-Package:\
 	org.springframework.aop.config,\
 	org.springframework.beans.factory.xml,\

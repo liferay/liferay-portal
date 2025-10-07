@@ -65,4 +65,7 @@
 		<suppress checks="InnerExceptionClassCheck" files="portal/portal-json-web-service-client/src/main/java/com/liferay/portal/json/web/service/client/JSONWebServiceTransportException\.java" />
 		<suppress checks="InnerExceptionClassCheck" files="portal-workflow/portal-workflow-kaleo-definition-api/src/main/java/com/liferay/portal/workflow/kaleo/definition/exception/KaleoDefinitionValidationException\.java" />
 	</checkstyle>
+	<source-check>
+		<suppress checks="JavaReferenceAnnotationsCheck" files="feature-flag/feature-flag-web/src/main/java/com/liferay/feature/flag/web/internal/feature/flag/FeatureFlagManagerImpl\.java" />
+	</source-check>
 </suppressions>

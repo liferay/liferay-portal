@@ -114,6 +114,11 @@ definition {
 				property = "classPK",
 				value = ${entryId});
 
+			ACUtils.assertEventPropertyValueIsPresent(
+				applicationId = "Ratings",
+				eventId = "VOTE",
+				property = "externalReferenceCode");
+
 			ACUtils.assertEventPropertyValue(
 				applicationId = "Ratings",
 				eventId = "VOTE",
@@ -201,6 +206,11 @@ definition {
 				eventId = "VOTE",
 				property = "className",
 				value = "com.liferay.document.library.kernel.model.DLFileEntry");
+
+			ACUtils.assertEventPropertyValueIsPresent(
+				applicationId = "Ratings",
+				eventId = "VOTE",
+				property = "externalReferenceCode");
 
 			ACUtils.assertEventPropertyValue(
 				applicationId = "Ratings",

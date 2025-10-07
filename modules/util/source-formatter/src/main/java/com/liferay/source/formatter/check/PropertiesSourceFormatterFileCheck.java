@@ -60,7 +60,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 	private void _checkCheckstylePropertiesGroupAndOrder(
 		String fileName, String content, String prefix) {
 
-		String properties = _getProperites(content, prefix);
+		String properties = _getProperties(content, prefix);
 
 		if (properties == null) {
 			return;
@@ -189,7 +189,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 	private void _checkSourceCheckPropertiesGroupAndOrder(
 		String fileName, String content, String prefix) {
 
-		String properties = _getProperites(content, prefix);
+		String properties = _getProperties(content, prefix);
 
 		if (properties == null) {
 			return;
@@ -331,7 +331,7 @@ public class PropertiesSourceFormatterFileCheck extends BaseFileCheck {
 		return checkstyleCheckNames;
 	}
 
-	private String _getProperites(String content, String prefix) {
+	private String _getProperties(String content, String prefix) {
 		int x = content.indexOf(StringPool.FOUR_SPACES + prefix);
 
 		if (x == -1) {

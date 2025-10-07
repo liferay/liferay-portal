@@ -6,29 +6,30 @@
 import ClayBreadcrumb from '@clayui/breadcrumb';
 import React, {useMemo} from 'react';
 
-import {useCache} from '../contexts/CacheContext';
+import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
-import selectStructureFields from '../selectors/selectStructureFields';
+import selectStructureChildren from '../selectors/selectStructureChildren';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureUuid from '../selectors/selectStructureUuid';
-import {ReferencedStructure, Structures} from '../types/Structure';
+import {
+	ReferencedStructure,
+	RepeatableGroup,
+	Structure,
+} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
-import {Field} from '../utils/field';
-import getReferencedStructureLabel from '../utils/getReferencedStructureLabel';
 
 type Path = {label: string; uuid: Uuid}[];
 
 export default function Breadcrumb({uuid}: {uuid: Uuid}) {
 	const dispatch = useStateDispatch();
 
+	const children = useSelector(selectStructureChildren);
+
 	const structureLabel = useSelector(selectStructureLocalizedLabel);
 	const structureUuid = useSelector(selectStructureUuid);
-	const fields = useSelector(selectStructureFields);
-
-	const {data: structures} = useCache('structures');
 
 	const items = useMemo(() => {
-		const path = getPath(uuid, fields, structures, [
+		const path = getPath(uuid, children, [
 			{label: structureLabel, uuid: structureUuid},
 		]);
 
@@ -54,7 +55,7 @@ export default function Breadcrumb({uuid}: {uuid: Uuid}) {
 				},
 			};
 		});
-	}, [dispatch, fields, structureLabel, structureUuid, structures, uuid]);
+	}, [children, dispatch, structureLabel, structureUuid, uuid]);
 
 	return (
 		<div className="mb-3">
@@ -65,49 +66,33 @@ export default function Breadcrumb({uuid}: {uuid: Uuid}) {
 
 function getPath(
 	uuid: Uuid,
-	fields: (Field | ReferencedStructure)[],
-	structures: Structures,
+	children: (ReferencedStructure | RepeatableGroup | Structure)['children'],
 	path: Path = []
 ): Path | null {
-	for (const field of fields) {
-		if (field.uuid === uuid) {
-			if (field.type === 'referenced-structure') {
-				path.push({
-					label: getReferencedStructureLabel(field.erc, structures),
-					uuid: field.uuid,
-				});
-			}
-			else {
-				path.push({
-					label: field!.label[
-						Liferay.ThemeDisplay.getDefaultLanguageId()
-					]!,
-					uuid: field.uuid,
-				});
-			}
-
-			return path;
+	for (const child of children.values()) {
+		if (child.uuid === uuid) {
+			return [
+				...path,
+				{
+					label: getLocalizedValue(child.label),
+					uuid: child.uuid,
+				},
+			];
 		}
+		else if (
+			child.type === 'referenced-structure' ||
+			child.type === 'repeatable-group'
+		) {
+			const nextPath = getPath(uuid, child.children, [
+				...path,
+				{
+					label: getLocalizedValue(child.label),
+					uuid: child.uuid,
+				},
+			]);
 
-		if (field.type === 'referenced-structure') {
-			const structure = structures.get(field.erc);
-
-			path.push({
-				label: getReferencedStructureLabel(field.erc, structures),
-				uuid: field.uuid,
-			});
-
-			if (structure) {
-				const nextPath = getPath(
-					uuid,
-					selectStructureFields(structure),
-					structures,
-					path
-				);
-
-				if (nextPath) {
-					return nextPath;
-				}
+			if (nextPath) {
+				return nextPath;
 			}
 		}
 	}

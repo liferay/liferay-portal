@@ -9,7 +9,6 @@ import {featureFlagsTest} from '../../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../../fixtures/loginTest';
 import getRandomString from '../../../../../utils/getRandomString';
 import {dataSetManagerApiHelpersTest} from '../../fixtures/dataSetManagerApiHelpersTest';
-import {API_ENDPOINT_PATH} from '../../utils/constants';
 import {customDataSetsPageTest} from './fixtures/customDataSetsPageTest';
 import {CustomDataSetsPage} from './pages/CustomDataSetsPage';
 
@@ -54,14 +53,14 @@ const skusDataSetConfig = {
 
 const tableSectionsDataSetConfig = {
 	name: getRandomString(),
-	restApplication: `${API_ENDPOINT_PATH}/table-sections`,
+	restApplication: '/data-set-admin/table-sections',
 	restEndpoint: '/',
 	restSchema: 'DataSetTableSection',
 };
 
 const tableSectionsWithSpecialCharactersDataSetConfig = {
 	name: 'Data Set ~!@#$%^&*(){}[].<>/? name',
-	restApplication: `${API_ENDPOINT_PATH}/table-sections`,
+	restApplication: '/data-set-admin/table-sections',
 	restEndpoint: '/',
 	restSchema: 'DataSetTableSection',
 };
@@ -121,7 +120,7 @@ async function assertTableColumnLabels(customDataSetsPage: CustomDataSetsPage) {
 		'REST Schema',
 		'REST Endpoint',
 		'Modified Date',
-		'',
+		'Item Actions',
 	];
 
 	expect(tableColumnLabels).toEqual(expectedLabels);

@@ -10,7 +10,9 @@ import {waitForAlert} from '../../utils/waitForAlert';
 
 export class AccountSettingsPage {
 	readonly accountSettingsMenuItem: Locator;
+	readonly cookieManagerMenuItem: Locator;
 	readonly currentPasswordInput: Locator;
+	private readonly dataAndPrivacyNavigationItem: Locator;
 	private readonly displayMenuItem: Locator;
 	readonly formSubmitButton: Locator;
 	readonly languageSelect: Locator;
@@ -23,6 +25,7 @@ export class AccountSettingsPage {
 	readonly passwordErrorMessage: (message: string) => Locator;
 	readonly passwordMenuItem: Locator;
 	private readonly preferencesNavigationItem: Locator;
+	readonly productAnalyticsMenuItem: Locator;
 	readonly reenterPasswordInput: Locator;
 	readonly rolesMenuItem: Locator;
 	readonly saveButton: Locator;
@@ -34,7 +37,13 @@ export class AccountSettingsPage {
 		this.accountSettingsMenuItem = page.getByRole('menuitem', {
 			name: 'Account Settings',
 		});
+		this.cookieManagerMenuItem = page.getByRole('link', {
+			name: 'Cookie Manager',
+		});
 		this.currentPasswordInput = page.getByLabel('Current Password');
+		this.dataAndPrivacyNavigationItem = page.locator('.nav-link', {
+			hasText: 'Data And Privacy',
+		});
 		this.displayMenuItem = page.getByRole('link', {
 			name: 'Display Settings',
 		});
@@ -70,6 +79,9 @@ export class AccountSettingsPage {
 		this.preferencesNavigationItem = page.locator('.nav-link', {
 			hasText: 'Preferences',
 		});
+		this.productAnalyticsMenuItem = page.getByRole('link', {
+			name: 'Product Analytics',
+		});
 		this.reenterPasswordInput = page.getByLabel('Reenter Password');
 		this.rolesMenuItem = page.getByRole('link', {
 			name: 'Roles',
@@ -102,6 +114,12 @@ export class AccountSettingsPage {
 					resp.url().includes('screenNavigationEntryKey=roles')
 			),
 		]);
+	}
+
+	async goToDataAndPrivacy() {
+		await this.goToAccountSettings();
+
+		await this.dataAndPrivacyNavigationItem.click();
 	}
 
 	async goToDisplaySettings() {

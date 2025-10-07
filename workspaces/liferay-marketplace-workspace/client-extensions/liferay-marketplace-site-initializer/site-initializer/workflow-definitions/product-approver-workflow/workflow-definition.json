@@ -1,0 +1,9 @@
+{
+	"active": true,
+	"description": "This workflow is triggered when a publisher submits a product, allowing a single admin to review and approve the content before it goes live.",
+	"name": "Product Approver",
+	"title": "Product Approver",
+	"title_i18n": {
+		"en_US": "Product Approver"
+	}
+}

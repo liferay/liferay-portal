@@ -109,7 +109,7 @@ public class GradleIndentationCheck extends BaseFileCheck {
 	}
 
 	private String _getQuoteString(String line) {
-		if (line.indexOf("'''") != -1) {
+		if (line.contains("'''")) {
 			return "'''";
 		}
 
@@ -120,7 +120,7 @@ public class GradleIndentationCheck extends BaseFileCheck {
 		String quoteString = _getQuoteString(line);
 		String text = line;
 
-		if (line.indexOf(quoteString) != -1) {
+		if (line.contains(quoteString)) {
 			if (insideQuotes) {
 				int x = quoteString.length();
 

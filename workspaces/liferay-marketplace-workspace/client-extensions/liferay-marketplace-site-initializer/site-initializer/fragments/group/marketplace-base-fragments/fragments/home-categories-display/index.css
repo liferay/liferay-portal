@@ -1,0 +1,59 @@
+.marketplace-categories-container .category-button {
+    background: radial-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    border: solid -13px transparent;
+    border-radius: 0.5rem; 
+    position: relative;
+}
+
+.marketplace-categories-container  .category-button::before {
+    background: linear-gradient(125deg, rgba(233, 236, 255, 1) -6.56%, rgba(244, 232, 255, 1) 111.4%);
+    border-radius: 0.5rem; 
+    content: "";
+    inset: 0;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    padding: 1px;
+    position: absolute;
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.marketplace-categories-container  .category-button:hover {
+    background: radial-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    border: solid -13px transparent;
+    border-radius: 0.5rem;
+    position: relative;
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.marketplace-categories-container  .category-button:hover::before {
+    background: linear-gradient(125deg, rgba(233, 236, 255, 1) -6.56%, rgba(244, 232, 255, 1) 111.4%);
+    border-radius: 0.5rem;
+    content: "";
+    inset: 0;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    padding: 3px;
+    position: absolute;
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.marketplace-categories-container .category-button svg {
+    position: relative;
+    top: 2px;
+}
+
+.marketplace-categories-container .category-icon {
+    background: transparent !important;
+    color: var(--category-color);
+}
+
+.marketplace-categories-container .categories-container {
+    background: transparent !important;
+    gap: 16px; 
+}
+
+.marketplace-categories-container .title-container {
+    font-size: 16px; 
+    line-height: 24px; 
+    letter-spacing: 0%;
+}

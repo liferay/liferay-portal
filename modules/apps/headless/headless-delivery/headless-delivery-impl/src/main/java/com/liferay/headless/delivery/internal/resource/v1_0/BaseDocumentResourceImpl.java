@@ -390,14 +390,14 @@ public abstract class BaseDocumentResourceImpl
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS,
-					"getAssetLibraryDocumentPermissionsPage", portletName,
+					ActionKeys.PERMISSIONS, assetLibraryId,
+					"getAssetLibraryDocumentPermissionsPage", null, portletName,
 					assetLibraryId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS,
-					"putAssetLibraryDocumentPermissionsPage", portletName,
+					ActionKeys.PERMISSIONS, assetLibraryId,
+					"putAssetLibraryDocumentPermissionsPage", null, portletName,
 					assetLibraryId)
 			).build(),
 			assetLibraryId, portletName, roleNames);
@@ -748,23 +748,24 @@ public abstract class BaseDocumentResourceImpl
 			String roleNames)
 		throws Exception {
 
+		Long groupId = getPermissionCheckerGroupId(documentId);
 		String resourceName = getPermissionCheckerResourceName(documentId);
 		Long resourceId = getPermissionCheckerResourceId(documentId);
 
 		PermissionServiceUtil.checkPermission(
-			getPermissionCheckerGroupId(documentId), resourceName, resourceId);
+			groupId, resourceName, resourceId);
 
 		return toPermissionPage(
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS, "getDocumentPermissionsPage",
-					resourceName, resourceId)
+					ActionKeys.PERMISSIONS, resourceId,
+					"getDocumentPermissionsPage", null, resourceName, groupId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS, "putDocumentPermissionsPage",
-					resourceName, resourceId)
+					ActionKeys.PERMISSIONS, resourceId,
+					"putDocumentPermissionsPage", null, resourceName, groupId)
 			).build(),
 			resourceId, resourceName, roleNames);
 	}
@@ -933,13 +934,13 @@ public abstract class BaseDocumentResourceImpl
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS, "getSiteDocumentPermissionsPage",
-					portletName, siteId)
+					ActionKeys.PERMISSIONS, siteId,
+					"getSiteDocumentPermissionsPage", null, portletName, siteId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS, "putSiteDocumentPermissionsPage",
-					portletName, siteId)
+					ActionKeys.PERMISSIONS, siteId,
+					"putSiteDocumentPermissionsPage", null, portletName, siteId)
 			).build(),
 			siteId, portletName, roleNames);
 	}
@@ -1797,14 +1798,14 @@ public abstract class BaseDocumentResourceImpl
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS,
-					"getAssetLibraryDocumentPermissionsPage", portletName,
+					ActionKeys.PERMISSIONS, assetLibraryId,
+					"getAssetLibraryDocumentPermissionsPage", null, portletName,
 					assetLibraryId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS,
-					"putAssetLibraryDocumentPermissionsPage", portletName,
+					ActionKeys.PERMISSIONS, assetLibraryId,
+					"putAssetLibraryDocumentPermissionsPage", null, portletName,
 					assetLibraryId)
 			).build(),
 			assetLibraryId, portletName, null);
@@ -1955,11 +1956,12 @@ public abstract class BaseDocumentResourceImpl
 			Permission[] permissions)
 		throws Exception {
 
+		Long groupId = getPermissionCheckerGroupId(documentId);
 		String resourceName = getPermissionCheckerResourceName(documentId);
 		Long resourceId = getPermissionCheckerResourceId(documentId);
 
 		PermissionServiceUtil.checkPermission(
-			getPermissionCheckerGroupId(documentId), resourceName, resourceId);
+			groupId, resourceName, resourceId);
 
 		ModelPermissions modelPermissions =
 			ModelPermissionsUtil.toModelPermissions(
@@ -1995,21 +1997,20 @@ public abstract class BaseDocumentResourceImpl
 		}
 
 		resourcePermissionLocalService.updateResourcePermissions(
-			contextCompany.getCompanyId(),
-			getPermissionCheckerGroupId(documentId), resourceName,
+			contextCompany.getCompanyId(), groupId, resourceName,
 			String.valueOf(resourceId), modelPermissions);
 
 		return toPermissionPage(
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS, "getDocumentPermissionsPage",
-					resourceName, resourceId)
+					ActionKeys.PERMISSIONS, resourceId,
+					"getDocumentPermissionsPage", null, resourceName, groupId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS, "putDocumentPermissionsPage",
-					resourceName, resourceId)
+					ActionKeys.PERMISSIONS, resourceId,
+					"putDocumentPermissionsPage", null, resourceName, groupId)
 			).build(),
 			resourceId, resourceName, null);
 	}
@@ -2133,13 +2134,13 @@ public abstract class BaseDocumentResourceImpl
 			HashMapBuilder.put(
 				"get",
 				addAction(
-					ActionKeys.PERMISSIONS, "getSiteDocumentPermissionsPage",
-					portletName, siteId)
+					ActionKeys.PERMISSIONS, siteId,
+					"getSiteDocumentPermissionsPage", null, portletName, siteId)
 			).put(
 				"replace",
 				addAction(
-					ActionKeys.PERMISSIONS, "putSiteDocumentPermissionsPage",
-					portletName, siteId)
+					ActionKeys.PERMISSIONS, siteId,
+					"putSiteDocumentPermissionsPage", null, portletName, siteId)
 			).build(),
 			siteId, portletName, null);
 	}
@@ -2158,24 +2159,23 @@ public abstract class BaseDocumentResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("documentFolderId")) {
-				documentUnsafeFunction = document -> postDocumentFolderDocument(
-					_parseLong((String)parameters.get("documentFolderId")),
-					(MultipartBody)parameters.get("multipartBody"));
-			}
-			else if (parameters.containsKey("assetLibraryId")) {
+			if (parameters.containsKey("assetLibraryId")) {
 				documentUnsafeFunction = document -> postAssetLibraryDocument(
 					(Long)parameters.get("assetLibraryId"),
-					(MultipartBody)parameters.get("multipartBody"));
+					(MultipartBody)null);
+			}
+			else if (parameters.containsKey("documentFolderId")) {
+				documentUnsafeFunction = document -> postDocumentFolderDocument(
+					_parseLong((String)parameters.get("documentFolderId")),
+					(MultipartBody)null);
 			}
 			else if (parameters.containsKey("siteId")) {
 				documentUnsafeFunction = document -> postSiteDocument(
-					(Long)parameters.get("siteId"),
-					(MultipartBody)parameters.get("multipartBody"));
+					(Long)parameters.get("siteId"), (MultipartBody)null);
 			}
 			else {
 				throw new NotSupportedException(
-					"One of the following parameters must be specified: [documentFolderId, assetLibraryId, siteId]");
+					"One of the following parameters must be specified: [assetLibraryId, documentFolderId, siteId]");
 			}
 		}
 
@@ -2185,42 +2185,50 @@ public abstract class BaseDocumentResourceImpl
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
 				documentUnsafeFunction = document -> {
+					Document getDocument = null;
 					Document persistedDocument = null;
 
 					try {
-						Document getDocument =
-							getSiteDocumentByExternalReferenceCode(
-								document.getSiteId() != null ?
-									document.getSiteId() :
-										(Long)parameters.get("siteId"),
-								document.getExternalReferenceCode());
+						if (parameters.containsKey("assetLibraryId")) {
+							getDocument =
+								getAssetLibraryDocumentByExternalReferenceCode(
+									(Long)parameters.get("assetLibraryId"),
+									document.getExternalReferenceCode());
+						}
+						else if (parameters.containsKey("siteId")) {
+							getDocument =
+								getSiteDocumentByExternalReferenceCode(
+									(Long)parameters.get("siteId"),
+									document.getExternalReferenceCode());
+						}
+						else {
+							throw new NotSupportedException(
+								"One of the following parameters must be specified: [assetLibraryId, siteId]");
+						}
 
 						persistedDocument = patchDocument(
-							getDocument.getId() != null ? getDocument.getId() :
-								_parseLong(
-									(String)parameters.get("documentId")),
-							null);
+							getDocument.getId(), (MultipartBody)null);
 					}
 					catch (NoSuchModelException noSuchModelException) {
-						if (parameters.containsKey("documentFolderId")) {
+						if (parameters.containsKey("assetLibraryId")) {
+							persistedDocument = postAssetLibraryDocument(
+								(Long)parameters.get("assetLibraryId"),
+								(MultipartBody)null);
+						}
+						else if (parameters.containsKey("documentFolderId")) {
 							persistedDocument = postDocumentFolderDocument(
 								_parseLong(
 									(String)parameters.get("documentFolderId")),
-								(MultipartBody)parameters.get("multipartBody"));
-						}
-						else if (parameters.containsKey("assetLibraryId")) {
-							persistedDocument = postAssetLibraryDocument(
-								(Long)parameters.get("assetLibraryId"),
-								(MultipartBody)parameters.get("multipartBody"));
+								(MultipartBody)null);
 						}
 						else if (parameters.containsKey("siteId")) {
 							persistedDocument = postSiteDocument(
 								(Long)parameters.get("siteId"),
-								(MultipartBody)parameters.get("multipartBody"));
+								(MultipartBody)null);
 						}
 						else {
 							throw new NotSupportedException(
-								"One of the following parameters must be specified: [documentFolderId, assetLibraryId]");
+								"One of the following parameters must be specified: [assetLibraryId, documentFolderId, siteId]");
 						}
 					}
 
@@ -2229,11 +2237,30 @@ public abstract class BaseDocumentResourceImpl
 			}
 
 			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-				documentUnsafeFunction =
-					document -> putSiteDocumentByExternalReferenceCode(
-						document.getSiteId() != null ? document.getSiteId() :
-							(Long)parameters.get("siteId"),
-						document.getExternalReferenceCode(), null);
+				documentUnsafeFunction = document -> {
+					Document persistedDocument = null;
+
+					if (parameters.containsKey("assetLibraryId")) {
+						persistedDocument =
+							putAssetLibraryDocumentByExternalReferenceCode(
+								(Long)parameters.get("assetLibraryId"),
+								document.getExternalReferenceCode(),
+								(MultipartBody)null);
+					}
+					else if (parameters.containsKey("siteId")) {
+						persistedDocument =
+							putSiteDocumentByExternalReferenceCode(
+								(Long)parameters.get("siteId"),
+								document.getExternalReferenceCode(),
+								(MultipartBody)null);
+					}
+					else {
+						throw new NotSupportedException(
+							"One of the following parameters must be specified: [assetLibraryId, siteId]");
+					}
+
+					return persistedDocument;
+				};
 			}
 		}
 
@@ -2302,13 +2329,6 @@ public abstract class BaseDocumentResourceImpl
 			new MultivaluedHashMap<String, Object>(multivaluedMap));
 	}
 
-	@Override
-	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
-		throws Exception {
-
-		return null;
-	}
-
 	public String getResourceName() {
 		return "Document";
 	}
@@ -2331,21 +2351,21 @@ public abstract class BaseDocumentResourceImpl
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
-		else if (parameters.containsKey("siteId")) {
-			return getSiteDocumentsPage(
-				(Long)parameters.get("siteId"),
-				_parseBoolean((String)parameters.get("flatten")), search, null,
-				filter, pagination, sorts);
-		}
 		else if (parameters.containsKey("documentFolderId")) {
 			return getDocumentFolderDocumentsPage(
 				_parseLong((String)parameters.get("documentFolderId")),
 				_parseBoolean((String)parameters.get("flatten")), search, null,
 				filter, pagination, sorts);
 		}
+		else if (parameters.containsKey("siteId")) {
+			return getSiteDocumentsPage(
+				(Long)parameters.get("siteId"),
+				_parseBoolean((String)parameters.get("flatten")), search, null,
+				filter, pagination, sorts);
+		}
 		else {
 			throw new NotSupportedException(
-				"One of the following parameters must be specified: [assetLibraryId, siteId, documentFolderId]");
+				"One of the following parameters must be specified: [assetLibraryId, documentFolderId, siteId]");
 		}
 	}
 
@@ -2385,16 +2405,12 @@ public abstract class BaseDocumentResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
 			documentUnsafeFunction = document -> patchDocument(
-				document.getId() != null ? document.getId() :
-					_parseLong((String)parameters.get("documentId")),
-				null);
+				document.getId(), (MultipartBody)null);
 		}
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
 			documentUnsafeFunction = document -> putDocument(
-				document.getId() != null ? document.getId() :
-					_parseLong((String)parameters.get("documentId")),
-				null);
+				document.getId(), (MultipartBody)null);
 		}
 
 		if (documentUnsafeFunction == null) {
@@ -2430,6 +2446,13 @@ public abstract class BaseDocumentResourceImpl
 		if (value != null) {
 			return Long.parseLong(value);
 		}
+
+		return null;
+	}
+
+	@Override
+	public EntityModel getEntityModel(MultivaluedMap multivaluedMap)
+		throws Exception {
 
 		return null;
 	}
@@ -2819,6 +2842,20 @@ public abstract class BaseDocumentResourceImpl
 		return TransformUtil.transform(collection, unsafeFunction);
 	}
 
+	public static <R, E extends Throwable> R[] transform(
+		int[] array, UnsafeFunction<Integer, R, E> unsafeFunction,
+		Class<? extends R> clazz) {
+
+		return TransformUtil.transform(array, unsafeFunction, clazz);
+	}
+
+	public static <R, E extends Throwable> R[] transform(
+		long[] array, UnsafeFunction<Long, R, E> unsafeFunction,
+		Class<? extends R> clazz) {
+
+		return TransformUtil.transform(array, unsafeFunction, clazz);
+	}
+
 	protected <T, R, E extends Throwable> R[] transform(
 		T[] array, UnsafeFunction<T, R, E> unsafeFunction,
 		Class<? extends R> clazz) {
@@ -2834,6 +2871,80 @@ public abstract class BaseDocumentResourceImpl
 			collection, unsafeFunction, clazz);
 	}
 
+	public static <T, E extends Throwable> boolean[] transformToBooleanArray(
+		Collection<T> collection,
+		UnsafeFunction<T, Boolean, E> unsafeFunction) {
+
+		return TransformUtil.transformToBooleanArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> boolean[] transformToBooleanArray(
+		T[] array, UnsafeFunction<T, Boolean, E> unsafeFunction) {
+
+		return TransformUtil.transformToBooleanArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> byte[] transformToByteArray(
+		Collection<T> collection, UnsafeFunction<T, Byte, E> unsafeFunction) {
+
+		return TransformUtil.transformToByteArray(collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> byte[] transformToByteArray(
+		T[] array, UnsafeFunction<T, Byte, E> unsafeFunction) {
+
+		return TransformUtil.transformToByteArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> double[] transformToDoubleArray(
+		Collection<T> collection, UnsafeFunction<T, Double, E> unsafeFunction) {
+
+		return TransformUtil.transformToDoubleArray(collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> double[] transformToDoubleArray(
+		T[] array, UnsafeFunction<T, Double, E> unsafeFunction) {
+
+		return TransformUtil.transformToDoubleArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> float[] transformToFloatArray(
+		Collection<T> collection, UnsafeFunction<T, Float, E> unsafeFunction) {
+
+		return TransformUtil.transformToFloatArray(collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> float[] transformToFloatArray(
+		T[] array, UnsafeFunction<T, Float, E> unsafeFunction) {
+
+		return TransformUtil.transformToFloatArray(array, unsafeFunction);
+	}
+
+	public static <T, R, E extends Throwable> int[] transformToIntArray(
+		Collection<T> collection, UnsafeFunction<T, R, E> unsafeFunction) {
+
+		return TransformUtil.transformToIntArray(collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> int[] transformToIntArray(
+		T[] array, UnsafeFunction<T, Integer, E> unsafeFunction) {
+
+		return TransformUtil.transformToIntArray(array, unsafeFunction);
+	}
+
+	public static <R, E extends Throwable> List<R> transformToList(
+		int[] array, UnsafeFunction<Integer, R, E> unsafeFunction) {
+
+		return TransformUtil.transformToList(array, unsafeFunction);
+	}
+
+	public static <R, E extends Throwable> List<R> transformToList(
+		long[] array, UnsafeFunction<Long, R, E> unsafeFunction) {
+
+		return TransformUtil.transformToList(array, unsafeFunction);
+	}
+
 	protected <T, R, E extends Throwable> List<R> transformToList(
 		T[] array, UnsafeFunction<T, R, E> unsafeFunction) {
 
@@ -2846,11 +2957,45 @@ public abstract class BaseDocumentResourceImpl
 		return TransformUtil.transformToLongArray(collection, unsafeFunction);
 	}
 
+	public static <T, E extends Throwable> long[] transformToLongArray(
+		T[] array, UnsafeFunction<T, Long, E> unsafeFunction) {
+
+		return TransformUtil.transformToLongArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> short[] transformToShortArray(
+		Collection<T> collection, UnsafeFunction<T, Short, E> unsafeFunction) {
+
+		return TransformUtil.transformToShortArray(collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> short[] transformToShortArray(
+		T[] array, UnsafeFunction<T, Short, E> unsafeFunction) {
+
+		return TransformUtil.transformToShortArray(array, unsafeFunction);
+	}
+
 	protected <T, R, E extends Throwable> List<R> unsafeTransform(
 			Collection<T> collection, UnsafeFunction<T, R, E> unsafeFunction)
 		throws E {
 
 		return TransformUtil.unsafeTransform(collection, unsafeFunction);
+	}
+
+	public static <R, E extends Throwable> R[] unsafeTransform(
+			int[] array, UnsafeFunction<Integer, R, E> unsafeFunction,
+			Class<? extends R> clazz)
+		throws E {
+
+		return TransformUtil.unsafeTransform(array, unsafeFunction, clazz);
+	}
+
+	public static <R, E extends Throwable> R[] unsafeTransform(
+			long[] array, UnsafeFunction<Long, R, E> unsafeFunction,
+			Class<? extends R> clazz)
+		throws E {
+
+		return TransformUtil.unsafeTransform(array, unsafeFunction, clazz);
 	}
 
 	protected <T, R, E extends Throwable> R[] unsafeTransform(
@@ -2870,6 +3015,104 @@ public abstract class BaseDocumentResourceImpl
 			collection, unsafeFunction, clazz);
 	}
 
+	public static <T, E extends Throwable> boolean[]
+			unsafeTransformToBooleanArray(
+				Collection<T> collection,
+				UnsafeFunction<T, Boolean, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToBooleanArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> boolean[]
+			unsafeTransformToBooleanArray(
+				T[] array, UnsafeFunction<T, Boolean, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToBooleanArray(
+			array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> byte[] unsafeTransformToByteArray(
+			Collection<T> collection, UnsafeFunction<T, Byte, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToByteArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> byte[] unsafeTransformToByteArray(
+			T[] array, UnsafeFunction<T, Byte, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToByteArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> double[]
+			unsafeTransformToDoubleArray(
+				Collection<T> collection,
+				UnsafeFunction<T, Double, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToDoubleArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> double[]
+			unsafeTransformToDoubleArray(
+				T[] array, UnsafeFunction<T, Double, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToDoubleArray(
+			array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> float[] unsafeTransformToFloatArray(
+			Collection<T> collection,
+			UnsafeFunction<T, Float, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToFloatArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> float[] unsafeTransformToFloatArray(
+			T[] array, UnsafeFunction<T, Float, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToFloatArray(array, unsafeFunction);
+	}
+
+	public static <T, R, E extends Throwable> int[] unsafeTransformToIntArray(
+			Collection<T> collection, UnsafeFunction<T, R, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToIntArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> int[] unsafeTransformToIntArray(
+			T[] array, UnsafeFunction<T, Integer, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToIntArray(array, unsafeFunction);
+	}
+
+	public static <R, E extends Throwable> List<R> unsafeTransformToList(
+			int[] array, UnsafeFunction<Integer, R, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToList(array, unsafeFunction);
+	}
+
+	public static <R, E extends Throwable> List<R> unsafeTransformToList(
+			long[] array, UnsafeFunction<Long, R, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToList(array, unsafeFunction);
+	}
+
 	protected <T, R, E extends Throwable> List<R> unsafeTransformToList(
 			T[] array, UnsafeFunction<T, R, E> unsafeFunction)
 		throws E {
@@ -2883,6 +3126,29 @@ public abstract class BaseDocumentResourceImpl
 
 		return TransformUtil.unsafeTransformToLongArray(
 			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> long[] unsafeTransformToLongArray(
+			T[] array, UnsafeFunction<T, Long, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToLongArray(array, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> short[] unsafeTransformToShortArray(
+			Collection<T> collection,
+			UnsafeFunction<T, Short, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToShortArray(
+			collection, unsafeFunction);
+	}
+
+	public static <T, E extends Throwable> short[] unsafeTransformToShortArray(
+			T[] array, UnsafeFunction<T, Short, E> unsafeFunction)
+		throws E {
+
+		return TransformUtil.unsafeTransformToShortArray(array, unsafeFunction);
 	}
 
 	protected AcceptLanguage contextAcceptLanguage;

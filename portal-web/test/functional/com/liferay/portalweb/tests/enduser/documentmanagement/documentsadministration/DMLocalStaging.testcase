@@ -311,7 +311,7 @@ definition {
 	@priority = 3
 	@refactordone
 	test CanOnlyCommentOnLiveSite {
-		property portal.acceptance = "true";
+		property portal.acceptance = "false";
 
 		JSONLayout.addWidgetToPublicLayout(
 			column = 1,

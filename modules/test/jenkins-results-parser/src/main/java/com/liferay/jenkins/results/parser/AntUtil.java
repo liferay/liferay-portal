@@ -116,9 +116,7 @@ public class AntUtil {
 
 				sb.append("\"");
 				sb.append(value);
-				sb.append("\"");
-
-				sb.append(" ; ");
+				sb.append("\" ; ");
 			}
 		}
 

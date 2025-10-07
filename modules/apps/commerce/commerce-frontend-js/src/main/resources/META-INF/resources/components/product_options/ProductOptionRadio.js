@@ -17,11 +17,11 @@ import {
 } from '../../utilities/eventsDefinitions';
 import Asterisk from './Asterisk';
 import {
+	INITIAL_SKU_OPTIONS_ATOM_STATE,
 	getInitialProductOptionValue,
 	getName,
 	getProductOptionName,
 	getSkuOptionsErrors,
-	initialSkuOptionsAtomState,
 	isRequired,
 } from './utils';
 
@@ -89,7 +89,6 @@ const ProductOptionRadio = ({
 							price: defaultProductOptionValue?.price,
 							priceType: defaultProductOptionValue?.priceType,
 							quantity: defaultProductOptionValue?.quantity,
-							required: productOption.required,
 							skuId: defaultProductOptionValue?.skuId,
 							skuOptionKey: productOption.key,
 							skuOptionName: productOption.name,
@@ -103,7 +102,7 @@ const ProductOptionRadio = ({
 		});
 
 		if (defaultProductOptionValue) {
-			handleChange(selectedProductOption);
+			handleChange(selectedProductOption, json);
 		}
 
 		return () =>
@@ -112,7 +111,7 @@ const ProductOptionRadio = ({
 						...skuOptionsAtomState,
 						miniCartSkuOptions: [],
 					})
-				: setSkuOptionsAtomState(initialSkuOptionsAtomState);
+				: setSkuOptionsAtomState(INITIAL_SKU_OPTIONS_ATOM_STATE);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -140,7 +139,7 @@ const ProductOptionRadio = ({
 	const DeliveryCatalogAPIServiceProvider =
 		ServiceProvider.DeliveryCatalogAPI('v1');
 
-	const handleChange = (value) => {
+	const handleChange = (value, json = '') => {
 		if (skuOptionsAtomState.updating) {
 			return;
 		}
@@ -164,7 +163,9 @@ const ProductOptionRadio = ({
 			(productOptionValue) => productOptionValue.key === valueArray[1]
 		);
 
-		let currentSkuOptions = skuOptionsAtomState[skuOptionsKey].slice();
+		let currentSkuOptions = json
+			? JSON.parse(json)
+			: skuOptionsAtomState[skuOptionsKey].slice();
 
 		const currentSkuOption = currentSkuOptions.filter(
 			(skuOption) => skuOption.skuOptionKey === productOption.key
@@ -178,7 +179,6 @@ const ProductOptionRadio = ({
 						price: currentProductOptionValue.price,
 						priceType: currentProductOptionValue.priceType,
 						quantity: currentProductOptionValue.quantity,
-						required: productOption.required,
 						skuId: currentProductOptionValue.skuId,
 						skuOptionKey: productOption.key,
 						skuOptionName: productOption.name,
@@ -199,7 +199,6 @@ const ProductOptionRadio = ({
 					price: currentProductOptionValue.price,
 					priceType: currentProductOptionValue.priceType,
 					quantity: currentProductOptionValue.quantity,
-					required: productOption.required,
 					skuId: currentProductOptionValue.skuId,
 					skuOptionKey: productOption.key,
 					skuOptionName: productOption.name,

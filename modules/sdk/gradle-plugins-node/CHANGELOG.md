@@ -1,5 +1,20 @@
 # Liferay Gradle Plugins Node Change Log
 
+## 8.1.2 - 2025-03-17
+
+### Commits
+- [LPD-51417] - Set yarn version appropriately (6683777b19)
+
+## 8.1.1 - 2024-11-05
+
+### Commits
+- [LPD-40537] Fix symlinks (2f1f8bee7d)
+
+## 8.0.8 - 2024-10-28
+
+### Commits
+- [LRCI-4827] TCP timeout for network requests (1039e25750)
+
 ## 8.0.7 - 2024-06-14
 
 ### Commits
@@ -1345,6 +1360,8 @@ symbolic links in it will be lost (0a1438b324)
 [LPD-23882]: https://issues.liferay.com/browse/LPD-23882
 [LPD-24865]: https://issues.liferay.com/browse/LPD-24865
 [LPD-28512]: https://issues.liferay.com/browse/LPD-28512
+[LPD-40537]: https://issues.liferay.com/browse/LPD-40537
+[LPD-51417]: https://issues.liferay.com/browse/LPD-51417
 [LPS-0]: https://issues.liferay.com/browse/LPS-0
 [LPS-51081]: https://issues.liferay.com/browse/LPS-51081
 [LPS-58260]: https://issues.liferay.com/browse/LPS-58260
@@ -1469,6 +1486,7 @@ symbolic links in it will be lost (0a1438b324)
 [LPS-150857]: https://issues.liferay.com/browse/LPS-150857
 [LPS-181508]: https://issues.liferay.com/browse/LPS-181508
 [LRCI-2670]: https://issues.liferay.com/browse/LRCI-2670
+[LRCI-4827]: https://issues.liferay.com/browse/LRCI-4827
 [LRDOCS-3663]: https://issues.liferay.com/browse/LRDOCS-3663
 [LRDOCS-4129]: https://issues.liferay.com/browse/LRDOCS-4129
 [LRQA-52072]: https://issues.liferay.com/browse/LRQA-52072

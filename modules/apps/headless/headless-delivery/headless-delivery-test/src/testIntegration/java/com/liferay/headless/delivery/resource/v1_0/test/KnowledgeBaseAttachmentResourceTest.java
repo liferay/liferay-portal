@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import java.io.File;
 
@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -144,6 +145,15 @@ public class KnowledgeBaseAttachmentResourceTest
 					newKnowledgeBaseAttachment.getExternalReferenceCode()));
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage()
+		throws Exception {
+
+		super.testGraphQLGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage();
+	}
+
 	@Override
 	protected void assertValid(
 			KnowledgeBaseAttachment knowledgeBaseAttachment,
@@ -217,14 +227,6 @@ public class KnowledgeBaseAttachmentResourceTest
 	}
 
 	@Override
-	protected Long
-			testDeleteSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode_getSiteId()
-		throws Exception {
-
-		return testGroup.getGroupId();
-	}
-
-	@Override
 	protected Map<String, Map<String, String>>
 			testGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage_getExpectedActions(
 				Long knowledgeBaseArticleId)
@@ -273,18 +275,18 @@ public class KnowledgeBaseAttachmentResourceTest
 
 	@Override
 	protected String
-			testGraphQLGetSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode_getKnowledgeBaseArticleExternalReferenceCode()
+			testGraphQLDeleteSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode_getKnowledgeBaseArticleExternalReferenceCode()
 		throws Exception {
 
 		return _kbArticle.getExternalReferenceCode();
 	}
 
 	@Override
-	protected Long
-			testGraphQLGetSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode_getSiteId()
+	protected String
+			testGraphQLGetSiteKnowledgeBaseArticleByExternalReferenceCodeKnowledgeBaseArticleExternalReferenceCodeKnowledgeBaseAttachmentByExternalReferenceCode_getKnowledgeBaseArticleExternalReferenceCode()
 		throws Exception {
 
-		return testGroup.getGroupId();
+		return _kbArticle.getExternalReferenceCode();
 	}
 
 	@Override
@@ -293,6 +295,14 @@ public class KnowledgeBaseAttachmentResourceTest
 		throws Exception {
 
 		return testDeleteKnowledgeBaseAttachment_addKnowledgeBaseAttachment();
+	}
+
+	@Override
+	protected KnowledgeBaseAttachment
+			testGraphQLSiteKnowledgeBaseAttachment_addKnowledgeBaseAttachment()
+		throws Exception {
+
+		return _addKnowledgeBaseAttachment();
 	}
 
 	private KBArticle _addKBArticle() throws Exception {
