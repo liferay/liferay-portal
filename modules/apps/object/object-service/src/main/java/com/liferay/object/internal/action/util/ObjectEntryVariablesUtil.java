@@ -8,6 +8,7 @@ package com.liferay.object.internal.action.util;
 import com.liferay.dynamic.data.mapping.expression.CreateExpressionRequest;
 import com.liferay.dynamic.data.mapping.expression.DDMExpression;
 import com.liferay.dynamic.data.mapping.expression.DDMExpressionFactory;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.internal.dynamic.data.mapping.expression.ObjectEntryDDMExpressionParameterAccessor;
 import com.liferay.object.model.ObjectDefinition;
@@ -46,6 +47,7 @@ public class ObjectEntryVariablesUtil {
 
 	public static Map<String, Object> getValues(
 			DDMExpressionFactory ddmExpressionFactory,
+			ObjectDefinition objectDefinition,
 			UnicodeProperties parametersUnicodeProperties,
 			Map<String, Object> variables)
 		throws Exception {
@@ -64,24 +66,36 @@ public class ObjectEntryVariablesUtil {
 				continue;
 			}
 
-			if (!jsonObject.getBoolean("inputAsValue")) {
-				DDMExpression<Serializable> ddmExpression =
-					ddmExpressionFactory.createExpression(
-						CreateExpressionRequest.Builder.newBuilder(
-							value.toString()
-						).withDDMExpressionParameterAccessor(
-							new ObjectEntryDDMExpressionParameterAccessor(
-								(Map<String, Object>)variables.get(
-									"originalBaseModel"))
-						).build());
+			ObjectField objectField =
+				ObjectFieldLocalServiceUtil.fetchObjectField(
+					objectDefinition.getObjectDefinitionId(),
+					jsonObject.getString("name"));
 
-				ddmExpression.setVariables(
-					(Map<String, Object>)variables.get("baseModel"));
+			if ((objectField != null) &&
+				objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
 
-				value = ddmExpression.evaluate();
+				JSONObject valueJSONObject = JSONFactoryUtil.createJSONObject(
+					value.toString());
+
+				values.put(
+					jsonObject.getString("name"),
+					HashMapBuilder.put(
+						"externalReferenceCode",
+						_evaluate(
+							ddmExpressionFactory, jsonObject,
+							valueJSONObject.getString("externalReferenceCode"),
+							variables)
+					).put(
+						"type", valueJSONObject.getString("type")
+					).build());
 			}
-
-			values.put(jsonObject.getString("name"), value);
+			else {
+				values.put(
+					jsonObject.getString("name"),
+					_evaluate(
+						ddmExpressionFactory, jsonObject, value, variables));
+			}
 		}
 
 		return values;
@@ -259,6 +273,30 @@ public class ObjectEntryVariablesUtil {
 			payloadJSONObject.get(
 				"originalObjectEntryDTO" + objectDefinition.getShortName())
 		).build();
+	}
+
+	private static Object _evaluate(
+			DDMExpressionFactory ddmExpressionFactory, JSONObject jsonObject,
+			Object value, Map<String, Object> variables)
+		throws Exception {
+
+		if (jsonObject.getBoolean("inputAsValue")) {
+			return value;
+		}
+
+		DDMExpression<Serializable> ddmExpression =
+			ddmExpressionFactory.createExpression(
+				CreateExpressionRequest.Builder.newBuilder(
+					value.toString()
+				).withDDMExpressionParameterAccessor(
+					new ObjectEntryDDMExpressionParameterAccessor(
+						(Map<String, Object>)variables.get("originalBaseModel"))
+				).build());
+
+		ddmExpression.setVariables(
+			(Map<String, Object>)variables.get("baseModel"));
+
+		return ddmExpression.evaluate();
 	}
 
 	private static String _getContentType(
