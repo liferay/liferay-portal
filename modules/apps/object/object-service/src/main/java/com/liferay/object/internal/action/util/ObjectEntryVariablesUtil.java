@@ -125,6 +125,9 @@ public class ObjectEntryVariablesUtil {
 					return dateFormat.format(new Date());
 				}
 			).put(
+				"currentUserExternalReferenceCode",
+				payloadJSONObject.getString("userExternalReferenceCode")
+			).put(
 				"currentUserId", payloadJSONObject.getLong("userId")
 			).put(
 				"groupId",

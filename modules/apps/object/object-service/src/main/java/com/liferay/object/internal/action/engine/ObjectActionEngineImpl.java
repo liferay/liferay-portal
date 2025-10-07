@@ -346,6 +346,8 @@ public class ObjectActionEngineImpl implements ObjectActionEngine {
 		).put(
 			"status", objectDefinition.getStatus()
 		).put(
+			"userExternalReferenceCode", user.getExternalReferenceCode()
+		).put(
 			"userId", user.getUserId()
 		).put(
 			"userName", user.getFullName()

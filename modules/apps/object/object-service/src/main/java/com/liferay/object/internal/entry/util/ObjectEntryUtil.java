@@ -220,6 +220,8 @@ public class ObjectEntryUtil {
 		).put(
 			"preferredLanguageId", preferredLanguageId
 		).put(
+			"userExternalReferenceCode", user.getExternalReferenceCode()
+		).put(
 			"userId", user.getUserId()
 		);
 	}
