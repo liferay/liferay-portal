@@ -230,6 +230,9 @@ public interface ObjectActionLocalService
 	public ObjectAction fetchObjectAction(long objectActionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public ObjectAction fetchObjectAction(long objectDefinitionId, String name);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ObjectAction fetchObjectAction(
 		String externalReferenceCode, long objectDefinitionId);
 
