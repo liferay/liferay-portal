@@ -235,7 +235,7 @@ public class ObjectDefinitionResourceImpl
 
 	@Override
 	public ObjectDefinition postObjectDefinition(
-			Boolean accumulateOnValidation, ObjectDefinition objectDefinition)
+			Boolean accumulateError, ObjectDefinition objectDefinition)
 		throws Exception {
 
 		if (!Validator.isBlank(objectDefinition.getStorageType()) &&
@@ -271,7 +271,7 @@ public class ObjectDefinitionResourceImpl
 
 			ObjectDefinitionValidationThreadLocal.
 				setObjectDefinitionValidationContext(
-					accumulateOnValidation,
+					accumulateError,
 					new ObjectDefinitionValidationContext(
 						objectDefinition.getExternalReferenceCode()));
 		}
@@ -401,7 +401,6 @@ public class ObjectDefinitionResourceImpl
 						_workflowDefinitionLinkLocalService,
 						objectDefinition.getWorkflowDefinitionLinks()));
 		}
-
 
 		if (!Validator.isBlank(objectDefinition.getExternalReferenceCode())) {
 			serviceBuilderObjectDefinition =
@@ -616,7 +615,7 @@ public class ObjectDefinitionResourceImpl
 			statusInt = objectDefinitionStatus.getCode();
 		}
 
-		List<com.liferay.object.model.ObjectField> objectFieldsDTO =
+		List<com.liferay.object.model.ObjectField> serviceBuilderObjectFields =
 			transformToList(
 				objectDefinition.getObjectFields(),
 				objectField -> ObjectFieldUtil.toObjectField(
@@ -638,7 +637,7 @@ public class ObjectDefinitionResourceImpl
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
 						_objectDefinitionSettingLocalService),
-					objectFieldsDTO,
+					serviceBuilderObjectFields,
 					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 						contextUser.getCompanyId(), _groupLocalService,
 						contextUser.getUserId(),
@@ -708,7 +707,7 @@ public class ObjectDefinitionResourceImpl
 						contextUser.getCompanyId(), _groupLocalService,
 						objectDefinition.getObjectDefinitionSettings(),
 						_objectDefinitionSettingLocalService),
-					objectFieldsDTO,
+					serviceBuilderObjectFields,
 					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
 						contextUser.getCompanyId(), _groupLocalService,
 						contextUser.getUserId(),
@@ -728,7 +727,7 @@ public class ObjectDefinitionResourceImpl
 		List<com.liferay.object.model.ObjectAction>
 			serviceBuilderObjectActions = new ArrayList<>(
 				_objectActionLocalService.getObjectActions(objectDefinitionId));
-		List<com.liferay.object.model.ObjectField> serviceBuilderObjectFields =
+		serviceBuilderObjectFields =
 			new ArrayList<>(
 				_objectFieldLocalService.getObjectFields(objectDefinitionId));
 		List<com.liferay.object.model.ObjectRelationship>
@@ -962,7 +961,7 @@ public class ObjectDefinitionResourceImpl
 
 	@Override
 	public ObjectDefinition putObjectDefinitionByExternalReferenceCode(
-			String externalReferenceCode, Boolean accumulateOnValidation,
+			String externalReferenceCode, Boolean accumulateError,
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -980,7 +979,7 @@ public class ObjectDefinitionResourceImpl
 
 				ObjectDefinitionValidationThreadLocal.
 					setObjectDefinitionValidationContext(
-						accumulateOnValidation,
+						accumulateError,
 						new ObjectDefinitionValidationContext(
 							objectDefinition.getExternalReferenceCode()));
 			}
@@ -990,7 +989,7 @@ public class ObjectDefinitionResourceImpl
 				objectDefinition);
 		}
 
-		return postObjectDefinition(accumulateOnValidation, objectDefinition);
+		return postObjectDefinition(accumulateError, objectDefinition);
 	}
 
 	@Override
