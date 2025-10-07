@@ -342,6 +342,13 @@ public class ObjectActionLocalServiceImpl
 
 	@Override
 	public ObjectAction fetchObjectAction(
+		long objectDefinitionId, String name) {
+
+		return objectActionPersistence.fetchByODI_N(objectDefinitionId, name);
+	}
+
+	@Override
+	public ObjectAction fetchObjectAction(
 		String externalReferenceCode, long objectDefinitionId) {
 
 		ObjectDefinition objectDefinition =
