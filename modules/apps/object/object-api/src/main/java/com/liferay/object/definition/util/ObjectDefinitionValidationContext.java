@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,13 +53,10 @@ public class ObjectDefinitionValidationContext {
 	public static final String VERSION_PROPERTY = "version";
 
 	public ObjectDefinitionValidationContext(
-		String objectDefinitionExternalReferenceCode,
-		List<ObjectDefinitionValidationException.ValidationError>
-			validationErrors) {
+		String objectDefinitionExternalReferenceCode) {
 
 		_objectDefinitionExternalReferenceCode =
 			objectDefinitionExternalReferenceCode;
-		_validationErrors = validationErrors;
 	}
 
 	public void addValidationError(
@@ -101,15 +99,11 @@ public class ObjectDefinitionValidationContext {
 	}
 
 	public boolean hasValidationErrors() {
-		if (_validationErrors == null) {
-			return false;
-		}
-
 		return !_validationErrors.isEmpty();
 	}
 
 	private final String _objectDefinitionExternalReferenceCode;
 	private final List<ObjectDefinitionValidationException.ValidationError>
-		_validationErrors;
+		_validationErrors = new ArrayList<>();
 
 }

@@ -273,8 +273,7 @@ public class ObjectDefinitionResourceImpl
 				setObjectDefinitionValidationContext(
 					accumulateOnValidation,
 					new ObjectDefinitionValidationContext(
-						objectDefinition.getExternalReferenceCode(),
-						new ArrayList<>()));
+						objectDefinition.getExternalReferenceCode()));
 		}
 
 		try {
@@ -418,7 +417,7 @@ public class ObjectDefinitionResourceImpl
 				ObjectDefinitionValidationThreadLocal.
 					setObjectDefinitionValidationContext(
 						false,
-						new ObjectDefinitionValidationContext(null, null));
+						new ObjectDefinitionValidationContext(null));
 			}
 		}
 
@@ -746,7 +745,7 @@ public class ObjectDefinitionResourceImpl
 		finally {
 			ObjectDefinitionValidationThreadLocal.
 				setObjectDefinitionValidationContext(
-					false, new ObjectDefinitionValidationContext(null, null));
+					false, new ObjectDefinitionValidationContext(null));
 		}
 
 		List<ObjectAction> objectActions = ListUtil.fromArray(
@@ -1015,8 +1014,7 @@ public class ObjectDefinitionResourceImpl
 					setObjectDefinitionValidationContext(
 						accumulateOnValidation,
 						new ObjectDefinitionValidationContext(
-							objectDefinition.getExternalReferenceCode(),
-							new ArrayList<>()));
+							objectDefinition.getExternalReferenceCode()));
 			}
 
 			return putObjectDefinition(
