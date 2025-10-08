@@ -18,7 +18,7 @@ public class ObjectDefinitionValidationThreadLocal {
 		return _objectDefinitionValidationContext.get();
 	}
 
-	public static <E extends Exception> void handleAsValidationError(
+	public static <E extends Exception> void handleException(
 			E exception, String className, String property, Object value)
 		throws E {
 
