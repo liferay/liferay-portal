@@ -40,7 +40,7 @@ public class ObjectDefinitionValidationThreadLocal {
 			value);
 	}
 
-	public static boolean hasValidationError() {
+	public static boolean hasValidationErrors() {
 		ObjectDefinitionValidationContext objectDefinitionValidationContext =
 			_objectDefinitionValidationContext.get();
 

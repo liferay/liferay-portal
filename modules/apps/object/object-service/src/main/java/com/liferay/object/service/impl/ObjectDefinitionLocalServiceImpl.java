@@ -1332,7 +1332,7 @@ public class ObjectDefinitionLocalServiceImpl
 				objectDefinition, objectFields);
 		}
 
-		if (ObjectDefinitionValidationThreadLocal.hasValidationError()) {
+		if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
 			throw new ObjectDefinitionValidationException();
 		}
 
@@ -1563,16 +1563,20 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setVersion(version);
 		objectDefinition.setStatus(status);
 
-		String objectDefinitionERC =
-			ObjectDefinitionValidationThreadLocal.
-				getObjectDefinitionValidationContext(
-				).getObjectDefinitionExternalReferenceCode();
+		if (ObjectDefinitionValidationThreadLocal.isAccumulateError()) {
+			ObjectDefinitionValidationContext
+				objectDefinitionValidationContext =
+					ObjectDefinitionValidationThreadLocal.
+						getObjectDefinitionValidationContext();
 
-		ObjectDefinition existentObjectDefinition =
-			objectDefinitionPersistence.fetchByERC_C(
-				objectDefinitionERC, user.getCompanyId());
+			String objectDefinitionERC =
+				objectDefinitionValidationContext.
+					getObjectDefinitionExternalReferenceCode();
 
-		if (objectDefinitionERC != null) {
+			ObjectDefinition existentObjectDefinition =
+				objectDefinitionPersistence.fetchByERC_C(
+					objectDefinitionERC, user.getCompanyId());
+
 			_validateExternalReferenceCode(objectDefinitionERC, system);
 
 			if (existentObjectDefinition != null) {
@@ -1588,18 +1592,13 @@ public class ObjectDefinitionLocalServiceImpl
 						EXTERNAL_REFERENCE_CODE_PROPERTY,
 					objectDefinitionERC);
 			}
-		}
 
-		if (ObjectDefinitionValidationThreadLocal.isAccumulateError()) {
 			_objectFieldLocalService.validateObjectFields(
 				objectDefinition, objectFields);
-		}
 
-		if (ObjectDefinitionValidationThreadLocal.
-				getObjectDefinitionValidationContext(
-				).hasValidationErrors()) {
-
-			throw new ObjectDefinitionValidationException();
+			if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
+				throw new ObjectDefinitionValidationException();
+			}
 		}
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
@@ -2715,10 +2714,7 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		if (objectDefinition.isApproved()) {
-			if (ObjectDefinitionValidationThreadLocal.
-					getObjectDefinitionValidationContext(
-					).hasValidationErrors()) {
-
+			if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
 				throw new ObjectDefinitionValidationException();
 			}
 
@@ -2777,10 +2773,7 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setPKObjectFieldName(pkObjectFieldName);
 		objectDefinition.setScope(scope);
 
-		if (ObjectDefinitionValidationThreadLocal.
-				getObjectDefinitionValidationContext(
-				).hasValidationErrors()) {
-
+		if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
 			throw new ObjectDefinitionValidationException();
 		}
 

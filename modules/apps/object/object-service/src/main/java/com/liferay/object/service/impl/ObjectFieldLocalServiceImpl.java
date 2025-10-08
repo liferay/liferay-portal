@@ -719,37 +719,30 @@ public class ObjectFieldLocalServiceImpl
 			ObjectDefinition objectDefinition, List<ObjectField> objectFields)
 		throws PortalException {
 
-		Set<String> externalReferenceCodeSet = new HashSet<>();
-
-		Set<String> nameSet = new HashSet<>();
+		Set<String> externalReferenceCodes = new HashSet<>();
+		Set<String> names = new HashSet<>();
 
 		for (ObjectField objectField : objectFields) {
-			String externalReferenceCode =
-				objectField.getExternalReferenceCode();
+			if (!externalReferenceCodes.add(
+					objectField.getExternalReferenceCode())) {
 
-			if (externalReferenceCodeSet.contains(externalReferenceCode)) {
 				ObjectDefinitionValidationThreadLocal.handleException(
 					ObjectDefinitionValidationContext.OBJECT_FIELD_CLASS_NAME,
 					new DuplicateObjectFieldExternalReferenceCodeException(
-						externalReferenceCode),
+						objectField.getExternalReferenceCode()),
 					ObjectDefinitionValidationContext.
 						EXTERNAL_REFERENCE_CODE_PROPERTY,
-					externalReferenceCode);
+					objectField.getExternalReferenceCode());
 			}
 
-			String name = objectField.getName();
-
-			if (nameSet.contains(name)) {
+			if (!names.add(objectField.getName())) {
 				ObjectDefinitionValidationThreadLocal.handleException(
 					ObjectDefinitionValidationContext.OBJECT_FIELD_CLASS_NAME,
-					new ObjectFieldNameException.MustNotBeDuplicate(name),
-					ObjectDefinitionValidationContext.NAME_PROPERTY, name);
+					new ObjectFieldNameException.MustNotBeDuplicate(
+						objectField.getName()),
+					ObjectDefinitionValidationContext.NAME_PROPERTY,
+					objectField.getName());
 			}
-
-			nameSet.add(objectField.getName());
-
-			externalReferenceCodeSet.add(
-				objectField.getExternalReferenceCode());
 
 			ObjectField oldObjectField =
 				objectFieldPersistence.fetchByPrimaryKey(
@@ -763,37 +756,102 @@ public class ObjectFieldLocalServiceImpl
 			}
 
 			if (oldObjectField == null) {
-				_validateThreadLocalNewObjectField(
-					objectField.getDBType(),
-					objectField.getExternalReferenceCode(), objectDefinition,
+				validateExternalReferenceCode(
+					objectField.getExternalReferenceCode(), 0,
+					objectDefinition.getCompanyId(),
+					objectDefinition.getObjectDefinitionId());
+
+				_validateListTypeDefinitionId(
 					objectField.getListTypeDefinitionId(),
-					objectField.getBusinessType(), objectField.isIndexed(),
-					objectField.isIndexedAsKeyword(),
-					objectField.getIndexedLanguageId(), objectField.getName(),
-					objectField.getReadOnly(),
-					objectField.getReadOnlyConditionExpression(),
-					objectField.isRequired(), objectField.isState(),
+					objectField.getBusinessType());
+				_validateBusinessType(
+					objectDefinition, objectField.getBusinessType());
+				_validateIndexed(
+					objectField.getBusinessType(), objectField.getDBType(),
+					objectField.isIndexed(), objectField.isIndexedAsKeyword(),
+					objectField.getIndexedLanguageId());
+				_validateLabel(objectDefinition.getLabelMap(), null);
+				_validateName(
+					0, objectDefinition, objectField.getName(),
 					objectField.isSystem());
+				validateReadOnlyAndReadOnlyConditionExpression(
+					objectField.getBusinessType(), objectField.getReadOnly(),
+					objectField.getReadOnlyConditionExpression(),
+					objectField.isRequired());
+				validateRequired(
+					objectField.getBusinessType(),
+					objectDefinition.isApproved(), null,
+					objectField.isRequired());
+				_validateState(objectField.isRequired(), objectField.isState());
+
+				//  localized parameter comes from the DTO and objectField is
+				//  created during transaction context I dont think a validation
+				//  would work in the correct way in this limited context
+
+				validateReadOnlyAndReadOnlyConditionExpression(
+					objectField.getBusinessType(), objectField.getReadOnly(),
+					objectField.getReadOnlyConditionExpression(),
+					objectField.isRequired());
+
+				_validateState(objectField.isRequired(), objectField.isState());
+
+				validateReadOnlyAndReadOnlyConditionExpression(
+					objectField.getBusinessType(), objectField.getReadOnly(),
+					objectField.getReadOnlyConditionExpression(),
+					objectField.isRequired());
 
 				continue;
 			}
 
-			_validateThreadLocalExistingObjectField(
-				oldObjectField, objectField.getDBType(),
+			validateExternalReferenceCode(
 				objectField.getExternalReferenceCode(),
+				oldObjectField.getObjectFieldId(),
+				oldObjectField.getCompanyId(),
+				oldObjectField.getObjectDefinitionId());
+
+			_validateListTypeDefinitionId(
 				objectField.getListTypeDefinitionId(),
-				objectDefinition.getObjectDefinitionId(),
-				objectField.getBusinessType(),
-				GetterUtil.getBoolean(objectField.isIndexed()),
-				GetterUtil.getBoolean(objectField.isIndexedAsKeyword()),
-				objectField.getIndexedLanguageId(),
-				objectDefinition.getLabelMap(),
-				GetterUtil.getBoolean(objectField.isLocalized()),
-				objectField.getName(), objectField.getReadOnly(),
+				objectField.getBusinessType());
+			_validateBusinessTypeEncrypted(
+				oldObjectField.getObjectDefinitionId(),
+				objectField.getBusinessType());
+			_validateIndexed(
+				objectField.getBusinessType(), null, objectField.isIndexed(),
+				objectField.isIndexedAsKeyword(),
+				objectField.getIndexedLanguageId());
+			_validateLabel(objectDefinition.getLabelMap(), oldObjectField);
+
+			_validateLocalized(
+				objectField.isLocalized(), oldObjectField.getObjectDefinition(),
+				oldObjectField,
+				_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+					objectField.getBusinessType()),
+				objectField.isRequired());
+
+			validateRequired(
+				objectField.getBusinessType(), objectDefinition.isApproved(),
+				oldObjectField, objectField.isRequired());
+
+			_validateReadOnlySetting(
+				objectField.getBusinessType(), objectField.getReadOnly(),
+				objectDefinition, oldObjectField);
+
+			_validateRelationshipAndDBType(
+				objectField.getDBType(), objectField.getName(),
+				objectField.isSystem(), oldObjectField,
+				oldObjectField.getObjectFieldId(), objectDefinition);
+
+			validateReadOnlyAndReadOnlyConditionExpression(
+				objectField.getBusinessType(), objectField.getReadOnly(),
 				objectField.getReadOnlyConditionExpression(),
-				GetterUtil.getBoolean(objectField.isRequired()),
-				GetterUtil.getBoolean(objectField.isState()),
-				objectField.isSystem());
+				objectField.isRequired());
+
+			_validateState(objectField.isRequired(), objectField.isState());
+
+			validateReadOnlyAndReadOnlyConditionExpression(
+				objectField.getBusinessType(), objectField.getReadOnly(),
+				objectField.getReadOnlyConditionExpression(),
+				objectField.isRequired());
 		}
 	}
 
@@ -2130,103 +2188,6 @@ public class ObjectFieldLocalServiceImpl
 					"Object field must be required when the state is true"),
 				"state", state);
 		}
-	}
-
-	private void _validateThreadLocalExistingObjectField(
-			ObjectField oldObjectField, String dbType,
-			String externalReferenceCode, long listTypeDefinitionId,
-			long objectDefinitionId, String businessType, boolean indexed,
-			boolean indexedAsKeyword, String indexedLanguageId,
-			Map<Locale, String> labelMap, boolean localized, String name,
-			String readOnly, String readOnlyConditionExpression,
-			boolean required, boolean state, boolean system)
-		throws PortalException {
-
-		long objectFieldId = oldObjectField.getObjectFieldId();
-
-		ObjectField newObjectField = (ObjectField)oldObjectField.clone();
-
-		validateExternalReferenceCode(
-			externalReferenceCode, newObjectField.getObjectFieldId(),
-			newObjectField.getCompanyId(),
-			newObjectField.getObjectDefinitionId());
-
-		_validateListTypeDefinitionId(listTypeDefinitionId, businessType);
-		_validateBusinessTypeEncrypted(
-			newObjectField.getObjectDefinitionId(), businessType);
-		_validateIndexed(
-			businessType, null, indexed, indexedAsKeyword, indexedLanguageId);
-		_validateLabel(labelMap, newObjectField);
-
-		_validateLocalized(
-			localized, oldObjectField.getObjectDefinition(), newObjectField,
-			_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
-				businessType),
-			required);
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
-
-		validateRequired(
-			businessType, objectDefinition.isApproved(), oldObjectField,
-			required);
-
-		_validateReadOnlySetting(
-			businessType, readOnly, objectDefinition, oldObjectField);
-
-		_validateRelationshipAndDBType(
-			dbType, name, system, newObjectField, objectFieldId,
-			objectDefinition);
-
-		validateReadOnlyAndReadOnlyConditionExpression(
-			businessType, readOnly, readOnlyConditionExpression, required);
-
-		_validateState(required, state);
-
-		validateReadOnlyAndReadOnlyConditionExpression(
-			businessType, readOnly, readOnlyConditionExpression, required);
-	}
-
-	private void _validateThreadLocalNewObjectField(
-			String dbType, String externalReferenceCode,
-			ObjectDefinition objectDefinition, long listTypeDefinitionId,
-			String businessType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId, String name, String readOnly,
-			String readOnlyConditionExpression, boolean required, boolean state,
-			boolean system)
-		throws PortalException {
-
-		validateExternalReferenceCode(
-			externalReferenceCode, 0, objectDefinition.getCompanyId(),
-			objectDefinition.getObjectDefinitionId());
-
-		_validateListTypeDefinitionId(listTypeDefinitionId, businessType);
-		_validateBusinessType(objectDefinition, businessType);
-		_validateIndexed(
-			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId);
-		_validateLabel(objectDefinition.getLabelMap(), null);
-		_validateName(0, objectDefinition, name, system);
-		validateReadOnlyAndReadOnlyConditionExpression(
-			businessType, readOnly, readOnlyConditionExpression, required);
-		validateRequired(
-			businessType, objectDefinition.isApproved(), null, required);
-		_validateState(required, state);
-
-		///		_validateLocalized(
-		///			localized, objectDefinition, objectField,
-		/// 		objectFieldBusinessType, required);
-
-		//  localized parameter comes from the DTO and objectField is created
-		//  during transaction context I dont think a validation would work in
-		//  the correct way in this limited context
-
-		validateReadOnlyAndReadOnlyConditionExpression(
-			businessType, readOnly, readOnlyConditionExpression, required);
-
-		_validateState(required, state);
-
-		validateReadOnlyAndReadOnlyConditionExpression(
-			businessType, readOnly, readOnlyConditionExpression, required);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
