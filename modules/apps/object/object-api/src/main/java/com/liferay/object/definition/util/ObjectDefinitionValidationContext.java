@@ -57,12 +57,12 @@ public class ObjectDefinitionValidationContext {
 	}
 
 	public void addValidationError(
-		String errorMessage, String exceptionClassName, String className,
+		String className, String errorMessage, String exceptionClassName,
 		String property, Object value) {
 
 		_validationErrors.add(
 			new ObjectDefinitionValidationException.ValidationError(
-				errorMessage, exceptionClassName, className, property, value));
+				className, errorMessage, exceptionClassName, property, value));
 	}
 
 	public String getObjectDefinitionExternalReferenceCode() {

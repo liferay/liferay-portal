@@ -19,7 +19,7 @@ public class ObjectDefinitionValidationThreadLocal {
 	}
 
 	public static <E extends Exception> void handleException(
-			E exception, String className, String property, Object value)
+			String className, E exception, String property, Object value)
 		throws E {
 
 		if (!_accumulateError.get()) {
@@ -36,7 +36,7 @@ public class ObjectDefinitionValidationThreadLocal {
 		Class<?> clazz = exception.getClass();
 
 		objectDefinitionValidationContext.addValidationError(
-			exception.getMessage(), clazz.getName(), className, property,
+			className, exception.getMessage(), clazz.getName(), property,
 			value);
 	}
 

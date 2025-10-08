@@ -25,12 +25,12 @@ public class ObjectDefinitionValidationException extends PortalException {
 	public static class ValidationError {
 
 		public ValidationError(
-			String errorMessage, String exceptionClassName, String className,
+			String className, String errorMessage, String exceptionClassName,
 			String property, Object value) {
 
+			_className = className;
 			_errorMessage = errorMessage;
 			_exceptionClassName = exceptionClassName;
-			_className = className;
 			_property = property;
 			_value = value;
 		}
