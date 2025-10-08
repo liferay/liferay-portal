@@ -26,10 +26,14 @@ public class ObjectDefinitionValidationThreadLocal {
 			throw exception;
 		}
 
-		Class<?> clazz = exception.getClass();
-
 		ObjectDefinitionValidationContext objectDefinitionValidationContext =
 			_objectDefinitionValidationContext.get();
+
+		if (objectDefinitionValidationContext == null) {
+			return;
+		}
+
+		Class<?> clazz = exception.getClass();
 
 		objectDefinitionValidationContext.addValidationError(
 			exception.getMessage(), clazz.getName(), className, property,
@@ -39,6 +43,10 @@ public class ObjectDefinitionValidationThreadLocal {
 	public static boolean hasValidationError() {
 		ObjectDefinitionValidationContext objectDefinitionValidationContext =
 			_objectDefinitionValidationContext.get();
+
+		if (objectDefinitionValidationContext == null) {
+			return false;
+		}
 
 		return objectDefinitionValidationContext.hasValidationErrors();
 	}
@@ -62,7 +70,6 @@ public class ObjectDefinitionValidationThreadLocal {
 		<ObjectDefinitionValidationContext> _objectDefinitionValidationContext =
 			new CentralizedThreadLocal<>(
 				ObjectDefinitionValidationThreadLocal.class +
-					"._objectDefinitionValidationContext",
-				() -> new ObjectDefinitionValidationContext(null));
+					"._objectDefinitionValidationContext");
 
 }
