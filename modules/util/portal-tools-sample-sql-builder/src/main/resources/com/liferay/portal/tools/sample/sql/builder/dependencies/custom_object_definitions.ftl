@@ -71,7 +71,8 @@ ${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinition
 	</#if>
 </#list>
 
-${dataFactory.toInsertSQL(dataFactory.newObjectRelationshipModel(objectDefinitionModel.getObjectDefinitionId()))}
+${dataFactory.toInsertSQL(dataFactory.newObjectRelationshipModel("Ticket", objectDefinitionModel.getObjectDefinitionId()))}
+${dataFactory.toInsertSQL(dataFactory.newObjectRelationshipModel("User", objectDefinitionModel.getObjectDefinitionId()))}
 
 <#list dataFactory.newResourcePermissionModels(objectDefinitionModel) as resourcePermissionModel>
 	${dataFactory.toInsertSQL(resourcePermissionModel)}

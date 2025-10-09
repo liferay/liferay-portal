@@ -407,6 +407,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -5697,11 +5698,11 @@ public class DataFactory {
 
 		objectFieldModel.setObjectFieldId(_counter.get());
 
-		if (StringUtil.equals(
-				businessType,
-				ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
-
-			_objectFieldId = objectFieldModel.getObjectFieldId();
+		if (StringUtil.equals(name, "r_relatedTo_ticketId")) {
+			_ticketObjectFieldId = objectFieldModel.getObjectFieldId();
+		}
+		else if (StringUtil.equals(name, "r_userTicket_userId")) {
+			_userObjectFieldId = objectFieldModel.getObjectFieldId();
 		}
 
 		// Audit fields
@@ -5798,6 +5799,12 @@ public class DataFactory {
 					"r_userTicket_userId", dbTableName,
 					ObjectFieldConstants.DB_TYPE_LONG, "Assignee",
 					"r_userTicket_userId", false, false, false),
+				newObjectFieldModel(
+					0, objectDefinitionId,
+					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP,
+					"r_relatedTo_ticketId", dbTableName,
+					ObjectFieldConstants.DB_TYPE_LONG, "RelatedTo",
+					"r_relatedTo_ticketId", false, false, false),
 				newObjectFieldModel(
 					0, objectDefinitionId,
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "status",
@@ -6061,7 +6068,8 @@ public class DataFactory {
 	}
 
 	public ObjectRelationshipModel newObjectRelationshipModel(
-		long objectDefinitionId2) {
+		long objectDefinitionId1, long objectDefinitionId2,
+		long objectFieldId2) {
 
 		ObjectRelationshipModel objectRelationshipModel =
 			new ObjectRelationshipModelImpl();
@@ -6080,16 +6088,16 @@ public class DataFactory {
 
 		// Other fields
 
-		objectRelationshipModel.setObjectDefinitionId1(_objectDefinitionId);
+		objectRelationshipModel.setObjectDefinitionId1(objectDefinitionId1);
 		objectRelationshipModel.setObjectDefinitionId2(objectDefinitionId2);
-		objectRelationshipModel.setObjectFieldId2(_objectFieldId);
+		objectRelationshipModel.setObjectFieldId2(objectFieldId2);
 		objectRelationshipModel.setParameterObjectFieldId(0);
 		objectRelationshipModel.setDeletionType(
 			ObjectRelationshipConstants.DELETION_TYPE_CASCADE);
 		objectRelationshipModel.setEdge(false);
 
 		String name =
-			"ObjectRelationship" + _objectDefinitionId + objectDefinitionId2;
+			"ObjectRelationship" + objectDefinitionId1 + objectDefinitionId2;
 
 		objectRelationshipModel.setLabel(_getObjectLabel(name));
 		objectRelationshipModel.setName(name);
@@ -6107,6 +6115,21 @@ public class DataFactory {
 		objectRelationshipModel.setUuid(uuid);
 
 		return objectRelationshipModel;
+	}
+
+	public ObjectRelationshipModel newObjectRelationshipModel(
+		String objectDefinition1name, long objectDefinitionId2) {
+
+		long objectDefinitionId1 = _userObjectDefinitionId;
+		long objectFieldId2 = _userObjectFieldId;
+
+		if (Objects.equals(objectDefinition1name, "Ticket")) {
+			objectDefinitionId1 = _ticketObjectDefinitionId;
+			objectFieldId2 = _ticketObjectFieldId;
+		}
+
+		return newObjectRelationshipModel(
+			objectDefinitionId1, objectDefinitionId2, objectFieldId2);
 	}
 
 	public ObjectStateFlowModel newObjectStateFlowModel(long objectFieldId) {
@@ -8202,7 +8225,10 @@ public class DataFactory {
 		objectDefinitionModel.setObjectDefinitionId(objectDefinitionId);
 
 		if (StringUtil.equals(dbTableName, "User_")) {
-			_objectDefinitionId = objectDefinitionId;
+			_userObjectDefinitionId = objectDefinitionId;
+		}
+		else if (StringUtil.startsWith(name, "Ticket_")) {
+			_ticketObjectDefinitionId = objectDefinitionId;
 		}
 
 		// Audit fields
@@ -9240,8 +9266,6 @@ public class DataFactory {
 	private final SimpleCounter _layoutPlidCounter;
 	private final SimpleCounter _layoutSetIdCounter;
 	private final Set<String> _objectDefinitionDBTableNames = new HashSet<>();
-	private long _objectDefinitionId;
-	private long _objectFieldId;
 	private RoleModel _ownerRoleModel;
 	private final SimpleCounter _portletPreferenceValueIdCounter;
 	private RoleModel _powerUserRoleModel;
@@ -9251,9 +9275,13 @@ public class DataFactory {
 	private final Format _simpleDateFormat;
 	private RoleModel _siteMemberRoleModel;
 	private final SimpleCounter _socialActivityIdCounter;
+	private long _ticketObjectDefinitionId;
+	private long _ticketObjectFieldId;
 	private final SimpleCounter _timeCounter;
 	private final Map<Integer, Map<Long, String>> _treePathsMap =
 		new HashMap<>();
+	private long _userObjectDefinitionId;
+	private long _userObjectFieldId;
 	private RoleModel _userRoleModel;
 	private final SimpleCounter _userScreenNameCounter;
 	private String _webId;
