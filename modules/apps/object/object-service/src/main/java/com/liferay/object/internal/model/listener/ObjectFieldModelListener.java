@@ -9,9 +9,11 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionNameConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectActionLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.ModelListenerException;
@@ -108,7 +110,10 @@ public class ObjectFieldModelListener extends BaseModelListener<ObjectField> {
 			return;
 		}
 
-		try {
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
+
 			_objectActionLocalService.addObjectAction(
 				null, objectField.getUserId(),
 				objectField.getObjectDefinitionId(), true, null, null,
@@ -156,7 +161,10 @@ public class ObjectFieldModelListener extends BaseModelListener<ObjectField> {
 			return;
 		}
 
-		try {
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
+
 			ObjectAction objectAction =
 				_objectActionLocalService.fetchObjectAction(
 					objectField.getObjectDefinitionId(),

@@ -26,14 +26,29 @@ public class ObjectDefinitionThreadLocal {
 		return false;
 	}
 
+	public static boolean isSkipBundleAllowedCheck() {
+		return _skipBundleAllowedCheck.get();
+	}
+
 	public static SafeCloseable setDeleteObjectDefinitionIdWithSafeCloseable(
 		long id) {
 
 		return _deleteObjectDefinitionId.setWithSafeCloseable(id);
 	}
 
+	public static SafeCloseable setSkipBundleAllowedCheckWithSafeCloseable(
+		boolean skipBundleAllowedCheck) {
+
+		return _skipBundleAllowedCheck.setWithSafeCloseable(
+			skipBundleAllowedCheck);
+	}
+
 	private static final CentralizedThreadLocal<Long>
 		_deleteObjectDefinitionId = new CentralizedThreadLocal<>(
 			ObjectEntryThreadLocal.class + "._deleteObjectDefinitionId");
+	private static final CentralizedThreadLocal<Boolean>
+		_skipBundleAllowedCheck = new CentralizedThreadLocal<>(
+			ObjectDefinitionThreadLocal.class + "._skipBundleAllowedCheck",
+			() -> false);
 
 }
