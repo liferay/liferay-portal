@@ -48,6 +48,7 @@ import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.object.constants.ObjectActionConstants;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
+import com.liferay.object.constants.ObjectActionNameConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -59,6 +60,7 @@ import com.liferay.object.exception.ObjectActionNameException;
 import com.liferay.object.exception.ObjectActionParametersException;
 import com.liferay.object.exception.ObjectActionSystemException;
 import com.liferay.object.exception.ObjectActionTriggerKeyException;
+import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.field.builder.AutoIncrementObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
@@ -2090,6 +2092,56 @@ public class ObjectActionLocalServiceTest {
 
 		_testExecuteObjectActionMultipleTimesInTheSameThreadWithACustomObjectDefinition();
 		_testExecuteObjectActionMultipleTimesInTheSameThreadWithASystemObjectDefinition();
+	}
+
+	@FeatureFlag("LPD-6233")
+	@Test
+	public void testExecuteObjectActionWithAssigneeObjectField()
+		throws Exception {
+
+		ObjectFieldUtil.addCustomObjectField(
+			new AssigneeObjectFieldBuilder(
+			).labelMap(
+				RandomTestUtil.randomLocaleStringMap()
+			).name(
+				"assignee"
+			).objectDefinitionId(
+				_objectDefinition.getObjectDefinitionId()
+			).userId(
+				TestPropsValues.getUserId()
+			).build());
+
+		_objectDefinition = _publishCustomObjectDefinition();
+
+		ObjectAction objectAction = _objectActionLocalService.fetchObjectAction(
+			_objectDefinition.getObjectDefinitionId(),
+			ObjectActionNameConstants.NAME_ASSIGN_TO_ME);
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", "John"
+			).build());
+
+		User user = UserTestUtil.addUser();
+
+		_addModelResourcePermissions(
+			objectAction.getName(), objectEntry.getObjectEntryId(),
+			user.getUserId());
+
+		ObjectEntryResource objectEntryResource = _getObjectEntryResource(user);
+
+		objectEntryResource.putObjectEntryObjectActionObjectActionName(
+			objectEntry.getObjectEntryId(), objectAction.getName());
+
+		objectEntry = _objectEntryLocalService.fetchObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			user.getUserId(),
+			MapUtil.getLong(
+				(Map<String, Long>)values.get("assignee"), "classPK"));
 	}
 
 	@Test
