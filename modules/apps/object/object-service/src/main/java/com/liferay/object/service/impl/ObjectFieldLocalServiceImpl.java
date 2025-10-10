@@ -758,28 +758,43 @@ public class ObjectFieldLocalServiceImpl
 					objectField.getExternalReferenceCode(), 0,
 					objectDefinition.getCompanyId(),
 					objectDefinition.getObjectDefinitionId());
+				// if exists
+				validateExternalReferenceCode(
+					objectField.getExternalReferenceCode(),
+					oldObjectField.getObjectFieldId(),
+					oldObjectField.getCompanyId(),
+					oldObjectField.getObjectDefinitionId());
 
-				_validateListTypeDefinitionId(
-					objectField.getListTypeDefinitionId(),
-					objectField.getBusinessType());
+				_validateListTypeDefinitionId(objectField.getListTypeDefinitionId(), objectField.getBusinessType());
 				_validateBusinessType(
 					objectDefinition, objectField.getBusinessType());
 				_validateIndexed(
 					objectField.getBusinessType(), objectField.getDBType(),
 					objectField.isIndexed(), objectField.isIndexedAsKeyword(),
 					objectField.getIndexedLanguageId());
+				//if exists
+				_validateIndexed(
+					objectField.getBusinessType(), null, objectField.isIndexed(),
+					objectField.isIndexedAsKeyword(),
+					objectField.getIndexedLanguageId());
+
 				_validateLabel(objectDefinition.getLabelMap(), null);
+				// if exists
+				_validateLabel(objectDefinition.getLabelMap(), oldObjectField);
+
 				_validateName(
 					0, objectDefinition, objectField.getName(),
 					objectField.isSystem());
-				validateReadOnlyAndReadOnlyConditionExpression(
-					objectField.getBusinessType(), objectField.getReadOnly(),
-					objectField.getReadOnlyConditionExpression(),
-					objectField.isRequired());
+
 				validateRequired(
 					objectField.getBusinessType(),
 					objectDefinition.isApproved(), null,
 					objectField.isRequired());
+				// exists
+				validateRequired(
+					objectField.getBusinessType(), objectDefinition.isApproved(),
+					oldObjectField, objectField.isRequired());
+
 				_validateState(objectField.isRequired(), objectField.isState());
 
 				//  localized parameter comes from the DTO and objectField is
@@ -790,34 +805,27 @@ public class ObjectFieldLocalServiceImpl
 					objectField.getBusinessType(), objectField.getReadOnly(),
 					objectField.getReadOnlyConditionExpression(),
 					objectField.isRequired());
-
-				_validateState(objectField.isRequired(), objectField.isState());
-
+				//exists
 				validateReadOnlyAndReadOnlyConditionExpression(
 					objectField.getBusinessType(), objectField.getReadOnly(),
 					objectField.getReadOnlyConditionExpression(),
 					objectField.isRequired());
 
+				_validateState(objectField.isRequired(), objectField.isState());
+				//exists
+				_validateState(objectField.isRequired(), objectField.isState());
+
 				continue;
 			}
 
-			validateExternalReferenceCode(
-				objectField.getExternalReferenceCode(),
-				oldObjectField.getObjectFieldId(),
-				oldObjectField.getCompanyId(),
-				oldObjectField.getObjectDefinitionId());
-
-			_validateListTypeDefinitionId(
-				objectField.getListTypeDefinitionId(),
-				objectField.getBusinessType());
+			// only here
 			_validateBusinessTypeEncrypted(
 				oldObjectField.getObjectDefinitionId(),
 				objectField.getBusinessType());
-			_validateIndexed(
-				objectField.getBusinessType(), null, objectField.isIndexed(),
-				objectField.isIndexedAsKeyword(),
-				objectField.getIndexedLanguageId());
-			_validateLabel(objectDefinition.getLabelMap(), oldObjectField);
+
+			/// theres something about this
+			/// _validateListTypeDefinitionId(listTypeDefinitionId, businessType);
+
 
 			_validateLocalized(
 				objectField.isLocalized(), oldObjectField.getObjectDefinition(),
@@ -826,9 +834,7 @@ public class ObjectFieldLocalServiceImpl
 					objectField.getBusinessType()),
 				objectField.isRequired());
 
-			validateRequired(
-				objectField.getBusinessType(), objectDefinition.isApproved(),
-				oldObjectField, objectField.isRequired());
+			_validateReadOnly(oldObjectField, objectField.getReadOnly());
 
 			_validateReadOnlySetting(
 				objectField.getBusinessType(), objectField.getReadOnly(),
@@ -838,18 +844,6 @@ public class ObjectFieldLocalServiceImpl
 				objectField.getDBType(), objectField.getName(),
 				objectField.isSystem(), oldObjectField,
 				oldObjectField.getObjectFieldId(), objectDefinition);
-
-			validateReadOnlyAndReadOnlyConditionExpression(
-				objectField.getBusinessType(), objectField.getReadOnly(),
-				objectField.getReadOnlyConditionExpression(),
-				objectField.isRequired());
-
-			_validateState(objectField.isRequired(), objectField.isState());
-
-			validateReadOnlyAndReadOnlyConditionExpression(
-				objectField.getBusinessType(), objectField.getReadOnly(),
-				objectField.getReadOnlyConditionExpression(),
-				objectField.isRequired());
 		}
 	}
 
@@ -1623,7 +1617,6 @@ public class ObjectFieldLocalServiceImpl
 
 		validateReadOnlyAndReadOnlyConditionExpression(
 			businessType, readOnly, readOnlyConditionExpression, required);
-
 		_validateState(required, state);
 
 		newObjectField.setExternalReferenceCode(externalReferenceCode);
