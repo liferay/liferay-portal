@@ -32,7 +32,7 @@ bootRun {
 
 dependencies {
 	implementation group: "com.liferay", name: "com.liferay.client.extension.util.spring.boot3", version: "latest.release"
-	implementation group: "com.liferay", name: "com.liferay.headless.admin.user.client", version: "4.0.50"
+	implementation group: "com.liferay", name: "com.liferay.headless.admin.user.client", version: "4.0.76"
 	implementation group: "com.liferay", name: "com.liferay.headless.portal.instances.client", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.notification.rest.client", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"

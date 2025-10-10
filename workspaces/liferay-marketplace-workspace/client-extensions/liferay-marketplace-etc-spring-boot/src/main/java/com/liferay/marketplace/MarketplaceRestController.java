@@ -6,12 +6,14 @@
 package com.liferay.marketplace;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
-import com.liferay.headless.admin.user.client.custom.field.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
 import com.liferay.headless.admin.user.client.dto.v1_0.AccountRole;
 import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
+import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.AccountRoleResource;
 import com.liferay.headless.admin.user.client.resource.v1_0.PostalAddressResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.UserAccountResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Catalog;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.BillingAddress;
@@ -148,43 +150,23 @@ public class MarketplaceRestController extends BaseRestController {
 
 	@PostMapping("/account")
 	public ResponseEntity<Account> postAccount(
-			@RequestPart("account") String json,
+			@RequestPart("account") String accountString,
 			@RequestPart("file") MultipartFile file,
 			@AuthenticationPrincipal Jwt jwt)
 		throws Exception {
 
 		if (_log.isInfoEnabled()) {
-			_log.info("Account Create: " + json);
+			_log.info("POST account: " + accountString);
 		}
 
-		Account account = Account.toDTO(json);
+		Account account = Account.toDTO(accountString);
 
-		String base64Image = Base64.getEncoder(
-		).encodeToString(
-			file.getBytes()
-		);
-
-		account.setLogoBase64(() -> base64Image);
-
-		if (account.getPostalAddresses() != null) {
-			for (PostalAddress postalAddress : account.getPostalAddresses()) {
-				postalAddress.setName(() -> _ACCOUNT_POSTAL_ADDRESS_NAME);
-			}
-		}
-
-		String contactEmail = null;
-
-		for (CustomField customField : account.getCustomFields()) {
-			if (Objects.equals(customField.getName(), "Contact Email")) {
-				Object data = customField.getCustomValue(
-				).getData();
-
-				if (data != null) {
-					contactEmail = data.toString();
-				}
-
-				break;
-			}
+		if (file != null) {
+			account.setLogoBase64(
+				() -> Base64.getEncoder(
+				).encodeToString(
+					file.getBytes()
+				));
 		}
 
 		AccountResource accountResource =
@@ -213,42 +195,43 @@ public class MarketplaceRestController extends BaseRestController {
 			).fetchFirstItem();
 
 		if (postalAddress != null) {
-			_marketplaceService.getAccountResource(
-			).patchAccount(
+			accountResource.patchAccount(
 				account.getId(),
 				new Account() {
 					{
 						setDefaultBillingAddressId(postalAddress::getId);
 					}
-				}
-			);
+				});
 		}
-		else {
+
+		UserAccountResource userAccountResource =
+			_marketplaceService.getUserAccountResource();
+
+		UserAccount userAccount = userAccountResource.getMyUserAccount();
+
+		String emailAddress = userAccount.getEmailAddress();
+
+		userAccountResource.postAccountUserAccountByEmailAddress(
+			account.getId(), emailAddress);
+
+		Long accountRoleId = _getAccountAdministratorRoleId(account.getId());
+
+		if (accountRoleId != null) {
+			AccountRoleResource accountRoleResource =
+				_marketplaceService.getAccountRoleResource();
+
+			accountRoleResource.
+				postAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress(
+					account.getExternalReferenceCode(), accountRoleId,
+					emailAddress);
+		}
+
+		if (_log.isInfoEnabled()) {
 			_log.info(
-				"No postal address found for account ID: " + account.getId());
+				StringBundler.concat(
+					"User ", emailAddress, " associated with account ",
+					account.getName()));
 		}
-
-		if (contactEmail == null) {
-			contactEmail = jwt.getClaimAsString("userName");
-		}
-
-		_marketplaceService.getUserAccountResource(
-		).postAccountUserAccountByEmailAddress(
-			account.getId(), contactEmail
-		);
-
-		long accountRoleId = _getAccountAdminRoleId(account.getId());
-
-		_marketplaceService.getAccountRoleResource(
-		).
-			postAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress(
-				account.getExternalReferenceCode(), accountRoleId, contactEmail
-			);
-
-		_log.info(
-			StringBundler.concat(
-				"User ", contactEmail, " associated with account ID ",
-				account.getId()));
 
 		return ResponseEntity.ok(account);
 	}
@@ -452,18 +435,11 @@ public class MarketplaceRestController extends BaseRestController {
 			});
 	}
 
-	private long _getAccountAdminRoleId(long accountId) throws Exception {
-		if (_cachedAccountAdminRoleId != null) {
-			return _cachedAccountAdminRoleId;
-		}
+	private Long _getAccountAdministratorRoleId(long accountId)
+		throws Exception {
 
-		long envRoleId = GetterUtil.getLong(
-			System.getenv("LIFERAY_ACCOUNT_ADMIN_ROLE_ID"));
-
-		if (envRoleId > 0) {
-			_cachedAccountAdminRoleId = envRoleId;
-
-			return envRoleId;
+		if (_accountAdministratorRoleId != null) {
+			return _accountAdministratorRoleId;
 		}
 
 		com.liferay.headless.admin.user.client.pagination.Page<AccountRole>
@@ -477,15 +453,13 @@ public class MarketplaceRestController extends BaseRestController {
 
 		AccountRole accountRole = accountRolesPage.fetchFirstItem();
 
-		if (accountRole != null) {
-			_cachedAccountAdminRoleId = accountRole.getId();
-
-			return _cachedAccountAdminRoleId;
+		if (accountRole == null) {
+			return null;
 		}
 
-		throw new RuntimeException(
-			"Account Administrator role not found for account ID: " +
-				accountId);
+		_accountAdministratorRoleId = accountRole.getId();
+
+		return _accountAdministratorRoleId;
 	}
 
 	private void _sendOrderPurchasedNotification(Order order) throws Exception {
@@ -670,8 +644,6 @@ public class MarketplaceRestController extends BaseRestController {
 		}
 	}
 
-	private static final String _ACCOUNT_POSTAL_ADDRESS_NAME = "Postal Address";
-
 	private static final int _ACCOUNT_TYPE_BUSINESS = 2;
 
 	private static final int _ACCOUNT_TYPE_PERSON = 1;
@@ -681,7 +653,9 @@ public class MarketplaceRestController extends BaseRestController {
 	private static final Log _log = LogFactory.getLog(
 		MarketplaceRestController.class);
 
-	private Long _cachedAccountAdminRoleId;
+	private static Long _accountAdministratorRoleId = GetterUtil.getLong(
+		System.getenv("_ACCOUNT_ADMINISTRATOR_ROLE_ID"));
+
 	private final Set<String> _europeanCountriesISOCode = Set.of(
 		"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR",
 		"HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO",
