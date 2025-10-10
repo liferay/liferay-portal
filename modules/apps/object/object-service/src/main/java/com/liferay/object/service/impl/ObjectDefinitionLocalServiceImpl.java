@@ -1333,7 +1333,14 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
-			throw new ObjectDefinitionValidationException();
+			if (FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-51345")) {
+
+				ObjectDefinitionValidationThreadLocal.
+					setObjectDefinitionValidationContext(false, null);
+			}
+
+			_throwObjectDefinitionValidationException();
 		}
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
@@ -1569,15 +1576,16 @@ public class ObjectDefinitionLocalServiceImpl
 					ObjectDefinitionValidationThreadLocal.
 						getObjectDefinitionValidationContext();
 
-			String objectDefinitionERC =
+			String objectDefinitionExternalReferenceCode =
 				objectDefinitionValidationContext.
 					getObjectDefinitionExternalReferenceCode();
 
 			ObjectDefinition existentObjectDefinition =
 				objectDefinitionPersistence.fetchByERC_C(
-					objectDefinitionERC, user.getCompanyId());
+					objectDefinitionExternalReferenceCode, user.getCompanyId());
 
-			_validateExternalReferenceCode(objectDefinitionERC, system);
+			_validateExternalReferenceCode(
+				objectDefinitionExternalReferenceCode, system);
 
 			if (existentObjectDefinition != null) {
 				ObjectDefinitionValidationThreadLocal.handleException(
@@ -1585,16 +1593,25 @@ public class ObjectDefinitionLocalServiceImpl
 					new DuplicateObjectDefinitionExternalReferenceCodeException(
 						StringBundler.concat(
 							"Duplicate object definition with external ",
-							"reference code ", objectDefinitionERC,
+							"reference code ",
+							objectDefinitionExternalReferenceCode,
 							" and company ", objectDefinition.getCompanyId())),
-					"externalReferenceCode", objectDefinitionERC);
+					"externalReferenceCode",
+					objectDefinitionExternalReferenceCode);
 			}
 
 			_objectFieldLocalService.validateObjectFields(
 				objectDefinition, objectFields);
 
 			if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
-				throw new ObjectDefinitionValidationException();
+				if (FeatureFlagManagerUtil.isEnabled(
+						CompanyThreadLocal.getCompanyId(), "LPD-51345")) {
+
+					ObjectDefinitionValidationThreadLocal.
+						setObjectDefinitionValidationContext(false, null);
+				}
+
+				_throwObjectDefinitionValidationException();
 			}
 		}
 
@@ -2528,6 +2545,23 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 	}
 
+	private void _throwObjectDefinitionValidationException()
+		throws ObjectDefinitionValidationException {
+
+		ObjectDefinitionValidationException
+			objectDefinitionValidationException =
+				new ObjectDefinitionValidationException();
+
+		ObjectDefinitionValidationContext objectDefinitionValidationContext =
+			ObjectDefinitionValidationThreadLocal.
+				getObjectDefinitionValidationContext();
+
+		objectDefinitionValidationException.setValidationErrors(
+			objectDefinitionValidationContext.getValidationErrors());
+
+		throw objectDefinitionValidationException;
+	}
+
 	private ObjectDefinition _updateObjectDefinition(
 			String externalReferenceCode, ObjectDefinition objectDefinition,
 			long accountEntryRestrictedObjectFieldId,
@@ -2711,10 +2745,6 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		if (objectDefinition.isApproved()) {
-			if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
-				throw new ObjectDefinitionValidationException();
-			}
-
 			if (!active && oldActive) {
 				objectDefinitionLocalService.deployInactiveObjectDefinition(
 					objectDefinition);
@@ -2724,6 +2754,17 @@ public class ObjectDefinitionLocalServiceImpl
 
 				objectDefinitionLocalService.deployObjectDefinition(
 					objectDefinition);
+			}
+
+			if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
+				if (FeatureFlagManagerUtil.isEnabled(
+						CompanyThreadLocal.getCompanyId(), "LPD-51345")) {
+
+					ObjectDefinitionValidationThreadLocal.
+						setObjectDefinitionValidationContext(false, null);
+				}
+
+				_throwObjectDefinitionValidationException();
 			}
 
 			if (active != oldActive) {
@@ -2771,7 +2812,14 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setScope(scope);
 
 		if (ObjectDefinitionValidationThreadLocal.hasValidationErrors()) {
-			throw new ObjectDefinitionValidationException();
+			if (FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-51345")) {
+
+				ObjectDefinitionValidationThreadLocal.
+					setObjectDefinitionValidationContext(false, null);
+			}
+
+			_throwObjectDefinitionValidationException();
 		}
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
