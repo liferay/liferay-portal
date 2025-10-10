@@ -38,7 +38,6 @@ import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.lang.Nullable;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 
 public class LocalSessionFactoryBean extends HibernateExceptionTranslator
 	implements FactoryBean<SessionFactory>, ResourceLoaderAware, BeanFactoryAware, InitializingBean, SmartInitializingSingleton, DisposableBean {
