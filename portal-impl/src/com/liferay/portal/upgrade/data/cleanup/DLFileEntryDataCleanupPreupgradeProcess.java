@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProce
 import com.liferay.portal.kernel.upgrade.data.cleanup.FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
+import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
 import java.sql.PreparedStatement;
@@ -78,8 +79,9 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 		return new DataCleanupPreupgradeProcess(
 			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					"classNameId in (select classNameId from ClassName_ where ",
-					"value in ('", FileEntry.class.getName(), "', '",
+					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
+					".classNameId in (select classNameId from ClassName_ ",
+					"where value in ('", FileEntry.class.getName(), "', '",
 					DLFileEntry.class.getName(), "'))"),
 				new String[] {"classNameId"}, "classPK",
 				new String[] {"fileEntryId"}, "DLFileEntry"),
@@ -96,8 +98,11 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 				null, "toFileEntryId", "DLFileShortcut", "fileEntryId",
 				"DLFileEntry"),
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				"name = '" + DLFileEntry.class.getName() + "'", "primKeyId",
-				"ResourcePermission", "fileEntryId", "DLFileEntry"));
+				StringBundler.concat(
+					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
+					".name = '", DLFileEntry.class.getName(), "'"),
+				"primKeyId", "ResourcePermission", "fileEntryId",
+				"DLFileEntry"));
 	}
 
 	private DataCleanupPreupgradeProcess
@@ -150,8 +155,9 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
 					"exists (select 1 from DDMStructure where ",
-					"DDMStorageLink.structureId = DDMStructure.structureId ",
-					"and DDMStructure.classNameId in (select classNameId from ",
+					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
+					".structureId = DDMStructure.structureId and ",
+					"DDMStructure.classNameId in (select classNameId from ",
 					"ClassName_ where value in ('",
 					DLFileEntryMetadata.class.getName(), "', '",
 					RawMetadataProcessor.class.getName(), "')))"),
@@ -165,13 +171,17 @@ public class DLFileEntryDataCleanupPreupgradeProcess
 		return new DataCleanupPreupgradeProcess(
 			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					"classNameId = (select classNameId from ClassName_ where ",
+					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
+					".classNameId = (select classNameId from ClassName_ where ",
 					"value = '", DLFileShortcut.class.getName(), "')"),
 				new String[] {"classNameId"}, "classPK",
 				new String[] {"fileShortcutId"}, "DLFileShortcut"),
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				"name = '" + DLFileShortcut.class.getName() + "'", "primKeyId",
-				"ResourcePermission", "fileShortcutId", "DLFileShortcut"));
+				StringBundler.concat(
+					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
+					".name = '", DLFileShortcut.class.getName(), "'"),
+				"primKeyId", "ResourcePermission", "fileShortcutId",
+				"DLFileShortcut"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
