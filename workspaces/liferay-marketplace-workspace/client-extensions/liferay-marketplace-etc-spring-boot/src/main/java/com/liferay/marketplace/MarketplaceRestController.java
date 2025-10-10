@@ -6,8 +6,12 @@
 package com.liferay.marketplace;
 
 import com.liferay.client.extension.util.spring.boot3.BaseRestController;
+import com.liferay.headless.admin.user.client.custom.field.CustomField;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
+import com.liferay.headless.admin.user.client.dto.v1_0.AccountRole;
+import com.liferay.headless.admin.user.client.dto.v1_0.PostalAddress;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.PostalAddressResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Catalog;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.order.client.dto.v1_0.BillingAddress;
@@ -21,6 +25,7 @@ import com.liferay.marketplace.service.KoroneikiService;
 import com.liferay.marketplace.service.MarketplaceService;
 import com.liferay.marketplace.util.MarketplaceUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import java.io.BufferedWriter;
@@ -35,6 +40,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +54,7 @@ import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -58,7 +65,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
@@ -134,6 +144,113 @@ public class MarketplaceRestController extends BaseRestController {
 		).body(
 			streamingResponseBody
 		);
+	}
+
+	@PostMapping("/account")
+	public ResponseEntity<Account> postAccount(
+			@RequestPart("account") String json,
+			@RequestPart("file") MultipartFile file,
+			@AuthenticationPrincipal Jwt jwt)
+		throws Exception {
+
+		if (_log.isInfoEnabled()) {
+			_log.info("Account Create: " + json);
+		}
+
+		Account account = Account.toDTO(json);
+
+		String base64Image = Base64.getEncoder(
+		).encodeToString(
+			file.getBytes()
+		);
+
+		account.setLogoBase64(() -> base64Image);
+
+		if (account.getPostalAddresses() != null) {
+			for (PostalAddress postalAddress : account.getPostalAddresses()) {
+				postalAddress.setName(() -> _ACCOUNT_POSTAL_ADDRESS_NAME);
+			}
+		}
+
+		String contactEmail = null;
+
+		for (CustomField customField : account.getCustomFields()) {
+			if (Objects.equals(customField.getName(), "Contact Email")) {
+				Object data = customField.getCustomValue(
+				).getData();
+
+				if (data != null) {
+					contactEmail = data.toString();
+				}
+
+				break;
+			}
+		}
+
+		AccountResource accountResource =
+			_marketplaceService.getAccountResource();
+
+		com.liferay.headless.admin.user.client.pagination.Page<Account>
+			accountPage = accountResource.getAccountsPage(
+				"", "name eq '" + account.getName() + "'",
+				com.liferay.headless.admin.user.client.pagination.Pagination.of(
+					1, 1),
+				"");
+
+		if (accountPage.getTotalCount() > 0) {
+			throw new ResponseStatusException(
+				HttpStatus.CONFLICT, "Account already exists");
+		}
+
+		account = accountResource.postAccount(account);
+
+		PostalAddressResource postalAddressesResource =
+			_marketplaceService.getPostalAddressResource();
+
+		PostalAddress postalAddress =
+			postalAddressesResource.getAccountPostalAddressesPage(
+				account.getId()
+			).fetchFirstItem();
+
+		if (postalAddress != null) {
+			_marketplaceService.getAccountResource(
+			).patchAccount(
+				account.getId(),
+				new Account() {
+					{
+						setDefaultBillingAddressId(postalAddress::getId);
+					}
+				}
+			);
+		}
+		else {
+			_log.info(
+				"No postal address found for account ID: " + account.getId());
+		}
+
+		if (contactEmail == null) {
+			contactEmail = jwt.getClaimAsString("userName");
+		}
+
+		_marketplaceService.getUserAccountResource(
+		).postAccountUserAccountByEmailAddress(
+			account.getId(), contactEmail
+		);
+
+		long accountRoleId = _getAccountAdminRoleId(account.getId());
+
+		_marketplaceService.getAccountRoleResource(
+		).
+			postAccountByExternalReferenceCodeAccountRoleUserAccountByEmailAddress(
+				account.getExternalReferenceCode(), accountRoleId, contactEmail
+			);
+
+		_log.info(
+			StringBundler.concat(
+				"User ", contactEmail, " associated with account ID ",
+				account.getId()));
+
+		return ResponseEntity.ok(account);
 	}
 
 	@PostMapping("product/purchase")
@@ -335,6 +452,42 @@ public class MarketplaceRestController extends BaseRestController {
 			});
 	}
 
+	private long _getAccountAdminRoleId(long accountId) throws Exception {
+		if (_cachedAccountAdminRoleId != null) {
+			return _cachedAccountAdminRoleId;
+		}
+
+		long envRoleId = GetterUtil.getLong(
+			System.getenv("LIFERAY_ACCOUNT_ADMIN_ROLE_ID"));
+
+		if (envRoleId > 0) {
+			_cachedAccountAdminRoleId = envRoleId;
+
+			return envRoleId;
+		}
+
+		com.liferay.headless.admin.user.client.pagination.Page<AccountRole>
+			accountRolesPage = _marketplaceService.getAccountRoleResource(
+			).getAccountAccountRolesPage(
+				accountId, null, "name eq 'Account Administrator'",
+				com.liferay.headless.admin.user.client.pagination.Pagination.of(
+					1, 1),
+				null
+			);
+
+		AccountRole accountRole = accountRolesPage.fetchFirstItem();
+
+		if (accountRole != null) {
+			_cachedAccountAdminRoleId = accountRole.getId();
+
+			return _cachedAccountAdminRoleId;
+		}
+
+		throw new RuntimeException(
+			"Account Administrator role not found for account ID: " +
+				accountId);
+	}
+
 	private void _sendOrderPurchasedNotification(Order order) throws Exception {
 		OrderItem[] orderItems = order.getOrderItems();
 
@@ -517,6 +670,8 @@ public class MarketplaceRestController extends BaseRestController {
 		}
 	}
 
+	private static final String _ACCOUNT_POSTAL_ADDRESS_NAME = "Postal Address";
+
 	private static final int _ACCOUNT_TYPE_BUSINESS = 2;
 
 	private static final int _ACCOUNT_TYPE_PERSON = 1;
@@ -526,6 +681,7 @@ public class MarketplaceRestController extends BaseRestController {
 	private static final Log _log = LogFactory.getLog(
 		MarketplaceRestController.class);
 
+	private Long _cachedAccountAdminRoleId;
 	private final Set<String> _europeanCountriesISOCode = Set.of(
 		"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR",
 		"HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO",

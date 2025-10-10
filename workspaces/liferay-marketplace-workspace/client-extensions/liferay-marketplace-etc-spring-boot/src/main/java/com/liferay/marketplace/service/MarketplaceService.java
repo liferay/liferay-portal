@@ -9,6 +9,7 @@ import com.liferay.client.extension.util.spring.boot3.client.LiferayOAuth2Access
 import com.liferay.client.extension.util.spring.boot3.service.BaseService;
 import com.liferay.headless.admin.user.client.dto.v1_0.UserAccount;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.AccountRoleResource;
 import com.liferay.headless.admin.user.client.resource.v1_0.PostalAddressResource;
 import com.liferay.headless.admin.user.client.resource.v1_0.UserAccountResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Catalog;
@@ -126,6 +127,17 @@ public class MarketplaceService extends BaseService {
 
 	public AccountResource getAccountResource() throws Exception {
 		return AccountResource.builder(
+		).header(
+			HttpHeaders.AUTHORIZATION,
+			_liferayOAuth2AccessTokenManager.getAuthorization(
+				"liferay-marketplace-etc-spring-boot-oahs")
+		).endpoint(
+			new URL(lxcDXPServerProtocol + "://" + lxcDXPMainDomain)
+		).build();
+	}
+
+	public AccountRoleResource getAccountRoleResource() throws Exception {
+		return AccountRoleResource.builder(
 		).header(
 			HttpHeaders.AUTHORIZATION,
 			_liferayOAuth2AccessTokenManager.getAuthorization(
@@ -328,9 +340,20 @@ public class MarketplaceService extends BaseService {
 	}
 
 	public UserAccount getUserAccount(String emailAddress) throws Exception {
-		UserAccountResource userAccountResource = _getUserAccountResource();
+		UserAccountResource userAccountResource = getUserAccountResource();
 
 		return userAccountResource.getUserAccountByEmailAddress(emailAddress);
+	}
+
+	public UserAccountResource getUserAccountResource() throws Exception {
+		return UserAccountResource.builder(
+		).endpoint(
+			new URL(lxcDXPServerProtocol + "://" + lxcDXPMainDomain)
+		).header(
+			org.apache.http.HttpHeaders.AUTHORIZATION,
+			_liferayOAuth2AccessTokenManager.getAuthorization(
+				"liferay-marketplace-etc-spring-boot-oahs")
+		).build();
 	}
 
 	public void postNotificationQueueEntry(
@@ -504,17 +527,6 @@ public class MarketplaceService extends BaseService {
 				"liferay-marketplace-etc-spring-boot-oahs")
 		).endpoint(
 			new URL(lxcDXPServerProtocol + "://" + lxcDXPMainDomain)
-		).build();
-	}
-
-	private UserAccountResource _getUserAccountResource() throws Exception {
-		return UserAccountResource.builder(
-		).endpoint(
-			new URL(lxcDXPServerProtocol + "://" + lxcDXPMainDomain)
-		).header(
-			org.apache.http.HttpHeaders.AUTHORIZATION,
-			_liferayOAuth2AccessTokenManager.getAuthorization(
-				"liferay-marketplace-etc-spring-boot-oahs")
 		).build();
 	}
 
