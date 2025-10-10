@@ -9,8 +9,6 @@ import org.hibernate.StaleObjectStateException;
 import org.hibernate.StaleStateException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-
 /**
  * @author Tina Tian
  */

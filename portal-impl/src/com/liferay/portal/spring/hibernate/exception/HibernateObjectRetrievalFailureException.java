@@ -10,7 +10,6 @@ import org.hibernate.UnresolvableObjectException;
 import org.hibernate.WrongClassException;
 
 import org.springframework.lang.Nullable;
-import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.util.ReflectionUtils;
 
 /**

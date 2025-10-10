@@ -10,7 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import org.springframework.lang.Nullable;
-import org.springframework.orm.jpa.EntityManagerHolder;
 
 /**
  * @author Tina Tian
