@@ -66,7 +66,6 @@ import org.hibernate.type.spi.TypeConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 
 /**
