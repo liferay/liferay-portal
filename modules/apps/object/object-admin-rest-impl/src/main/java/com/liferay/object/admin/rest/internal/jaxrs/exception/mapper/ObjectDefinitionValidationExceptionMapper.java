@@ -37,17 +37,6 @@ public class ObjectDefinitionValidationExceptionMapper
 		ObjectDefinitionValidationException
 			objectDefinitionValidationException) {
 
-		return new Problem(
-			_generateDetail(objectDefinitionValidationException),
-			Response.Status.BAD_REQUEST,
-			ObjectDefinitionValidationException.class.getName(),
-			ObjectDefinitionValidationException.class.getName());
-	}
-
-	private String _generateDetail(
-		ObjectDefinitionValidationException
-			objectDefinitionValidationException) {
-
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
 		for (ObjectDefinitionValidationException.ValidationError
@@ -69,9 +58,13 @@ public class ObjectDefinitionValidationExceptionMapper
 				));
 		}
 
-		return JSONUtil.put(
-			"validationErrors", jsonArray
-		).toString();
+		return new Problem(
+			JSONUtil.put(
+				"validationErrors", jsonArray
+			).toString(),
+			Response.Status.BAD_REQUEST,
+			ObjectDefinitionValidationException.class.getName(),
+			ObjectDefinitionValidationException.class.getName());
 	}
 
 	@Reference
