@@ -30,6 +30,8 @@ import java.util.List;
  */
 public class OrphanReferencesDataCleanupUtil {
 
+	public static final String SOURCE_TABLE_ALIAS = "s";
+
 	public static void cleanUpTable(
 			Connection connection, String sourceAdditionalWhereClause,
 			String sourceColumnName, String sourceTableName,
@@ -45,19 +47,22 @@ public class OrphanReferencesDataCleanupUtil {
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
-					"select ", sourceColumnName, ", count(1) from ",
-					sourceTableName,
+					"select ", SOURCE_TABLE_ALIAS, StringPool.PERIOD,
+					sourceColumnName, ", count(1) from ", sourceTableName,
+					StringPool.SPACE, SOURCE_TABLE_ALIAS,
 					getWhereClause(
 						connection, sourceAdditionalWhereClause,
 						sourceColumnName, sourceTableName, targetColumnNames,
 						targetTableName),
-					" group by ", sourceColumnName));
+					" group by ", SOURCE_TABLE_ALIAS, StringPool.PERIOD,
+					sourceColumnName));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				StringBundler.concat(
-					"delete from ", sourceTableName,
+					"delete ", SOURCE_TABLE_ALIAS, " from ", sourceTableName,
+					StringPool.SPACE, SOURCE_TABLE_ALIAS,
 					getWhereClause(
 						connection, sourceAdditionalWhereClause,
-						sourceColumnName, sourceTableName, targetColumnNames,
+						sourceColumnName, SOURCE_TABLE_ALIAS, targetColumnNames,
 						targetTableName)));
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
@@ -108,46 +113,68 @@ public class OrphanReferencesDataCleanupUtil {
 		DBInspector dbInspector = new DBInspector(connection);
 
 		if (dbInspector.isNumeric(sourceTableName, sourceColumnName)) {
-			additionalNullCheck = " and " + sourceColumnName + " != 0";
+			additionalNullCheck = StringBundler.concat(
+				" and ", SOURCE_TABLE_ALIAS, StringPool.PERIOD,
+				sourceColumnName, " != 0");
 		}
 		else if (db.getDBType() != DBType.ORACLE) {
-			additionalNullCheck = " and " + sourceColumnName + " != ''";
+			additionalNullCheck = StringBundler.concat(
+				" and ", SOURCE_TABLE_ALIAS, StringPool.PERIOD,
+				sourceColumnName, " != ''");
 		}
 
 		StringBundler sb = new StringBundler(
-			(8 * targetColumnNames.length) + 5);
-
-		sb.append("not exists (select 1 from ");
-		sb.append(targetTableName);
-		sb.append(" where (");
+			(15 * targetColumnNames.length) + 1);
 
 		for (String targetColumnName : targetColumnNames) {
+			String aliasTableName =
+				targetTableName + StringPool.UNDERLINE + targetColumnName;
+
+			sb.append(" left join ");
 			sb.append(targetTableName);
+			sb.append(StringPool.SPACE);
+			sb.append(aliasTableName);
+			sb.append(StringPool.SPACE);
+			sb.append(" on ");
+			sb.append(aliasTableName);
 			sb.append(StringPool.PERIOD);
 			sb.append(targetColumnName);
 			sb.append(" = ");
-			sb.append(sourceTableName);
+			sb.append(SOURCE_TABLE_ALIAS);
 			sb.append(StringPool.PERIOD);
 			sb.append(sourceColumnName);
-			sb.append(" or ");
+
+			if (StringUtil.equalsIgnoreCase("Company", targetTableName) &&
+				PropsValues.DATABASE_PARTITION_ENABLED &&
+				!dbInspector.isControlTable(sourceTableName)) {
+
+				sb.append(" and ");
+				sb.append(aliasTableName);
+				sb.append(".companyId = ");
+				sb.append(CompanyThreadLocal.getCompanyId());
+			}
+		}
+
+		sb.append(" where ");
+
+		for (String targetColumnName : targetColumnNames) {
+			String aliasTableName =
+				targetTableName + StringPool.UNDERLINE + targetColumnName;
+
+			sb.append(aliasTableName);
+
+			sb.append(StringPool.PERIOD);
+			sb.append(targetColumnName);
+			sb.append(" is null");
+			sb.append(" and ");
 		}
 
 		sb.setIndex(sb.index() - 1);
-		sb.append(")");
-
-		if (StringUtil.equalsIgnoreCase("Company", targetTableName) &&
-			PropsValues.DATABASE_PARTITION_ENABLED &&
-			!dbInspector.isControlTable(sourceTableName)) {
-
-			sb.append(" and companyId = ");
-			sb.append(CompanyThreadLocal.getCompanyId());
-		}
-
-		sb.append(")");
 
 		return StringBundler.concat(
-			" where ", sb, " and ", sourceColumnName, " is not null",
-			additionalNullCheck,
+			sb, " and ",
+			SOURCE_TABLE_ALIAS + StringPool.PERIOD + sourceColumnName,
+			" is not null", additionalNullCheck,
 			(sourceAdditionalWhereClause != null) ?
 				" and " + sourceAdditionalWhereClause : "");
 	}
