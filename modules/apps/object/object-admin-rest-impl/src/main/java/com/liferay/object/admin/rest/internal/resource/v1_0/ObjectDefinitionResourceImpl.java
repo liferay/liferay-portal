@@ -276,150 +276,132 @@ public class ObjectDefinitionResourceImpl
 						objectDefinition.getExternalReferenceCode()));
 		}
 
-		try {
-			if (GetterUtil.getBoolean(objectDefinition.getSystem())) {
-				serviceBuilderObjectDefinition =
-					_objectDefinitionService.addSystemObjectDefinition(
-						objectDefinition.getExternalReferenceCode(),
+		if (GetterUtil.getBoolean(objectDefinition.getSystem())) {
+			serviceBuilderObjectDefinition =
+				_objectDefinitionService.addSystemObjectDefinition(
+					objectDefinition.getExternalReferenceCode(),
+					contextUser.getUserId(),
+					_getObjectFolderId(
+						objectDefinition.
+							getObjectFolderExternalReferenceCode()),
+					objectDefinition.getClassName(),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableFriendlyURLCustomization()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableIndexSearch()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableLocalization(),
+						FeatureFlagManagerUtil.isEnabled(
+							contextUser.getCompanyId(), "LPD-32050")),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryDraft()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableObjectEntrySubscription()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryVersioning()),
+					objectDefinition.getFriendlyURLSeparator(),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getLabel()),
+					objectDefinition.getName(),
+					objectDefinition.getPanelAppOrder(),
+					objectDefinition.getPanelCategoryKey(),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getPluralLabel()),
+					GetterUtil.getBoolean(objectDefinition.getPortlet()),
+					objectDefinition.getScope(),
+					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
+						contextUser.getCompanyId(), _groupLocalService,
+						objectDefinition.getObjectDefinitionSettings(),
+						_objectDefinitionSettingLocalService),
+					objectFields,
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
 						contextUser.getUserId(),
-						_getObjectFolderId(
-							objectDefinition.
-								getObjectFolderExternalReferenceCode()),
-						objectDefinition.getClassName(),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableComments()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableFormContainer(), true),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableFriendlyURLCustomization()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableIndexSearch()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableLocalization(),
-							FeatureFlagManagerUtil.isEnabled(
-								contextUser.getCompanyId(), "LPD-32050")),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryDraft()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntrySchedule()),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableObjectEntrySubscription()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryVersioning()),
-						objectDefinition.getFriendlyURLSeparator(),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getLabel()),
-						objectDefinition.getName(),
-						objectDefinition.getPanelAppOrder(),
-						objectDefinition.getPanelCategoryKey(),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getPluralLabel()),
-						GetterUtil.getBoolean(objectDefinition.getPortlet()),
-						objectDefinition.getScope(),
-						ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
-							contextUser.getCompanyId(), _groupLocalService,
-							objectDefinition.getObjectDefinitionSettings(),
-							_objectDefinitionSettingLocalService),
-						objectFields,
-						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
-							contextUser.getCompanyId(), _groupLocalService,
-							contextUser.getUserId(),
-							_workflowDefinitionLinkLocalService,
-							objectDefinition.getWorkflowDefinitionLinks()));
-			}
-			else {
-				serviceBuilderObjectDefinition =
-					_objectDefinitionService.addCustomObjectDefinition(
-						_getObjectFolderId(
-							objectDefinition.
-								getObjectFolderExternalReferenceCode()),
-						objectDefinition.getClassName(),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableComments()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableFormContainer(), true),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableFriendlyURLCustomization()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableIndexSearch(), true),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableLocalization(),
-							FeatureFlagManagerUtil.isEnabled(
-								contextUser.getCompanyId(), "LPD-32050")),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryDraft()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntrySchedule()),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableObjectEntrySubscription()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryVersioning()),
-						objectDefinition.getFriendlyURLSeparator(),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getLabel()),
-						objectDefinition.getName(),
-						objectDefinition.getPanelAppOrder(),
-						objectDefinition.getPanelCategoryKey(),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getPluralLabel()),
-						GetterUtil.getBoolean(
-							objectDefinition.getPortlet(), true),
-						objectDefinition.getScope(),
-						objectDefinition.getStorageType(),
-						ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
-							contextUser.getCompanyId(), _groupLocalService,
-							objectDefinition.getObjectDefinitionSettings(),
-							_objectDefinitionSettingLocalService),
-						transformToList(
-							ArrayUtil.filter(
-								objectDefinition.getObjectFields(),
-								objectField ->
-									!StringUtil.equals(
-										objectField.getBusinessTypeAsString(),
-										ObjectFieldConstants.
-											BUSINESS_TYPE_AGGREGATION) &&
-									!StringUtil.equals(
-										objectField.getBusinessTypeAsString(),
-										ObjectFieldConstants.
-											BUSINESS_TYPE_RELATIONSHIP)),
-							objectField -> ObjectFieldUtil.toObjectField(
-								objectDefinition.getDefaultLanguageId(),
-								_listTypeDefinitionLocalService, objectField,
-								_objectFieldLocalService,
-								_objectFieldSettingLocalService,
-								_objectFilterLocalService)),
-						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
-							contextUser.getCompanyId(), _groupLocalService,
-							contextUser.getUserId(),
-							_workflowDefinitionLinkLocalService,
-							objectDefinition.getWorkflowDefinitionLinks()));
-			}
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
-		catch (Exception exception) {
-			if (exception instanceof ObjectDefinitionValidationException) {
-				_throwObjectDefinitionValidationException();
-			}
+		else {
+			serviceBuilderObjectDefinition =
+				_objectDefinitionService.addCustomObjectDefinition(
+					_getObjectFolderId(
+						objectDefinition.
+							getObjectFolderExternalReferenceCode()),
+					objectDefinition.getClassName(),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableFriendlyURLCustomization()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableIndexSearch(), true),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableLocalization(),
+						FeatureFlagManagerUtil.isEnabled(
+							contextUser.getCompanyId(), "LPD-32050")),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryDraft()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableObjectEntrySubscription()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryVersioning()),
+					objectDefinition.getFriendlyURLSeparator(),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getLabel()),
+					objectDefinition.getName(),
+					objectDefinition.getPanelAppOrder(),
+					objectDefinition.getPanelCategoryKey(),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getPluralLabel()),
+					GetterUtil.getBoolean(
+						objectDefinition.getPortlet(), true),
+					objectDefinition.getScope(),
+					objectDefinition.getStorageType(),
+					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
+						contextUser.getCompanyId(), _groupLocalService,
+						objectDefinition.getObjectDefinitionSettings(),
+						_objectDefinitionSettingLocalService),
+					transformToList(
+						ArrayUtil.filter(
+							objectDefinition.getObjectFields(),
+							objectField ->
+								!StringUtil.equals(
+									objectField.getBusinessTypeAsString(),
+									ObjectFieldConstants.
+										BUSINESS_TYPE_AGGREGATION) &&
+								!StringUtil.equals(
+									objectField.getBusinessTypeAsString(),
+									ObjectFieldConstants.
+										BUSINESS_TYPE_RELATIONSHIP)),
+						objectField -> ObjectFieldUtil.toObjectField(
+							objectDefinition.getDefaultLanguageId(),
+							_listTypeDefinitionLocalService, objectField,
+							_objectFieldLocalService,
+							_objectFieldSettingLocalService,
+							_objectFilterLocalService)),
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
+		}
 
-			throw exception;
-		}
-		finally {
-			if (FeatureFlagManagerUtil.isEnabled(
-					contextCompany.getCompanyId(), "LPD-51345")) {
-
-				ObjectDefinitionValidationThreadLocal.
-					setObjectDefinitionValidationContext(
-						false,
-						new ObjectDefinitionValidationContext(null));
-			}
-		}
 
 		if (!Validator.isBlank(objectDefinition.getExternalReferenceCode())) {
 			serviceBuilderObjectDefinition =
@@ -643,109 +625,95 @@ public class ObjectDefinitionResourceImpl
 					_objectFieldLocalService, _objectFieldSettingLocalService,
 					_objectFilterLocalService));
 
-		try {
-			if (serviceBuilderObjectDefinition.isUnmodifiableSystemObject()) {
-				serviceBuilderObjectDefinition =
-					_objectDefinitionService.updateSystemObjectDefinition(
-						objectDefinition.getExternalReferenceCode(),
-						objectDefinitionId,
-						_getObjectFolderId(
-							objectDefinition.
-								getObjectFolderExternalReferenceCode()),
-						0,
-						ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
-							contextUser.getCompanyId(), _groupLocalService,
-							objectDefinition.getObjectDefinitionSettings(),
-							_objectDefinitionSettingLocalService),
-						objectFieldsDTO,
-						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
-							contextUser.getCompanyId(), _groupLocalService,
-							contextUser.getUserId(),
-							_workflowDefinitionLinkLocalService,
-							objectDefinition.getWorkflowDefinitionLinks()));
-			}
-			else {
-				serviceBuilderObjectDefinition =
-					_objectDefinitionService.updateCustomObjectDefinition(
-						objectDefinition.getExternalReferenceCode(),
-						objectDefinitionId,
-						GetterUtil.getLong(accountEntryRestrictedObjectFieldId),
-						0,
-						_getObjectFolderId(
-							objectDefinition.
-								getObjectFolderExternalReferenceCode()),
-						0,
-						GetterUtil.getBoolean(
-							objectDefinition.getAccountEntryRestricted()),
-						GetterUtil.getBoolean(
-							objectDefinition.getActive(),
-							serviceBuilderObjectDefinition.isActive()),
-						objectDefinition.getClassName(),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableCategorization(), true),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableComments()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableFormContainer(), true),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableFriendlyURLCustomization()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableIndexSearch()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableLocalization(),
-							FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-32050")),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryDraft()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryHistory()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntrySchedule()),
-						GetterUtil.getBoolean(
-							objectDefinition.
-								getEnableObjectEntrySubscription()),
-						GetterUtil.getBoolean(
-							objectDefinition.getEnableObjectEntryVersioning()),
-						GetterUtil.getString(
-							objectDefinition.getFriendlyURLSeparator(),
-							serviceBuilderObjectDefinition.
-								getFriendlyURLSeparator()),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getLabel()),
-						objectDefinition.getName(),
-						objectDefinition.getPanelAppOrder(),
-						objectDefinition.getPanelCategoryKey(),
-						GetterUtil.getBoolean(objectDefinition.getPortlet()),
-						LocalizedMapUtil.populateLocalizedMap(
-							objectDefinition.getDefaultLanguageId(),
-							objectDefinition.getPluralLabel()),
-						objectDefinition.getScope(), statusInt,
-						ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
-							contextUser.getCompanyId(), _groupLocalService,
-							objectDefinition.getObjectDefinitionSettings(),
-							_objectDefinitionSettingLocalService),
-						objectFieldsDTO,
-						WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
-							contextUser.getCompanyId(), _groupLocalService,
-							contextUser.getUserId(),
-							_workflowDefinitionLinkLocalService,
-							objectDefinition.getWorkflowDefinitionLinks()));
-			}
+		if (serviceBuilderObjectDefinition.isUnmodifiableSystemObject()) {
+			serviceBuilderObjectDefinition =
+				_objectDefinitionService.updateSystemObjectDefinition(
+					objectDefinition.getExternalReferenceCode(),
+					objectDefinitionId,
+					_getObjectFolderId(
+						objectDefinition.
+							getObjectFolderExternalReferenceCode()),
+					0,
+					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
+						contextUser.getCompanyId(), _groupLocalService,
+						objectDefinition.getObjectDefinitionSettings(),
+						_objectDefinitionSettingLocalService),
+					objectFieldsDTO,
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
-		catch (Exception exception) {
-			if (exception instanceof ObjectDefinitionValidationException) {
-				_throwObjectDefinitionValidationException();
-			}
-
-			throw exception;
-		}
-		finally {
-			ObjectDefinitionValidationThreadLocal.
-				setObjectDefinitionValidationContext(
-					false, new ObjectDefinitionValidationContext(null));
+		else {
+			serviceBuilderObjectDefinition =
+				_objectDefinitionService.updateCustomObjectDefinition(
+					objectDefinition.getExternalReferenceCode(),
+					objectDefinitionId,
+					GetterUtil.getLong(accountEntryRestrictedObjectFieldId),
+					0,
+					_getObjectFolderId(
+						objectDefinition.
+							getObjectFolderExternalReferenceCode()),
+					0,
+					GetterUtil.getBoolean(
+						objectDefinition.getAccountEntryRestricted()),
+					GetterUtil.getBoolean(
+						objectDefinition.getActive(),
+						serviceBuilderObjectDefinition.isActive()),
+					objectDefinition.getClassName(),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableCategorization(), true),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableFormContainer(), true),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableFriendlyURLCustomization()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableIndexSearch()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableLocalization(),
+						FeatureFlagManagerUtil.isEnabled(
+							serviceBuilderObjectDefinition.getCompanyId(),
+							"LPD-32050")),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryDraft()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryHistory()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntrySchedule()),
+					GetterUtil.getBoolean(
+						objectDefinition.
+							getEnableObjectEntrySubscription()),
+					GetterUtil.getBoolean(
+						objectDefinition.getEnableObjectEntryVersioning()),
+					GetterUtil.getString(
+						objectDefinition.getFriendlyURLSeparator(),
+						serviceBuilderObjectDefinition.
+							getFriendlyURLSeparator()),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getLabel()),
+					objectDefinition.getName(),
+					objectDefinition.getPanelAppOrder(),
+					objectDefinition.getPanelCategoryKey(),
+					GetterUtil.getBoolean(objectDefinition.getPortlet()),
+					LocalizedMapUtil.populateLocalizedMap(
+						objectDefinition.getDefaultLanguageId(),
+						objectDefinition.getPluralLabel()),
+					objectDefinition.getScope(), statusInt,
+					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
+						contextUser.getCompanyId(), _groupLocalService,
+						objectDefinition.getObjectDefinitionSettings(),
+						_objectDefinitionSettingLocalService),
+					objectFieldsDTO,
+					WorkflowDefinitionLinkUtil.toWorkflowDefinitionLinks(
+						contextUser.getCompanyId(), _groupLocalService,
+						contextUser.getUserId(),
+						_workflowDefinitionLinkLocalService,
+						objectDefinition.getWorkflowDefinitionLinks()));
 		}
 
 		List<ObjectAction> objectActions = ListUtil.fromArray(
