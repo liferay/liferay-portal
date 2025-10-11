@@ -10,14 +10,15 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.support.ResourceHolderSupport;
 
 /**
  * @author Tina Tian
  */
-public class SessionHolder extends EntityManagerHolder {
+public class SessionHolder extends ResourceHolderSupport {
 
 	public SessionHolder(Session session) {
-		super(session);
+		_session = session;
 	}
 
 	public void clear() {
@@ -33,7 +34,7 @@ public class SessionHolder extends EntityManagerHolder {
 	}
 
 	public Session getSession() {
-		return (Session)getEntityManager();
+		return _session;
 	}
 
 	@Nullable
@@ -47,8 +48,6 @@ public class SessionHolder extends EntityManagerHolder {
 
 	public void setTransaction(@Nullable Transaction transaction) {
 		_transaction = transaction;
-
-		setTransactionActive(transaction != null);
 	}
 
 	@Nullable
@@ -56,5 +55,7 @@ public class SessionHolder extends EntityManagerHolder {
 
 	@Nullable
 	private Transaction _transaction;
+
+	private final Session _session;
 
 }

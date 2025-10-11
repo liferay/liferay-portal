@@ -52,9 +52,8 @@ public class SpringSessionContext implements CurrentSessionContext {
 			}
 
 			return session;
-		} else if (value instanceof EntityManagerHolder entityManagerHolder) {
-			return (Session)entityManagerHolder.getEntityManager().unwrap(Session.class);
-		} else {
+		}
+		else {
 			if (this.transactionManager != null && this.jtaSessionContext != null) {
 				try {
 					if (this.transactionManager.getStatus() == 0) {

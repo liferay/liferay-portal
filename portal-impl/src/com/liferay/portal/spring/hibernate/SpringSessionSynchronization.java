@@ -19,12 +19,6 @@ public class SpringSessionSynchronization
 	implements Ordered, TransactionSynchronization {
 
 	public SpringSessionSynchronization(
-		SessionHolder sessionHolder, SessionFactory sessionFactory) {
-
-		this(sessionHolder, sessionFactory, false);
-	}
-
-	public SpringSessionSynchronization(
 		SessionHolder sessionHolder, SessionFactory sessionFactory,
 		boolean newSession) {
 
