@@ -499,7 +499,8 @@ public class DataFactory {
 
 	public List<String> generateDynamicSQLs(
 		String dbTableName, long dlFileEntryId, long objectEntryId,
-		List<ObjectFieldModel> objectFieldModels, long relatedObjectEntryId) {
+		List<ObjectFieldModel> objectFieldModels,
+		long relatedTicketObjectEntryId, long relatedUserObjectEntryId) {
 
 		StringBundler sb = new StringBundler(
 			5 + (3 * objectFieldModels.size()));
@@ -530,9 +531,23 @@ public class DataFactory {
 			}
 			else if (StringUtil.equals(
 						objectFieldModel.getBusinessType(),
-						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
+					 StringUtil.equals(
+						 objectFieldModel.getName(), "r_relatedTo_ticketId")) {
 
-				value = (relatedObjectEntryId > 0) ? relatedObjectEntryId : 0;
+				value =
+					(relatedTicketObjectEntryId > 0) ?
+						relatedTicketObjectEntryId : 0;
+			}
+			else if (StringUtil.equals(
+						objectFieldModel.getBusinessType(),
+						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP) &&
+					 StringUtil.equals(
+						 objectFieldModel.getName(), "r_userTicket_userId")) {
+
+				value =
+					(relatedUserObjectEntryId > 0) ? relatedUserObjectEntryId :
+						0;
 			}
 
 			sb.append(", '");

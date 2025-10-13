@@ -23,6 +23,8 @@ ${dataFactory.getDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel, ob
 
 ${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinitionModel)}
 
+<#assign relatedTicketObjectEntryId = 0 />
+
 <#list dataFactory.newObjectEntryModels(objectDefinitionModel.getObjectDefinitionId()) as objectEntryModel>
 	<#assign
 		dlFileEntryModel = dataFactory.newDLFileEntryModel(dlFolderModel, "FileEntry" + objectEntryModel.getObjectEntryId(), "txt", "text/plain", dataFactory.getCounterNext())
@@ -39,9 +41,11 @@ ${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinition
 
 	<@insertAssetEntry _entry = objectEntryModel />
 
-	<#list dataFactory.generateDynamicSQLs(objectDefinitionModel.getDBTableName(), dlFileEntryModel.getFileEntryId(), objectEntryModel.getObjectEntryId(), objectFieldModels, objectEntryModel.getUserId()) as dynamicSQL>
+	<#list dataFactory.generateDynamicSQLs(objectDefinitionModel.getDBTableName(), dlFileEntryModel.getFileEntryId(), objectEntryModel.getObjectEntryId(), objectFieldModels, relatedTicketObjectEntryId, objectEntryModel.getUserId()) as dynamicSQL>
 		${dynamicSQL}
 	</#list>
+
+	<#assign relatedTicketObjectEntryId = objectEntryModel.getObjectEntryId() />
 </#list>
 
 <#list objectFieldModels as objectFieldModel>
