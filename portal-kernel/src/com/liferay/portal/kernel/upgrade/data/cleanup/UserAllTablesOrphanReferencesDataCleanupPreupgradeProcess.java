@@ -50,14 +50,20 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcess
 
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
-					"select [$SOURCE_TABLE_ALIAS$].", sourceColumnName, ", ",
-					"[$SOURCE_TABLE_ALIAS$].companyId, count(1) from ",
-					sourceTableName, " [$SOURCE_TABLE_ALIAS$]",
+					"select ",
+					OrphanReferencesDataCleanupUtil.getSourceTableAlias(),
+					StringPool.PERIOD, sourceColumnName, ", ",
+					OrphanReferencesDataCleanupUtil.getSourceTableAlias(),
+					".companyId, count(1) from ", sourceTableName, " ",
+					OrphanReferencesDataCleanupUtil.getSourceTableAlias(),
 					OrphanReferencesDataCleanupUtil.getWhereClause(
 						connection, null, sourceColumnName, sourceTableName,
 						targetColumnNames, targetTableName),
-					" group by [$SOURCE_TABLE_ALIAS$].", sourceColumnName,
-					", [$SOURCE_TABLE_ALIAS$].companyId"));
+					" group by ",
+					OrphanReferencesDataCleanupUtil.getSourceTableAlias(),
+					StringPool.PERIOD, sourceColumnName, ", ",
+					OrphanReferencesDataCleanupUtil.getSourceTableAlias(),
+					".companyId"));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				StringBundler.concat(
 					"delete from ", sourceTableName, " where ",
