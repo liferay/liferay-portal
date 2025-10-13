@@ -448,8 +448,7 @@ public class DataSourceFactoryUtil {
 		Class<?> clazz = getterMethod.getReturnType();
 
 		Method setterMethod = ReflectionUtil.fetchMethod(
-			HikariDataSource.class, "set" + keyName,
-			new Class<?>[] {clazz});
+			HikariDataSource.class, "set" + keyName, new Class<?>[] {clazz});
 
 		setterMethod.invoke(hikariDataSource, _toTypedValue(clazz, value));
 	}
