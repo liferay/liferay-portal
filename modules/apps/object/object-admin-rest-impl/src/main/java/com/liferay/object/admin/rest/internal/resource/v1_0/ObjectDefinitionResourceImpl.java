@@ -285,13 +285,11 @@ public class ObjectDefinitionResourceImpl
 						objectDefinition.
 							getObjectFolderExternalReferenceCode()),
 					objectDefinition.getClassName(),
-					GetterUtil.getBoolean(
-						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableFormContainer(), true),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableFriendlyURLCustomization()),
+						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch()),
 					GetterUtil.getBoolean(
@@ -303,8 +301,7 @@ public class ObjectDefinitionResourceImpl
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntrySchedule()),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableObjectEntrySubscription()),
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					objectDefinition.getFriendlyURLSeparator(),
@@ -337,13 +334,11 @@ public class ObjectDefinitionResourceImpl
 						objectDefinition.
 							getObjectFolderExternalReferenceCode()),
 					objectDefinition.getClassName(),
-					GetterUtil.getBoolean(
-						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableFormContainer(), true),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableFriendlyURLCustomization()),
+						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch(), true),
 					GetterUtil.getBoolean(
@@ -355,8 +350,7 @@ public class ObjectDefinitionResourceImpl
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntrySchedule()),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableObjectEntrySubscription()),
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					objectDefinition.getFriendlyURLSeparator(),
@@ -369,8 +363,7 @@ public class ObjectDefinitionResourceImpl
 					LocalizedMapUtil.populateLocalizedMap(
 						objectDefinition.getDefaultLanguageId(),
 						objectDefinition.getPluralLabel()),
-					GetterUtil.getBoolean(
-						objectDefinition.getPortlet(), true),
+					GetterUtil.getBoolean(objectDefinition.getPortlet(), true),
 					objectDefinition.getScope(),
 					objectDefinition.getStorageType(),
 					ObjectDefinitionSettingUtil.toObjectDefinitionSettings(
@@ -649,8 +642,7 @@ public class ObjectDefinitionResourceImpl
 				_objectDefinitionService.updateCustomObjectDefinition(
 					objectDefinition.getExternalReferenceCode(),
 					objectDefinitionId,
-					GetterUtil.getLong(accountEntryRestrictedObjectFieldId),
-					0,
+					GetterUtil.getLong(accountEntryRestrictedObjectFieldId), 0,
 					_getObjectFolderId(
 						objectDefinition.
 							getObjectFolderExternalReferenceCode()),
@@ -663,13 +655,11 @@ public class ObjectDefinitionResourceImpl
 					objectDefinition.getClassName(),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableCategorization(), true),
-					GetterUtil.getBoolean(
-						objectDefinition.getEnableComments()),
+					GetterUtil.getBoolean(objectDefinition.getEnableComments()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableFormContainer(), true),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableFriendlyURLCustomization()),
+						objectDefinition.getEnableFriendlyURLCustomization()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableIndexSearch()),
 					GetterUtil.getBoolean(
@@ -684,8 +674,7 @@ public class ObjectDefinitionResourceImpl
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntrySchedule()),
 					GetterUtil.getBoolean(
-						objectDefinition.
-							getEnableObjectEntrySubscription()),
+						objectDefinition.getEnableObjectEntrySubscription()),
 					GetterUtil.getBoolean(
 						objectDefinition.getEnableObjectEntryVersioning()),
 					GetterUtil.getString(
@@ -727,9 +716,8 @@ public class ObjectDefinitionResourceImpl
 		List<com.liferay.object.model.ObjectAction>
 			serviceBuilderObjectActions = new ArrayList<>(
 				_objectActionLocalService.getObjectActions(objectDefinitionId));
-		serviceBuilderObjectFields =
-			new ArrayList<>(
-				_objectFieldLocalService.getObjectFields(objectDefinitionId));
+		serviceBuilderObjectFields = new ArrayList<>(
+			_objectFieldLocalService.getObjectFields(objectDefinitionId));
 		List<com.liferay.object.model.ObjectRelationship>
 			serviceBuilderObjectRelationships = new ArrayList<>(
 				_objectRelationshipLocalService.getObjectRelationships(
