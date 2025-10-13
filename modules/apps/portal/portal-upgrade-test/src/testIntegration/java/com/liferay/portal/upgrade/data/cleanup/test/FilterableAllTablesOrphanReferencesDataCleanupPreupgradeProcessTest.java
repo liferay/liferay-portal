@@ -75,9 +75,9 @@ public class FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 	@Override
 	protected UpgradeProcess getUpgradeProcess() {
 		return new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
-			OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-				".classNameId = (select classNameId from ClassName_ where " +
-					"value = 'com.liferay.journal.model.JournalArticle')",
+			"[$SOURCE_TABLE_ALIAS$].classNameId = (select classNameId from " +
+				"ClassName_ where value = 'com.liferay.journal.model." +
+					"JournalArticle')",
 			new String[] {"classNameId"}, "classPK",
 			new String[] {"resourcePrimKey", "id_"}, "JournalArticle");
 	}

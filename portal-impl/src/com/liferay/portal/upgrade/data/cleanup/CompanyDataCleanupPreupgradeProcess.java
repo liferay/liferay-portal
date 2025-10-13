@@ -8,7 +8,6 @@ package com.liferay.portal.upgrade.data.cleanup;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
@@ -24,13 +23,13 @@ public class CompanyDataCleanupPreupgradeProcess
 				"companyId", "Company"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-					".ownerType = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY,
+				"[$SOURCE_TABLE_ALIAS$].ownerType = " +
+					PortletKeys.PREFS_OWNER_TYPE_COMPANY,
 				"ownerId", "PortalPreferences", "companyId", "Company"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-					".ownerType = " + PortletKeys.PREFS_OWNER_TYPE_COMPANY,
+				"[$SOURCE_TABLE_ALIAS$].ownerType = " +
+					PortletKeys.PREFS_OWNER_TYPE_COMPANY,
 				"ownerId", "PortletPreferences", "companyId", "Company"));
 	}
 

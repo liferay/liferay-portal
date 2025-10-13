@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DefaultAllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 
 /**
@@ -27,26 +26,26 @@ public class GroupDataCleanupPreupgradeProcess
 				"groupId", "Group_"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-					".ownerType = " + PortletKeys.PREFS_OWNER_TYPE_GROUP,
+				"[$SOURCE_TABLE_ALIAS$].ownerType = " +
+					PortletKeys.PREFS_OWNER_TYPE_GROUP,
 				"ownerId", "PortalPreferences", "groupId", "Group_"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-					".ownerType = " + PortletKeys.PREFS_OWNER_TYPE_GROUP,
+				"[$SOURCE_TABLE_ALIAS$].ownerType = " +
+					PortletKeys.PREFS_OWNER_TYPE_GROUP,
 				"ownerId", "PortletPreferences", "groupId", "Group_"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS +
-					".scope = " + ResourceConstants.SCOPE_GROUP,
+				"[$SOURCE_TABLE_ALIAS$].scope = " +
+					ResourceConstants.SCOPE_GROUP,
 				"primKeyId", "ResourcePermission", "groupId", "Group_"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
-					".scope = ", ResourceConstants.SCOPE_INDIVIDUAL, " and ",
-					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
-					".name = '", Group.class.getName(), "'"),
+					"[$SOURCE_TABLE_ALIAS$].scope = ",
+					ResourceConstants.SCOPE_INDIVIDUAL, " and ",
+					"[$SOURCE_TABLE_ALIAS$].name = '", Group.class.getName(),
+					"'"),
 				"primKeyId", "ResourcePermission", "groupId", "Group_"));
 	}
 

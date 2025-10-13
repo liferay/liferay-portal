@@ -9,7 +9,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
-import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
 import java.util.List;
@@ -104,10 +103,9 @@ public class DDMDataCleanupPreupgradeProcess
 		return new DataCleanupPreupgradeProcess(
 			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
-					".classNameId = (select classNameId from ClassName_ where ",
-					"value = 'com.liferay.dynamic.data.mapping.model.",
-					"DDMStructure')"),
+					"[$SOURCE_TABLE_ALIAS$].classNameId = (select classNameId ",
+					"from ClassName_ where value = 'com.liferay.dynamic.data.",
+					"mapping.model.DDMStructure')"),
 				new String[] {"classNameId"}, "classPK",
 				new String[] {"structureId"}, "DDMStructure"),
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
@@ -142,10 +140,9 @@ public class DDMDataCleanupPreupgradeProcess
 		return new DataCleanupPreupgradeProcess(
 			new FilterableAllTablesOrphanReferencesDataCleanupPreupgradeProcess(
 				StringBundler.concat(
-					OrphanReferencesDataCleanupUtil.SOURCE_TABLE_ALIAS,
-					".classNameId = (select classNameId from ClassName_ where ",
-					"value = 'com.liferay.dynamic.data.mapping.model.",
-					"DDMTemplate')"),
+					"[$SOURCE_TABLE_ALIAS$].classNameId = (select classNameId ",
+					"from ClassName_ where value = 'com.liferay.dynamic.data.",
+					"mapping.model.DDMTemplate')"),
 				new String[] {"classNameId"}, "classPK",
 				new String[] {"templateId"}, "DDMTemplate"),
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
