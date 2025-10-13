@@ -45,6 +45,8 @@ public class OrphanReferencesDataCleanupUtil {
 			return;
 		}
 
+		DB db = DBManagerUtil.getDB();
+
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
 					"select ", SOURCE_TABLE_ALIAS, StringPool.PERIOD,
@@ -58,11 +60,12 @@ public class OrphanReferencesDataCleanupUtil {
 					sourceColumnName));
 			PreparedStatement preparedStatement2 = connection.prepareStatement(
 				StringBundler.concat(
-					"delete ", SOURCE_TABLE_ALIAS, " from ", sourceTableName,
-					StringPool.SPACE, SOURCE_TABLE_ALIAS,
+					"delete ", (db.getDBType() == DBType.MYSQL) ? "s " : "",
+					"from ", sourceTableName, StringPool.SPACE,
+					SOURCE_TABLE_ALIAS,
 					getWhereClause(
 						connection, sourceAdditionalWhereClause,
-						sourceColumnName, SOURCE_TABLE_ALIAS, targetColumnNames,
+						sourceColumnName, sourceTableName, targetColumnNames,
 						targetTableName)));
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
@@ -123,6 +126,32 @@ public class OrphanReferencesDataCleanupUtil {
 				sourceColumnName, " != ''");
 		}
 
+		String query;
+
+		if (db.getDBType() == DBType.MYSQL) {
+			query = _getMySQLWhereClause(
+				dbInspector, sourceColumnName, sourceTableName,
+				targetColumnNames, targetTableName);
+		}
+		else {
+			query = _getOtherDBsWhereClause(
+				dbInspector, sourceColumnName, sourceTableName,
+				targetColumnNames, targetTableName);
+		}
+
+		return StringBundler.concat(
+			query, " and ",
+			SOURCE_TABLE_ALIAS + StringPool.PERIOD + sourceColumnName,
+			" is not null", additionalNullCheck,
+			(sourceAdditionalWhereClause != null) ?
+				" and " + sourceAdditionalWhereClause : "");
+	}
+
+	private static String _getMySQLWhereClause(
+		DBInspector dbInspector, String sourceColumnName,
+		String sourceTableName, String[] targetColumnNames,
+		String targetTableName) {
+
 		StringBundler sb = new StringBundler(
 			(15 * targetColumnNames.length) + 1);
 
@@ -171,12 +200,46 @@ public class OrphanReferencesDataCleanupUtil {
 
 		sb.setIndex(sb.index() - 1);
 
-		return StringBundler.concat(
-			sb, " and ",
-			SOURCE_TABLE_ALIAS + StringPool.PERIOD + sourceColumnName,
-			" is not null", additionalNullCheck,
-			(sourceAdditionalWhereClause != null) ?
-				" and " + sourceAdditionalWhereClause : "");
+		return sb.toString();
+	}
+
+	private static String _getOtherDBsWhereClause(
+		DBInspector dbInspector, String sourceColumnName,
+		String sourceTableName, String[] targetColumnNames,
+		String targetTableName) {
+
+		StringBundler sb = new StringBundler(
+			(8 * targetColumnNames.length) + 5);
+
+		sb.append(" where not exists (select 1 from ");
+		sb.append(targetTableName);
+		sb.append(" where (");
+
+		for (String targetColumnName : targetColumnNames) {
+			sb.append(targetTableName);
+			sb.append(StringPool.PERIOD);
+			sb.append(targetColumnName);
+			sb.append(" = ");
+			sb.append(SOURCE_TABLE_ALIAS);
+			sb.append(StringPool.PERIOD);
+			sb.append(sourceColumnName);
+			sb.append(" or ");
+		}
+
+		sb.setIndex(sb.index() - 1);
+		sb.append(")");
+
+		if (StringUtil.equalsIgnoreCase("Company", targetTableName) &&
+			PropsValues.DATABASE_PARTITION_ENABLED &&
+			!dbInspector.isControlTable(sourceTableName)) {
+
+			sb.append(" and companyId = ");
+			sb.append(CompanyThreadLocal.getCompanyId());
+		}
+
+		sb.append(")");
+
+		return sb.toString();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
