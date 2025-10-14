@@ -1709,23 +1709,25 @@ public class CommerceDiscountLocalServiceImpl
 				WorkflowConstants.STATUS_APPROVED)
 		);
 
+		if (Validator.isBlank(target)) {
+			predicate = predicate.and(
+				CommerceDiscountRelTable.INSTANCE.commerceDiscountId.eq(
+					CommerceDiscountTable.INSTANCE.commerceDiscountId)
+			).and(
+				_toTargetPredicate(cpDefinitionId, cpInstanceId,
+					unitOfMeasureKey));
+
+			joinStep = joinStep.innerJoinON(
+				CommerceDiscountRelTable.INSTANCE, predicate);
+		}
+
 		if (commerceAccountId != null) {
 			joinStep = joinStep.innerJoinON(
 				CommerceDiscountAccountRelTable.INSTANCE,
 				CommerceDiscountAccountRelTable.INSTANCE.commerceDiscountId.eq(
-					CommerceDiscountTable.INSTANCE.commerceDiscountId));
-			predicate = predicate.and(
+					CommerceDiscountTable.INSTANCE.commerceDiscountId).and(
 				CommerceDiscountAccountRelTable.INSTANCE.commerceAccountId.eq(
-					commerceAccountId));
-		}
-		else {
-			joinStep = joinStep.leftJoinOn(
-				CommerceDiscountAccountRelTable.INSTANCE,
-				CommerceDiscountAccountRelTable.INSTANCE.commerceDiscountId.eq(
-					CommerceDiscountTable.INSTANCE.commerceDiscountId));
-			predicate = predicate.and(
-				CommerceDiscountAccountRelTable.INSTANCE.
-					commerceDiscountAccountRelId.isNull());
+					commerceAccountId)));
 		}
 
 		if (commerceAccountGroupIds != null) {
@@ -1737,22 +1739,10 @@ public class CommerceDiscountLocalServiceImpl
 				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE,
 				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
 					commerceDiscountId.eq(
-						CommerceDiscountTable.INSTANCE.commerceDiscountId));
-
-			predicate = predicate.and(
+						CommerceDiscountTable.INSTANCE.commerceDiscountId).and(
 				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
 					commerceAccountGroupId.in(
-						ArrayUtil.toArray(commerceAccountGroupIds)));
-		}
-		else {
-			joinStep = joinStep.leftJoinOn(
-				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE,
-				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
-					commerceDiscountId.eq(
-						CommerceDiscountTable.INSTANCE.commerceDiscountId));
-			predicate = predicate.and(
-				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
-					commerceDiscountCommerceAccountGroupRelId.isNull());
+						ArrayUtil.toArray(commerceAccountGroupIds))));
 		}
 
 		if (commerceChannelId != null) {
@@ -1764,12 +1754,50 @@ public class CommerceDiscountLocalServiceImpl
 					CommerceChannelRelTable.INSTANCE.classNameId.eq(
 						_classNameLocalService.getClassNameId(
 							CommerceDiscount.class.getName()))
-				));
-			predicate = predicate.and(
+				).and(
 				CommerceChannelRelTable.INSTANCE.commerceChannelId.eq(
-					commerceChannelId));
+					commerceChannelId)));
 		}
-		else {
+
+		if (commerceOrderTypeId != null) {
+			joinStep = joinStep.innerJoinON(
+				CommerceDiscountOrderTypeRelTable.INSTANCE,
+				CommerceDiscountOrderTypeRelTable.INSTANCE.commerceDiscountId.
+					eq(CommerceDiscountTable.INSTANCE.commerceDiscountId).and(
+				CommerceDiscountOrderTypeRelTable.INSTANCE.commerceOrderTypeId.
+					eq(commerceOrderTypeId)));
+		}
+
+		predicate = null;
+
+		if (commerceAccountId == null) {
+			joinStep = joinStep.leftJoinOn(
+				CommerceDiscountAccountRelTable.INSTANCE,
+				CommerceDiscountAccountRelTable.INSTANCE.commerceDiscountId.eq(
+					CommerceDiscountTable.INSTANCE.commerceDiscountId));
+			predicate =
+				CommerceDiscountAccountRelTable.INSTANCE.
+					commerceDiscountAccountRelId.isNull();
+		}
+
+		if (commerceAccountGroupIds == null) {
+			joinStep = joinStep.leftJoinOn(
+				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE,
+				CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
+					commerceDiscountId.eq(
+						CommerceDiscountTable.INSTANCE.commerceDiscountId));
+			if (predicate == null) {
+				predicate =
+					CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
+						commerceDiscountCommerceAccountGroupRelId.isNull();
+			} else {
+				predicate = predicate.and(
+					CommerceDiscountCommerceAccountGroupRelTable.INSTANCE.
+						commerceDiscountCommerceAccountGroupRelId.isNull());
+			}
+		}
+
+		if (commerceChannelId == null) {
 			joinStep = joinStep.leftJoinOn(
 				CommerceChannelRelTable.INSTANCE,
 				CommerceChannelRelTable.INSTANCE.classPK.eq(
@@ -1779,44 +1807,36 @@ public class CommerceDiscountLocalServiceImpl
 						_classNameLocalService.getClassNameId(
 							CommerceDiscount.class.getName()))
 				));
-			predicate = predicate.and(
-				CommerceChannelRelTable.INSTANCE.commerceChannelRelId.isNull());
+			if (predicate == null) {
+				predicate = CommerceChannelRelTable.INSTANCE.commerceChannelRelId.isNull();
+			} else {
+				predicate = predicate.and(
+					CommerceChannelRelTable.INSTANCE.commerceChannelRelId.isNull());
+			}
 		}
 
-		if (commerceOrderTypeId != null) {
-			joinStep = joinStep.innerJoinON(
-				CommerceDiscountOrderTypeRelTable.INSTANCE,
-				CommerceDiscountOrderTypeRelTable.INSTANCE.commerceDiscountId.
-					eq(CommerceDiscountTable.INSTANCE.commerceDiscountId));
-			predicate = predicate.and(
-				CommerceDiscountOrderTypeRelTable.INSTANCE.commerceOrderTypeId.
-					eq(commerceOrderTypeId));
-		}
-		else {
+		if (commerceOrderTypeId == null) {
 			joinStep = joinStep.leftJoinOn(
 				CommerceDiscountOrderTypeRelTable.INSTANCE,
 				CommerceDiscountOrderTypeRelTable.INSTANCE.commerceDiscountId.
 					eq(CommerceDiscountTable.INSTANCE.commerceDiscountId));
-			predicate = predicate.and(
-				CommerceDiscountOrderTypeRelTable.INSTANCE.
-					commerceDiscountOrderTypeRelId.isNull());
+			if (predicate == null) {
+				predicate = CommerceDiscountOrderTypeRelTable.INSTANCE.
+					commerceDiscountOrderTypeRelId.isNull();
+			} else {
+				predicate.and(
+					CommerceDiscountOrderTypeRelTable.INSTANCE.
+						commerceDiscountOrderTypeRelId.isNull());
+			}
+
 		}
 
 		if (!Validator.isBlank(target)) {
-			return joinStep.where(
-				predicate.and(
-					CommerceDiscountTable.INSTANCE.target.eq(target)));
+			predicate = predicate.and(
+				CommerceDiscountTable.INSTANCE.target.eq(target));
 		}
 
-		joinStep = joinStep.innerJoinON(
-			CommerceDiscountRelTable.INSTANCE,
-			CommerceDiscountRelTable.INSTANCE.commerceDiscountId.eq(
-				CommerceDiscountTable.INSTANCE.commerceDiscountId));
-
-		return joinStep.where(
-			predicate.and(
-				_toTargetPredicate(
-					cpDefinitionId, cpInstanceId, unitOfMeasureKey)));
+		return joinStep.where(predicate);
 	}
 
 	private boolean _isWorkflowEnabled(
