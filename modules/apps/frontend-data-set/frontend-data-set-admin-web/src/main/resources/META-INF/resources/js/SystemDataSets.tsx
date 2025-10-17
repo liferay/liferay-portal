@@ -394,7 +394,6 @@ const SystemDataSets = ({
 			<ClayTooltipProvider>
 				<ClayLink
 					data-tooltip-align="top"
-					decoration="underline"
 					displayType="tertiary"
 					href={apiExplorerURL}
 					rel="noopener noreferrer"
