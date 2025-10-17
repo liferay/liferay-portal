@@ -578,14 +578,26 @@ public class JournalConverterImpl implements JournalConverter {
 				Map<String, LocalizedValue> options =
 					ddmFormFieldOptions.getOptions();
 
+				JSONArray fieldValueJSONArray = _jsonFactory.createJSONArray(
+					fieldValue);
+
 				if (options.size() > 1) {
 					dynamicContentElement.addCDATA(fieldValue);
 
+					for (int i = 0; i < fieldValueJSONArray.length(); i++) {
+						String selectedValue = fieldValueJSONArray.getString(i);
+
+						Element optionReferenceElement =
+							dynamicContentElement.addElement(
+								"option-reference");
+
+						optionReferenceElement.addCDATA(
+							ddmFormFieldOptions.getOptionReference(
+								selectedValue));
+					}
+
 					return;
 				}
-
-				JSONArray fieldValueJSONArray = _jsonFactory.createJSONArray(
-					fieldValue);
 
 				if (fieldValueJSONArray.length() == 1) {
 					fieldValue = Boolean.TRUE.toString();
@@ -598,7 +610,7 @@ public class JournalConverterImpl implements JournalConverter {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Unable to get dynamic data mapping form field for " +
-							fieldName,
+						fieldName,
 						portalException);
 				}
 			}
