@@ -2097,13 +2097,20 @@ public class LanguageImpl implements Language, Serializable {
 		}
 
 		private CompanyLocalesBag(long companyId) {
+			_log.error("{companyId = " + companyId + "}");
+
 			String[] languageIds = PropsValues.LOCALES;
+
+			_log.error("There are " + languageIds.length + " languageIds");
 
 			if (companyId != CompanyConstants.SYSTEM) {
 				try {
 					languageIds = PrefsPropsUtil.getStringArray(
 						companyId, PropsKeys.LOCALES, StringPool.COMMA,
 						PropsValues.LOCALES_ENABLED);
+
+					_log.error(
+						"There are " + languageIds.length + " languageIds");
 				}
 				catch (SystemException systemException) {
 
@@ -2114,8 +2121,14 @@ public class LanguageImpl implements Language, Serializable {
 					}
 
 					languageIds = PropsValues.LOCALES_ENABLED;
+
+					_log.error(
+						"There are " + languageIds.length + " languageIds");
 				}
 			}
+
+			_log.error(
+				"Current languageIds = " + ArrayUtil.toString(languageIds, ""));
 
 			Locale defaultLocale = LocaleUtil.getDefault();
 
@@ -2150,7 +2163,16 @@ public class LanguageImpl implements Language, Serializable {
 			Set<String> duplicateLanguageCodes = new HashSet<>();
 
 			for (String languageId : languageIds) {
+				if (languageId.equals("in_ID")) {
+					_log.error("Encountered language ID 'in_ID'");
+				}
+
 				Locale locale = LocaleUtil.fromLanguageId(languageId, false);
+
+				if (languageId.equals("in_ID")) {
+					_log.error(
+						"New language ID = " + LocaleUtil.toLanguageId(locale));
+				}
 
 				String languageCode = languageId;
 
