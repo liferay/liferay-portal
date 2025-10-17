@@ -617,6 +617,20 @@ public class JournalConverterImpl implements JournalConverter {
 
 			dynamicContentElement.addCDATA(fieldValue);
 		}
+		else if (Objects.equals(DDMFormFieldTypeConstants.RADIO, fieldType) &&
+				 Validator.isNotNull(fieldValue)) {
+
+			DDMFormFieldOptions ddmFormFieldOptions =
+				ddmFormField.getDDMFormFieldOptions();
+
+			dynamicContentElement.addCDATA(fieldValue);
+
+			Element optionReferenceElement = dynamicContentElement.addElement(
+				"option-reference");
+
+			optionReferenceElement.addCDATA(
+				ddmFormFieldOptions.getOptionReference(fieldValue));
+		}
 		else if (Objects.equals(DDMFormFieldTypeConstants.SELECT, fieldType) &&
 				 Validator.isNotNull(fieldValue)) {
 
