@@ -42,7 +42,8 @@ import org.osgi.service.component.annotations.Reference;
 		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.ALL_SECTION,
 		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.FILES_SECTION,
 		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.RECYCLE_BIN_SECTION,
-		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.VIEW_FILES_FOLDER
+		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.VIEW_FILES_FOLDER,
+		"service.ranking:Integer=95"
 	},
 	service = FDSFilter.class
 )
